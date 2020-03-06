@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django_extensions.db.fields import AutoSlugField
+from django_extensions.db.fields import AutoSlugField #pylint: disable=import-error
 
 from user_management.models import AtlasGroup
 
@@ -29,7 +29,7 @@ class LayerManager(models.Manager):
         if not ctrix:
             return open_dataset
 
-        elif user and user.is_anonymous and ctrix:
+        if user and user.is_anonymous and ctrix:
             result = open_dataset | closed_dataset
             return result
 

@@ -3,7 +3,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG_DEFAULT = 'True'
-SECRET_KEY_DEFAULT = 'changemetosomethingsecret'
+SECRET_KEY_DEFAULT = 'changemetosomethingsecret' # noqa
 ALLOWED_HOSTS_DEFAULT = 'localhost,127.0.0.1,[::1]'
 
 if os.getenv('ATLAS_ENVIRONMENT') == 'production':

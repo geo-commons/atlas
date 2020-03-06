@@ -29,4 +29,4 @@ class SavedDataset(models.Model):
         try:
             return json_data['numberReturned']
         except KeyError:
-            None
+            return None

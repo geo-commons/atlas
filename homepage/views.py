@@ -71,7 +71,6 @@ class SavedDatasetView(FormView):
     success_url = reversed('homepage:downloads')
 
     def post(self, request, *args, **kwargs):
-
         form = self.form_class(request.POST)
 
         if form.is_valid():
@@ -85,7 +84,7 @@ class SavedDatasetView(FormView):
             dataset.save()
             logger.debug('dataset %s saved', dataset.title)
 
-            return redirect(reverse('homepage:downloads'))
+        return redirect(reverse('homepage:downloads'))
 
 
 def save_dataset_view(request, pk, type_):
@@ -124,7 +123,7 @@ def search_wfs(request):
 
     if query and layer_id:
         layer = Layer.objects.get(layer_id=layer_id)
-        search_fields = layer._search_fields
+        search_fields = layer._search_fields #pylint: disable=protected-access
         WFS_PARAMS['typeName'] = layer.layer_name
 
         if search_fields:
@@ -146,7 +145,7 @@ def autocomplete_search(request):
     cql_filter = "({} ILIKE '%{}%')"
     filter_list = []
     layer = Layer.objects.get(layer_id=layer_id)
-    search_fields = layer._search_fields
+    search_fields = layer._search_fields #pylint: disable=protected-access
     WFS_PARAMS['typeName'] = layer.layer_name
 
     if request.is_ajax():
@@ -166,7 +165,7 @@ def autocomplete_search(request):
                 r = requests.get(settings.WFS_URL, WFS_PARAMS)
                 results = json.loads(r.text)['features']
                 results = [x['properties'] for x in results]
-                results = [x[field] for x in results]
+                results = [x[field] for x in results] #pylint: disable=undefined-loop-variable
                 results = json.dumps(results)
     mimetype = 'application/json'
 
