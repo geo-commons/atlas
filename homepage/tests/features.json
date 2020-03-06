@@ -1,0 +1,56 @@
+{
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "urn:ogc:def:crs:EPSG::28992"
+        }
+    },
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "id": "BAG_Purmerend_Verblijfseenheid_GEKOPPELD.fid-4d6bf21c_168751eee50_-670e",
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    126987.146,
+                    502670.875
+                ]
+            },
+            "properties": {
+                "id": "24875",
+                "x_coord": "126987.14",
+                "y_coord": "502670.87",
+                "adres_id": "24875",
+                "bouwjaar": "1968",
+                "postcode": "1443 JJ",
+                "wijknaam": "Wheermolen",
+                "gebied_id": "30",
+                "gebouw_id": "38764",
+                "parent_id": "7",
+                "status_id": "4",
+                "gebiednaam": "Wheermolen-Oost",
+                "huisletter": null,
+                "huisnummer": "61",
+                "straatnaam": "Tjalkstraat",
+                "woonplaats": "Purmerend",
+                "gebruiksdoel": "woonfunctie",
+                "indauthentiek": "J",
+                "_matched_records": "1",
+                "gebouwvolgnummer": "3",
+                "gebruiksdoel_id1": "1",
+                "gebruiksdoel_id2": null,
+                "pandmodification": null,
+                "vloeroppervlakte": "100",
+                "verblijfseenheid_id": "18679",
+                "huisnummertoevoeging": null,
+                "verblijfseenheidnummer": "0439010000018679",
+                "verblijfseenheidvolgnummer": "3"
+            },
+            "geometry_name": "geom"
+        }
+    ],
+    "timeStamp": "2019-01-22T10:35:45.213Z",
+    "totalFeatures": "unknown",
+    "numberReturned": 1
+}

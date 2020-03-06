@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    {% include 'nav.html' %}
+    <hr>
+
+    <div class="container mb-4">
+        <hr>
+        {% if ctrix %}
+            <h4>Downloads</h4>
+            <div class="table-responsive">
+                <table id="mytable" class="table table-bordred table-striped">
+                <thead>
+                    <th>Titel</th>
+                    <th>Bewaard door</th>
+                    <th>Aantal records</th>
+                    <th>CSV (Excel)</th>
+                    <th>JSON</th>
+                </thead>
+                <tbody>
+                {% for item in object_list %}
+                <tr>
+                <td>{{ item.title }}</td>
+                <td>
+                    {% if item.saved_by %}
+                    {{ item.saved_by }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.number_of_records %}
+                        {{ item.number_of_records }}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/atlas/downloads/{{ item.pk }}/csv"><span class="glyphicon glyphicon-download-alt"></span></a>
+                </td>
+                <td>
+                    <a href="{{ item.pk }}/json"><span class="glyphicon glyphicon-download-alt"></span></a>
+                </td>
+                {% endfor %}
+                </tbody>
+                </table>
+
+            </div>
+
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; Eerste</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">vorige</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Pagina {{ page_obj.number }} van {{ page_obj.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">volgende</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">laatse &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        {% else %}
+        You are not allowed to view this page.
+        {% endif %}
+    </div>
+{% endblock content %}

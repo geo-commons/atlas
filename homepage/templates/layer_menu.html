@@ -1,0 +1,186 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block layer-menu %}
+
+<div class="row">
+  <div class="col-sm-3 atlas-layer-list">
+      {% block main-content %}
+      {% endblock main-content %}
+  </div> <!-- END col-sm-4 -->
+
+  <div class="col-sm-9 atlas-map">
+
+    <div class="main-content">
+      <div id="map">
+        <!-- zoek data filter menu -->
+        <div class="info-div-all" id="zoekDataFilterDiv">
+
+            <h5>Zoek & filter op data <button title="Sluiten"
+              id="close_data_filter_btn" type="button"
+              class="btn btn-cls_data">X</button>
+            </h5>
+
+          <div style="margin:4px 0px 7px 0px;" class='bg-info text-white'>* U kunt zoeken op:</div>
+
+          <!-- select layer to search & filter -->
+          <div class="form-group">
+            <select class="form-control" id="data_filter_layer_select">
+              <option value="null">Selecteer een kaartlaag</option>
+            </select>
+          </div>
+          <div class="" id="loading_gif" >
+            <img width="50" height="50" src="{% static 'img/468.gif' %}"" alt="">
+            Zoekingangen worden geladen...
+          </div>
+
+          <div id="layer_attribute_menu" class="form-group">
+            <label>Zoekingang</label>
+            <select class="form-control" id="layer_attribute_list">
+              <option value="null">Selecteer een attribuut</option>
+            </select>
+          </div>
+          <div class="form-group" id="layer_search_menu">
+            <div id="alert_message" class="alert alert-info" role="alert">
+            </div>
+            <label id="search_value">Zoek op data</label>
+            <input type="text" class="form-control ui-autocomplete-input"
+              id="search_data_value" autocomplete="on">
+              <div class="" id="loading_gif_data" >
+                <img width="50" height="50" src="{% static 'img/468.gif' %}"" alt="">
+                Resultaten worden geladen...
+              </div>
+          </div>
+          <div id="founded_object_div" class="">
+            <h5>Geselecteerde object informatie</h5>
+            <div class="" id="founded_object_info"></div>
+          </div>
+
+        </div> <!-- END zoek data filter menu -->
+
+        {% if ctrix %}
+          <div class="" id="streetsmartDiv">
+            <h5>Rondkijkfoto - Cyclomedia
+            <button title="Sluiten" id="close_viewer_btn" type="button"
+            class="btn btn-cls_view">X</button>
+            </h5>
+            <div id="streetsmartApi" class="panoramaViewerWindow"></div>
+            <div id="view_alert_message" class="alert alert-info" role="alert">
+
+            </div>
+          </div>
+        {% endif %}
+        <div id="zoekopadresDiv">
+          <!--<label class="control-label">Zoek op adres</label>-->
+          <input type="text" class="form-control ui-autocomplete-input"
+            placeholder="Zoek op adres, straatnaam, postcode, woonplaats"
+            id="straatnaam" autocomplete="off">
+          <i class="glyphicon glyphicon-search form-control-feedback"></i>
+        </div>
+        <div class='map_items_icoon'>
+          <div style="float:left;" class="" id="measureOutput"></div>
+          <div style="float:right;">
+            {% if ctrix %}
+            <div  class="btn-group">
+              <button
+                class="btn btn-default dropdown-toggle btn_style box-shadow--6dp"
+                id="adress_select_btn" type="button" data-toggle="dropdown">
+                <img src="{% static 'images/adress_select.png' %}">
+                Selectie
+                <span class="glyphicon glyphicon-chevron-down"></span>
+              </button>
+              <ul id="address_select" class="dropdown-menu">
+                <li>
+                  <a class="adress_select_type" href="#" id="selecteer_adres"
+                    title="Uit">
+                    - -  (uit)
+                  </a>
+                </li>
+                <!-- <li>
+                  <a class="adress_select_type"  href="#" id="length_adres"
+                    title="Select this card">
+                    <img src="{% static 'images/measure_line.png' %}">
+                    Afstand (lijn)
+                  </a>
+                </li> -->
+                <li>
+                  <a class="adress_select_type" href="#" id="area_adres"
+                    title="Select this card">
+                    <img src="{% static 'images/measure_area.png' %}">
+                    Adressen binnen vlak
+                  </a>
+                </li>
+              </ul>
+            </div> <!-- button group -->
+            <button type="button"
+              class="btn btn-default btn_stret_sty box-shadow--6dp">
+              <img src="{% static 'images/street-view.png' %}">
+              Rondkijkfoto
+            </button>
+            <div  class="btn-group">
+              <button
+                class="btn btn-default dropdown-toggle btn_style box-shadow--6dp"
+                id="measure_btn" type="button" data-toggle="dropdown">
+                <img src="{% static 'images/measure2.png' %}">
+                Meten
+                <span class="glyphicon glyphicon-chevron-down"></span>
+              </button>
+              <ul id="measure_select" class="dropdown-menu">
+                <li>
+                  <a class="measure_type" href="#" id="selecteer" title="Uit">
+                    - -  (uit)
+                  </a>
+                </li>
+                <li>
+                  <a class="measure_type"  href="#" id="length"
+                    title="Select this card">
+                    <img src="{% static 'images/measure_line.png' %}">
+                    Afstand (lijn)
+                  </a>
+                </li>
+                <li>
+                  <a class="measure_type" href="#" id="area"
+                    title="Select this card">
+                    <img src="{% static 'images/measure_area.png' %}">
+                    Oppervlakte (vlak)
+                  </a>
+                </li>
+              </ul>
+            </div> <!-- button group -->
+            {% endif %}
+            <button type="button"
+              class="btn btn-default btn_zoek_adres_style box-shadow--6dp">
+             <img src="{% static 'images/search_adres.png' %}">
+             Zoek adres
+            </button>
+            {% if ctrix %}
+            <!-- data filter and search -->
+            <button type="button"
+              class="btn btn-default btn_zoek_data_style box-shadow--6dp">
+             <img src="{% static 'images/filter_data.png' %}">
+             Zoek op data
+            </button>
+            {% endif %}
+            <!-- <form class="form-inline">
+              <select id="type">
+              <option value="selecteer">- -  (uit)</option>
+              <option value="length">Afstand (lijn)</option>
+              <option value="area">Oppervlakte (vlak)</option>
+              </select>
+            </form> -->
+          </div> <!-- iccon group -->
+        </div>
+
+        <div id="popup" class="ol-popup">
+          <div id="popup-content"></div>
+        </div>
+
+      </div> <!-- END map -->
+
+  </div> <!-- END card-mb-4 -->
+
+</div> <!-- END col-sm-8 -->
+
+</div> <!-- END row class -->
+
+{% endblock layer-menu %}

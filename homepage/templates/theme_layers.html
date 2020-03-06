@@ -1,0 +1,45 @@
+{% autoescape off %}
+
+
+{% for theme, layers in themes.items %}
+  {% for layer in layers %}
+  var {{ layer.layer_id }} = new ol.layer.Tile({
+    id: "{{ layer.layer_id }}",
+    sldDiv: "{{ layer.slddiv }}",
+    infoDiv: "{{ layer.infodiv }}",
+    sld: "{{ layer.sld }}",
+    lgnd: "{{ layer.legend }}",
+    filterId: "{{ layer.filterid }}",
+    filterdataId: "{{ layer.filterdataid }}",
+    dataZoekId: "{{ layer.datazoekid }}",
+    layerName: "{{ layer.layer_name }}",
+    // metadata attributen
+    meta_naam: "{{ layer.meta_name }}",
+    meta_soort: "{{ layer.meta_kind }}",
+    meta_org: "{{ layer.meta_org }}",
+    meta_bijgewerkt: {{ layer.meta_updated }},
+    // metadata attributen
+    categorie: "{{layer.layer_type}}",
+    title: "{{ layer.title }}",
+    opacity: {{ layer.opacity }},
+    visible: {{ layer.visible|lower }},
+    {{ layer.layer_type_str }},
+    isQueryable: {{ layer.isqueryable|lower }},
+    {% if layer.popup_attributes %}
+    {{ layer.popup_attributes }},
+    {% endif %}
+    {% if layer.search_fields %}
+    {{ layer.search_fields }},
+    {% endif %}
+    source: new ol.source.TileWMS({
+      projection: "{{ layer.projection }}", //here is the data source projection
+      url: "{{ layer.url }}",
+      params: {'layers': '{{ layer.layer_name }}'},
+      servertype: "{{ layer.server_type }}"
+      })
+    });
+
+  {% endfor %}
+{% endfor %}
+
+{% endautoescape %}

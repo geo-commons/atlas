@@ -1,0 +1,36 @@
+{% extends "layer_menu.html" %}
+{% load static %}
+{% block main-content %}
+  <div id="street-view"></div>
+  {% if results %}
+    {% for item in results.features %}
+    <br/>
+      {% for k, v in item.properties.items %}
+        <div>{{ k }}: {{ v }}</div>
+      {% endfor %}
+      <br />
+    {% endfor %}
+  {% else %}
+    Geen resultaat gevonden.
+  {% endif %}
+{% endblock main-content %}
+
+{% block extrajs %}
+{% autoescape off %}
+<script type="text/javascript">
+  var search_data = {{ results }};
+
+  var vectorSource = new ol.source.Vector({
+    features: (new ol.format.GeoJSON()).readFeatures(search_data),
+  });
+
+  var featuressource = new ol.layer.Vector({
+    source: vectorSource,
+  });
+  <!-- map.addLayer(featuressource); -->
+  layerList.push(featuressource);
+
+{% endautoescape %}
+  </script>
+
+{% endblock extrajs %}

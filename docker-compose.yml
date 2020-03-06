@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  atlas:
+    build:
+      context: .
+    environment:
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - CTRIX_IPS=${CTRIX_IPS}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - WFS_URL=${WFS_URL}
+      - WFS_URL_CTRIX=${WFS_URL_CTRIX}
+      - SMARTSTREET_USER=${SMARTSTREET_USER}
+      - SMARTSTREET_PASSWORD=${SMARTSTREET_PASSWORD}
+      - SMARTSTREET_API_KEY=${SMARTSTREET_API_KEY}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+    ports:
+      - 8000:8000
+  postgres:
+    image: postgres:11.6-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres-data:

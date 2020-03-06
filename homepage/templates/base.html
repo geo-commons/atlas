@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% load app_version %}
+{% load static %}
+<html lang="nl">
+    <head>
+        <title>Atlas {% app_version %} [Geo Portaal] - Gemeente Purmerend en Beemster</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" >
+        <meta name="keywords" content="Atlas, Gis Viewer, kaart, geo portaal">
+        <meta name="description" content="Atlas [Gis Viewer] - Gemeente Purmerend & Beemster">
+
+        <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/vnd.microsoft.icon" />
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="{% static 'css/openlayers-4.6.5.css' %}">
+        <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="{% static 'css/openlayers.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/site.css' %}"/>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+        <script type="text/javascript" src="{% static 'js/openlayers-4.6.5.js' %}"></script>
+
+        {% if ctrix %}
+            <!-- StreetSmartApi -->
+            <script type="text/javascript" src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+            <script type="text/javascript" src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
+            <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v19.19/StreetSmartApi.js"></script>
+        {% else %}
+            <!-- google street-view API -->
+            <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}"></script>
+        {% endif %}
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
+        <script src="https://epsg.io/28992.js"></script>
+
+        <!-- OpenLayers Basic -->
+        <script type="text/javascript">
+            var transparantie_png = "{% static 'images/transparantie.png' %}";
+            var legendicon_png = "{% static 'images/legendicon.png' %}";
+            var filter_png = "{% static 'images/filter.png' %}";
+            var informatie_png = "{% static 'images/informatie.png' %}";
+            var icon_png = "{% static 'img/icon.png' %}";
+            var icon_selected_png = "{% static 'img/selected.png' %}";
+            {% if ctrix %}
+            var smartstreet_user = "{{ SMARTSTREET_USER }}";
+            var smartstreet_password = "{{ SMARTSTREET_PASSWORD }}";
+            var smartstreet_api_key = "{{ SMARTSTREET_API_KEY }}";
+            var CSRF_TOKEN = "{{ csrf_token }}";
+            var BRK_KADOBJECT = "{{ WFS_URL_CTRIX }}?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:BRK_KADOBJECT&outputFormat=application%2Fjson";
+            var BRK_KADADRES = "{{ WFS_URL_CTRIX }}?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:BRK_KADADRES&outputFormat=application%2Fjson";
+            var BRK_KADSUBJECTZR = "{{ WFS_URL_CTRIX }}?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:BRK_KADSUBJECTZR&outputFormat=application%2Fjson";
+            {% endif %}
+        </script>
+
+        <script type='text/javascript' src="{% static 'js/map_global.js' %}"></script>
+        <script type='text/javascript' src="{% static 'js/category.js' %}"></script>
+
+        {% if ctrix %}
+            <script type='text/javascript' src="{% static 'js/map_intern.js' %}"></script>
+        {% else %}
+            <script type='text/javascript' src="{% static 'js/map_extern.js' %}"></script>
+        {% endif %}
+        <!-- Layers -->
+        <script type='text/javascript' src="{% static 'js/layers.js' %}"></script>
+        <!-- OpenLayers Controllers -->
+        <script type='text/javascript' src="{% static 'js/controllers.js' %}"></script>
+        <!-- Zoek op adres - PDOK Locatieserver API -->
+        <script type='text/javascript' src="{% static 'js/zoekopadres.js' %}"></script>
+
+    </head>
+    <body onload="atlasCategory.init(); init();">
+        {% block content %}
+        {% endblock content %}
+
+
+        {% block extrajs %}
+        {% endblock extrajs %}
+
+        {% include "footer.html" %}
+
+    </body>
+</html>
