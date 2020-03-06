@@ -21,7 +21,7 @@ Adjust the `.env` file to configure the application and create a secure producti
 - DEBUG: Django [debug mode](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-DEBUG). (default: False)
 - SECRET_KEY: Django [secret key](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-SECRET_KEY). Replace with a generated password in production. (default: changemetosomethingsecret)
 - ALLOWED_HOSTS: Django [allowed hosts](https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts) setting. A comma-seperated list of hosts that are allowed to serve the application. (default: localhost,127.0.0.1,[::1])
-- CTRIX_IPS: A comma-seperated list of IP's that are internal in the application. (default: 127.0.0.1)
+- CTRIX_IPS: A comma-seperated list of IP's that are internal in the application.
 - DB_HOST: The host of the Postgres database. (default: postgres)
 - DB_USER: The username of the Postgres database. (default: atlas)
 - DB_PASSWORD: The password of the Postgres database. Replace with a generated password in production. (default: atlas)

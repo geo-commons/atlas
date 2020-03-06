@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY_DEFAULT)
 DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ALLOWED_HOSTS_DEFAULT).split(',')
-CTRIX_IPS = os.getenv('CTRIX_IPS', '127.0.0.1').split(',')
+CTRIX_IPS = os.getenv('CTRIX_IPS', '').split(',')
 
 WFS_URL = os.getenv('WFS_URL', '')
 WFS_URL_CTRIX = os.getenv('WFS_URL_CTRIX', '')
