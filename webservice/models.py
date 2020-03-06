@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django_extensions.db.fields import AutoSlugField #pylint: disable=import-error
+from django_extensions.db.fields import AutoSlugField
 
 from user_management.models import AtlasGroup
 
