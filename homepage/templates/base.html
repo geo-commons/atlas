@@ -23,6 +23,13 @@
         <link rel="stylesheet" href="{% static 'css/openlayers.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/site.css' %}"/>
 
+        {% if SENTRY_DSN %}
+            <script src="https://browser.sentry-cdn.com/5.15.4/bundle.min.js" integrity="sha384-Nrg+xiw+qRl3grVrxJtWazjeZmUwoSt0FAVsbthlJ5OMpx0G08bqIq3b/v0hPjhB" crossorigin="anonymous"></script>
+            <script type="text/javascript">
+                Sentry.init({ dsn: '{{ SENTRY_DSN }}' });
+            </script>
+        {% endif %}
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -88,6 +95,5 @@
         {% endblock extrajs %}
 
         {% include "footer.html" %}
-
     </body>
 </html>

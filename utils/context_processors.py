@@ -12,6 +12,7 @@ def global_settings(request):
         'SMARTSTREET_API_KEY': settings.SMARTSTREET_API_KEY,
         'WFS_URL_CTRIX': settings.WFS_URL_CTRIX,
         'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY,
+        'SENTRY_DSN': settings.SENTRY_DSN
     }
 
 def is_ctrix(request: HttpRequest) -> bool:
