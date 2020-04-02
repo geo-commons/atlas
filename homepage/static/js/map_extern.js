@@ -678,8 +678,10 @@ function init(){
 		// set Streetview Positie
 		streetViewCoordinates(evt);
 
+	var isFirstItem = true;
+
 	//get layerList
-	layerList.forEach(function(layer, i){
+	layerList.forEach(function(layer) {
 		// if layer visible and not Basigreg not MarkerLayer not
 		if(layer.getVisible() && !layer.get('isBaseLayer') && layer.get('title') != "Marker Layer" && layer.get('isQueryable') == true){
 
@@ -688,30 +690,18 @@ function init(){
 
 			// if url true
 			if (layer_url) {
-
-				var parser = new ol.format.GeoJSON();
-
 				$.ajax({
 					url: layer_url,
 					method:'get',
 					success:function(data){
-						// create empty table
-						var start_tabelregel = "<table class='table'  width='100%' cellspacing = '0'>";
-						var header_regel = "<thead>";
-						var content_header = " ";
-						var body_regel = "<tbody>";
-						var content_feature = " ";
-						var einde_tabelregel = "</tbody></table>";
-
-						console.log(data);
-
-						data.features.map(function (v,i) {
-							content_popup += "<a class='accordion-toggle collapsed' data-toggle='collapse' data-parent='#categorieen-accordion' href='#"+layer.get('filterdataId')+"'>";
-							content_popup += 	"<span class='text'>"+layer.get('title')+"</span>";
-							content_popup +=  "<span class='icon-caret icon-caret-right'></span></a>";
+						data.features.map(function (v, i) {
+							content_popup += "<a class='accordion-toggle " + (isFirstItem ? '' : 'collapsed') + "' data-toggle='collapse' data-parent='#categorieen-accordion' href='#" + layer.get('filterdataId') + "'>";
+							content_popup += "<span class='text'>" + layer.get('title') + "</span>";
+							content_popup += "<span class='icon-caret icon-caret-right'></span></a>";
 							content_popup += "<br/>";
+							content_popup += "<div id='" + layer.get('filterdataId') + "' class='" + (isFirstItem ? 'collapse in' : 'collapse') + "'>";
 
-							content_popup += "<div id='"+layer.get('filterdataId')+"' class='collapse'>";
+							isFirstItem = false;
 
 							$.each(v.properties, function(prop_name,prop_val){
 								// get popup info
