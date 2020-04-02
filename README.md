@@ -6,7 +6,7 @@ Atlas is a geo portal that provides a user-friendly interface for layers on a WF
 ## Run Atlas locally
 Make sure you installed [Docker](https://www.docker.com/) on your local machine.
 
-Download Atlas from https://gitlab.com/purmerend/atlas and unpack the downloaded file on your computer.
+Download Atlas from [GitLab](https://gitlab.com/purmerend/atlas) and unpack the downloaded file on your computer.
 Start Atlas by running the following command in the root of the repository:
 
 ```bash
