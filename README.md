@@ -43,7 +43,7 @@ Make sure you installed the following requirements:
 First setup a new virtual environment for Atlas with:
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -57,13 +57,26 @@ docker-compose up -d postgres
 Now run the database migrations with:
 
 ```bash
-python3 manage.py migrate
+python manage.py migrate
 ```
 
 And run the development server with:
 
 ```bash
-python3 manage.py runserver
+python manage.py runserver
+```
+
+Now install the npm dependencies:
+
+```bash
+cd ui/
+npm install
+```
+
+And start a watch server:
+
+```bash
+npm run serve
 ```
 
 Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
@@ -72,7 +85,7 @@ Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
 To create a new superuser use the following command:
 
 ```bash
-python3 manage.py createsuperuser
+python manage.py createsuperuser
 ```
 
 Follow the steps. You can now login to [http://localhost:8000/atlas/admin/](http://localhost:8000/atlas/admin/).

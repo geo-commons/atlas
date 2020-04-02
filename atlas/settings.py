@@ -1,4 +1,5 @@
 import os
+import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'homepage',
     'webservice',
     'user_management',
+    'webpack_loader',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,6 +130,16 @@ STATIC_URL = '/atlas/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+STATS_FILE = os.path.join(BASE_DIR, 'ui', 'webpack-stats.json')
+if 'test' in sys.argv:
+    STATS_FILE = os.path.join(BASE_DIR, 'ui', 'webpack-stats-test.json')
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'STATS_FILE': STATS_FILE,
+    }
+}
 
 LOGIN_URL = '/atlas/accounts/login/'
 LOGIN_REDIRECT_URL = '/atlas/'

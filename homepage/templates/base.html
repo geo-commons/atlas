@@ -1,6 +1,7 @@
-<!DOCTYPE html>
+{% load render_bundle from webpack_loader %}
 {% load app_version %}
 {% load static %}
+<!DOCTYPE html>
 <html lang="nl">
     <head>
         <title>Atlas {% app_version %} [Geo Portaal] - Gemeente Purmerend en Beemster</title>
@@ -95,5 +96,8 @@
         {% endblock extrajs %}
 
         {% include "footer.html" %}
+
+        {% render_bundle "chunk-vendors" %}
+        {% render_bundle "app" %}
     </body>
 </html>
