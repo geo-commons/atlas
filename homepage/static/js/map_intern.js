@@ -2008,7 +2008,10 @@ function init(){
 										content_popup += "<br>";
 
 									} else if (attr_nm == "foto"){
-										content_popup += "<a href='../data/images/"+layer.get('title')+"/"+attr_val+"' target='_blank'><img style='width:100%; height:250px;' src='../data/images/"+layer.get('title')+"/"+attr_val+"'/></a>";
+										content_popup += "<a href='"+attr_val+"' target='_blank'><img style='width:100%;' src='"+attr_val+"'/></a>";
+										content_popup += "<br>";
+									} else if (attr_nm == "url"){
+										content_popup += "<a href='"+attr_val+"' target='_blank'>"+attr_val+"</a>";
 										content_popup += "<br>";
 									} else{ // the other attribute values
 										content_popup += "<b>"+jsUcfirst(attr_nm)+": </b>";
