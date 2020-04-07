@@ -336,12 +336,17 @@ table.table a {cursor: pointer;}
 }
 
 /* autocomplete */
-.ui-autocomplete{
-    z-index:2550;
-    height: 250px;
-    width: 80px;
-    overflow-y: auto;
-    overflow-x: hidden;
+.ui-autocomplete {
+  z-index:2550;
+  height: 250px;
+  width: 80px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Remove "clear field" icon in IE10+ */
+.ui-autocomplete-input::-ms-clear {
+  display: none;
 }
 
 .street_view_actief {
