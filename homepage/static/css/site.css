@@ -451,10 +451,12 @@ table.table a {cursor: pointer;}
 
 @media only screen and (min-width: 768px) {
   .atlas-layer-list {
-    overflow-y: scroll;
     height: calc(100vh - 29px - 50px);
     border-right: 1px solid #c8c8c8;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
   }
+
   .atlas-map {
     height: calc(100vh - 29px - 50px);
   }
