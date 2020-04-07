@@ -15,11 +15,11 @@
 
         <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/vnd.microsoft.icon" />
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link rel="stylesheet" href="{% static 'css/openlayers-4.6.5.css' %}">
-        <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{% static 'vendor/jquery-ui/1.12.1/jquery-ui.min.css' %}">
+        <link rel="stylesheet" href="{% static 'vendor/bootstrap/3.3.7/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'vendor/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css' %}">
+        <link rel="stylesheet" href="{% static 'vendor/font-awesome/4.7.0/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'vendor/openlayers/4.6.5/ol.css' %}">
 
         <link rel="stylesheet" href="{% static 'css/openlayers.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/site.css' %}"/>
@@ -31,26 +31,24 @@
             </script>
         {% endif %}
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
-        <script type="text/javascript" src="{% static 'js/openlayers-4.6.5.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/jquery/3.2.1/jquery-3.2.1.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/jquery-ui/1.12.1/jquery-ui.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bootstrap/3.3.7/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/openlayers/4.6.5/ol.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/proj4/2.6.0/proj4.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/epsg/28992.js' %}"></script>
 
         {% if ctrix %}
             <!-- StreetSmartApi -->
-            <script type="text/javascript" src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
-            <script type="text/javascript" src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
-            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+            <script type="text/javascript" src="{% static 'vendor/react/16.12.0/react.production.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'vendor/react/16.12.0/react-dom.production.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'vendor/lodash/4.17.15/lodash.min.js' %}"></script>
             <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v19.19/StreetSmartApi.js"></script>
         {% else %}
             <!-- google street-view API -->
             <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}"></script>
         {% endif %}
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.0/proj4.js"></script>
-        <script src="https://epsg.io/28992.js"></script>
 
         <!-- OpenLayers Basic -->
         <script type="text/javascript">
