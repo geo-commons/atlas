@@ -455,6 +455,7 @@ table.table a {cursor: pointer;}
     border-right: 1px solid #c8c8c8;
     overflow-y: scroll;
     -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   .atlas-map {
