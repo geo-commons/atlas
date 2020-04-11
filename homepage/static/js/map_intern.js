@@ -1368,9 +1368,9 @@ function init(){
 		).then(
 		function(result)
 		{
-			if (result) {
-				for (let i =0; i < result.length; i++) {
-					if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) window.panoramaViewer = result[i];
+			for (var i=0; i < result.length; i++) {
+				if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) {
+					result[i].toggle3DCursor();
 				}
 			}
 		}.bind(this)
