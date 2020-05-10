@@ -27,7 +27,7 @@ Adjust the `.env` file to configure the application and create a secure producti
 - DB_USER: The username of the Postgres database. (default: atlas)
 - DB_PASSWORD: The password of the Postgres database. Replace with a generated password in production. (default: atlas)
 - DB_NAME: The database name of the Postgres database. (default: atlas)
-- WFS_URL: The URL of the external WFS server (e.g. [Geoserver](https://http://geoserver.org/)).
+- WFS_URL: The URL of the external WFS server (e.g. [Geoserver](https://geoserver.org/)).
 - WFS_URL_CTRIX: The URL if the internal WFS server (e.g. Geoserver).
 - SMARTSTREET_USER: The username of the [Cyclomedia](https://www.cyclomedia.com/) Smartstreet API (used internally).
 - SMARTSTREET_PASSWORD: The password of the Cyclomedia Smartstreet API (used internally).
