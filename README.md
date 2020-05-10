@@ -33,6 +33,9 @@ Adjust the `.env` file to configure the application and create a secure producti
 - SMARTSTREET_PASSWORD: The password of the Cyclomedia Smartstreet API (used internally).
 - SMARTSTREET_API_KEY: The API key of the Cyclomedia Smartstreet API (used internally).
 - GOOGLE_MAPS_API_KEY: The [API key](https://developers.google.com/maps/documentation/javascript/get-api-key) for Google Maps (used externally).
+- SENTRY_DSN: The Sentry DSN to collect app statistics. (optional)
+- MATOMO_URL: The [Matomo](https://matomo.org/) URL to collect statistics (e.g. https://stats.example.com). (optional)
+- MATOMO_SITE_ID: The Matomo site id. (optional)
 
 ## Setup a development environment
 Make sure you installed the following requirements:

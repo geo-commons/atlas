@@ -27,6 +27,9 @@ SMARTSTREET_API_KEY = os.getenv('SMARTSTREET_API_KEY', '')
 
 GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY', '')
 
+MATOMO_URL = os.getenv('MATOMO_URL', '')
+MATOMO_SITE_ID = os.getenv('MATOMO_SITE_ID', '')
+
 SENTRY_DSN = os.getenv('SENTRY_DSN', '')
 
 DATABASES = {
