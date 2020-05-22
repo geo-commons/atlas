@@ -1370,7 +1370,7 @@ function init(){
 		{
 			for (var i=0; i < result.length; i++) {
 				if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) {
-					result[i].toggle3DCursor();
+					result[i].toggle3DCursor(false);
 				}
 			}
 		}.bind(this)
