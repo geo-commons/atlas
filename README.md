@@ -37,7 +37,7 @@ Adjust the `.env` file to configure the application and create a secure producti
 - MATOMO_URL: The [Matomo](https://matomo.org/) URL to collect statistics (e.g. https://stats.example.com). (optional)
 - MATOMO_SITE_ID: The Matomo site id. (optional)
 
-## Setup a development environment
+## Setup a development environment on Linux or MacOS
 Make sure you installed the following requirements:
 
 - [Python 3](https://www.python.org)
