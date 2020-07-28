@@ -64,28 +64,28 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
 **Meta_naam:** ([nog toevoegen])\
 **Meta_soort:** ([nog toevoegen])\
 **Meta_org:** ([nog toevoegen])\
-**Meta_bijgewerkt:** ([nog toevoegen])
-**Opacity:** (waarbij 0 doorzichtig is [klopt dit?])
-**Visible:** (is deze layer zichtbaar in de viewer?)
-**Categorie:** (selecteer onder welke categorie deze layer komt)
-**ISqueryable:** (maak de layer zichtbaar in het zoekscherm binnen de viewer)
-**Popup attributes:** ([nog toevoegen])
-**Search fields:** ([nog toevoegen])
-**Projection:** (standaard: EPSG:28992)
-**Url:** (url van layer)
-**Server type:** (standaard: geoserver)
-**Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)
-**Gepubliceerd:** ([nog toevoegen])
-**Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema)
-**Owner:** (Wie eigenaar van deze layer)
-**Users:** ([nog toevoegen])
-**Atlas groups:** ([nog toevoegen])
-**Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt)
+**Meta_bijgewerkt:** ([nog toevoegen])\
+**Opacity:** (waarbij 0 doorzichtig is [klopt dit?])\
+**Visible:** (is deze layer zichtbaar in de viewer?)\
+**Categorie:** (selecteer onder welke categorie deze layer komt)\
+**ISqueryable:** (maak de layer zichtbaar in het zoekscherm binnen de viewer)\
+**Popup attributes:** ([nog toevoegen])\
+**Search fields:** ([nog toevoegen])\
+**Projection:** (standaard: EPSG:28992)\
+**Url:** (url van layer)\
+**Server type:** (standaard: geoserver)\
+**Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)\
+**Gepubliceerd:** ([nog toevoegen])\
+**Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema)\
+**Owner:** (Wie eigenaar van deze layer)\
+**Users:** ([nog toevoegen])\
+**Atlas groups:** ([nog toevoegen])\
+**Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt)\
 
 
-De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
-**Title:** ([nog toevoegen])
-**Layers:** (De layers die binnen het Thema vallen)
+De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:\
+**Title:** ([nog toevoegen])\
+**Layers:** (De layers die binnen het Thema vallen)\
 
 ![thema-toevoegen](https://gitlab.com/purmerend/atlas/uploads/83378d840b94f66f299bfe3cf19b7575/thema-toevoegen.png)
 
