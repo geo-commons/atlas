@@ -17,7 +17,9 @@ https://gitlab.com/purmerend/atlas/-/blob/admin-module-manual/docs/images/hoofds
 
 -->
 
-<img src="https://gitlab.com/purmerend/atlas/admin-module-manual/docs/images/hoofdscherm.png" alt="Hoofdscherm Admin module" width="500"/>
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hoofdscherm.png" alt="Hoofdscherm Admin module" width="500"/>
+https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hoofdscherm.png
+https://gitlab.com/purmerend/atlas/-/blob/admin-module-manual/docs/images/hoofdscherm.png
 
 
 ##### AUTHENTICATIE EN AUTORISATIE
