@@ -48,9 +48,7 @@ Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
 Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het klikken op een van de hoofdonderwerpen/categorieën
 zorgt ervoor dat eronder de verschillende kaartlagen van die categorie worden getoond.
 Bij het toevoegen van een kaartlaag wordt onder andere aangegeven onder welke categorie deze valt.
-[Thema ontbreekt nog in de handleiding
-
-]
+[Thema ontbreekt nog in de handleiding]
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
 **Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan)\
