@@ -17,7 +17,7 @@ Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewer
 
 Per groep kunnen rechten worden toegekend. 
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/groep-toevoegen.png.png" alt="Authenticatie en autorisatie: groep toevoegen" width="700"/>
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/groep-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="700"/>
 
 
 ##### HOMEPAGE
