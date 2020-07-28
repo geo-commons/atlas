@@ -24,7 +24,7 @@ https://gitlab.com/purmerend/atlas/-/blob/admin-module-manual/docs/images/hoofds
 ##### AUTHENTICATIE EN AUTORISATIE
 Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden.
 
-![auth-en-autorisatie](https://gitlab.com/purmerend/atlas/uploads/361fb76412fa13afae0b64903f7903b2/auth-en-autorisatie.png)
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/auth-en-autorisatie.png" alt="Hoofdscherm Admin module" width="1000"/>
 
 Per groep kunnen rechten worden toegekend. 
 
