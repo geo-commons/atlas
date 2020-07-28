@@ -60,6 +60,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 
 **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)
+
 **Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)EPSG:28992
 **Layer_name:** ([nog toevoegen])
 **Meta_naam:** ([nog toevoegen])
