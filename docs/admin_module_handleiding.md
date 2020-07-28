@@ -18,7 +18,7 @@ Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld 
 <img src="https://gitlab.com/purmerend/atlas/uploads/e3f94a31893ba409f442b3d60805dbc0/hoofdscherm.png" alt="Screenshot of Atlas" width="500"/>
 -->
 
-#####AUTHENTICATIE EN AUTORISATIE
+##### AUTHENTICATIE EN AUTORISATIE
 Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden.
 
 ![auth-en-autorisatie](https://gitlab.com/purmerend/atlas/uploads/361fb76412fa13afae0b64903f7903b2/auth-en-autorisatie.png)
@@ -26,14 +26,14 @@ Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewer
 Per groep kunnen rechten worden toegekend. 
 
 
-#####HOMEPAGE
+##### HOMEPAGE
 Binnen homepage kunnen datasets toegevoegd en gewijzigd worden. Datasets moeten worden toegevoegd in JSON formaat
 
-#####USER_MANAGEMENT
+##### USER_MANAGEMENT
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
 aan een Atlas group.
 
-#####WEBSERVICE
+##### WEBSERVICE
 Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
 Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het klikken op een van de hoofdonderwerpen/categorieën
 zorgt ervoor dat eronder de verschillende kaartlagen van die categorie worden getoond.
