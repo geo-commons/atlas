@@ -58,13 +58,12 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
 **Gesloten thema** ([nog toevoegen])
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
-**Layer_id:** (Een uniek ID dat de layer onderscheid van andere)
-
-**Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)EPSG:28992
-**Layer_name:** ([nog toevoegen])
-**Meta_naam:** ([nog toevoegen])
-**Meta_soort:** ([nog toevoegen])
-**Meta_org:** ([nog toevoegen])
+**Layer_id:** (Een uniek ID dat de layer onderscheid van andere)\
+**Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)EPSG:28992\
+**Layer_name:** ([nog toevoegen])\
+**Meta_naam:** ([nog toevoegen])\
+**Meta_soort:** ([nog toevoegen])\
+**Meta_org:** ([nog toevoegen])\
 **Meta_bijgewerkt:** ([nog toevoegen])
 **Opacity:** (waarbij 0 doorzichtig is [klopt dit?])
 **Visible:** (is deze layer zichtbaar in de viewer?)
