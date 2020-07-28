@@ -30,7 +30,7 @@ Bij 'Saved by' kan een gebruiker worden geselecteerd voor administratieve doelei
 
 ##### USER_MANAGEMENT
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
-aan een Atlas group.
+aan een Atlas group. Het gebruikersbeheer heeft geen relatie met groepen in authenticatie en autorisatie.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/user-magement-beheer.png" alt="Gebruikersbeheer" width="600"/>
 
