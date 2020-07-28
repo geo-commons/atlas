@@ -25,7 +25,7 @@ Per groep kunnen rechten worden toegekend. Klik in het "Authenticatie en autoris
 Binnen homepage kunnen datasets toegevoegd en gewijzigd worden. Datasets moeten worden toegevoegd in JSON formaat.
 Klik op Toevoegen naast het groene plus teken om een dataset toe te voegen.
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="1000"/>
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="1400"/>
 
 ##### USER_MANAGEMENT
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
