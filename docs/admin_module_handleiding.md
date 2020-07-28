@@ -32,7 +32,7 @@ Bij 'Saved by' kan een gebruiker worden geselecteerd voor administratieve doelei
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
 aan een Atlas group.
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/user-magement-beheer.png" alt="Gebruikersbeheer" width="800"/>user-magement-beheer
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/user-magement-beheer.png" alt="Gebruikersbeheer" width="800"/>
 
 ##### WEBSERVICE
 Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
