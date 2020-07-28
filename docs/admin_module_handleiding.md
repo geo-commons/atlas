@@ -52,10 +52,10 @@ Bij het toevoegen van een kaartlaag wordt onder andere aangegeven onder welke ca
 
 ]
 
-De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
-**Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan)
-**Javascript type:** ([nog toevoegen])
-**Gesloten thema** ([nog toevoegen])
+De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
+**Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan)\
+**Javascript type:** ([nog toevoegen])\
+**Gesloten thema** ([nog toevoegen])\
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
 **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)\
