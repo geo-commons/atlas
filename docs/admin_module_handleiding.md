@@ -1,4 +1,4 @@
-#Handleiding Admin Module Atlas versie 2.2.4
+# Handleiding Admin Module Atlas versie 2.2.4
 
 ##Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt de configuratie van atlas gedaan.
 
