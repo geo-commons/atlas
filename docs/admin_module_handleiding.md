@@ -91,21 +91,19 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
 
 ![wijzig-atlas-groep](https://gitlab.com/purmerend/atlas/uploads/c7edbce90fd4526f35a82d6b7a285de1/wijzig-atlas-groep.png)
 
-![user-magement-beheer](https://gitlab.com/purmerend/atlas/uploads/53a263e3428df613fc08d3faa05d7ba8/user-magement-beheer.png)
+
 
 ![wijzigen-dataset1](https://gitlab.com/purmerend/atlas/uploads/c40b279b26a3117febfb18102b64b069/wijzigen-dataset1.png)
 
 
 
-![wijzig-groep](https://gitlab.com/purmerend/atlas/uploads/b1f275d96e5bab81070237ff8c32c1ac/wijzig-groep.png)
+
 
 
 
 ![webservice-beheer](https://gitlab.com/purmerend/atlas/uploads/cfcd96dc0a3fc25b256d78b8731dc806/webservice-beheer.png)
 
-![_gebruikerswijzigen2](https://gitlab.com/purmerend/atlas/uploads/21fd98949d8a147ddd45e0a1a2aa6707/_gebruikerswijzigen2.png)
 
-![gebruikerswijzigen](https://gitlab.com/purmerend/atlas/uploads/9c6525271d34d18e39df34675d68b1a3/gebruikerswijzigen.png)
 
 
 
