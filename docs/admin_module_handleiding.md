@@ -26,11 +26,13 @@ Binnen homepage kunnen datasets toegevoegd en gewijzigd worden. Datasets moeten 
 Klik op Toevoegen naast het groene plus teken om een dataset toe te voegen. Via copy & paste kan een dataset in het JSON venster geplakt worden.
 Bij 'Saved by' kan een gebruiker worden geselecteerd voor administratieve doeleinden.
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="1400"/>
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
 
 ##### USER_MANAGEMENT
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
 aan een Atlas group.
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/user-magement-beheer.png" alt="Gebruikersbeheer" width="1400"/>user-magement-beheer
 
 ##### WEBSERVICE
 Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
