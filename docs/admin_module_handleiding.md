@@ -17,6 +17,8 @@ Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewer
 
 Per groep kunnen rechten worden toegekend. 
 
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/groep-toevoegen.png.png" alt="Authenticatie en autorisatie: groep toevoegen" width="700"/>
+
 
 ##### HOMEPAGE
 Binnen homepage kunnen datasets toegevoegd en gewijzigd worden. Datasets moeten worden toegevoegd in JSON formaat
@@ -77,7 +79,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
 
 ![wijzigen-dataset1](https://gitlab.com/purmerend/atlas/uploads/c40b279b26a3117febfb18102b64b069/wijzigen-dataset1.png)
 
-![groep-toevoegen](https://gitlab.com/purmerend/atlas/uploads/8caa3c606fd3c7d8702e744c087034a9/groep-toevoegen.png)
+
 
 ![wijzig-groep](https://gitlab.com/purmerend/atlas/uploads/b1f275d96e5bab81070237ff8c32c1ac/wijzig-groep.png)
 
@@ -89,5 +91,5 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
 
 ![gebruikerswijzigen](https://gitlab.com/purmerend/atlas/uploads/9c6525271d34d18e39df34675d68b1a3/gebruikerswijzigen.png)
 
-![hoofdscherm](https://gitlab.com/purmerend/atlas/uploads/97997ab4f533b556982074a3f1ed75da/hoofdscherm.png)
+
 
