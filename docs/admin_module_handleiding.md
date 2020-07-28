@@ -10,12 +10,14 @@ Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld 
 
 <!--
 ![Hoofdscherm](hoofdscherm.png)
--->
+
 
 ![Hoofdscherm](https://gitlab.com/purmerend/atlas/uploads/e3f94a31893ba409f442b3d60805dbc0/hoofdscherm.png)
 https://gitlab.com/purmerend/atlas/-/blob/admin-module-manual/docs/images/hoofdscherm.png
 
-<img src="https://gitlab.com/purmerend/atlas/-/blob/admin-module-manual/docs/images/hoofdscherm.png" alt="Hoofdscherm Admin module" width="500"/>
+-->
+
+<img src="https://gitlab.com/purmerend/atlas/admin-module-manual/docs/images/hoofdscherm.png" alt="Hoofdscherm Admin module" width="500"/>
 
 
 ##### AUTHENTICATIE EN AUTORISATIE
