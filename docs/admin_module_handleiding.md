@@ -38,6 +38,10 @@ aan een Atlas group. Het gebruikersbeheer heeft geen relatie met groepen in auth
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/gebruiker-toevoegen.png" alt="gebruiker toevoegen" width="1400"/>
 
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/gebruikerwijzigen.png" alt="gebruiker wijzigen 1" width="1400"/>
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/_gebruikerwijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
+
 
 ##### WEBSERVICE
 Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
