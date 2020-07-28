@@ -8,23 +8,12 @@ Let op dat de url eindigt met een /.
 
 Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld kunnen worden.
 
-<!--
-![Hoofdscherm](hoofdscherm.png)
-
-
-![Hoofdscherm](https://gitlab.com/purmerend/atlas/uploads/e3f94a31893ba409f442b3d60805dbc0/hoofdscherm.png)
-https://gitlab.com/purmerend/atlas/-/blob/admin-module-manual/docs/images/hoofdscherm.png
-
--->
-
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hoofdscherm.png" alt="Hoofdscherm Admin module" width="1000"/>
-
-
 
 ##### AUTHENTICATIE EN AUTORISATIE
 Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden.
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/auth-en-autorisatie.png" alt="Hoofdscherm Admin module" width="700"/>
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/auth-en-autorisatie.png" alt="Authenticatie en autorisatie" width="700"/>
 
 Per groep kunnen rechten worden toegekend. 
 
