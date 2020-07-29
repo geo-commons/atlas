@@ -51,11 +51,15 @@ Klik op Opslaan om deze gegevens naar de database te schrijven. Nu verschijnt ee
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/gebruiker-toevoegen.png" alt="gebruiker toevoegen" width="1400"/>
 
+In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toegevoegd of gegevens gewijzigd.
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/_gebruikerswijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
+
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/gebruikerswijzigen.png" alt="gebruiker wijzigen 1" width="1400"/>
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/_gebruikerswijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
+
 
 
 ##### WEBSERVICE
