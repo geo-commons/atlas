@@ -23,9 +23,9 @@ Per groep kunnen rechten worden toegekend. Klik in het "Authenticatie en autoris
 
 ##### HOMEPAGE
 Binnen atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren. Dit kan door middel van de CTRL toets ingedrukt te houden en tegelijkertijd met de muis een gebied met adressen te selecteren. Ook kunnen adressen geselecteerd worden met behulp van de selectietool rechtsboven in het Atlas scherm. Deze adres-selecties worden op het scherm getoond maar kunnen ook gedownload worden. Binnen Atlas zelf worden deze selecties in de database opgeslagen. Via de "Saved Datasets" optie, kunnen deze selecties beheerd worden.
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-datasets.png" alt="Saved datasets" width="1400"/>
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-datasets.png" alt="Saved datasets" width="700"/>
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-dataset-wijzigen.png" alt="Saved dataset wijzigen" width="1400"/>
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-dataset-wijzigen.png" alt="Saved dataset wijzigen" width="700"/>
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
 ##### USER_MANAGEMENT
