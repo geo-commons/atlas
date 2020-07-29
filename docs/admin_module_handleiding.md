@@ -26,6 +26,8 @@ Binnen atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-datasets.png" alt="Saved datasets" width="600"/>
 
+Wanneer een "saved dataset" geselecteerd wordt dan wordt de inhoud in JSON scherm getoond.
+
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-dataset-wijzigen.png" alt="Saved dataset wijzigen" width="600"/>
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
