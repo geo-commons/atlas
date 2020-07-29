@@ -81,9 +81,9 @@ Thema's zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan. Bi
 
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
-**Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan)\
-**Javascript type:** ([nog toevoegen])\
-**Gesloten thema** ([nog toevoegen])\
+**Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan, denk hierbij om de alfabetische volgorde)\
+**Javascript type:** (default waarde: themelayer:true)\
+**Gesloten thema** (Is deze categorie in alle omgevingen zichtbaar of alleen intern?)\
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorie-toevoegen.png" alt="categorie toevoegen" width="400"/>
 
