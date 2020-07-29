@@ -55,6 +55,8 @@ In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toe
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/_gebruikerswijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
 
+In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er ook gebruikers zijn aangemaakt kunnen deze hier aan de groep worden toegvoegd.
+
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/gebruikerswijzigen.png" alt="gebruiker wijzigen 1" width="1400"/>
