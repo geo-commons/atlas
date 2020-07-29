@@ -75,7 +75,7 @@ Kaartlagen \
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlagenkopie.png" alt="kaartlagen" width="400"/>
 
 
-Thema's zijn verzamelde kaartlagen die samen over een bepaals onderwerp gaan. Bij het aanmaken van een thema worden de kaartlagen geselecteerd die bij dat thema horen. Een thema verschijnt niet in het Atlas scherm als aanklikbare menu-optie maar moet in de url balk worden meegegeven. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
+Thema's zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan. Bij het aanmaken van een thema worden de kaartlagen geselecteerd die bij dat thema horen. Een thema verschijnt niet in het Atlas scherm als aanklikbare menu-optie maar moet in de url balk worden meegegeven. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hondenbeleid.png" alt="hondenbeleid" width="400"/>
 
@@ -84,6 +84,9 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
 **Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan)\
 **Javascript type:** ([nog toevoegen])\
 **Gesloten thema** ([nog toevoegen])\
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorie-toevoegen.png" alt="categorie toevoegen" width="400"/>
+
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
 **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)\
