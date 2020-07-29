@@ -30,6 +30,8 @@ Wanneer een "saved dataset" wordt geselecteerd, dan zal de inhoud in het JSON sc
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-dataset-wijzigen.png" alt="Saved dataset wijzigen" width="600"/>
 
+Ook is het mogelijk om via cut & paste zelf datasets toe te voegen voor eventueel toekomstig gebruik.
+
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
 
 ##### USER_MANAGEMENT
