@@ -46,6 +46,7 @@ In het volgende scherm kan een gebruikersnaam en wachtwoord worden ingegeven. De
 * Uw wachtwoord moet minstens 8 tekens lang zijn. 
 * Uw wachtwoord mag geen veelgebruikt wachtwoord zijn. 
 * Uw wachtwoord mag niet volledig uit cijfers bestaan.
+
 Klik op Opslaan om deze gegevens naar de database te schrijven. Nu verschijnt een uitgebreid scherm waarin extra gebruikergegevens kunnen worden ingegeven of gewijzigd. Wanneer er ook groepen zijn aangemaakt, kan hier de gebruiker aan een of meerdere groepen worden toegevoegd. Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere items te selecteren.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/gebruiker-toevoegen.png" alt="gebruiker toevoegen" width="1400"/>
