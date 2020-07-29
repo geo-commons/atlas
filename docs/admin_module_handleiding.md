@@ -59,11 +59,6 @@ In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/gebruikerswijzigen.png" alt="gebruiker wijzigen 1" width="1400"/>
-
-
-
-
 ##### WEBSERVICE
 Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
 Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het klikken op een van de hoofdonderwerpen/categorieën
