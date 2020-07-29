@@ -68,7 +68,12 @@ zorgt ervoor dat eronder de verschillende kaartlagen van die categorie worden ge
 Bij het toevoegen van een kaartlaag wordt onder andere aangegeven onder welke categorie deze valt.
 Categorieën worden getoond op alfabetische volgorde, onder Achtergrondkaarten en Luchtfoto's. Hou hier rekening mee bij het aanmaken van een categorie.
 
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorieenkopie.png" alt="categorieën" width="700"/>\
+Categorieën
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorieenkopie.png" alt="categorieën" width="400"/>
+
+Kaartlagen
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlagenkopie.png" alt="kaartlagen" width="400"/>
+
 
 Thema's zijn verzamelde kaartlagen die samen over een bepaals onderwerp gaan. Bij het aanmaken van een thema worden de kaartlagen geselecteerd die bij dat thema horen. Een thema verschijnt niet in het Atlas scherm als aanklikbare menu-optie maar moet in de url balk worden meegegeven. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
 
