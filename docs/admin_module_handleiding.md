@@ -104,13 +104,8 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:\
 **Title:** ([nog toevoegen])\
 **Layers:** (De layers die binnen het Thema vallen)\
 
-![thema-toevoegen](https://gitlab.com/purmerend/atlas/uploads/83378d840b94f66f299bfe3cf19b7575/thema-toevoegen.png)
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
 
-![wijzig-atlas-groep](https://gitlab.com/purmerend/atlas/uploads/c7edbce90fd4526f35a82d6b7a285de1/wijzig-atlas-groep.png)
-
-
-
-![wijzigen-dataset1](https://gitlab.com/purmerend/atlas/uploads/c40b279b26a3117febfb18102b64b069/wijzigen-dataset1.png)
 
 
 
