@@ -113,6 +113,8 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
 **Atlas groups:** ([nog toevoegen])\
 **Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt)\
 
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlaag-toevoegen.png" alt="kaartlaag toevoegen" width="700"/>
+
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:\
 **Title:** ([nog toevoegen])\
