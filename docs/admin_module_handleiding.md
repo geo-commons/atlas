@@ -119,6 +119,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
 De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:\
 **Title:** ([De naam zoals die ook bij de url ingegeven moet worden)\
 **Layers:** (De layers die binnen het Thema vallen)\
+Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
 
