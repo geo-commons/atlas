@@ -108,7 +108,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
 **Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)\
 **Gepubliceerd:** ([nog toevoegen])\
 **Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema)\
-**Owner:** (Wie eigenaar van deze layer)\
+**Owner:** (Wie is eigenaar van deze layer)\
 **Users:** ([nog toevoegen])\
 **Atlas groups:** ([nog toevoegen])\
 **Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt)\
