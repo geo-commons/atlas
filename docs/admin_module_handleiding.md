@@ -22,9 +22,7 @@ Per groep kunnen rechten worden toegekend. Klik in het "Authenticatie en autoris
 
 
 ##### HOMEPAGE
-Binnen homepage kunnen datasets toegevoegd en gewijzigd worden. Datasets moeten worden toegevoegd in JSON formaat.
-Klik op Toevoegen naast het groene plus teken om een dataset toe te voegen. Via copy & paste kan een dataset in het JSON venster geplakt worden.
-Bij 'Saved by' kan een gebruiker worden geselecteerd voor administratieve doeleinden.
+Binnen atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren. Dit kan door middel van de CTRL toets ingedrukt te houden en tegelijkertijd met de muis een gebied met adressen te selecteren. Ook kunnen adressen geselecteerd worden met behulp van de selectietool rechtsboven in het Atlas scherm. Deze adres-selecties worden op het scherm getoond maar kunnen ook gedownload worden. Binnen Atlas zelf worden deze selecties in de database opgeslagen. Via de "Saved Datasets" optie, kunnen deze selecties beheerd worden.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
 
