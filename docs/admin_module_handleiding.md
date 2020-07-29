@@ -68,10 +68,10 @@ zorgt ervoor dat eronder de verschillende kaartlagen van die categorie worden ge
 Bij het toevoegen van een kaartlaag wordt onder andere aangegeven onder welke categorie deze valt.
 Categorieën worden getoond op alfabetische volgorde, onder Achtergrondkaarten en Luchtfoto's. Hou hier rekening mee bij het aanmaken van een categorie.
 
-Categorieën
+Categorieën \
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorieenkopie.png" alt="categorieën" width="400"/>
 
-Kaartlagen
+Kaartlagen \
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlagenkopie.png" alt="kaartlagen" width="400"/>
 
 
