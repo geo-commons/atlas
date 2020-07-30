@@ -22,6 +22,8 @@ Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld 
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hoofdscherm.png" alt="Hoofdscherm Admin module" width="1000"/>
 
+[Naar boven](#inhoud)
+
 ##### AUTHENTICATIE EN AUTORISATIE
 Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden. Per groep kunnen rechten worden toegekend voor bewerkingen binnen Atlas en de toegang tot data. 
 Versie 2.2.4: Deze functie is voor toekomstig gebruik, er is nog geen koppeling met Atlas gebruikersgroepen
