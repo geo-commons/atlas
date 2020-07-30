@@ -81,10 +81,10 @@ Thema's zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan. Bi
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hondenbeleid.png" alt="hondenbeleid" width="500"/>
 
 
-De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
-**Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan, denk hierbij om de alfabetische volgorde)\
-**Javascript type:** (default waarde: themelayer:true)\
-**Gesloten thema** (Is deze categorie in alle omgevingen zichtbaar of alleen intern?)\
+De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
+* **Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan, denk hierbij om de alfabetische volgorde)
+* **Javascript type:** (default waarde: themelayer:true)
+* **Gesloten thema** (Is deze categorie in alle omgevingen zichtbaar of alleen intern?)
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
 
@@ -117,9 +117,9 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlaag-toevoegen.png" alt="kaartlaag toevoegen" width="700"/>
 
 
-De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:\
-**Title:** ([De naam zoals die ook bij de url ingegeven moet worden)\
-**Layers:** (De layers die binnen het Thema vallen)\
+De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
+* **Title:** ([De naam zoals die ook bij de url ingegeven moet worden)
+* **Layers:** (De layers die binnen het Thema vallen)
 Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
