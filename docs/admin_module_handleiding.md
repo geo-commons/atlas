@@ -127,7 +127,7 @@ Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te sel
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
 
-Voorbeeld van een anchor [voorbeeld anchor](#voorbeeld-anchor)
+# voorbeeld-anchor
 
 
 
