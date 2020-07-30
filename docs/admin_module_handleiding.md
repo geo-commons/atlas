@@ -90,29 +90,29 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
 
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
-* **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)\
-**Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)\
-**Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver)\
-**Meta_naam:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Adressen(BAG))\
-**Meta_soort:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Basisregistratie)\
-**Meta_org:** ([Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Geoinformatie\
-**Meta_bijgewerkt:** (De waarde wordt door Javascript geëvalueerd (Bijv:"01-01-2018",getDate("year"). Default: getDate("full"))\
-**Opacity:** (default 0,9)\
-**Visible:** (is deze layer zichtbaar in de viewer?)\
-**Categorie:** (selecteer onder welke categorie deze layer komt)\
-**ISqueryable:** (maak de layer zichtbaar in het zoekscherm binnen de viewer)\
-**Popup attributes:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd)\
-**Search fields:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden)\
-**Projection:** (standaard: EPSG:28992)\
-**Url:** (url van layer)\
-**Server type:** (standaard: geoserver)\
-**Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)\
-**Gepubliceerd:** (Default: aan)\
-**Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema)\
-**Owner:** (Wie is eigenaar van deze layer)\
-**Users:** (Welke gebruikers hebben toegang tot deze kaartlaag? (Deze functie is nog niet in gebruik))\
-**Atlas groups:** ([Welke Atlas gebruikersgroepen hebben toegang tot deze kaartlaag? (Deze functie is nog niet in gebruik))\
-**Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt)\
+* **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)
+* **Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)
+* **Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver)
+* **Meta_naam:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Adressen(BAG))
+* **Meta_soort:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Basisregistratie)
+* **Meta_org:** ([Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Geoinformatie
+* **Meta_bijgewerkt:** (De waarde wordt door Javascript geëvalueerd (Bijv:"01-01-2018",getDate("year"). Default: getDate("full"))
+* **Opacity:** (default 0,9)
+* **Visible:** (is deze layer zichtbaar in de viewer?)
+* **Categorie:** (selecteer onder welke categorie deze layer komt)
+* **ISqueryable:** (maak de layer zichtbaar in het zoekscherm binnen de viewer)
+* **Popup attributes:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd)
+* **Search fields:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden)
+* **Projection:** (standaard: EPSG:28992)
+* **Url:** (url van layer
+* **Server type:** (standaard: geoserver)
+* **Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)
+* **Gepubliceerd:** (Default: aan)
+* **Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema)
+* **Owner:** (Wie is eigenaar van deze layer) 
+* **Users:** (Welke gebruikers hebben toegang tot deze kaartlaag? (Deze functie is nog niet in gebruik))
+* **Atlas groups:** ([Welke Atlas gebruikersgroepen hebben toegang tot deze kaartlaag? (Deze functie is nog niet in gebruik))
+* **Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt)
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlaag-toevoegen.png" alt="kaartlaag toevoegen" width="700"/>
 
