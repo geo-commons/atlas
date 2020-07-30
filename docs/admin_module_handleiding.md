@@ -89,7 +89,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
 
 
-De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
+De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)
 * **Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)
 * **Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver)
