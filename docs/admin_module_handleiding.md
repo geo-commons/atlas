@@ -90,13 +90,13 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:\
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:\
 **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)\
-**Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)EPSG:28992\
-**Layer_name:** ([nog toevoegen])\
-**Meta_naam:** ([nog toevoegen])\
-**Meta_soort:** ([nog toevoegen])\
-**Meta_org:** ([nog toevoegen])\
-**Meta_bijgewerkt:** ([nog toevoegen])\
-**Opacity:** (waarbij 0 doorzichtig is [klopt dit?])\
+**Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)\
+**Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver)\
+**Meta_naam:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Adressen(BAG))\
+**Meta_soort:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Basisregistratie)\
+**Meta_org:** ([Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Geoinformatie\
+**Meta_bijgewerkt:** (De waarde wordt door Javascript geëvalueerd (Bijv:"01-01-2018",getDate("year"). Default: getDate("full"))\
+**Opacity:** (default 0,9)\
 **Visible:** (is deze layer zichtbaar in de viewer?)\
 **Categorie:** (selecteer onder welke categorie deze layer komt)\
 **ISqueryable:** (maak de layer zichtbaar in het zoekscherm binnen de viewer)\
