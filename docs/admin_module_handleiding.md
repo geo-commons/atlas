@@ -21,7 +21,7 @@ Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld 
 
 
 ***
-> * [Naar boven](#inhoud)
+* [Naar boven](#inhoud)
 ***
 
 ##### AUTHENTICATIE EN AUTORISATIE
