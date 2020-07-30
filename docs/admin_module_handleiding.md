@@ -6,6 +6,9 @@ Voorbeeld van een anchor [voorbeeld anchor](#voorbeeld-anchor)
 ## Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt de configuratie van atlas gedaan.
 
 [AUTHENTICATIE EN AUTORISATIE](#####AUTHENTICATIE EN AUTORISATIE)
+[HOMEPAGE](#####HOMEPAGE)
+[USER_MANAGEMENT](#####USER_MANAGEMENT)
+[WEBSERVICE](#####WEBSERVICE)
 
 In de README.MD file wordt in de laatste stap een superuser aangemaakt. Met deze gebruiker kan in de adminmodule worden ingelogt zoals in de README.MD beschreven.
 Let op dat de url eindigt met een /.
@@ -127,8 +130,6 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
 Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
-
-# voorbeeld-anchor
 
 
 
