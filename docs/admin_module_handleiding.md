@@ -8,9 +8,9 @@ Voorbeeld van een anchor [voorbeeld anchor](#voorbeeld-anchor)
 ### Inhoud
 
 * [AUTHENTICATIE EN AUTORISATIE](#authenticatie-en-autorisatie)
-* [HOMEPAGE](##### HOMEPAGE)
-* [USER_MANAGEMENT](#####U SER_MANAGEMENT)
-* [WEBSERVICE](##### WEBSERVICE)
+* [HOMEPAGE](#homepage)
+* [USER_MANAGEMENT](#user_management)
+* [WEBSERVICE](#webservice)
 
 In de README.MD file wordt in de laatste stap een superuser aangemaakt. Met deze gebruiker kan in de adminmodule worden ingelogt zoals in de README.MD beschreven.
 Let op dat de url eindigt met een /.
