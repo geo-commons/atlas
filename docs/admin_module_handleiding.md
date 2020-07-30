@@ -34,6 +34,9 @@ Per groep kunnen rechten worden toegekend. Klik in het "Authenticatie en autoris
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/groep-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="1400"/>
 
+***
+* [Naar boven](#inhoud)
+***
 
 ##### HOMEPAGE
 Binnen atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren. Dit kan door middel van de CTRL toets ingedrukt te houden en tegelijkertijd met de muis een gebied met adressen te selecteren. Ook kunnen adressen geselecteerd worden met behulp van de selectietool rechtsboven in het Atlas scherm. Deze adres-selecties worden op het scherm getoond maar kunnen ook gedownload worden. Binnen Atlas zelf worden deze selecties in de database opgeslagen. Via de "Saved Datasets" optie, kunnen deze selecties beheerd worden.
@@ -47,6 +50,10 @@ Wanneer een "saved dataset" wordt geselecteerd, dan zal de inhoud in het JSON sc
 Ook is het mogelijk om via cut & paste zelf datasets toe te voegen voor eventueel toekomstig gebruik.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
+
+***
+* [Naar boven](#inhoud)
+***
 
 ##### USER_MANAGEMENT
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
@@ -72,6 +79,10 @@ In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toe
 In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er ook gebruikers zijn aangemaakt kunnen deze hier aan de groep worden toegvoegd.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
+
+***
+* [Naar boven](#inhoud)
+***
 
 ##### WEBSERVICE
 
@@ -138,7 +149,9 @@ Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te sel
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
 
-
+***
+* [Naar boven](#inhoud)
+***
 
 
 
