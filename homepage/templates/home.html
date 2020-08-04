@@ -52,10 +52,10 @@
           <h4 class="modal-title">Versie {% app_version %}</h4>
         </div>
         <div class="modal-body">
-          Softwareversie 2.2.4 biedt de volgende nieuwe functies en verbeteringen:
+          Softwareversie 2.3.0 biedt de volgende nieuwe functies en verbeteringen:
           <br/><br/>
           <ul>
-            <li>Verbeterde opmaak</li>
+            <li>Mogelijkheid toegevoegd om kaartjes in te sluiten</li>
           </ul>
         </div>
       </div>
@@ -81,6 +81,22 @@
       </div>
     </div>
   </div> <!-- END search modal-->
+
+  <!-- Embed modal -->
+  <div class="modal fade" id="embedModal" role="dialog" style="display: none;">
+    <div class="modal-dialog ui-draggable">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header ui-draggable-handle">
+          <button type="button" class="close" data-dismiss="modal">×</button>
+          <h4 class="modal-title">Kaart insluiten</h4>
+        </div>
+        <div class="modal-body">
+          <div id="embedCode" class="embedCode"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- login modal -->
 {% if not user.is_authenticated and ctrix %}

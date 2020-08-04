@@ -761,9 +761,17 @@ function init(){
 			$('#'+ (lyr.get('id'))+'').change(function(){
 				if($(this).is(":checked")){
 					lyr.setVisible(true);
+
+					if (window.vueStore) {
+						window.vueStore.commit('addLayer', lyr.get('id'));
+					}
 				}
 				else{
 					lyr.setVisible(false);
+
+					if (window.vueStore) {
+						window.vueStore.commit('deleteLayer', lyr.get('id'));
+					}
 				}
 			}); // END change function
 		} // END if NOT isBaseLayer
@@ -1466,7 +1474,6 @@ function init(){
 			// specifiek for IE-11
 			$(".btn_zoek_data_style").css('background-color', '#fff');
 		}
-
 	});
 
 	// data result
@@ -2151,19 +2158,31 @@ function init(){
 	$("#streetsmartApi").on('mouseenter', function(event) {
 		$("#streetsmartDiv").draggable("disable");
 
-	}).on('mouseleave', function(){
+	}).on('mouseleave', function() {
 		// Street wil on-draggable when street-vew NOT using
 		$("#streetsmartDiv").draggable("enable");
 	});
 
-	// move map event
-	 map.on('moveend', function(evt){
-		 // create dynamish coordinate
-		 coord = map.getView().getCenter();
-		 dynamisch_adres_coordinate = coord[0] + ", " + coord[1];
+	$(".btn_embed_style").click(function() {
+		$("#embedModal").modal('toggle');
+	});
 
-		 console.log(dynamisch_adres_coordinate);
-	 });
+	map.on('moveend', function() {
+		var view = map.getView();
+
+		coord = view.getCenter();
+		dynamisch_adres_coordinate = coord[0] + ", " + coord[1];
+
+		if (!window.vueStore) {
+			return;
+		}
+
+		window.vueStore.commit('setPosition', {
+			x: coord[0],
+			y: coord[1],
+			zoom: view.getZoom()
+		});
+	});
 
 	// update de layers when de db changed
 	map.updateSize();

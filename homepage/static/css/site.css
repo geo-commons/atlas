@@ -84,6 +84,12 @@
   padding:5px;
 }
 
+.btn_embed_style {
+  font-size: 11px;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 5px;
+}
+
 .measure_type{
   font-size:10px;
 }

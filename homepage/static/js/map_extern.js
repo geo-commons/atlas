@@ -538,9 +538,17 @@ function init(){
 			$('#'+ (lyr.get('id'))+'').change(function(){
 				if($(this).is(":checked")){
 					lyr.setVisible(true);
+
+					if (window.vueStore) {
+						window.vueStore.commit('addLayer', lyr.get('id'));
+					}
 				}
 				else{
 					lyr.setVisible(false);
+
+					if (window.vueStore) {
+						window.vueStore.commit('deleteLayer', lyr.get('id'));
+					}
 				}
 			}); // END change function
 		} // END if NOT isBaseLayer
@@ -789,6 +797,27 @@ function init(){
 			$(".btn_zoek_adres_style").css('background-color', '#fff');
 		}
 
+	});
+
+	$(".btn_embed_style").click(function() {
+		$("#embedModal").modal('toggle');
+	});
+
+	map.on('moveend', function() {
+		var view = map.getView();
+
+		coord = view.getCenter();
+		dynamisch_adres_coordinate = coord[0] + ", " + coord[1];
+
+		if (!window.vueStore) {
+			return;
+		}
+
+		window.vueStore.commit('setPosition', {
+			x: coord[0],
+			y: coord[1],
+			zoom: view.getZoom()
+		});
 	});
 
 	// update de layers when de db changed

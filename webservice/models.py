@@ -245,6 +245,15 @@ source: new ol.source.TileWMS({{
     def is_closed_dataset(self):
         return self.closed_dataset
 
+    def to_dict(self):
+        return {
+            'id': self.layer_id,
+            'name': self.layer_name,
+            'opacity': float(self.opacity),
+            'url': self.url,
+            'server_type': self.server_type
+        }
+
 
 class AtlasTheme(models.Model):
     title = models.CharField('title', max_length=128, null=True)

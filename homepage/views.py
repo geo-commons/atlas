@@ -170,3 +170,101 @@ def autocomplete_search(request):
     mimetype = 'application/json'
 
     return HttpResponse(results, mimetype)
+
+def embed(request):
+    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+
+    context = {
+        'layers': _default_layers() + [ l.to_dict() for l in authorized_layers ]
+    }
+
+    return render(request, 'embed.html', context)
+
+def _default_layers():
+    return [
+        {
+            'id': 'brt_topo_kaart_totaal',
+            'name': 'topp:topografische_kaart_grijs',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver',
+            'is_base': True
+        },
+        {
+            'id': 'purm_lufo2019',
+            'name': 'topp:Lufo_Totaal_Recent',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2018',
+            'name': 'topp:Lufo_Totaal_2018',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2017',
+            'name': 'topp:Lufo_Totaal_2017',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2016',
+            'name': 'topp:Lufo_Totaal_2016',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2015',
+            'name': 'topp:Lufo_Totaal_2015',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2014',
+            'name': 'topp:Lufo_Purmerend_2014',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2013',
+            'name': 'topp:Lufo_Purmerend_2013',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2012',
+            'name': 'topp:Lufo_Purmerend_2012',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2011',
+            'name': 'topp:Lufo_Purmerend_2011',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'purm_lufo2010',
+            'name': 'topp:Lufo_Purmerend_2010',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        },
+        {
+            'id': 'beem_lufo2011',
+            'name': 'topp:Lufo_Beemster_2011',
+            'opacity': 0.9,
+            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'server_type': 'geoserver'
+        }
+    ]
