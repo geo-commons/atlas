@@ -52,20 +52,20 @@ var osm = new ol.layer.Tile({
 	source: new ol.source.OSM()
 });
 
-// Lufo 2019 Purmerend
-var lufo_2019_purm_totaal = new ol.layer.Tile({
-id: "lufo_2019_purm_recent",
-sldDiv: "slddiv_lufo_2019_purm_recent",
-infoDiv: "infodiv_lufo_2019_purnm_recent",
-sld: "sld_lufo_2019_purm_recent",
-lgnd: "lgn_lufo_2019_purm_recent",
+// Lufo 2020 Purmerend
+var lufo_2020_purm_totaal = new ol.layer.Tile({
+id: "lufo_2020_purm_recent",
+sldDiv: "slddiv_lufo_2020_purm_recent",
+infoDiv: "infodiv_lufo_2020_purnm_recent",
+sld: "sld_lufo_2020_purm_recent",
+lgnd: "lgn_lufo_2020_purm_recent",
 // metadata attributen
-meta_naam: "Luchtfoto 2019 Purmerend en Beemster",
+meta_naam: "Luchtfoto 2020 Purmerend en Beemster",
 meta_soort: "Raster kaart",
 meta_org: "Geo Informatie</a>",
 meta_bijgewerkt:"2019 (Jaarlijks)",
 // metadata attributen
-title: "Luchtfoto 2019",
+title: "Luchtfoto 2020",
 opacity: 0.9,
 visible:false,
 isBaseLayer: true,
@@ -78,7 +78,7 @@ source: new ol.source.TileWMS({
 })
 });
 
-// Lufo 2019 Purmerend
+// Grijs 2019 Purmerend
 var brt_topo_kaart = new ol.layer.Tile({
 	id: "brt_topo_kaart_totaal",
 	sldDiv: "slddiv_brt_topo_kaart_totaal",
@@ -271,6 +271,32 @@ source: new ol.source.TileWMS({
 })
 });
 
+// Lufo 2020 Purmerend
+var lufo_2020_totaal = new ol.layer.Tile({
+	id: "purm_lufo2020",
+	sldDiv: "sld_div_purm_lufo_20",
+	infoDiv: "info_div_purm_lufo_20",
+	sld: "prm_sld_lufo20",
+	lgnd: "prm_lgn_lufo2020",
+	// metadata attributen
+	meta_naam: "Luchtfoto 2020 Purmerend en Beemster",
+	meta_soort: "Raster kaart",
+	meta_org: "Geo Informatie</a>",
+	meta_bijgewerkt:"2020 (Jaarlijks)",
+	// metadata attributen
+	title: "2020",
+	isLufo: true,
+	opacity: 0.9,
+	visible:false,
+	isQueryable: false,
+	source: new ol.source.TileWMS({
+		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
+		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
+		params: {'layers': 'topp:Lufo_Totaal_2020'},
+		serverType: 'geoserver'
+	})
+	});
+
 // Lufo 2019 Purmerend
 var lufo_2019_totaal = new ol.layer.Tile({
 id: "purm_lufo2019",
@@ -292,7 +318,7 @@ isQueryable: false,
 source: new ol.source.TileWMS({
 	projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
 	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'layers': 'topp:Lufo_Totaal_Recent'},
+	params: {'layers': 'topp:Lufo_Totaal_2019'},
 	serverType: 'geoserver'
 })
 });
@@ -654,7 +680,8 @@ var layerList =
 [
 // pdok_brt,
 brt_topo_kaart,
-lufo_2019_purm_totaal,
+lufo_2020_purm_totaal,
+lufo_2020_totaal,
 lufo_2019_totaal,
 lufo_2018_totaal,
 lufo_2017_totaal,
