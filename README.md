@@ -27,7 +27,7 @@ Adjust the `.env` file to configure the application and create a secure producti
 - DB_USER: The username of the Postgres database. (default: atlas)
 - DB_PASSWORD: The password of the Postgres database. Replace with a generated password in production. (default: atlas)
 - DB_NAME: The database name of the Postgres database. (default: atlas)
-- WFS_URL: The URL of the external WFS server (e.g. [Geoserver](https://geoserver.org/)).
+- WFS_URL: The URL of the external WFS server (e.g. [Geoserver](https://github.com/geoserver/geoserver)).
 - WFS_URL_CTRIX: The URL if the internal WFS server (e.g. Geoserver).
 - SMARTSTREET_USER: The username of the [Cyclomedia](https://www.cyclomedia.com/) Smartstreet API (used internally).
 - SMARTSTREET_PASSWORD: The password of the Cyclomedia Smartstreet API (used internally).
@@ -42,6 +42,11 @@ Make sure you installed the following requirements:
 
 - [Python 3](https://www.python.org)
 - [Docker](https://www.docker.com)
+
+Atlas relies on [Geoserver](https://github.com/geoserver/geoserver) for viewing geospatial data.
+GeoServer is an open source software server written in Java that allows users to share and edit geospatial data. Designed for interoperability, it publishes data from any major spatial data source using open standards.
+The default development environment of Atlas uses the Purmerend Datalab Geoserver. Therefore Geoserver is not listed as a requirement to set up a development environment. However, if you want to present you own geospatial data (and you do), you will need to run you own Geoserver.
+There is a lot of very good [documentation](https://docs.geoserver.org/stable/en/user/) about Geoserver on the Internet.
 
 First setup a new virtual environment for Atlas with:
 
