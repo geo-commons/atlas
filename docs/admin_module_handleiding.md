@@ -129,7 +129,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * **Popup attributes:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd)
 * **Search fields:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden)
 * **Projection:** (standaard: EPSG:28992)
-* **Url:** De URL van de layer (http://GEOSERVER_URL/wms?...) Het gebruikte endpoint (zie ook https://docs.geoserver.org/stable/en/user/geowebcache/webadmin/defaults.html#gwc-webadmin-defaults)
+* **Url:** De URL van de layer (http://GEOSERVER_URL/wms?...) Het gebruikte endpoint (zie ook de<a href="https://docs.geoserver.org/stable/en/user/geowebcache/webadmin/defaults.html#gwc-webadmin-defaults">geoserver handleidng</a>)
 * **Server type:** (standaard: geoserver)
 * **Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)
 * **Gepubliceerd:** (Default: aan)
