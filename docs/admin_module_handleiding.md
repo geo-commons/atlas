@@ -1,22 +1,27 @@
 # Handleiding Admin Module Atlas versie 2.2.4
 
-## Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt de configuratie van Atlas gedaan.
+## Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt Atlas geconfigureerd.
 
 ### Inhoud
 
 * [INTRODUCTIE](#introductie)
 * [HOOFDSCHERM](#hoofdscherm)
 * [USER_MANAGEMENT](#user_management)
+     * [Gebruikers](#gebruikers)
+     * [Atlas_groups](#atlas_groups)
 * [WEBSERVICE](#webservice)
-     * [Categoriëen](categoriëen)
-     * [Kaartlagen](kaartlagen)
-     * [Thema's](thema's)
+     * [Categorieën](#categorieën)
+     * [Kaartlagen](#kaartlagen)
+     * [Thema](#thema)
 * [HOMEPAGE](#homepage)
+     * [Saved_datasets](#saved_datasets)
 * [AUTHENTICATIE EN AUTORISATIE](#authenticatie-en-autorisatie)
-
+     * [Groepen](#groepen)
 #### INTRODUCTIE
 
-Bij het installeren van Atlas wordt in de laatste stap een superuser aangemaakt. In de README.MD file is dit beschreven.  Met deze gebruiker (superuser) kan in de adminmodule worden ingelogd op http://localhost:8000/atlas/admin/
+Bij het installeren van Atlas wordt in de laatste stap een superuser aangemaakt. In de README.MD file is dit beschreven.  Met deze gebruiker (superuser) kan in de adminmodule worden ingelogd op http://localhost:8000/atlas/admin/ .
+
+
 Let op dat de url eindigt met een /.
 
 ***
@@ -37,6 +42,9 @@ Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld 
 #### USER_MANAGEMENT
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
 aan een Atlas group. Het gebruikersbeheer heeft geen relatie met groepen in authenticatie en autorisatie.
+
+
+##### Gebruikers
 Klik in het user management beheer scherm bij gebruikers op Toevoegen om een gebruiker toe te voegen.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/user-magement-beheer.png" alt="Gebruikersbeheer" width="600"/>
@@ -55,6 +63,8 @@ In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toe
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/_gebruikerswijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
 
+
+##### Atlas_groups
 In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er ook gebruikers zijn aangemaakt kunnen deze hier aan de groep worden toegvoegd.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
@@ -81,29 +91,30 @@ zorgt ervoor dat eronder de verschillende kaartlagen van die categorie in de leg
 Bij het toevoegen van een kaartlaag wordt aangegeven onder welke categorie deze valt.
 Categorieën worden getoond op alfabetische volgorde, onder Achtergrondkaarten en Luchtfoto's. Hou hier rekening mee bij het aanmaken van een categorie.
 
-Categorieën \
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorieenkopie.png" alt="categorieën" width="500"/>
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
 * **Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan, denk hierbij om de alfabetische volgorde)
 * **Javascript type:** (default waarde: themelayer:true)
 * **Gesloten thema** (Is deze categorie in alle omgevingen zichtbaar of alleen intern?)
+ 
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
+
+
+***
+* [Naar boven](#inhoud)
+***
 
 ##### Kaartlagen
 Kaartlagen zijn de datasets die binnen Atlas ontsloten worden. 
 Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere thema's. 
 
-Kaartlagen \
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlagenkopie.png" alt="kaartlagen" width="500"/>
-
-
-
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
 
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * **Layer_id:** (Een uniek ID dat de layer onderscheid van andere)
-* **Title:** (De naam zoals die verschijnt in het viewer scherm van Atlas)
+* **Title:** (De naam zoals die verschijnt in de legenda van Atlas)
 * **Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver)
 * **Meta_naam:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Adressen(BAG))
 * **Meta_soort:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Basisregistratie)
@@ -112,25 +123,30 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * **Opacity:** (default 0,9)
 * **Visible:** (is deze layer zichtbaar in de viewer?)
 * **Categorie:** (selecteer onder welke categorie deze layer komt)
-* **ISqueryable:** (maak de layer zichtbaar in het zoekscherm binnen de viewer)
-* **Popup attributes:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd)
-* **Search fields:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden)
-* **Projection:** (standaard: EPSG:28992)
+* **ISqueryable:** (maak het mogelijk de laag te bevragen door in de kaart te klikken (popup attriutes) én maak de layer zichtbaar in de zoekfunctie )
+* **Popup attributes:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond.)
+* **Search fields:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden. Als dit leeg gelaten wordt, worden alle attributen zoekvelden.)
+* **Projection:** (De projectie waarin de kaartlaag bevraagd wordt. Default: EPSG:28992)
 * **Url:** De URL van de layer (http://GEOSERVER_URL/wms?...) Het gebruikte endpoint (zie ook de <a href="https://docs.geoserver.org/stable/en/user/geowebcache/webadmin/defaults.html#gwc-webadmin-defaults">Geoserver handleidng</a>)
 * **Server type:** (standaard: geoserver)
 * **Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)
-* **Gepubliceerd:** (Default: aan)
-* **Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema)
+* **Gepubliceerd:** (wordt de laag gepubliceerd of niet. deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden.)(Default: aan)
+* **Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in de thema's waaraan deze is toegevoegd)
 * **Owner:** (Wie is eigenaar van deze layer) 
-* **Users:** (Welke gebruikers hebben toegang tot deze kaartlaag? (Deze functie is nog niet in gebruik))
-* **Atlas groups:** ([Welke Atlas gebruikersgroepen hebben toegang tot deze kaartlaag? (Deze functie is nog niet in gebruik))
-* **Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt)
+* **Users:** (Welke gebruikers hebben toegang tot deze kaartlaag? 
+* **Atlas groups:** (Welke Atlas gebruikersgroepen hebben toegang tot deze kaartlaag? )
+* **Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt. Let op: dit nummer moet uniek zijn, anders zullen de lagen binnen Atlas niet laden)
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlaag-toevoegen.png" alt="kaartlaag toevoegen" width="700"/>
 
+***
+* [Naar boven](#inhoud)
+***
 
-##### Thema's
-Thema's zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Bij het aanmaken van een thema worden de kaartlagen geselecteerd die bij dat thema horen. Een thema verschijnt niet in het Atlas scherm als aanklikbare menu-optie maar moet in de url balk worden meegegeven. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
+##### Thema
+Thema's zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om van een thema samen te stellen worden kaartlagen geselecteerd die bij dat thema horen. 
+
+Een thema verschijnt niet in het Atlas scherm. Bij het aanmaken van een thema wordt als het ware een aparte instantie van Atlas gecreëerd met een beperkter aantal kaartlagen en beperktere functionaliteit. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hondenbeleid.png" alt="hondenbeleid" width="500"/>
 
@@ -148,6 +164,9 @@ Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te sel
 ***
 
 #### HOMEPAGE
+
+##### Saved_datasets
+
 Binnen Atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren. Dit kan door middel van de CTRL toets ingedrukt te houden en tegelijkertijd met de muis een gebied met adressen te selecteren. Ook kunnen adressen geselecteerd worden met behulp van de selectietool rechtsboven in het Atlas scherm. Deze adres-selecties worden op het scherm getoond maar kunnen ook gedownload worden. Binnen Atlas zelf worden deze selecties in de database opgeslagen. Via de "Saved Datasets" optie, kunnen deze selecties beheerd worden.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-datasets.png" alt="Saved datasets" width="600"/>
@@ -166,7 +185,9 @@ Ook is het mogelijk om via cut & paste zelf datasets toe te voegen voor eventuee
 
 
 #### AUTHENTICATIE EN AUTORISATIE
-# Versie 2.2.4: Deze functie is voor toekomstig gebruik!
+
+##### Groepen
+##### Versie 2.2.4: Deze functie is voor toekomstig gebruik!
 Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden. Per groep kunnen rechten worden toegekend voor bewerkingen binnen Atlas en de toegang tot data. 
 Versie 2.2.4: Deze functie is voor toekomstig gebruik, er is nog geen koppeling met Atlas gebruikersgroepen
 
