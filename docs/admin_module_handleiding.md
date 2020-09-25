@@ -4,16 +4,26 @@
 
 ### Inhoud
 
-* [INTRODUCTIE EN HOOFDSCHERM](#introductie-en-hoofdscherm)
-* [AUTHENTICATIE EN AUTORISATIE](#authenticatie-en-autorisatie)
-* [HOMEPAGE](#homepage)
+* [INTRODUCTIE](#introductie)
+* [HOOFDSCHERM](#hoofdscherm)
 * [USER_MANAGEMENT](#user_management)
 * [WEBSERVICE](#webservice)
+     * [Categoriëen](categoriëen)
+     * [Kaartlagen](kaartlagen)
+     * [Thema's](thema's)
+* [HOMEPAGE](#homepage)
+* [AUTHENTICATIE EN AUTORISATIE](#authenticatie-en-autorisatie)
 
-##### INTRODUCTIE EN HOOFDSCHERM
+#### INTRODUCTIE
 
-In de README.MD file wordt in de laatste stap een superuser aangemaakt. Met deze gebruiker kan in de adminmodule worden ingelogt zoals in de README.MD beschreven.
+Bij het installeren van Atlas wordt in de laatste stap een superuser aangemaakt. In de README.MD file is dit beschreven.  Met deze gebruiker (superuser) kan in de adminmodule worden ingelogd op http://localhost:8000/atlas/admin/
 Let op dat de url eindigt met een /.
+
+***
+* [Naar boven](#inhoud)
+***
+
+#### HOOFDSCHERM
 
 Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld kunnen worden.
 
@@ -24,38 +34,7 @@ Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld 
 * [Naar boven](#inhoud)
 ***
 
-##### AUTHENTICATIE EN AUTORISATIE
-Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden. Per groep kunnen rechten worden toegekend voor bewerkingen binnen Atlas en de toegang tot data. 
-Versie 2.2.4: Deze functie is voor toekomstig gebruik, er is nog geen koppeling met Atlas gebruikersgroepen
-
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/auth-en-autorisatie.png" alt="Authenticatie en autorisatie" width="700"/>
-
-Per groep kunnen rechten worden toegekend. Klik in het "Authenticatie en autorisatie" scherm naast het groene plus teken op Toevoegen om een groep toe te voegen. In het "groep toevoegen" scherm kan nu een naam voor de nieuwe groep worden opgegeven en kunnen rechten voor deze nieuwe groep vanuit de linker kolom naar de rechter kolom worden verplaatst.
-
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/groep-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="1400"/>
-
-***
-* [Naar boven](#inhoud)
-***
-
-##### HOMEPAGE
-Binnen Atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren. Dit kan door middel van de CTRL toets ingedrukt te houden en tegelijkertijd met de muis een gebied met adressen te selecteren. Ook kunnen adressen geselecteerd worden met behulp van de selectietool rechtsboven in het Atlas scherm. Deze adres-selecties worden op het scherm getoond maar kunnen ook gedownload worden. Binnen Atlas zelf worden deze selecties in de database opgeslagen. Via de "Saved Datasets" optie, kunnen deze selecties beheerd worden.
-
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-datasets.png" alt="Saved datasets" width="600"/>
-
-Wanneer een "saved dataset" wordt geselecteerd, dan zal de inhoud in het JSON scherm getoond worden.
-
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-dataset-wijzigen.png" alt="Saved dataset wijzigen" width="600"/>
-
-Ook is het mogelijk om via cut & paste zelf datasets toe te voegen voor eventueel toekomstig gebruik.
-
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
-
-***
-* [Naar boven](#inhoud)
-***
-
-##### USER_MANAGEMENT
+#### USER_MANAGEMENT
 In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
 aan een Atlas group. Het gebruikersbeheer heeft geen relatie met groepen in authenticatie en autorisatie.
 Klik in het user management beheer scherm bij gebruikers op Toevoegen om een gebruiker toe te voegen.
@@ -84,32 +63,40 @@ In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er
 * [Naar boven](#inhoud)
 ***
 
-##### WEBSERVICE
+#### WEBSERVICE
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/webservice-beheer.png" alt="Webservice beheer" width="600"/>
 
 Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
-Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het klikken op een van de hoofdonderwerpen/categorieën
-zorgt ervoor dat eronder de verschillende kaartlagen van die categorie worden getoond.
-Bij het toevoegen van een kaartlaag wordt onder andere aangegeven onder welke categorie deze valt.
+* Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. 
+Het aanmaken en toekennen van categorieën helpt bij het geordend houden van de legenda.
+* Kaartlagen zijn de datasets die binnen Atlas ontsloten worden. 
+Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere thema's. 
+* Thema's zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan. 
+Bij het aanmaken van een thema wordt een nieuwe url gecreëerd, waar een aparte instantie van Atlas wordt getoond met een beperkter aantal kaartlagen en beperktere functionaliteit.
+
+##### Categorieën
+Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het openklikken van een hoofdonderwerp/categorie
+zorgt ervoor dat eronder de verschillende kaartlagen van die categorie in de legenda worden getoond.
+Bij het toevoegen van een kaartlaag wordt aangegeven onder welke categorie deze valt.
 Categorieën worden getoond op alfabetische volgorde, onder Achtergrondkaarten en Luchtfoto's. Hou hier rekening mee bij het aanmaken van een categorie.
 
 Categorieën \
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorieenkopie.png" alt="categorieën" width="500"/>
 
-Kaartlagen \
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlagenkopie.png" alt="kaartlagen" width="500"/>
-
-
-Thema's zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan. Bij het aanmaken van een thema worden de kaartlagen geselecteerd die bij dat thema horen. Een thema verschijnt niet in het Atlas scherm als aanklikbare menu-optie maar moet in de url balk worden meegegeven. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
-
-<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hondenbeleid.png" alt="hondenbeleid" width="500"/>
-
-
 De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
 * **Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan, denk hierbij om de alfabetische volgorde)
 * **Javascript type:** (default waarde: themelayer:true)
 * **Gesloten thema** (Is deze categorie in alle omgevingen zichtbaar of alleen intern?)
+
+##### Kaartlagen
+Kaartlagen zijn de datasets die binnen Atlas ontsloten worden. 
+Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere thema's. 
+
+Kaartlagen \
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlagenkopie.png" alt="kaartlagen" width="500"/>
+
+
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
 
@@ -142,12 +129,52 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/kaartlaag-toevoegen.png" alt="kaartlaag toevoegen" width="700"/>
 
 
+##### Thema's
+Thema's zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Bij het aanmaken van een thema worden de kaartlagen geselecteerd die bij dat thema horen. Een thema verschijnt niet in het Atlas scherm als aanklikbare menu-optie maar moet in de url balk worden meegegeven. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/hondenbeleid.png" alt="hondenbeleid" width="500"/>
+
+
+
 De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
 * **Title:** ([De naam zoals die ook bij de url ingegeven moet worden)
 * **Layers:** (De layers die binnen het Thema vallen)
 Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
 
 <img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
+
+***
+* [Naar boven](#inhoud)
+***
+
+#### HOMEPAGE
+Binnen Atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren. Dit kan door middel van de CTRL toets ingedrukt te houden en tegelijkertijd met de muis een gebied met adressen te selecteren. Ook kunnen adressen geselecteerd worden met behulp van de selectietool rechtsboven in het Atlas scherm. Deze adres-selecties worden op het scherm getoond maar kunnen ook gedownload worden. Binnen Atlas zelf worden deze selecties in de database opgeslagen. Via de "Saved Datasets" optie, kunnen deze selecties beheerd worden.
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-datasets.png" alt="Saved datasets" width="600"/>
+
+Wanneer een "saved dataset" wordt geselecteerd, dan zal de inhoud in het JSON scherm getoond worden.
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/saved-dataset-wijzigen.png" alt="Saved dataset wijzigen" width="600"/>
+
+Ook is het mogelijk om via cut & paste zelf datasets toe te voegen voor eventueel toekomstig gebruik.
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
+
+***
+* [Naar boven](#inhoud)
+***
+
+
+#### AUTHENTICATIE EN AUTORISATIE
+# Versie 2.2.4: Deze functie is voor toekomstig gebruik!
+Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden. Per groep kunnen rechten worden toegekend voor bewerkingen binnen Atlas en de toegang tot data. 
+Versie 2.2.4: Deze functie is voor toekomstig gebruik, er is nog geen koppeling met Atlas gebruikersgroepen
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/auth-en-autorisatie.png" alt="Authenticatie en autorisatie" width="700"/>
+
+Per groep kunnen rechten worden toegekend. Klik in het "Authenticatie en autorisatie" scherm naast het groene plus teken op Toevoegen om een groep toe te voegen. In het "groep toevoegen" scherm kan nu een naam voor de nieuwe groep worden opgegeven en kunnen rechten voor deze nieuwe groep vanuit de linker kolom naar de rechter kolom worden verplaatst.
+
+<img src="https://gitlab.com/purmerend/atlas/-/raw/admin-module-manual/docs/images/groep-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="1400"/>
 
 ***
 * [Naar boven](#inhoud)
