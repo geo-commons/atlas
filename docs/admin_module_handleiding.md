@@ -127,7 +127,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * **Popup attributes:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond.)
 * **Search fields:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden. Als dit leeg gelaten wordt, worden alle attributen zoekvelden.)
 * **Projection:** (De projectie waarin de kaartlaag bevraagd wordt. Default: EPSG:28992)
-* **Url:** De URL van de layer (http://GEOSERVER_URL/wms?...) Het gebruikte endpoint (zie ook de <a href="https://docs.geoserver.org/stable/en/user/geowebcache/webadmin/defaults.html#gwc-webadmin-defaults">Geoserver handleidng</a>)
+* **Url:** De URL van de layer (http://GEOSERVER_URL/wms?...) Het gebruikte endpoint (zie ook de <a href="https://docs.geoserver.org/stable/en/user/geowebcache/webadmin/defaults.html#gwc-webadmin-defaults">Geoserver handleiding</a>)
 * **Server type:** (standaard: geoserver)
 * **Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)
 * **Gepubliceerd:** (wordt de laag gepubliceerd of niet. deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden.)(Default: aan)
