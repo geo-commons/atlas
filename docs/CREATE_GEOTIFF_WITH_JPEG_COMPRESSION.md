@@ -41,14 +41,14 @@ Het Geotiff bestand dat gdaladdo genereert kan als zodanig worden ingelezen in b
 Met [**gdalinfo**](https://gdal.org/programs/gdalinfo.html) kan het gegenereerde bestand bekeken worden. Wordt het juiste formaat gezien? Klopt de opgegeven projectie? etc.
 
 Geraadpleegde sites:
-https://gdal.org/index.html
-https://docs.geoserver.org
-https://www.geosolutionsgroup.com/technologies/geoserver/
-https://docs.geoserver.geo-solutions.it/edu/en/enterprise/raster.html
-http://blog.cleverelephant.ca/2015/02/geotiff-compression-for-dummies.html
-https://docs.geoserver.org/latest/en/user/tutorials/imagepyramid/imagepyramid.html#building-and-using-an-image-pyramid
-https://github.com/planetfederal/workshops/blob/master/workshops/data_configs/sphinx/source/raster.rst
-https://github.com/OSGeo/gdal/issues/1442
+- https://gdal.org/index.html
+- https://docs.geoserver.org
+- https://www.geosolutionsgroup.com/technologies/geoserver/
+- https://docs.geoserver.geo-solutions.it/edu/en/enterprise/raster.html
+- http://blog.cleverelephant.ca/2015/02/geotiff-compression-for-dummies.html
+- https://docs.geoserver.org/latest/en/user/tutorials/imagepyramid/imagepyramid.html#building-and-using-an-image-pyramid
+- https://github.com/planetfederal/workshops/blob/master/workshops/data_configs/sphinx/source/raster.rst
+- https://github.com/OSGeo/gdal/issues/1442
 
 ---
 
