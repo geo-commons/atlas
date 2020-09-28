@@ -22,7 +22,7 @@ Onderstaande conversiestappen zijn uitgevoerd onder Centos 7.4 en OSX Catalina. 
 maakt een virtueel raster bestand aan. Een VRT bestand is een XML bestand met de informatie over de bronbestanden:
 
 ```bash
-  **gdalbuildvrt**  [-scrnodata "255 255 255"](#srcnodata) <output-bestand>  <input-bestanden bv.:  ../1_mosaic_tiles_TIFF_TFW/*.tif>
+  gdalbuildvrt  [-scrnodata "255 255 255"](#srcnodata) <output-bestand>  <input-bestanden bv.:  ../1_mosaic_tiles_TIFF_TFW/*.tif>
 ```
 
   [**Gdal_translate**](https://gdal.org/programs/gdal_translate.html)
@@ -30,7 +30,7 @@ maakt een virtueel raster bestand aan. Een VRT bestand is een XML bestand met de
 zorgt voor de conversie tussen formaten
 
 ```bash
-  [**gdal_translate**](#gdal_translate) -a_srs “EPSG:28992” -co “COMPRESS=JPEG" -co "TILED=YES" -co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES <input-bestand.tif> <output-bestand.tif>
+  [gdal_translate](#gdal_translate) -a_srs “EPSG:28992” -co “COMPRESS=JPEG" -co "TILED=YES" -co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES <input-bestand.tif> <output-bestand.tif>
 ```
 
   [**Gdaladdo**](https://gdal.org/programs/gdaladdo.html)
@@ -38,7 +38,7 @@ zorgt voor de conversie tussen formaten
 voegt overzichten toe.
 
 ```bash
-**gdaladdo** --config BIGGTIFF_OVERVIEW YES --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL -r average <input-bestand.tif> 2 4 8 16
+gdaladdo --config BIGGTIFF_OVERVIEW YES --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL -r average <input-bestand.tif> 2 4 8 16
 ```
 
 Afhankelijk van de grootte van de originele luchtfoto (de grootte van het grondgebied) en de gebruikte hardware, kan gdalladdo een half uur tot een hele dag of langer bezig zijn.
