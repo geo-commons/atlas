@@ -22,7 +22,7 @@ Onderstaande conversiestappen zijn uitgevoerd onder Centos 7.4 en OSX Catalina. 
 maakt een virtueel raster bestand aan. Een VRT bestand is een XML bestand met de informatie over de bronbestanden:
 
 ```bash
-  gdalbuildvrt  [-scrnodata "255 255 255"](#srcnodata) <output-bestand>  <input-bestanden bv.:  ../1_mosaic_tiles_TIFF_TFW/*.tif>
+  gdalbuildvrt  -scrnodata "255 255 255" <output-bestand>  <input-bestanden bv.:  ../1_mosaic_tiles_TIFF_TFW/*.tif>
 ```
 
   [**Gdal_translate**](https://gdal.org/programs/gdal_translate.html)
