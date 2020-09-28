@@ -30,7 +30,7 @@ maakt een virtueel raster bestand aan. Een VRT bestand is een XML bestand met de
 zorgt voor de conversie tussen formaten
 
 ```bash
-  [gdal_translate](#gdal_translate) -a_srs “EPSG:28992” -co “COMPRESS=JPEG" -co "TILED=YES" -co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES <input-bestand.tif> <output-bestand.tif>
+  gdal_translate(#gdal_translate) -a_srs “EPSG:28992” -co “COMPRESS=JPEG" -co "TILED=YES" -co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES <input-bestand.tif> <output-bestand.tif>
 ```
 
   [**Gdaladdo**](https://gdal.org/programs/gdaladdo.html)
