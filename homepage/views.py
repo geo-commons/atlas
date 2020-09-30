@@ -15,7 +15,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 
 from utils.context_processors import is_ctrix
-from webservice.models import Category, Layer
+from webservice.models import Layer
 
 from .forms import UploadDatasetForm
 from .models import SavedDataset
@@ -29,18 +29,9 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         user = self.request.user
-        ctrix = is_ctrix(self.request)
 
         context = super().get_context_data(**kwargs)
-        themes = Category.environment_dependent.environment(ctrix)
-
-        result = {}
-
-        for theme in themes:
-            result[theme] = Layer.authorized.user_or_group(
-                user, ctrix).filter(
-                    layer_type=theme).filter(~Q(not_in_atlas=True))
-        context['themes'] = result
+        context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request)).filter(~Q(not_in_atlas=True))
 
         return context
 
@@ -199,81 +190,4 @@ def _default_layers():
             'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
             'server_type': 'geoserver'
         },
-        {
-            'id': 'purm_lufo2019',
-            'name': 'topp:Lufo_Totaal_2019',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2018',
-            'name': 'topp:Lufo_Totaal_2018',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2017',
-            'name': 'topp:Lufo_Totaal_2017',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2016',
-            'name': 'topp:Lufo_Totaal_2016',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2015',
-            'name': 'topp:Lufo_Totaal_2015',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2014',
-            'name': 'topp:Lufo_Purmerend_2014',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2013',
-            'name': 'topp:Lufo_Purmerend_2013',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2012',
-            'name': 'topp:Lufo_Purmerend_2012',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2011',
-            'name': 'topp:Lufo_Purmerend_2011',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'purm_lufo2010',
-            'name': 'topp:Lufo_Purmerend_2010',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        },
-        {
-            'id': 'beem_lufo2011',
-            'name': 'topp:Lufo_Beemster_2011',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
-        }
     ]

@@ -12,13 +12,9 @@ var stembureauStyl = new ol.style.Text({
 
 // get curent time
 function getDate(param){
-	// define a current time
 	var currentTime = new Date()
-	// returns the month (from 0 to 11)
 	var month = currentTime.getMonth() + 1
-	// returns the day of the month (from 1 to 31)
 	var day = currentTime.getDate()
-	// returns the year (four digits)
 	var year = currentTime.getFullYear()
 
 	if(param == 'month'){ // get month
@@ -50,32 +46,6 @@ var osm = new ol.layer.Tile({
 	isQueryable: false,
 	opacity: 0.9,
 	source: new ol.source.OSM()
-});
-
-// Lufo 2020 Purmerend
-var lufo_2020_purm_totaal = new ol.layer.Tile({
-id: "lufo_2020_purm_recent",
-sldDiv: "slddiv_lufo_2020_purm_recent",
-infoDiv: "infodiv_lufo_2020_purnm_recent",
-sld: "sld_lufo_2020_purm_recent",
-lgnd: "lgn_lufo_2020_purm_recent",
-// metadata attributen
-meta_naam: "Luchtfoto 2020 Purmerend en Beemster",
-meta_soort: "Raster kaart",
-meta_org: "Geo Informatie</a>",
-meta_bijgewerkt:"2019 (Jaarlijks)",
-// metadata attributen
-title: "Luchtfoto 2020",
-opacity: 0.9,
-visible:false,
-isBaseLayer: true,
-isQueryable: false,
-source: new ol.source.TileWMS({
-	projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'layers': 'topp:Lufo_Totaal_Recent'},
-	serverType: 'geoserver'
-})
 });
 
 // Grijs 2019 Purmerend
@@ -244,33 +214,6 @@ source: new ol.source.TileWMS({
 })
 });
 
-// Lufo 2017 Purmerend
-var data_local = new ol.layer.Tile({
-id: "purm_lufo2017_loc",
-sldDiv: "sld_div_purm_lufo_17_loc",
-infoDiv: "info_div_purm_lufo_17_loc",
-sld: "prm_sld_lufo17_loc",
-lgnd: "prm_lgn_lufo2017_loc",
-layerName: 'topp:Lufo_Purmerend_2012',
-// metadata attributen
-meta_naam: "Gesloten data",
-meta_soort: "Raster kaart",
-meta_org: "Geo Informatie</a>",
-meta_bijgewerkt:getDate('year') -1 + ' (Jaarlijks)',
-// metadata attributen
-title: "Gesloten data",
-isLufo: false,
-opacity: 0.9,
-visible:false,
-isQueryable: false,
-source: new ol.source.TileWMS({
-	projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'layers': 'topp:Lufo_Purmerend_2012'},
-	serverType: 'geoserver'
-})
-});
-
 // Lufo 2020 Purmerend
 var lufo_2020_totaal = new ol.layer.Tile({
 	id: "purm_lufo2020",
@@ -293,318 +236,6 @@ var lufo_2020_totaal = new ol.layer.Tile({
 		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
 		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
 		params: {'layers': 'topp:Lufo_Totaal_2020'},
-		serverType: 'geoserver'
-	})
-	});
-
-// Lufo 2019 Purmerend
-var lufo_2019_totaal = new ol.layer.Tile({
-id: "purm_lufo2019",
-sldDiv: "sld_div_purm_lufo_19",
-infoDiv: "info_div_purm_lufo_19",
-sld: "prm_sld_lufo19",
-lgnd: "prm_lgn_lufo2019",
-// metadata attributen
-meta_naam: "Luchtfoto 2019 Purmerend en Beemster",
-meta_soort: "Raster kaart",
-meta_org: "Geo Informatie</a>",
-meta_bijgewerkt:"2019 (Jaarlijks)",
-// metadata attributen
-title: "2019",
-isLufo: true,
-opacity: 0.9,
-visible:false,
-isQueryable: false,
-source: new ol.source.TileWMS({
-	projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'layers': 'topp:Lufo_Totaal_2019'},
-	serverType: 'geoserver'
-})
-});
-
-// Lufo 2018 Purmerend
-var lufo_2018_totaal = new ol.layer.Tile({
-id: "purm_lufo2018",
-sldDiv: "sld_div_purm_lufo_18",
-infoDiv: "info_div_purm_lufo_18",
-sld: "prm_sld_lufo18",
-lgnd: "prm_lgn_lufo2018",
-// metadata attributen
-meta_naam: "Luchtfoto 2018 Purmerend en Beemster",
-meta_soort: "Raster kaart",
-meta_org: "Geo Informatie</a>",
-meta_bijgewerkt:"2018 (Jaarlijks)",
-// metadata attributen
-title: "2018",
-isLufo: true,
-opacity: 0.9,
-visible:false,
-isQueryable: false,
-source: new ol.source.TileWMS({
-	projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'layers': 'topp:Lufo_Totaal_2018'},
-	serverType: 'geoserver'
-})
-});
-
-// Lufo 2017 Purmerend
-var lufo_2017_totaal = new ol.layer.Tile({
-id: "purm_lufo2017",
-sldDiv: "sld_div_purm_lufo_17",
-infoDiv: "info_div_purm_lufo_17",
-sld: "prm_sld_lufo17",
-lgnd: "prm_lgn_lufo2017",
-// metadata attributen
-meta_naam: "Luchtfoto 2017 Purmerend en Beemster",
-meta_soort: "Raster kaart",
-meta_org: "Geo Informatie</a>",
-meta_bijgewerkt:getDate('year') -1 + ' (Jaarlijks)',
-// metadata attributen
-title: "2017",
-isLufo: true,
-opacity: 0.9,
-visible:false,
-isQueryable: false,
-source: new ol.source.TileWMS({
-	projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'layers': 'topp:Lufo_Totaal_2017'},
-	serverType: 'geoserver'
-})
-});
-
-// Lufo 2016 Purmerend
-var lufo_2016_totaal = new ol.layer.Tile({
-	id: "purm_lufo2016",
-	sldDiv: "sld_div_purm_lufo2016",
-	infoDiv: "info_div_purm_lufo2016",
-	sld: "purm_sld_lufo2016",
-	lgnd: "purm_lgn_lufo2016",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2016 Purmerend en Beemster",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:getDate('year') -2 + ' (Jaarlijks)',
-	// metadata attributen
-	title: "2016",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Totaal_2016'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2015 Purmerend
-var lufo_2015_totaal = new ol.layer.Tile({
-	id: "purm_lufo2015",
-	sldDiv: "sld_div_purm_lufo2015",
-	infoDiv: "info_div_purm_lufo2015",
-	sld: "purm_sld_lufo2015",
-	lgnd: "purm_lgn_lufo2015",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2015 Purmerend en Beemster",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2015',
-	// metadata attributen
-	title: "2015",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Totaal_2015'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2014 Purmerend
-var lufo_2014_purm = new ol.layer.Tile({
-	id: "purm_lufo2014",
-	sldDiv: "sld_div_purm_lufo2014",
-	infoDiv: "info_div_purm_lufo2014",
-	sld: "purm_sld_lufo2014",
-	lgnd: "purm_lgn_lufo2014",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2014 Gemeente Purmerend",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2014',
-	// metadata attributen
-	title: "2014 Purmerend",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Purmerend_2014'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2013 Purmerend
-var lufo_2013_purm = new ol.layer.Tile({
-	id: "purm_lufo2013",
-	sldDiv: "sld_div_purm_lufo2013",
-	infoDiv: "info_div_purm_lufo2013",
-	sld: "purm_sld_lufo2013",
-	lgnd: "purm_lgn_lufo2013",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2013 Gemeente Purmerend",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2013',
-	// metadata attributen
-	title: "2013 Purmerend",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Purmerend_2013'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2013 Beemster
-var lufo_2013_beem = new ol.layer.Tile({
-	id: "beem_lufo2013",
-	sldDiv: "sld_div_beem_lufo2013",
-	infoDiv: "info_div_beem_lufo2013",
-	sld: "beem_sld_beem_lufo2013",
-	lgnd: "beem_lgn_beem_lufo2013",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2013 Gemeente Beemster",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2013',
-	// metadata attributen
-	title: "2013 Beemster",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Beemster_2013'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2012 Purmerend
-var lufo_2012_purm = new ol.layer.Tile({
-	id: "purm_lufo2012",
-	sldDiv: "sld_div_purm_lufo2012",
-	infoDiv: "info_div_purm_lufo2012",
-	sld: "purm_sld_lufo2012",
-	lgnd: "purm_lgn_lufo2012",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2012 Gemeente Purmerend",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2012',
-	// metadata attributen
-	title: "2012 Purmerend",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Purmerend_2012'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2011 Purmerend
-var lufo_2011_purm = new ol.layer.Tile({
-	id: "purm_lufo2011",
-	sldDiv: "sld_div_purm_lufo2011",
-	infoDiv: "info_div_purm_lufo2011",
-	sld: "purm_sld_lufo2011",
-	lgnd: "purm_lgn_lufo2011",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2012 Gemeente Purmerend",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2011',
-	// metadata attributen
-	title: "2011 Purmerend",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Purmerend_2011'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2011 Beemster
-var beem_2011 = new ol.layer.Tile({
-	id: "beem_lufo2011",
-	sldDiv: "sld_div_beem_lufo2011",
-	infoDiv: "info_div_beem_lufo2011",
-	sld: "beem_sld_lufo2011",
-	lgnd: "beem_lgn_lufo2011",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2011 Gemeente Beemster",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2011',
-	// metadata attributen
-	title: "2011 Beemster",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Beemster_2011'},
-		serverType: 'geoserver'
-	})
-});
-
-// Lufo 2011 Purmerend
-var lufo_2010_purm = new ol.layer.Tile({
-	id: "purm_lufo2010",
-	sldDiv: "sld_div_purm_lufo2010",
-	infoDiv: "info_div_purm_lufo2010",
-	sld: "purm_sld_lufo2010",
-	lgnd: "purm_lgn_purm_lufo2010",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2010 Gemeente Purmerend",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:'2010',
-	// metadata attributen
-	title: "2010 Purmerend",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'LAYERS': 'topp:Lufo_Purmerend_2010'},
 		serverType: 'geoserver'
 	})
 });
@@ -672,29 +303,12 @@ var buurten_layer = new ol.layer.Tile({
 // marker layers
 vectorSource = new ol.source.Vector({});
 vectorLayer = new ol.layer.Vector({
-title: "Marker Layer",
-source: vectorSource
+	title: "Marker Layer",
+	source: vectorSource
 });
 
-var layerList =
-[
-// pdok_brt,
-brt_topo_kaart,
-lufo_2020_purm_totaal,
-lufo_2020_totaal,
-lufo_2019_totaal,
-lufo_2018_totaal,
-lufo_2017_totaal,
-lufo_2016_totaal,
-lufo_2015_totaal,
-lufo_2014_purm,
-lufo_2013_purm,
-lufo_2013_beem,
-lufo_2012_purm,
-lufo_2011_purm,
-beem_2011,
-lufo_2010_purm,
-// bgt_wmts,
-// pdok_bag,
-vectorLayer
+var layerList = [
+	brt_topo_kaart,
+	lufo_2020_totaal,
+	vectorLayer
 ];

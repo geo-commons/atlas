@@ -1,8 +1,7 @@
 {% autoescape off %}
 
 
-{% for theme, layers in themes.items %}
-  {% for layer in layers %}
+{% for layer in layers %}
   var {{ layer.layer_id }} = new ol.layer.Tile({
     id: "{{ layer.layer_id }}",
     sldDiv: "{{ layer.slddiv }}",
@@ -38,8 +37,6 @@
       servertype: "{{ layer.server_type }}"
       })
     });
-
-  {% endfor %}
 {% endfor %}
 
 {% endautoescape %}

@@ -14,6 +14,12 @@ class LayerAdmin(admin.ModelAdmin):
     list_filter = ('layer_type', 'closed_dataset')
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('ordering', 'title')
+    list_display_links = ('title',)
+    list_editable = ('ordering',)
+
+
 admin.site.register(Layer, LayerAdmin)
-admin.site.register(Category, admin.ModelAdmin)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(AtlasTheme, admin.ModelAdmin)

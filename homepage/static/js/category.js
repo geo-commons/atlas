@@ -52,21 +52,21 @@ var atlasCategory = {
     },
 
     getUniqueCategoryList: function(layerList) {
-		var unique_list = [];
-		for (var i = 0; i < atlasCategory.getCategoryNames(layerList).length; i++) {
-			var move_space = atlasCategory.getCategoryNames(layerList)[i].split(' ').join('_');
-			unique_list.push(move_space);
-		}
+			var unique_list = [];
+			for (var i = 0; i < atlasCategory.getCategoryNames(layerList).length; i++) {
+				var move_space = atlasCategory.getCategoryNames(layerList)[i].split(' ').join('_');
+				unique_list.push(move_space);
+			}
 
-		return unique_list;
+			return unique_list;
     },
 
     getCategoryNames: function(array) {
-		var outputArray = [];
-		var count = 0;
-		var start = false;
+			var outputArray = [];
+			var count = 0;
+			var start = false;
 
-		for (j = 0; j < array.length; j++) {
+			for (j = 0; j < array.length; j++) {
 				if (array[j].get('categorie')) {
 					for (k = 0; k < outputArray.length; k++) {
 							if ( array[j].get('categorie') == outputArray[k] ) {
@@ -80,9 +80,9 @@ var atlasCategory = {
 					start = false;
 					count = 0;
 				}
-		}
+			}
 
-		return outputArray.sort();
+			return outputArray;
     },
 
 	setCategoryContent: function(layer) {

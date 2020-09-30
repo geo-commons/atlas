@@ -58,10 +58,8 @@ function init(){
 	var content_thema = " ";
 	var content_basisreg = " ";
 	var content_baselayer = " ";
-	var content_luchtfotos = " ";
 	var einde_tabelregel = "</tbody></table>";
 
-	// legend mogel content_luchtfotos
 	var content_legendlink = " ";
 	// filter div content
 	var content_zoekdatamodal = " ";
@@ -338,40 +336,6 @@ function init(){
 
 			content_basisreg += "</tr>";
 		}
-
-		// check for the luchtfoto's
-		if(luchtfotokaart){
-
-			content_luchtfotos+= "<tr>";
-			content_luchtfotos += "<td class='eerste'>";
-			if(visiblity){ //check the visibility
-				content_luchtfotos += "<span class='layerName'>" + name + "</span>";
-				content_luchtfotos += "<div class ='layer-switch pull-right'>";
-				content_luchtfotos += "<input checked id='"+ lyrID +"' value='"+ lyrID +"' type='checkbox'/><label class='label-success' for='"+ lyrID +"'></label>";
-				content_luchtfotos += "</div>";
-			} else{
-				content_luchtfotos += "<span class='layerName'>" + name + "</span>";
-				content_luchtfotos += "<div class ='layer-switch pull-right'>";
-				content_luchtfotos += "<input id='"+ lyrID +"' value='"+ lyrID +"' type='checkbox'/><label class='label-success' for='"+ lyrID +"'></label>";
-				content_luchtfotos += "</div>";
-			}
-			content_luchtfotos += "</td>";
-
-			content_luchtfotos += "<td class='tweede'>";
-			content_luchtfotos += "<a data-tooltip='tooltip' title='Metadata informatie'  data-toggle='modal' data-target='#"+infoDiv+"'>";
-			content_luchtfotos += "<img src='" + informatie_png + "' height='20' width='20'/>";
-			content_luchtfotos += "</a>";
-			content_luchtfotos += "</td>";
-
-			content_luchtfotos += "<td class='tweede'>";
-			content_luchtfotos += "<a data-tooltip='tooltip' title='Zichtbaarheid'  data-toggle='modal' data-target='#"+sldDiv+"'>";
-			content_luchtfotos += "<img src='" + transparantie_png + "' height='20' width='20'/>";
-			content_luchtfotos += "</a>";
-			content_luchtfotos += "</td>";
-
-			content_luchtfotos += "</tr>";
-		}
-
 	}); // END foreach LayerList
 
 	// add thema layers
@@ -382,9 +346,6 @@ function init(){
 
 	// add baselayer layers
 	$( "#achtergronden" ).append("<table class='table' width='100%' cellspacing='0'><tbody>"+content_baselayer+"</tbody></table>");
-
-	// add luchtfoto's layers
-	$("#luchtfotos").append(start_tabelregel+header_regel+content_luchtfotos+einde_tabelregel);
 
 	// add metadata info popup
 	$("#metadaInfoDiv").append(content_infomodal);

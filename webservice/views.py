@@ -11,20 +11,10 @@ class CategoryDetailView(TemplateView):
     template_name = "main_content.html"
 
     def get_context_data(self, **kwargs):
-        slug = kwargs['slug']
         user = self.request.user
-        ctrix = is_ctrix(self.request)
 
         context = super().get_context_data(**kwargs)
-        themes = Category.environment_dependent.environment(
-            ctrix).filter(slug=slug)
-
-        result = {}
-
-        for theme in themes:
-            result[theme] = Layer.authorized.user_or_group(
-                user, ctrix).filter(layer_type=theme)
-        context['themes'] = result
+        context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request))
 
         return context
 
@@ -33,22 +23,12 @@ class LayerDetailView(TemplateView):
     template_name = "main_content.html"
 
     def get_context_data(self, **kwargs):
-        # slug = kwargs['slug']
-        layer_id = kwargs['layer_id']
         user = self.request.user
-        ctrix = is_ctrix(self.request)
+
+        layer = Layer.authorized.user_or_group(user, is_ctrix(self.request)).get(layer_id=kwargs['layer_id'])
 
         context = super().get_context_data(**kwargs)
-        # theme = Category.environment_dependent.environment(
-        #     ctrix).get(slug=slug)
-
-        result = {}
-        layer = Layer.authorized.user_or_group(
-            user, ctrix).get(layer_id=layer_id)
-        layer.visible = True
-        category = layer.layer_type
-        result[category] = [layer]
-        context['themes'] = result
+        context['layers'] = [layer]
 
         return context
 
@@ -59,13 +39,10 @@ class AtlasThemeDetailView(DetailView):
     model = AtlasTheme
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
         user = self.request.user
-        ctrix = is_ctrix(self.request)
-        context['themes'] = {}
-        layers = Layer.authorized.user_or_group(
-            user, ctrix).filter(atlastheme=context['atlastheme'])
-        context['themes'][context['atlastheme']] = layers
+
+        context = super().get_context_data(**kwargs)
+        context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request)).filter(atlastheme=context['atlastheme'])
         context['homepage'] = False
 
         return context

@@ -164,10 +164,9 @@
 
 <script type="text/javascript">
 
-  function searchform(element){
-    document.getElementById('searchlayer').value =
-      element.getAttribute('searchlayerid');
-  }
+function searchform(element){
+  document.getElementById('searchlayer').value = element.getAttribute('searchlayerid');
+}
 
 {# {% include "base_layers.html" %} #}
 
@@ -175,24 +174,21 @@
 
 {% include "theme_layers.html" %}
 
-{% for theme, layers in themes.items %}
-    {% for layer in layers %}
-        layerList.push({{ layer.layer_id }});
-    {% endfor %}
+{% for layer in layers %}
+  layerList.push({{ layer.layer_id }});
 {% endfor %}
 
-  $(document).ready(function(){
-      $("#searchbox").autocomplete({
-          source: '{% url "homepage:autocomplete_search" %}',
-          minLength: 4,
-          open: function(){
-              setTimeout(function () {
-                  $('.ui-autocomplete').css('z-index', 99);
-              }, 0);
-          }
-        });
-
+$(document).ready(function(){
+  $("#searchbox").autocomplete({
+    source: '{% url "homepage:autocomplete_search" %}',
+    minLength: 4,
+    open: function(){
+      setTimeout(function () {
+        $('.ui-autocomplete').css('z-index', 99);
+      }, 0);
+    }
   });
+});
 
 </script>
 

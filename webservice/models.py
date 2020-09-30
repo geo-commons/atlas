@@ -53,10 +53,6 @@ class CategoryManager(models.Manager):
 
 
 class Category(models.Model):
-    class Meta:
-        verbose_name = 'Categorie'
-        verbose_name_plural = "Categorieën"
-
     objects = models.Manager()
     environment_dependent = CategoryManager()
 
@@ -70,17 +66,19 @@ class Category(models.Model):
         help_text='javascript...')
 
     closed_theme = models.BooleanField('Gesloten thema', default=True)
+    ordering = models.PositiveIntegerField(
+        default=0, editable=True, db_index=True)
 
     def __str__(self):
         return f"{self.title}"
 
-
-class Layer(models.Model):
     class Meta:
-        verbose_name = 'Kaartlaag'
-        verbose_name_plural = 'Kaartlagen'
+        verbose_name = 'Categorie'
+        verbose_name_plural = 'Categorieën'
         ordering = ['ordering', 'title']
 
+
+class Layer(models.Model):
     objects = models.Manager()
     authorized = LayerManager()
 
@@ -253,6 +251,11 @@ source: new ol.source.TileWMS({{
             'url': self.url,
             'server_type': self.server_type
         }
+
+    class Meta:
+        verbose_name = 'Kaartlaag'
+        verbose_name_plural = 'Kaartlagen'
+        ordering = ['layer_type__ordering', 'layer_type__title', 'ordering', 'title']
 
 
 class AtlasTheme(models.Model):
