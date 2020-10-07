@@ -75,7 +75,7 @@ In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er
 
 #### WEBSERVICE
 
-<img src="https://gitlab.com/purmerend/atlas/-/tree/master/docs/images/webservice-beheer.png" alt="Webservice beheer" width="600"/>
+<img src="h/uploads/a8d17641ad4383eff163ec9121619711/webservice-beheer.png" alt="Webservice beheer" width="600"/>
 
 Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
 * Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. 
