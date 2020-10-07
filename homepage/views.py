@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.shortcuts import HttpResponse, redirect, render
 from django.urls import reverse
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
@@ -171,6 +172,7 @@ def autocomplete_search(request):
 
     return HttpResponse(results, mimetype)
 
+@xframe_options_exempt
 def embed(request):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
 
