@@ -61,7 +61,7 @@ Klik op Opslaan om deze gegevens naar de database te schrijven. Nu verschijnt ee
 
 In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toegevoegd of gegevens gewijzigd.
 
-<img src="https://gitlab.com/purmerend/atlas/-/tree/master/docs/images/_gebruikerswijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
+<img src="/uploads/7307bf8f38c0d8794bf9e425e4640c71/_gebruikerswijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
 
 
 ##### Atlas_groups
