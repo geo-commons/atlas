@@ -32,7 +32,7 @@ Let op dat de url eindigt met een /.
 
 Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld kunnen worden.
 
-<img src="https://gitlab.com/purmerend/atlas/-/tree/master/docs/images/hoofdscherm.png" alt="Hoofdscherm Admin module" width="1000"/>
+<img src="/uploads/7478bfaf4c2986cecdd3f3bb819f60db/hoofdscherm.png" alt="Hoofdscherm Admin module" width="1000"/>
 
 
 ***
@@ -47,7 +47,7 @@ aan een Atlas group. Het gebruikersbeheer heeft geen relatie met groepen in auth
 ##### Gebruikers
 Klik in het user management beheer scherm bij gebruikers op Toevoegen om een gebruiker toe te voegen.
 
-<img src="https://gitlab.com/purmerend/atlas/-/tree/master/docs/images/user-magement-beheer.png" alt="Gebruikersbeheer" width="600"/>
+<img src="/uploads/1b8d33f8a57599b0381758859a5c4138/user-magement-beheer.png" alt="Gebruikersbeheer" width="600"/>
 
 In het volgende scherm kan een gebruikersnaam en wachtwoord worden ingegeven. De gebruikersnaam moet 150 tekens of minder lang zijn. Alleen letters, cijfers en @/,/+/-/_ tekens zijn toegestaan. Aan het wachtwoord zijn de volgende beperkingen gebonden: 
 * Uw wachtwoord mag niet te veel lijken op uw overige persoonlijke informatie. 
@@ -157,7 +157,7 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
 * **Layers:** (De layers die binnen het Thema vallen)
 Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
 
-<img src="https://gitlab.com/purmerend/atlas/-/tree/master/docs/images/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
+<img src="/uploads/de986950d607214fb299ead6ddceea15/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
 
 ***
 * [Naar boven](#inhoud)
