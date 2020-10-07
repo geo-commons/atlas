@@ -67,7 +67,7 @@ In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toe
 ##### Atlas_groups
 In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er ook gebruikers zijn aangemaakt kunnen deze hier aan de groep worden toegvoegd.
 
-<img src="https://gitlab.com/purmerend/atlas/-/tree/master/docs/images/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
+<img src="/uploads/4c3cb144ebbf90680b36214e215a4128/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
 
 ***
 * [Naar boven](#inhoud)
