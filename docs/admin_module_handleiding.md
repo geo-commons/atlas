@@ -114,8 +114,8 @@ Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere thema'
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * **Layer_id:** (Een uniek ID dat de layer onderscheid van andere. De invoer mag geen verbindingsstreepje - bevatten) 
-* **Title:** (De naam zoals die verschijnt in de legenda van Atlas)
-* **Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver. De invoer mag geen 'speciale' tekens bevatten)
+* **Title:** (De naam zoals die verschijnt in de legenda van Atlas. De invoer mag geen 'speciale' tekens bevatten)
+* **Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver.)
 * **Meta_naam:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Adressen(BAG))
 * **Meta_soort:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Basisregistratie)
 * **Meta_org:** ([Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Geoinformatie
