@@ -57,7 +57,7 @@ In het volgende scherm kan een gebruikersnaam en wachtwoord worden ingegeven. De
 
 Klik op Opslaan om deze gegevens naar de database te schrijven. Nu verschijnt een uitgebreid scherm waarin extra gebruikergegevens kunnen worden ingegeven of gewijzigd. Wanneer er ook groepen zijn aangemaakt, kan hier de gebruiker aan een of meerdere groepen worden toegevoegd. Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere items te selecteren.
 
-<img src="https://gitlab.com/purmerend/atlas/-/tree/master/docs/images/gebruiker-toevoegen.png" alt="gebruiker toevoegen" width="1400"/>
+<img src="/uploads/d228a44b188e28689c405b9a185cff9b/gebruiker-toevoegen.png" alt="gebruiker toevoegen" width="1400"/>
 
 In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toegevoegd of gegevens gewijzigd.
 
