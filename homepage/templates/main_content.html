@@ -13,62 +13,59 @@
       {% endif %}
 
       {% if ctrix %}
-      <!-- Kadaster result div -->
-      <div id="kad-result-link">
-        <div style="padding-top:20px;" class="accordion-heading"> <!-- Achtergron kaart button -->
-          <a id="openKadasterInfo">
-            <span class="text">Kadastrale informatie</span></a>
-            <span id="kadasterToggleDiv" style="float:right;"  class="glyphicon glyphicon-chevron-right"></span>
-        </div> <!-- END Kadaster informatie button -->
+        <!-- Kadaster result div -->
+        <div id="kad-result-link">
+          <div style="padding-top:20px;" class="accordion-heading"> <!-- Achtergron kaart button -->
+            <a id="openKadasterInfo">
+              <span class="text">Kadastrale informatie</span></a>
+              <span id="kadasterToggleDiv" style="float:right;"  class="glyphicon glyphicon-chevron-right"></span>
+          </div> <!-- END Kadaster informatie button -->
+
+          <div style="padding-bottom:1px;" class="label_div2"> <!-- Achtergron kaarten -->
+            <div id="kadaster-resultaat">
+
+            <ul class="nav nav-tabs">
+              <li class="active"><a data-toggle="tab" href="#kad_object">Object</a></li>
+              <li><a data-toggle="tab" href="#kad_rechthebbende">Rechthebbende</a></li>
+              <li><a data-toggle="tab" href="#kad_adres">Adres</a></li>
+            </ul>
+
+            <div class="tab-content">
+              <div id="kad_object" class="tab-pane fade in active">
+                <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p> -->
+              </div>
+              <div id="kad_rechthebbende" class="tab-pane fade">
+                <!-- <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p> -->
+              </div>
+              <div id="kad_adres" class="tab-pane fade">
+                <p></p>
+              </div>
+            </div>
+
+            </div>
+          </div>  <!-- END Achtergron kaarten -->
+
+        </div> <!-- END KAD link -->
+
+        <div class="accordion-heading"> <!-- Achtergron kaart button -->
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#categorieen-accordion" href="#achtergronden">
+            <span class="text">Achtergrond kaarten</span>
+            <span class="icon-caret icon-caret-right"></span></a>
+        </div> <!-- END Achtergron kaart button -->
 
         <div style="padding-bottom:1px;" class="label_div2"> <!-- Achtergron kaarten -->
-          <div id="kadaster-resultaat">
-
-          <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#kad_object">Object</a></li>
-            <li><a data-toggle="tab" href="#kad_rechthebbende">Rechthebbende</a></li>
-            <li><a data-toggle="tab" href="#kad_adres">Adres</a></li>
-          </ul>
-
-          <div class="tab-content">
-            <div id="kad_object" class="tab-pane fade in active">
-              <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p> -->
-            </div>
-            <div id="kad_rechthebbende" class="tab-pane fade">
-              <!-- <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p> -->
-            </div>
-            <div id="kad_adres" class="tab-pane fade">
-              <p></p>
-            </div>
-          </div>
-
-          </div>
+          <div id="achtergronden" class="collapse"></div>
         </div>  <!-- END Achtergron kaarten -->
-
-      </div> <!-- END KAD link -->
-
-      <div class="accordion-heading"> <!-- Achtergron kaart button -->
-        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#categorieen-accordion" href="#achtergronden">
-          <span class="text">Achtergrond kaarten</span>
-          <span class="icon-caret icon-caret-right"></span></a>
-      </div> <!-- END Achtergron kaart button -->
-
-      <div style="padding-bottom:1px;" class="label_div2"> <!-- Achtergron kaarten -->
-        <div id="achtergronden" class="collapse"></div>
-      </div>  <!-- END Achtergron kaarten -->
-
       {% else %}
+        <div style="padding-top:20px;" class="accordion-heading"> <!-- Achtergron kaart button -->
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#categorieen-accordion" href="#achtergronden">
+            <span class="text">Achtergrond kaarten</span>
+            <span class="icon-caret icon-caret-right"></span></a>
+        </div> <!-- END Achtergron kaart button -->
 
-      <div style="padding-top:20px;" class="accordion-heading"> <!-- Achtergron kaart button -->
-        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#categorieen-accordion" href="#achtergronden">
-          <span class="text">Achtergrond kaarten</span>
-          <span class="icon-caret icon-caret-right"></span></a>
-      </div> <!-- END Achtergron kaart button -->
-
-      <div style="padding-bottom:1px;" class="label_div2"> <!-- Achtergron kaarten -->
-        <div id="achtergronden" class="collapse"></div>
-      </div>  <!-- END Achtergron kaarten -->
-
+        <div style="padding-bottom:1px;" class="label_div2"> <!-- Achtergron kaarten -->
+          <div id="achtergronden" class="collapse"></div>
+        </div>  <!-- END Achtergron kaarten -->
       {% endif %}
 
       <div id="theme-list"></div>

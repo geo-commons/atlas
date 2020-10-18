@@ -28,26 +28,6 @@ function getDate(param){
 	}
 }
 
-// Osm
-var osm = new ol.layer.Tile({
-	id: "osm",
-	sld: "sldID_osm",
-	sldDiv: "sld_div_osm",
-	infoDiv: "info_div_osm",
-	// metadata attributen
-	meta_naam: "<a target='_blank' href='http://www.openstreetmap.org'>OSM</a> (OpenStreetMap)",
-	meta_soort: "Achtergrond kaart",
-	meta_org: "Vrijwilligers</a>",
-	meta_bijgewerkt:getDate('full') + ' (Dagelijks)',
-	// metadata attributen
-	title: "Open Street Map",
-	visible:false,
-	isBaseLayer: true,
-	isQueryable: false,
-	opacity: 0.9,
-	source: new ol.source.OSM()
-});
-
 // Grijs 2019 Purmerend
 var brt_topo_kaart = new ol.layer.Tile({
 	id: "brt_topo_kaart_totaal",
@@ -74,26 +54,29 @@ var brt_topo_kaart = new ol.layer.Tile({
 	})
 });
 
-//add BRT PDOk Panden
-var pdok_brt = new ol.layer.Tile({
-	id: "pdok_brt",
-	sld: "sldID_brt",
-	sldDiv: "sld_div_brt",
-	infoDiv: "info_div_brt",
+// Lufo totaal 2020
+var lufo_totaal_2020 = new ol.layer.Tile({
+	id: "lufo_totaal_2020",
+	sldDiv: "slddiv_lufo_totaal_2020",
+	infoDiv: "infodiv_lufo_totaal_2020",
+	sld: "sld_lufo_totaal_2020",
+	lgnd: "lgn_lufo_totaal_2020",
 	// metadata attributen
-	meta_naam: "BRT (Basisregistratie Topografie) - <a target='_blank' href='http://pdok.nl'>PDOK</a>",
-	meta_soort: "Basisregistratie",
-	meta_org: "<a href='https://data.overheid.nl/data/dataset/brt-achtergrondkaart' target='_blank'>Kadaster</a>",
-	meta_bijgewerkt: '01/02/2018',
+	meta_naam: "Luchtfoto 2020 Purmerend en Beemster",
+	meta_soort: "Raster kaart",
+	meta_org: "Geo Informatie</a>",
+	meta_bijgewerkt:"2020 (Jaarlijks)",
 	// metadata attributen
-	title: "Topografische kaart",
-	visible: true,
+	title: "Luchtfoto 2020",
+	opacity: 0.9,
+	visible:false,
 	isBaseLayer: true,
 	isQueryable: false,
-	opacity: 0.9,
 	source: new ol.source.TileWMS({
-		url: "https://geodata.nationaalgeoregister.nl/wmsc?",
-		params: {'layers': 'brtachtergrondkaartpastel'}
+		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
+		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
+		params: {'layers': 'topp:Lufo_Totaal_2020'},
+		serverType: 'geoserver'
 	})
 });
 
@@ -108,197 +91,7 @@ var matrixIds = new Array(15);
 for (var z = 0; z < 15; ++z) {
 		matrixIds[z] = 'EPSG:28992:' + z;
 }
-
 // END BGT PDOK config
-
-// BGT PDOk Tiled
-var bgt_wmts =  new ol.layer.Tile({
-	id: "pdok_bgt_wmts",
-	sld: "sld_bgt_wmts",
-	sldDiv: "sld_div_bgt_wmts",
-	infoDiv: "info_div_bgt_wmts",
-	lgnd: "pdok_lgn_bgt",
-	// metadata attributen
-	meta_naam: "<a href='https://www.geobasisregistraties.nl/basisregistraties/grootschalige-topografie/basisregistratie-grootschalige-topografie' target='_blank'>BGT</a> (Basisregistratie Grootschalige Topografie)",
-	meta_soort: "Basisregistratie",
-	meta_org: "Lokaal per Gemeente en het <a href='https://www.geobasisregistraties.nl/basisregistraties/grootschalige-topografie' target='_blank'>Kadaster</a> voor landelijk",
-	meta_bijgewerkt: getDate('month') + ' (Maandelijks)',
-	// metadata attributen
-	title: "BGT",
-	visible: false,
-	basisreg:true,
-	isBaseLayer: false,
-	isQueryable: false,
-	opacity: 1,
-	source: new ol.source.WMTS({
-			attributions: 'Kaartgegevens: &copy; <a href="https://www.kadaster.nl">Kadaster</a>',
-			url: 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts?',
-			layer: 'bgtstandaardv2',
-			matrixSet: 'EPSG:28992',
-			format: 'image/png',
-			projection: projection,
-			tileGrid: new ol.tilegrid.WMTS({
-					origin: ol.extent.getTopLeft(projectionExtent),
-					resolutions: resolutions,
-					matrixIds: matrixIds
-			}),
-			style: 'default',
-			wrapX: false
-	})
-});
-
-//add PDOK BAG Panden
-var pdok_bag = new ol.layer.Tile({
-	id: "pdok_bag",
-	sldDiv: "sld_div_bag",
-	infoDiv: "info_div_pdok_bag",
-	sld: "pdok_sld_bag",
-	lgnd: "pdok_lgn_bag",
-	filterId: "pdook_flt_bag",
-	dataFilterId: "pdok_data_flt_bag",
-	// metadata attributen
-	meta_naam: "BAG (Basisregistratie Adressen en Gebouwen) - <a target='_blank' href='http://pdok.nl'>PDOK</a>",
-	meta_soort: "Basisregistratie",
-	meta_org: "Lokaal per Gemeente en het <a href='https://www.geobasisregistraties.nl/basisregistraties/adressen-en-gebouwen' target='_blank'>Kadaster</a> voor landelijk",
-	meta_bijgewerkt: getDate('full') +' (Dagelijks)',
-	// metadata attributen
-	title: "BAG",
-	visible: true,
-	isBaseLayer: false,
-	isQueryable: false,
-	basisreg:true,
-	opacity: 0.7,
-	source: new ol.source.TileWMS({
-		url: "https://geodata.nationaalgeoregister.nl/bag/wms",
-		params: {
-			layers: "pand,ligplaats",
-			"SRS": "EPSG:28992"
-		}
-	})
-});
-
-// test wms layer
-var wms_layer = new ol.layer.Tile({
-source: new ol.source.TileWMS({
-	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'LAYERS': 'topp:BAG_Purmerend_wijken'}
-})
-});
-
-// BAG_Purmerend_wijken
-var wijken_purm = new ol.layer.Tile({
-id: "prm_wijken",
-sldDiv: "sld_div_wijk",
-infoDiv: "info_div_wijken",
-sld: "prm_sld_wijken",
-lgnd: "prm_lgn_wijken",
-filterId: "flt_wijken",
-dataFilterId: "prm_data_flt_wijk",
-dataZoekId: "prm_zoek_data_wijk",
-layerName: 'topp:BAG_Purmerend_wijken',
-// metadata attributen
-meta_naam: "Wijken Gemeente Purmerend",
-meta_soort: "Thema kaart",
-meta_org: "Ruimtelijke Ontwikkeling</a>",
-meta_bijgewerkt: '2013',
-// metadata attributen
-title: "Wijken",
-opacity: 0.7,
-visible:false,
-isQueryable: true,
-source: new ol.source.TileWMS({
-	projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-	url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-	params: {'layers': 'topp:BAG_Purmerend_wijken'},
-	serverType: 'geoserver'
-})
-});
-
-// Lufo 2020 Purmerend
-var lufo_2020_totaal = new ol.layer.Tile({
-	id: "purm_lufo2020",
-	sldDiv: "sld_div_purm_lufo_20",
-	infoDiv: "info_div_purm_lufo_20",
-	sld: "prm_sld_lufo20",
-	lgnd: "prm_lgn_lufo2020",
-	// metadata attributen
-	meta_naam: "Luchtfoto 2020 Purmerend en Beemster",
-	meta_soort: "Raster kaart",
-	meta_org: "Geo Informatie</a>",
-	meta_bijgewerkt:"2020 (Jaarlijks)",
-	// metadata attributen
-	title: "2020",
-	isLufo: true,
-	opacity: 0.9,
-	visible:false,
-	isQueryable: false,
-	source: new ol.source.TileWMS({
-		projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-		url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-		params: {'layers': 'topp:Lufo_Totaal_2020'},
-		serverType: 'geoserver'
-	})
-});
-
-// add gejson subbuurten
-var subbuurten_layer = new ol.layer.Tile({
-    id: "id_subrt",
-    sldDiv: "sld_div_subburt",
-    infoDiv: "info_div_subbuurten",
-    sld: "sld_subrt",
-    lgnd: "lgnd_subrt",
-    filterId: "flt_subrt",
-    dataFilterId: "prm_data_flt_subrt",
-    dataZoekId: "prm_zoek_data_subbuurt",
-    layerName: 'topp:Purmerend_subbuurten',
-    // metadata attributen
-    meta_naam: "Subbuurten Gemeente Purmerend",
-    meta_soort: "Thema kaart",
-    meta_org: "Ruimtelijke Ontwikkeling</a>",
-    meta_bijgewerkt: '2015',
-    // metadata attributen
-    title: "Subbuurten",
-    isLufo: false,
-    opacity: 0.7,
-    visible:false,
-    isQueryable: true,
-    source: new ol.source.TileWMS({
-        projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-        url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-        params: {'layers': 'topp:Purmerend_subbuurten'},
-        serverType: 'geoserver'
-    })
-});
-
-var buurten_layer = new ol.layer.Tile({
-    id: "prm_buurten",
-    sldDiv: "sld_div_burt",
-    infoDiv: "info_div_buurt",
-    sld: "prm_sld_buurten",
-    lgnd: "prm_lgn_buurten",
-    filterId: "flt_buurten",
-    dataFilterId: "prm_data_flt_burt",
-    dataZoekId: "prm_zoek_data_buurten",
-    layerName: 'topp:BAG_Purmerend_buurten',
-    // metadata attributen
-    meta_naam: "Buurten Gemeente Purmerend",
-    meta_soort: "Thema kaart",
-    meta_org: "Ruimtelijke Ontwikkeling</a>",
-    meta_bijgewerkt: '2017',
-    // metadata attributen
-    title: "Buurten",
-    isLufo: false,
-    opacity: 0.7,
-    visible:false,
-    isQueryable: true,
-    source: new ol.source.TileWMS({
-        projection: 'EPSG:28992', //HERE IS THE DATA SOURCE PROJECTION
-        url: 'https://datalab.purmerend.nl/geoserver/topp/wms?',
-        params: {'layers': 'topp:BAG_Purmerend_buurten'},
-        serverType: 'geoserver'
-    })
-});
-
 
 // marker layers
 vectorSource = new ol.source.Vector({});
@@ -309,6 +102,6 @@ vectorLayer = new ol.layer.Vector({
 
 var layerList = [
 	brt_topo_kaart,
-	lufo_2020_totaal,
+	lufo_totaal_2020,
 	vectorLayer
 ];
