@@ -14,12 +14,12 @@ var atlasCategory = {
             layerContent +=
                 "<a class='accordion-toggle collapsed'" +
 				"data-toggle='collapse' data-parent='#categorieen-accordion'" +
-                "href='#"+uniqueLayerList[i]+"'>";
+                "href='#" + atlasCategory.getCategoryId(uniqueLayerList[i]) + "'>";
             layerContent += "<span class='text'>" + uniqueLayerList[i].split('_').join(' ') + "</span>"
             layerContent += "<span class='icon-caret icon-caret-right'></span></a>";
             layerContent += "</div>";
             layerContent += "<div style='padding-bottom:1px;' class='label_div2'>";
-            layerContent += "<div id='" + uniqueLayerList[i] + "' class=\"collapse\" data-type=\"category\"></div>";
+            layerContent += "<div id='" + atlasCategory.getCategoryId(uniqueLayerList[i]) + "' class=\"collapse\" data-type=\"category\"></div>";
             layerContent += "</div>";
         }
 
@@ -35,12 +35,11 @@ var atlasCategory = {
 		});
 
         for (var i = 0; i < layerList.length; i++) {
-            if (layerList[i].get('categorie')) {
-				var moved_space = layerList[i].get('categorie').split(' ').join('_');
-                $('#' + moved_space).find("tbody").append(
-                    atlasCategory.setCategoryContent(layerList[i])
-                );
-            }
+					if (layerList[i].get('categorie')) {
+							$('#' + atlasCategory.getCategoryId(layerList[i].get('categorie'))).find("tbody").append(
+									atlasCategory.setCategoryContent(layerList[i])
+							);
+					}
 		}
 
 		$('div[data-type="category"]').each(function() {
@@ -140,6 +139,9 @@ var atlasCategory = {
 		}
 
 		return dynamish_category_content;
+	},
 
+	getCategoryId: function(categoryName) {
+		return categoryName.replace(/[^a-zA-Z0-9]/g,'-');
 	}
 }
