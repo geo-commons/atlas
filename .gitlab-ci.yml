@@ -122,6 +122,6 @@ Deploy acceptance:
       --set ingress.hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN
   environment:
     name: review/acc
-    url: https://atlas-acc.$REVIEW_BASE_DOMAIN
+    url: https://atlas-acc.$REVIEW_BASE_DOMAIN/atlas/
   only:
     - master@purmerend/atlas
