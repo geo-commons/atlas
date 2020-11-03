@@ -105,3 +105,23 @@ Deploy Docker latest tag:
     - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - master
+
+Deploy acceptance:
+  stage: Deploy
+  image: registry.gitlab.com/commonground/core/review-app-deployer:latest
+  script:
+    - |
+      cd helm/
+      helm dependency update
+      helm upgrade --install atlas-acc . \
+      --set image.repository=$CI_REGISTRY_IMAGE \
+      --set image.tag=$CI_COMMIT_SHA \
+      --set allowedHosts=atlas-acc.$REVIEW_BASE_DOMAIN \
+      --set secretKey=$SECRET_KEY \
+      --set dbHost=atlas-acc-postgresql \
+      --set ingress.hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN
+  environment:
+    name: review/acc
+    url: https://atlas-acc.$REVIEW_BASE_DOMAIN
+  only:
+    - master@purmerend/atlas
