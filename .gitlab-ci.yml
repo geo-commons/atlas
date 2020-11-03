@@ -3,6 +3,9 @@ stages:
   - Build
   - Deploy
 
+variables:
+  REVIEW_BASE_DOMAIN: delta10-review.nl
+
 Test:
   stage: Test
   image: python:3.8
@@ -42,10 +45,52 @@ Build:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
-Deploy:
+Deploy Review App:
+  stage: Deploy
+  image: registry.gitlab.com/commonground/core/review-app-deployer:latest
+  script:
+    - |
+      cd helm/
+      helm dependency update
+      helm upgrade --install atlas-$CI_ENVIRONMENT_SLUG . \
+      --set image.repository=$CI_REGISTRY_IMAGE \
+      --set image.tag=$CI_COMMIT_SHA \
+      --set allowedHosts=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN \
+      --set secretKey=somethingsecret \
+      --set dbHost=atlas-$CI_ENVIRONMENT_SLUG-postgresql \
+      --set postgresql.persistence.enabled=false \
+      --set ingress.hosts[0]=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
+    on_stop: Remove Review App
+    auto_stop_in: 1 week
+  only:
+    - branches@purmerend/atlas
+  except:
+    - master
+
+Remove Review App:
+  stage: Deploy
+  image: registry.gitlab.com/commonground/core/review-app-deployer:latest
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - helm uninstall atlas-$CI_ENVIRONMENT_SLUG
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
+    action: stop
+  only:
+    - branches@purmerend/atlas
+  except:
+    - master
+
+Deploy Docker latest tag:
   stage: Deploy
   image: docker:19.03.8
   services:
@@ -55,7 +100,8 @@ Deploy:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - master

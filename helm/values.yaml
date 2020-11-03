@@ -1,0 +1,80 @@
+tags:
+  postgresql: true
+
+replicaCount: 1
+
+image:
+  repository: registry.gitlab.com/purmerend/atlas
+  tag: latest
+  pullPolicy: IfNotPresent
+
+debug: false
+secretKey: something-secret
+allowedHosts: atlas.example.com
+ctrixIps: "127.0.0.1"
+
+dbHost: atlas-postgresql
+dbUser: atlas
+dbPassword: change-to-something-secret
+dbName: atlas
+
+wfsUrl: ""
+wfsUrlCtrix: ""
+
+smartstreetUser: ""
+smartstreetPassword: ""
+smartstreetApiKey: ""
+
+googleMapsApiKey: ""
+
+sentryDsn: ""
+
+matomoUrl: ""
+matomoSiteId: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  annotations: {}
+  #   cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - atlas.example.com
+  tls: []
+  #   - secretName: atlas-tls
+  #     hosts:
+  #       - atlas.example.com
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+#########################
+## PostgreSQL subchart ##
+#########################
+postgresql:
+  persistence:
+    size: 1Gi
+
+  resources:
+    requests:
+      cpu: "1m"
+      memory: "1Mi"
+
+  postgresqlDatabase: atlas
+  postgresqlUsername: atlas
+  postgresqlPassword: change-to-something-secret
