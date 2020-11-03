@@ -173,6 +173,15 @@ def embed(request):
 
     return render(request, 'embed.html', context)
 
+def v3(request):
+    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+
+    context = {
+        'layers': _default_layers() + [ l.to_dict() for l in authorized_layers ]
+    }
+
+    return render(request, 'v3.html', context)
+
 def _default_layers():
     return [
         {

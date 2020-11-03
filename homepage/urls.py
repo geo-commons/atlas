@@ -11,5 +11,6 @@ urlpatterns = [
     path('downloads/<int:pk>/<str:type_>', views.save_dataset_view, name='save_dataset_view'),
     path('search_wfs', views.search_wfs, name='search_wfs'),
     path('autocomplete_search', views.autocomplete_search, name='autocomplete_search'),
+    re_path('v3/', views.v3, name='v3'),
     re_path('embed/', views.embed, name='embed'),
 ]

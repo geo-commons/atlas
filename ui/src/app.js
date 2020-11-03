@@ -1,6 +1,13 @@
+import 'ol/ol.css'
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import { register } from 'ol/proj/proj4'
+import { getDefinitions } from './utils/projections'
+import { getSettingsFromPath } from './utils/router'
+import LayerRepository from './repository/layer'
+import MapController from './map/controller'
 import EmbedCode from './components/EmbedCode'
 
 Vue.config.productionTip = false
@@ -49,4 +56,20 @@ document.addEventListener('DOMContentLoaded', () => {
     store,
     render: (c) => c(EmbedCode),
   })
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.querySelector('#app')
+  if (!el) {
+    return
+  }
+
+  register(getDefinitions())
+
+  const settings = getSettingsFromPath()
+  const layers = LayerRepository.list()
+
+  const mapController = new MapController(settings)
+  mapController.addLayers(layers)
+  mapController.render('app')
 })
