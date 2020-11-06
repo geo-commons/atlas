@@ -6,8 +6,7 @@ import Vuex from 'vuex'
 import { register } from 'ol/proj/proj4'
 import { getDefinitions } from './utils/projections'
 import { getSettingsFromPath } from './utils/router'
-import LayerRepository from './repository/layer'
-import MapController from './map/controller'
+import MapController from './utils/controller'
 import EmbedCode from './components/EmbedCode'
 
 Vue.config.productionTip = false
@@ -67,7 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
   register(getDefinitions())
 
   const settings = getSettingsFromPath()
-  const layers = LayerRepository.list()
+
+  let layers = []
+  const data = document.querySelector('#layers-data')
+  if (data) {
+    layers = JSON.parse(data.innerHTML)
+  }
 
   const mapController = new MapController(settings)
   mapController.addLayers(layers)
