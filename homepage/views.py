@@ -168,7 +168,7 @@ def embed(request):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
 
     context = {
-        'layers': _default_layers() + [ l.to_dict() for l in authorized_layers ]
+        'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
     }
 
     return render(request, 'embed.html', context)
@@ -177,7 +177,7 @@ def v3(request):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
 
     context = {
-        'layers': _default_layers() + [ l.to_dict() for l in authorized_layers ]
+        'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
     }
 
     return render(request, 'v3.html', context)
