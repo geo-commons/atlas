@@ -1,5 +1,7 @@
-import Vue from 'vue'
+import 'es6-promise/auto'
+import 'whatwg-fetch'
 
+import Vue from 'vue'
 import store from './store'
 import App from './pages/App'
 import EmbedCode from './components/EmbedCode'
