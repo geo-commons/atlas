@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="interface">
-      <SearchPanel />
+      <SearchPanel :position="this.position" @set-position="this.setPosition" />
       <LayersPanel :layers="this.layers" />
       <ZoomPanel :position="this.position" @set-position="this.setPosition" />
       <MorePanel />

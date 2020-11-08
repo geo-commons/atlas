@@ -6,9 +6,9 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     position: {
-      x: 126910,
-      y: 505834,
-      zoom: 13
+      zoom: 13,
+      center: [ 126910, 505834 ],
+      marker: null
     },
     layers: document.querySelector('#layers-data') ? JSON.parse(document.querySelector('#layers-data').innerHTML) : []
   },
