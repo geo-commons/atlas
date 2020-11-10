@@ -62,6 +62,7 @@ Deploy Review App:
       --set secretKey=somethingsecret \
       --set dbHost=atlas-$CI_ENVIRONMENT_SLUG-postgresql \
       --set postgresql.persistence.enabled=false \
+      --set loadDemoData=true \
       --set ingress.hosts[0]=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN
   environment:
     name: review/$CI_COMMIT_REF_NAME
