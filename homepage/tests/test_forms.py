@@ -5,7 +5,7 @@ from datetime import datetime
 from io import StringIO
 
 from django.conf import settings
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from homepage.forms import UploadDatasetForm
@@ -34,6 +34,7 @@ def load_and_read_testjson(filename, client):
     return [row for row in reader]
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestSaveDatasetsForm(TestCase):
     """Testing the save datasets form."""
 
@@ -60,6 +61,7 @@ class TestSaveDatasetsForm(TestCase):
         self.assertFalse(form.is_valid())
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestSavedDatasetAnonymous(TestCase):
     def setUp(self):
         self.client = Client()
@@ -71,6 +73,7 @@ class TestSavedDatasetAnonymous(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestSavedDataset(TestCase):
     def setUp(self):
         self.client = Client(REMOTE_ADDR=settings.CTRIX_IPS[0])

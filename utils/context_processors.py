@@ -20,6 +20,9 @@ def global_settings(request):
 def is_ctrix(request: HttpRequest) -> bool:
     """Check if ip address of the visitor is listed as a ctrix ip address. """
 
+    if settings.CTRIX_IPS == ['*']:
+        return True
+
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
     if x_forwarded_for:

@@ -1,6 +1,23 @@
 
 	<footer class="footer">
 		<div class="container">
-			<p>© 2017 - 2019 Gemeente Purmerend • All Rights Reserved, Design by <a data-tooltip="tooltip" title="Datalab Purmerend" href="https://datalab.purmerend.nl" target="_blank">Datalab Purmerend</a></p>
+			<p>© 2017 - 2020 {{ config.ORGANIZATION_NAME }} • All Rights Reserved. {% if config.DISCLAIMER %}<a href="#" data-toggle="modal" data-target="#disclaimer">Disclaimer</a>{% endif %}</p>
 		</div>
 	</footer>
+
+	{% if config.DISCLAIMER %}
+		<div class="modal fade" id="disclaimer" role="dialog">
+			<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Disclaimer</h4>
+				</div>
+				<div class="modal-body">
+					{{ config.DISCLAIMER|linebreaks }}
+				</div>
+			</div>
+			</div>
+		</div>
+	{% endif %}
