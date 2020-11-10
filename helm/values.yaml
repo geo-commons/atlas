@@ -18,6 +18,8 @@ dbUser: atlas
 dbPassword: change-to-something-secret
 dbName: atlas
 
+loadDemoData: false
+
 wfsUrl: ""
 wfsUrlCtrix: ""
 
