@@ -94,15 +94,17 @@ export default {
   position: fixed;
   top: 16px;
   left: 16px;
+  width: 320px;
   background: white;
   border-radius: 6px;
+  overflow: hidden;
   box-shadow: 0 0 4px rgba(0,0,0,.1), 0 0 12px rgba(0,0,0,.15);
 }
 
 .search {
   display: flex;
-  width: 320px;
   height: 40px;
+  width: 100%;
 }
 
 .search input {
@@ -119,6 +121,7 @@ export default {
 }
 
 .results {
+  width: 100%;
   border-top: 1px solid #EAEAEA;
   padding: 12px 16px;
 }
