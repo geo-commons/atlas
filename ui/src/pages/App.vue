@@ -39,6 +39,35 @@ export default {
 }
 </script>
 
+<style>
+input, button {
+  border: none;
+  background: transparent;
+}
+
+input::placeholder {
+  color: rgba(0,0,0,.55);
+}
+
+button:not([disabled]) {
+  cursor: pointer;
+}
+
+button:not([disabled]):hover {
+  background: #F5F5F5;
+}
+
+button:not([disabled]):active {
+  background: #EAEAEA;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+</style>
+
 <style scoped>
 .container {
   width: 100%;
