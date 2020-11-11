@@ -40,6 +40,16 @@ export default {
 </script>
 
 <style>
+/* Remove outline from all focused elements */
+*:focus {
+  outline: none;
+}
+
+/* Remove highlight color on Android */
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
 input, button {
   border: none;
   background: transparent;
