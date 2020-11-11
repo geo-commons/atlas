@@ -51,6 +51,7 @@ export default {
 }
 
 input, button {
+  padding: 0;
   border: none;
   background: transparent;
 }
@@ -75,6 +76,12 @@ ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
+}
+
+.iconbutton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
 
