@@ -40,6 +40,12 @@ export default {
 </script>
 
 <style>
+@import url('https://rsms.me/inter/inter.css');
+html { font-family: 'Inter', sans-serif; letter-spacing: -0.035em; }
+@supports (font-variation-settings: normal) {
+  html { font-family: 'Inter var', sans-serif; letter-spacing: -0.035em; }
+}
+
 /* Remove outline from all focused elements */
 *:focus {
   outline: none;
@@ -54,6 +60,8 @@ input, button {
   padding: 0;
   border: none;
   background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
 }
 
 input::placeholder {
