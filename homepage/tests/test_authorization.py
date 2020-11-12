@@ -1,11 +1,12 @@
 from django.conf import settings
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.models import Layer, Category
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestHomePageAnonymousUser(TestCase):
     def setUp(self):
         self.client = Client()
@@ -40,6 +41,7 @@ class TestHomePageAnonymousUser(TestCase):
         self.assertNotContains(response, 'purm_stembureaus_2017')
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestHomePageAnonymousUserCtrix(TestCase):
     def setUp(self):
         cred = {'username': 'testuser', 'password': '1234'}
@@ -111,6 +113,7 @@ class TestHomePageAnonymousUserCtrix(TestCase):
         self.assertEqual(len(Layer.objects.all()), 4)
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestHomePageUserPermissions(TestCase):
 
     cred = {'username': 'testuser', 'password': '1234'}
@@ -150,6 +153,7 @@ class TestHomePageUserPermissions(TestCase):
         self.assertContains(response, 'purm_stembureaus_2018')
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestHomePageGroupPermissions(TestCase):
 
     cred = {'username': 'testuser', 'password': '1234'}
@@ -204,4 +208,3 @@ class TestHomePageGroupPermissions(TestCase):
         response = self.client.get(reverse('homepage:homepage'))
         self.assertContains(response, 'purm_stembureaus_2018')
         self.assertContains(response, 'purm_stembureaus_2017')
-

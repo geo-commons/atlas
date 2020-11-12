@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY_DEFAULT)
 DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ALLOWED_HOSTS_DEFAULT).split(',')
-CTRIX_IPS = os.getenv('CTRIX_IPS', '').split(',')
+CTRIX_IPS = os.getenv('CTRIX_IPS', '*').split(',')
 
 WFS_URL = os.getenv('WFS_URL', '')
 WFS_URL_CTRIX = os.getenv('WFS_URL_CTRIX', '')
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'webservice',
     'user_management',
     'webpack_loader',
+    'constance',
+    'constance.backends.database',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,6 +78,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'constance.context_processors.config',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -162,4 +165,11 @@ LOGGING = {
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
         }
     }
+}
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    'ORGANIZATION_NAME': ('Gemeente Purmerend', 'The name of the organization'),
+    'DISCLAIMER': ('', 'The disclaimer that is shown'),
 }

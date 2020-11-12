@@ -4,7 +4,7 @@
 .modal-header{height:21px; background-color:#003366; color:#fff; cursor: move;}
 .modal-title{margin-top:-10px; font-size:14px; color:#fff;}
 .modal-header .close{margin-top:-10px; color:#fff;}
-.modal-body p {text-align:center; padding-top:10px;}
+.modal-body p {padding-top:10px;}
 .blue {color:blue;}
 .btn-group-lg > .btn, .btn-lg {font-size:14px;}
 .navbar-nav > li > a {padding:12px 16px;}

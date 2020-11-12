@@ -11,7 +11,7 @@ image:
 debug: false
 secretKey: something-secret
 allowedHosts: atlas.example.com
-ctrixIps: "127.0.0.1"
+ctrixIps: "*"
 
 dbHost: atlas-postgresql
 dbUser: atlas

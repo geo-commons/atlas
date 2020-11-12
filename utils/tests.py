@@ -1,12 +1,13 @@
 from random import choice
 
 from django.conf import settings
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from user_management.models import AtlasUser
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestAdminFromTheBigBadInternet(TestCase):
     def setUp(self):
         self.client = Client(REMOTE_ADDR='1.2.3.4')
@@ -20,6 +21,7 @@ class TestAdminFromTheBigBadInternet(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
+@override_settings(CTRIX_IPS='0.0.0.0')
 class TestAdminFromCtrix(TestCase):
     def setUp(self):
         self.client = Client(REMOTE_ADDR=choice(settings.CTRIX_IPS))

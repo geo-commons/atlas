@@ -91,6 +91,7 @@ function init(){
 		layers:layerList,
 		target: 'map',
 		controls: ol.control.defaults({
+			attribution: false
 		}).extend([mousePositionControl, zoomSlider]),
 		view: view
 	}); // END Map Class
