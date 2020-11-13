@@ -41,10 +41,16 @@ export default {
 
 <style>
 @import url('https://rsms.me/inter/inter.css');
-html { font-family: 'Inter', sans-serif; letter-spacing: -0.035em; }
+html { font-family: 'Inter', sans-serif; letter-spacing: -0.035em; font-size: 15px; }
 @supports (font-variation-settings: normal) {
   html { font-family: 'Inter var', sans-serif; letter-spacing: -0.035em; }
 }
+
+ *,
+  *:after,
+  *:before {
+      box-sizing: border-box;
+  }
 
 /* Remove outline from all focused elements */
 *:focus {

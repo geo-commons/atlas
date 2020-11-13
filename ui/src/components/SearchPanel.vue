@@ -6,7 +6,7 @@
       </form>
       <span v-if="this.error">Er is een fout opgetreden, probeer het opnieuw.</span>
       <div class="results" v-if="this.showResults && results.length">
-        <ul>
+        <ul class="list">
           <li v-for="result in results" v-bind:key="result.id">
             <a href="#" @click="(e) => onNavigate(e, result.id)">{{ result.weergavenaam }}</a>
           </li>
@@ -111,7 +111,6 @@ export default {
   width: 100%;
   height: 100%;
   padding-left: 16px;
-  font-size: 16px;
 }
 
 .search button {
@@ -123,7 +122,17 @@ export default {
 .results {
   width: 100%;
   border-top: 1px solid #EAEAEA;
-  padding: 12px 16px;
+  padding: 12px 0;
 }
 
+.list a {
+  display: block;
+  color: #4285F4;
+  text-decoration: none;
+  padding: 3px 16px;
+}
+
+.list a:hover {
+  text-decoration: underline;
+}
 </style>
