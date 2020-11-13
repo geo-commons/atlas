@@ -8,9 +8,9 @@ variables:
 
 Test:
   stage: Test
-  image: python:3.8
+  image: python:3.9
   services:
-    - postgres:11.7-alpine
+    - postgres:11.10-alpine
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
     POSTGRES_PASSWORD: postgres
@@ -37,9 +37,9 @@ Test:
 
 Build:
   stage: Build
-  image: docker:19.03.8
+  image: docker:19.03.13
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.13-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
@@ -95,9 +95,9 @@ Remove Review App:
 
 Deploy Docker latest tag:
   stage: Deploy
-  image: docker:19.03.8
+  image: docker:19.03.13
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.13-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
