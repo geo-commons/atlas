@@ -7,7 +7,7 @@
       <span v-if="this.error">Er is een fout opgetreden, probeer het opnieuw.</span>
       <div class="results" v-if="this.showResults && results.length">
         <ul class="list">
-          <li v-for="result in results" v-bind:key="result.id">
+          <li v-for="result in results" :key="result.id">
             <a href="#" @click="(e) => onNavigate(e, result.id)">{{ result.weergavenaam }}</a>
           </li>
         </ul>
