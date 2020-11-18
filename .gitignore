@@ -11,4 +11,3 @@ htmlcov
 
 /ui/node_modules
 /ui/webpack-stats.json
-/ui/webpack-stats-test.json
