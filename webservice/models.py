@@ -249,7 +249,9 @@ source: new ol.source.TileWMS({{
             'name': self.layer_name,
             'opacity': float(self.opacity),
             'url': self.url,
-            'server_type': self.server_type
+            'server_type': self.server_type,
+            'is_base': False,
+            'is_visible': False
         }
 
     class Meta:

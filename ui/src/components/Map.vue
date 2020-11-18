@@ -47,14 +47,16 @@ export default {
       this.vectorSource.addFeature(markerFeature)
     }
 
+    this.tileLayers = {}
+
     this.map = new Map({
       target: this.$refs['map'],
       controls: [],
       layers: [
         ...this.layers.map((layer) => {
-          return new TileLayer({
+          const tileLayer = new TileLayer({
             id: layer.id,
-            visible: layer.is_base === true,
+            visible: (layer.is_visible === true),
             layerName: layer.name,
             opacity: layer.opacity,
             source: new TileWMS({
@@ -64,6 +66,9 @@ export default {
               params: { 'layers': layer.name },
             })
           })
+
+          this.tileLayers[layer.id] = tileLayer
+          return tileLayer
         }),
         this.vectorLayer
       ],
@@ -114,6 +119,13 @@ export default {
         markerFeature.setStyle(markerStyle)
         this.vectorSource.addFeature(markerFeature)
       }
+    },
+    layers(value) {
+      value.forEach((layer) => {
+        if (layer.is_visible !== this.tileLayers[layer.id].getVisible()) {
+          this.tileLayers[layer.id].setVisible(layer.is_visible)
+        }
+      })
     }
   },
   props: {

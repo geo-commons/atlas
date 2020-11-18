@@ -4,6 +4,7 @@
       <SearchPanel :position="this.position" @set-position="this.setPosition" />
       <LayersPanel :layers="this.layers" />
       <ZoomPanel :position="this.position" @set-position="this.setPosition" />
+      <BaseLayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
       <MorePanel />
     </div>
     <Map :position="this.position" :layers="this.layers" @set-position="this.setPosition" />
@@ -17,6 +18,7 @@ import SearchPanel from '../components/SearchPanel'
 import LayersPanel from '../components/LayersPanel'
 import ZoomPanel from '../components/ZoomPanel'
 import MorePanel from '../components/MorePanel'
+import BaseLayersPanel from '../components/BaseLayersPanel'
 
 export default {
   name: 'App',
@@ -26,6 +28,7 @@ export default {
     LayersPanel,
     ZoomPanel,
     MorePanel,
+    BaseLayersPanel
   },
   computed: mapState({
     position: state => state.position,
@@ -35,6 +38,9 @@ export default {
     setPosition(position) {
       this.$store.commit('setPosition', position)
     },
+    toggleLayer(layer) {
+      this.$store.commit('toggleLayer', layer)
+    }
   }
 }
 </script>

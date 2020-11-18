@@ -190,13 +190,16 @@ def _default_layers():
             'opacity': 0.9,
             'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
             'server_type': 'geoserver',
-            'is_base': True
+            'is_base': True,
+            'is_visible': True
         },
         {
             'id': 'purm_lufo2020',
             'name': 'topp:Lufo_Totaal_2020',
             'opacity': 0.9,
             'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver'
+            'server_type': 'geoserver',
+            'is_base': True,
+            'is_visible': False
         },
     ]

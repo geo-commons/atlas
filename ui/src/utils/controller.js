@@ -21,7 +21,7 @@ class MapController {
       ...this.layers,
       new TileLayer({
         id: layer.id,
-        visible: (layer.is_base === true) || this.settings.layers.includes(layer.id),
+        visible: (layer.is_visible === true) || this.settings.layers.includes(layer.id),
         layerName: layer.name,
         opacity: layer.opacity,
         source: new TileWMS({

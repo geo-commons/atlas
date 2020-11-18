@@ -28,6 +28,9 @@ const store = new Vuex.Store({
 
       state.layers = [ ...layerSet ]
     },
+    toggleLayer(state, [ layerId, isVisible ]) {
+      state.layers = state.layers.map((layer) => layer.id === layerId ? { ...layer, is_visible: isVisible } : layer)
+    },
   }
 })
 
