@@ -1,9 +1,11 @@
 # Atlas
+
 Atlas is a geo portal that provides a user-friendly interface for layers on a WFS server. Atlas is developed by [Datalab Purmerend](https://datalab.purmerend.nl/), part of Gemeente Purmerend.
 
 <img src="https://gitlab.com/purmerend/atlas/uploads/3c5ed4d1d65ab0ac67e958b9264ab149/image.png" alt="Screenshot of Atlas" width="500"/>
 
 ## Run Atlas locally
+
 Make sure you installed [Docker](https://www.docker.com/) on your local machine.
 
 Download Atlas from [GitLab](https://gitlab.com/purmerend/atlas) and unpack the downloaded file on your computer.
@@ -38,12 +40,13 @@ Adjust the `.env` file to configure the application and create a secure producti
 - MATOMO_SITE_ID: The Matomo site id. (optional)
 
 ## Setup a development environment on Linux or MacOS
+
 Make sure you installed the following requirements:
 
 - [Python 3](https://www.python.org)
 - [Docker](https://www.docker.com)
 
-Atlas can work with any WFS server as a source of geospatial data. Datalab Purmerend relies on [Geoserver](https://github.com/geoserver/geoserver) for viewing geospatial data. Since Geoserver is one possible choice, it is not listed as a requirement to set up a development environment. 
+Atlas can work with any WFS server as a source of geospatial data. Datalab Purmerend relies on [Geoserver](https://github.com/geoserver/geoserver) for viewing geospatial data. Since Geoserver is one possible choice, it is not listed as a requirement to set up a development environment.
 
 GeoServer is an open source software server written in Java that allows users to share and edit geospatial data. Designed for interoperability, it publishes data from any major spatial data source using open standards.
 The default development environment of Atlas uses the Purmerend Datalab Geoserver. However, if you want to present you own geospatial data (and you do), you will need to run you own Geoserver.
@@ -52,9 +55,9 @@ There is a lot of very good [documentation](https://docs.geoserver.org/stable/en
 First setup a new virtual environment for Atlas with:
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 Run a Postgres database server with:
@@ -66,13 +69,13 @@ docker-compose up -d postgres
 Now run the database migrations with:
 
 ```bash
-python manage.py migrate
+python3 manage.py migrate
 ```
 
 And run the development server with:
 
 ```bash
-python manage.py runserver
+python3 manage.py runserver
 ```
 
 Now install the npm dependencies:
@@ -90,11 +93,25 @@ npm run serve
 
 Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
 
+### Load demo data
+
+You can easily load demo data into the local backend with:
+
+```bash
+python3 manage.py loaddata data/demo.json
+```
+
+This dump contains some example categories and layers and also creates a superadmin user with the following credentials:
+
+- Username: admin
+- Password: password
+
 ### Create a superuser
+
 To create a new superuser use the following command:
 
 ```bash
-python manage.py createsuperuser
+python3 manage.py createsuperuser
 ```
 
 Follow the steps. You can now login to [http://localhost:8000/atlas/admin/](http://localhost:8000/atlas/admin/).
