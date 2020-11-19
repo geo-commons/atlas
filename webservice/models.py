@@ -252,7 +252,11 @@ source: new ol.source.TileWMS({{
             'url': self.url,
             'server_type': self.server_type,
             'is_base': False,
-            'is_visible': False
+            'is_visible': False,
+            'category': {
+                'id': self.layer_type.id,
+                'title': self.layer_type.title
+            }
         }
 
     class Meta:

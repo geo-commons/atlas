@@ -2,7 +2,7 @@
   <div class="container">
     <div class="interface">
       <SearchPanel :position="this.position" @set-position="this.setPosition" />
-      <LayersPanel :layers="this.layers" />
+      <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
       <ZoomPanel :position="this.position" @set-position="this.setPosition" />
       <BaseLayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
       <MorePanel />
