@@ -246,6 +246,7 @@ source: new ol.source.TileWMS({{
     def to_dict(self):
         return {
             'id': self.layer_id,
+            'title': self.title,
             'name': self.layer_name,
             'opacity': float(self.opacity),
             'url': self.url,

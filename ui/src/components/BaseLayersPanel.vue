@@ -5,7 +5,7 @@
       <ul>
         <li v-for="layer in baseLayers" :key="layer.id">
           <input type="radio" :id="layer.id" name="baseLayer" :checked="visibleLayer && (visibleLayer.id === layer.id)" @change="() => onSelect(layer)">
-          <label :for="layer.id">{{ layer.id }}</label>
+          <label :for="layer.id">{{ layer.title }}</label>
         </li>
       </ul>
     </div>
