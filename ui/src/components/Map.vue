@@ -5,9 +5,10 @@
 <script>
 import 'ol/ol.css'
 import Map from 'ol/Map'
+
 import View from 'ol/View'
 import Feature from 'ol/Feature'
-import Point from 'ol/geom/Point'
+import { Point } from 'ol/geom'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import TileLayer from 'ol/layer/Tile'
@@ -15,8 +16,8 @@ import TileWMS from 'ol/source/TileWMS'
 import { Icon, Style } from 'ol/style'
 import { register } from 'ol/proj/proj4'
 
-import '../utils/projections'
 import { getDefinitions } from '../utils/projections'
+import constructDraw from '../utils/draw'
 
 // Register EPSG:28992 projection
 register(getDefinitions())
@@ -79,6 +80,11 @@ export default {
       })
     })
 
+    if (this.measure !== '') {
+      this.draw = constructDraw(this.measure)
+      this.map.addInteraction(this.draw)
+    }
+
     this.map.on('moveend', () => {
       const view = this.map.getView()
 
@@ -90,6 +96,10 @@ export default {
     })
 
     this.map.on('singleclick', (e) => {
+      if (this.measure !== '') {
+        return
+      }
+
       this.$emit('set-position', {
         ...this.position,
         marker: e.coordinate
@@ -126,11 +136,19 @@ export default {
           this.tileLayers[layer.id].setVisible(layer.is_visible)
         }
       })
+    },
+    measure(value) {
+      this.map.removeInteraction(this.draw)
+      if (value !== '') {
+        this.draw = constructDraw(value)
+        this.map.addInteraction(this.draw)
+      }
     }
   },
   props: {
     position: Object,
     layers: Array,
+    measure: String,
   }
 }
 </script>

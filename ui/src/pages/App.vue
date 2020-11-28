@@ -5,9 +5,10 @@
       <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
       <ZoomPanel :position="this.position" @set-position="this.setPosition" />
       <BaseLayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
+      <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
       <MorePanel />
     </div>
-    <Map :position="this.position" :layers="this.layers" @set-position="this.setPosition" />
+    <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
   </div>
 </template>
 
@@ -18,6 +19,7 @@ import SearchPanel from '../components/SearchPanel'
 import LayersPanel from '../components/LayersPanel'
 import ZoomPanel from '../components/ZoomPanel'
 import MorePanel from '../components/MorePanel'
+import MeasurePanel from '../components/MeasurePanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 
 export default {
@@ -28,11 +30,13 @@ export default {
     LayersPanel,
     ZoomPanel,
     MorePanel,
-    BaseLayersPanel
+    MeasurePanel,
+    BaseLayersPanel,
   },
   computed: mapState({
     position: state => state.position,
     layers: state => state.layers,
+    measure: state => state.measure,
   }),
   methods: {
     setPosition(position) {
@@ -40,6 +44,9 @@ export default {
     },
     toggleLayer(layer) {
       this.$store.commit('toggleLayer', layer)
+    },
+    setMeasure(measure) {
+      this.$store.commit('setMeasure', measure)
     }
   }
 }
