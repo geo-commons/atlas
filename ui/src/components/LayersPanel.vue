@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper">
-    <button class="iconbutton" :class="{ isOpen: this.panel === 'layers' }" @click="() => togglePanel('layers')" aria-label="Layers" :aria-expanded="String(this.panel === 'layers')" aria-controls="layers"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"/></svg></button>
+    <button class="iconbutton" :class="{ isOpen: this.panel === 'layers' }" @click="() => togglePanel('layers')" aria-label="Layers" :aria-expanded="String(this.panel === 'layers')" aria-controls="layers">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"/></svg>
+    </button>
     <div class="layers" v-if="this.panel === 'layers'" id="layers">
       <ul>
         <Category v-for="category in categories" :key="category.id" :category="category">
@@ -11,7 +13,10 @@
         </Category>
       </ul>
     </div>
-    <button v-if="visibleCategories.length > 0" class="iconbutton" :class="{ isOpen: this.panel === 'activeLayers' }" @click="() => togglePanel('activeLayers')" aria-label="Layers" :aria-expanded="String(this.panel === 'activeLayers')" aria-controls="visibleLayers"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z"/></svg></button>
+    <button v-if="visibleCategories.length > 0" class="iconbutton" :class="{ isOpen: this.panel === 'activeLayers' }" @click="() => togglePanel('activeLayers')" aria-label="Layers" :aria-expanded="String(this.panel === 'activeLayers')" aria-controls="visibleLayers">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z"/></svg>
+      {{ visibleLayerCount > 0 ? visibleLayerCount : '' }}
+    </button>
     <div v-if="visibleCategories.length > 0 && this.panel === 'activeLayers'" class="visibleLayers" id="visibleLayers">
       <ul>
         <Category v-for="category in visibleCategories" :key="category.id" :category="category">
@@ -95,6 +100,9 @@ export default {
       })
 
       return Object.values(categories).reverse()
+    },
+    visibleLayerCount() {
+      return this.layers.filter((layer) => layer.category && layer.is_visible).length
     }
   },
   props: {
