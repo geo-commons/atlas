@@ -4,7 +4,7 @@
     <div class="layers" v-if="isOpen" id="baseLayers">
       <ul>
         <li v-for="layer in baseLayers" :key="layer.id">
-          <input type="radio" :id="layer.id" name="baseLayer" :checked="visibleLayer && (visibleLayer.id === layer.id)" @change="() => onSelect(layer)">
+          <input type="radio" :id="layer.id" name="baseLayer" :checked="layer.is_visible" @change="() => onSelect(layer)">
           <label :for="layer.id">{{ layer.title }}</label>
         </li>
       </ul>
@@ -25,31 +25,18 @@ export default {
       this.isOpen = !this.isOpen
     },
     onSelect(selectedLayer) {
-      if (!selectedLayer) {
-        return
-      }
-
-      this.$emit('toggle-layer', [ selectedLayer.id, true ])
-
-      if (this.visibleLayer) {
-        this.$emit('toggle-layer', [ this.visibleLayer.id, false ])
-      }
+      this.baseLayers.map((layer) => {
+        if (selectedLayer.id === layer.id) {
+          this.$emit('toggle-layer', [ layer.id, true ])
+        } else {
+          this.$emit('toggle-layer', [ layer.id, false ])
+        }
+      })
     }
   },
   computed: {
     baseLayers() {
       return this.layers.filter((layer) => layer.is_base)
-    },
-    visibleLayer() {
-      let visibleLayer
-
-      this.layers.forEach((layer) => {
-        if (layer.is_visible === true) {
-          visibleLayer = layer
-        }
-      })
-
-      return visibleLayer
     },
   },
   props: {
