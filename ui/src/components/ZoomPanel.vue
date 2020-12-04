@@ -24,20 +24,17 @@ export default {
 
 <style scoped>
 .wrapper {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
   display: flex;
   flex-direction: column;
   background: white;
-  border-radius: 6px;
+  border-radius: var(--radius-normal);
   overflow: hidden;
-  box-shadow: 0 0 4px rgba(0,0,0,.1), 0 0 12px rgba(0,0,0,.15);
+  box-shadow: var(--shadow-normal);
 }
 
 .iconbutton {
-  width: 32px;
-  height: 32px;
+  width: var(--width-button-normal);
+  height: var(--width-button-normal);
 }
 
 .iconbutton:not(:last-child) {
