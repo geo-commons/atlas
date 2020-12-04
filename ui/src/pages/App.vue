@@ -161,6 +161,7 @@ ul {
   top: var(--padding-screen);
   right: var(--padding-screen);
   display: flex;
+
 }
 
 .bottom-right-panels {
@@ -169,5 +170,11 @@ ul {
   right: var(--padding-screen);
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 470px) {
+  .top-right-panels {
+    top: calc((var(--padding-screen) * 2) + var(--width-button-large));
+  }
 }
 </style>

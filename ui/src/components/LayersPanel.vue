@@ -11,6 +11,7 @@
       </div>
       <div class="visible-layers-count" v-if="visibleLayerCount > 0">{{ visibleLayerCount }}</div>
     </div>
+
     <div class="layers" v-if="this.panel === 'layers'" id="layers">
       <ul>
         <Category v-for="category in categories" :key="category.id" :category="category">
@@ -22,7 +23,7 @@
       </ul>
     </div>
 
-    <div v-if="visibleCategories.length > 0 && this.panel === 'activeLayers'" class="visibleLayers" id="visibleLayers">
+    <div v-if="visibleCategories.length > 0 && this.panel === 'activeLayers'" class="visible-layers" id="visibleLayers">
       <ul>
         <Category v-for="category in visibleCategories" :key="category.id" :category="category">
           <li v-for="layer in category.layers" v-bind:key="layer.id">
@@ -167,23 +168,25 @@ export default {
 }
 
 .layers,
-.visibleLayers {
+.visible-layers {
   position: absolute;
   bottom: var(--width-button-large);
   left: 0;
   max-height: calc(100vh - ((var(--width-button-large) * 4) + (var(--padding-screen) * 2)));
+  max-width: calc(100vw - (var(--padding-screen) * 2));
   overflow-y: auto;
   background: white;
   border-radius: var(--radius-small);
   border-bottom-left-radius: 0;
   box-shadow: var(--shadow-normal);
+  z-index: 2;
 }
 
 .layers {
   width: calc(var(--width-detail) - (var(--padding-screen) * 2));
 }
 
-.visibleLayers {
+.visible-layers {
   max-width: calc(var(--width-detail) - (var(--padding-screen) * 2));
 }
 </style>
