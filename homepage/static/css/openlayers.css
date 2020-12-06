@@ -32,7 +32,7 @@
   #kad-result-link{display: none;}
 
   .selectCity_div{text-align:center; margin-top:2px; padding:0px; background-color:#afc812; border-top-left-radius:7px; border-top-right-radius:7px;}
-  .selectCity_div select{font-family: Cursive; font-size: 13px; padding:2px; width: 170px; height: 28px; overflow: hidden; background: url('http://s24.postimg.org/lyhytocf5/dropdown.png') no-repeat right #FEFEFE; border: #FEFEFE 1px solid; -webkit-border-radius: var(--radius-small); border-radius: var(--radius-small); -webkit-box-shadow: inset 0px 0px 10px 1px #FEFEFE; box-shadow: inset 0px 0px 10px 1px #FEFEFE;}
+  .selectCity_div select{font-family: Cursive; font-size: 13px; padding:2px; width: 170px; height: 28px; overflow: hidden; background: url('http://s24.postimg.org/lyhytocf5/dropdown.png') no-repeat right #FEFEFE; border: #FEFEFE 1px solid; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: inset 0px 0px 10px 1px #FEFEFE; box-shadow: inset 0px 0px 10px 1px #FEFEFE;}
   .selectCity_div option{color:#000; background-color:#afc812; padding: 3px;}
   .selectCity_div #selectCity{padding: 7px;}
 
