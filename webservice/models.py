@@ -246,10 +246,17 @@ source: new ol.source.TileWMS({{
     def to_dict(self):
         return {
             'id': self.layer_id,
+            'title': self.title,
             'name': self.layer_name,
             'opacity': float(self.opacity),
             'url': self.url,
-            'server_type': self.server_type
+            'server_type': self.server_type,
+            'is_base': False,
+            'is_visible': False,
+            'category': {
+                'id': self.layer_type.id,
+                'title': self.layer_type.title
+            }
         }
 
     class Meta:

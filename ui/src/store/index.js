@@ -10,7 +10,8 @@ const store = new Vuex.Store({
       center: [ 126910, 505834 ],
       marker: null
     },
-    layers: document.querySelector('#layers-data') ? JSON.parse(document.querySelector('#layers-data').innerHTML) : []
+    layers: document.querySelector('#layers-data') ? JSON.parse(document.querySelector('#layers-data').innerHTML) : [],
+    measure: ''
   },
   mutations: {
     setPosition(state, position) {
@@ -28,6 +29,12 @@ const store = new Vuex.Store({
 
       state.layers = [ ...layerSet ]
     },
+    toggleLayer(state, [ layerId, isVisible ]) {
+      state.layers = state.layers.map((layer) => layer.id === layerId ? { ...layer, is_visible: isVisible } : layer)
+    },
+    setMeasure(state, measure) {
+      state.measure = measure
+    }
   }
 })
 

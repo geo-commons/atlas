@@ -31,17 +31,15 @@ export default {
 
 <style scoped>
 .wrapper {
-  position: fixed;
-  top: 16px;
-  right: 16px;
+  position: relative;
 }
 
 .iconbutton {
-  width: 40px;
-  height: 40px;
+  width: var(--width-button-normal);
+  height: var(--width-button-normal);
   background: white;
-  border-radius: 6px;
-  box-shadow: 0 0 4px rgba(0,0,0,.1), 0 0 12px rgba(0,0,0,.15);
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-normal);
 }
 
 .iconbutton.isOpen {
@@ -51,13 +49,13 @@ export default {
 
 .menu {
   position: absolute;
-  top: 40px;
+  top: var(--width-button-normal);
   right: 0;
-  padding: 8px 0;
+  padding: 6px 0;
   background: white;
-  border-radius: 3px;
+  border-radius: var(--radius-small);
   border-top-right-radius: 0;
-  box-shadow: 0 0 4px rgba(0,0,0,.1), 0 0 12px rgba(0,0,0,.15);
+  box-shadow: var(--shadow-normal);
 }
 
 .list a {
@@ -65,6 +63,7 @@ export default {
   color: black;
   text-decoration: none;
   padding: 2px 12px;
+  font-size: var(--font-size-small);
 }
 
 .list a:hover {
