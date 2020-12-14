@@ -1,15 +1,17 @@
 <template>
   <div class="wrapper">
     <button class="iconbutton" :class="{ isOpen }" @click="toggle" aria-label="Meer..."><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
-    <div class="menu" v-if="isOpen">
-      <ul class="list">
-        <li><a href="#">Log in</a></li>
-        <li><a href="#">Help</a></li>
-        <li><a href="#">Print</a></li>
-        <li><a href="#">Deel</a></li>
-        <li><a href="#">Embed</a></li>
-      </ul>
-    </div>
+    <transition name="fade">
+      <div class="menu" v-if="isOpen">
+        <ul class="list">
+          <li><a href="#">Log in</a></li>
+          <li><a href="#">Help</a></li>
+          <li><a href="#">Print</a></li>
+          <li><a href="#">Deel</a></li>
+          <li><a href="#">Embed</a></li>
+        </ul>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -35,10 +37,10 @@ export default {
 }
 
 .iconbutton {
-  width: var(--width-button-normal);
-  height: var(--width-button-normal);
+  width: var(--width-button-large);
+  height: var(--width-button-large);
   background: white;
-  border-radius: var(--radius-small);
+  border-radius: 50%;
   box-shadow: var(--shadow-normal);
 }
 
@@ -49,13 +51,14 @@ export default {
 
 .menu {
   position: absolute;
-  top: var(--width-button-normal);
+  top: var(--width-button-large);
   right: 0;
   padding: 6px 0;
   background: white;
   border-radius: var(--radius-small);
   border-top-right-radius: 0;
   box-shadow: var(--shadow-normal);
+  transform: translateY(0);
 }
 
 .list a {
