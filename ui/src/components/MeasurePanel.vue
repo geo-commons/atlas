@@ -30,8 +30,8 @@ export default {
 }
 
 .iconbutton {
-  width: var(--width-button-normal);
-  height: var(--width-button-normal);
+  width: var(--width-button-large);
+  height: var(--width-button-large);
 }
 
 .iconbutton:not(:last-child) {

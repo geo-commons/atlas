@@ -1,8 +1,12 @@
 <template>
-  <div class="container">
-    <div class="interface">
-      <SearchPanel :position="this.position" @set-position="this.setPosition" />
-      <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
+  <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel && showSidePanel }">
+    <PointInfoPanel :layers="this.layers" :position="this.position" @set-position="this.setPosition" :showInfoPanel="showInfoPanel && showSidePanel" @toggle-side-panel="this.toggleSidePanel" />
+    <SearchPanel :position="this.position" @set-position="this.setPosition" :showInfoPanel="showInfoPanel" :showSearchPanel="showSidePanel" />
+    <div class="map">
+      <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
+      <div class="bottom-left-panels">
+        <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
+      </div>
       <div class="top-right-panels">
         <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
         <MorePanel />
@@ -12,7 +16,6 @@
         <ZoomPanel :position="this.position" @set-position="this.setPosition" />
       </div>
     </div>
-    <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
   </div>
 </template>
 
@@ -25,6 +28,7 @@ import ZoomPanel from '../components/ZoomPanel'
 import MorePanel from '../components/MorePanel'
 import MeasurePanel from '../components/MeasurePanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
+import PointInfoPanel from '../components/PointInfoPanel'
 
 export default {
   name: 'App',
@@ -36,6 +40,7 @@ export default {
     MorePanel,
     MeasurePanel,
     BaseLayersPanel,
+    PointInfoPanel,
   },
   computed: mapState({
     position: state => state.position,
@@ -51,6 +56,23 @@ export default {
     },
     setMeasure(measure) {
       this.$store.commit('setMeasure', measure)
+    },
+    toggleSidePanel() {
+      this.showSidePanel = !this.showSidePanel
+    },
+  },
+  watch: {
+    position(value) {
+      this.showInfoPanel = Boolean(value.marker)
+    }
+  },
+  data() {
+    return {
+      showInfoPanel: Boolean(this.position && this.position.marker),
+      showSidePanel: true,
+      computedStyle: {
+        '--color-primary': '#0066FF'
+      }
     }
   }
 }
@@ -58,8 +80,10 @@ export default {
 
 <style>
   :root {
-    --color-primary: #0066FF;
+    --color-text-grey: rgba(0,0,0,.55);
+
     --color-grey-50: #EAEAEA;
+    --color-grey-60: #DADADA;
 
     --font-size-small: 14px;
     --font-size-normal: 16px;
@@ -70,13 +94,31 @@ export default {
     --radius-small: 3px;
     --radius-normal: 6px;
 
-    --shadow-normal: 0 0 4px rgba(0,0,0,.1), 0 0 12px rgba(0,0,0,.15);
+    --shadow-normal: 0 0 1px rgba(0,0,0,.3), 0 0 8px rgba(0,0,0,.15);
 
     --padding-screen: 8px;
 
-    --width-detail: 350px;
+    --width-detail: 100vw;
     --width-button-normal: 32px;
     --width-button-large: 40px;
+  }
+
+  @media (min-width: 576px) {
+    :root {
+      --width-detail: 350px;
+    }
+  }
+
+  @media (min-width: 992px) {
+    :root {
+      --padding-screen: 16px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    :root {
+      --padding-screen: 20px;
+    }
   }
 
   @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
@@ -113,7 +155,7 @@ input, button {
 }
 
 input::placeholder {
-  color: rgba(0,0,0,.55);
+  color: var(--color-text-grey);
 }
 
 button:not([disabled]) {
@@ -135,13 +177,26 @@ ul {
 }
 
 .iconbutton {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border-radius .1s;
+}
+
+.iconbutton[disabled] {
+  color: var(--color-grey-60);
 }
 
 .iconbutton.isActive {
   color: var(--color-primary);
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .1s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
 
@@ -149,32 +204,44 @@ ul {
 .container {
   width: 100%;
   height: 100%;
+  display: flex;
 }
 
-.interface {
+.map {
+  position: relative;
+  flex-grow: 1;
+}
+
+.bottom-left-panels {
   position: absolute;
-  z-index: 1;
+  bottom: var(--padding-screen);
+  left: var(--padding-screen);
+}
+
+@media (min-width: 576px) {
+  .showInfoPanel .bottom-left-panels {
+    left: calc(var(--padding-screen) + var(--width-detail));
+  }
 }
 
 .top-right-panels {
-  position: fixed;
-  top: var(--padding-screen);
+  position: absolute;
+  top: calc((var(--padding-screen) * 2) + var(--width-button-large));
   right: var(--padding-screen);
   display: flex;
+}
 
+@media (min-width: 576px) {
+  .top-right-panels {
+    top: var(--padding-screen);
+  }
 }
 
 .bottom-right-panels {
-  position: fixed;
+  position: absolute;
   bottom: var(--padding-screen);
   right: var(--padding-screen);
   display: flex;
   flex-direction: column;
-}
-
-@media (max-width: 470px) {
-  .top-right-panels {
-    top: calc((var(--padding-screen) * 2) + var(--width-button-large));
-  }
 }
 </style>
