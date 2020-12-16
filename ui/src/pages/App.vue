@@ -9,7 +9,7 @@
       </div>
       <div class="top-right-panels">
         <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
-        <MorePanel />
+        <MorePanel :user="this.user" />
       </div>
       <div class="bottom-right-panels">
         <div class="bottom-right-wrapper">
@@ -59,6 +59,7 @@ export default {
     position: state => state.position,
     layers: state => state.layers,
     measure: state => state.measure,
+    user: state => state.user
   }),
   methods: {
     setPosition(position) {

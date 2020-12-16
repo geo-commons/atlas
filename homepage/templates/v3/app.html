@@ -1,0 +1,6 @@
+{% extends 'v3/_base.html' %}
+
+{% block content %}
+  <div id="app" class="app"></div>
+  {{ data|json_script:"app-data" }}
+{% endblock %}

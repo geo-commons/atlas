@@ -21,14 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const settings = getSettingsFromPath()
 
-  const layers = JSON.parse(document.querySelector('#layers-data').innerHTML).map(
+  const data = JSON.parse(document.querySelector('#app-data').innerHTML)
+
+  const layers = data.layers.map(
     (layer) => settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer
   )
 
   const initialState = {
     position: settings.position,
     layers,
-    measure: ''
+    measure: '',
+    user: data.user
   }
 
   const store = createStore(initialState)
