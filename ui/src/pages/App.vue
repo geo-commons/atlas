@@ -5,7 +5,7 @@
     <div class="map">
       <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
       <div class="bottom-left-panels">
-        <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
+        <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" @set-layer-opacity="this.setLayerOpacity" />
       </div>
       <div class="top-right-panels">
         <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
@@ -51,8 +51,11 @@ export default {
     setPosition(position) {
       this.$store.commit('setPosition', position)
     },
-    toggleLayer(layer) {
-      this.$store.commit('toggleLayer', layer)
+    toggleLayer(values) {
+      this.$store.commit('toggleLayer', values)
+    },
+    setLayerOpacity(values) {
+      this.$store.commit('setLayerOpacity', values)
     },
     setMeasure(measure) {
       this.$store.commit('setMeasure', measure)
@@ -130,7 +133,7 @@ export default {
     font-weight: var(--font-weight-normal);
   }
 
- *,
+  *,
   *:after,
   *:before {
       box-sizing: border-box;

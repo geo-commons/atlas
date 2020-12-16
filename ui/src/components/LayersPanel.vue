@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="buttons-wrapper">
-      <div class="buttons" :class="{ isOpen: this.panel === 'layers' || this.panel === 'activeLayers', showVisibleLayers: visibleCategories.length > 0 }">
+      <div class="buttons" :class="{ isOpen: this.panel === 'layers' || this.panel === 'activeLayers', showVisibleLayers: visibleLayers.length > 0 }">
         <button class="iconbutton" :class="{ isActive: this.panel === 'layers' }" @click="() => togglePanel('layers')" aria-label="Layers" :aria-expanded="String(this.panel === 'layers')" aria-controls="layers">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path fill="currentColor" d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"/></svg>
         </button>
@@ -10,13 +10,12 @@
         </button>
       </div>
       <transition name="fade">
-        <div class="visible-layers-count" v-if="visibleLayerCount > 0">{{ visibleLayerCount }}</div>
+        <div class="visible-layers-count" v-if="visibleLayers.length > 0">{{ visibleLayers.length }}</div>
       </transition>
     </div>
 
     <transition name="fade">
-      <div class="layers" v-if="this.panel === 'layers'" id="layers">
-        <ul>
+      <ul class="layers" v-if="this.panel === 'layers'" id="layers">
           <Category v-for="category in categories" :key="category.id" :category="category">
             <li v-for="layer in category.layers" v-bind:key="layer.id">
               <input type="checkbox" :name="layer.id" :id="layer.id" :checked="layer.is_visible" @change="() => onSelectLayer(layer)" />
@@ -24,30 +23,25 @@
             </li>
           </Category>
         </ul>
-      </div>
     </transition>
 
     <transition name="fade">
-      <div v-if="visibleCategories.length > 0 && this.panel === 'activeLayers'" class="visible-layers" id="visibleLayers">
-        <ul>
-          <Category v-for="category in visibleCategories" :key="category.id" :category="category">
-            <li v-for="layer in category.layers" v-bind:key="layer.id">
-              {{ layer.title }}
-            </li>
-          </Category>
+      <ul v-if="visibleLayers.length > 0 && this.panel === 'activeLayers'" class="visible-layers" id="visibleLayers">
+          <VisibleLayer v-for="layer in visibleLayers" v-bind:key="layer.id" :layer="layer" @set-layer-opacity="setLayerOpacity" @toggle-layer="onSelectLayer" />
         </ul>
-      </div>
     </transition>
   </div>
 </template>
 
 <script>
 import Category from './Category'
+import VisibleLayer from './VisibleLayer'
 
 export default {
   name: 'LayersPanel',
   components: {
-    Category
+    Category,
+    VisibleLayer
   },
   data() {
     return {
@@ -60,6 +54,9 @@ export default {
     },
     onSelectLayer(selectedLayer) {
       this.$emit('toggle-layer', [ selectedLayer.id, !selectedLayer.is_visible ])
+    },
+    setLayerOpacity(values) {
+      this.$emit('set-layer-opacity', values)
     }
   },
   computed: {
@@ -86,35 +83,8 @@ export default {
 
       return Object.values(categories).reverse()
     },
-    visibleCategories() {
-      let categories = {}
-
-      this.layers.forEach((layer) => {
-        if (!layer.category) {
-          return
-        }
-
-        if (!layer.is_visible) {
-          return
-        }
-
-        if (categories[layer.category.id]) {
-          categories[layer.category.id].layers = [
-            ...categories[layer.category.id].layers,
-            layer
-          ]
-        } else {
-          categories[layer.category.id] = {
-            ...layer.category,
-            layers: [layer]
-          }
-        }
-      })
-
-      return Object.values(categories).reverse()
-    },
-    visibleLayerCount() {
-      return this.layers.filter((layer) => layer.category && layer.is_visible).length
+    visibleLayers() {
+      return this.layers.filter((layer) => layer.category && layer.is_visible)
     }
   },
   props: {
@@ -178,7 +148,7 @@ export default {
   position: absolute;
   bottom: var(--width-button-large);
   left: 0;
-  max-height: calc(100vh - ((var(--width-button-large) * 4) + (var(--padding-screen) * 2)));
+  max-height: calc(100vh - ((var(--width-button-large) * 2) + (var(--padding-screen) * 4)));
   width: calc(var(--width-detail) - (var(--padding-screen) * 2));
   max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal));
   overflow-y: auto;

@@ -56,7 +56,7 @@ export default {
 }
 
 .layers > li:last-child {
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .layers > li > input {

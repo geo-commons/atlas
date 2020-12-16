@@ -53,7 +53,7 @@ export default {
   position: absolute;
   top: var(--width-button-large);
   right: 0;
-  padding: 6px 0;
+  padding: 4px 0;
   background: white;
   border-radius: var(--radius-small);
   border-top-right-radius: 0;
