@@ -32,6 +32,9 @@ const store = new Vuex.Store({
     toggleLayer(state, [ layerId, isVisible ]) {
       state.layers = state.layers.map((layer) => layer.id === layerId ? { ...layer, is_visible: isVisible } : layer)
     },
+    setLayerOpacity(state, [ layerId, opacity ]) {
+      state.layers = state.layers.map((layer) => layer.id === layerId ? { ...layer, opacity: opacity } : layer)
+    },
     setMeasure(state, measure) {
       state.measure = measure
     }

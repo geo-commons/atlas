@@ -135,6 +135,9 @@ export default {
         if (layer.is_visible !== this.tileLayers[layer.id].getVisible()) {
           this.tileLayers[layer.id].setVisible(layer.is_visible)
         }
+        if (layer.opacity !== this.tileLayers[layer.id].getOpacity()) {
+          this.tileLayers[layer.id].setOpacity(layer.opacity)
+        }
       })
     },
     measure(value) {
