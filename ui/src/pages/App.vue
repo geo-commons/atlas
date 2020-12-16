@@ -63,10 +63,21 @@ export default {
     toggleSidePanel() {
       this.showSidePanel = !this.showSidePanel
     },
+    pushHistoryState() {
+      const x = encodeURIComponent(this.position.center[0].toFixed(2))
+      const y = encodeURIComponent(this.position.center[1].toFixed(2))
+      const zoom = encodeURIComponent(this.position.zoom.toFixed(2))
+      const layers = this.layers.filter(l => l.is_visible && !l.is_base).map(l => l.id).join(',')
+      window.history.replaceState({}, '', `/atlas/v3/@${x},${y},${zoom}z/layers=${layers}`)
+    }
   },
   watch: {
     position(value) {
       this.showInfoPanel = Boolean(value.marker)
+      this.pushHistoryState()
+    },
+    layers(value) {
+      this.pushHistoryState()
     }
   },
   data() {
