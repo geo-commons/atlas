@@ -3,7 +3,8 @@
     <button class="category" @click="toggle" :aria-expanded="isOpen.toString()" :aria-controls="category.id">
       <svg v-if="!isOpen" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
       <svg v-if="isOpen" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
-      {{ category.title }}
+      <div class="name">{{ category.title }}</div>
+      <div v-if="visibleLayers.length > 0" class="counter">{{visibleLayers.length}}</div>
     </button>
     <ul :id="category.id" v-if="isOpen" class="layers">
       <slot />
@@ -24,6 +25,11 @@ export default {
       this.isOpen = !this.isOpen
     },
   },
+   computed: {
+    visibleLayers() {
+      return this.category.layers.filter((layer) => layer.is_visible)
+    }
+  },
   props: {
     category: Object,
   }
@@ -37,26 +43,27 @@ export default {
 
 .category {
   display: flex;
-  align-items: center;
-  height: 30px;
   width: 100%;
-  padding: 0 12px 0 4px;
+  padding-left: 4px;
+  padding-right: 8px;
+}
+
+.name {
+  flex-grow: 1;
+  padding: 5px 0;
 }
 
 .category > svg {
+  margin-top: 3px;
   margin-right: 2px;
 }
 
 .layers {
-  margin-left: 30px;
+  padding: 0 0 4px 30px;
 }
 
 .layers > li {
   position: relative;
-}
-
-.layers > li:last-child {
-  margin-bottom: 4px;
 }
 
 .layers > li > input {
@@ -75,5 +82,10 @@ export default {
   cursor: pointer;
   padding: 2px 12px 2px 20px;
   user-select: none;
+}
+
+.counter {
+  margin-top: 6px;
+  margin-left: 4px;
 }
 </style>
