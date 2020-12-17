@@ -82,13 +82,13 @@ export default {
   flex-grow: 1;
   display: flex;
   align-items: center;
-  padding: 0 0 0 4px;
+  padding-left: 4px;
   overflow: hidden;
   text-align: left;
 }
 
 .collapse svg {
-  flex-shrink: 0;
+  margin-right: 2px;
 }
 
 .name {
@@ -130,7 +130,7 @@ export default {
 }
 
 .content {
-  padding: 4px 22px 0;
+  padding: 4px 8px 4px;
   overflow-x: auto;
 }
 </style>

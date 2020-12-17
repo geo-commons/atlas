@@ -131,6 +131,8 @@ export default {
     letter-spacing: -0.005em;
     font-size: var(--font-size-normal);
     font-weight: var(--font-weight-normal);
+    word-break: break-word;
+    word-wrap: break-word;
   }
 
   *,
@@ -155,6 +157,7 @@ input, button {
   background: transparent;
   font: inherit;
   letter-spacing: inherit;
+  text-align: left;
 }
 
 input::placeholder {
@@ -179,6 +182,10 @@ ul {
   list-style-type: none;
 }
 
+svg {
+  flex-shrink: 0;
+}
+
 .iconbutton {
   flex-shrink: 0;
   display: flex;
@@ -193,6 +200,22 @@ ul {
 
 .iconbutton.isActive {
   color: var(--color-primary);
+}
+
+.counter {
+  flex-shrink: 0;
+  height: 18px;
+  min-width: 18px;
+  border-radius: 9px;
+  border: 2px solid var(--color-primary);
+  padding: 0 3px;
+  background: white;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  line-height: 14px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .fade-enter-active, .fade-leave-active {

@@ -10,7 +10,7 @@
         </button>
       </div>
       <transition name="fade">
-        <div class="visible-layers-count" v-if="visibleLayers.length > 0">{{ visibleLayers.length }}</div>
+        <div class="counter" v-if="visibleLayers.length > 0">{{ visibleLayers.length }}</div>
       </transition>
     </div>
 
@@ -127,20 +127,10 @@ export default {
   border-right: 1px solid var(--color-grey-50);
 }
 
-.visible-layers-count {
+.counter {
   position: absolute;
   top: 2px;
   left: calc(100% - 8px);
-  height: 14px;
-  min-width: 14px;
-  border-radius: 7px;
-  padding: 0 4px;
-  background: var(--color-primary);
-  color: white;
-  font-size: 11px;
-  font-weight: var(--font-weight-bold);
-  line-height: 14px;
-  text-align: center;;
 }
 
 .layers,
