@@ -49,7 +49,7 @@ method.
 Converting individual TIFF files to a TIFF mosaic compressed with JPEG
 happens in three steps:
 
-  **1. Virtually mosaicking different files into one.]**
+  **1. Virtually mosaicking different files into one.**
 
 gdalbuildvrt -srcnodata \"255 255 255\" \<output-file.tif\>
 \<input-files.tif\>
