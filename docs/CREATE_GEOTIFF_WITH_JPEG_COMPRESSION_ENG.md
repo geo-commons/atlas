@@ -143,7 +143,7 @@ second line. E.g*. compressed_output.tif*
 > JPEG \--config PHOTOMETRIC_OVERVIEW YCBCR \--config
 > INTERLEAVE_OVERVIEW PIXEL -r average compressed_output.tif 2 4 8 16
 
-## Batch compression of individual GeoTIFF files (tested on Linux only)
+## 2.3 Batch compression of individual GeoTIFF files (tested on Linux only)
 
 In order to compress multiple GeoTIFFS without mosaicking them into a
 larger GeoTIFF, one must repeat the second step described above. This
@@ -177,7 +177,7 @@ Follow the guidelines regarding the naming conventions.
 >
 > done
 
-# Useful sources
+# 3. Useful sources
 
 <https://developers.planet.com/planetschool/getting-started-with-gdal/>
 
