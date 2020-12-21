@@ -99,7 +99,7 @@ first line. E.g. *vrt_output.tif*
 **\<output-file.tif\>:** this is the name of the expected output file.
 E.g.: *output_compressed.tif*
 
-**[Note:]{.ul}** Although it's possible to change the compression factor
+**Note:** Although it's possible to change the compression factor
 with **-co JPEG_QUALITY=XX**, where **XX** is the compression factor.
 This is not added to the line above as the standard compression factor
 of 75 is used.
