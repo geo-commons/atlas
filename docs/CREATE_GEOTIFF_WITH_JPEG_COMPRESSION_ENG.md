@@ -51,8 +51,8 @@ happens in three steps:
 
   **1. Virtually mosaicking different files into one.**
 
-gdalbuildvrt -srcnodata \"255 255 255\" \<output-file.tif\>
-\<input-files.tif\>
+> gdalbuildvrt -srcnodata \"255 255 255\" \<output-file.tif\>
+> \<input-files.tif\>
 
 **-srcnodata "255 255 255"**: make no data pixels white (as defined by
 the numbers). Other colours can also be selected, but white is deemed
