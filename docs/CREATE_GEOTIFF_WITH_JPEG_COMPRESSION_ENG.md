@@ -72,9 +72,9 @@ E.g.: *output.tif*
 
 **2. Converting a TIFF file to a TIFF with JPEG compression.**
 
-gdal_translate -a_srs "EPSG:28992" -co "COMPRESS=JPEG" -co "TILED=YES"
--co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES \<input-file.tif\>
-\<output-file.tif\>
+>gdal_translate -a_srs "EPSG:28992" -co "COMPRESS=JPEG" -co "TILED=YES"
+>-co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES \<input-file.tif\>
+>\<output-file.tif\>
 
 **-a_src "EPSG"**: assigns the projection. It seems that this is not
 correctly taken from the original GeoTiff files. Hence, one must assign
