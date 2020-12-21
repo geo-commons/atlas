@@ -149,13 +149,13 @@ In order to compress multiple GeoTIFFS without mosaicking them into a
 larger GeoTIFF, one must repeat the second step described above. This
 can be done by using the following line:
 
-for f in \*.tif; do
-
-gdal_translate -a_srs "EPSG:28992" -co "COMPRESS=JPEG" -co "TILED=YES"
--co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES "\$f"
-"\<output_folder\>/\<possible_prefix\>\$f"
-
-done
+> for f in \*.tif; do
+> 
+> gdal_translate -a_srs "EPSG:28992" -co "COMPRESS=JPEG" -co "TILED=YES"
+> -co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES "\$f"
+> "\<output_folder\>/\<possible_prefix\>\$f"
+> 
+> done
 
 **\<output_folder\>**: the folder name where you want the outputs to go.
 If the outputs have the same name as the inputs these cannot be saved in
