@@ -1,4 +1,4 @@
-# A note on definitions
+# 1. A note on definitions
 
 It's important to get the definitions straight as the nomenclature of
 file naming conventions can be confusing.
@@ -15,7 +15,7 @@ file naming conventions can be confusing.
     generally with the filename extension .jpg, .jpeg. Thus, JPEG is
     both a file format as well as a method to compress images.
 
-# Instructions
+# 2. Instructions
 
 Credits for the following instructions go to the Datalab of the
 Municipality of Purmerend.
@@ -31,7 +31,7 @@ All image suppliers are expected to follow these steps for a uniform
 delivery of images for all municipalities. Logically, suppliers must use
 georeferenced .tif files in order to follow these steps.
 
-## Software specifications
+## 2.1 Software specifications
 
 All described steps were executed using CentOS 7.4 (Linux), Pop!\_OS
 20.10 (Linux), and OSX Catalina (MacOS).
@@ -40,7 +40,7 @@ For the JPEG compression of GeoTIFF files, [GDAL](https://gdal.org/) was
 used. For downloading instructions, follow the first link in the sources
 below.
 
-## Mosaicking and compression instructions
+## 2.2 Mosaicking and compression instructions
 
 The goal of these instructions is to change large GeoTIFF images into,
 smaller, compressed GeoTIFFs. This is done using JPEF a compression
@@ -49,7 +49,7 @@ method.
 Converting individual TIFF files to a TIFF mosaic compressed with JPEG
 happens in three steps:
 
-1.  **[Virtually mosaicking different files into one.]{.ul}**
+  **1. Virtually mosaicking different files into one.]**
 
 gdalbuildvrt -srcnodata \"255 255 255\" \<output-file.tif\>
 \<input-files.tif\>
@@ -70,7 +70,7 @@ E.g.: *output.tif*
 >
 > gdalbuildvrt -srcnodata "255 255 255" vrt_output.tif \*.tif
 
-2.  **[Converting a TIFF file to a TIFF with JPEG compression.]{.ul}**
+**2. Converting a TIFF file to a TIFF with JPEG compression.**
 
 gdal_translate -a_srs "EPSG:28992" -co "COMPRESS=JPEG" -co "TILED=YES"
 -co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES \<input-file.tif\>
@@ -111,8 +111,133 @@ of 75 is used.
 > -co "PHOTOMETRIC=YCBCR" -co BIGTIFF=YES vrt_output.tif
 > output_compressed.tif
 
-3.  **[Building overview images within the GeoTIFF file. This is useful
-    for quicker loading/displaying in web viewers.]{.ul}**
+  **3. Building overview images within the GeoTIFF file. This is useful
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+   for quicker loading/displaying in web viewers.**
 
 gdaladdo \--config BIGGTIFF_OVERVIEW YES \--config COMPRESS_OVERVIEW
 JPEG \--config PHOTOMETRIC_OVERVIEW YCBCR \--config INTERLEAVE_OVERVIEW
