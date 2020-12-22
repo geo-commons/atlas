@@ -142,8 +142,6 @@ export default {
     letter-spacing: -0.005em;
     font-size: var(--font-size-normal);
     font-weight: var(--font-weight-normal);
-    word-break: break-word;
-    word-wrap: break-word;
   }
 
   *,
