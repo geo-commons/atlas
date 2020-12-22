@@ -776,9 +776,9 @@ function init(){
 		}
 
 		window.vueStore.commit('setPosition', {
-			x: coord[0],
-			y: coord[1],
-			zoom: view.getZoom()
+			center: coord,
+			zoom: view.getZoom(),
+			measure: ''
 		});
 	});
 

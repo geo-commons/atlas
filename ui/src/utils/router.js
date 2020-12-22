@@ -3,9 +3,11 @@ export const getSettingsFromPath = () => {
   const match = window.location.pathname.match(pathExpression) || { groups: {} }
 
   return {
-    x: match.groups.x ? parseFloat(match.groups.x) : 126910,
-    y: match.groups.y ? parseFloat(match.groups.y) : 505834,
-    zoom: match.groups.zoom ? parseFloat(match.groups.zoom) : 12.8,
-    layers: match.groups.layers ? match.groups.layers.split(',') : []
+    position: {
+      zoom: match.groups.zoom ? parseFloat(match.groups.zoom) : 13,
+      center: [ match.groups.x ? parseFloat(match.groups.x) : 126910, match.groups.y ? parseFloat(match.groups.y) : 505834 ],
+      marker: null
+    },
+    visibleLayers: match.groups.layers ? match.groups.layers.split(',') : []
   }
 }

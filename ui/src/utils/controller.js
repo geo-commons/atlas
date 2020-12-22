@@ -21,7 +21,7 @@ class MapController {
       ...this.layers,
       new TileLayer({
         id: layer.id,
-        visible: (layer.is_visible === true) || this.settings.layers.includes(layer.id),
+        visible: (layer.is_visible === true) || this.settings.visibleLayers.includes(layer.id),
         layerName: layer.name,
         opacity: layer.opacity,
         source: new TileWMS({
@@ -43,8 +43,8 @@ class MapController {
       target: targetId,
       view: new View({
         projection: 'EPSG:28992',
-        center: [ this.settings.x, this.settings.y ],
-        zoom: this.settings.zoom
+        center: this.settings.position.center,
+        zoom: this.settings.position.zoom
       })
     })
   }
