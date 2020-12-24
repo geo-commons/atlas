@@ -1,17 +1,23 @@
 <template>
   <div>
-    <button v-if="this.position.marker && !showInfoPanel" @click="toggleSidePanel" aria-label="Toon details" class="iconbutton open-button">
+    <button v-if="this.position.marker && !showInfoPanel" @click="toggleInfoPanel" aria-label="Toon details" class="iconbutton open-button">
       <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
     </button>
 
     <transition name="fade">
       <aside class="wrapper" v-if="showInfoPanel">
-        <button @click="toggleSidePanel" aria-label="Verberg details" class="iconbutton close-button">
+        <button @click="toggleInfoPanel" aria-label="Verberg details" class="iconbutton close-button">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/></svg>
         </button>
 
         <div class="content">
-          <FeatureInfo v-for="visibleLayer in visibleLayers" v-bind:key="visibleLayer.id" :layer="visibleLayer" :position="position" />
+          <FeatureInfo
+            v-for="visibleLayer in visibleLayers"
+            v-bind:key="visibleLayer.id"
+            :layer="visibleLayer"
+            :position="position"
+            :selection="selection"
+          />
         </div>
       </aside>
     </transition>
@@ -22,13 +28,13 @@
 import FeatureInfo from './FeatureInfo'
 
 export default {
-  name: 'MorePanel',
+  name: 'InfoPanel',
   components: {
     FeatureInfo
   },
   methods: {
-    toggleSidePanel() {
-      this.$emit('toggle-side-panel')
+    toggleInfoPanel() {
+      this.$emit('toggle-info-panel')
     }
   },
   computed: {
@@ -37,8 +43,9 @@ export default {
     }
   },
   props: {
-    position: Object,
     layers: Array,
+    position: Object,
+    selection: Object,
     showInfoPanel: Boolean
   }
 }

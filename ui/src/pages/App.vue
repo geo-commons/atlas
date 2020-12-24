@@ -1,11 +1,48 @@
 <template>
-  <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel && showSidePanel }">
-    <PointInfoPanel :layers="this.layers" :position="this.position" @set-position="this.setPosition" :showInfoPanel="showInfoPanel && showSidePanel" @toggle-side-panel="this.toggleSidePanel" />
-    <SearchPanel :position="this.position" @set-position="this.setPosition" :showInfoPanel="showInfoPanel" :showSearchPanel="showSidePanel" />
+  <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel && !infoPanelHidden }">
+    <InfoPanel
+      :layers="this.layers"
+      :position="this.position"
+      :selection="this.selection"
+      @set-position="this.setPosition"
+      :showInfoPanel="showInfoPanel && !infoPanelHidden"
+      @toggle-info-panel="this.toggleInfoPanel"
+    />
+    <SearchPanel
+      :position="this.position"
+      @set-position="this.setPosition"
+      :showInfoPanel="showInfoPanel"
+      :showSearchPanel="!infoPanelHidden"
+    />
     <div class="map">
-      <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
+      <Map
+        :position="this.position"
+        :layers="this.layers"
+        :tool="this.tool"
+        @set-position="this.setPosition"
+        @tool-used="this.onToolUsed"
+      />
+      <div class="bottom-left-panels">
+        <LayersPanel
+          :layers="this.layers"
+          @toggle-layer="this.toggleLayer"
+          @set-layer-opacity="this.setLayerOpacity"
+        />
+      </div>
       <div class="top-right-panels">
-        <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
+        <AreaSelectPanel
+          ref="areaSelectPanel"
+          :layers="layers"
+          :tool="this.tool"
+          :position="this.position"
+          @set-tool="this.setTool" 
+          @set-position="this.setPosition"
+
+        />
+        <MeasurePanel
+          :tool="this.tool"
+          @set-tool="this.setTool"
+        />
         <MorePanel :user="this.user" @toggle-modal="toggleModal" />
       </div>
       <div class="bottom-left-panels">
@@ -35,15 +72,18 @@
 
 <script>
 import { mapState } from 'vuex'
+import { LineString, Polygon } from 'ol/geom'
+import { getArea, getLength } from 'ol/sphere'
 import Map from '../components/Map'
 import SearchPanel from '../components/SearchPanel'
 import LayersPanel from '../components/LayersPanel'
 import ZoomPanel from '../components/ZoomPanel'
 import PanoramaPanel from '../components/PanoramaPanel'
 import MorePanel from '../components/MorePanel'
+import AreaSelectPanel from '../components/AreaSelectPanel'
 import MeasurePanel from '../components/MeasurePanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
-import PointInfoPanel from '../components/PointInfoPanel'
+import InfoPanel from '../components/InfoPanel'
 import EmbedModal from '../components/EmbedModal'
 
 export default {
@@ -54,21 +94,17 @@ export default {
     LayersPanel,
     ZoomPanel,
     PanoramaPanel,
+    AreaSelectPanel,
     MorePanel,
     MeasurePanel,
     BaseLayersPanel,
-    PointInfoPanel,
+    InfoPanel,
     EmbedModal
   },
-  computed: mapState({
-    position: state => state.position,
-    layers: state => state.layers,
-    measure: state => state.measure,
-    user: state => state.user
-  }),
   methods: {
     setPosition(position) {
       this.$store.commit('setPosition', position)
+      this.$store.commit('setSelection', null)
     },
     toggleLayer(values) {
       this.$store.commit('toggleLayer', values)
@@ -76,11 +112,28 @@ export default {
     setLayerOpacity(values) {
       this.$store.commit('setLayerOpacity', values)
     },
-    setMeasure(measure) {
-      this.$store.commit('setMeasure', measure)
+    setTool(tool) {
+      this.$store.commit('setTool', tool)
+
+      if (tool === '') {
+        this.$store.commit('setSelection', null)
+      }
     },
-    toggleSidePanel() {
-      this.showSidePanel = !this.showSidePanel
+    onToolUsed(result) {
+      switch (result.tool) {
+        case 'MEASURE_AREA':
+          alert(`${getArea(result.sketch.getGeometry())} m2`)
+          break
+        case 'MEASURE_LINE':
+          alert(`${getLength(result.sketch.getGeometry())} m`)
+          break
+        case 'SELECT_AREA':
+          this.$store.commit('setSelection', result.sketch.getGeometry())
+          break
+      }
+    },
+    toggleInfoPanel() {
+      this.infoPanelHidden = !this.infoPanelHidden
     },
     togglePanoramaPanel() {
       this.showBaseLayersPanel = false
@@ -103,7 +156,6 @@ export default {
   },
   watch: {
     position(value) {
-      this.showInfoPanel = Boolean(value.marker)
       this.pushHistoryState()
     },
     layers(value) {
@@ -112,13 +164,24 @@ export default {
   },
   data() {
     return {
-      showInfoPanel: Boolean(this.position && this.position.marker),
-      showSidePanel: true,
+      infoPanelHidden: false,
       showPanoramaPanel: false,
       showBaseLayersPanel: false,
       computedStyle: { '--color-primary': '#0066FF' },
       modal: ''
     }
+  },
+  computed: {
+    showInfoPanel() {
+      return Boolean(this.position && this.position.marker) || Boolean(this.selection)
+    },
+    ...mapState({
+      layers: state => state.layers,
+      position: state => state.position,
+      selection: state => state.selection,
+      tool: state => state.tool,
+      user: state => state.user
+    })
   }
 }
 </script>

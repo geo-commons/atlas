@@ -4,11 +4,14 @@ export const createStore = (initialState) => {
   return new Vuex.Store({
     state: initialState,
     mutations: {
+      setLayers(state, layers) {
+        state.layers = layers
+      },
       setPosition(state, position) {
         state.position = position
       },
-      setLayers(state, layers) {
-        state.layers = layers
+      setSelection(state, selection) {
+        state.selection = selection
       },
       addLayer(state, layer) {
         const layerSet = new Set(state.layers)
@@ -28,9 +31,9 @@ export const createStore = (initialState) => {
       setLayerOpacity(state, [ layerId, opacity ]) {
         state.layers = state.layers.map((layer) => layer.id === layerId ? { ...layer, opacity: opacity } : layer)
       },
-      setMeasure(state, measure) {
-        state.measure = measure
-      }
+      setTool(state, tool) {
+        state.tool = tool
+      },
     }
   })
 }

@@ -1,10 +1,8 @@
 import Draw from 'ol/interaction/Draw'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
-import { LineString, Polygon } from 'ol/geom'
-import { getArea, getLength } from 'ol/sphere'
 
-const constructDraw = (measure) => {
+const constructDraw = (measure, onDrawEnd) => {
   const draw = new Draw({
     source: new VectorSource(),
     type: measure == 'area' ? 'Polygon' : 'LineString',
@@ -34,14 +32,7 @@ const constructDraw = (measure) => {
     sketch = e.feature
   })
 
-  draw.on('drawend', () => {
-    const geometry = sketch.getGeometry()
-    if (geometry instanceof Polygon) {
-      alert(`${getArea(geometry)} m2`)
-    } else if (geometry instanceof LineString) {
-      alert(`${getLength(geometry)} m`)
-    }
-  })
+  draw.on('drawend', (e) => onDrawEnd(sketch, e))
 
   return draw
 }

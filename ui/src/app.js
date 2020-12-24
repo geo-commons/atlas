@@ -28,9 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
   )
 
   const initialState = {
-    position: settings.position,
     layers,
-    measure: '',
+    position: settings.position,
+    selection: null,
+    tool: '',
     user: data.user
   }
 
@@ -53,9 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const settings = getSettingsFromPath()
 
   const initialState = {
-    position: settings.position,
     layers: [],
-    measure: ''
+    position: settings.position,
+    selection: null,
+    tool: ''
   }
 
   const store = createStore(initialState)

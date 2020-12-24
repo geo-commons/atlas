@@ -80,8 +80,8 @@ export default {
       })
     })
 
-    if (this.measure !== '') {
-      this.draw = constructDraw(this.measure)
+    if (this.tool !== '') {
+      this.draw = constructDraw(this.tool)
       this.map.addInteraction(this.draw)
     }
 
@@ -96,7 +96,8 @@ export default {
     })
 
     this.map.on('singleclick', (e) => {
-      if (this.measure !== '') {
+      if (this.tool !== '') {
+        // do not interact on click when a tool like measuring or selecting is enabled
         return
       }
 
@@ -140,18 +141,34 @@ export default {
         }
       })
     },
-    measure(value) {
+    tool(value) {
       this.map.removeInteraction(this.draw)
-      if (value !== '') {
-        this.draw = constructDraw(value)
-        this.map.addInteraction(this.draw)
+
+      const onDrawEnd = (sketch) => {
+        this.$emit('tool-used', { 'tool': value, sketch })
+      }
+
+      switch(value) {
+        case 'MEASURE_LINE':
+          this.draw = constructDraw('line', onDrawEnd)
+          this.map.addInteraction(this.draw)
+          break
+        case 'MEASURE_AREA':
+        case 'SELECT_AREA':
+          this.draw = constructDraw('area', onDrawEnd)
+          this.map.addInteraction(this.draw)
+          break
+        case '':
+          break
+        default:
+          console.error('Tried to activate an unknown tool: ', value)
       }
     }
   },
   props: {
     position: Object,
     layers: Array,
-    measure: String,
+    tool: String
   }
 }
 </script>

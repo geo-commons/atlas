@@ -26,7 +26,8 @@ export default {
   },
   props: {
     layer: Object,
-    position: Object
+    position: Object,
+    selection: Object
   },
   mounted() {
     this.fetchFeatures()
@@ -36,31 +37,30 @@ export default {
   },
   methods: {
     async fetchFeatures() {
-      const wmsSource = new TileWMS({
-          url: this.layer.url,
-          servertype: this.layer.server_type,
-          params: {
-            'LAYERS': this.layer.name,
-            'TILED': true
-          },
-        })
+      const params = new URLSearchParams([
+        ['service', 'WFS'],
+        ['version', '1.0.0'],
+        ['request', 'GetFeature'],
+        ['typename', this.layer.name],
+        ['outputFormat', 'application/json'],
+        ['maxFeatures', '500'],
+      ])
 
-      const view = new View({
-        center: this.position.center,
-        zoom: this.position.zoom,
-      })
-
-      const url = wmsSource.getFeatureInfoUrl(this.position.marker, view.getResolution(), 'EPSG:28992', {
-        'INFO_FORMAT': 'application/json'
-      })
+      if (this.position.marker) {
+        params.set('cql_filter', `INTERSECTS(geom,POINT(${this.position.marker[0]} ${this.position.marker[1]}))`)
+      } else if (this.selection) {
+        params.set('cql_filter', `WITHIN(geom,POLYGON((${this.selection.getCoordinates()[0].map(c => `${c[0]} ${c[1]}`).join(',')})))`)
+      }
 
       try {
-        const result = await fetch(url)
+        const result = await fetch(this.layer.url + params.toString())
         const data = await result.json()
+
         this.features = data.features
       } catch(e) {
         console.error(e)
       }
+
     }
   }
 }
