@@ -122,7 +122,12 @@ Deploy acceptance:
       --set allowedHosts=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set secretKey=$SECRET_KEY \
       --set dbHost=atlas-acc-postgresql \
-      --set ingress.hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN
+      --set ingress.hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN \
+      --set smartstreetUser=$SMARTSTREET_USER \
+      --set smartstreetPassword=$SMARTSTREET_PASSWORD \
+      --set smartstreetApiKey=$SMARTSTREET_API_KEY \
+      --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY \
+      --set ctrixIps=$CTRIX_IPS
   environment:
     name: review/acc
     url: https://atlas-acc.$REVIEW_BASE_DOMAIN/atlas/
