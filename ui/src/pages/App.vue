@@ -12,7 +12,18 @@
         <MorePanel />
       </div>
       <div class="bottom-right-panels">
-        <BaseLayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" />
+        <div class="bottom-right-wrapper">
+          <div class="bottom-right-buttons" :class="{ isOpen: showBaseLayersPanel, showTogglePanorama: position.marker || showPanoramaPanel }">
+            <button class="iconbutton" @click="togglePanoramaPanel" aria-label="Panorama"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 7C6.48 7 2 9.24 2 12c0 2.24 2.94 4.13 7 4.77V20l4-4-4-4v2.73c-3.15-.56-5-1.9-5-2.73 0-1.06 3.04-3 8-3s8 1.94 8 3c0 .73-1.46 1.89-4 2.53v2.05c3.53-.77 6-2.53 6-4.58 0-2.76-4.48-5-10-5z"/></svg></button>
+            <button class="iconbutton" @click="toggleBaseLayersPanel" aria-label="Layers" :aria-expanded="showBaseLayersPanel.toString()" aria-controls="baseLayers"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"/></svg></button>
+          </div>
+          <transition name="fade">
+            <PanoramaPanel :position="this.position" :isOpen="showPanoramaPanel" @toggle="togglePanoramaPanel" />
+          </transition>
+          <transition name="fade">
+            <BaseLayersPanel v-if="showBaseLayersPanel" :layers="this.layers" @toggle-layer="this.toggleLayer" />
+          </transition>
+        </div>
         <ZoomPanel :position="this.position" @set-position="this.setPosition" />
       </div>
     </div>
@@ -25,6 +36,7 @@ import Map from '../components/Map'
 import SearchPanel from '../components/SearchPanel'
 import LayersPanel from '../components/LayersPanel'
 import ZoomPanel from '../components/ZoomPanel'
+import PanoramaPanel from '../components/PanoramaPanel'
 import MorePanel from '../components/MorePanel'
 import MeasurePanel from '../components/MeasurePanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
@@ -37,6 +49,7 @@ export default {
     SearchPanel,
     LayersPanel,
     ZoomPanel,
+    PanoramaPanel,
     MorePanel,
     MeasurePanel,
     BaseLayersPanel,
@@ -63,6 +76,14 @@ export default {
     toggleSidePanel() {
       this.showSidePanel = !this.showSidePanel
     },
+    togglePanoramaPanel() {
+      this.showBaseLayersPanel = false
+      this.showPanoramaPanel = !this.showPanoramaPanel
+    },
+    toggleBaseLayersPanel() {
+      this.showPanoramaPanel = false
+      this.showBaseLayersPanel = !this.showBaseLayersPanel
+    },
     pushHistoryState() {
       const x = encodeURIComponent(this.position.center[0].toFixed(2))
       const y = encodeURIComponent(this.position.center[1].toFixed(2))
@@ -84,6 +105,8 @@ export default {
     return {
       showInfoPanel: Boolean(this.position && this.position.marker),
       showSidePanel: true,
+      showPanoramaPanel: false,
+      showBaseLayersPanel: false,
       computedStyle: {
         '--color-primary': '#0066FF'
       }
@@ -108,7 +131,7 @@ export default {
     --radius-small: 3px;
     --radius-normal: 6px;
 
-    --shadow-normal: 0 0 1px rgba(0,0,0,.3), 0 0 8px rgba(0,0,0,.15);
+    --shadow-normal: 0 0 1px rgba(0,0,0,.2), 0 0 8px rgba(0,0,0,.15);
 
     --padding-screen: 8px;
 
@@ -225,6 +248,7 @@ svg {
   line-height: 14px;
   text-align: center;
   white-space: nowrap;
+  user-select: none;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -278,5 +302,42 @@ svg {
   right: var(--padding-screen);
   display: flex;
   flex-direction: column;
+}
+
+.bottom-right-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.bottom-right-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: white;
+  border-radius: var(--radius-normal);
+  overflow: hidden;
+  box-shadow: var(--shadow-normal);
+  height: var(--width-button-normal);
+  transition: height .1s ease, border-radius .1s;
+  overflow: hidden;
+}
+
+.bottom-right-buttons.isOpen {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.bottom-right-buttons.showTogglePanorama {
+  height: calc(var(--width-button-normal) * 2 + 1px);
+}
+
+.bottom-right-buttons .iconbutton {
+  width: var(--width-button-normal);
+  height: var(--width-button-normal);
+}
+
+.bottom-right-buttons .iconbutton:first-child {
+  box-sizing: content-box;
+  border-bottom: 1px solid #EAEAEA;
 }
 </style>

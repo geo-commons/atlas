@@ -124,6 +124,7 @@ export default {
 }
 
 .iconbutton:not(:last-child) {
+  box-sizing: content-box;
   border-right: 1px solid var(--color-grey-50);
 }
 
