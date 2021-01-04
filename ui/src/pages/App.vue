@@ -4,12 +4,12 @@
     <SearchPanel :position="this.position" @set-position="this.setPosition" :showInfoPanel="showInfoPanel" :showSearchPanel="showSidePanel" />
     <div class="map">
       <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
-      <div class="bottom-left-panels">
-        <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" @set-layer-opacity="this.setLayerOpacity" />
-      </div>
       <div class="top-right-panels">
         <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
         <MorePanel :user="this.user" />
+      </div>
+      <div class="bottom-left-panels">
+        <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" @set-layer-opacity="this.setLayerOpacity" />
       </div>
       <div class="bottom-right-panels">
         <div class="bottom-right-wrapper">
