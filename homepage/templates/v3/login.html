@@ -1,0 +1,43 @@
+{% extends 'v3/_base.html' %}
+
+{% block content %}
+  <div class="login__container">
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+
+      {{ form.non_field_errors }}
+
+      {% for hidden_field in form.hidden_fields %}
+          {{ hidden_field.errors }}
+          {{ hidden_field }}
+      {% endfor %}
+
+      <div>
+        <div>
+          <label for="id_username">
+            Gebruikersnaam
+          </label>
+          {{ form.username }}
+        </div>
+        {% for error in form.username.errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div>
+        <div>
+          <label for="id_password">
+            Wachtwoord
+          </label>
+          {{ form.password }}
+        </div>
+        {% for error in form.password.errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+{% endblock %}

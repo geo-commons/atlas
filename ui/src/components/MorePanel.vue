@@ -4,10 +4,9 @@
     <transition name="fade">
       <div class="menu" v-if="isOpen">
         <ul class="list">
-          <li><a href="#">Log in</a></li>
-          <li><a href="#">Help</a></li>
-          <li><a href="#">Print</a></li>
-          <li><a href="#">Deel</a></li>
+          <li v-if="!user"><a :href="`/atlas/v3/login?next=${encodeURIComponent(this.nextUrl)}`">Log in</a></li>
+          <li v-if="user"><a :href="`/atlas/v3/logout?next=${encodeURIComponent(this.nextUrl)}`">Log uit</a></li>
+          <li><a href="/atlas/v3/help" target="_blank">Help</a></li>
           <li><a href="#">Embed</a></li>
         </ul>
       </div>
@@ -23,10 +22,18 @@ export default {
       isOpen: false
     }
   },
+  computed: {
+    nextUrl() {
+      return window.location.pathname
+    }
+  },
   methods: {
     toggle() {
       this.isOpen = !this.isOpen
     }
+  },
+  props: {
+    user: Object,
   }
 }
 </script>

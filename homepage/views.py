@@ -168,7 +168,10 @@ def embed(request):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
 
     context = {
-        'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
+        'data': {
+            'user': _get_user(request),
+            'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
+        }
     }
 
     return render(request, 'embed.html', context)
@@ -177,10 +180,23 @@ def v3(request):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
 
     context = {
-        'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
+        'data': {
+            'user': _get_user(request),
+            'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
+        }
     }
 
-    return render(request, 'v3.html', context)
+    return render(request, 'v3/app.html', context)
+
+def v3_help(request):
+    return render(request, 'v3/help.html', {
+        'title': 'Help'
+    })
+
+def v3_login(request):
+    return render(request, 'v3/login.html', {
+        'title': 'Login'
+    })
 
 def _default_layers():
     return [
@@ -205,3 +221,16 @@ def _default_layers():
             'is_visible': False
         },
     ]
+
+def _get_user(request):
+    user = request.user
+
+    if not user.is_authenticated:
+        return None
+
+    return {
+        'id': user.id,
+        'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name
+    }
