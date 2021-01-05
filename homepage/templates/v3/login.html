@@ -6,13 +6,6 @@
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ next }}">
 
-      {{ form.non_field_errors }}
-
-      {% for hidden_field in form.hidden_fields %}
-          {{ hidden_field.errors }}
-          {{ hidden_field }}
-      {% endfor %}
-
       <div>
         <div class="login__form-item">
           <label for="id_username">
@@ -36,6 +29,13 @@
             <p>{{ error }}</p>
         {% endfor %}
       </div>
+
+      {{ form.non_field_errors }}
+
+      {% for hidden_field in form.hidden_fields %}
+          {{ hidden_field.errors }}
+          {{ hidden_field }}
+      {% endfor %}
 
       <button type="submit" class="login__submit">Log in</button>
     </form>
