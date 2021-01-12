@@ -502,14 +502,14 @@ function init(){
 					lyr.setVisible(true);
 
 					if (window.vueStore) {
-						window.vueStore.commit('addLayer', lyr.get('id'));
+						window.vueStore.commit('addLayer', { 'id': lyr.get('id'), 'is_visible': true });
 					}
 				}
 				else{
 					lyr.setVisible(false);
 
 					if (window.vueStore) {
-						window.vueStore.commit('deleteLayer', lyr.get('id'));
+						window.vueStore.commit('deleteLayer', { 'id': lyr.get('id'), 'is_visible': true });
 					}
 				}
 			}); // END change function

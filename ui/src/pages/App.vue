@@ -6,7 +6,7 @@
       <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
       <div class="top-right-panels">
         <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
-        <MorePanel :user="this.user" />
+        <MorePanel :user="this.user" @toggle-modal="toggleModal" />
       </div>
       <div class="bottom-left-panels">
         <LayersPanel :layers="this.layers" @toggle-layer="this.toggleLayer" @set-layer-opacity="this.setLayerOpacity" />
@@ -27,6 +27,9 @@
         <ZoomPanel :position="this.position" @set-position="this.setPosition" />
       </div>
     </div>
+    <transition name="fade">
+      <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
+    </transition>
   </div>
 </template>
 
@@ -41,6 +44,7 @@ import MorePanel from '../components/MorePanel'
 import MeasurePanel from '../components/MeasurePanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 import PointInfoPanel from '../components/PointInfoPanel'
+import EmbedModal from '../components/EmbedModal'
 
 export default {
   name: 'App',
@@ -54,6 +58,7 @@ export default {
     MeasurePanel,
     BaseLayersPanel,
     PointInfoPanel,
+    EmbedModal
   },
   computed: mapState({
     position: state => state.position,
@@ -91,6 +96,9 @@ export default {
       const zoom = encodeURIComponent(this.position.zoom.toFixed(2))
       const layers = this.layers.filter(l => l.is_visible && !l.is_base).map(l => l.id).join(',')
       window.history.replaceState({}, '', `/atlas/v3/@${x},${y},${zoom}z/layers=${layers}`)
+    },
+    toggleModal(modal) {
+      this.modal = modal
     }
   },
   watch: {
@@ -108,9 +116,8 @@ export default {
       showSidePanel: true,
       showPanoramaPanel: false,
       showBaseLayersPanel: false,
-      computedStyle: {
-        '--color-primary': '#0066FF'
-      }
+      computedStyle: { '--color-primary': '#0066FF' },
+      modal: ''
     }
   }
 }
@@ -123,6 +130,7 @@ export default {
     --color-grey-50: #EAEAEA;
     --color-grey-60: #DADADA;
 
+    --font-size-tiny: 14px;
     --font-size-small: 14px;
     --font-size-normal: 16px;
 
@@ -201,14 +209,6 @@ button:not([disabled]) {
   cursor: pointer;
 }
 
-button:not([disabled]):hover {
-  background: #F5F5F5;
-}
-
-button:not([disabled]):active {
-  background: #EAEAEA;
-}
-
 ul {
   margin: 0;
   padding: 0;
@@ -233,6 +233,14 @@ svg {
 
 .iconbutton.isActive {
   color: var(--color-primary);
+}
+
+.iconbutton:not([disabled]):hover {
+  background: #F5F5F5;
+}
+
+.iconbutton:not([disabled]):active {
+  background: #EAEAEA;
 }
 
 .counter {
