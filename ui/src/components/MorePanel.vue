@@ -7,7 +7,7 @@
           <li v-if="!user"><a :href="`/atlas/v3/login?next=${encodeURIComponent(this.nextUrl)}`">Log in</a></li>
           <li v-if="user"><a :href="`/atlas/v3/logout?next=${encodeURIComponent(this.nextUrl)}`">Log uit</a></li>
           <li><a href="/atlas/v3/help" target="_blank">Help</a></li>
-          <li><a href="#">Embed</a></li>
+          <li><button @click="() => toggleModal('embed')">Embed</button></li>
         </ul>
       </div>
     </transition>
@@ -30,6 +30,9 @@ export default {
   methods: {
     toggle() {
       this.isOpen = !this.isOpen
+    },
+    toggleModal(modal) {
+      this.$emit('toggle-modal', modal)
     }
   },
   props: {
@@ -68,7 +71,7 @@ export default {
   transform: translateY(0);
 }
 
-.list a {
+.list a, .list button {
   display: block;
   color: black;
   text-decoration: none;

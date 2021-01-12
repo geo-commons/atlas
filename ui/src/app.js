@@ -5,7 +5,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import App from './pages/App'
-import EmbedCode from './components/EmbedCode'
+import LegacyEmbedModal from './pages/LegacyEmbedModal'
 import { createStore } from './store'
 import { getSettingsFromPath } from './utils/router'
 
@@ -64,6 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
   new Vue({
     el: '#embedCode',
     store,
-    render: (c) => c(EmbedCode),
+    render: (c) => c(LegacyEmbedModal),
   })
 })
