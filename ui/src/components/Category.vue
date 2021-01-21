@@ -48,6 +48,14 @@ export default {
   padding-right: 8px;
 }
 
+.category:hover {
+  background: #F5F5F5;
+}
+
+.category:active {
+  background: #EAEAEA;
+}
+
 .name {
   flex-grow: 1;
   padding: 5px 0;
