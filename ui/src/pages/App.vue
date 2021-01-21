@@ -14,8 +14,8 @@
       <div class="bottom-right-panels">
         <div class="bottom-right-wrapper">
           <div class="bottom-right-buttons" :class="{ isOpen: showBaseLayersPanel, showTogglePanorama: position.marker || showPanoramaPanel }">
-            <button class="iconbutton" @click="togglePanoramaPanel" aria-label="Panorama"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 7C6.48 7 2 9.24 2 12c0 2.24 2.94 4.13 7 4.77V20l4-4-4-4v2.73c-3.15-.56-5-1.9-5-2.73 0-1.06 3.04-3 8-3s8 1.94 8 3c0 .73-1.46 1.89-4 2.53v2.05c3.53-.77 6-2.53 6-4.58 0-2.76-4.48-5-10-5z"/></svg></button>
-            <button class="iconbutton" @click="toggleBaseLayersPanel" aria-label="Layers" :aria-expanded="showBaseLayersPanel.toString()" aria-controls="baseLayers"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"/></svg></button>
+            <button class="iconbutton" @click="togglePanoramaPanel" v-tippy='{ placement : "left" }' content="Panorama" aria-label="Toon panorama"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 7C6.48 7 2 9.24 2 12c0 2.24 2.94 4.13 7 4.77V20l4-4-4-4v2.73c-3.15-.56-5-1.9-5-2.73 0-1.06 3.04-3 8-3s8 1.94 8 3c0 .73-1.46 1.89-4 2.53v2.05c3.53-.77 6-2.53 6-4.58 0-2.76-4.48-5-10-5z"/></svg></button>
+            <button class="iconbutton" @click="toggleBaseLayersPanel" v-tippy='{ placement : "left" }' content="Basislagen" aria-label="Toon basislagen" :aria-expanded="showBaseLayersPanel.toString()" aria-controls="baseLayers"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"/></svg></button>
           </div>
           <transition name="fade">
             <PanoramaPanel :position="this.position" :isOpen="showPanoramaPanel" @toggle="togglePanoramaPanel" />
@@ -129,6 +129,8 @@ export default {
 
     --color-grey-50: #EAEAEA;
     --color-grey-60: #DADADA;
+
+    --color-tooltip-dark: #222222;
 
     --font-size-tiny: 14px;
     --font-size-small: 14px;
@@ -266,7 +268,26 @@ svg {
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+
+.tippy-tooltip {
+  padding: 3px 7px 4px;
+  border-radius: var(--radius-normal);
+  font-family: inherit;
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0em;
+}
+
+.tippy-tooltip.dark-theme .tippy-backdrop {
+  background-color: var(--color-tooltip-dark);
+}
+
+.tippy-tooltip.primary-theme .tippy-backdrop {
+  /* TODO: var(--color-primary) doesn't work */
+  background-color: #0066FF;
+}
 </style>
+
 
 <style scoped>
 .container {

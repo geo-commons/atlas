@@ -3,6 +3,7 @@ import 'whatwg-fetch'
 
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VueTippy, { TippyComponent } from 'vue-tippy'
 
 import App from './pages/App'
 import LegacyEmbedModal from './pages/LegacyEmbedModal'
@@ -11,6 +12,17 @@ import { getSettingsFromPath } from './utils/router'
 
 Vue.use(Vuex)
 Vue.config.productionTip = false
+
+Vue.use(VueTippy, {
+  distance: 8,
+  duration: [200, 175],
+  hideOnClick: false,
+  interactive: true,
+  ignoreAttributes: true,
+  allowHTML: false,
+  boundary: 'window',
+  delay: [1000, 0]
+});
 
 // Atlas v3
 document.addEventListener('DOMContentLoaded', () => {
