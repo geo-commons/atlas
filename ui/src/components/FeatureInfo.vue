@@ -1,24 +1,30 @@
 <template>
-  <div class="feature">
-    <h2>{{ layer.title }}</h2>
-    <div class="details" v-if="features.length > 0">
+  <ExpandButton v-if="features.length > 0" :title="layer.title" class="feature">
+    <Table v-if="features.length > 0" class="table">
       <table v-for="feature in features" v-bind:key="feature.id">
+        <tbody>
           <tr v-for="(value, key) in feature.properties" v-bind:key="key">
             <td>{{ key }}</td>
             <td>{{ value }}</td>
           </tr>
+        </tbody>
       </table>
-    </div>
-    <span v-if="features.length === 0">Geen informatie gevonden</span>
-  </div>
+    </Table>
+  </ExpandButton>
 </template>
 
 <script>
+import Table from './Table'
 import TileWMS from 'ol/source/TileWMS'
 import View from 'ol/View'
+import ExpandButton from './ExpandButton'
 
 export default {
   name: 'FeatureInfo',
+  components: {
+    Table,
+    ExpandButton,
+  },
   data() {
     return {
       features: {}
@@ -67,36 +73,16 @@ export default {
 </script>
 
 <style scoped>
-.feature {
-  margin-bottom: 20px;
+.feature:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-50);
 }
 
-.feature h2 {
-  margin: 0 0 8px;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
+.table {
+  margin: 4px 0 8px;
 }
 
-.details {
-  margin: 0 -20px;
-  overflow: auto;
-}
-
-.details table {
-  width: 100%;
-  font-size: var(--font-size-small);
-}
-
-.details td {
-  padding: 4px;
-}
-
-.details td:first-child {
-  padding-left: 20px;
+.table-wrapper td:first-child {
+  width: 30%;
   color: var(--color-text-grey);
-}
-
-.details td:last-child {
-  padding-right: 20px;
 }
 </style>

@@ -1,7 +1,25 @@
 <template>
-  <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel && showSidePanel }">
-    <PointInfoPanel :layers="this.layers" :position="this.position" @set-position="this.setPosition" :showInfoPanel="showInfoPanel && showSidePanel" @toggle-side-panel="this.toggleSidePanel" />
-    <SearchPanel :position="this.position" @set-position="this.setPosition" :showInfoPanel="showInfoPanel" :showSearchPanel="showSidePanel" />
+  <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel && showSidePanel, showDataPanel }">
+    <SearchPanel
+      :position="this.position"
+      :showSearchPanel="showSidePanel"
+      @set-position="this.setPosition"
+      @toggle-data-panel="this.toggleDataPanel"
+    />
+    <PointInfoPanel
+      :layers="this.layers"
+      :position="this.position"
+      :showSidePanel="showSidePanel"
+      :showInfoPanel="!showDataPanel && showInfoPanel"
+      @set-position="this.setPosition"
+      @toggle-side-panel="this.toggleSidePanel"
+    />
+    <DataPanel
+      :layers="this.layers"
+      :showDataPanel="showDataPanel"
+      @toggle-data-panel="this.toggleDataPanel"
+    />
+
     <div class="map">
       <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
       <div class="top-right-panels">
@@ -44,6 +62,7 @@ import MorePanel from '../components/MorePanel'
 import MeasurePanel from '../components/MeasurePanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 import PointInfoPanel from '../components/PointInfoPanel'
+import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
 
 export default {
@@ -58,6 +77,7 @@ export default {
     MeasurePanel,
     BaseLayersPanel,
     PointInfoPanel,
+    DataPanel,
     EmbedModal
   },
   computed: mapState({
@@ -82,6 +102,9 @@ export default {
     toggleSidePanel() {
       this.showSidePanel = !this.showSidePanel
     },
+    toggleInfoPanel() {
+      this.showInfoPanel = !this.showInfoPanel
+    },
     togglePanoramaPanel() {
       this.showBaseLayersPanel = false
       this.showPanoramaPanel = !this.showPanoramaPanel
@@ -99,6 +122,9 @@ export default {
     },
     toggleModal(modal) {
       this.modal = modal
+    },
+    toggleDataPanel() {
+      this.showDataPanel = !this.showDataPanel
     }
   },
   watch: {
@@ -116,6 +142,7 @@ export default {
       showSidePanel: true,
       showPanoramaPanel: false,
       showBaseLayersPanel: false,
+      showDataPanel: false,
       computedStyle: { '--color-primary': '#0066FF' },
       modal: ''
     }
@@ -127,6 +154,7 @@ export default {
   :root {
     --color-text-grey: rgba(0,0,0,.55);
 
+    --color-grey-40: #F5F5F5;
     --color-grey-50: #EAEAEA;
     --color-grey-60: #DADADA;
 
@@ -195,8 +223,10 @@ export default {
 }
 
 input, button {
+  margin: 0;
   padding: 0;
   border: none;
+  color: inherit;
   background: transparent;
   font: inherit;
   letter-spacing: inherit;
@@ -222,6 +252,7 @@ svg {
 }
 
 .iconbutton {
+  color: black;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -310,6 +341,9 @@ svg {
 @media (min-width: 576px) {
   .showInfoPanel .bottom-left-panels {
     left: calc(var(--padding-screen) + var(--width-detail));
+  }
+  .showDataPanel .bottom-left-panels {
+    left: calc(var(--padding-screen) + 50%);
   }
 }
 
