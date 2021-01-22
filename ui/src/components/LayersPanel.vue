@@ -12,19 +12,28 @@
       </div>
 
       <transition name="fade">
-        <div class="counter" v-if="visibleLayers.length > 0">{{ visibleLayers.length }}</div>
+        <div class="counter visible-layer-counter" v-if="visibleLayers.length > 0">{{ visibleLayers.length }}</div>
       </transition>
     </div>
 
     <transition name="fade">
       <ul class="layers" v-if="this.panel === 'layers'" id="layers">
-          <Category v-for="category in categories" :key="category.id" :category="category">
-            <li v-for="layer in category.layers" v-bind:key="layer.id">
-              <input type="checkbox" :name="layer.id" :id="layer.id" :checked="layer.is_visible" @change="() => onSelectLayer(layer)" />
-              <label :for="layer.id">{{ layer.title }}</label>
-            </li>
-          </Category>
-        </ul>
+        <li>
+          <ExpandButton v-for="category in categories" :key="category.id" :title="category.title" class="category-wrapper">
+            <template v-slot:button>
+              <div v-if="category.layers.filter((layer) => layer.is_visible).length > 0" class="counter layer-counter">{{category.layers.filter((layer) => layer.is_visible).length}}</div>
+            </template>
+            <template v-slot:default>
+              <ul :id="category.id" class="sublayers">
+                <li v-for="layer in category.layers" v-bind:key="layer.id">
+                  <input type="checkbox" :name="layer.id" :id="layer.id" :checked="layer.is_visible" @change="() => onSelectLayer(layer)" />
+                  <label :for="layer.id">{{ layer.title }}</label>
+                </li>
+              </ul>
+            </template>
+          </ExpandButton>
+        </li>
+      </ul>
     </transition>
 
     <transition name="fade">
@@ -36,13 +45,13 @@
 </template>
 
 <script>
-import Category from './Category'
+import ExpandButton from './ExpandButton'
 import VisibleLayer from './VisibleLayer'
 
 export default {
   name: 'LayersPanel',
   components: {
-    Category,
+    ExpandButton,
     VisibleLayer
   },
   data() {
@@ -130,7 +139,7 @@ export default {
   border-right: 1px solid var(--color-grey-50);
 }
 
-.counter {
+.visible-layer-counter {
   position: absolute;
   top: 2px;
   left: calc(100% - 8px);
@@ -156,5 +165,39 @@ export default {
   .showInfoPanel .visible-layers {
     max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal) - var(--width-detail));
   }
+}
+
+.category-wrapper:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-50);
+}
+
+.sublayers {
+  padding: 0 0 4px 30px;
+}
+
+.sublayers > li {
+  position: relative;
+}
+
+.sublayers > li > input {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+
+.sublayers > li > label {
+  display: block;
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+  padding: 2px 12px 2px 20px;
+  user-select: none;
+}
+
+.layer-counter {
+  margin: 7px 8px 0 4px;
 }
 </style>

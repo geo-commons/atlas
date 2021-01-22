@@ -256,7 +256,9 @@ source: new ol.source.TileWMS({{
             'category': {
                 'id': self.layer_type.id,
                 'title': self.layer_type.title
-            }
+            },
+            'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
+            'search_properties': self._search_fields.split('\r\n') if self._search_fields else []
         }
 
     class Meta:

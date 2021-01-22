@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 Vue.use(VueTippy, {
   distance: 8,
   duration: [200, 175],
-  hideOnClick: false,
+  hideOnClick: true,
   interactive: true,
   ignoreAttributes: true,
   allowHTML: false,
