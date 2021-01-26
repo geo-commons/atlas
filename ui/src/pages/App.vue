@@ -21,9 +21,9 @@
     />
 
     <div class="map">
-      <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
+      <Map :position="this.position" :layers="this.layers" :tool="this.tool" @set-position="this.setPosition" @tool-used="this.toolUsed" />
       <div class="top-right-panels">
-        <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
+        <MeasurePanel :tool="this.tool" @set-tool="this.setTool" />
         <MorePanel :user="this.user" @toggle-modal="toggleModal" />
       </div>
       <div class="bottom-left-panels">
@@ -53,6 +53,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { getArea, getLength } from 'ol/sphere'
 import Map from '../components/Map'
 import SearchPanel from '../components/SearchPanel'
 import LayersPanel from '../components/LayersPanel'
@@ -83,7 +84,7 @@ export default {
   computed: mapState({
     position: state => state.position,
     layers: state => state.layers,
-    measure: state => state.measure,
+    tool: state => state.tool,
     user: state => state.user
   }),
   methods: {
@@ -96,8 +97,18 @@ export default {
     setLayerOpacity(values) {
       this.$store.commit('setLayerOpacity', values)
     },
-    setMeasure(measure) {
-      this.$store.commit('setMeasure', measure)
+    setTool(tool) {
+      this.$store.commit('setTool', tool)
+    },
+    toolUsed(result) {
+      switch (result.tool) {
+        case 'MEASURE_AREA':
+          alert(`${getArea(result.sketch.getGeometry())} m2`)
+          break
+        case 'MEASURE_LINE':
+          alert(`${getLength(result.sketch.getGeometry())} m`)
+          break
+      }
     },
     toggleSidePanel() {
       this.showSidePanel = !this.showSidePanel

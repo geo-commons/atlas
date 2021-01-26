@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialState = {
     position: settings.position,
     layers,
-    measure: '',
+    tool: '',
     user: data.user
   }
 
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialState = {
     position: settings.position,
     layers: [],
-    measure: ''
+    tool: ''
   }
 
   const store = createStore(initialState)

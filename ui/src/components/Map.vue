@@ -80,8 +80,12 @@ export default {
       })
     })
 
-    if (this.measure !== '') {
-      this.draw = constructDraw(this.measure)
+    if (this.tool !== '') {
+      const onDrawEnd = (sketch) => {
+        this.$emit('tool-used', { 'tool': value, sketch })
+      }
+
+      this.draw = constructDraw(this.tool, onDrawEnd)
       this.map.addInteraction(this.draw)
     }
 
@@ -96,7 +100,7 @@ export default {
     })
 
     this.map.on('singleclick', (e) => {
-      if (this.measure !== '') {
+      if (this.tool !== '') {
         return
       }
 
@@ -140,10 +144,15 @@ export default {
         }
       })
     },
-    measure(value) {
+    tool(value) {
       this.map.removeInteraction(this.draw)
+
+      const onDrawEnd = (sketch) => {
+        this.$emit('tool-used', { 'tool': value, sketch })
+      }
+
       if (value !== '') {
-        this.draw = constructDraw(value)
+        this.draw = constructDraw(value, onDrawEnd)
         this.map.addInteraction(this.draw)
       }
     }
@@ -151,7 +160,7 @@ export default {
   props: {
     position: Object,
     layers: Array,
-    measure: String,
+    tool: String,
   }
 }
 </script>

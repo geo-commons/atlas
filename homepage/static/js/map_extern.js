@@ -778,7 +778,7 @@ function init(){
 		window.vueStore.commit('setPosition', {
 			center: coord,
 			zoom: view.getZoom(),
-			measure: ''
+			tool: ''
 		});
 	});
 

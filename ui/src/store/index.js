@@ -28,8 +28,8 @@ export const createStore = (initialState) => {
       setLayerOpacity(state, [ layerId, opacity ]) {
         state.layers = state.layers.map((layer) => layer.id === layerId ? { ...layer, opacity: opacity } : layer)
       },
-      setMeasure(state, measure) {
-        state.measure = measure
+      setTool(state, tool) {
+        state.tool = tool
       }
     }
   })
