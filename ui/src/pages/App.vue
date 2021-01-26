@@ -23,6 +23,7 @@
     <div class="map">
       <Map :position="this.position" :layers="this.layers" :tool="this.tool" @set-position="this.setPosition" @tool-used="this.toolUsed" />
       <div class="top-right-panels">
+        <AreaSelectPanel :tool="this.tool" @set-tool="this.setTool" />
         <MeasurePanel :tool="this.tool" @set-tool="this.setTool" />
         <MorePanel :user="this.user" @toggle-modal="toggleModal" />
       </div>
@@ -54,32 +55,34 @@
 <script>
 import { mapState } from 'vuex'
 import { getArea, getLength } from 'ol/sphere'
-import Map from '../components/Map'
-import SearchPanel from '../components/SearchPanel'
-import LayersPanel from '../components/LayersPanel'
-import ZoomPanel from '../components/ZoomPanel'
-import PanoramaPanel from '../components/PanoramaPanel'
-import MorePanel from '../components/MorePanel'
-import MeasurePanel from '../components/MeasurePanel'
+import AreaSelectPanel from '../components/AreaSelectPanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
-import PointInfoPanel from '../components/PointInfoPanel'
 import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
+import LayersPanel from '../components/LayersPanel'
+import Map from '../components/Map'
+import MeasurePanel from '../components/MeasurePanel'
+import MorePanel from '../components/MorePanel'
+import PanoramaPanel from '../components/PanoramaPanel'
+import PointInfoPanel from '../components/PointInfoPanel'
+import SearchPanel from '../components/SearchPanel'
+import ZoomPanel from '../components/ZoomPanel'
 
 export default {
   name: 'App',
   components: {
-    Map,
-    SearchPanel,
-    LayersPanel,
-    ZoomPanel,
-    PanoramaPanel,
-    MorePanel,
-    MeasurePanel,
+    AreaSelectPanel,
     BaseLayersPanel,
-    PointInfoPanel,
     DataPanel,
-    EmbedModal
+    EmbedModal,
+    LayersPanel,
+    Map,
+    MeasurePanel,
+    MorePanel,
+    PanoramaPanel,
+    PointInfoPanel,
+    SearchPanel,
+    ZoomPanel
   },
   computed: mapState({
     position: state => state.position,
@@ -107,6 +110,9 @@ export default {
           break
         case 'MEASURE_LINE':
           alert(`${getLength(result.sketch.getGeometry())} m`)
+          break
+        case 'SELECT_AREA':
+          alert('Area selected')
           break
       }
     },

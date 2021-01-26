@@ -3,9 +3,15 @@ import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 
 const constructDraw = (measure, onDrawEnd) => {
+  const mapping = {
+    'MEASURE_AREA': 'Polygon',
+    'SELECT_AREA': 'Polygon',
+    'MEASURE_LINE': 'LineString'
+  }
+
   const draw = new Draw({
     source: new VectorSource(),
-    type: measure == 'MEASURE_AREA' ? 'Polygon' : 'LineString',
+    type: mapping[measure],
     style: new Style({
       fill: new Fill({
         color: 'rgba(255, 255, 255, 0.2)',
