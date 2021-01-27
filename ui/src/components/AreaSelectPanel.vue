@@ -16,6 +16,7 @@ export default {
       } else {
         // toggle off when the user is currently selecting an area
         this.$emit('set-tool', '')
+        this.$emit('set-selected-area', null)
       }
     }
   },

@@ -16,14 +16,15 @@
     />
     <DataPanel
       :layers="this.layers"
+      :selectedArea="this.selectedArea"
       :showDataPanel="showDataPanel"
       @toggle-data-panel="this.toggleDataPanel"
     />
 
     <div class="map">
-      <Map :position="this.position" :layers="this.layers" :tool="this.tool" @set-position="this.setPosition" @tool-used="this.toolUsed" />
+      <Map :position="this.position" :layers="this.layers" :tool="this.tool" :selectedArea="this.selectedArea" @set-position="this.setPosition" @tool-used="this.toolUsed" />
       <div class="top-right-panels">
-        <AreaSelectPanel :tool="this.tool" @set-tool="this.setTool" />
+        <AreaSelectPanel :tool="this.tool" @set-tool="this.setTool" @set-selected-area="this.setSelectedArea" />
         <MeasurePanel :tool="this.tool" @set-tool="this.setTool" />
         <MorePanel :user="this.user" @toggle-modal="toggleModal" />
       </div>
@@ -88,7 +89,8 @@ export default {
     position: state => state.position,
     layers: state => state.layers,
     tool: state => state.tool,
-    user: state => state.user
+    user: state => state.user,
+    selectedArea: state => state.selectedArea
   }),
   methods: {
     setPosition(position) {
@@ -103,6 +105,9 @@ export default {
     setTool(tool) {
       this.$store.commit('setTool', tool)
     },
+    setSelectedArea(selectedArea) {
+      this.$store.commit('setSelectedArea', selectedArea)
+    },
     toolUsed(result) {
       switch (result.tool) {
         case 'MEASURE_AREA':
@@ -112,7 +117,8 @@ export default {
           alert(`${getLength(result.sketch.getGeometry())} m`)
           break
         case 'SELECT_AREA':
-          alert('Area selected')
+          this.$store.commit('setSelectedArea', result.sketch.getGeometry())
+          this.showDataPanel = true
           break
       }
     },

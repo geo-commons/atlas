@@ -29,8 +29,6 @@
 <script>
 import Table from './Table'
 import ExpandButton from './ExpandButton'
-import TileWMS from 'ol/source/TileWMS'
-import View from 'ol/View'
 
 export default {
   name: 'FeatureTable',
@@ -50,14 +48,16 @@ export default {
   },
   props: {
     layer: Object,
-    query: String
+    query: String,
+    selectedArea: Object
   },
   mounted() {
     this.fetchFeatures()
   },
   watch: {
     position: 'fetchFeatures',
-    query: 'fetchFeatures'
+    query: 'fetchFeatures',
+    selectedArea: 'fetchFeatures'
   },
   methods: {
     async fetchFeatures() {
@@ -73,8 +73,18 @@ export default {
         ['maxFeatures', '500'],
       ])
 
+      const filters = []
+
       if (this.query && this.searchProperties.length > 0) {
-        params.set('cql_filter', this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(' OR '))
+        filters.push(this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(' OR '))
+      }
+
+      if (this.selectedArea) {
+        filters.push(`WITHIN(geom,POLYGON((${this.selectedArea.getCoordinates()[0].map(c => `${c[0]} ${c[1]}`).join(',')})))`)
+      }
+
+      if (filters.length > 0) {
+        params.set('cql_filter', filters.join(' AND '))
       }
 
       try {

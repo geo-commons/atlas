@@ -14,6 +14,7 @@
         v-bind:key="visibleLayer.id"
         :layer="visibleLayer"
         :position="position"
+        :selectedArea="selectedArea"
         :query="query"
       />
     </template>
@@ -53,7 +54,8 @@ export default {
   props: {
     position: Object,
     layers: Array,
-    showDataPanel: Boolean
+    showDataPanel: Boolean,
+    selectedArea: Object
   }
 }
 </script>

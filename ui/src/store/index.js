@@ -30,6 +30,9 @@ export const createStore = (initialState) => {
       },
       setTool(state, tool) {
         state.tool = tool
+      },
+      setSelectedArea(state, area) {
+        state.selectedArea = area
       }
     }
   })
