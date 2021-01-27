@@ -4,6 +4,7 @@
     <span v-if="loading">Bezig met laden...</span>
     <span v-if="!loading && !error && displayProperties.length === 0">Geen weergave beschikbaar.</span>
     <div v-if="!loading && !error && displayProperties.length > 0">
+      <button @click="this.downloadCSV">Download</button>
       <Table class="table">
         <table>
           <thead>
@@ -110,6 +111,21 @@ export default {
       }
 
       this.loading = false
+    },
+    downloadCSV() {
+      const filename = this.layer.title.replace(' ', '-').replace(/[^a-z0-9\-]/gi, '').toLowerCase()
+
+      let data = this.displayProperties.map((property) => `"${property.replace(/\"/g, "\"\"")}"`).join(',') + '\n'
+
+      this.features.forEach((feature) => {
+        data += this.displayProperties.map((property) => feature.properties[property] !== null ? `"${String(feature.properties[property]).replace(/\"/g, "\"\"")}"` : "").join(',') + '\n'
+      })
+
+      const hiddenElement = document.createElement('a')
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(data)
+      hiddenElement.target = '_blank'
+      hiddenElement.download = `${filename}.csv`
+      hiddenElement.click()
     }
   }
 }
