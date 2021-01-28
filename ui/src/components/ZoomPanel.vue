@@ -38,7 +38,7 @@ export default {
 }
 
 .iconbutton:not(:last-child) {
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid var(--color-grey-50);
 }
 
 </style>

@@ -13,7 +13,7 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import TileLayer from 'ol/layer/Tile'
 import TileWMS from 'ol/source/TileWMS'
-import { Icon, Style } from 'ol/style'
+import { Icon, Style, Fill, Stroke, Text } from 'ol/style'
 import { register } from 'ol/proj/proj4'
 
 import { getDefinitions } from '../utils/projections'
@@ -25,9 +25,14 @@ register(getDefinitions())
 export default {
   name: 'Map',
   mounted() {
-    this.vectorSource = new VectorSource()
-    this.vectorLayer = new VectorLayer({
-      source: this.vectorSource
+    this.markerSource = new VectorSource()
+    this.markerLayer = new VectorLayer({
+      source: this.markerSource
+    })
+
+    this.selectedAreaSource = new VectorSource()
+    this.selectedAreaLayer = new VectorLayer({
+      source: this.selectedAreaSource
     })
 
     if (this.position.marker) {
@@ -45,7 +50,7 @@ export default {
       })
 
       markerFeature.setStyle(markerStyle)
-      this.vectorSource.addFeature(markerFeature)
+      this.markerSource.addFeature(markerFeature)
     }
 
     this.tileLayers = {}
@@ -71,7 +76,8 @@ export default {
           this.tileLayers[layer.id] = tileLayer
           return tileLayer
         }),
-        this.vectorLayer
+        this.markerLayer,
+        this.selectedAreaLayer
       ],
       view: new View({
         projection: 'EPSG:28992',
@@ -80,8 +86,12 @@ export default {
       })
     })
 
-    if (this.measure !== '') {
-      this.draw = constructDraw(this.measure)
+    if (this.tool !== '') {
+      const onDrawEnd = (sketch) => {
+        this.$emit('tool-used', { 'tool': this.tool, sketch })
+      }
+
+      this.draw = constructDraw(this.tool, onDrawEnd)
       this.map.addInteraction(this.draw)
     }
 
@@ -96,7 +106,7 @@ export default {
     })
 
     this.map.on('singleclick', (e) => {
-      if (this.measure !== '') {
+      if (this.tool !== '') {
         return
       }
 
@@ -110,7 +120,7 @@ export default {
     position(value) {
       this.map.getView().setCenter(value.center)
       this.map.getView().setZoom(value.zoom)
-      this.vectorSource.clear()
+      this.markerSource.clear()
 
       if (value.marker) {
         const markerFeature = new Feature({
@@ -127,7 +137,7 @@ export default {
         })
 
         markerFeature.setStyle(markerStyle)
-        this.vectorSource.addFeature(markerFeature)
+        this.markerSource.addFeature(markerFeature)
       }
     },
     layers(value) {
@@ -140,18 +150,41 @@ export default {
         }
       })
     },
-    measure(value) {
+    tool(value) {
       this.map.removeInteraction(this.draw)
+
+      const onDrawEnd = (sketch) => {
+        this.$emit('tool-used', { 'tool': value, sketch })
+      }
+
       if (value !== '') {
-        this.draw = constructDraw(value)
+        this.draw = constructDraw(value, onDrawEnd)
         this.map.addInteraction(this.draw)
+      }
+    },
+    selectedArea(selectedArea) {
+      this.selectedAreaSource.clear()
+
+      if (selectedArea) {
+        const selectedAreaFeature = new Feature({
+          geometry: selectedArea,
+        })
+
+        const selectedAreaStyle = new Style({
+          stroke: new Stroke({ color: 'rgba(0, 102, 255, 1)' }),
+          fill: new Fill({ color: 'rgba(0, 102, 255, 0.2)' })
+        })
+
+        selectedAreaFeature.setStyle(selectedAreaStyle)
+        this.selectedAreaSource.addFeature(selectedAreaFeature)
       }
     }
   },
   props: {
     position: Object,
     layers: Array,
-    measure: String,
+    tool: String,
+    selectedArea: Object
   }
 }
 </script>

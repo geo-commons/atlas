@@ -48,9 +48,7 @@ export default {
     toggleDataPanel() {
       this.$emit('toggle-data-panel')
     },
-    async onSearch(e) {
-      e.preventDefault()
-
+    async onSearch() {
       this.error = false
       this.results = []
 

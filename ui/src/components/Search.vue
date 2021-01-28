@@ -1,10 +1,10 @@
 <template>
     <div class="search-wrapper" :class="{ showBorder }">
       <form class="search" autocomplete="off" method="GET" @submit="onSubmit">
-        <button v-if="this.$listeners['show-data-panel']" class="iconbutton toggle-button" type="button" aria-label="Toon dataweergave" @click="showDataPanel">
+        <button v-if="this.$listeners['show-data-panel']" class="iconbutton toggle-button" type="button" v-tippy='{ placement : "bottom" }' content="Toon data" aria-label="Toon data" @click="showDataPanel">
           <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><g><rect fill="none" height="24" width="24"/><path fill="currentColor" d="M14.17,5L19,9.83V19H5V5L14.17,5L14.17,5 M14.17,3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V9.83 c0-0.53-0.21-1.04-0.59-1.41l-4.83-4.83C15.21,3.21,14.7,3,14.17,3L14.17,3z M7,15h10v2H7V15z M7,11h10v2H7V11z M7,7h7v2H7V7z"/></g></svg>
         </button>
-        <button v-if="this.$listeners['on-close']" class="iconbutton toggle-button" type="button" aria-label="Sluit weergave" @click="onClose">
+        <button v-if="this.$listeners['on-close']" class="iconbutton toggle-button" type="button" v-tippy content="Sluit paneel" aria-label="Sluit paneel" @click="onClose">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
 
@@ -21,9 +21,6 @@
 </template>
 
 <script>
-const suggestEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest'
-const freeEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/free'
-
 export default {
   name: 'Search',
   props: {
@@ -89,11 +86,44 @@ export default {
 }
 
 .search-button {
+  position: relative;
   width: 48px;
 }
 
-.search-button:not([disabled]) {
+.search-button > * {
+  position: relative;
+}
+
+.search-button:not([disabled]):hover {
   background: transparent;
+}
+
+.search-button:not([disabled]):active {
+  background: transparent;
+}
+
+.search-button:before {
+  content: '';
+  position: absolute;
+  top:0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--width-button-large);
+  height: var(--width-button-large);
+  margin: auto;
+  border-radius: 50%;
+}
+
+.iconbutton:not([disabled]):hover:before {
+  background: var(--color-grey-40);
+}
+
+.iconbutton:not([disabled]):active:before {
+  background: var(--color-grey-50);
+}
+
+.search-button:not([disabled]) {
   color: var(--color-primary);
 }
 
@@ -110,7 +140,7 @@ export default {
 
 .results {
   width: 100%;
-  border-top: 1px solid #EAEAEA;
+  border-top: 1px solid var(--color-grey-50);
   padding: 12px 0;
 }
 

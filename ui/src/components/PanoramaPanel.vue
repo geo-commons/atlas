@@ -149,7 +149,7 @@ export default {
 
 .buttons .iconbutton:first-child {
   box-sizing: content-box;
-  border-right: 1px solid #EAEAEA;
+  border-right: 1px solid var(--color-grey-50);
 }
 
 .wrapper.isLarge .buttons {

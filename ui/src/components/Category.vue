@@ -49,11 +49,11 @@ export default {
 }
 
 .category:hover {
-  background: #F5F5F5;
+  background: var(--color-grey-40);
 }
 
 .category:active {
-  background: #EAEAEA;
+  background: var(--color-grey-50);
 }
 
 .name {
