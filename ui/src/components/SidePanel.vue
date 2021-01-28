@@ -2,13 +2,13 @@
   <div>
     <transition name="fade">
       <aside class="wrapper" :class="{ large, fullScreen }" v-if="showPanel">
-        <button v-if="this.$listeners['toggle-side-panel']" @click="toggleSidePanel" v-tippy='{ placement : "right" }' content="Verberg details" aria-label="Verberg details" class="iconbutton resize-button">
+        <button v-if="this.$listeners['toggle-side-panel']" @click="toggleSidePanel" v-tippy='{ placement : "right" }' content="Verberg paneel" aria-label="Verberg paneel" class="iconbutton resize-button">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/></svg>
         </button>
-        <button v-if="large && !fullScreen" @click="toggleFullScreen" aria-label="Vergroot details" class="iconbutton resize-button">
+        <button v-if="large && !fullScreen" @click="toggleFullScreen" v-tippy='{ placement : "right" }' content="Vergroot paneel" aria-label="Vergroot paneel" class="iconbutton resize-button">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
         </button>
-        <button v-if="large && fullScreen" @click="toggleFullScreen" aria-label="Vergroot details" class="iconbutton resize-button exit-fullscreen">
+        <button v-if="large && fullScreen" @click="toggleFullScreen" v-tippy='{ placement : "left" }' content="Verklein paneel" aria-label="Verklein paneel" class="iconbutton resize-button exit-fullscreen">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/></svg>
         </button>
 
@@ -81,9 +81,6 @@ export default {
   padding: var(--padding-screen);
   padding-bottom: 0;
   margin: 0 auto;
-}
-
-.wrapper.fullScreen .header {
   max-width: var(--width-detail);
 }
 

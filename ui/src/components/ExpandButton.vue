@@ -48,6 +48,14 @@ export default {
   padding-left: 4px;
 }
 
+.expand-button:not([disabled]):hover {
+  background: var(--color-grey-40);
+}
+
+.expand-button:not([disabled]):active {
+  background: var(--color-grey-50);
+}
+
 .expand-button > svg {
   margin-top: 4px;
   margin-right: 2px;

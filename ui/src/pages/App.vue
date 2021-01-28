@@ -16,14 +16,16 @@
     />
     <DataPanel
       :layers="this.layers"
+      :selectedArea="this.selectedArea"
       :showDataPanel="showDataPanel"
       @toggle-data-panel="this.toggleDataPanel"
     />
 
     <div class="map">
-      <Map :position="this.position" :layers="this.layers" :measure="this.measure" @set-position="this.setPosition" />
+      <Map :position="this.position" :layers="this.layers" :tool="this.tool" :selectedArea="this.selectedArea" @set-position="this.setPosition" @tool-used="this.toolUsed" />
       <div class="top-right-panels">
-        <MeasurePanel :measure="this.measure" @set-measure="this.setMeasure" />
+        <AreaSelectPanel :tool="this.tool" @set-tool="this.setTool" @set-selected-area="this.setSelectedArea" />
+        <MeasurePanel :tool="this.tool" @set-tool="this.setTool" />
         <MorePanel :user="this.user" @toggle-modal="toggleModal" />
       </div>
       <div class="bottom-left-panels">
@@ -53,38 +55,42 @@
 
 <script>
 import { mapState } from 'vuex'
-import Map from '../components/Map'
-import SearchPanel from '../components/SearchPanel'
-import LayersPanel from '../components/LayersPanel'
-import ZoomPanel from '../components/ZoomPanel'
-import PanoramaPanel from '../components/PanoramaPanel'
-import MorePanel from '../components/MorePanel'
-import MeasurePanel from '../components/MeasurePanel'
+import { getArea, getLength } from 'ol/sphere'
+import AreaSelectPanel from '../components/AreaSelectPanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
-import PointInfoPanel from '../components/PointInfoPanel'
 import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
+import LayersPanel from '../components/LayersPanel'
+import Map from '../components/Map'
+import MeasurePanel from '../components/MeasurePanel'
+import MorePanel from '../components/MorePanel'
+import PanoramaPanel from '../components/PanoramaPanel'
+import PointInfoPanel from '../components/PointInfoPanel'
+import SearchPanel from '../components/SearchPanel'
+import ZoomPanel from '../components/ZoomPanel'
 
 export default {
   name: 'App',
   components: {
-    Map,
-    SearchPanel,
-    LayersPanel,
-    ZoomPanel,
-    PanoramaPanel,
-    MorePanel,
-    MeasurePanel,
+    AreaSelectPanel,
     BaseLayersPanel,
-    PointInfoPanel,
     DataPanel,
-    EmbedModal
+    EmbedModal,
+    LayersPanel,
+    Map,
+    MeasurePanel,
+    MorePanel,
+    PanoramaPanel,
+    PointInfoPanel,
+    SearchPanel,
+    ZoomPanel
   },
   computed: mapState({
     position: state => state.position,
     layers: state => state.layers,
-    measure: state => state.measure,
-    user: state => state.user
+    tool: state => state.tool,
+    user: state => state.user,
+    selectedArea: state => state.selectedArea
   }),
   methods: {
     setPosition(position) {
@@ -96,8 +102,25 @@ export default {
     setLayerOpacity(values) {
       this.$store.commit('setLayerOpacity', values)
     },
-    setMeasure(measure) {
-      this.$store.commit('setMeasure', measure)
+    setTool(tool) {
+      this.$store.commit('setTool', tool)
+    },
+    setSelectedArea(selectedArea) {
+      this.$store.commit('setSelectedArea', selectedArea)
+    },
+    toolUsed(result) {
+      switch (result.tool) {
+        case 'MEASURE_AREA':
+          alert(`${getArea(result.sketch.getGeometry())} m2`)
+          break
+        case 'MEASURE_LINE':
+          alert(`${getLength(result.sketch.getGeometry())} m`)
+          break
+        case 'SELECT_AREA':
+          this.$store.commit('setSelectedArea', result.sketch.getGeometry())
+          this.showDataPanel = true
+          break
+      }
     },
     toggleSidePanel() {
       this.showSidePanel = !this.showSidePanel
@@ -269,11 +292,11 @@ svg {
 }
 
 .iconbutton:not([disabled]):hover {
-  background: #F5F5F5;
+  background: var(--color-grey-40);
 }
 
 .iconbutton:not([disabled]):active {
-  background: #EAEAEA;
+  background: var(--color-grey-50);
 }
 
 .counter {
@@ -402,6 +425,6 @@ svg {
 
 .bottom-right-buttons .iconbutton:first-child {
   box-sizing: content-box;
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid var(--color-grey-50);
 }
 </style>
