@@ -52,7 +52,7 @@ export default {
 
 .layer > input {
   position: absolute;
-  top: 5px;
+  top: 6px;
   left: 0;
   width: 12px;
   height: 12px;
@@ -64,7 +64,7 @@ export default {
   position: relative;
   width: 100%;
   cursor: pointer;
-  padding: 2px 0 2px 18px;
+  padding: 3px 0 3px 18px;
   user-select: none;
   font-size: var(--font-size-small);
   white-space: nowrap;
