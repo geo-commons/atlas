@@ -24,8 +24,7 @@
     <div class="map">
       <Map :position="this.position" :layers="this.layers" :tool="this.tool" :selectedArea="this.selectedArea" @set-position="this.setPosition" @tool-used="this.toolUsed" />
       <div class="top-right-panels">
-        <AreaSelectPanel :tool="this.tool" @set-tool="this.setTool" @set-selected-area="this.setSelectedArea" />
-        <MeasurePanel :tool="this.tool" @set-tool="this.setTool" />
+        <Tools :tool="this.tool" @set-tool="this.setTool" @set-selected-area="this.setSelectedArea" />
         <MorePanel :user="this.user" @toggle-modal="toggleModal" />
       </div>
       <div class="bottom-left-panels">
@@ -56,13 +55,12 @@
 <script>
 import { mapState } from 'vuex'
 import { getArea, getLength } from 'ol/sphere'
-import AreaSelectPanel from '../components/AreaSelectPanel'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
 import LayersPanel from '../components/LayersPanel'
 import Map from '../components/Map'
-import MeasurePanel from '../components/MeasurePanel'
+import Tools from '../components/Tools'
 import MorePanel from '../components/MorePanel'
 import PanoramaPanel from '../components/PanoramaPanel'
 import PointInfoPanel from '../components/PointInfoPanel'
@@ -72,13 +70,12 @@ import ZoomPanel from '../components/ZoomPanel'
 export default {
   name: 'App',
   components: {
-    AreaSelectPanel,
     BaseLayersPanel,
     DataPanel,
     EmbedModal,
     LayersPanel,
     Map,
-    MeasurePanel,
+    Tools,
     MorePanel,
     PanoramaPanel,
     PointInfoPanel,
@@ -298,6 +295,34 @@ svg {
 .iconbutton:not([disabled]):active {
   background: var(--color-grey-50);
 }
+
+.menu {
+  padding: 6px 0;
+  background: white;
+  border-radius: var(--radius-small);
+  border-top-right-radius: 0;
+  box-shadow: var(--shadow-normal);
+}
+
+.list a, .list button {
+  display: block;
+  width: 100%;
+  color: black;
+  text-decoration: none;
+  padding: 4px 12px;
+  font-size: var(--font-size-small);
+}
+
+.list a:hover,
+.list button:hover {
+  background: var(--color-grey-40);
+}
+
+.list a:active,
+.list button:active {
+  background: var(--color-grey-50);
+}
+
 
 .counter {
   flex-shrink: 0;

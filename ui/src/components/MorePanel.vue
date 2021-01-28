@@ -63,27 +63,5 @@ export default {
   position: absolute;
   top: var(--width-button-large);
   right: 0;
-  padding: 4px 0;
-  background: white;
-  border-radius: var(--radius-small);
-  border-top-right-radius: 0;
-  box-shadow: var(--shadow-normal);
-  transform: translateY(0);
-}
-
-.list a, .list button {
-  display: block;
-  color: black;
-  text-decoration: none;
-  padding: 2px 12px;
-  font-size: var(--font-size-small);
-}
-
-.list a:hover {
-  background: var(--color-grey-40);
-}
-
-.list a:active {
-  background: var(--color-grey-50);
 }
 </style>
