@@ -292,11 +292,11 @@ svg {
 }
 
 .iconbutton:not([disabled]):hover {
-  background: #F5F5F5;
+  background: var(--color-grey-40);
 }
 
 .iconbutton:not([disabled]):active {
-  background: #EAEAEA;
+  background: var(--color-grey-50);
 }
 
 .counter {
@@ -425,6 +425,6 @@ svg {
 
 .bottom-right-buttons .iconbutton:first-child {
   box-sizing: content-box;
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid var(--color-grey-50);
 }
 </style>

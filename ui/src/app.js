@@ -14,13 +14,14 @@ Vue.use(Vuex)
 Vue.config.productionTip = false
 
 Vue.use(VueTippy, {
-  distance: 8,
+  distance: 5,
+  placement: 'top',
   duration: [200, 175],
   hideOnClick: true,
   interactive: true,
   ignoreAttributes: true,
   allowHTML: false,
-  boundary: 'window',
+  boundary: 'viewport',
   delay: [1000, 0]
 });
 

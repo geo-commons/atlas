@@ -2,7 +2,7 @@
   <div>
     <div class="buttons-wrapper">
       <div class="buttons" :class="{ isOpen: this.panel === 'layers' || this.panel === 'activeLayers', showVisibleLayers: visibleLayers.length > 0 }">
-        <button class="iconbutton" :class="{ isActive: this.panel === 'layers' }" @click="() => togglePanel('layers')" v-tippy='{ placement : "top-start" }' content="Alle lagen" aria-label="Toon alle lagen" :aria-expanded="String(this.panel === 'layers')" aria-controls="layers">
+        <button class="iconbutton" :class="{ isActive: this.panel === 'layers' }" @click="() => togglePanel('layers')" v-tippy content="Alle lagen" aria-label="Toon alle lagen" :aria-expanded="String(this.panel === 'layers')" aria-controls="layers">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path fill="currentColor" d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"/></svg>
         </button>
 
@@ -160,10 +160,15 @@ export default {
   box-shadow: var(--shadow-normal);
 }
 
-@media (min-width: 650px) {
+@media (min-width: 576px) {
   .showInfoPanel .layers,
   .showInfoPanel .visible-layers {
     max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal) - var(--width-detail));
+  }
+
+  .showDataPanel .layers,
+  .showDataPanel .visible-layers {
+    max-width: calc(50vw - (var(--padding-screen) * 3) - var(--width-button-normal));
   }
 }
 
