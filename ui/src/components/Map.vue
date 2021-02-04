@@ -18,6 +18,7 @@ import { register } from 'ol/proj/proj4'
 
 import { getDefinitions } from '../utils/projections'
 import constructDraw from '../utils/draw'
+import getMarkerUrl from "../utils/generate-marker-url"
 
 // Register EPSG:28992 projection
 register(getDefinitions())
@@ -42,10 +43,10 @@ export default {
 
       const markerStyle = new Style({
         image: new Icon({
-          anchor: [ 0.5, 46 ],
+          src: getMarkerUrl("#0066FF", "#FFFFFF"),
+          anchor: [ 0.55, 42 ],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
-          src: '/atlas/static/img/icon.png'
         })
       })
 
@@ -129,10 +130,10 @@ export default {
 
         const markerStyle = new Style({
           image: new Icon({
-            anchor: [ 0.5, 46 ],
+            src: getMarkerUrl("#0066FF", "#FFFFFF"),
+            anchor: [ 0.55, 42 ],
             anchorXUnits: 'fraction',
             anchorYUnits: 'pixels',
-            src: '/atlas/static/img/icon.png'
           })
         })
 
