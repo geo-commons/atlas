@@ -14,7 +14,7 @@
       </template>
 
       <template v-slot:default>
-        <FeatureInfo v-for="visibleLayer in visibleLayers" v-bind:key="visibleLayer.id" :layer="visibleLayer" :position="position" />
+        <FeatureInfo v-for="visibleLayer in visibleLayers" :isOpen="visibleLayers.length === 1" v-bind:key="visibleLayer.id" :layer="visibleLayer" :position="position" />
       </template>
     </SidePanel>
   </div>

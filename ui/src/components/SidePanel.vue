@@ -85,6 +85,7 @@ export default {
 }
 
 .content {
+  position: relative;
   flex-grow: 1;
   overflow-y: auto;
   padding: 16px 0;
