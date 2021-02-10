@@ -1,7 +1,13 @@
 from django.contrib import admin
 
-from .forms import LayerForm
-from .models import Category, Layer, AtlasTheme
+from .forms import LayerForm, LinkedDataForm
+from .models import Category, Layer, AtlasTheme, LinkedData
+
+
+class LinkedDataInline(admin.TabularInline):
+    form = LinkedDataForm
+    model = LinkedData
+    extra = 1
 
 
 class LayerAdmin(admin.ModelAdmin):
@@ -12,6 +18,10 @@ class LayerAdmin(admin.ModelAdmin):
     list_display_links = ('title',)
     list_editable = ('ordering',)
     list_filter = ('layer_type', 'closed_dataset')
+
+    inlines = [
+        LinkedDataInline,
+    ]
 
 
 class CategoryAdmin(admin.ModelAdmin):

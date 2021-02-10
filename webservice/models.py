@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
 
 from user_management.models import AtlasGroup
@@ -258,13 +259,42 @@ source: new ol.source.TileWMS({{
                 'title': self.layer_type.title
             },
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
-            'search_properties': self._search_fields.split('\r\n') if self._search_fields else []
+            'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
+            'linked_data': [ item.to_dict() for item in self.linked_data.all() ]
         }
 
     class Meta:
         verbose_name = 'Kaartlaag'
         verbose_name_plural = 'Kaartlagen'
         ordering = ['layer_type__ordering', 'layer_type__title', 'ordering', 'title']
+
+
+class LinkedData(models.Model):
+    source = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='linked_data')
+
+    title = models.CharField(_('Titel'), max_length=128, null=True)
+    layer_name = models.CharField(_('Laag naam'), max_length=128)
+    url = models.CharField(_('URL'), max_length=500, default='https://datalab.purmerend.nl/geoserver/topp/wms?')
+    source_key = models.CharField(_('Bronsleutel'), max_length=128)
+    target_key = models.CharField(_('Doelsleutel'), max_length=128)
+    popup_attributes = models.CharField(_('Toon deze attributen'), max_length=250, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Gekoppelde data'
+        verbose_name_plural = 'Gekoppelde data'
+
+    def __str__(self):
+        return self.layer_name
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'name': self.layer_name,
+            'url': self.url,
+            'source_key': self.source_key,
+            'target_key': self.target_key,
+            'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else []
+        }
 
 
 class AtlasTheme(models.Model):
