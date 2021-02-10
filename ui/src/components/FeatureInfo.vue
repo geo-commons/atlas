@@ -1,5 +1,5 @@
 <template>
-  <ExpandButton v-if="features.length > 0" :title="layer.title" class="feature">
+  <ExpandButton v-if="features.length > 0" :title="layer.title" :isOpen="isOpen" class="feature">
     <Table v-if="features.length > 0" class="table">
       <table v-for="feature in features" v-bind:key="feature.id">
         <tbody>
@@ -32,7 +32,8 @@ export default {
   },
   props: {
     layer: Object,
-    position: Object
+    position: Object,
+    isOpen: Boolean
   },
   mounted() {
     this.fetchFeatures()
