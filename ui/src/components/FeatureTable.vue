@@ -58,7 +58,8 @@ export default {
     layer: Object,
     query: String,
     selectedArea: Object,
-    isOpen: Boolean
+    isOpen: Boolean,
+    filter: Object
   },
   mounted() {
     this.fetchFeatures()
@@ -66,7 +67,8 @@ export default {
   watch: {
     position: 'fetchFeatures',
     query: 'fetchFeatures',
-    selectedArea: 'fetchFeatures'
+    selectedArea: 'fetchFeatures',
+    filter: 'fetchFeatures'
   },
   methods: {
     async fetchFeatures() {
@@ -96,6 +98,10 @@ export default {
         params.set('cql_filter', filters.join(' AND '))
       }
 
+      if (this.filter) {
+        params.set('cql_filter', `${this.filter.key} = '${this.filter.value}'`)
+      }
+
       try {
         const result = await fetch(this.layer.url + params.toString())
         const data = await result.json()
@@ -107,7 +113,7 @@ export default {
           // cache first retrieval of properties into this.properties
           const fetchedProperties = Object.keys(data.features[0].properties)
           this.displayProperties = this.layer.display_properties.length > 0 ? this.layer.display_properties.filter((p) => fetchedProperties.includes(p)) : fetchedProperties
-          this.searchProperties = this.layer.search_properties.filter((p) => fetchedProperties.includes(p))
+          this.searchProperties = this.layer.search_properties ? this.layer.search_properties.filter((p) => fetchedProperties.includes(p)) : []
         }
       } catch(e) {
         console.error(e)
