@@ -18,7 +18,9 @@
     meta_org: "{{ layer.meta_org }}",
     meta_bijgewerkt: {{ layer.meta_updated }},
     // metadata attributen
+    {% if layer.layer_type %}
     categorie: "{{layer.layer_type}}",
+    {% endif %}
     title: "{{ layer.title }}",
     opacity: {{ layer.opacity }},
     visible: {{ layer.visible|lower }},
