@@ -194,6 +194,9 @@ Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema.
             return "isBaseLayer:true"
         """
 
+        if not self.layer_type:
+            return 'themelayer:true'
+
         return self.layer_type.js_type
 
     @property
@@ -257,7 +260,7 @@ source: new ol.source.TileWMS({{
             'category': {
                 'id': self.layer_type.id,
                 'title': self.layer_type.title
-            },
+            } if self.layer_type else None,
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
             'linked_data': [ item.to_dict() for item in self.linked_data.all() ]
