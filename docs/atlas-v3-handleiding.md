@@ -24,11 +24,11 @@
 
 Als Atlas wordt gestart is het volgende scherm te zien:
 
-![](media/image1.png)
+![image1](/uploads/409bb319174c5a62499c622c5e008001/image1.png)
 
---
-* [Naar boven](#inhoud)
---
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Pannen en zoomen
 
@@ -36,41 +36,49 @@ In- en uitzoomen kan door gebruik van de plus en min knoppen of door
 gebruik van het muiswiel.
 Om in te zoomen op een gebied is het ook mogelijk om shift in te
 drukken, en een rechthoek te trekken in de kaart.
-Verschuiven van de kaart kan doormiddel van klikken en aansluitend
+Verschuiven van de kaart kan door middel van klikken en aansluitend
 slepen in de kaart.
+
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Keuze van de achtergrondkaart
 
-Met deze knop ![](media/image2.png)kan het menu worden geopend waarin de gewenste
+![image2](/uploads/12fdedcf7b11e0fbfd33c55f91fae122/image2.png)
+Met deze knop kan het menu worden geopend waarin de gewenste
 achtergrondkaart ingesteld kan worden.
 
-![](media/image3.png){width="2.3541666666666665in"
-height="2.2708333333333335in"}
+![image3](/uploads/66b302b389237e4e6ad9992f7450828d/image3.png)
+
+***  
+* [Naar boven](#inhoud)  
+***  
 
 #  Keuze van de zichtbare kaartlagen
 
-![](media/image4.png){width="1.8596117672790902in"
-height="3.4166666666666665in"}Met deze knop
-![](media/image5.png){width="0.2708333333333333in"
-height="0.28125in"}kan het menu worden geopend waarin de zichtbaarheid
+![image4](/uploads/6bf4a09f850e2632f9899a7eb669ad14/image4.png)
+Met deze knop kan het menu worden geopend waarin de zichtbaarheid
 van de kaartlagen ingesteld kan worden.
+
+![keuzevandezichtbarekaartlagen](/uploads/d9a606640f2c90e47d3badd012698437/keuzevandezichtbarekaartlagen.png)!
 
 In het menu zijn diverse categorieën zichtbaar die met het pijltje
 opengeklapt kunnen worden, om de lagen te tonen.
 
-![](media/image6.png){width="2.0781692913385825in"
-height="3.496578083989501in"}
+![keuzevandezichtbarekaartlagen2](/uploads/1b8853a5b81c65808a93fe5f946ec520/keuzevandezichtbarekaartlagen2.png)
 
 Een kaartlaag kan door middel van een vinkje te zetten zichtbaar gemaakt
 worden in het kaartbeeld.
-
 Achter de categorienaam wordt met een cijfer inzichtelijk gemaakt
 hoeveel kaartlagen in deze categorie op zichtbaar zijn ingesteld.
 
-![](media/image7.png){width="2.6506944444444445in" height="1.25in"}Op
-het moment dat er 1 of meerdere lagen zichtbaar zijn gemaakt, verschijnt
-het icoon ![](media/image8.png){width="0.4895833333333333in"
-height="0.37438757655293087in"}zichtbare lagen. Met deze knop kan er
+[keuzevandezichtbarekaartlagen3](/uploads/42027c1983cd64bde6e366f132dd5dd0/keuzevandezichtbarekaartlagen3.png)
+
+Op het moment dat er 1 of meerdere lagen zichtbaar zijn gemaakt, verschijnt
+het icoon 
+[icoonzichtbarelagen](/uploads/6cf3dff1ae90d75a045bddb70397e9cf/icoonzichtbarelagen.png)
+zichtbare lagen. Met deze knop kan er
 gewisseld worden tusen weergave van alle lagen, of weergave van alleen
 de zichtbare lagen in de lijst.
 
@@ -88,6 +96,10 @@ met alleen zichtbare lagen, de knop Verberg
 ![](media/image10.png){width="0.3541666666666667in" height="0.375in"}
 van deze laag te gebruiken
 
+***  
+* [Naar boven](#inhoud)  
+***  
+
 # Legenda
 
 In de lijstweergave van zichtbare lagen kan de legenda van de zichtbare
@@ -96,6 +108,10 @@ legenda te tonen.
 
 ![](media/image11.png){width="3.5729166666666665in"
 height="3.6751181102362205in"}
+
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Zichtbaarheid transparantie/opacity
 
@@ -109,6 +125,10 @@ transparant..
 
 ![](media/image12.png){width="3.4in" height="0.5597222222222222in"}
 
+***  
+* [Naar boven](#inhoud)  
+***  
+
 # Zoek adres
 
 Er kan een adres gezicht worden met onderstaande zoekbalk.
@@ -121,8 +141,9 @@ objecten op de adreslocatie getoond in het detailpanel.
 ![](media/image13.png){width="3.359722222222222in"
 height="3.359722222222222in"}
 
-**\
-**
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Details tonen
 
@@ -139,8 +160,10 @@ worden.
 
 ![](media/image15.png){width="3.1in" height="2.1in"}
 
-**\
-**
+
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Gekoppelde gegevens bekijken
 
@@ -161,8 +184,11 @@ het detailpaneel terug te vinden.
 
 ![](media/image16.png){width="3.2in" height="4.979861111111111in"}
 
-**\
-**
+***  
+* [Naar boven](#inhoud)  
+***  
+
+
 
 # Objecten selecteren op de kaart binnen een polygoon
 
@@ -173,6 +199,10 @@ Er kan alleen op zichtbare lagen gezocht worden.
 
 ![](media/image17.png){width="1.9201388888888888in"
 height="1.179861111111111in"}
+
+***  
+* [Naar boven](#inhoud)  
+***  
 
 Teken een vlak in de kaart.
 
@@ -194,7 +224,12 @@ De geselecteerde objecten kunnen gedownload worden naar een csv (comma
 seperated value) bestand. Een dergelijk bestand kan bijvoorbeeld in
 Excel geopend worden.
 
+***  
+* [Naar boven](#inhoud)  
+***  
+
 # Rondkijkfoto
+
 
 Om de cyclorama's (rondkijkfoto's) en obliekfoto te openen, moet er
 eerst een locatie in de kaart aangegeven worden. Na een klik in de kaart
@@ -221,8 +256,9 @@ meest rechtse knop.
 ![](media/image23.png){width="3.530048118985127in"
 height="3.7291666666666665in"}
 
-**\
-**
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Meten
 
@@ -235,8 +271,9 @@ resultaat van de meting verschijnt in een popup scherm.
 ![](media/image24.png){width="1.520138888888889in"
 height="1.5402777777777779in"}
 
-**\
-**
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Zoek op data
 
@@ -252,8 +289,9 @@ scherm weergegeven.
 
 \[deze beschrijving wordt later uitgebreid\]
 
-**\
-**
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Printen
 
@@ -275,8 +313,9 @@ schermafbeelding maken, en volg de aanwijzingen op het scherm. Het
 opslaan en printen van de schermselectie verloopt verder hetzelfde als
 met het knipprogramma.
 
-**\
-**
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Huidige kaartscherm embedden in een andere webpagina
 
@@ -286,6 +325,10 @@ huidige scherm met de HTML code om deze op te vragen.
 
 Gebruik de code om deze kaartweergave met alle geselecteerde lagen weer
 te geven in een andere webpagina.
+
+***  
+* [Naar boven](#inhoud)  
+***  
 
 # Huidige kaartscherm delen met een collega
 
@@ -305,3 +348,7 @@ betreffende:
 -   Schaal van de kaart
 
 -   Zichtbare lagen in de kaart
+
+***  
+* [Naar boven](#inhoud)  
+***  
