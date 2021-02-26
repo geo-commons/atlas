@@ -61,40 +61,26 @@ achtergrondkaart ingesteld kan worden.
 Met deze knop kan het menu worden geopend waarin de zichtbaarheid
 van de kaartlagen ingesteld kan worden.
 
-![keuzevandezichtbarekaartlagen](/uploads/d9a606640f2c90e47d3badd012698437/keuzevandezichtbarekaartlagen.png)!
-
 In het menu zijn diverse categorieën zichtbaar die met het pijltje
 opengeklapt kunnen worden, om de lagen te tonen.
-
-![keuzevandezichtbarekaartlagen2](/uploads/1b8853a5b81c65808a93fe5f946ec520/keuzevandezichtbarekaartlagen2.png)
+![keuzevandezichtbarekaartlagen](/uploads/d9a606640f2c90e47d3badd012698437/keuzevandezichtbarekaartlagen.png)!
 
 Een kaartlaag kan door middel van een vinkje te zetten zichtbaar gemaakt
 worden in het kaartbeeld.
-Achter de categorienaam wordt met een cijfer inzichtelijk gemaakt
-hoeveel kaartlagen in deze categorie op zichtbaar zijn ingesteld.
+Achter de categorienaam wordt met een cijfer inzichtelijk gemaakt hoeveel kaartlagen in deze categorie op zichtbaar zijn ingesteld.
 
-[keuzevandezichtbarekaartlagen3](/uploads/42027c1983cd64bde6e366f132dd5dd0/keuzevandezichtbarekaartlagen3.png)
+![keuzevandezichtbarekaartlagen2](/uploads/1b8853a5b81c65808a93fe5f946ec520/keuzevandezichtbarekaartlagen2.png)
 
+![icoonzichtbarelagen](/uploads/3e3bb2a406c326bad81f2ed50320cf3e/icoonzichtbarelagen.png)
 Op het moment dat er 1 of meerdere lagen zichtbaar zijn gemaakt, verschijnt
-het icoon 
-[icoonzichtbarelagen](/uploads/6cf3dff1ae90d75a045bddb70397e9cf/icoonzichtbarelagen.png)
-zichtbare lagen. Met deze knop kan er
-gewisseld worden tusen weergave van alle lagen, of weergave van alleen
-de zichtbare lagen in de lijst.
-
-**\
-**
-
-![](media/image9.png){width="4.159722222222222in"
-height="0.8201388888888889in"}
-
+het icoon zichtbare lagen. Met deze knop kan er gewisseld worden tusen weergave van alle lagen, of weergave van alleen de zichtbare lagen in de lijst.
 Een zichtbare kaartlaag kan weer uitgezet worden door het vinkje in de
 lijst met alle lagen, uit te vinken.
 
 Een andere manier om een kaartlaag uit te zetten is om in de weergave
-met alleen zichtbare lagen, de knop Verberg
-![](media/image10.png){width="0.3541666666666667in" height="0.375in"}
-van deze laag te gebruiken
+met alleen zichtbare lagen, de knop Verberg van deze laag te gebruiken
+![knopverberg](/uploads/799b7ef01254e69c678302fb37522d32/knopverberg.png)
+![keuzevandezichtbarekaartlagen3](/uploads/42027c1983cd64bde6e366f132dd5dd0/keuzevandezichtbarekaartlagen3.png)
 
 ***  
 * [Naar boven](#inhoud)  
@@ -106,8 +92,7 @@ In de lijstweergave van zichtbare lagen kan de legenda van de zichtbare
 lagen geraadpleegd worden. Druk op het pijltje naast een kaartlaag om de
 legenda te tonen.
 
-![](media/image11.png){width="3.5729166666666665in"
-height="3.6751181102362205in"}
+![legenda](/uploads/32800a30bce3c5e2f03831fb6d086d51/legenda.png)
 
 ***  
 * [Naar boven](#inhoud)  
@@ -123,7 +108,7 @@ in.
 De waarde 0 is volledig transparant, de waarde 100 is helemaal niet
 transparant..
 
-![](media/image12.png){width="3.4in" height="0.5597222222222222in"}
+![zichtbaarheid](/uploads/996504b4613070232853dd282dd9707d/zichtbaarheid.png)
 
 ***  
 * [Naar boven](#inhoud)  
@@ -138,8 +123,7 @@ Selecteer een adres om naar deze locatie in de kaart te verspringen.
 Als er kaartlagen geopend zijn, worden direct de detailgegevens van
 objecten op de adreslocatie getoond in het detailpanel.
 
-![](media/image13.png){width="3.359722222222222in"
-height="3.359722222222222in"}
+![kimono](/uploads/b29c38b03ffb7ce8fc2d7d7cfbf99217/kimono.png)
 
 ***  
 * [Naar boven](#inhoud)  
@@ -152,13 +136,12 @@ details opgevraagd worden. Klik hiervoor in de kaart om een punt te
 plaatsen. Links wordt een paneel geopend met daarin de details van alle
 objecten die op de geklikte locatie zijn gevonden.
 
-![](media/image14.png){width="3.729529746281715in"
-height="4.499722222222222in"}
+![toondetails1](/uploads/99273a2269854f767ab29500f938cf09/toondetails1.png)
 
 Met de Toon details knop kan het detail paneel ingeklapt en uitgeklapt
 worden.
 
-![](media/image15.png){width="3.1in" height="2.1in"}
+![toondetails2](/uploads/50e0e44d7528c5d78c3ecc43e77eb12b/toondetails2.png)
 
 
 ***  
@@ -182,7 +165,7 @@ Als de beheerder gekoppelde tabellen heeft geconfigureerd, zijn bij het
 opvragen van de details van een object, de gekoppelde gegevens ook in
 het detailpaneel terug te vinden.
 
-![](media/image16.png){width="3.2in" height="4.979861111111111in"}
+![gekoppeldegegevens](/uploads/9b8882b42a67c5272d2cce02e69ef438/gekoppeldegegevens.png)
 
 ***  
 * [Naar boven](#inhoud)  
@@ -197,8 +180,7 @@ worden.
 
 Er kan alleen op zichtbare lagen gezocht worden.
 
-![](media/image17.png){width="1.9201388888888888in"
-height="1.179861111111111in"}
+![objectenselecteren](/uploads/788dbd7c5a0ed457ce9cf1062cecf38a/objectenselecteren.png)
 
 ***  
 * [Naar boven](#inhoud)  
@@ -206,13 +188,12 @@ height="1.179861111111111in"}
 
 Teken een vlak in de kaart.
 
-![](media/image18.png){width="2.5729166666666665in"
-height="2.2705872703412076in"}
+![tekeneenvlak](/uploads/29ea4b338b9614ebdd23d1276c485542/tekeneenvlak.png)
 
 De objecten die zich binnen dit vlak bevinden worden weergegeven in het
 datapaneel.
 
-![](media/image19.png){width="5.40625in" height="2.866408573928259in"}
+![objectenbinnenditvlak](/uploads/5c994fcea034ffd7f1ea208dee8deb63/objectenbinnenditvlak.png)
 
 In dit voorbeeld is gekozen voor het selecteren van bomen binnen een
 vlak.
@@ -236,25 +217,20 @@ eerst een locatie in de kaart aangegeven worden. Na een klik in de kaart
 verschijnt er een locatiesymbool in de kaart, en verschijnt rechts
 onderin de panoramaknop.
 
-![](media/image20.png){width="3.0751345144356956in"
-height="2.9791666666666665in"}
+![rondkijkfoto](/uploads/ea6382b5a00be38900ecdfce9289fed3/rondkijkfoto.png)
 
 Met de panoramaknop wordt het panoramabeeld geopend. Intern (ingelogd in
 het gemeentelijk netwerk) worden de cyclorama's van cyclomedia getoond.
 Extern wordt Google Streetview getoond.
 
-Het panorama scherm kan vergroot worden
-![](media/image21.png){width="0.3229166666666667in"
-height="0.2708333333333333in"}en gesloten worden
-![](media/image22.png){width="0.2708333333333333in"
-height="0.3020833333333333in"} met de getoonde knoppen.
+![panorama-groot-sluit](/uploads/9637dea8c421e94e51cc06bef64feb92/panorama-groot-sluit.png)
+Het panorama scherm kan vergroot worden en gesloten worden met de getoonde knoppen.
 
 Het Cyclomedia panoramascherm bevat eigen functionaliteiten die hier
 verder niet toegelicht worden. Het openen van de obliekfoto kan met de
 meest rechtse knop.
 
-![](media/image23.png){width="3.530048118985127in"
-height="3.7291666666666665in"}
+![rondkijkfoto2](/uploads/5046b3b15f58111bf25ec244e4bbf6c9/rondkijkfoto2.png)
 
 ***  
 * [Naar boven](#inhoud)  
