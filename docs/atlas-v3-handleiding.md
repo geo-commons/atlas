@@ -210,8 +210,8 @@ startmenu. klik op Nieuw en selecteer met de muis het gebied dat je wilt printen
 
 ![printen](/uploads/fd2bc0897ec3bfcac883d3376fb82b3a/printen.png)
 
-Wanneer Atlas geopend is in de Firefox browser dan kan via de rechtermuisknop ook een schermselectie gemaakt worden.Klik op Een
-schermafbeelding maken, en volg de aanwijzingen op het scherm. Het opslaan en printen van de schermselectie verloopt verder hetzelfde als
+Wanneer Atlas geopend is in de Firefox browser dan kan via de rechtermuisknop ook een schermselectie gemaakt worden. Klik op **Een
+schermafbeelding maken**, en volg de aanwijzingen op het scherm. Het opslaan en printen van de schermselectie verloopt verder hetzelfde als
 met het knipprogramma.
 
 ***  
