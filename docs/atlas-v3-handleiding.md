@@ -244,8 +244,7 @@ worden.
 Kies de gewenste optie en teken een lijn of vlak in de kaart. Het
 resultaat van de meting verschijnt in een popup scherm.
 
-![](media/image24.png){width="1.520138888888889in"
-height="1.5402777777777779in"}
+![meten](/uploads/7cb9eb7ff579db9db346ccc2d5f4d16c/meten.png)
 
 ***  
 * [Naar boven](#inhoud)  
@@ -253,10 +252,8 @@ height="1.5402777777777779in"}
 
 # Zoek op data
 
-Met de knop Zoek op data
-![](media/image25.png){width="0.4479166666666667in" height="0.4375in"},
-die naast zoek op adres staat, kan in de data gezocht worden.
-
+![zoekenopdata](/uploads/29b456b6c9fbeab1d1ae0a807ea1880d/zoekenopdata.png)
+Met de knop Zoek op data, die naast zoek op adres staat, kan in de data gezocht worden.
 Er kan alleen op zichtbare lagen gezocht worden en op een beperkt
 aantal, door de beheerder ingestelde, zoekvelden.
 
@@ -281,7 +278,7 @@ bestandmenu of CTRL-S. De selectie staat nu als knipsel.png in je
 downloadsmap of andere gekozen map. Dubbelklik op het bestand en kies in
 het Windows Photo viewermenu voor Afdrukken.
 
-![](media/image26.png){width="3.8645833333333335in" height="2.9375in"}
+![printen](/uploads/fd2bc0897ec3bfcac883d3376fb82b3a/printen.png)
 
 Wanneer Atlas geopend is in de Firefox browser dan kan via de
 rechtermuisknop ook een schermselectie gemaakt worden.Klik op Een
