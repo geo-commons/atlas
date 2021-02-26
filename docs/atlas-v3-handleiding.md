@@ -1,5 +1,5 @@
-#  Handleiding Atlas V3
---
+# Handleiding Atlas V3
+
 
 # Inhoud 
 
@@ -19,7 +19,6 @@
 * [Printen](#printen)  
 * [Huidige kaartscherm embedden in een andere webpagina](#huidige-kaartscherm-embedden-in-een-andere-webpagina)  
 
---
 
 #### Opbouw van het scherm
 
