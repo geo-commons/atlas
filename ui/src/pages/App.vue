@@ -106,12 +106,16 @@ export default {
       this.$store.commit('setSelectedArea', selectedArea)
     },
     toolUsed(result) {
+      let measureResult
+
       switch (result.tool) {
         case 'MEASURE_AREA':
-          alert(`${getArea(result.sketch.getGeometry())} m2`)
+          measureResult = getArea(result.sketch.getGeometry())
+          alert(`${Math.round(measureResult*100)/100} m2`)
           break
         case 'MEASURE_LINE':
-          alert(`${getLength(result.sketch.getGeometry())} m`)
+          measureResult = getLength(result.sketch.getGeometry())
+          alert(`${Math.round(measureResult*100)/100} m`)
           break
         case 'SELECT_AREA':
           this.$store.commit('setSelectedArea', result.sketch.getGeometry())
