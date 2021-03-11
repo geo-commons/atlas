@@ -3,7 +3,7 @@
     <template v-slot:search>
       <Search :showBorder="true" @on-close="toggleDataPanel" @on-submit="onSearch">
         <template v-slot:default>
-          <input ref="queryInput" type="text" name="search" placeholder="Zoek data" autocomplete="off" />
+          <input ref="queryInput" type="search" name="search" placeholder="Zoek data" autocomplete="off" />
         </template>
       </Search>
     </template>

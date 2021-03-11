@@ -3,7 +3,7 @@
   <div class="wrapper" v-if="showSearchPanel">
     <Search :showSuggestions="showSuggestions" @show-data-panel="toggleDataPanel" @on-submit="onSearch">
       <template v-slot:default>
-        <input v-model="query" @keyup="onSearch" type="text" name="search" placeholder="Zoek adres" autocomplete="off" aria-autocomplete="list" role="combobox" aria-owns="search-results" :aria-expanded="showSuggestions && results.length" />
+        <input v-model="query" @keyup="onSearch" type="search" name="search" placeholder="Zoek adres" autocomplete="off" aria-autocomplete="list" role="combobox" aria-owns="search-results" :aria-expanded="showSuggestions && results.length" />
       </template>
 
       <template v-slot:suggestions>
