@@ -88,11 +88,15 @@ export default {
     })
 
     if (this.tool !== '') {
+      const onDrawStart = () => {
+        this.selectedAreaSource.clear()
+      }
+
       const onDrawEnd = (sketch) => {
         this.$emit('tool-used', { 'tool': this.tool, sketch })
       }
 
-      this.draw = constructDraw(this.tool, onDrawEnd)
+      this.draw = constructDraw(this.tool, onDrawStart, onDrawEnd)
       this.map.addInteraction(this.draw)
     }
 
@@ -154,12 +158,16 @@ export default {
     tool(value) {
       this.map.removeInteraction(this.draw)
 
+      const onDrawStart = () => {
+        this.selectedAreaSource.clear()
+      }
+
       const onDrawEnd = (sketch) => {
         this.$emit('tool-used', { 'tool': value, sketch })
       }
 
       if (value !== '') {
-        this.draw = constructDraw(value, onDrawEnd)
+        this.draw = constructDraw(value, onDrawStart, onDrawEnd)
         this.map.addInteraction(this.draw)
       }
     },

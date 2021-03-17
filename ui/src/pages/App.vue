@@ -149,6 +149,10 @@ export default {
     },
     toggleDataPanel() {
       this.showDataPanel = !this.showDataPanel
+
+      if (!this.showDataPanel) {
+        this.$store.commit('setSelectedArea', null)
+      }
     }
   },
   watch: {
