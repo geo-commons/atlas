@@ -17,6 +17,7 @@
         :position="position"
         :selectedArea="selectedArea"
         :query="query"
+        @set-position="setPosition"
       />
     </template>
   </SidePanel>
@@ -41,6 +42,9 @@ export default {
     toggleDataPanel() {
       this.$emit('toggle-data-panel')
     },
+    setPosition(value) {
+      this.$emit('set-position', value)
+    }
   },
   computed: {
     visibleLayers() {

@@ -16,8 +16,10 @@
     />
     <DataPanel
       :layers="this.layers"
+      :position="this.position"
       :selectedArea="this.selectedArea"
       :showDataPanel="showDataPanel"
+      @set-position="this.setPosition"
       @toggle-data-panel="this.toggleDataPanel"
     />
 
