@@ -72,27 +72,29 @@ export default {
   },
   computed: {
     categories() {
-      let categories = {}
+      let categories = []
 
       this.layers.forEach((layer) => {
         if (!layer.category) {
           return
         }
 
-        if (categories[layer.category.id]) {
-          categories[layer.category.id].layers = [
-            ...categories[layer.category.id].layers,
-            layer
-          ]
-        } else {
-          categories[layer.category.id] = {
-            ...layer.category,
-            layers: [layer]
-          }
+        const existingCategory = categories.find((c) => c.id === layer.category.id)
+
+        if (existingCategory) {
+          existingCategory.layers.push(layer)
+          return
         }
+
+        const newCategory = {
+          ...layer.category,
+          layers: [layer]
+        }
+
+        categories.push(newCategory)
       })
 
-      return Object.values(categories).reverse()
+      return categories
     },
     visibleLayers() {
       return this.layers.filter((layer) => layer.category && layer.is_visible)
