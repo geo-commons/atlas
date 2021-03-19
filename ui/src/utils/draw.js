@@ -2,7 +2,7 @@ import Draw from 'ol/interaction/Draw'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 
-const constructDraw = (measure, onDrawEnd) => {
+const constructDraw = (measure, onDrawStart, onDrawEnd) => {
   const mapping = {
     'MEASURE_AREA': 'Polygon',
     'SELECT_AREA': 'Polygon',
@@ -35,6 +35,7 @@ const constructDraw = (measure, onDrawEnd) => {
 
   let sketch
   draw.on('drawstart', (e) => {
+    onDrawStart()
     sketch = e.feature
   })
 
