@@ -34,10 +34,19 @@ export default {
   },
   data() {
     return {
-      query: '',
       error: false,
       showSuggestions: false,
       results: []
+    }
+  },
+  computed: {
+    query: {
+      get() {
+        return this.$store.state.searchQuery
+      },
+      set(value) {
+        this.$store.commit('setSearchQuery', value)
+      }
     }
   },
   props: {
@@ -92,8 +101,8 @@ export default {
           zoom: 19
         })
 
-        this.showSuggestions = false
         this.query = object.weergavenaam
+        this.showSuggestions = false
       } catch(e) {
         console.error(e)
       }
