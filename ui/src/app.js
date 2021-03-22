@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     layers,
     tool: '',
     user: data.user,
-    selectedArea: null
+    selectedArea: null,
+    searchQuery: ''
   }
 
   const store = createStore(initialState)
@@ -70,7 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
     position: settings.position,
     layers: [],
     tool: '',
-    selectedArea: null
+    selectedArea: null,
+    searchQuery: ''
   }
 
   const store = createStore(initialState)

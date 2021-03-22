@@ -69,6 +69,8 @@ import PointInfoPanel from '../components/PointInfoPanel'
 import SearchPanel from '../components/SearchPanel'
 import ZoomPanel from '../components/ZoomPanel'
 
+const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/revgeo'
+
 export default {
   name: 'App',
   components: {
@@ -92,8 +94,26 @@ export default {
     selectedArea: state => state.selectedArea
   }),
   methods: {
-    setPosition(position) {
+    async setPosition(position) {
       this.$store.commit('setPosition', position)
+
+      if (!position.marker) {
+        return
+      }
+
+      try {
+        const result = await fetch(`${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`)
+        const data = await result.json()
+
+        if (!data.response.docs || data.response.docs.length === 0) {
+          this.$store.commit('setSearchQuery', `(${Math.round(position.marker[0]*100)/100},${Math.round(position.marker[1]*100)/100})`)
+        }
+
+        const object = data.response.docs[0]
+        this.$store.commit('setSearchQuery', object.weergavenaam)
+      } catch(e) {
+        console.error(e)
+      }
     },
     toggleLayer(values) {
       this.$store.commit('toggleLayer', values)

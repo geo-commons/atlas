@@ -33,6 +33,9 @@ export const createStore = (initialState) => {
       },
       setSelectedArea(state, area) {
         state.selectedArea = area
+      },
+      setSearchQuery(state, searchQuery) {
+        state.searchQuery = searchQuery
       }
     }
   })
