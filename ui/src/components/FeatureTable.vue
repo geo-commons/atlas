@@ -90,7 +90,7 @@ export default {
         ['request', 'GetFeature'],
         ['typename', this.layer.name],
         ['outputFormat', 'application/json'],
-        ['maxFeatures', '500'],
+        ['maxFeatures', '5000'],
       ])
 
       const filters = []
@@ -136,12 +136,13 @@ export default {
       this.loading = false
     },
     downloadCSV() {
+      const separator = ';'
       const filename = this.layer.title.replace(' ', '-').replace(/[^a-z0-9\-]/gi, '').toLowerCase()
 
-      let data = this.displayProperties.map((property) => `"${property.replace(/\"/g, "\"\"")}"`).join(',') + '\n'
+      let data = this.displayProperties.map((property) => `"${property.replace(/\"/g, "\"\"")}"`).join(separator) + '\n'
 
       this.features.forEach((feature) => {
-        data += this.displayProperties.map((property) => feature.properties[property] !== null ? `"${String(feature.properties[property]).replace(/\"/g, "\"\"")}"` : "").join(',') + '\n'
+        data += this.displayProperties.map((property) => feature.properties[property] !== null ? `"${String(feature.properties[property]).replace(/\"/g, "\"\"")}"` : "").join(separator) + '\n'
       })
 
       const hiddenElement = document.createElement('a')
