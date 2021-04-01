@@ -107,6 +107,7 @@ export default {
 
         if (!data.response.docs || data.response.docs.length === 0) {
           this.$store.commit('setSearchQuery', `(${Math.round(position.marker[0]*100)/100},${Math.round(position.marker[1]*100)/100})`)
+          return
         }
 
         const object = data.response.docs[0]
@@ -164,7 +165,7 @@ export default {
       const y = encodeURIComponent(this.position.center[1].toFixed(2))
       const zoom = encodeURIComponent(this.position.zoom.toFixed(2))
       const layers = this.layers.filter(l => l.is_visible && !l.is_base).map(l => l.id).join(',')
-      window.history.replaceState({}, '', `/atlas/v3/@${x},${y},${zoom}z/layers=${layers}`)
+      window.history.replaceState({}, '', `../@${x},${y},${zoom}z/layers=${layers}`)
     },
     toggleModal(modal) {
       this.modal = modal
