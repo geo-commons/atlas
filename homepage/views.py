@@ -7,7 +7,7 @@ import requests
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
-from django.shortcuts import HttpResponse, redirect, render
+from django.shortcuts import HttpResponse, redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import TemplateView
@@ -19,6 +19,7 @@ from webservice.models import Layer
 
 from .forms import UploadDatasetForm
 from .models import SavedDataset
+from webservice.models import AtlasTheme
 
 
 logger = logging.getLogger(__name__)
@@ -176,8 +177,12 @@ def embed(request):
 
     return render(request, 'embed.html', context)
 
-def v3(request):
+def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+
+    if theme_slug:
+        theme = get_object_or_404(AtlasTheme, slug=theme_slug)
+        authorized_layers = authorized_layers.filter(atlastheme=theme)
 
     context = {
         'data': {
