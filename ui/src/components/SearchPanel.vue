@@ -1,6 +1,6 @@
 <template>
  <transition name="fade">
-  <div class="wrapper" v-if="showSearchPanel">
+  <div class="wrapper">
     <Search :showSuggestions="showSuggestions" @show-data-panel="toggleDataPanel" @on-submit="onSearch">
       <template v-slot:default>
         <input v-model="query" @keyup="onSearch" type="search" name="search" placeholder="Zoek adres" autocomplete="off" aria-autocomplete="list" role="combobox" aria-owns="search-results" :aria-expanded="showSuggestions && results.length" />
@@ -51,7 +51,6 @@ export default {
   },
   props: {
     position: Object,
-    showSearchPanel: Boolean
   },
   methods: {
     toggleDataPanel() {

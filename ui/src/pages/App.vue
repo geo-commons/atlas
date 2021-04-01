@@ -1,18 +1,15 @@
 <template>
-  <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel && showSidePanel, showDataPanel }">
+  <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel, showDataPanel }">
     <SearchPanel
       :position="this.position"
-      :showSearchPanel="showSidePanel"
       @set-position="this.setPosition"
       @toggle-data-panel="this.toggleDataPanel"
     />
     <PointInfoPanel
       :layers="this.layers"
       :position="this.position"
-      :showSidePanel="showSidePanel"
       :showInfoPanel="!showDataPanel && showInfoPanel"
       @set-position="this.setPosition"
-      @toggle-side-panel="this.toggleSidePanel"
     />
     <DataPanel
       :layers="this.layers"
@@ -145,9 +142,6 @@ export default {
           break
       }
     },
-    toggleSidePanel() {
-      this.showSidePanel = !this.showSidePanel
-    },
     toggleInfoPanel() {
       this.showInfoPanel = !this.showInfoPanel
     },
@@ -189,7 +183,6 @@ export default {
   data() {
     return {
       showInfoPanel: Boolean(this.position && this.position.marker),
-      showSidePanel: true,
       showPanoramaPanel: false,
       showBaseLayersPanel: false,
       showDataPanel: false,
@@ -235,7 +228,7 @@ export default {
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: 576px) {
     :root {
       --padding-screen: 16px;
     }

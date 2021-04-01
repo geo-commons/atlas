@@ -1,11 +1,16 @@
 <template>
   <SidePanel large :showPanel="showDataPanel">
     <template v-slot:search>
-      <Search :showBorder="true" @on-close="toggleDataPanel" @on-submit="onSearch">
-        <template v-slot:default>
-          <input ref="queryInput" type="search" name="search" placeholder="Zoek data" autocomplete="off" />
-        </template>
-      </Search>
+      <div class="flexer">
+        <button class="iconbutton close-button" type="button" v-tippy content="Sluit paneel" aria-label="Sluit paneel" @click="toggleDataPanel">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+        <Search :showBorder="true" @on-submit="onSearch" class="data-search">
+          <template v-slot:default>
+            <input ref="queryInput" type="search" name="search" placeholder="Zoek data" autocomplete="off" />
+          </template>
+        </Search>
+      </div>
     </template>
 
     <template v-slot:default>
@@ -64,3 +69,32 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.close-button {
+  width: var(--width-button-large);
+  height: var(--width-button-large);
+  border-radius: var(--radius-normal);
+  border: 1px solid var(--color-grey-60);
+  margin-right: 12px;
+}
+
+.flexer {
+  display: flex;
+}
+
+@media (max-width: 575px) {
+
+}
+
+@media (min-width: 576px) {
+  .data-search {
+    margin: 0 auto;
+    max-width: var(--width-detail);
+  }
+
+  .flexer {
+    padding-right: calc(var(--width-button-large) + 12px);
+  }
+}
+</style>
