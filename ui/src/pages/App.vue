@@ -161,7 +161,7 @@ export default {
       this.showBaseLayersPanel = !this.showBaseLayersPanel
     },
     pushHistoryState() {
-      const basePath = /(.*?)[@|$]/.exec(window.location.pathname)
+      const basePath = /(.*?)(@|$)/.exec(window.location.pathname)
 
       const x = encodeURIComponent(this.position.center[0].toFixed(2))
       const y = encodeURIComponent(this.position.center[1].toFixed(2))
