@@ -161,11 +161,14 @@ export default {
       this.showBaseLayersPanel = !this.showBaseLayersPanel
     },
     pushHistoryState() {
+      const basePath = /(.*?)[@|$]/.exec(window.location.pathname)
+
       const x = encodeURIComponent(this.position.center[0].toFixed(2))
       const y = encodeURIComponent(this.position.center[1].toFixed(2))
       const zoom = encodeURIComponent(this.position.zoom.toFixed(2))
       const layers = this.layers.filter(l => l.is_visible && !l.is_base).map(l => l.id).join(',')
-      window.history.replaceState({}, '', `../@${x},${y},${zoom}z/layers=${layers}`)
+
+      window.history.replaceState({}, '', `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}`)
     },
     toggleModal(modal) {
       this.modal = modal
