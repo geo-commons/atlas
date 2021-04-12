@@ -145,6 +145,10 @@ export default {
           this.showDataPanel = true
           break
       }
+
+      setTimeout(() => {
+        this.$store.commit('setTool', '')
+      }, 500)
     },
     toggleSidePanel() {
       this.showSidePanel = !this.showSidePanel
