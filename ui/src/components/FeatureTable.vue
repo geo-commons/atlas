@@ -100,7 +100,7 @@ export default {
       }
 
       if (this.selectedArea) {
-        filters.push(`WITHIN(geom,POLYGON((${this.selectedArea.getCoordinates()[0].map(c => `${c[0]} ${c[1]}`).join(',')})))`)
+        filters.push(`INTERSECTS(geom,POLYGON((${this.selectedArea.getCoordinates()[0].map(c => `${c[0]} ${c[1]}`).join(',')})))`)
       }
 
       if (filters.length > 0) {
