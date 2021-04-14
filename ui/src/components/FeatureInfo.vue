@@ -13,7 +13,12 @@
     <div v-for="(linkedData, key) in layer.linked_data" v-bind:key="key" class="linked-data">
       <div v-if="features[0].properties[linkedData.source_key]">
         <b>{{ linkedData.title }}</b>
-        <FeatureTable :layer="linkedData" :filter="{ key: linkedData.target_key, value: features[0].properties[linkedData.source_key] }" />
+        <FeatureTable
+          :layer="linkedData"
+          :filter="{ key: linkedData.target_key, value: features[0].properties[linkedData.source_key] }"
+          :position="position"
+          @set-position="setPosition"
+        />
       </div>
     </div>
   </ExpandButton>
@@ -76,6 +81,9 @@ export default {
       } catch(e) {
         console.error(e)
       }
+    },
+    setPosition(value) {
+      this.$store.commit('setPosition', value)
     }
   }
 }
