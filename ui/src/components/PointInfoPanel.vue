@@ -1,22 +1,16 @@
 <template>
-  <div>
-    <button v-if="!showSidePanel && showInfoPanel" @click="toggleSidePanel" v-tippy='{ placement : "right" }' content="Toon details" aria-label="Toon details" class="iconbutton open-button">
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-    </button>
+  <SidePanel :showPanel="showInfoPanel">
+    <template v-slot:search>
+      <button class="iconbutton close-button" type="button" v-tippy='{ placement : "right" }' content="Sluit paneel" aria-label="Sluit paneel" @click="closeInfoPanel">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+      <h1>{{searchQuery}}</h1>
+    </template>
 
-    <SidePanel :showPanel="showInfoPanel && showSidePanel" @toggle-side-panel="toggleSidePanel">
-      <template v-slot:search>
-        <button class="iconbutton back-button" type="button" v-tippy='{ placement : "right" }' content="Ga terug" aria-label="Ga terug" @click="closeInfoPanel">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-        </button>
-        <h1>{{searchQuery}}</h1>
-      </template>
-
-      <template v-slot:default>
-        <FeatureInfo v-for="visibleLayer in visibleLayers" :isOpen="visibleLayers.length === 1" v-bind:key="visibleLayer.id" :layer="visibleLayer" :position="position" />
-      </template>
-    </SidePanel>
-  </div>
+    <template v-slot:default>
+      <FeatureInfo v-for="visibleLayer in visibleLayers" :isOpen="visibleLayers.length === 1" v-bind:key="visibleLayer.id" :layer="visibleLayer" :position="position" />
+    </template>
+  </SidePanel>
 </template>
 
 <script>
@@ -34,9 +28,6 @@ export default {
       this.searchQuery = ''
       this.$emit('set-position', { ...this.position, marker: null })
     },
-    toggleSidePanel() {
-      this.$emit('toggle-side-panel')
-    }
   },
   computed: {
     visibleLayers() {
@@ -54,7 +45,6 @@ export default {
   props: {
     position: Object,
     layers: Array,
-    showSidePanel: Boolean,
     showInfoPanel: Boolean
   },
 }
@@ -77,9 +67,9 @@ h1 {
   font-size: var(--font-size-normal);
 }
 
-.back-button {
-  width: 40px;
-  height: 40px;
+.close-button {
+  width: var(--width-button-large);;
+  height: var(--width-button-large);;
   border-radius: var(--radius-normal);
   border: 1px solid var(--color-grey-60);
 }

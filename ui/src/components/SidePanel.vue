@@ -95,7 +95,6 @@ export default {
   width: 100%;
   padding: var(--padding-screen);
   padding-bottom: 0;
-  max-width: var(--width-detail);
 }
 
 .content {
@@ -150,7 +149,9 @@ export default {
 
 .wrapper.fullScreen .expand-mobile-button {
   top: 0;
-  box-shadow: 0 0 0 1px var(--color-grey-60);
+  border: 1px solid var(--color-grey-60);
+  border-top: none;
+  box-shadow: none;
   border-radius: 0;
   border-bottom-left-radius: var(--radius-small);
   border-bottom-right-radius: var(--radius-small);
@@ -191,8 +192,9 @@ export default {
   border-bottom-right-radius: 0;
   border-top-left-radius: var(--radius-small);
   border-bottom-left-radius: var(--radius-small);
+  border: 1px solid var(--color-grey-60);
+  border-right: none;
   box-shadow: none;
-  box-shadow: 0 0 0 1px var(--color-grey-60);
 }
 
 .exit-fullscreen:before {
