@@ -5,7 +5,7 @@
         <tbody>
           <tr v-for="(value, key) in feature.properties" v-bind:key="key">
             <td>{{ key }}</td>
-            <td>{{ value }}</td>
+            <td><RichValue :dataKey="key" :dataValue="value" /></td>
           </tr>
         </tbody>
       </table>
@@ -30,13 +30,15 @@ import FeatureTable from './FeatureTable'
 import TileWMS from 'ol/source/TileWMS'
 import View from 'ol/View'
 import ExpandButton from './ExpandButton'
+import RichValue from './RichValue'
 
 export default {
   name: 'FeatureInfo',
   components: {
     Table,
     ExpandButton,
-    FeatureTable
+    FeatureTable,
+    RichValue
   },
   data() {
     return {

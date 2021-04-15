@@ -145,6 +145,7 @@ export default {
   margin: 0 auto;
   border-top-left-radius: var(--radius-small);
   border-top-right-radius: var(--radius-small);
+  z-index: 1;
 }
 
 .wrapper.fullScreen .expand-mobile-button {
