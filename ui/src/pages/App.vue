@@ -48,12 +48,14 @@
     <transition name="fade">
       <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
     </transition>
+    <Alert :alert="this.alert" />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import { getArea, getLength } from 'ol/sphere'
+import Alert from '../components/Alert'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
@@ -71,6 +73,7 @@ const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locati
 export default {
   name: 'App',
   components: {
+    Alert,
     BaseLayersPanel,
     DataPanel,
     EmbedModal,
@@ -84,6 +87,7 @@ export default {
     ZoomPanel
   },
   computed: mapState({
+    alert: state => state.alert,
     position: state => state.position,
     layers: state => state.layers,
     tool: state => state.tool,
@@ -211,6 +215,8 @@ export default {
 
     --color-tooltip-dark: #222222;
 
+    --color-alert: #EB0000;
+
     --font-size-tiny: 14px;
     --font-size-small: 14px;
     --font-size-normal: 16px;
@@ -226,6 +232,7 @@ export default {
     --padding-screen: 8px;
 
     --width-detail: 100vw;
+    --width-button-small: 24px;
     --width-button-normal: 32px;
     --width-button-large: 40px;
   }

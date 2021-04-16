@@ -36,6 +36,9 @@ export const createStore = (initialState) => {
       },
       setSearchQuery(state, searchQuery) {
         state.searchQuery = searchQuery
+      },
+      setAlert(state, alert) {
+        state.alert = alert
       }
     }
   })
