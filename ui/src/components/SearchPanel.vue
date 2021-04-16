@@ -16,7 +16,6 @@
         </div>
       </template>
     </Search>
-    <span v-if="this.error">Er is een fout opgetreden, probeer het opnieuw.</span>
   </div>
   </transition>
 </template>
@@ -34,7 +33,6 @@ export default {
   },
   data() {
     return {
-      error: false,
       showSuggestions: false,
       results: []
     }
@@ -57,7 +55,6 @@ export default {
       this.$emit('toggle-data-panel')
     },
     async onSearch() {
-      this.error = false
       this.results = []
 
       if (!this.query) {
@@ -74,7 +71,7 @@ export default {
         this.results = data.response.docs
       } catch(e) {
         console.error(e)
-        this.error = true
+        this.$store.commit('setAlert', 'Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.')
       }
     },
     async onNavigate(e, id) {
@@ -104,6 +101,7 @@ export default {
         this.showSuggestions = false
       } catch(e) {
         console.error(e)
+        this.$store.commit('setAlert', 'Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.')
       }
     },
   },
