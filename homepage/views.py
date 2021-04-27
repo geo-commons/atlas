@@ -208,9 +208,10 @@ def _default_layers():
         {
             'id': 'brt_topo_kaart_totaal',
             'title': 'Kaart grijs',
-            'name': 'topp:topografische_kaart_grijs',
+            'name': 'brtachtergrondkaartgrijs',
+            'source': 'wmts',
             'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
             'server_type': 'geoserver',
             'is_base': True,
             'is_visible': True
