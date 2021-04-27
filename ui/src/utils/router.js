@@ -5,7 +5,7 @@ export const getSettingsFromPath = () => {
   return {
     position: {
       zoom: match.groups.zoom ? parseFloat(match.groups.zoom) : 13,
-      center: [ match.groups.x ? parseFloat(match.groups.x) : 126910, match.groups.y ? parseFloat(match.groups.y) : 505834 ],
+      center: [ match.groups.x ? parseFloat(match.groups.x) : 136358, match.groups.y ? parseFloat(match.groups.y) : 455322 ],
       marker: null
     },
     visibleLayers: match.groups.layers ? match.groups.layers.split(',') : []
