@@ -21,7 +21,6 @@ module.exports = {
   },
 
   pages: {
-    app: { entry: 'src/app.js' },
-    embed: { entry: 'src/embed.js' }
+    app: { entry: 'src/app.js' }
   }
 }

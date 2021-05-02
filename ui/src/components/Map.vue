@@ -71,7 +71,7 @@ export default {
       })
 
       markerFeature.setStyle(markerStyle)
-      this.markerSource.addFeature(markerFeature)
+      //this.markerSource.addFeature(markerFeature)
     }
 
     this.tileLayers = {}
@@ -230,7 +230,7 @@ export default {
         })
 
         markerFeature.setStyle(markerStyle)
-        this.markerSource.addFeature(markerFeature)
+        //this.markerSource.addFeature(markerFeature)
       }
     },
     layers(value) {

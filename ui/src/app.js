@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const initialState = {
     position: settings.position,
+    embed: data.embed,
     layers,
     tool: '',
     user: data.user,

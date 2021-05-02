@@ -171,6 +171,7 @@ def embed(request):
     context = {
         'data': {
             'user': _get_user(request),
+            'embed': True,
             'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
         }
     }

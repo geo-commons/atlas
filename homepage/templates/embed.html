@@ -14,9 +14,9 @@
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/vnd.microsoft.icon" />
 </head>
   <body>
-    <div id="map" class="map"></div>
+    <div id="app" class="app"></div>
     {{ data|json_script:"app-data" }}
     {% render_bundle "chunk-vendors" %}
-    {% render_bundle "embed" %}
+    {% render_bundle "app" %}
   </body>
 </html>

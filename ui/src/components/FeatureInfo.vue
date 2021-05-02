@@ -98,6 +98,7 @@ export default {
 
 .table {
   margin: 4px 0 8px;
+  table-layout: fixed;
 }
 
 .linked-data {
@@ -105,8 +106,22 @@ export default {
   margin: 4px 0 8px;
 }
 
-.table-wrapper td:first-child {
+.table-wrapper >>> td:first-child {
   width: 30%;
   color: var(--color-text-grey);
 }
+
+.table-wrapper >>> table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-wrapper >>> td {
+  word-wrap: break-word;
+}
+
+.table-wrapper >>> img {
+  width: 100%;
+}
+
 </style>
