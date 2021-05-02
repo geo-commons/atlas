@@ -1,5 +1,5 @@
 <template>
-  <ExpandButton v-if="features.length > 0" :title="layer.title" :isOpen="isOpen" class="feature">
+  <ExpandButton v-if="features.length > 0" :title="features.length > 1 ? layer.title : ''" :isOpen="isOpen" class="feature">
     <Table class="table">
       <table v-for="feature in features" v-bind:key="feature.id">
         <tbody>
