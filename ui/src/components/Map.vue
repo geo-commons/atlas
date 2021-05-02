@@ -104,6 +104,10 @@ export default {
             })
           } else if (layer.source === 'wfs') {
             tileLayer = new VectorLayer({
+              id: layer.id,
+              visible: (layer.is_visible === true),
+              layerName: layer.name,
+              opacity: layer.opacity,
               source: new VectorSource({
                 format: new GeoJSON(),
                 url: (extent) => `${layer.url}?service=WFS&version=1.1.0&request=GetFeature&typename=${layer.id}&outputFormat=application/json&srsname=EPSG:28992&bbox=${extent.join(',')}`,
