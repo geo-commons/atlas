@@ -64,7 +64,7 @@ export default {
       }
 
       try {
-        const result = await fetch(`${suggestEndpoint}?fq=gemeentenaam:(purmerend,beemster)&q=${encodeURIComponent(this.query)}`)
+        const result = await fetch(`${suggestEndpoint}?fq=${encodeURIComponent(`gemeentenaam:utrecht`)}&q=${encodeURIComponent(this.query)}`)
         const data = await result.json()
 
         this.showSuggestions = true
