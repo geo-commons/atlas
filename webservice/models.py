@@ -88,6 +88,8 @@ class Layer(models.Model):
     title = models.CharField('title', max_length=128, null=True)
     layer_name = models.CharField('layer_name', max_length=128, null=True)
 
+    source_type = models.CharField('source_type', max_length=128, default='wms', null=True)
+
     meta_name = models.CharField('meta_naam', max_length=128, null=True)
     meta_kind = models.CharField('meta_soort', max_length=128, null=True)
     meta_org = models.CharField('meta_org', max_length=128, null=True)
@@ -252,6 +254,7 @@ source: new ol.source.TileWMS({{
             'id': self.layer_id,
             'title': self.title,
             'name': self.layer_name,
+            'source': self.source_type,
             'opacity': float(self.opacity),
             'url': self.url,
             'server_type': self.server_type,

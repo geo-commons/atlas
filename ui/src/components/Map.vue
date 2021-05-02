@@ -15,8 +15,11 @@ import TileLayer from 'ol/layer/Tile'
 import TileWMS from 'ol/source/TileWMS'
 import WMTSSource from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
+import GeoJSON from 'ol/format/GeoJSON'
+import Select from 'ol/interaction/Select'
 import Projection from 'ol/proj/Projection'
-import { Icon, Style, Fill, Stroke } from 'ol/style'
+import { bbox as bboxStrategy } from 'ol/loadingstrategy'
+import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
 import { register } from 'ol/proj/proj4'
 import { getTopLeft } from 'ol/extent.js'
 
@@ -99,6 +102,33 @@ export default {
                 })
               })
             })
+          } else if (layer.source === 'wfs') {
+            tileLayer = new VectorLayer({
+              source: new VectorSource({
+                format: new GeoJSON(),
+                url: (extent) => `${layer.url}?service=WFS&version=1.1.0&request=GetFeature&typename=${layer.id}&outputFormat=application/json&srsname=EPSG:28992&bbox=${extent.join(',')}`,
+                strategy: bboxStrategy
+              }),
+              style: (feature) => {
+                const properties = feature.getProperties()
+                if (properties.icon) {
+                  return new Style({
+                    image: new Icon({
+                      opacity: 1,
+                      src: properties.icon,
+                      scale: 1
+                    })
+                  })
+                }
+
+                return new Style({
+                  image: new Circle({
+                    radius: 5,
+                    fill: new Fill({color: 'red'})
+                  })
+                })
+              }
+            })
           } else {
             tileLayer = new TileLayer({
               id: layer.id,
@@ -140,6 +170,16 @@ export default {
       this.map.addInteraction(this.draw)
     }
 
+    this.map.on('pointermove', (e) => {
+      if (e.dragging) {
+        return
+      }
+
+      const pixel = this.map.getEventPixel(e.originalEvent)
+      const hit = this.map.hasFeatureAtPixel(pixel)
+      this.map.getTarget().style.cursor = hit ? 'pointer' : ''
+    })
+
     this.map.on('moveend', () => {
       const view = this.map.getView()
 
@@ -155,9 +195,17 @@ export default {
         return
       }
 
+      const pixel = this.map.getEventPixel(e.originalEvent)
+      const features = this.map.getFeaturesAtPixel(pixel)
+
+      let coordinates = e.coordinate
+      if (features.length > 0) {
+        coordinates = features[0].getGeometry().getCoordinates()
+      }
+
       this.$emit('set-position', {
         ...this.position,
-        marker: e.coordinate
+        marker: coordinates
       })
     })
   },

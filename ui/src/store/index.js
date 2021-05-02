@@ -10,6 +10,9 @@ export const createStore = (initialState) => {
       setLayers(state, layers) {
         state.layers = layers
       },
+      setSelectedFeature(state, feature) {
+        state.selectedFeature = feature
+      },
       addLayer(state, layer) {
         const layerSet = new Set(state.layers)
         layerSet.add(layer)
