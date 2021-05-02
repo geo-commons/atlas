@@ -206,9 +206,9 @@ def v3_login(request):
 def _default_layers():
     return [
         {
-            'id': 'brt_topo_kaart_totaal',
-            'title': 'Kaart grijs',
-            'name': 'brtachtergrondkaartgrijs',
+            'id': 'brtachtergrondkaart',
+            'title': 'Kaart normaal',
+            'name': 'brtachtergrondkaart',
             'source': 'wmts',
             'opacity': 0.9,
             'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
@@ -217,15 +217,38 @@ def _default_layers():
             'is_visible': True
         },
         {
-            'id': 'purm_lufo2020',
-            'title': 'Luchtfoto 2020',
-            'name': 'topp:Lufo_Totaal_2020',
+            'id': 'brtachtergrondkaartgrijs',
+            'title': 'Kaart grijs',
+            'name': 'brtachtergrondkaartgrijs',
+            'source': 'wmts',
             'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
+            'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
             'server_type': 'geoserver',
             'is_base': True,
             'is_visible': False
         },
+        {
+            'id': 'brtachtergrondkaartpastel',
+            'title': 'Kaart pastel',
+            'name': 'brtachtergrondkaartpastel',
+            'source': 'wmts',
+            'opacity': 0.9,
+            'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
+            'server_type': 'geoserver',
+            'is_base': True,
+            'is_visible': False
+        },
+        {
+            'id': 'brtachtergrondkaartwater',
+            'title': 'Kaart water',
+            'name': 'brtachtergrondkaartwater',
+            'source': 'wmts',
+            'opacity': 0.9,
+            'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
+            'server_type': 'geoserver',
+            'is_base': True,
+            'is_visible': False
+        }
     ]
 
 def _get_user(request):
