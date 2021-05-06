@@ -4,6 +4,7 @@ import 'whatwg-fetch'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueTippy, { TippyComponent } from 'vue-tippy'
+import VueSimpleMarkdown from 'vue-simple-markdown'
 
 import App from './pages/App'
 import LegacyEmbedModal from './pages/LegacyEmbedModal'
@@ -11,6 +12,7 @@ import { createStore } from './store'
 import { getSettingsFromPath } from './utils/router'
 
 Vue.use(Vuex)
+Vue.use(VueSimpleMarkdown)
 Vue.config.productionTip = false
 
 Vue.use(VueTippy, {
