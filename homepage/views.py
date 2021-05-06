@@ -207,6 +207,17 @@ def v3_login(request):
 def _default_layers():
     return [
         {
+            'id': 'brtachtergrondkaartwater',
+            'title': 'Kaart water',
+            'name': 'brtachtergrondkaartwater',
+            'source': 'wmts',
+            'opacity': 0.9,
+            'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
+            'server_type': 'geoserver',
+            'is_base': True,
+            'is_visible': True
+        },
+        {
             'id': 'brtachtergrondkaart',
             'title': 'Kaart normaal',
             'name': 'brtachtergrondkaart',
@@ -215,7 +226,7 @@ def _default_layers():
             'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
             'server_type': 'geoserver',
             'is_base': True,
-            'is_visible': True
+            'is_visible': False
         },
         {
             'id': 'brtachtergrondkaartgrijs',
@@ -232,17 +243,6 @@ def _default_layers():
             'id': 'brtachtergrondkaartpastel',
             'title': 'Kaart pastel',
             'name': 'brtachtergrondkaartpastel',
-            'source': 'wmts',
-            'opacity': 0.9,
-            'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
-            'server_type': 'geoserver',
-            'is_base': True,
-            'is_visible': False
-        },
-        {
-            'id': 'brtachtergrondkaartwater',
-            'title': 'Kaart water',
-            'name': 'brtachtergrondkaartwater',
             'source': 'wmts',
             'opacity': 0.9,
             'url': 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts',
