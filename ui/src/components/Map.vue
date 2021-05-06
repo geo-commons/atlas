@@ -202,10 +202,12 @@ export default {
       const pixel = this.map.getEventPixel(e.originalEvent)
       const features = this.map.getFeaturesAtPixel(pixel)
 
-      let coordinates = e.coordinate
-      if (features.length > 0) {
-        coordinates = features[0].getGeometry().getCoordinates()
+      if (features.length === 0) {
+        return
       }
+
+      let coordinates = e.coordinate
+      coordinates = features[0].getGeometry().getCoordinates()
 
       this.$emit('set-position', {
         ...this.position,
