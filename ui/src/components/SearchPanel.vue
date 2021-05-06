@@ -92,7 +92,6 @@ export default {
 
         this.$emit('set-position', {
           ...this.position,
-          marker: parsedCenteroide,
           center: parsedCenteroide,
           zoom: 19
         })

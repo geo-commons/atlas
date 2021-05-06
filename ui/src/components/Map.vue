@@ -16,7 +16,6 @@ import TileWMS from 'ol/source/TileWMS'
 import WMTSSource from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
 import GeoJSON from 'ol/format/GeoJSON'
-import Select from 'ol/interaction/Select'
 import Projection from 'ol/proj/Projection'
 import { bbox as bboxStrategy } from 'ol/loadingstrategy'
 import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
@@ -218,26 +217,11 @@ export default {
   watch: {
     position(value) {
       this.map.getView().setCenter(value.center)
-      this.map.getView().setZoom(value.zoom)
-      this.markerSource.clear()
 
-      if (value.marker) {
-        const markerFeature = new Feature({
-          geometry: new Point([ this.position.marker[0], this.position.marker[1] ]),
-        })
-
-        const markerStyle = new Style({
-          image: new Icon({
-            src: getMarkerUrl("#0066FF", "#FFFFFF"),
-            anchor: [ 0.55, 42 ],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'pixels',
-          })
-        })
-
-        markerFeature.setStyle(markerStyle)
-        //this.markerSource.addFeature(markerFeature)
-      }
+      this.map.getView().animate({
+        zoom: value.zoom,
+        duration: 250
+      })
     },
     layers(value) {
       value.forEach((layer) => {

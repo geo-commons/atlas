@@ -1,7 +1,6 @@
 <template>
   <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel, showDataPanel }">
     <SearchPanel
-      v-if="!this.embed"
       :position="this.position"
       @set-position="this.setPosition"
       @toggle-data-panel="this.toggleDataPanel"
