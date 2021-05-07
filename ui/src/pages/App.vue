@@ -1,16 +1,7 @@
 <template>
   <div class="container" :style="computedStyle" :class="{ showInfoPanel: showInfoPanel, showDataPanel }">
-    <SearchPanel
-      :position="this.position"
-      @set-position="this.setPosition"
-      @toggle-data-panel="this.toggleDataPanel"
-    />
-    <PointInfoPanel
-      :layers="this.layers"
-      :position="this.position"
-      :showInfoPanel="!showDataPanel && showInfoPanel"
-      @set-position="this.setPosition"
-    />
+    <SearchPanel :position="this.position" @set-position="this.setPosition" @toggle-data-panel="this.toggleDataPanel" />
+    <PointInfoPanel :layers="this.layers" :position="this.position" :showInfoPanel="!showDataPanel && showInfoPanel" @set-position="this.setPosition" />
     <DataPanel
       :layers="this.layers"
       :position="this.position"
@@ -31,16 +22,44 @@
       </div>
       <div class="bottom-right-panels">
         <div class="bottom-right-wrapper">
-          <div class="bottom-right-buttons" :class="{ isOpen: showBaseLayersPanel, showTogglePanorama: position.marker || showPanoramaPanel }">
-            <button class="iconbutton" @click="togglePanoramaPanel" v-tippy='{ placement : "left" }' content="Panorama" aria-label="Toon panorama"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 7C6.48 7 2 9.24 2 12c0 2.24 2.94 4.13 7 4.77V20l4-4-4-4v2.73c-3.15-.56-5-1.9-5-2.73 0-1.06 3.04-3 8-3s8 1.94 8 3c0 .73-1.46 1.89-4 2.53v2.05c3.53-.77 6-2.53 6-4.58 0-2.76-4.48-5-10-5z"/></svg></button>
-            <button class="iconbutton" @click="toggleBaseLayersPanel" v-tippy='{ placement : "left" }' content="Basislagen" aria-label="Toon basislagen" :aria-expanded="showBaseLayersPanel.toString()" aria-controls="baseLayers"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"/></svg></button>
+          <div
+            class="bottom-right-buttons"
+            :class="{
+              isOpen: showBaseLayersPanel,
+              showTogglePanorama: position.marker || showPanoramaPanel,
+            }"
+          >
+            <button class="iconbutton" @click="togglePanoramaPanel" v-tippy="{ placement: 'left' }" content="Panorama" aria-label="Toon panorama">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M12 7C6.48 7 2 9.24 2 12c0 2.24 2.94 4.13 7 4.77V20l4-4-4-4v2.73c-3.15-.56-5-1.9-5-2.73 0-1.06 3.04-3 8-3s8 1.94 8 3c0 .73-1.46 1.89-4 2.53v2.05c3.53-.77 6-2.53 6-4.58 0-2.76-4.48-5-10-5z"
+                />
+              </svg>
+            </button>
+            <transition name="fade">
+              <PanoramaPanel :position="this.position" :isOpen="showPanoramaPanel" @toggle="togglePanoramaPanel" />
+            </transition>
+            <button
+              class="iconbutton"
+              @click="toggleBaseLayersPanel"
+              v-tippy="{ placement: 'left' }"
+              content="Basislagen"
+              aria-label="Toon basislagen"
+              :aria-expanded="showBaseLayersPanel.toString()"
+              aria-controls="baseLayers"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"
+                />
+              </svg>
+            </button>
+            <transition name="fade">
+              <BaseLayersPanel v-if="showBaseLayersPanel" :layers="this.layers" @toggle-layer="this.toggleLayer" />
+            </transition>
           </div>
-          <transition name="fade">
-            <PanoramaPanel :position="this.position" :isOpen="showPanoramaPanel" @toggle="togglePanoramaPanel" />
-          </transition>
-          <transition name="fade">
-            <BaseLayersPanel v-if="showBaseLayersPanel" :layers="this.layers" @toggle-layer="this.toggleLayer" />
-          </transition>
         </div>
         <ZoomPanel :position="this.position" @set-position="this.setPosition" />
       </div>
@@ -53,25 +72,25 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { getArea, getLength } from 'ol/sphere'
-import Alert from '../components/Alert'
-import BaseLayersPanel from '../components/BaseLayersPanel'
-import DataPanel from '../components/DataPanel'
-import EmbedModal from '../components/EmbedModal'
-import LayersPanel from '../components/LayersPanel'
-import Map from '../components/Map'
-import Tools from '../components/Tools'
-import MorePanel from '../components/MorePanel'
-import PanoramaPanel from '../components/PanoramaPanel'
-import PointInfoPanel from '../components/PointInfoPanel'
-import SearchPanel from '../components/SearchPanel'
-import ZoomPanel from '../components/ZoomPanel'
+import { mapState } from "vuex";
+import { getArea, getLength } from "ol/sphere";
+import Alert from "../components/Alert";
+import BaseLayersPanel from "../components/BaseLayersPanel";
+import DataPanel from "../components/DataPanel";
+import EmbedModal from "../components/EmbedModal";
+import LayersPanel from "../components/LayersPanel";
+import Map from "../components/Map";
+import Tools from "../components/Tools";
+import MorePanel from "../components/MorePanel";
+import PanoramaPanel from "../components/PanoramaPanel";
+import PointInfoPanel from "../components/PointInfoPanel";
+import SearchPanel from "../components/SearchPanel";
+import ZoomPanel from "../components/ZoomPanel";
 
-const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/revgeo'
+const reverseGeocodingEndpoint = "https://geodata.nationaalgeoregister.nl/locatieserver/revgeo";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Alert,
     BaseLayersPanel,
@@ -84,113 +103,116 @@ export default {
     PanoramaPanel,
     PointInfoPanel,
     SearchPanel,
-    ZoomPanel
+    ZoomPanel,
   },
   computed: mapState({
-    alert: state => state.alert,
-    position: state => state.position,
-    layers: state => state.layers,
-    tool: state => state.tool,
-    user: state => state.user,
-    selectedArea: state => state.selectedArea
+    alert: (state) => state.alert,
+    position: (state) => state.position,
+    layers: (state) => state.layers,
+    tool: (state) => state.tool,
+    user: (state) => state.user,
+    selectedArea: (state) => state.selectedArea,
   }),
   methods: {
     async setPosition(position) {
-      this.$store.commit('setPosition', position)
+      this.$store.commit("setPosition", position);
 
       if (!position.marker) {
-        return
+        return;
       }
 
       try {
-        const result = await fetch(`${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`)
-        const data = await result.json()
+        const result = await fetch(`${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`);
+        const data = await result.json();
 
         if (!data.response.docs || data.response.docs.length === 0) {
-          this.$store.commit('setSearchQuery', `(${Math.round(position.marker[0]*100)/100},${Math.round(position.marker[1]*100)/100})`)
-          return
+          this.$store.commit("setSearchQuery", `(${Math.round(position.marker[0] * 100) / 100},${Math.round(position.marker[1] * 100) / 100})`);
+          return;
         }
 
-        const object = data.response.docs[0]
-        this.$store.commit('setSearchQuery', object.weergavenaam)
-      } catch(e) {
-        console.error(e)
+        const object = data.response.docs[0];
+        this.$store.commit("setSearchQuery", object.weergavenaam);
+      } catch (e) {
+        console.error(e);
       }
     },
     toggleLayer(values) {
-      this.$store.commit('toggleLayer', values)
+      this.$store.commit("toggleLayer", values);
     },
     setLayerOpacity(values) {
-      this.$store.commit('setLayerOpacity', values)
+      this.$store.commit("setLayerOpacity", values);
     },
     setTool(tool) {
-      this.$store.commit('setTool', tool)
+      this.$store.commit("setTool", tool);
     },
     setSelectedArea(selectedArea) {
-      this.$store.commit('setSelectedArea', selectedArea)
+      this.$store.commit("setSelectedArea", selectedArea);
     },
     toolUsed(result) {
-      let measureResult
+      let measureResult;
 
       switch (result.tool) {
-        case 'MEASURE_AREA':
-          measureResult = getArea(result.sketch.getGeometry())
-          alert(`${Math.round(measureResult*100)/100} m2`)
-          break
-        case 'MEASURE_LINE':
-          measureResult = getLength(result.sketch.getGeometry())
-          alert(`${Math.round(measureResult*100)/100} m`)
-          break
-        case 'SELECT_AREA':
-          this.$store.commit('setSelectedArea', result.sketch.getGeometry())
-          this.showDataPanel = true
-          break
+        case "MEASURE_AREA":
+          measureResult = getArea(result.sketch.getGeometry());
+          alert(`${Math.round(measureResult * 100) / 100} m2`);
+          break;
+        case "MEASURE_LINE":
+          measureResult = getLength(result.sketch.getGeometry());
+          alert(`${Math.round(measureResult * 100) / 100} m`);
+          break;
+        case "SELECT_AREA":
+          this.$store.commit("setSelectedArea", result.sketch.getGeometry());
+          this.showDataPanel = true;
+          break;
       }
 
       setTimeout(() => {
-        this.$store.commit('setTool', '')
-      }, 500)
+        this.$store.commit("setTool", "");
+      }, 500);
     },
     toggleInfoPanel() {
-      this.showInfoPanel = !this.showInfoPanel
+      this.showInfoPanel = !this.showInfoPanel;
     },
     togglePanoramaPanel() {
-      this.showBaseLayersPanel = false
-      this.showPanoramaPanel = !this.showPanoramaPanel
+      this.showBaseLayersPanel = false;
+      this.showPanoramaPanel = !this.showPanoramaPanel;
     },
     toggleBaseLayersPanel() {
-      this.showPanoramaPanel = false
-      this.showBaseLayersPanel = !this.showBaseLayersPanel
+      this.showPanoramaPanel = false;
+      this.showBaseLayersPanel = !this.showBaseLayersPanel;
     },
     pushHistoryState() {
-      const basePath = /(.*?)(@|$)/.exec(window.location.pathname)
+      const basePath = /(.*?)(@|$)/.exec(window.location.pathname);
 
-      const x = encodeURIComponent(this.position.center[0].toFixed(2))
-      const y = encodeURIComponent(this.position.center[1].toFixed(2))
-      const zoom = encodeURIComponent(this.position.zoom.toFixed(2))
-      const layers = this.layers.filter(l => l.is_visible && !l.is_base).map(l => l.id).join(',')
+      const x = encodeURIComponent(this.position.center[0].toFixed(2));
+      const y = encodeURIComponent(this.position.center[1].toFixed(2));
+      const zoom = encodeURIComponent(this.position.zoom.toFixed(2));
+      const layers = this.layers
+        .filter((l) => l.is_visible && !l.is_base)
+        .map((l) => l.id)
+        .join(",");
 
-      window.history.replaceState({}, '', `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}`)
+      window.history.replaceState({}, "", `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}`);
     },
     toggleModal(modal) {
-      this.modal = modal
+      this.modal = modal;
     },
     toggleDataPanel() {
-      this.showDataPanel = !this.showDataPanel
+      this.showDataPanel = !this.showDataPanel;
 
       if (!this.showDataPanel) {
-        this.$store.commit('setSelectedArea', null)
+        this.$store.commit("setSelectedArea", null);
       }
-    }
+    },
   },
   watch: {
     position(value) {
-      this.showInfoPanel = Boolean(value.marker)
-      this.pushHistoryState()
+      this.showInfoPanel = Boolean(value.marker);
+      this.pushHistoryState();
     },
     layers(value) {
-      this.pushHistoryState()
-    }
+      this.pushHistoryState();
+    },
   },
   data() {
     return {
@@ -198,81 +220,82 @@ export default {
       showPanoramaPanel: false,
       showBaseLayersPanel: false,
       showDataPanel: false,
-      computedStyle: { '--color-primary': '#0066FF' },
-      modal: ''
-    }
-  }
-}
+      computedStyle: { "--color-primary": "#0066FF" },
+      modal: "",
+    };
+  },
+};
 </script>
 
 <style>
+:root {
+  --color-text-grey: rgba(0, 0, 0, 0.55);
+
+  --color-grey-40: #f5f5f5;
+  --color-grey-50: #eaeaea;
+  --color-grey-60: #dadada;
+
+  --color-tooltip-dark: #222222;
+
+  --color-alert: #eb0000;
+
+  --font-size-tiny: 14px;
+  --font-size-small: 14px;
+  --font-size-normal: 16px;
+
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+
+  --radius-small: 3px;
+  --radius-normal: 6px;
+
+  --shadow-normal: 0 0 1px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 0, 0, 0.15);
+
+  --padding-screen: 8px;
+
+  --width-detail: 100vw;
+  --width-button-small: 24px;
+  --width-button-normal: 32px;
+  --width-button-large: 40px;
+}
+
+@media (min-width: 576px) {
   :root {
-    --color-text-grey: rgba(0,0,0,.55);
-
-    --color-grey-40: #F5F5F5;
-    --color-grey-50: #EAEAEA;
-    --color-grey-60: #DADADA;
-
-    --color-tooltip-dark: #222222;
-
-    --color-alert: #EB0000;
-
-    --font-size-tiny: 14px;
-    --font-size-small: 14px;
-    --font-size-normal: 16px;
-
-    --font-weight-normal: 400;
-    --font-weight-bold: 700;
-
-    --radius-small: 3px;
-    --radius-normal: 6px;
-
-    --shadow-normal: 0 0 1px rgba(0,0,0,.2), 0 0 8px rgba(0,0,0,.15);
-
-    --padding-screen: 8px;
-
-    --width-detail: 100vw;
-    --width-button-small: 24px;
-    --width-button-normal: 32px;
-    --width-button-large: 40px;
+    --width-detail: 350px;
   }
+}
 
-  @media (min-width: 576px) {
-    :root {
-      --width-detail: 350px;
-    }
+@media (min-width: 576px) {
+  :root {
+    --padding-screen: 16px;
   }
+}
 
-  @media (min-width: 576px) {
-    :root {
-      --padding-screen: 16px;
-    }
+@media (min-width: 1200px) {
+  :root {
+    --padding-screen: 20px;
   }
+}
 
-  @media (min-width: 1200px) {
-    :root {
-      --padding-screen: 20px;
-    }
-  }
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
 
-  @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+html {
+  font-family: "PT Sans", sans-serif;
+  letter-spacing: -0.005em;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+}
 
-  html {
-    font-family: 'PT Sans', sans-serif;
-    letter-spacing: -0.005em;
-    font-size: var(--font-size-normal);
-    font-weight: var(--font-weight-normal);
-  }
-
-  *,
-  *:after,
-  *:before {
-      box-sizing: border-box;
-  }
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
 
 /* Remove outline from all focused elements */
 *:focus {
   outline: none;
+  outline-offset: -2px;
 }
 
 /* Remove highlight color on Android */
@@ -280,7 +303,12 @@ export default {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-input, button {
+html.keyboard-user *:focus {
+  outline: 2px solid var(--color-primary);
+}
+
+input,
+button {
   margin: 0;
   padding: 0;
   border: none;
@@ -315,7 +343,7 @@ svg {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-radius .1s;
+  transition: border-radius 0.1s;
 }
 
 .iconbutton[disabled] {
@@ -342,7 +370,8 @@ svg {
   box-shadow: var(--shadow-normal);
 }
 
-.list a, .list button {
+.list a,
+.list button {
   display: block;
   width: 100%;
   color: black;
@@ -361,7 +390,6 @@ svg {
   background: var(--color-grey-50);
 }
 
-
 .counter {
   flex-shrink: 0;
   height: 18px;
@@ -379,10 +407,12 @@ svg {
   user-select: none;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .1s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 
@@ -401,10 +431,9 @@ svg {
 
 .tippy-tooltip.primary-theme .tippy-backdrop {
   /* TODO: var(--color-primary) doesn't work */
-  background-color: #0066FF;
+  background-color: #0066ff;
 }
 </style>
-
 
 <style scoped>
 .container {
@@ -468,7 +497,7 @@ svg {
   overflow: hidden;
   box-shadow: var(--shadow-normal);
   height: var(--width-button-normal);
-  transition: height .1s ease, border-radius .1s;
+  transition: height 0.1s ease, border-radius 0.1s;
   overflow: hidden;
 }
 
