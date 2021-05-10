@@ -222,6 +222,7 @@ export default {
     --font-size-tiny: 14px;
     --font-size-small: 14px;
     --font-size-normal: 16px;
+    --font-size-large: 20px;
 
     --font-weight-normal: 400;
     --font-weight-bold: 700;
@@ -362,7 +363,6 @@ svg {
 .list button:active {
   background: var(--color-grey-50);
 }
-
 
 .counter {
   flex-shrink: 0;

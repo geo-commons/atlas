@@ -90,18 +90,22 @@ export default {
   }
 }
 
-
 .header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   padding: var(--padding-screen);
   padding-bottom: 0;
+  z-index: 1;
 }
 
 .content {
   position: relative;
   flex-grow: 1;
   overflow-y: auto;
-  padding: 16px 0;
+  padding-top: 48px;
 }
 
 .resize-button {

@@ -1,7 +1,8 @@
 <template>
   <ExpandButton v-if="feature" :title="''" :isOpen="isOpen" class="feature">
+    <img v-if="feature.properties.featuredImage" :src="feature.properties.featuredImage" class="featured-image" />
+    <div class="content">
     <div v-if="feature.properties" class="special-properties">
-      <img v-if="feature.properties.featuredImage" :src="feature.properties.featuredImage" class="featured-image" />
       <h1 v-if="feature.properties.title">{{ feature.properties.title }}</h1>
       <p v-if="feature.properties.description" class="markdown">
         <vue-simple-markdown :source="feature.properties.description" />
@@ -9,13 +10,13 @@
     </div>
     <div v-for="displayProperty in displayProperties" v-bind:key="displayProperty" class="properties">
       <div v-if="feature.properties[displayProperty]" class="property">
-        <b>{{ displayProperty|capitalize }}</b>
+        <strong>{{ displayProperty|capitalize }}</strong>
         <RichValue :dataKey="displayProperty" :dataValue="feature.properties[displayProperty]" />
       </div>
     </div>
     <div v-for="(linkedData, key) in layer.linked_data" v-bind:key="key" class="linked-data">
       <div v-if="features[0].properties[linkedData.source_key]">
-        <b>{{ linkedData.title }}</b>
+        <strong>{{ linkedData.title }}</strong>
         <FeatureTable
           :layer="linkedData"
           :filter="{ key: linkedData.target_key, value: features[0].properties[linkedData.source_key] }"
@@ -26,6 +27,7 @@
     </div>
     <div v-if="feature.properties" class="special-properties">
       <vue-simple-markdown :source="feature.properties.link" class="markdown" />
+    </div>
     </div>
   </ExpandButton>
 </template>
@@ -112,6 +114,10 @@ export default {
 </script>
 
 <style scoped>
+.content {
+  padding: 16px 0;
+}
+
 .feature:not(:last-child) {
   border-bottom: 1px solid var(--color-grey-50);
 }
@@ -121,15 +127,32 @@ export default {
 }
 
 .special-properties {
-  padding: 0 20px;
+  padding: 0 var(--padding-screen);;
+}
+
+.special-properties h1 {
+  margin: 0 0 8px;
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-normal);
+  font-weight: var(--font-weight-bold);
+}
+
+.special-properties p {
+  margin: 0 0 20px;
+}
+
+.feature strong {
+  display: block;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 4px;
 }
 
 .properties {
-  padding: 0 20px;
+  padding: 0 var(--padding-screen);;
 }
 
 .property {
-  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .table {
@@ -138,7 +161,7 @@ export default {
 }
 
 .linked-data {
-  padding: 0 20px;
+  padding: 0 var(--padding-screen);;
   margin: 4px 0 8px;
 }
 

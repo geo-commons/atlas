@@ -71,6 +71,7 @@ h1 {
 }
 
 .close-button {
+  background-color: white;
   width: var(--width-button-large);;
   height: var(--width-button-large);;
   border-radius: var(--radius-normal);
