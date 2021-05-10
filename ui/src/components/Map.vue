@@ -56,6 +56,13 @@ export default {
 
         this.tileLayers = {}
 
+        this.view = new View({
+            projection: 'EPSG:28992',
+            center: [this.position.center[0], this.position.center[1]],
+            zoom: this.position.zoom,
+            padding: this.padding,
+        })
+
         this.map = new Map({
             target: this.$refs['map'],
             controls: [],
@@ -80,11 +87,7 @@ export default {
                 this.markerLayer,
                 this.selectedAreaLayer,
             ],
-            view: new View({
-                projection: 'EPSG:28992',
-                center: [this.position.center[0], this.position.center[1]],
-                zoom: this.position.zoom,
-            }),
+            view: this.view,
         })
 
         if (this.tool !== '') {
@@ -188,12 +191,16 @@ export default {
                 this.selectedAreaSource.addFeature(selectedAreaFeature)
             }
         },
+        padding(value) {
+            this.view.setProperties({ padding: value })
+        },
     },
     props: {
         position: Object,
         layers: Array,
         tool: String,
         selectedArea: Object,
+        padding: { type: Array, default: () => [0, 0, 0, 0] },
     },
 }
 </script>

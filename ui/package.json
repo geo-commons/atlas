@@ -10,7 +10,7 @@
   "dependencies": {
     "core-js": "3.7.0",
     "es6-promise": "4.2.8",
-    "ol": "6.4.3",
+    "ol": "6.5.0",
     "proj4": "2.6.3",
     "vue": "2.6.12",
     "vue-tippy": "4.7.2",

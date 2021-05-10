@@ -16,6 +16,7 @@
             @set-position="this.setPosition"
         />
         <DataPanel
+            ref="dataPanel"
             :layers="this.layers"
             :position="this.position"
             :selectedArea="this.selectedArea"
@@ -30,6 +31,7 @@
                 :layers="this.layers"
                 :tool="this.tool"
                 :selectedArea="this.selectedArea"
+                :padding="this.mapPadding"
                 @set-position="this.setPosition"
                 @tool-used="this.toolUsed"
             />
@@ -131,6 +133,7 @@
 <script>
 import { mapState } from 'vuex'
 import { getArea, getLength } from 'ol/sphere'
+import { isMobile } from '../utils/helpers'
 import Alert from '../components/Alert'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 import DataPanel from '../components/DataPanel'
@@ -267,9 +270,14 @@ export default {
         },
         toggleDataPanel() {
             this.showDataPanel = !this.showDataPanel
-
             if (!this.showDataPanel) {
                 this.$store.commit('setSelectedArea', null)
+            }
+
+            if (!isMobile() && this.showDataPanel) {
+                this.$set(this.mapPadding, 3, window.innerWidth * 0.5)
+            } else {
+                this.$set(this.mapPadding, 3, 0)
             }
         },
     },
@@ -290,6 +298,7 @@ export default {
             showDataPanel: false,
             computedStyle: { '--color-primary': '#0066FF' },
             modal: '',
+            mapPadding: [0, 0, 0, 0],
         }
     },
 }
