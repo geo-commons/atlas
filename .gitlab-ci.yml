@@ -35,6 +35,18 @@ Test:
     paths:
       - htmlcov
 
+Lint ui:
+  stage: Test
+  image: node:12.19.1-alpine
+  cache:
+    paths:
+      - ui/node_modules/
+  before_script:
+    - cd ui/
+    - npm install
+  script:
+    - npm run lint
+
 Build:
   stage: Build
   image: docker:19.03.13
