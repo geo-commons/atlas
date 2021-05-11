@@ -122,11 +122,21 @@ export default {
         })
     },
     watch: {
-        position(value) {
-            this.map.getView().setCenter(value.center)
-            this.map.getView().setZoom(value.zoom)
-            this.markerSource.clear()
+        position(value, oldValue) {
+            const view = this.map.getView()
 
+            if (value.center != oldValue.center) {
+                view.setCenter(value.center)
+            }
+
+            if (value.zoom != oldValue.zoom) {
+                view.animate({
+                    zoom: value.zoom,
+                    duration: 250,
+                })
+            }
+
+            this.markerSource.clear()
             if (value.marker) {
                 const markerFeature = new Feature({
                     geometry: new Point([this.position.marker[0], this.position.marker[1]]),
