@@ -26,7 +26,10 @@
       </div>
     </div>
     <div v-if="feature.properties" class="special-properties">
-      <vue-simple-markdown :source="feature.properties.link" class="markdown" />
+      <div v-if="feature.properties.link" class="link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px"  height="24px" fill="#4285F4"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
+        <vue-simple-markdown :source="feature.properties.link" class="markdown" />
+      </div>
     </div>
     </div>
   </ExpandButton>
@@ -185,6 +188,11 @@ export default {
 
 .table-wrapper >>> img {
   width: 100%;
+}
+
+.link {
+  display: flex;
+  align-items: center;
 }
 
 .markdown >>> a {
