@@ -232,7 +232,7 @@ export default {
 
     --shadow-normal: 0 0 1px rgba(0,0,0,.2), 0 0 8px rgba(0,0,0,.15);
 
-    --padding-screen: 8px;
+    --padding-screen: 12px;
 
     --width-detail: 100vw;
     --width-button-small: 24px;

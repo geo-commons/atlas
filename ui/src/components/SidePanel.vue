@@ -98,14 +98,15 @@ export default {
   width: 100%;
   padding: var(--padding-screen);
   padding-bottom: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 .content {
   position: relative;
+  z-index: 1;
   flex-grow: 1;
   overflow-y: auto;
-  padding-top: 48px;
+  padding-top: calc(var(--padding-screen) + var(--width-button-large));
 }
 
 .resize-button {
