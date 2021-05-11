@@ -7,7 +7,7 @@
     </template>
 
     <template v-slot:default>
-      <FeatureInfo v-for="visibleLayer in visibleLayers" :isOpen="visibleLayers.length === 1" v-bind:key="visibleLayer.id" :layer="visibleLayer" :position="position" />
+      <FeatureInfo v-for="visibleLayer in visibleLayers" :isOpen="visibleLayers.length === 1" v-bind:key="visibleLayer.id" :layer="visibleLayer" :position="position" @on-featured-image="onFeaturedImage" />
     </template>
   </SidePanel>
 </template>
@@ -18,15 +18,23 @@ import SidePanel from './SidePanel'
 import FeatureInfo from './FeatureInfo'
 
 export default {
-  name: 'MorePanel',
+  name: 'PointInfoPanel',
   components: {
     SidePanel,
     FeatureInfo,
+  },
+  data() {
+    return {
+      hasFeaturedImage: false
+    }
   },
   methods: {
     closeInfoPanel() {
       this.searchQuery = ''
       this.$emit('set-position', { ...this.position, marker: null })
+    },
+    onFeaturedImage() {
+      this.hasFeaturedImage = true
     },
   },
   computed: {

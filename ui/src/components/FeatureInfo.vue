@@ -1,6 +1,6 @@
 <template>
   <ExpandButton v-if="feature" :title="''" :isOpen="isOpen" class="feature">
-    <img v-if="feature.properties.featuredImage" :src="feature.properties.featuredImage" class="featured-image" />
+    <img v-if="feature.properties && feature.properties.featuredImage" :src="feature.properties.featuredImage" class="featured-image" />
     <div class="content">
     <div v-if="feature.properties" class="special-properties">
       <h1 v-if="feature.properties.title">{{ feature.properties.title }}</h1>
@@ -94,6 +94,10 @@ export default {
           this.displayProperties = this.layer.display_properties.length > 0 ? this.layer.display_properties.filter((p) => fetchedProperties.includes(p)) : fetchedProperties
           this.displayProperties = this.displayProperties.filter((p) => !specialProperties.includes(p))
           this.feature = data.features[0]
+
+          if (this.feature.properties.featuredImage) {
+            this.$emit('on-featured-image', true)
+          }
         }
       } catch(e) {
         console.error(e)
