@@ -131,6 +131,7 @@ export default {
 
 .featured-image {
   width: 100%;
+  margin-top: calc(var(--padding-screen) * -1 + var(--width-button-large) * -1);
 }
 
 .special-properties {
