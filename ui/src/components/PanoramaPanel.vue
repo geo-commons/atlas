@@ -171,14 +171,17 @@ export default {
 }
 
 .window {
+    resize: both;
+    overflow: auto;
     width: 350px;
+    min-width: 350px;
     max-width: calc(100vw - (var(--padding-screen) * 2));
+    min-height: 300px;
     height: 300px;
     background: white;
     border-radius: var(--radius-normal);
     border-bottom-right-radius: 0;
     box-shadow: var(--shadow-normal);
-    overflow: hidden;
 }
 
 .wrapper.isLarge .window {
