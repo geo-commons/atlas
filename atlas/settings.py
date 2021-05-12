@@ -172,4 +172,8 @@ CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
     'ORGANIZATION_NAME': ('Gemeente Purmerend', 'The name of the organization'),
     'DISCLAIMER': ('', 'The disclaimer that is shown'),
+    'POSITION_ZOOM': (13, 'The position zoom level'),
+    'POSITION_CENTER_X': (126910, 'The position center X coordinate'),
+    'POSITION_CENTER_Y': (505834, 'The position center Y coordinate'),
+    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'A comma-separated list of municipalities for autocomplete')
 }

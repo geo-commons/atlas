@@ -33,9 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return
     }
 
-    const settings = getSettingsFromPath()
-
     const data = JSON.parse(document.querySelector('#app-data').innerHTML)
+    const settings = getSettingsFromPath(data.config)
 
     const layers = data.layers.map((layer) =>
         settings.visibleLayers && settings.visibleLayers.includes(layer.id)
@@ -44,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     )
 
     const initialState = {
+        config: data.config,
         position: settings.position,
         layers,
         tool: '',
@@ -71,9 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return
     }
 
-    const settings = getSettingsFromPath()
+    const data = JSON.parse(document.querySelector('#app-data').innerHTML)
+    const settings = getSettingsFromPath(data.config)
 
     const initialState = {
+        config: data.config,
         position: settings.position,
         layers: [],
         tool: '',

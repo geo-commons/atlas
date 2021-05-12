@@ -4,6 +4,7 @@ from datetime import datetime
 import logging
 
 import requests
+from constance import config
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
@@ -170,6 +171,7 @@ def embed(request):
 
     context = {
         'data': {
+            'config': _get_config(),
             'user': _get_user(request),
             'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
         }
@@ -186,6 +188,7 @@ def v3(request, theme_slug=''):
 
     context = {
         'data': {
+            'config': _get_config(),
             'user': _get_user(request),
             'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
         }
@@ -226,6 +229,19 @@ def _default_layers():
             'is_visible': False
         },
     ]
+
+def _get_config():
+    return {
+        'organization_name': config.ORGANIZATION_NAME,
+        'position': {
+            'zoom': config.POSITION_ZOOM,
+            'center': {
+                'x': config.POSITION_CENTER_X,
+                'y': config.POSITION_CENTER_Y
+            }
+        },
+        'suggest_municipalities': config.SUGGEST_MUNICIPALITIES
+    }
 
 def _get_user(request):
     user = request.user
