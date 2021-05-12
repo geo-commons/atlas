@@ -207,6 +207,11 @@ def v3_login(request):
     })
 
 def _default_layers():
+    if Layer.objects.filter(is_base=True).count() > 0:
+        # Do not return default base layers when the database contains base layers
+        return []
+
+    # TODO: Remove default hardcoded layers
     return [
         {
             'id': 'brt_topo_kaart_totaal',

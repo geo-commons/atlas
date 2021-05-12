@@ -80,6 +80,13 @@ class Category(models.Model):
 
 
 class Layer(models.Model):
+    SOURCE_WMS = 'WMS'
+    SOURCE_WMTS = 'WMTS'
+    SOURCE_TYPES = [
+        (SOURCE_WMS, 'WMS'),
+        (SOURCE_WMTS, 'WMTS')
+    ]
+
     objects = models.Manager()
     authorized = LayerManager()
 
@@ -130,6 +137,11 @@ De waarde wordt door javascript geëvalueerd
     closed_dataset = models.BooleanField('Gesloten data', default=True)
 
     published = models.BooleanField('Gepubliceerd', default=False)
+
+    source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS, max_length=20)
+
+    is_base = models.BooleanField('Is basislaag', default=False)
+    is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
 
     not_in_atlas = models.BooleanField(
         'Alleen in een thema, niet in Atlas',
@@ -250,13 +262,15 @@ source: new ol.source.TileWMS({{
     def to_dict(self):
         return {
             'id': self.layer_id,
+            'source_type': self.source_type,
             'title': self.title,
             'name': self.layer_name,
             'opacity': float(self.opacity),
             'url': self.url,
             'server_type': self.server_type,
-            'is_base': False,
-            'is_visible': False,
+            'is_base': self.is_base,
+            'is_visible': self.is_visible,
+            'projection': self.projection,
             'category': {
                 'id': self.layer_type.id,
                 'title': self.layer_type.title
@@ -269,7 +283,7 @@ source: new ol.source.TileWMS({{
     class Meta:
         verbose_name = 'Kaartlaag'
         verbose_name_plural = 'Kaartlagen'
-        ordering = ['layer_type__ordering', 'layer_type__title', 'ordering', 'title']
+        ordering = ['ordering', 'title']
 
 
 class LinkedData(models.Model):
