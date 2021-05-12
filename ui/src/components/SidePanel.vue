@@ -8,7 +8,7 @@
         <button v-if="large && !fullScreen" @click="toggleFullScreen" v-tippy='{ placement : "right" }' content="Vergroot paneel" aria-label="Vergroot paneel" class="iconbutton resize-button">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
         </button>
-        <button @click="toggleFullScreen" v-tippy='{ placement : "bottom" }' :content="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'" :aria-label="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'" class="iconbutton expand-mobile-button">
+        <button @click="toggleFullScreen" v-tippy='{ placement : "bottom" }' :content="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'" :aria-label="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'" class="iconbutton expand-mobile-button" :class="{shadow: hasFeaturedImage}">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
         </button>
         <button v-if="large && fullScreen" @click="toggleFullScreen" v-tippy='{ placement : "left" }' content="Verklein paneel" aria-label="Verklein paneel" class="iconbutton resize-button exit-fullscreen">
@@ -46,7 +46,8 @@ export default {
   },
   props: {
     large: Boolean,
-    showPanel: Boolean
+    showPanel: Boolean,
+    hasFeaturedImage: Boolean
   }
 }
 </script>
@@ -162,6 +163,12 @@ export default {
   border-radius: 0;
   border-bottom-left-radius: var(--radius-small);
   border-bottom-right-radius: var(--radius-small);
+  z-index: 2;
+}
+
+.wrapper.fullScreen .expand-mobile-button.shadow {
+  box-shadow: var(--shadow-normal);
+  border-color: transparent;
 }
 
 .wrapper.fullScreen .expand-mobile-button svg {

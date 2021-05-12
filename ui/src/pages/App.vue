@@ -230,7 +230,7 @@ export default {
     --radius-small: 3px;
     --radius-normal: 6px;
 
-    --shadow-normal: 0 0 1px rgba(0,0,0,.2), 0 0 8px rgba(0,0,0,.15);
+    --shadow-normal: 0 0 1px rgba(0,0,0,.3), 0 0 8px rgba(0,0,0,.15);
 
     --padding-screen: 12px;
 
