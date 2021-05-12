@@ -84,6 +84,7 @@ h1 {
   height: var(--width-button-large);
   border-radius: var(--radius-normal);
   border: 1px solid var(--color-grey-60);
+  pointer-events: auto;
 }
 
 .close-button.shadow {

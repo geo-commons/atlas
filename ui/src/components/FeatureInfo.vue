@@ -193,12 +193,16 @@ export default {
   align-items: center;
   border-top: 1px solid var(--color-grey-50);
   border-bottom: 1px solid var(--color-grey-50);
-  padding: 8px var(--padding-screen);
+  padding: 9px var(--padding-screen);
   color: var(--color-primary);
 }
 
-.link svg {
+.link svg:first-child {
   margin-right: 8px;
+}
+
+.link svg:last-child {
+  margin-left: auto;
 }
 
 .markdown >>> a {

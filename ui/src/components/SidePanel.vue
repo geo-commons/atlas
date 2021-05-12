@@ -99,6 +99,7 @@ export default {
   padding: var(--padding-screen);
   padding-bottom: 0;
   z-index: 2;
+  pointer-events: none;
 }
 
 .content {
