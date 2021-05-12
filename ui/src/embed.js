@@ -7,8 +7,8 @@ import MapController from './utils/controller'
 
 register(getDefinitions())
 
-const settings = getSettingsFromPath()
 const data = JSON.parse(document.querySelector('#app-data').innerHTML)
+const settings = getSettingsFromPath(data.config)
 
 const mapController = new MapController(settings)
 mapController.addLayers(data.layers)
