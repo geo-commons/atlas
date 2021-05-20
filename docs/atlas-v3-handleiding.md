@@ -194,10 +194,10 @@ Met de meetknop kunnen afstanden en oppervlaktes in de kaart gemeten worden. Kie
 # Zoek op data
 
 ![zoekenopdata](/uploads/29b456b6c9fbeab1d1ae0a807ea1880d/zoekenopdata.png)
-Met de knop Zoek op data, die naast zoek op adres staat, kan in de data gezocht worden. Er kan alleen op zichtbare lagen gezocht worden en op een beperkt aantal, door de beheerder ingestelde, zoekvelden. Na intypen van een zoekterm worden de resultaten per kaartlaag in het
-scherm weergegeven.
+Met de knop Zoek op data, die naast zoek op adres staat, kunnen de gegevens van de zichtbare kaartlagen getoond worden en binnen deze gegevens met een zoekterm objecten gezocht worden.
+Bij het openen van het zoek-op-data paneel worden de tabellen met gegevens van alle zichtbare lagen geopend. Klik op een laagnaam om de tabel open te klappen.
+Binnen de tabel kan gezocht worden op een aantal, door de beheerder ingestelde, zoekvelden. Na intypen van een zoekterm worden de resultaten per kaartlaag in het scherm weergegeven. Via het symbool Bekijk op kaart kan per gevonden resultaat naar het desbetreffende object in de kaart ingezoomd worden.
 
-\[deze beschrijving wordt later uitgebreid\]
 
 ***  
 * [Naar boven](#inhoud)  
