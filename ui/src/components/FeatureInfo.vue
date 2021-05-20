@@ -80,7 +80,8 @@ export default {
                 view.getResolution(),
                 'EPSG:28992',
                 {
-                    INFO_FORMAT: 'application/json',
+                    info_format: 'application/json',
+                    feature_count: 20,
                 }
             )
 
