@@ -1,20 +1,25 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 from homepage import views
+from webservice.views import AtlasThemeDetailView
 
 app_name = 'homepage'
 
 urlpatterns = [
-    path('', views.HomePageView.as_view(), name='homepage'),
-    path('savedataset', views.SavedDatasetView.as_view(), name='savedataset'),
-    path('handleiding/', views.HandleidingView.as_view(), name='handleiding'),
-    path('downloads/', views.DownloadsView.as_view(), name='downloads'),
-    path('downloads/<int:pk>/<str:type_>', views.save_dataset_view, name='save_dataset_view'),
-    path('search_wfs', views.search_wfs, name='search_wfs'),
-    path('autocomplete_search', views.autocomplete_search, name='autocomplete_search'),
-    path('v3/help', views.v3_help, name='v3_help'),
-    path('v3/login', auth_views.LoginView.as_view(template_name='v3/login.html'), name='v3_login'),
-    path('v3/logout', auth_views.LogoutView.as_view(template_name='v3/logout.html'), name='v3_logout'),
-    re_path(r'v3(\/(?P<theme_slug>\w+)?)', views.v3, name='v3'),
-    re_path('embed/', views.embed, name='embed'),
+    path('v2/', views.HomePageView.as_view(), name='homepage'),
+    path('v2/savedataset', views.SavedDatasetView.as_view(), name='savedataset'),
+    path('v2/handleiding/', views.HandleidingView.as_view(), name='handleiding'),
+    path('v2/downloads/', views.DownloadsView.as_view(), name='downloads'),
+    path('v2/downloads/<int:pk>/<str:type_>', views.save_dataset_view, name='save_dataset_view'),
+    path('v2/search_wfs', views.search_wfs, name='search_wfs'),
+    path('v2/autocomplete_search', views.autocomplete_search, name='autocomplete_search'),
+    path('v2/<slug:slug>', AtlasThemeDetailView.as_view(), name='atlastheme-detail'),
+]
+
+urlpatterns += [
+    path('help', views.v3_help, name='v3_help'),
+    path('login', auth_views.LoginView.as_view(template_name='v3/login.html'), name='v3_login'),
+    path('logout', auth_views.LogoutView.as_view(template_name='v3/logout.html'), name='v3_logout'),
+    re_path('embed', views.embed, name='embed'),
+    re_path(r'((?P<theme_slug>\w+)?)', views.v3, name='v3'),
 ]

@@ -1635,7 +1635,7 @@ function init(){
 		content_popup += get_adres_properties(data, content_popup);
 
 		// push adres data JSON
-		content_popup += "<form action='/atlas/savedataset' method='POST'>";
+		content_popup += "<form action='/atlas/v2/savedataset' method='POST'>";
 		content_popup += "<div class='form-group'>";
 		content_popup += "<input type='hidden' name='title' value='Adressen (BAG)' >";
 		content_popup += "<input type='hidden' name='json' value='"+adres_download+"' >";
@@ -2053,7 +2053,7 @@ function init(){
 								});
 
 								// push adres data JSON
-								content_popup += "<form action='/atlas/savedataset' method='POST'>";
+								content_popup += "<form action='/atlas/v2/savedataset' method='POST'>";
 								content_popup += "<div class='form-group'>";
 								content_popup += "<input type='hidden' name='title' value='"+ layer.get('title') +"' >";
 								content_popup += "<input type='hidden' name='json' value='"+adres_download+"' >";
