@@ -16,22 +16,10 @@ const rdProjection = new Projection({
 // can be calculated based on resolution z0, written out for clarity
 // see https://www.geonovum.nl/uploads/standards/downloads/nederlandse_richtlijn_tiling_-_versie_1.1.pdf
 const resolutions = [
-    3440.64,
-    1720.32,
-    860.16,
-    430.08,
-    215.04,
-    107.52,
-    53.76,
-    26.88,
-    13.44,
-    6.72,
-    3.36,
-    1.68,
-    0.84,
-    0.42,
-    0.21,
+    3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84,
+    0.42, 0.21,
 ]
+
 const matrixIds = new Array(15)
 for (var i = 0; i < 15; ++i) {
     matrixIds[i] = i
