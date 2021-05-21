@@ -24,5 +24,4 @@ urlpatterns = [
     path('atlas/admin/', admin.site.urls),
     path('atlas/accounts/', include('django.contrib.auth.urls')),
     path('atlas/', include('homepage.urls')),
-    path('atlas/', include('webservice.urls')),
 ]

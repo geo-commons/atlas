@@ -19,16 +19,16 @@
             <div class="menu" v-if="isOpen">
                 <ul class="list">
                     <li v-if="!user">
-                        <a :href="`/atlas/v3/login?next=${encodeURIComponent(this.nextUrl)}`"
+                        <a :href="`/atlas/login?next=${encodeURIComponent(this.nextUrl)}`"
                             >Log in</a
                         >
                     </li>
                     <li v-if="user">
-                        <a :href="`/atlas/v3/logout?next=${encodeURIComponent(this.nextUrl)}`"
+                        <a :href="`/atlas/logout?next=${encodeURIComponent(this.nextUrl)}`"
                             >Log uit</a
                         >
                     </li>
-                    <li><a href="/atlas/v3/help" target="_blank">Help</a></li>
+                    <li><a href="/atlas/help" target="_blank">Help</a></li>
                     <li><button @click="() => toggleModal('embed')">Embed</button></li>
                 </ul>
             </div>
