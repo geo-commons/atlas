@@ -52,3 +52,28 @@ html, body, #app {
     font-size: 14px;
     font-weight: 700;
 }
+
+.help__container {
+    padding: 20px;
+    max-width: 730px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.help__container img {
+    max-width: 100%;
+}
+
+.help__container ul {
+    list-style-type: disc;
+    padding-left: 40px;
+}
+
+.help__container a {
+    color: #4285f4;
+    text-decoration: none;
+}
+
+.help__container a:hover {
+    text-decoration: underline;
+}
