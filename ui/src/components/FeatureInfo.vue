@@ -3,9 +3,14 @@
         <Table class="table">
             <table v-for="feature in features" v-bind:key="feature.id">
                 <tbody>
-                    <tr v-for="(value, key) in feature.properties" v-bind:key="key">
-                        <td>{{ key }}</td>
-                        <td><RichValue :dataKey="key" :dataValue="value" /></td>
+                    <tr v-for="property in displayProperties" v-bind:key="property">
+                        <td>{{ property }}</td>
+                        <td>
+                            <RichValue
+                                :dataKey="property"
+                                :dataValue="feature.properties[property]"
+                            />
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -45,7 +50,8 @@ export default {
     },
     data() {
         return {
-            features: {},
+            features: [],
+            displayProperties: [],
         }
     },
     props: {
@@ -89,6 +95,16 @@ export default {
                 const result = await fetch(url)
                 const data = await result.json()
                 this.features = data.features
+
+                if (data.features.length > 0) {
+                    const fetchedProperties = Object.keys(data.features[0].properties)
+                    this.displayProperties =
+                        this.layer.display_properties.length > 0
+                            ? this.layer.display_properties.filter((p) =>
+                                  fetchedProperties.includes(p)
+                              )
+                            : fetchedProperties
+                }
             } catch (e) {
                 console.error(e)
             }
