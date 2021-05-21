@@ -19,12 +19,13 @@ from utils.context_processors import is_ctrix
 from webservice.models import Layer
 
 from .forms import UploadDatasetForm
+from .lib import get_help_content
 from .models import SavedDataset
 from webservice.models import AtlasTheme
 
 
 logger = logging.getLogger(__name__)
-
+help_content = get_help_content()
 
 class HomePageView(TemplateView):
     template_name = "main_content.html"
@@ -198,7 +199,8 @@ def v3(request, theme_slug=''):
 
 def v3_help(request):
     return render(request, 'v3/help.html', {
-        'title': 'Help'
+        'title': 'Help',
+        'content': help_content
     })
 
 def v3_login(request):

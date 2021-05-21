@@ -1,5 +1,9 @@
 {% extends 'v3/_base.html' %}
+{% load markdownify %}
 
 {% block content %}
-    Help
+    <div class="help__container">
+        <h1>Help</h1>
+        {{ content | markdown | safe }}
+    </div>
 {% endblock %}
