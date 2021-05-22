@@ -10,7 +10,7 @@ Test:
   stage: Test
   image: python:3.9
   services:
-    - postgres:11.10-alpine
+    - postgres:11.12-alpine
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
     POSTGRES_PASSWORD: postgres
@@ -37,7 +37,7 @@ Test:
 
 Lint ui:
   stage: Test
-  image: node:12.19.1-alpine
+  image: node:12.22.1-alpine
   cache:
     paths:
       - ui/node_modules/
