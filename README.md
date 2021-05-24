@@ -46,7 +46,7 @@ Make sure you installed the following requirements:
 - [Python 3](https://www.python.org)
 - [Docker](https://www.docker.com)
 
-Atlas can work with any WFS server as a source of geospatial data. Datalab Purmerend relies on [Geoserver](https://github.com/geoserver/geoserver) for viewing geospatial data. Since Geoserver is one possible choice, it is not listed as a requirement to set up a development environment.
+Atlas can work with any WMS, WFS and WMTS server as a source of geospatial data. Datalab Purmerend relies on [Geoserver](https://github.com/geoserver/geoserver) for viewing geospatial data. Since Geoserver is one possible choice, it is not listed as a requirement to set up a development environment.
 
 GeoServer is an open source software server written in Java that allows users to share and edit geospatial data. Designed for interoperability, it publishes data from any major spatial data source using open standards.
 The default development environment of Atlas uses the Purmerend Datalab Geoserver. However, if you want to present you own geospatial data (and you do), you will need to run you own Geoserver.
