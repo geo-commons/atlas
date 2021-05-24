@@ -1,6 +1,6 @@
 # Atlas
 
-Atlas is a geo portal that provides a user-friendly interface for layers on a WMS, WFS and WMTS server. Atlas is developed by [Datalab Purmerend](https://datalab.purmerend.nl/), part of Gemeente Purmerend.
+Atlas is a geo portal that provides a user-friendly interface for layers on a WMS, WFS and WMTS server. Atlas is developed by [Datalab Purmerend](https://datalab.purmerend.nl/), part of Gemeente Purmerend and [Delta10](https://www.delta10.nl).
 
 <img src="https://gitlab.com/purmerend/atlas/uploads/e549ad00397d4f0f593f703ee12ceb9b/image.png" alt="Screenshot of Atlas" width="500"/>
 
