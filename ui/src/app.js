@@ -1,3 +1,4 @@
+import 'tippy.js/themes/light-border.css'
 import 'es6-promise/auto'
 import 'whatwg-fetch'
 
@@ -15,6 +16,7 @@ Vue.use(Vuex)
 Vue.config.productionTip = false
 
 Vue.use(VueTippy, {
+    directive: 'tippy',
     distance: 5,
     placement: 'top',
     duration: [200, 175],
@@ -25,6 +27,7 @@ Vue.use(VueTippy, {
     boundary: 'viewport',
     delay: [1000, 0],
 })
+Vue.component('tippy', TippyComponent)
 
 // Atlas v3
 document.addEventListener('DOMContentLoaded', () => {

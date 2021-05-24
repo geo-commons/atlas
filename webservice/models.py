@@ -277,6 +277,11 @@ source: new ol.source.TileWMS({{
             } if self.layer_type else None,
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
+            'metadata': {
+                'description': self.meta_kind,
+                'organization': self.meta_org,
+                'updated': self.meta_updated
+            },
             'linked_data': [ item.to_dict() for item in self.linked_data.all() ]
         }
 

@@ -86,15 +86,24 @@
                         </template>
                         <template v-slot:default>
                             <ul :id="category.id" class="sublayers">
-                                <li v-for="layer in category.layers" v-bind:key="layer.id">
-                                    <input
-                                        type="checkbox"
-                                        :name="layer.id"
-                                        :id="layer.id"
-                                        :checked="layer.is_visible"
-                                        @change="() => onSelectLayer(layer)"
-                                    />
-                                    <label :for="layer.id">{{ layer.title }}</label>
+                                <li
+                                    v-for="layer in category.layers"
+                                    v-bind:key="layer.id"
+                                    class="sublayer"
+                                >
+                                    <div>
+                                        <input
+                                            type="checkbox"
+                                            :name="layer.id"
+                                            :id="layer.id"
+                                            :checked="layer.is_visible"
+                                            @change="() => onSelectLayer(layer)"
+                                        />
+                                        <label :for="layer.id">
+                                            {{ layer.title }}
+                                        </label>
+                                    </div>
+                                    <LayerInfo :layer="layer" />
                                 </li>
                             </ul>
                         </template>
@@ -124,12 +133,14 @@
 <script>
 import ExpandButton from './ExpandButton'
 import VisibleLayer from './VisibleLayer'
+import LayerInfo from './LayerInfo'
 
 export default {
     name: 'LayersPanel',
     components: {
         ExpandButton,
         VisibleLayer,
+        LayerInfo,
     },
     data() {
         return {
@@ -258,7 +269,7 @@ export default {
 }
 
 .sublayers {
-    padding: 0 0 4px 30px;
+    padding: 0 4px 4px 30px;
 }
 
 .sublayers > li {
@@ -283,7 +294,17 @@ export default {
     user-select: none;
 }
 
+.sublayer {
+    display: flex;
+    justify-content: space-between;
+}
+
 .layer-counter {
     margin: 7px 8px 0 4px;
+}
+
+.tippy-box {
+    background-color: tomato;
+    color: yellow;
 }
 </style>
