@@ -8,24 +8,24 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "core-js": "3.7.0",
+    "core-js": "3.12.1",
     "es6-promise": "4.2.8",
     "ol": "6.5.0",
-    "proj4": "2.6.3",
+    "proj4": "2.7.2",
     "vue": "2.6.12",
-    "vue-tippy": "4.7.2",
-    "vuex": "3.5.1",
-    "whatwg-fetch": "3.5.0"
+    "vue-tippy": "4.10.1",
+    "vuex": "3.6.2",
+    "whatwg-fetch": "3.6.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.5.9",
-    "@vue/cli-plugin-eslint": "4.5.9",
-    "@vue/cli-service": "4.5.9",
+    "@vue/cli-plugin-babel": "4.5.13",
+    "@vue/cli-plugin-eslint": "4.5.13",
+    "@vue/cli-service": "4.5.13",
     "babel-eslint": "10.1.0",
-    "eslint": "7.14.0",
+    "eslint": "7.27.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "3.4.0",
-    "eslint-plugin-vue": "7.1.0",
+    "eslint-plugin-vue": "7.9.0",
     "prettier": "2.3.0",
     "vue-template-compiler": "2.6.12",
     "webpack-bundle-tracker": "0.4.3"
