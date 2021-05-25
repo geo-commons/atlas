@@ -84,8 +84,7 @@ Deploy Review App:
   only:
     - branches@purmerend/atlas
   except:
-    - renovate/*
-    - master
+    - master@purmerend/atlas
 
 Remove Review App:
   stage: Deploy
@@ -102,8 +101,7 @@ Remove Review App:
   only:
     - branches@purmerend/atlas
   except:
-    - renovate/*
-    - master
+    - master@purmerend/atlas
 
 Deploy Docker latest tag:
   stage: Deploy
