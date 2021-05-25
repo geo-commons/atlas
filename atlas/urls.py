@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 
 admin.site.site_header = 'Atlas administration'
 admin.site.site_title = 'Atlas administration'
@@ -24,4 +25,5 @@ urlpatterns = [
     path('atlas/admin/', admin.site.urls),
     path('atlas/accounts/', include('django.contrib.auth.urls')),
     path('atlas/', include('homepage.urls')),
+    path('', RedirectView.as_view(url='/atlas/'))
 ]
