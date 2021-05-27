@@ -13,6 +13,7 @@ export default {
 <style scoped>
 .table-wrapper {
     overflow: auto;
+    word-wrap: break-word;
 }
 
 .table-wrapper table {
@@ -47,5 +48,9 @@ export default {
 .table-wrapper th:last-child,
 .table-wrapper td:last-child {
     padding-right: 20px;
+}
+
+.table-wrapper td img {
+    max-width: 100%;
 }
 </style>
