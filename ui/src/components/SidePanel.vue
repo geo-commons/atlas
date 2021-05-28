@@ -176,10 +176,10 @@ export default {
 .resize-button:before {
     content: '';
     position: absolute;
-    top: -10px;
-    bottom: -10px;
-    width: 10px;
-    left: -10px;
+    top: -8px;
+    bottom: -8px;
+    width: 8px;
+    left: -8px;
     background: white;
     pointer-events: none;
 }
@@ -236,10 +236,10 @@ export default {
 .expand-mobile-button:before {
     content: '';
     position: absolute;
-    left: -10px;
-    right: -10px;
-    height: 10px;
-    bottom: -10px;
+    left: -8px;
+    right: -8px;
+    height: 8px;
+    bottom: -8px;
     background: white;
     pointer-events: none;
 }

@@ -530,6 +530,15 @@ svg {
     left: var(--padding-screen);
 }
 
+@media (max-width: 575px) {
+    .showInfoPanel .bottom-left-panels,
+    .showDataPanel .bottom-left-panels,
+    .showInfoPanel .bottom-right-panels,
+    .showDataPanel .bottom-right-panels {
+        bottom: calc(40vh + var(--padding-screen));
+    }
+}
+
 @media (min-width: 576px) {
     .showInfoPanel .bottom-left-panels {
         left: calc(var(--padding-screen) + var(--width-detail));

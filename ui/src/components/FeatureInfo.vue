@@ -131,8 +131,16 @@ export default {
     margin: 4px 0 8px;
 }
 
+.table-wrapper table {
+    table-layout: fixed;
+}
+
 .table-wrapper td:first-child {
     width: 30%;
     color: var(--color-text-grey);
+}
+
+.table-wrapper td:last-child {
+    width: 70%;
 }
 </style>
