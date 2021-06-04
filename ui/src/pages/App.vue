@@ -312,6 +312,8 @@ export default {
     --color-grey-50: #eaeaea;
     --color-grey-60: #dadada;
 
+    --color-icon-grey: rgba(0, 0, 0, 0.42);
+
     --color-tooltip-dark: #222222;
 
     --color-alert: #eb0000;
@@ -338,18 +340,20 @@ export default {
 
 @media (min-width: 576px) {
     :root {
-        --width-detail: 350px;
+        --width-detail: 300px;
+        --padding-screen: 16px;
     }
 }
 
-@media (min-width: 576px) {
+@media (min-width: 768px) {
     :root {
-        --padding-screen: 16px;
+        --width-detail: 350px;
     }
 }
 
 @media (min-width: 1200px) {
     :root {
+        --width-detail: 400px;
         --padding-screen: 20px;
     }
 }
@@ -494,12 +498,16 @@ svg {
 }
 
 .tippy-tooltip {
-    padding: 3px 7px 4px;
+    padding: 0;
     border-radius: var(--radius-normal);
     font-family: inherit;
     font-size: var(--font-size-tiny);
     font-weight: var(--font-weight-bold);
     letter-spacing: 0em;
+}
+
+.tippy-tooltip .tippy-content {
+    padding: 3px 7px 4px;
 }
 
 .tippy-tooltip.dark-theme .tippy-backdrop {
@@ -509,6 +517,24 @@ svg {
 .tippy-tooltip.primary-theme .tippy-backdrop {
     /* TODO: var(--color-primary) doesn't work */
     background-color: #0066ff;
+}
+
+.tippy-tooltip.popover-theme {
+    background-color: white;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-normal);
+    color: #000000;
+    letter-spacing: inherit;
+    box-shadow: var(--shadow-normal);
+}
+
+.tippy-tooltip.popover-theme[x-placement^='right'] .tippy-arrow {
+    border-right-color: white;
+}
+
+.tippy-tooltip.popover-theme .tippy-content {
+    padding: 0;
+    overflow: auto;
 }
 </style>
 

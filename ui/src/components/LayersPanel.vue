@@ -91,18 +91,18 @@
                                     v-bind:key="layer.id"
                                     class="sublayer"
                                 >
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            :name="layer.id"
-                                            :id="layer.id"
-                                            :checked="layer.is_visible"
-                                            @change="() => onSelectLayer(layer)"
-                                        />
-                                        <label :for="layer.id">
-                                            {{ layer.title }}
-                                        </label>
-                                    </div>
+                                    <!-- <div class="sublayer-check"> -->
+                                    <input
+                                        type="checkbox"
+                                        :name="layer.id"
+                                        :id="layer.id"
+                                        :checked="layer.is_visible"
+                                        @change="() => onSelectLayer(layer)"
+                                    />
+                                    <label :for="layer.id">
+                                        {{ layer.title }}
+                                    </label>
+                                    <!-- </div> -->
                                     <LayerInfo :layer="layer" />
                                 </li>
                             </ul>
@@ -240,7 +240,7 @@ export default {
     position: absolute;
     bottom: var(--width-button-large);
     left: 0;
-    max-height: calc(100vh - ((var(--width-button-large) * 2) + (var(--padding-screen) * 4)));
+    max-height: calc(100vh - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)));
     width: calc(var(--width-detail) - (var(--padding-screen) * 2));
     max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal));
     overflow-y: auto;
@@ -248,6 +248,15 @@ export default {
     border-radius: var(--radius-small);
     border-bottom-left-radius: 0;
     box-shadow: var(--shadow-normal);
+}
+
+@media (max-width: 575px) {
+    .showInfoPanel .layers,
+    .showInfoPanel .visible-layers,
+    .showDataPanel .layers,
+    .showDataPanel .visible-layers {
+        max-height: calc(60vh - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)));
+    }
 }
 
 @media (min-width: 576px) {
@@ -269,14 +278,15 @@ export default {
 }
 
 .sublayers {
-    padding: 0 4px 4px 30px;
+    padding: 0 0 4px 30px;
 }
 
-.sublayers > li {
+.sublayer {
     position: relative;
+    display: flex;
 }
 
-.sublayers > li > input {
+.sublayer > input {
     position: absolute;
     top: 5px;
     left: 0;
@@ -285,26 +295,17 @@ export default {
     margin: 0;
 }
 
-.sublayers > li > label {
+.sublayer > label {
     display: block;
     position: relative;
     width: 100%;
     cursor: pointer;
-    padding: 2px 12px 2px 20px;
+    padding: 2px 0 2px 20px;
     user-select: none;
-}
-
-.sublayer {
-    display: flex;
-    justify-content: space-between;
+    word-break: break-word;
 }
 
 .layer-counter {
     margin: 7px 8px 0 4px;
-}
-
-.tippy-box {
-    background-color: tomato;
-    color: yellow;
 }
 </style>
