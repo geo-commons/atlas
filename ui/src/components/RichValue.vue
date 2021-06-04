@@ -2,9 +2,16 @@
     <div>
         <span v-if="this.valueType === 'STRING'">{{ dataValue }}</span>
         <a v-if="this.valueType === 'URL'" :href="dataValue" target="_blank" rel="noopener">{{
-            dataValue
+            dataValue.length >= 75
+                ? `${dataValue.substring(0, 36)}...${dataValue.substring(dataValue.length - 36)}`
+                : dataValue
         }}</a>
-        <img v-if="this.valueType === 'IMAGE'" :src="dataValue" :alt="`Afbeelding ${dataKey}`" />
+        <img
+            v-if="this.valueType === 'IMAGE'"
+            :src="dataValue"
+            :alt="`Afbeelding ${dataKey}`"
+            v-bind:style="{ maxWidth: '100%' }"
+        />
     </div>
 </template>
 

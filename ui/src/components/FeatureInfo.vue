@@ -7,7 +7,7 @@
                         v-for="property in filterProperties(feature.properties)"
                         v-bind:key="property"
                     >
-                        <td>{{ property }}</td>
+                        <td>{{ property | capitalize }}</td>
                         <td>
                             <RichValue
                                 :dataKey="property"
@@ -60,6 +60,15 @@ export default {
         layer: Object,
         position: Object,
         isOpen: Boolean,
+    },
+    filters: {
+        capitalize: function (value) {
+            if (!value) return ''
+            // Replace underscores by spaces
+            value = value.toString().replace(/_/g, ' ')
+            // Uppercase first character
+            return value.charAt(0).toUpperCase() + value.slice(1)
+        },
     },
     mounted() {
         this.fetchFeatures()

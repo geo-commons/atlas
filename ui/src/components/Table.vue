@@ -49,8 +49,4 @@ export default {
 .table-wrapper td:last-child {
     padding-right: 20px;
 }
-
-.table-wrapper td img {
-    max-width: 100%;
-}
 </style>
