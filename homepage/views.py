@@ -35,6 +35,11 @@ class HomePageView(TemplateView):
 
         context = super().get_context_data(**kwargs)
         context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request)).filter(~Q(not_in_atlas=True))
+        context['data'] = {
+            'config': _get_config(),
+            'user': _get_user(self.request),
+            'layers': _default_layers() + [ layer.to_dict() for layer in context['layers'] ]
+        }
 
         return context
 
