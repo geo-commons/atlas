@@ -16,7 +16,6 @@
   <body>
     <div id="map" class="map"></div>
     {{ data|json_script:"app-data" }}
-    {% render_bundle "chunk-vendors" %}
     {% render_bundle "embed" %}
   </body>
 </html>

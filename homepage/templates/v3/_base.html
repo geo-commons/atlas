@@ -15,7 +15,6 @@
 </head>
   <body>
     {% block content %}{% endblock %}
-    {% render_bundle "chunk-vendors" %}
     {% render_bundle "app" %}
 
     {% if GOOGLE_MAPS_API_KEY %}
