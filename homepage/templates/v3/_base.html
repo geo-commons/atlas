@@ -11,7 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" >
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/vnd.microsoft.icon" />
+    <link rel="shortcut icon" href="{% if config.FAVICON_URL %}{{ config.FAVICON_URL }}{% else %}{% static 'img/favicon.ico' %}{% endif %}" />
 </head>
   <body>
     {% block content %}{% endblock %}
