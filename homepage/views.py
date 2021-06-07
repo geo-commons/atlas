@@ -188,16 +188,17 @@ def embed(request):
 def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
 
+    context = {}
+
     if theme_slug:
         theme = get_object_or_404(AtlasTheme, slug=theme_slug)
         authorized_layers = authorized_layers.filter(atlastheme=theme)
+        context['title'] = theme.title
 
-    context = {
-        'data': {
-            'config': _get_config(),
-            'user': _get_user(request),
-            'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
-        }
+    context['data'] = {
+        'config': _get_config(),
+        'user': _get_user(request),
+        'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
     }
 
     return render(request, 'v3/app.html', context)

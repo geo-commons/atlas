@@ -321,9 +321,7 @@ class LinkedData(models.Model):
 
 class AtlasTheme(models.Model):
     title = models.CharField('title', max_length=128, null=True)
-
     slug = AutoSlugField(blank=False, populate_from='title', overwrite=True)
-
     layers = models.ManyToManyField(Layer)
 
     def get_absolute_url(self):
