@@ -18,6 +18,10 @@ module.exports = {
         plugins: [new BundleTracker({ path: __dirname, filename: 'webpack-stats.json' })],
     },
 
+    css: {
+        sourceMap: true,
+    },
+
     pages: {
         app: { entry: 'src/app.js' },
         embed: { entry: 'src/embed.js' },
