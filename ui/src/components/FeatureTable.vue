@@ -55,6 +55,7 @@
                                 <tr v-for="feature in features" v-bind:key="feature.id">
                                     <td>
                                         <button
+                                            v-if="feature.geometry"
                                             class="iconbutton pin-button"
                                             v-tippy="{ placement: 'right' }"
                                             content="Bekijk op kaart"
@@ -132,6 +133,7 @@ export default {
     },
     mounted() {
         this.fetchFeatures()
+        this.fetchSearchProperties()
     },
     watch: {
         query: 'fetchFeatures',
@@ -196,17 +198,13 @@ export default {
                 this.numberMatched = data.numberMatched
 
                 if (this.displayProperties.length === 0 && data.features.length > 0) {
-                    // cache first retrieval of properties into this.properties
+                    // cache first retrieval of properties into this.displayProperties
                     const fetchedProperties = Object.keys(data.features[0].properties)
+
                     this.displayProperties =
                         this.layer.display_properties.length > 0
-                            ? this.layer.display_properties.filter((p) =>
-                                  fetchedProperties.includes(p)
-                              )
+                            ? this.layer.display_properties
                             : fetchedProperties
-                    this.searchProperties = this.layer.search_properties
-                        ? this.layer.search_properties.filter((p) => fetchedProperties.includes(p))
-                        : []
                 }
             } catch (e) {
                 console.error(e)
@@ -218,6 +216,35 @@ export default {
             }
 
             this.loading = false
+        },
+        async fetchSearchProperties() {
+            if (this.layer.search_properties.length > 0) {
+                this.searchProperties = this.layer.search_properties
+                return
+            }
+
+            const params = new URLSearchParams([
+                ['service', 'WFS'],
+                ['version', '1.0.0'],
+                ['request', 'DescribeFeatureType'],
+                ['typename', this.layer.name],
+                ['outputFormat', 'application/json'],
+            ])
+
+            try {
+                const result = await fetch(this.layer.url + params.toString())
+                const data = await result.json()
+                const featureType = data.featureTypes[0]
+
+                // Only search through properties with type string
+                const stringProperties = featureType.properties.filter(
+                    (p) => p.localType === 'string'
+                )
+
+                this.searchProperties = stringProperties.map((p) => p.name)
+            } catch (e) {
+                console.error(e)
+            }
         },
         downloadCSV() {
             const separator = ';'
