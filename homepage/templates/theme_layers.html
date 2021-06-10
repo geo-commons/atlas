@@ -24,7 +24,7 @@
     title: "{{ layer.title }}",
     opacity: {{ layer.opacity }},
     visible: {{ layer.visible|lower }},
-    {{ layer.layer_type_str }},
+    themelayer: true,
     isQueryable: {{ layer.isqueryable|lower }},
     {% if layer.popup_attributes %}
     {{ layer.popup_attributes }},

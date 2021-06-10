@@ -45,30 +45,14 @@ class LayerManager(models.Manager):
         return result
 
 
-class CategoryManager(models.Manager):
-    def environment(self, ctrix=True):
-        if ctrix:
-            return self.all()
-
-        return self.filter(closed_theme=False)
-
-
 class Category(models.Model):
     objects = models.Manager()
-    environment_dependent = CategoryManager()
 
-    title = models.CharField('title', max_length=128, null=True)
+    title = models.CharField('Titel', max_length=128, null=True)
 
     slug = AutoSlugField(blank=False, populate_from='title', overwrite=True)
-    js_type = models.CharField(
-        'Javascript type',
-        max_length=128,
-        default='themelayer:true',
-        help_text='javascript...')
-
-    closed_theme = models.BooleanField('Gesloten thema', default=True)
-    ordering = models.PositiveIntegerField(
-        default=0, editable=True, db_index=True)
+    ordering = models.PositiveIntegerField('Sortering',
+                                           default=0, editable=True, db_index=True)
 
     def __str__(self):
         return f"{self.title}"
@@ -93,86 +77,83 @@ class Layer(models.Model):
     authorized = LayerManager()
 
     layer_id = models.CharField(
-        'Layer_id', max_length=128, null=True, default="")
-    title = models.CharField('title', max_length=128, null=True)
-    layer_name = models.CharField('layer_name', max_length=128, null=True)
+        'Laag ID', max_length=128, null=True, default='', help_text='Het unieke kenmerk van de laag in Atlas')
+    title = models.CharField('Titel', max_length=128, null=True)
+    layer_name = models.CharField(
+        'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver')
 
-    meta_name = models.CharField('meta_naam', max_length=128, null=True)
-    meta_kind = models.CharField('meta_soort', max_length=128, null=True)
-    meta_org = models.CharField('meta_org', max_length=128, null=True)
+    meta_name = models.CharField('Naam', max_length=128, null=True)
+    meta_kind = models.CharField('Soort', max_length=128, null=True)
+    meta_org = models.CharField('Organisatie', max_length=128, null=True)
     meta_updated = models.CharField(
-        'meta_bijgewerkt',
-        max_length=128,
-        null=True,
-        help_text='''
-De waarde wordt door javascript geëvalueerd
-(Bijv: "01-01-2018", getDate("year"))'
-        ''')
+        'Laatst bijgewerkt', max_length=128, null=True)
 
     opacity = models.DecimalField(
-        'opacity', max_digits=1, decimal_places=1, default=0.9)
-    visible = models.BooleanField('visible', default=False)
+        'Ondoorzichtigheid', max_digits=1, decimal_places=1, default=0.9)
+    visible = models.BooleanField('Zichtbaar', default=False)
 
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
         blank=True, null=True)
 
-    isqueryable = models.BooleanField('isqueryable', default=True)
+    isqueryable = models.BooleanField('Kan doorzocht worden', default=True,
+                                      help_text='Deze instelling is alleen van toepassing op Atlas versie 2 en wordt binnenkort verwijderd')
 
     _popup_attributes = models.CharField(
-        'popup attributes', max_length=250, blank=True, null=True)
+        'Toon deze velden', max_length=250, blank=True, null=True)
 
     _search_fields = models.CharField(
-        'Zoek velden', max_length=250, blank=True, null=True)
+        'Zoek in deze velden', max_length=250, blank=True, null=True)
 
     projection = models.CharField(
-        'projection', max_length=100, default='EPSG:28992')
+        'Projectie', max_length=100, default='EPSG:28992')
 
     url = models.CharField(
-        'url',
+        'URL',
         max_length=500,
         default='https://datalab.purmerend.nl/geoserver/topp/wms?')
 
     server_type = models.CharField(
-        'Server type', max_length=50, default='geoserver')
+        'Servertype', max_length=50, default='geoserver')
 
-    closed_dataset = models.BooleanField('Gesloten data', default=True)
+    closed_dataset = models.BooleanField(
+        'Besloten', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving')
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS_WFS, max_length=20,
-        help_text='"WMS en WFS" is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.'
-    )
+                                   help_text='"WMS en WFS" is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.'
+                                   )
 
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
 
     not_in_atlas = models.BooleanField(
-        'Alleen in een thema, niet in Atlas',
+        'Toon laag alleen in een themakaart',
         default=False,
-        help_text='''
-Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema.
-        ''')
+        help_text='De laag wordt niet getoond in de standaardkaart')
 
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        verbose_name='Eigenaar',
         blank=True,
         null=True,
         on_delete=models.PROTECT,
         related_name='owner')
 
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
-    atlas_groups = models.ManyToManyField(AtlasGroup, blank=True)
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, verbose_name='Gebruikers')
+    atlas_groups = models.ManyToManyField(
+        AtlasGroup, blank=True, verbose_name='Groepen')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
     updated_at = models.DateTimeField('updated_at', auto_now=True)
 
-    ordering = models.PositiveIntegerField(
-        default=0, editable=True, db_index=True)
+    ordering = models.PositiveIntegerField('Sortering',
+                                           default=0, editable=True, db_index=True)
 
     def __str__(self):
-        return '{} (Gesloten dataset: {})'.format(
-            self.title, self.is_closed_dataset)
+        return self.title
 
     @property
     def popup_attributes(self):
@@ -200,20 +181,7 @@ Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema.
 
     @property
     def layer_type_str(self):
-        """
-
-        if self.layer_type == 'theme_layer':
-            return "themelayer:true"
-        elif self.layer_type == 'base_registration':
-            return "basisreg:true"
-        elif self.layer_type == 'base_layer':
-            return "isBaseLayer:true"
-        """
-
-        if not self.layer_type:
-            return 'themelayer:true'
-
-        return self.layer_type.js_type
+        return 'themelayer:true'
 
     @property
     def infodiv(self):
@@ -286,7 +254,7 @@ source: new ol.source.TileWMS({{
                 'organization': self.meta_org,
                 'updated': self.meta_updated
             },
-            'linked_data': [ item.to_dict() for item in self.linked_data.all() ]
+            'linked_data': [item.to_dict() for item in self.linked_data.all()]
         }
 
     class Meta:
@@ -296,14 +264,17 @@ source: new ol.source.TileWMS({{
 
 
 class LinkedData(models.Model):
-    source = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='linked_data')
+    source = models.ForeignKey(
+        Layer, on_delete=models.CASCADE, related_name='linked_data')
 
     title = models.CharField(_('Titel'), max_length=128, null=True)
     layer_name = models.CharField(_('Laag naam'), max_length=128)
-    url = models.CharField(_('URL'), max_length=500, default='https://datalab.purmerend.nl/geoserver/topp/wms?')
+    url = models.CharField(_('URL'), max_length=500,
+                           default='https://datalab.purmerend.nl/geoserver/topp/wms?')
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
-    popup_attributes = models.CharField(_('Toon deze attributen'), max_length=250, blank=True, null=True)
+    popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,
+                                        help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.')
 
     class Meta:
         verbose_name = 'Gekoppelde data'
@@ -324,7 +295,7 @@ class LinkedData(models.Model):
 
 
 class AtlasTheme(models.Model):
-    title = models.CharField('title', max_length=128, null=True)
+    title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField(blank=False, populate_from='title', overwrite=True)
     layers = models.ManyToManyField(Layer)
 

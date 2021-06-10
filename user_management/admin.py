@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
@@ -24,5 +25,8 @@ class AtlasGroupAdmin(admin.ModelAdmin):
     inlines = (MembershipInline,)
 
 
+
 admin.site.register(AtlasUser, AtlasUserAdmin)
+
+admin.site.unregister(Group) # Unregister Django default groups
 admin.site.register(AtlasGroup, AtlasGroupAdmin)

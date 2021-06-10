@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
 
-admin.site.site_header = 'Atlas administration'
-admin.site.site_title = 'Atlas administration'
+admin.site.site_header = 'Atlas beheer'
+admin.site.site_title = 'Atlas beheer'
 admin.site.site_url = '/atlas'
 
 urlpatterns = [
