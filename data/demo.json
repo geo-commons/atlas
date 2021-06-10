@@ -1617,8 +1617,6 @@
         "fields": {
             "title": "Overig",
             "slug": "overig",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 9
         }
     },
@@ -1628,8 +1626,6 @@
         "fields": {
             "title": "Kabels en leidingen",
             "slug": "kabels-en-leidingen",
-            "js_type": "themelayer:true",
-            "closed_theme": true,
             "ordering": 7
         }
     },
@@ -1639,8 +1635,6 @@
         "fields": {
             "title": "Verkiezingen",
             "slug": "verkiezingen",
-            "js_type": "themelayer:true",
-            "closed_theme": true,
             "ordering": 11
         }
     },
@@ -1650,8 +1644,6 @@
         "fields": {
             "title": "Kadaster",
             "slug": "kadaster",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 8
         }
     },
@@ -1661,8 +1653,6 @@
         "fields": {
             "title": "Beheer",
             "slug": "beheer",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 4
         }
     },
@@ -1672,8 +1662,6 @@
         "fields": {
             "title": "Administratie",
             "slug": "administratie",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 2
         }
     },
@@ -1683,8 +1671,6 @@
         "fields": {
             "title": "Erfgoed_Beemster",
             "slug": "erfgoed_beemster",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 5
         }
     },
@@ -1694,8 +1680,6 @@
         "fields": {
             "title": "Hondenbeleid",
             "slug": "hondenbeleid",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 6
         }
     },
@@ -1705,8 +1689,6 @@
         "fields": {
             "title": "Verkeer",
             "slug": "verkeer",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 10
         }
     },
@@ -1716,8 +1698,6 @@
         "fields": {
             "title": "Wonen",
             "slug": "wonen",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 13
         }
     },
@@ -1727,8 +1707,6 @@
         "fields": {
             "title": "Basisregistratie",
             "slug": "basisregistratie",
-            "js_type": "basisreg:true",
-            "closed_theme": false,
             "ordering": 3
         }
     },
@@ -1738,8 +1716,6 @@
         "fields": {
             "title": "Wegwerkzaamheden",
             "slug": "wegwerkzaamheden",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 12
         }
     },
@@ -1749,8 +1725,6 @@
         "fields": {
             "title": "Luchtfoto's",
             "slug": "luchtfotos",
-            "js_type": "themelayer:true",
-            "closed_theme": false,
             "ordering": 1
         }
     },

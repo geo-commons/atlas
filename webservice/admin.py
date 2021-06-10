@@ -23,6 +23,24 @@ class LayerAdmin(admin.ModelAdmin):
         LinkedDataInline,
     ]
 
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'layer_id', 'layer_type', 'published')
+        }),
+        ('Bron', {
+            'fields': ('layer_name', 'url', 'source_type', 'projection', 'server_type')
+        }),
+        ('Weergave', {
+            'fields': ('opacity', 'is_base', 'is_visible', 'not_in_atlas', 'isqueryable', '_popup_attributes', '_search_fields')
+        }),
+        ('Metadata', {
+            'fields': ('meta_name', 'meta_kind', 'meta_org', 'meta_updated')
+        }),
+        ('Toegang', {
+            'fields': ('closed_dataset', 'owner', 'users', 'atlas_groups')
+        })
+    )
+
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('ordering', 'title')

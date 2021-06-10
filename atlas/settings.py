@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'webservice',
     'user_management',
     'webpack_loader',
-    'constance',
+    'atlas.apps.CustomConstance',
     'constance.backends.database',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -170,22 +170,22 @@ LOGGING = {
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 CONSTANCE_CONFIG = {
-    'ORGANIZATION_NAME': ('Gemeente Purmerend', 'The name of the organization'),
-    'DISCLAIMER': ('', 'The disclaimer that is shown'),
-    'POSITION_ZOOM': (13, 'The position zoom level'),
-    'POSITION_CENTER_X': (126910, 'The position center X coordinate'),
-    'POSITION_CENTER_Y': (505834, 'The position center Y coordinate'),
-    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'A comma-separated list of municipalities for autocomplete'),
-    'FAVICON_URL': ('', ('Configure a custom favicon by URL\ne.g. http://www.organization.com/favicon.ico'))
+    'ORGANIZATION_NAME': ('Gemeente Purmerend', 'De naam van de organisatie'),
+    'DISCLAIMER': ('', 'Inhoud van de disclaimer die getoond wordt'),
+    'POSITION_ZOOM': (13, 'Het zoomniveau van de opstartpositie'),
+    'POSITION_CENTER_X': (126910, 'Het centrum X-coordinaat van de opstartpositie'),
+    'POSITION_CENTER_Y': (505834, 'Het centrum Y-coordinaat van de opstartpositie'),
+    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
+    'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico'))
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    'Branding options': (
+    '1. Organisatie': (
         'ORGANIZATION_NAME',
         'FAVICON_URL',
         'DISCLAIMER'
     ),
-    'Map configuration': (
+    '2. Kaartconfiguratie': (
         'POSITION_CENTER_X',
         'POSITION_CENTER_Y',
         'POSITION_ZOOM',

@@ -18,7 +18,7 @@ class TestHomePageCategoryPopupAttributes(TestCase):
             closed_dataset=False,
             published=True,
             layer_type=Category.objects.create(
-                title='thema_layer', js_type='theme_layer:true'),
+                title='thema_layer'),
             _popup_attributes='')
         response = self.client.get(reverse('homepage:homepage'))
         self.assertNotContains(response, 'popupAttributes')
@@ -31,9 +31,7 @@ class TestHomePageCategoryPopupAttributes(TestCase):
             closed_dataset=False,
             published=True,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                closed_theme=False,
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             _popup_attributes='test\ntest2 test3')
         response = self.client.get(reverse('homepage:homepage'))
         self.assertContains(response,

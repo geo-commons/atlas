@@ -23,9 +23,7 @@ class TestHomePageAnonymousUser(TestCase):
             closed_dataset=False,
             published=True,
             layer_type=Category.objects.create(
-                title='base_registration',
-                closed_theme=False,
-                js_type='basisreg:true'))
+                title='base_registration'))
         Layer.objects.create(
             layer_id="purm_stembureaus_2017",
             title="Stembureaus",
@@ -33,11 +31,9 @@ class TestHomePageAnonymousUser(TestCase):
             closed_dataset=True,
             published=True,
             layer_type=Category.objects.create(
-                title='base_registration',
-                js_type='basisreg:true'))
+                title='base_registration'))
         response = self.client.get(reverse('homepage:homepage'))
         self.assertContains(response, 'purm_stembureaus_2018')
-        self.assertContains(response, 'basisreg:true')
         self.assertNotContains(response, 'purm_stembureaus_2017')
 
 
@@ -57,8 +53,7 @@ class TestHomePageAnonymousUserCtrix(TestCase):
             layer_name="topp:Purm_Stembureaus_2018",
             closed_dataset=False,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             published=True)
 
         Layer.objects.create(
@@ -67,8 +62,7 @@ class TestHomePageAnonymousUserCtrix(TestCase):
             layer_name="topp:Purm_Stembureaus_2017",
             closed_dataset=True,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             published=True)
 
         closed_with_user = Layer.objects.create(
@@ -77,8 +71,7 @@ class TestHomePageAnonymousUserCtrix(TestCase):
             layer_name="topp:Purm_Stembureaus_2016",
             closed_dataset=True,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             published=True)
 
         closed_with_user.save()
@@ -91,8 +84,7 @@ class TestHomePageAnonymousUserCtrix(TestCase):
             layer_name="topp:Purm_Stembureaus_2015",
             closed_dataset=True,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             published=True)
 
         closed_with_group.save()
@@ -128,8 +120,7 @@ class TestHomePageUserPermissions(TestCase):
             layer_name="topp:Purm_Stembureaus_2018",
             closed_dataset=True,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             published=True)
         layer_1.save()
         layer_1.users.add(user)
@@ -171,8 +162,7 @@ class TestHomePageGroupPermissions(TestCase):
             layer_name="topp:Purm_Stembureaus_2018",
             closed_dataset=True,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             published=True)
         layer_1.save()
         layer_1.atlas_groups.add(group)
@@ -202,8 +192,7 @@ class TestHomePageGroupPermissions(TestCase):
             layer_name="topp:Purm_Stembureaus_2017",
             closed_dataset=False,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                js_type='theme_layer:true'),
+                title='thema_layer'),
             published=True).save()
         response = self.client.get(reverse('homepage:homepage'))
         self.assertContains(response, 'purm_stembureaus_2018')

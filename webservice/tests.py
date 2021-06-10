@@ -11,16 +11,14 @@ class TestLayerModel(TestCase):
             layer_name="topp:Purm_Stembureaus_2018",
             published=False,
             layer_type=Category.objects.create(
-                title='theme_layer',
-                js_type='theme_layer:true'))
+                title='theme_layer'))
         self.open_dataset = Layer.objects.create(
             title="Purm",
             layer_name="",
             closed_dataset=False,
             _popup_attributes="test\ntest1",
             layer_type=Category.objects.create(
-                title='base_layer',
-                js_type='base_layer:true'))
+                title='base_layer'))
 
     def test_layer_name(self):
         self.assertEqual(self.closed_dataset.layer_name,

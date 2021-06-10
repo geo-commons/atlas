@@ -16,7 +16,7 @@ class TestHomePageExcludeThemeLayers(TestCase):
             published=True,
             not_in_atlas=True,
             layer_type=Category.objects.create(
-                title='thema_layer', js_type='theme_layer:true'))
+                title='thema_layer'))
 
         Layer.objects.create(
             layer_id="purm_stembureaus_2019",
@@ -26,9 +26,7 @@ class TestHomePageExcludeThemeLayers(TestCase):
             published=True,
             not_in_atlas=False,
             layer_type=Category.objects.create(
-                title='thema_layer',
-                closed_theme=False,
-                js_type='theme_layer:true'))
+                title='thema_layer'))
 
         response = self.client.get(reverse('homepage:homepage'))
         self.assertContains(response, 'purm_stembureaus_2019')
