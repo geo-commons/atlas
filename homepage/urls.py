@@ -21,5 +21,5 @@ urlpatterns += [
     path('login', auth_views.LoginView.as_view(template_name='v3/login.html'), name='v3_login'),
     path('logout', auth_views.LogoutView.as_view(template_name='v3/logout.html'), name='v3_logout'),
     re_path('embed', views.embed, name='embed'),
-    re_path(r'((?P<theme_slug>\w+)?)', views.v3, name='v3'),
+    re_path(r'((?P<theme_slug>[a-z0-9\-]+)?)', views.v3, name='v3'),
 ]

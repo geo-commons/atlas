@@ -30,6 +30,10 @@ class CategoryAdmin(admin.ModelAdmin):
     list_editable = ('ordering',)
 
 
+class ThemeAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug')
+
+
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(AtlasTheme, admin.ModelAdmin)
+admin.site.register(AtlasTheme, ThemeAdmin)
