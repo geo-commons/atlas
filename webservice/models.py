@@ -80,9 +80,11 @@ class Category(models.Model):
 
 
 class Layer(models.Model):
+    SOURCE_WMS_WFS = 'WMS_WFS'
     SOURCE_WMS = 'WMS'
     SOURCE_WMTS = 'WMTS'
     SOURCE_TYPES = [
+        (SOURCE_WMS_WFS, 'WMS en WFS'),
         (SOURCE_WMS, 'WMS'),
         (SOURCE_WMTS, 'WMTS')
     ]
@@ -138,7 +140,9 @@ De waarde wordt door javascript geëvalueerd
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
-    source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS, max_length=20)
+    source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS_WFS, max_length=20,
+        help_text='"WMS en WFS" is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.'
+    )
 
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)

@@ -56,6 +56,8 @@ import SidePanel from './SidePanel'
 import FeatureTable from './FeatureTable'
 import Search from './Search'
 
+const visibleSourceTypes = ['WMS_WFS', 'WFS']
+
 export default {
     name: 'DataPanel',
     components: {
@@ -76,7 +78,12 @@ export default {
     },
     computed: {
         visibleLayers() {
-            return this.layers.filter((layer) => layer.is_visible && !layer.is_base)
+            return this.layers.filter(
+                (layer) =>
+                    layer.is_visible &&
+                    !layer.is_base &&
+                    visibleSourceTypes.includes(layer.source_type)
+            )
         },
     },
     data() {
