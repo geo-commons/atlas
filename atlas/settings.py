@@ -175,5 +175,20 @@ CONSTANCE_CONFIG = {
     'POSITION_ZOOM': (13, 'The position zoom level'),
     'POSITION_CENTER_X': (126910, 'The position center X coordinate'),
     'POSITION_CENTER_Y': (505834, 'The position center Y coordinate'),
-    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'A comma-separated list of municipalities for autocomplete')
+    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'A comma-separated list of municipalities for autocomplete'),
+    'FAVICON_URL': ('', ('Configure a custom favicon by URL\ne.g. http://www.organization.com/favicon.ico'))
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'Branding options': (
+        'ORGANIZATION_NAME',
+        'FAVICON_URL',
+        'DISCLAIMER'
+    ),
+    'Map configuration': (
+        'POSITION_CENTER_X',
+        'POSITION_CENTER_Y',
+        'POSITION_ZOOM',
+        'SUGGEST_MUNICIPALITIES'
+    )
 }
