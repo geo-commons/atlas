@@ -173,7 +173,20 @@ export default {
         user: (state) => state.user,
         selectedArea: (state) => state.selectedArea,
     }),
+    created() {
+        window.addEventListener('resize', this.onResizeWindow)
+        this.setViewportHeight()
+    },
+    destroyed() {
+        window.removeEventListener('resize', this.onResizeWindow)
+    },
     methods: {
+        onResizeWindow() {
+            this.setViewportHeight()
+        },
+        setViewportHeight() {
+            this.computedStyle['--vh'] = window.innerHeight / 100 + 'px'
+        },
         async setPosition(position) {
             this.$store.commit('setPosition', position)
 
@@ -561,7 +574,7 @@ svg {
     .showDataPanel .bottom-left-panels,
     .showInfoPanel .bottom-right-panels,
     .showDataPanel .bottom-right-panels {
-        bottom: calc(40vh + var(--padding-screen));
+        bottom: calc((40 * var(--vh)) + var(--padding-screen));
     }
 }
 
