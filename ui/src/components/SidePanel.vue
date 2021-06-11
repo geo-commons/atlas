@@ -123,7 +123,7 @@ export default {
 
 @media (max-width: 575px) {
     .wrapper {
-        height: 40vh;
+        height: calc(40 * var(--vh));
         bottom: 0;
     }
 

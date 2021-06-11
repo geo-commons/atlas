@@ -240,7 +240,9 @@ export default {
     position: absolute;
     bottom: var(--width-button-large);
     left: 0;
-    max-height: calc(100vh - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)));
+    max-height: calc(
+        (100 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3))
+    );
     width: calc(var(--width-detail) - (var(--padding-screen) * 2));
     max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal));
     overflow-y: auto;
@@ -255,7 +257,9 @@ export default {
     .showInfoPanel .visible-layers,
     .showDataPanel .layers,
     .showDataPanel .visible-layers {
-        max-height: calc(60vh - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)));
+        max-height: calc(
+            (60 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3))
+        );
     }
 }
 
