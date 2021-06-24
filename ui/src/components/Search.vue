@@ -2,7 +2,7 @@
     <div class="search-wrapper" :class="{ showBorder }">
         <form class="search" autocomplete="off" method="GET" @submit="onSubmit">
             <button
-                v-if="this.$listeners['show-data-panel']"
+                v-if="this.$listeners['show-data-panel'] && !this.isEmbed"
                 class="iconbutton toggle-button"
                 type="button"
                 v-tippy="{ placement: 'bottom' }"
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
     name: 'Search',
     props: {
@@ -74,6 +76,9 @@ export default {
             this.$emit('on-close')
         },
     },
+    computed: mapState({
+        isEmbed: (state) => state.isEmbed,
+    }),
 }
 </script>
 
