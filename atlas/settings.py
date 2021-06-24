@@ -32,6 +32,18 @@ MATOMO_SITE_ID = os.getenv('MATOMO_SITE_ID', '')
 
 SENTRY_DSN = os.getenv('SENTRY_DSN', '')
 
+AUTHENTICATION_ENABLE_CREDENTIALS = os.getenv('AUTHENTICATION_ENABLE_CREDENTIALS', 'True') == 'True'
+AUTHENTICATION_ENABLE_OIDC = os.getenv('AUTHENTICATION_ENABLE_OIDC', 'False') == 'True'
+
+OIDC_RP_CLIENT_ID = os.getenv('OIDC_CLIENT_ID', 'atlas')
+OIDC_RP_CLIENT_SECRET = os.getenv('OIDC_CLIENT_SECRET', 'somethingsecret')
+OIDC_RP_SIGN_ALGO = os.getenv('OIDC_SIGN_ALGO', 'RS256')
+OIDC_RP_SCOPES = os.getenv('OIDC_SCOPES', 'openid email profile')
+OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv('OIDC_AUTHORIZATION_ENDPOINT', 'http://localhost:6556/auth')
+OIDC_OP_TOKEN_ENDPOINT = os.getenv('OIDC_TOKEN_ENDPOINT', 'http://localhost:6556/token')
+OIDC_OP_USER_ENDPOINT = os.getenv('OIDC_USER_ENDPOINT', 'http://localhost:6556/userinfo')
+OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_JWKS_ENDPOINT', 'http://localhost:6556/keys')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -50,6 +62,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'atlas.apps.CustomConstance',
     'constance.backends.database',
+    'mozilla_django_oidc',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -67,6 +80,7 @@ MIDDLEWARE = [
     'utils.middleware.check_access_admin',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
 ]
 
 ROOT_URLCONF = 'atlas.urls'
@@ -104,6 +118,14 @@ LAYER_CHOICES_RETURN_VALUES = {
     'base_registration': 'basisreg:true',
     'base_layer': 'isBaseLayer:true'
 }
+
+AUTHENTICATION_BACKENDS = []
+
+if AUTHENTICATION_ENABLE_CREDENTIALS:
+    AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')
+
+if AUTHENTICATION_ENABLE_OIDC:
+    AUTHENTICATION_BACKENDS.append('webservice.auth.AtlasOIDCAuthenticationBackend')
 
 AUTH_PASSWORD_VALIDATORS = [
     {

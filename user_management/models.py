@@ -14,3 +14,6 @@ class AtlasGroup(models.Model):
 
 class AtlasUser(AbstractUser):
     atlas_groups = models.ManyToManyField(AtlasGroup, blank=True)
+
+    def __str__(self):
+        return '{} {}'.format(self.first_name, self.last_name)

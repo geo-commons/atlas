@@ -2,42 +2,52 @@
 
 {% block content %}
   <div class="login__container">
-    <form method="POST">
-      {% csrf_token %}
-      <input type="hidden" name="next" value="{{ next }}">
+    {% if AUTHENTICATION_ENABLE_CREDENTIALS %}
+      <div class="credentials__container">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}">
 
-      <div>
-        <div class="login__form-item">
-          <label for="id_username">
-            Gebruikersnaam
-          </label>
-          {{ form.username }}
-        </div>
-        {% for error in form.username.errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+          <div>
+            <div class="login__form-item">
+              <label for="id_username">
+                Gebruikersnaam
+              </label>
+              {{ form.username }}
+            </div>
+            {% for error in form.username.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+
+          <div>
+            <div class="login__form-item">
+              <label for="id_password">
+                Wachtwoord
+              </label>
+              {{ form.password }}
+            </div>
+            {% for error in form.password.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+
+          {{ form.non_field_errors }}
+
+          {% for hidden_field in form.hidden_fields %}
+              {{ hidden_field.errors }}
+              {{ hidden_field }}
+          {% endfor %}
+
+          <button type="submit" class="login__submit">Log in</button>
+        </form>
       </div>
+    {% endif %}
 
-      <div>
-        <div class="login__form-item">
-          <label for="id_password">
-            Wachtwoord
-          </label>
-          {{ form.password }}
-        </div>
-        {% for error in form.password.errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+    {% if AUTHENTICATION_ENABLE_OIDC %}
+      <div class="sso__container">
+        <a href="{% url 'oidc_authentication_init' %}?next={{next}}" class="login__submit">Inloggen via Single Sign On</a>
       </div>
-
-      {{ form.non_field_errors }}
-
-      {% for hidden_field in form.hidden_fields %}
-          {{ hidden_field.errors }}
-          {{ hidden_field }}
-      {% endfor %}
-
-      <button type="submit" class="login__submit">Log in</button>
-    </form>
+    {% endif %}
   </div>
 {% endblock %}

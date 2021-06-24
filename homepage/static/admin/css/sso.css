@@ -1,0 +1,11 @@
+.sso {
+    display: flex;
+    margin-top: 25px;
+    padding: 25px;
+    border-top: 1px solid #ccc;
+}
+
+.sso a.button {
+    margin: 0 auto;
+    padding: 10px 15px;
+}

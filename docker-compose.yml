@@ -30,6 +30,13 @@ services:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+  dex:
+    image: quay.io/dexidp/dex:v2.28.1
+    command: dex serve /config.yaml
+    volumes:
+      - ./dex.dev.yml:/config.yaml
+    ports:
+      - 6556:6556
 
 volumes:
   postgres-data:
