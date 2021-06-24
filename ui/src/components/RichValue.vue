@@ -6,12 +6,13 @@
                 ? `${dataValue.substring(0, 36)}...${dataValue.substring(dataValue.length - 36)}`
                 : dataValue
         }}</a>
-        <img
-            v-if="this.valueType === 'IMAGE'"
-            :src="dataValue"
-            :alt="`Afbeelding ${dataKey}`"
-            v-bind:style="{ maxWidth: '100%' }"
-        />
+        <a v-if="this.valueType === 'IMAGE'" :href="dataValue" target="_blank" rel="noopener">
+            <img
+                :src="dataValue"
+                :alt="`Afbeelding ${dataKey}`"
+                v-bind:style="{ maxWidth: '100%' }"
+            />
+        </a>
     </div>
 </template>
 
