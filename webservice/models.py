@@ -300,8 +300,7 @@ class AtlasTheme(models.Model):
     layers = models.ManyToManyField(Layer)
 
     def get_absolute_url(self):
-        return reverse('webservice:atlastheme-detail',
-                       kwargs={'slug': self.slug})
+        return reverse('homepage:v3', args=[self.slug]) + '/'
 
     class Meta:
         verbose_name = 'Thema'
