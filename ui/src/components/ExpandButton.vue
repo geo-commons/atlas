@@ -57,6 +57,13 @@ export default {
         title: String,
         isOpen: Boolean,
     },
+    watch: {
+        isOpen(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                this.showContent = newValue
+            }
+        },
+    },
 }
 </script>
 

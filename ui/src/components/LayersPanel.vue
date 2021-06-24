@@ -67,11 +67,35 @@
 
         <transition name="fade">
             <ul class="layers" v-if="this.panel === 'layers'" id="layers">
+                <div class="layers-search">
+                    <label for="layers-search">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="18px"
+                            viewBox="0 0 24 24"
+                            width="18px"
+                            fill="currentColor"
+                        >
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path
+                                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                            />
+                        </svg>
+                    </label>
+                    <input
+                        id="layers-search"
+                        type="search"
+                        name="query"
+                        placeholder="Zoek laag"
+                        v-model="searchQuery"
+                    />
+                </div>
                 <li>
                     <ExpandButton
                         v-for="category in categories"
                         :key="category.id"
                         :title="category.title"
+                        :isOpen="searchQuery != ''"
                         class="category-wrapper"
                     >
                         <template v-slot:button>
@@ -145,6 +169,7 @@ export default {
     data() {
         return {
             panel: '',
+            searchQuery: '',
         }
     },
     methods: {
@@ -165,6 +190,15 @@ export default {
             this.layers.forEach((layer) => {
                 if (!layer.category) {
                     return
+                }
+
+                if (this.searchQuery) {
+                    const searchFor = this.searchQuery.toLowerCase()
+                    const searchIn = layer.title.toLowerCase()
+
+                    if (searchIn.search(searchFor) === -1) {
+                        return
+                    }
                 }
 
                 const existingCategory = categories.find((c) => c.id === layer.category.id)
@@ -275,6 +309,28 @@ export default {
     .showDataPanel .visible-layers {
         max-width: calc(50vw - (var(--padding-screen) * 3) - var(--width-button-normal));
     }
+}
+
+.layers-search {
+    width: 100%;
+    display: flex;
+    height: var(--width-button-large);
+    border-bottom: 1px solid var(--color-grey-50);
+}
+
+.layers-search label {
+    flex-shrink: 0;
+    width: 32px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-icon-grey);
+}
+
+.layers-search input {
+    flex-grow: 1;
+    height: 100%;
 }
 
 .category-wrapper:not(:last-child) {
