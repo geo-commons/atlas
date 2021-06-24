@@ -11,6 +11,7 @@ html, body, #app {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .login__container form {
@@ -51,6 +52,11 @@ html, body, #app {
     padding: 0 24px 2px;
     font-size: 14px;
     font-weight: 700;
+    text-decoration: none;
+}
+
+.sso__container {
+    margin-top: 40px;
 }
 
 .help__container {

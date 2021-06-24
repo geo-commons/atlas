@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
+from django.conf import settings
 
 admin.site.site_header = 'Atlas beheer'
 admin.site.site_title = 'Atlas beheer'
@@ -23,7 +24,19 @@ admin.site.site_url = '/atlas'
 
 urlpatterns = [
     path('atlas/admin/', admin.site.urls),
-    path('atlas/accounts/', include('django.contrib.auth.urls')),
+]
+
+if settings.AUTHENTICATION_ENABLE_CREDENTIALS:
+    urlpatterns += [
+        path('atlas/accounts/', include('django.contrib.auth.urls'))
+    ]
+
+if settings.AUTHENTICATION_ENABLE_OIDC:
+    urlpatterns += [
+        path('atlas/oidc/', include('mozilla_django_oidc.urls'))
+    ]
+
+urlpatterns += [
     path('atlas/', include('homepage.urls')),
     path('', RedirectView.as_view(url='/atlas/'))
 ]
