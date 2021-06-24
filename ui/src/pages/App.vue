@@ -10,12 +10,14 @@
             @toggle-data-panel="this.toggleDataPanel"
         />
         <PointInfoPanel
+            v-if="!this.isEmbed"
             :layers="this.layers"
             :position="this.position"
             :showInfoPanel="!showDataPanel && showInfoPanel"
             @set-position="this.setPosition"
         />
         <DataPanel
+            v-if="!this.isEmbed"
             ref="dataPanel"
             :layers="this.layers"
             :position="this.position"
@@ -37,14 +39,16 @@
             />
             <div class="top-right-panels">
                 <Tools
+                    v-if="!this.isEmbed"
                     :tool="this.tool"
                     @set-tool="this.setTool"
                     @set-selected-area="this.setSelectedArea"
                 />
-                <MorePanel :user="this.user" @toggle-modal="toggleModal" />
+                <MorePanel v-if="!this.isEmbed" :user="this.user" @toggle-modal="toggleModal" />
             </div>
             <div class="bottom-left-panels">
                 <LayersPanel
+                    v-if="!this.isEmbed"
                     :layers="this.layers"
                     @toggle-layer="this.toggleLayer"
                     @set-layer-opacity="this.setLayerOpacity"
@@ -53,6 +57,7 @@
             <div class="bottom-right-panels">
                 <div class="bottom-right-wrapper">
                     <div
+                        v-if="!this.isEmbed"
                         class="bottom-right-buttons"
                         :class="{
                             isOpen: showBaseLayersPanel,
@@ -166,6 +171,7 @@ export default {
         ZoomPanel,
     },
     computed: mapState({
+        isEmbed: (state) => state.isEmbed,
         alert: (state) => state.alert,
         position: (state) => state.position,
         layers: (state) => state.layers,

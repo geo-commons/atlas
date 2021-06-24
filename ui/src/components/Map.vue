@@ -13,10 +13,12 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import TileLayer from 'ol/layer/Tile'
 import TileWMS from 'ol/source/TileWMS'
-import { Icon, Style, Fill, Stroke, Text } from 'ol/style'
+import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
 import WMTSSource from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
+import GeoJSON from 'ol/format/GeoJSON'
 import Projection from 'ol/proj/Projection'
+import { bbox as bboxStrategy } from 'ol/loadingstrategy'
 import { getTopLeft } from 'ol/extent.js'
 import { register } from 'ol/proj/proj4'
 
@@ -109,6 +111,51 @@ export default {
                                 }),
                             }),
                         })
+                    } else if (layer.source_type === 'WFS') {
+                        tileLayer = new VectorLayer({
+                            id: layer.id,
+                            visible: layer.is_visible === true,
+                            layerName: layer.name,
+                            opacity: layer.opacity,
+                            source: new VectorSource({
+                                format: new GeoJSON(),
+                                url: (extent) => {
+                                    const params = new URLSearchParams([
+                                        ['service', 'WFS'],
+                                        ['version', '1.0.0'],
+                                        ['request', 'GetFeature'],
+                                        ['typename', layer.name],
+                                        ['outputFormat', 'application/json'],
+                                        ['srsname', layer.projection],
+                                        ['bbox', extent.join(',')],
+                                    ])
+
+                                    return layer.url + params.toString()
+                                },
+                                strategy: bboxStrategy,
+                            }),
+                            style: () => {
+                                return [
+                                    new Style({
+                                        stroke: new Stroke({
+                                            color: 'blue',
+                                            width: 3,
+                                        }),
+                                        fill: new Fill({
+                                            color: 'rgba(0, 0, 255, 0.1)',
+                                        }),
+                                    }),
+                                    new Style({
+                                        image: new Circle({
+                                            radius: 10,
+                                            fill: new Fill({
+                                                color: 'blue',
+                                            }),
+                                        }),
+                                    }),
+                                ]
+                            },
+                        })
                     } else {
                         tileLayer = new TileLayer({
                             id: layer.id,
@@ -145,6 +192,16 @@ export default {
             this.draw = constructDraw(this.tool, onDrawStart, onDrawEnd)
             this.map.addInteraction(this.draw)
         }
+
+        this.map.on('pointermove', (e) => {
+            if (e.dragging) {
+                return
+            }
+
+            const pixel = this.map.getEventPixel(e.originalEvent)
+            const hit = this.map.hasFeatureAtPixel(pixel)
+            this.map.getTarget().style.cursor = hit ? 'pointer' : ''
+        })
 
         this.map.on('moveend', () => {
             const view = this.map.getView()

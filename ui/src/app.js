@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     )
 
     const initialState = {
+        isEmbed: data.is_embed,
         config: data.config,
         position: settings.position,
         layers,
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings = getSettingsFromPath(data.config)
 
     const initialState = {
+        isEmbed: data.is_embed,
         config: data.config,
         position: settings.position,
         layers: [],
