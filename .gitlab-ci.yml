@@ -73,7 +73,7 @@ Deploy Review App:
       --set allowedHosts=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN \
       --set secretKey=somethingsecret \
       --set dbHost=atlas-$CI_ENVIRONMENT_SLUG-postgresql \
-      --set postgresql.persistence.size=250Mi \
+      --set postgresql.persistence.enabled=false \
       --set loadDemoData=true \
       --set ingress.hosts[0]=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN
   environment:
@@ -85,6 +85,7 @@ Deploy Review App:
     - branches@purmerend/atlas
   except:
     - master@purmerend/atlas
+    - renovate/*
 
 Remove Review App:
   stage: Deploy
@@ -102,6 +103,7 @@ Remove Review App:
     - branches@purmerend/atlas
   except:
     - master@purmerend/atlas
+    - renovate/*
 
 Deploy Docker latest tag:
   stage: Deploy
