@@ -171,9 +171,9 @@ export default {
 }
 
 .window {
-    width: 350px;
+    width: 550px;
     max-width: calc(100vw - (var(--padding-screen) * 2));
-    height: 300px;
+    height: 400px;
     background: white;
     border-radius: var(--radius-normal);
     border-bottom-right-radius: 0;
