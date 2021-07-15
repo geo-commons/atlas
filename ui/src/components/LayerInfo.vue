@@ -1,12 +1,13 @@
 <template>
     <tippy
-        arrow
         placement="right-start"
         theme="popover"
         trigger="click"
-        :distance="8"
         :delay="[0, 0]"
         :a11y="false"
+        :animateFill="false"
+        :touch="true"
+        :touchHold="false"
     >
         <template v-slot:trigger>
             <button class="iconbutton" aria-label="Toon meer informatie">
@@ -68,7 +69,12 @@ export default {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    opacity: 0;
+}
+
+@media (min-width: 768px) {
+    .iconbutton {
+        opacity: 0;
+    }
 }
 
 .sublayer:hover .iconbutton,
@@ -82,6 +88,7 @@ export default {
     max-width: 300px;
     font-weight: normal;
     text-align: left;
+    font-size: var(--font-size-small);
 }
 
 .heading {

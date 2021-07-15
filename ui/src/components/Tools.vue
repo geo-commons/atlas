@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <div class="buttons" :class="{ showMeasureMenu }">
+        <div class="buttons">
             <button
                 class="iconbutton"
                 :class="{ isActive: tool === 'SELECT_AREA' }"
@@ -18,26 +18,40 @@
                 </svg>
             </button>
 
-            <button
-                class="iconbutton"
-                :class="{ isActive: tool === 'MEASURE_AREA' || tool === 'MEASURE_LINE' }"
-                @click="toggleMeasure"
-                v-tippy="{ placement: 'bottom' }"
-                content="Opmeten"
-                aria-label="Opmeten"
+            <tippy
+                placement="bottom-end"
+                theme="popover"
+                trigger="click"
+                :distance="1"
+                :delay="[0, 0]"
+                :a11y="false"
+                :animateFill="false"
+                :touch="true"
+                :touchHold="false"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0z" fill="none" />
-                    <path
-                        fill="currentColor"
-                        d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h2v8z"
-                    />
-                </svg>
-            </button>
-        </div>
-
-        <transition name="fade">
-            <div class="menu" v-if="showMeasureMenu">
+                <template v-slot:trigger>
+                    <button
+                        class="iconbutton"
+                        :class="{ isActive: tool === 'MEASURE_AREA' || tool === 'MEASURE_LINE' }"
+                        @click="toggleMeasure"
+                        v-tippy="{ placement: 'bottom' }"
+                        content="Opmeten"
+                        aria-label="Opmeten"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            width="24"
+                        >
+                            <path d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                fill="currentColor"
+                                d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h2v8z"
+                            />
+                        </svg>
+                    </button>
+                </template>
                 <ul class="list">
                     <li>
                         <button
@@ -56,25 +70,18 @@
                         </button>
                     </li>
                 </ul>
-            </div>
-        </transition>
+            </tippy>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
     name: 'Tools',
-    data() {
-        return {
-            showMeasureMenu: false,
-        }
-    },
     methods: {
         toggleMeasure() {
             if (this.tool === 'MEASURE_AREA' || this.tool === 'MEASURE_LINE') {
                 this.$emit('set-tool', '')
-            } else {
-                this.showMeasureMenu = !this.showMeasureMenu
             }
         },
         toggleSelectArea() {
@@ -88,7 +95,6 @@ export default {
         },
         setMeasureTool(chosenTool) {
             this.$emit('set-tool', this.tool !== chosenTool ? chosenTool : '')
-            this.showMeasureMenu = false
         },
     },
     props: {
@@ -111,11 +117,6 @@ export default {
     box-shadow: var(--shadow-normal);
 }
 
-.buttons.showMeasureMenu {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
 .iconbutton {
     width: var(--width-button-large);
     height: var(--width-button-large);
@@ -127,11 +128,5 @@ export default {
 
 .iconbutton.isActive {
     color: var(--color-primary);
-}
-
-.menu {
-    position: absolute;
-    top: var(--width-button-large);
-    right: 0;
 }
 </style>
