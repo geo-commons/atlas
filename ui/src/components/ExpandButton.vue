@@ -49,6 +49,7 @@ export default {
     },
     methods: {
         toggle() {
+            this.$emit('force-update')
             this.showContent = !this.showContent
         },
     },

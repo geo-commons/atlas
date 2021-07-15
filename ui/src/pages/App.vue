@@ -90,34 +90,43 @@
                                 @toggle="togglePanoramaPanel"
                             />
                         </transition>
-                        <button
-                            class="iconbutton"
-                            @click="toggleBaseLayersPanel"
-                            v-tippy="{ placement: 'left' }"
-                            content="Basislagen"
-                            aria-label="Toon basislagen"
-                            :aria-expanded="showBaseLayersPanel.toString()"
-                            aria-controls="baseLayers"
+                        <tippy
+                            placement="top-end"
+                            theme="popover"
+                            trigger="click"
+                            distance="0"
+                            :delay="[0, 0]"
+                            :a11y="false"
+                            :animateFill="false"
+                            :touch="true"
+                            :touchHold="false"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                width="24"
-                            >
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path
-                                    d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"
-                                />
-                            </svg>
-                        </button>
-                        <transition name="fade">
+                            <template v-slot:trigger>
+                                <button
+                                    class="iconbutton"
+                                    v-tippy="{ placement: 'left' }"
+                                    content="Basislagen"
+                                    aria-label="Toon basislagen"
+                                    aria-controls="baseLayers"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                    >
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path
+                                            d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"
+                                        />
+                                    </svg>
+                                </button>
+                            </template>
                             <BaseLayersPanel
-                                v-if="showBaseLayersPanel"
                                 :layers="this.layers"
                                 @toggle-layer="this.toggleLayer"
                             />
-                        </transition>
+                        </tippy>
                     </div>
                 </div>
                 <ZoomPanel :position="this.position" @set-position="this.setPosition" />
@@ -262,10 +271,6 @@ export default {
         togglePanoramaPanel() {
             this.showBaseLayersPanel = false
             this.showPanoramaPanel = !this.showPanoramaPanel
-        },
-        toggleBaseLayersPanel() {
-            this.showPanoramaPanel = false
-            this.showBaseLayersPanel = !this.showBaseLayersPanel
         },
         pushHistoryState() {
             const basePath = /(.*?)(@|$)/.exec(window.location.pathname)
@@ -462,21 +467,13 @@ svg {
     background: var(--color-grey-50);
 }
 
-.menu {
-    padding: 6px 0;
-    background: white;
-    border-radius: var(--radius-small);
-    border-top-right-radius: 0;
-    box-shadow: var(--shadow-normal);
-}
-
 .list a,
 .list button {
     display: block;
     width: 100%;
     color: black;
     text-decoration: none;
-    padding: 4px 12px;
+    padding: 5px 12px 6px;
     font-size: var(--font-size-small);
 }
 
@@ -516,6 +513,10 @@ svg {
     opacity: 0;
 }
 
+.tippy-popper {
+    max-width: calc(100vw - 8px);
+}
+
 .tippy-tooltip {
     padding: 0;
     border-radius: var(--radius-normal);
@@ -539,12 +540,15 @@ svg {
 }
 
 .tippy-tooltip.popover-theme {
+    border-radius: var(--radius-small);
     background-color: white;
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-normal);
     font-weight: var(--font-weight-normal);
     color: #000000;
     letter-spacing: inherit;
     box-shadow: var(--shadow-normal);
+    text-align: left;
+    overflow: hidden;
 }
 
 .tippy-tooltip.popover-theme[x-placement^='right'] .tippy-arrow {

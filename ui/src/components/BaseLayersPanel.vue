@@ -42,14 +42,7 @@ export default {
 
 <style scoped>
 .wrapper {
-    position: absolute;
-    bottom: var(--width-button-normal);
-    right: 0;
     padding: 8px 12px;
-    background: white;
-    border-radius: var(--radius-small);
-    border-bottom-right-radius: 0;
-    box-shadow: var(--shadow-normal);
 }
 
 .layer {
