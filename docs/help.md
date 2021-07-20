@@ -57,7 +57,7 @@ Een andere manier om een kaartlaag uit te zetten is om in de weergave met alleen
 
 ## Legenda
 
-In de lijstweergave van zichtbare lagen kan de legenda van de zichtbare lagen geraadpleegd worden. Druk op het pijltje naast een kaartlaag om de legenda te tonen.
+In de lijstweergave van zichtbare lagen (![image4](https://gitlab.com/purmerend/atlas/uploads/6bf4a09f850e2632f9899a7eb669ad14/image4.png)) kan de legenda van de zichtbare lagen geraadpleegd worden. Klik op de titel van de laag om daarvan de legenda te tonen.
 
 ![legenda](https://gitlab.com/purmerend/atlas/uploads/32800a30bce3c5e2f03831fb6d086d51/legenda.png)
 
