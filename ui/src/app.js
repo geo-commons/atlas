@@ -26,10 +26,6 @@ Vue.use(VueTippy, {
     allowHTML: false,
     boundary: 'viewport',
     delay: [1000, 0],
-    touch: false,
-    touchHold: true,
-    maxWidth: 'none',
-    appendTo: 'parent',
 })
 Vue.component('tippy', TippyComponent)
 

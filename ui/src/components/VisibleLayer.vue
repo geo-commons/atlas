@@ -1,6 +1,6 @@
 <template>
     <li class="layer-wrapper">
-        <ExpandButton :title="layer.title" @force-update="forceUpdate">
+        <ExpandButton :title="layer.title">
             <template v-slot:header>
                 <div class="buttons">
                     <input
@@ -73,11 +73,7 @@
 
             <template v-slot:default>
                 <div class="content">
-                    <img
-                        :src="legendImageUrl"
-                        :alt="`Legenda voor laag ${layer.title}`"
-                        @load="forceUpdate"
-                    />
+                    <img :src="legendImageUrl" :alt="`Legenda voor laag ${layer.title}`" />
                 </div>
             </template>
         </ExpandButton>
@@ -126,9 +122,6 @@ export default {
         },
         toggleLayer() {
             this.$emit('toggle-layer', this.layer)
-        },
-        forceUpdate() {
-            this.$emit('force-update')
         },
     },
 }

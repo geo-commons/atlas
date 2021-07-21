@@ -1,13 +1,12 @@
 <template>
     <tippy
+        arrow
         placement="right-start"
         theme="popover"
         trigger="click"
+        :distance="8"
         :delay="[0, 0]"
         :a11y="false"
-        :animateFill="false"
-        :touch="true"
-        :touchHold="false"
     >
         <template v-slot:trigger>
             <button class="iconbutton" aria-label="Toon meer informatie">
@@ -38,16 +37,22 @@
         <div class="container">
             <div class="heading">
                 <h3 class="title">{{ layer.title }}</h3>
-                <span class="description">{{ layer.metadata.description }}</span>
+                <span class="description">
+                    <markdown :source="layer.metadata.description" />
+                </span>
             </div>
             <div class="properties">
                 <div class="property">
                     <div class="key">Beheerder</div>
-                    <div class="value">{{ layer.metadata.organization }}</div>
+                    <div class="value">
+                        <markdown :source="layer.metadata.organization" />
+                    </div>
                 </div>
                 <div class="property">
                     <div class="key">Bijgewerkt</div>
-                    <div class="value">{{ layer.metadata.updated }}</div>
+                    <div class="value">
+                        <markdown :source="layer.metadata.updated" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,10 +60,20 @@
 </template>
 
 <script>
+import Markdown from './Markdown'
+
 export default {
     name: 'LayerInfo',
+    components: {
+        Markdown,
+    },
     props: {
         layer: Object,
+    },
+    created() {
+        this.markdownOptions = {
+            linkify: true,
+        }
     },
 }
 </script>
@@ -68,12 +83,7 @@ export default {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-}
-
-@media (min-width: 768px) {
-    .iconbutton {
-        opacity: 0;
-    }
+    opacity: 0;
 }
 
 .layer:hover .iconbutton,
@@ -88,7 +98,6 @@ export default {
     max-width: 300px;
     font-weight: normal;
     text-align: left;
-    font-size: var(--font-size-small);
 }
 
 .heading {

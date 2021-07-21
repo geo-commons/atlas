@@ -84,11 +84,11 @@ class Layer(models.Model):
     layer_name = models.CharField(
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver')
 
-    meta_name = models.CharField('Naam', max_length=128, null=True)
-    meta_kind = models.CharField('Soort', max_length=128, null=True)
-    meta_org = models.CharField('Organisatie', max_length=128, null=True)
+    meta_name = models.CharField('Naam', max_length=128, null=True,)
+    meta_kind = models.CharField('Soort', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+    meta_org = models.CharField('Organisatie', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_updated = models.CharField(
-        'Laatst bijgewerkt', max_length=128, null=True)
+        'Laatst bijgewerkt', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
 
     opacity = models.DecimalField(
         'Ondoorzichtigheid', max_digits=1, decimal_places=1, default=0.9)
