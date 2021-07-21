@@ -79,10 +79,11 @@ class Layer(models.Model):
     authorized = LayerManager()
 
     layer_id = models.CharField(
-        'Laag ID', max_length=128, null=True, default='', help_text='Het unieke kenmerk van de laag in Atlas')
+        'Kort kenmerk', max_length=128, null=True, default='',
+        help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.')
     title = models.CharField('Titel', max_length=128, null=True)
     layer_name = models.CharField(
-        'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver')
+        'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
 
     meta_name = models.CharField('Naam', max_length=128, null=True)
     meta_kind = models.CharField('Soort', max_length=128, null=True)
@@ -119,7 +120,7 @@ class Layer(models.Model):
         'Servertype', max_length=50, default='geoserver')
 
     closed_dataset = models.BooleanField(
-        'Besloten', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving')
+        'Besloten', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.')
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
@@ -298,7 +299,8 @@ class LinkedData(models.Model):
 
 class AtlasTheme(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
-    slug = AutoSlugField(blank=False, populate_from='title', overwrite=True)
+    slug = AutoSlugField('Kort kenmerk', blank=False, populate_from='title', editable=True,
+                         help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar de laag.')
     layers = models.ManyToManyField(Layer)
 
     def get_absolute_url(self):

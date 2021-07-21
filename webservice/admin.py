@@ -41,6 +41,8 @@ class LayerAdmin(admin.ModelAdmin):
         })
     )
 
+    prepopulated_fields = {'layer_id': ('title', )}
+
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('ordering', 'title')
@@ -49,7 +51,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ThemeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug')
+    list_display = ('title', )
+    fields = ('title', 'slug', 'layers')
+    prepopulated_fields = {'slug': ('title', )}
 
 
 admin.site.register(Layer, LayerAdmin)
