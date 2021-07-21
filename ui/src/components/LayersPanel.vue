@@ -4,163 +4,58 @@
             <div
                 class="buttons"
                 :class="{
+                    isOpen: this.panel === 'layers' || this.panel === 'activeLayers',
                     showVisibleLayers: visibleLayers.length > 0,
                 }"
             >
-                <tippy
-                    placement="top-start"
-                    theme="popover"
-                    trigger="click"
-                    :distance="1"
-                    :delay="[0, 0]"
-                    :a11y="false"
-                    :animateFill="false"
-                    :touch="true"
-                    :touchHold="false"
+                <button
+                    class="iconbutton"
+                    :class="{ isActive: this.panel === 'layers' }"
+                    @click="() => togglePanel('layers')"
+                    v-tippy
+                    content="Alle lagen"
+                    aria-label="Toon alle lagen"
+                    :aria-expanded="String(this.panel === 'layers')"
+                    aria-controls="layers"
                 >
-                    <template v-slot:trigger>
-                        <button
-                            class="iconbutton layers-button"
-                            v-tippy
-                            content="Alle lagen"
-                            aria-label="Toon alle lagen"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                width="24"
-                            >
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path
-                                    fill="currentColor"
-                                    d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"
-                                />
-                            </svg>
-                        </button>
-                    </template>
-                    <div class="layers">
-                        <div class="layers-search">
-                            <label for="layers-search">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    height="18px"
-                                    viewBox="0 0 24 24"
-                                    width="18px"
-                                    fill="currentColor"
-                                >
-                                    <path d="M0 0h24v24H0V0z" fill="none" />
-                                    <path
-                                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-                                    />
-                                </svg>
-                            </label>
-                            <input
-                                id="layers-search"
-                                type="search"
-                                name="query"
-                                placeholder="Zoek laag"
-                                v-model="searchQuery"
-                            />
-                        </div>
-                        <ul>
-                            <li>
-                                <ExpandButton
-                                    v-for="category in categories"
-                                    :key="category.id"
-                                    :title="category.title"
-                                    @force-update="forceUpdate"
-                                    class="category-wrapper"
-                                >
-                                    <template v-slot:button>
-                                        <div
-                                            v-if="
-                                                category.layers.filter((layer) => layer.is_visible)
-                                                    .length > 0
-                                            "
-                                            class="counter layer-counter"
-                                        >
-                                            {{
-                                                category.layers.filter((layer) => layer.is_visible)
-                                                    .length
-                                            }}
-                                        </div>
-                                    </template>
-                                    <template v-slot:default>
-                                        <ul :id="category.id" class="sublayers">
-                                            <li
-                                                v-for="layer in category.layers"
-                                                v-bind:key="layer.id"
-                                                class="sublayer"
-                                            >
-                                                <!-- <div class="sublayer-check"> -->
-                                                <input
-                                                    type="checkbox"
-                                                    :name="layer.id"
-                                                    :id="layer.id"
-                                                    :checked="layer.is_visible"
-                                                    @change="() => onSelectLayer(layer)"
-                                                />
-                                                <label :for="layer.id">
-                                                    {{ layer.title }}
-                                                </label>
-                                                <!-- </div> -->
-                                                <LayerInfo :layer="layer" />
-                                            </li>
-                                        </ul>
-                                    </template>
-                                </ExpandButton>
-                            </li>
-                        </ul>
-                    </div>
-                </tippy>
-
-                <tippy
-                    placement="top-start"
-                    theme="popover"
-                    trigger="click"
-                    :distance="1"
-                    offset="-40, 0"
-                    :delay="[0, 0]"
-                    :a11y="false"
-                    :animateFill="false"
-                    :touch="true"
-                    :touchHold="false"
-                >
-                    <template v-slot:trigger>
-                        <button
-                            class="iconbutton"
-                            :tabindex="visibleLayers.length > 0 ? 0 : -1"
-                            v-tippy
-                            content="Zichtbare lagen"
-                            aria-label="Toon zichtbare lagen"
-                            aria-controls="visibleLayers"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                width="24"
-                            >
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path
-                                    fill="currentColor"
-                                    d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z"
-                                />
-                            </svg>
-                        </button>
-                    </template>
-                    <ul class="visible-layers">
-                        <VisibleLayer
-                            v-for="layer in visibleLayers"
-                            v-bind:key="layer.id"
-                            :layer="layer"
-                            @set-layer-opacity="setLayerOpacity"
-                            @toggle-layer="onSelectLayer"
-                            @force-update="forceUpdate"
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        width="24"
+                    >
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                            fill="currentColor"
+                            d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"
                         />
-                    </ul>
-                </tippy>
+                    </svg>
+                </button>
+
+                <button
+                    class="iconbutton"
+                    :tabindex="visibleLayers.length > 0 ? 0 : -1"
+                    :class="{ isActive: this.panel === 'activeLayers' }"
+                    @click="() => togglePanel('activeLayers')"
+                    v-tippy
+                    content="Zichtbare lagen"
+                    aria-label="Toon zichtbare lagen"
+                    :aria-expanded="String(this.panel === 'activeLayers')"
+                    aria-controls="visibleLayers"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        width="24"
+                    >
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                            fill="currentColor"
+                            d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z"
+                        />
+                    </svg>
+                </button>
             </div>
 
             <transition name="fade">
@@ -169,6 +64,93 @@
                 </div>
             </transition>
         </div>
+
+        <transition name="fade">
+            <ul class="layers" v-if="this.panel === 'layers'" id="layers">
+                <div class="layers-search">
+                    <label for="layers-search">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="18px"
+                            viewBox="0 0 24 24"
+                            width="18px"
+                            fill="currentColor"
+                        >
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path
+                                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                            />
+                        </svg>
+                    </label>
+                    <input
+                        id="layers-search"
+                        type="search"
+                        name="query"
+                        placeholder="Zoek laag"
+                        v-model="searchQuery"
+                    />
+                </div>
+                <li>
+                    <ExpandButton
+                        v-for="category in categories"
+                        :key="category.id"
+                        :title="category.title"
+                        :isOpen="searchQuery != ''"
+                        class="category-wrapper"
+                    >
+                        <template v-slot:button>
+                            <div
+                                v-if="
+                                    category.layers.filter((layer) => layer.is_visible).length > 0
+                                "
+                                class="counter layer-counter"
+                            >
+                                {{ category.layers.filter((layer) => layer.is_visible).length }}
+                            </div>
+                        </template>
+                        <template v-slot:default>
+                            <ul :id="category.id" class="sublayers">
+                                <li
+                                    v-for="layer in category.layers"
+                                    v-bind:key="layer.id"
+                                    class="sublayer"
+                                >
+                                    <!-- <div class="sublayer-check"> -->
+                                    <input
+                                        type="checkbox"
+                                        :name="layer.id"
+                                        :id="layer.id"
+                                        :checked="layer.is_visible"
+                                        @change="() => onSelectLayer(layer)"
+                                    />
+                                    <label :for="layer.id">
+                                        {{ layer.title }}
+                                    </label>
+                                    <!-- </div> -->
+                                    <LayerInfo :layer="layer" />
+                                </li>
+                            </ul>
+                        </template>
+                    </ExpandButton>
+                </li>
+            </ul>
+        </transition>
+
+        <transition name="fade">
+            <ul
+                v-if="visibleLayers.length > 0 && this.panel === 'activeLayers'"
+                class="visible-layers"
+                id="visibleLayers"
+            >
+                <VisibleLayer
+                    v-for="layer in visibleLayers"
+                    v-bind:key="layer.id"
+                    :layer="layer"
+                    @set-layer-opacity="setLayerOpacity"
+                    @toggle-layer="onSelectLayer"
+                />
+            </ul>
+        </transition>
     </div>
 </template>
 
@@ -191,14 +173,8 @@ export default {
         }
     },
     methods: {
-        forceUpdate() {
-            this.$forceUpdate()
-        },
         togglePanel(selectedPanel) {
             this.panel = selectedPanel !== this.panel ? selectedPanel : ''
-        },
-        hideLayers() {
-            this.panel = ''
         },
         onSelectLayer(selectedLayer) {
             this.$emit('toggle-layer', [selectedLayer.id, !selectedLayer.is_visible])
@@ -267,6 +243,11 @@ export default {
     transition: width 0.1s ease, border-radius 0.1s;
 }
 
+.buttons.isOpen {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
 .buttons.showVisibleLayers {
     width: calc(var(--width-button-large) * 2 + 1px);
 }
@@ -277,7 +258,7 @@ export default {
     height: var(--width-button-large);
 }
 
-.layers-button {
+.iconbutton:not(:last-child) {
     box-sizing: content-box;
     border-right: 1px solid var(--color-grey-50);
 }
@@ -290,12 +271,19 @@ export default {
 
 .layers,
 .visible-layers {
+    position: absolute;
+    bottom: var(--width-button-large);
+    left: 0;
     max-height: calc(
         (100 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3))
     );
     width: calc(var(--width-detail) - (var(--padding-screen) * 2));
     max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal));
     overflow-y: auto;
+    background: white;
+    border-radius: var(--radius-small);
+    border-bottom-left-radius: 0;
+    box-shadow: var(--shadow-normal);
 }
 
 @media (max-width: 575px) {
@@ -360,7 +348,7 @@ export default {
 
 .sublayer > input {
     position: absolute;
-    top: 6px;
+    top: 5px;
     left: 0;
     width: 14px;
     height: 14px;
@@ -372,7 +360,7 @@ export default {
     position: relative;
     width: 100%;
     cursor: pointer;
-    padding: 1px 0 1px 20px;
+    padding: 2px 0 2px 20px;
     user-select: none;
     word-break: break-word;
 }
