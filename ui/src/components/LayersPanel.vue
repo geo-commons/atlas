@@ -350,7 +350,7 @@ export default {
 }
 
 .sublayers {
-    padding: 0 0 4px 30px;
+    padding: 0 4px 4px 30px;
 }
 
 .sublayer {

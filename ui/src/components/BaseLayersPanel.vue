@@ -10,14 +10,20 @@
                     @change="() => onSelect(layer)"
                 />
                 <label :for="layer.id">{{ layer.title }}</label>
+                <LayerInfo :layer="layer" />
             </li>
         </ul>
     </div>
 </template>
 
 <script>
+import LayerInfo from './LayerInfo'
+
 export default {
     name: 'BaseLayersPanel',
+    components: {
+        LayerInfo,
+    },
     methods: {
         onSelect(selectedLayer) {
             this.baseLayers.map((layer) => {
@@ -47,6 +53,7 @@ export default {
 
 .layer {
     position: relative;
+    display: flex;
 }
 
 .layer > input {

@@ -551,6 +551,10 @@ svg {
     overflow: hidden;
 }
 
+.tippy-tooltip.popover-theme[x-placement^='left'] .tippy-arrow {
+    border-left-color: white;
+}
+
 .tippy-tooltip.popover-theme[x-placement^='right'] .tippy-arrow {
     border-right-color: white;
 }

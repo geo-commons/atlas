@@ -233,7 +233,12 @@ def _default_layers():
             'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
             'server_type': 'geoserver',
             'is_base': True,
-            'is_visible': True
+            'is_visible': True,
+            'metadata': {
+                'description': 'Topografische achtergrondkaart',
+                'organization': 'Gemeente Purmerend',
+                'updated': '2020'
+            }
         },
         {
             'id': 'purm_lufo2020',
@@ -243,7 +248,12 @@ def _default_layers():
             'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
             'server_type': 'geoserver',
             'is_base': True,
-            'is_visible': False
+            'is_visible': False,
+            'metadata': {
+                'description': 'Luchtfoto',
+                'organization': 'Gemeente Purmerend',
+                'updated': '2020'
+            }
         },
     ]
 

@@ -65,7 +65,6 @@ export default {
 
 <style scoped>
 .iconbutton {
-    margin-right: 5px;
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -77,6 +76,7 @@ export default {
     }
 }
 
+.layer:hover .iconbutton,
 .sublayer:hover .iconbutton,
 .tippy-active > .iconbutton,
 .keyboard-user .iconbutton:focus {
