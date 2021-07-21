@@ -1,14 +1,18 @@
 from django.contrib import admin
 
-from .forms import LayerForm, LinkedDataForm
-from .models import Category, Layer, AtlasTheme, LinkedData
+from .forms import LayerForm, FilterForm, LinkedDataForm
+from .models import Category, Layer, AtlasTheme, LinkedData, Filter
 
 
 class LinkedDataInline(admin.TabularInline):
     form = LinkedDataForm
     model = LinkedData
-    extra = 1
+    extra = 0
 
+class FilterInline(admin.TabularInline):
+    form = FilterForm
+    model = Filter
+    extra = 0
 
 class LayerAdmin(admin.ModelAdmin):
     form = LayerForm
@@ -21,6 +25,7 @@ class LayerAdmin(admin.ModelAdmin):
 
     inlines = [
         LinkedDataInline,
+        FilterInline
     ]
 
     fieldsets = (

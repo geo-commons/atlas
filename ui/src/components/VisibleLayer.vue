@@ -74,6 +74,12 @@
             <template v-slot:default>
                 <div class="content">
                     <img :src="legendImageUrl" :alt="`Legenda voor laag ${layer.title}`" />
+                    <LayerFilter
+                        v-for="(filter, index) in layer.filters"
+                        v-bind:key="index"
+                        :layer="layer"
+                        :filter="filter"
+                    />
                 </div>
             </template>
         </ExpandButton>
@@ -84,11 +90,13 @@
 import TileWMS from 'ol/source/TileWMS'
 import View from 'ol/View'
 import ExpandButton from './ExpandButton'
+import LayerFilter from './LayerFilter'
 
 export default {
     name: 'VisibleLayer',
     components: {
         ExpandButton,
+        LayerFilter,
     },
     props: {
         layer: Object,

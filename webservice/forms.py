@@ -10,3 +10,6 @@ class LayerForm(forms.ModelForm):
 
 class LinkedDataForm(forms.ModelForm):
     popup_attributes = forms.CharField(widget=forms.Textarea, required=False)
+
+class FilterForm(forms.ModelForm):
+    pass

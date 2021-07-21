@@ -32,6 +32,11 @@ export const createStore = (initialState) => {
                     layer.id === layerId ? { ...layer, opacity: opacity } : layer
                 )
             },
+            setAppliedFilter(state, [layerId, appliedFilter]) {
+                state.layers = state.layers.map((layer) =>
+                    layer.id === layerId ? { ...layer, appliedFilter: appliedFilter } : layer
+                )
+            },
             setTool(state, tool) {
                 state.tool = tool
             },

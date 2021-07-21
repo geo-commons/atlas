@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedArea: null,
         searchQuery: '',
         alert: '',
+        filters: {},
     }
 
     const store = createStore(initialState)
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedArea: null,
         searchQuery: '',
         alert: '',
+        filters: {},
     }
 
     const store = createStore(initialState)

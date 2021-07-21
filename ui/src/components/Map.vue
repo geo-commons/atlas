@@ -266,6 +266,40 @@ export default {
                 if (layer.opacity !== this.tileLayers[layer.id].getOpacity()) {
                     this.tileLayers[layer.id].setOpacity(layer.opacity)
                 }
+                if (layer.appliedFilter) {
+                    const filters = Object.keys(layer.appliedFilter)
+                        .filter((filterKey) => layer.appliedFilter[filterKey].length !== 0)
+                        .map(
+                            (filterKey) =>
+                                `${filterKey} IN (${layer.appliedFilter[filterKey]
+                                    .map((filterValue) => `'${filterValue}'`)
+                                    .join(',')})`
+                        )
+
+                    this.tileLayers[layer.id].setSource(
+                        new VectorSource({
+                            format: new GeoJSON(),
+                            url: (extent) => {
+                                const params = new URLSearchParams([
+                                    ['service', 'WFS'],
+                                    ['version', '1.0.0'],
+                                    ['request', 'GetFeature'],
+                                    ['typename', layer.name],
+                                    ['outputFormat', 'application/json'],
+                                    ['srsname', layer.projection],
+                                    // ['bbox', extent.join(',')],
+                                ])
+
+                                if (filters.length > 0) {
+                                    params.set('cql_filter', filters.join(' AND '))
+                                }
+
+                                return layer.url + params.toString()
+                            },
+                            strategy: bboxStrategy,
+                        })
+                    )
+                }
             })
         },
         tool(value) {

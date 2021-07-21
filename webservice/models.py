@@ -257,7 +257,8 @@ source: new ol.source.TileWMS({{
                 'organization': self.meta_org,
                 'updated': self.meta_updated
             },
-            'linked_data': [item.to_dict() for item in self.linked_data.all()]
+            'linked_data': [item.to_dict() for item in self.linked_data.all()],
+            'filters': [item.to_dict() for item in self.filters.all()]
         }
 
     class Meta:
@@ -294,6 +295,32 @@ class LinkedData(models.Model):
             'source_key': self.source_key,
             'target_key': self.target_key,
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else []
+        }
+
+
+class Filter(models.Model):
+    FILTER_KIND_ATTRIBUTE = 'ATTRIBUTE'
+    FILTER_KINDS = [
+        (FILTER_KIND_ATTRIBUTE, 'Veld'),
+    ]
+
+    source = models.ForeignKey(
+        Layer, on_delete=models.CASCADE, related_name='filters')
+
+    title = models.CharField('Titel', max_length=128)
+    kind = models.CharField('Filtertype', choices=FILTER_KINDS, default=FILTER_KIND_ATTRIBUTE, max_length=20)
+    field = models.CharField('Veld', max_length=128)
+    values = models.CharField('Waarden', max_length=128)
+
+    def __str__(self):
+        return '{} {}'.format(self.kind, self.field)
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'kind': self.kind,
+            'field': self.field,
+            'values': self.values.split(',')
         }
 
 
