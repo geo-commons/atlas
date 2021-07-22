@@ -300,7 +300,7 @@ class LinkedData(models.Model):
 class AtlasTheme(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=False, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar de laag.')
+                         help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar het thema.')
     layers = models.ManyToManyField(Layer)
 
     def get_absolute_url(self):
