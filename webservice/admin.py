@@ -43,17 +43,23 @@ class LayerAdmin(admin.ModelAdmin):
 
     prepopulated_fields = {'layer_id': ('title', )}
 
+    search_fields = ['title']
+
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('ordering', 'title')
     list_display_links = ('title',)
     list_editable = ('ordering',)
 
+    search_fields = ['title']
+
 
 class ThemeAdmin(admin.ModelAdmin):
     list_display = ('title', )
     fields = ('title', 'slug', 'layers')
     prepopulated_fields = {'slug': ('title', )}
+
+    search_fields = ['title']
 
 
 admin.site.register(Layer, LayerAdmin)
