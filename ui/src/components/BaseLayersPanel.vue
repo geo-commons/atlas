@@ -12,6 +12,16 @@
                 <label :for="layer.id">{{ layer.title }}</label>
                 <LayerInfo :layer="layer" />
             </li>
+            <li class="layer">
+                <input
+                    type="radio"
+                    id="baseLayer_null"
+                    name="baseLayer"
+                    :checked="allBaseLayersUnvisible"
+                    @change="() => onSelect(null)"
+                />
+                <label for="baseLayer_null">Geen</label>
+            </li>
         </ul>
     </div>
 </template>
@@ -27,7 +37,7 @@ export default {
     methods: {
         onSelect(selectedLayer) {
             this.baseLayers.map((layer) => {
-                if (selectedLayer.id === layer.id) {
+                if (selectedLayer && selectedLayer.id === layer.id) {
                     this.$emit('toggle-layer', [layer.id, true])
                 } else {
                     this.$emit('toggle-layer', [layer.id, false])
@@ -38,6 +48,9 @@ export default {
     computed: {
         baseLayers() {
             return this.layers.filter((layer) => layer.is_base)
+        },
+        allBaseLayersUnvisible() {
+            return this.baseLayers.every((layer) => !layer.is_visible)
         },
     },
     props: {
