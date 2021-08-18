@@ -80,6 +80,7 @@ export default {
 
         this.view = new View({
             projection: 'EPSG:28992',
+            constrainResolution: true,
             center: [this.position.center[0], this.position.center[1]],
             zoom: this.position.zoom,
             padding: this.padding,

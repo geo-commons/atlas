@@ -272,7 +272,7 @@ export default {
 
             const x = encodeURIComponent(this.position.center[0].toFixed(2))
             const y = encodeURIComponent(this.position.center[1].toFixed(2))
-            const zoom = encodeURIComponent(this.position.zoom.toFixed(2))
+            const zoom = encodeURIComponent(this.position.zoom)
             const layers = this.layers
                 .filter((l) => l.is_visible && !l.is_base)
                 .map((l) => l.id)
