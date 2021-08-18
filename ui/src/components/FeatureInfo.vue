@@ -1,7 +1,7 @@
 <template>
     <ExpandButton v-if="features.length > 0" :title="layer.title" :isOpen="isOpen" class="feature">
-        <Table class="table">
-            <table v-for="feature in features" v-bind:key="feature.id">
+        <Table v-for="feature in features" v-bind:key="feature.id" class="table">
+            <table>
                 <tbody>
                     <tr
                         v-for="property in filterProperties(feature.properties)"
@@ -132,7 +132,11 @@ export default {
 }
 
 .table {
-    margin: 4px 0 8px;
+    padding: 4px 0 4px;
+}
+
+.table:not(:last-child) {
+    margin-bottom: 20px;
 }
 
 .linked-data {
