@@ -4,19 +4,29 @@
 
 <script>
 import 'ol/ol.css'
-import Map from 'ol/Map'
 
+import Map from 'ol/Map'
 import View from 'ol/View'
+
 import Feature from 'ol/Feature'
 import { Point } from 'ol/geom'
-import VectorLayer from 'ol/layer/Vector'
-import VectorSource from 'ol/source/Vector'
+
 import TileLayer from 'ol/layer/Tile'
+import VectorLayer from 'ol/layer/Vector'
+import VectorTileLayer from 'ol/layer/VectorTile'
+
+import VectorSource from 'ol/source/Vector'
+import VectorTileSource from 'ol/source/VectorTile'
 import TileWMS from 'ol/source/TileWMS'
-import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
 import WMTSSource from 'ol/source/WMTS'
+
+import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
+
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
+
 import GeoJSON from 'ol/format/GeoJSON'
+import MVT from 'ol/format/MVT'
+
 import Projection from 'ol/proj/Projection'
 import { bbox as bboxStrategy } from 'ol/loadingstrategy'
 import { getTopLeft } from 'ol/extent.js'
@@ -103,7 +113,6 @@ export default {
         this.tileLayers = {}
 
         this.view = new View({
-            projection: 'EPSG:28992',
             constrainResolution: true,
             center: [this.position.center[0], this.position.center[1]],
             zoom: this.position.zoom,
@@ -180,6 +189,16 @@ export default {
                                     }),
                                 ]
                             },
+                        })
+                    } else if (layer.source_type === 'MVT') {
+                        tileLayer = new VectorTileLayer({
+                            id: layer.id,
+                            visible: layer.is_visible === true,
+                            layerName: layer.name,
+                            source: new VectorTileSource({
+                                format: new MVT(),
+                                url: layer.url,
+                            }),
                         })
                     } else {
                         tileLayer = new TileLayer({

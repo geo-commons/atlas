@@ -68,11 +68,13 @@ class Layer(models.Model):
     SOURCE_WMS = 'WMS'
     SOURCE_WFS = 'WFS'
     SOURCE_WMTS = 'WMTS'
+    SOURCE_MVT = 'MVT'
     SOURCE_TYPES = [
         (SOURCE_WMS_WFS, 'WMS en WFS'),
         (SOURCE_WMS, 'WMS'),
         (SOURCE_WFS, 'WFS'),
-        (SOURCE_WMTS, 'WMTS')
+        (SOURCE_WMTS, 'WMTS'),
+        (SOURCE_MVT, 'Mapbox Vector Tile')
     ]
 
     objects = models.Manager()
