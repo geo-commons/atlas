@@ -24,7 +24,8 @@ import { register } from 'ol/proj/proj4'
 
 import { getDefinitions } from '../utils/projections'
 import constructDraw from '../utils/draw'
-import getMarkerUrl from '../utils/generate-marker-url'
+import getMarkerIconUrl from '../utils/generate-marker-icon-url'
+import getLocationIconUrl from '../utils/generate-location-icon-url'
 
 // Register EPSG:28992 projection
 register(getDefinitions())
@@ -53,6 +54,11 @@ export default {
             source: this.markerSource,
         })
 
+        this.geolocationSource = new VectorSource()
+        this.geolocationLayer = new VectorLayer({
+            source: this.geolocationSource,
+        })
+
         this.selectedAreaSource = new VectorSource()
         this.selectedAreaLayer = new VectorLayer({
             source: this.selectedAreaSource,
@@ -74,6 +80,24 @@ export default {
 
             markerFeature.setStyle(markerStyle)
             this.markerSource.addFeature(markerFeature)
+        }
+
+        if (this.position.geolocation) {
+            const geolocationFeature = new Feature({
+                geometry: new Point([this.position.geolocation[0], this.position.geolocation[1]]),
+            })
+
+            const geolocationStyle = new Style({
+                image: new Icon({
+                    src: getMarkerUrl('#0066FF', '#FFFFFF'),
+                    anchor: [0.55, 42],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'pixels',
+                }),
+            })
+
+            geolocationFeature.setStyle(geolocationStyle)
+            this.markerSource.addFeature(geolocationFeature)
         }
 
         this.tileLayers = {}
@@ -248,7 +272,7 @@ export default {
 
                 const markerStyle = new Style({
                     image: new Icon({
-                        src: getMarkerUrl('#0066FF', '#FFFFFF'),
+                        src: getMarkerIconUrl('#0066FF', '#FFFFFF'),
                         anchor: [0.55, 42],
                         anchorXUnits: 'fraction',
                         anchorYUnits: 'pixels',
@@ -257,6 +281,28 @@ export default {
 
                 markerFeature.setStyle(markerStyle)
                 this.markerSource.addFeature(markerFeature)
+            }
+
+            this.geolocationSource.clear()
+            if (value.geolocation) {
+                const geolocationFeature = new Feature({
+                    geometry: new Point([
+                        this.position.geolocation[0],
+                        this.position.geolocation[1],
+                    ]),
+                })
+
+                const geolocationStyle = new Style({
+                    image: new Icon({
+                        src: getLocationIconUrl('#0066FF', '#FFFFFF'),
+                        anchor: [0.55, 42],
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'pixels',
+                    }),
+                })
+
+                geolocationFeature.setStyle(geolocationStyle)
+                this.markerSource.addFeature(geolocationFeature)
             }
         },
         layers(value) {
