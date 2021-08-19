@@ -191,7 +191,10 @@ export default {
             }
 
             try {
-                const result = await fetch(this.layer.url + params.toString())
+                const url = new URL(this.layer.url)
+                url.search = params.toString()
+
+                const result = await fetch(url.toString())
                 const data = await result.json()
 
                 this.features = data.features
@@ -232,7 +235,11 @@ export default {
             ])
 
             try {
-                const result = await fetch(this.layer.url + params.toString())
+                const url = new URL(this.layer.url)
+                url.search = params.toString()
+
+                const result = await fetch(url.toString())
+
                 const data = await result.json()
                 const featureType = data.featureTypes[0]
 
