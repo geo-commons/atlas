@@ -11,6 +11,7 @@ export const getSettingsFromPath = (defaultConfig) => {
                 match.groups.y ? parseFloat(match.groups.y) : defaultConfig.position.center.y,
             ],
             marker: null,
+            geolocation: null,
         },
         visibleLayers: match.groups.layers ? match.groups.layers.split(',') : [],
     }

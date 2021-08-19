@@ -120,6 +120,9 @@
                         </transition>
                     </div>
                 </div>
+                <div class="bottom-right-wrapper">
+                    <GeoLocationButton @set-position="this.setPosition" />
+                </div>
                 <ZoomPanel :position="this.position" @set-position="this.setPosition" />
             </div>
         </div>
@@ -151,6 +154,7 @@ import PanoramaPanel from '../components/PanoramaPanel'
 import PointInfoPanel from '../components/PointInfoPanel'
 import SearchPanel from '../components/SearchPanel'
 import ZoomPanel from '../components/ZoomPanel'
+import GeoLocationButton from '../components/GeoLocationButton'
 
 const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/revgeo'
 
@@ -169,6 +173,7 @@ export default {
         PointInfoPanel,
         SearchPanel,
         ZoomPanel,
+        GeoLocationButton,
     },
     computed: mapState({
         isEmbed: (state) => state.isEmbed,

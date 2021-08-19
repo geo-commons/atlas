@@ -1,10 +1,10 @@
 import Vue from 'vue'
-import Marker from '../components/Marker'
+import MarkerIcon from '../components/MarkerIcon'
 
 // From https://medium.com/better-programming/dynamic-svg-markers-for-google-maps-in-vue-js-7541fa1a54a
 
 // create a constructor from a Vue component
-const LocationIconConstructor = Vue.extend(Marker)
+const LocationIconConstructor = Vue.extend(MarkerIcon)
 
 export default (fillColor, strokeColor) => {
     // create a Vue element with required props
