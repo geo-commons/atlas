@@ -26,11 +26,15 @@ RUN /app/venv/bin/pip3 install -r requirements.txt
 FROM python:3.9-slim
 WORKDIR /app
 
+ARG ATLAS_VERSION=unknown
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
     mime-support \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /app
+
+RUN sed -i "s/unknown/${ATLAS_VERSION}/g" /app/atlas/__init__.py
 
 COPY --from=api-build /app/venv /app/venv
 ENV PATH="/app/venv/bin:${PATH}"
