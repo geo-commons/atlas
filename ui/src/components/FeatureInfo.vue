@@ -77,7 +77,16 @@ export default {
         position: 'fetchFeatures',
     },
     methods: {
-        async fetchFeatures() {
+        fetchFeatures() {
+            if (this.layer.source_type === 'WMS' || this.layer.source_type === 'WMS_WFS') {
+                return this.fetchFeaturesFromWMS()
+            }
+
+            if (this.layer.source_type === 'WFS') {
+                return this.fetchFeaturesFromWFS()
+            }
+        },
+        async fetchFeaturesFromWMS() {
             const wmsSource = new TileWMS({
                 url: this.layer.url,
                 servertype: this.layer.server_type,
@@ -109,6 +118,23 @@ export default {
             } catch (e) {
                 console.error(e)
             }
+        },
+        async fetchFeaturesFromWFS() {
+            const params = new URLSearchParams([
+                ['service', 'WFS'],
+                ['version', '2.0.0'],
+                ['request', 'GetFeature'],
+                ['typename', this.layer.name],
+                ['outputFormat', 'application/json'],
+                ['srsname', this.layer.projection],
+                ['bbox', `${this.position.marker.join(',')},${this.position.marker.join(',')}`],
+                ['maxFeatures', '20'],
+            ])
+
+            const result = await fetch(this.layer.url + params.toString())
+            const data = await result.json()
+
+            this.features = data.features
         },
         setPosition(value) {
             this.$store.commit('setPosition', value)
