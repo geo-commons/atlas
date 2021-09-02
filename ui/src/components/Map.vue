@@ -1,5 +1,18 @@
 <template>
-    <div ref="map" class="wrapper" />
+    <div ref="map" class="wrapper">
+        <div class="scale" @click="this.toggleScaleType">
+            <div
+                ref="scale-line-container"
+                :style="{ display: this.scaleType === 'LINE' ? 'block' : 'none' }"
+            ></div>
+            <div
+                class="scale-text"
+                :style="{ display: this.scaleType === 'TEXT' ? 'block' : 'none' }"
+            >
+                1 : {{ Math.round(scale).toLocaleString() }}
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -9,6 +22,7 @@ import Map from 'ol/Map'
 import View from 'ol/View'
 import Feature from 'ol/Feature'
 import { Point } from 'ol/geom'
+import ScaleLine from 'ol/control/ScaleLine'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import TileLayer from 'ol/layer/Tile'
@@ -18,6 +32,7 @@ import WMTSSource from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
 import GeoJSON from 'ol/format/GeoJSON'
 import Projection from 'ol/proj/Projection'
+import { getPointResolution } from 'ol/proj'
 import { bbox as bboxStrategy } from 'ol/loadingstrategy'
 import { getTopLeft } from 'ol/extent.js'
 import { register } from 'ol/proj/proj4'
@@ -34,6 +49,8 @@ const rdProjection = new Projection({
     code: 'EPSG:28992',
     extent: [-285401.92, 22598.08, 595401.92, 903401.92],
 })
+
+const DEFAULT_DPI = 25.4 / 0.28
 
 // can be calculated based on resolution z0, written out for clarity
 // see https://www.geonovum.nl/uploads/standards/downloads/nederlandse_richtlijn_tiling_-_versie_1.1.pdf
@@ -231,6 +248,16 @@ export default {
         this.map.on('moveend', () => {
             const view = this.map.getView()
 
+            const resolution = getPointResolution(
+                this.view.getProjection(),
+                this.view.getResolution(),
+                this.view.getCenter()
+            )
+
+            const mpu = this.view.getProjection().getMetersPerUnit()
+            const inchesPerMeter = 1000 / 25.4
+            this.scale = parseFloat(resolution.toString()) * mpu * inchesPerMeter * DEFAULT_DPI
+
             this.$emit('set-position', {
                 ...this.position,
                 center: view.getCenter(),
@@ -248,6 +275,14 @@ export default {
                 marker: e.coordinate,
             })
         })
+
+        this.scaleline = new ScaleLine({
+            text: true,
+            target: this.$refs['scale-line-container'],
+            className: 'scale-line',
+        })
+
+        this.map.addControl(this.scaleline)
     },
     watch: {
         position(value, oldValue) {
@@ -352,6 +387,17 @@ export default {
             this.view.setProperties({ padding: value })
         },
     },
+    methods: {
+        toggleScaleType() {
+            this.scaleType = this.scaleType === 'LINE' ? 'TEXT' : 'LINE'
+        },
+    },
+    data() {
+        return {
+            scaleType: 'LINE',
+            scale: 0,
+        }
+    },
     props: {
         position: Object,
         layers: Array,
@@ -366,5 +412,30 @@ export default {
 .wrapper {
     width: 100%;
     height: 100%;
+}
+
+.scale {
+    z-index: 2;
+    position: absolute;
+    right: calc(var(--padding-screen) * 2 + var(--width-button-large));
+    bottom: var(--padding-screen);
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
+    user-select: none;
+}
+
+.scale >>> .scale-line {
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.scale >>> .scale-line-inner {
+    border: 1px solid #000;
+    border-top: none;
+    text-align: center;
+    margin: 1px;
+    will-change: contents, width;
+    transition: all 0.25s;
 }
 </style>
