@@ -80,8 +80,12 @@ MIDDLEWARE = [
     'utils.middleware.check_access_admin',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'mozilla_django_oidc.middleware.SessionRefresh',
 ]
+
+if AUTHENTICATION_ENABLE_OIDC:
+    MIDDLEWARE += [
+        'mozilla_django_oidc.middleware.SessionRefresh',
+    ]
 
 ROOT_URLCONF = 'atlas.urls'
 
