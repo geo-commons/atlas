@@ -49,7 +49,7 @@ Lint ui:
 
 Build:
   stage: Build
-  image: docker:20.10.7
+  image: docker:20.10.7-git
   services:
     - docker:20.10.7-dind
   variables:
@@ -57,7 +57,8 @@ Build:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - export ATLAS_VERSION=$(git describe --tags)
+    - docker build --build-arg ATLAS_VERSION=$ATLAS_VERSION -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 Deploy Review App:
@@ -120,6 +121,23 @@ Deploy Docker latest tag:
     - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - master
+
+Deploy Docker version tag:
+  stage: Deploy
+  image: docker:20.10.7
+  services:
+    - docker:20.10.7-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - export ATLAS_VERSION=$(git describe --tags)
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$ATLAS_VERSION
+    - docker push $CI_REGISTRY_IMAGE:$ATLAS_VERSION
+  only:
+    - tags
 
 Deploy acceptance:
   stage: Deploy
