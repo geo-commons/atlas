@@ -8,6 +8,8 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+podAnnotations: {}
+
 debug: false
 secretKey: something-secret
 allowedHosts: atlas.example.com
