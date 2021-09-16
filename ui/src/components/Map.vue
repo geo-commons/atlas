@@ -119,10 +119,18 @@ export default {
 
         this.tileLayers = {}
 
+        const extent = [
+            this.extent.min.x ? this.extent.min.x : -Infinity,
+            this.extent.min.y ? this.extent.min.y : -Infinity,
+            this.extent.max.x ? this.extent.max.x : Infinity,
+            this.extent.max.y ? this.extent.max.y : Infinity,
+        ]
+
         this.view = new View({
             projection: 'EPSG:28992',
             constrainResolution: true,
             center: [this.position.center[0], this.position.center[1]],
+            extent: extent,
             zoom: this.position.zoom,
             padding: this.padding,
         })
@@ -404,6 +412,7 @@ export default {
     },
     props: {
         position: Object,
+        extent: Object,
         layers: Array,
         tool: String,
         selectedArea: Object,

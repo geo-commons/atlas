@@ -32,6 +32,7 @@
                 ref="map"
                 :position="this.position"
                 :layers="this.layers"
+                :extent="this.config.extent"
                 :tool="this.tool"
                 :selectedArea="this.selectedArea"
                 :padding="this.mapPadding"
@@ -180,6 +181,7 @@ export default {
     },
     computed: mapState({
         isEmbed: (state) => state.isEmbed,
+        config: (state) => state.config,
         alert: (state) => state.alert,
         position: (state) => state.position,
         layers: (state) => state.layers,
@@ -203,32 +205,6 @@ export default {
         },
         async setPosition(position) {
             this.$store.commit('setPosition', position)
-
-            if (!position.marker) {
-                return
-            }
-
-            try {
-                const result = await fetch(
-                    `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`
-                )
-                const data = await result.json()
-
-                if (!data.response.docs || data.response.docs.length === 0) {
-                    this.$store.commit(
-                        'setSearchQuery',
-                        `(${Math.round(position.marker[0] * 100) / 100},${
-                            Math.round(position.marker[1] * 100) / 100
-                        })`
-                    )
-                    return
-                }
-
-                const object = data.response.docs[0]
-                this.$store.commit('setSearchQuery', object.weergavenaam)
-            } catch (e) {
-                console.error(e)
-            }
         },
         toggleLayer(values) {
             this.$store.commit('toggleLayer', values)
@@ -292,6 +268,35 @@ export default {
                 `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}`
             )
         },
+        async searchAddress() {
+            const position = this.position
+
+            if (!position.marker) {
+                return
+            }
+
+            try {
+                const result = await fetch(
+                    `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`
+                )
+                const data = await result.json()
+
+                if (!data.response.docs || data.response.docs.length === 0) {
+                    this.$store.commit(
+                        'setSearchQuery',
+                        `(${Math.round(position.marker[0] * 100) / 100},${
+                            Math.round(position.marker[1] * 100) / 100
+                        })`
+                    )
+                    return
+                }
+
+                const object = data.response.docs[0]
+                this.$store.commit('setSearchQuery', object.weergavenaam)
+            } catch (e) {
+                console.error(e)
+            }
+        },
         toggleModal(modal) {
             this.modal = modal
         },
@@ -312,6 +317,7 @@ export default {
         position(value) {
             this.showInfoPanel = Boolean(value.marker)
             this.pushHistoryState()
+            this.searchAddress()
         },
         layers(value) {
             this.pushHistoryState()

@@ -203,6 +203,10 @@ CONSTANCE_CONFIG = {
     'POSITION_ZOOM': (13, 'Het zoomniveau van de opstartpositie'),
     'POSITION_CENTER_X': (126910, 'Het centrum X-coordinaat van de opstartpositie'),
     'POSITION_CENTER_Y': (505834, 'Het centrum Y-coordinaat van de opstartpositie'),
+    'EXTENT_MIN_X': (0, 'Minimale X-coordinaat voor het kaartbereik'),
+    'EXTENT_MIN_Y': (0, 'Minimale Y-coordinaat voor het kaartbereik'),
+    'EXTENT_MAX_X': (0, 'Maximale X-coordinaat voor het kaartbereik'),
+    'EXTENT_MAX_Y': (0, 'Maximale Y-coordinaat voor het kaartbereik'),
     'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
     'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico'))
 }
@@ -217,6 +221,10 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'POSITION_CENTER_X',
         'POSITION_CENTER_Y',
         'POSITION_ZOOM',
+        'EXTENT_MIN_X',
+        'EXTENT_MIN_Y',
+        'EXTENT_MAX_X',
+        'EXTENT_MAX_Y',
         'SUGGEST_MUNICIPALITIES'
     )
 }

@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isEmbed: data.is_embed,
         config: data.config,
         position: settings.position,
+        extent: settings.extent,
         layers: [],
         tool: '',
         selectedArea: null,

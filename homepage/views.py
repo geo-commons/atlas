@@ -263,7 +263,11 @@ def _get_config():
             'center': {
                 'x': config.POSITION_CENTER_X,
                 'y': config.POSITION_CENTER_Y
-            }
+            },
+        },
+        'extent': {
+            'min': { 'x': config.EXTENT_MIN_X, 'y': config.EXTENT_MIN_Y },
+            'max': { 'x': config.EXTENT_MAX_X, 'y': config.EXTENT_MAX_Y }
         },
         'suggest_municipalities': config.SUGGEST_MUNICIPALITIES
     }
