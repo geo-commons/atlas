@@ -12,12 +12,13 @@ Test:
   services:
     - postgres:11.13-alpine
   variables:
+    DB_HOST: postgres
+    DB_NAME: postgres
+    DB_PASSWORD: postgres
+    DB_USER: postgres
+    DJANGO_SETTINGS_MODULE: atlas.settings
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
     POSTGRES_PASSWORD: postgres
-    DB_HOST: postgres
-    DB_USER: postgres
-    DB_PASSWORD: postgres
-    DB_NAME: postgres
     SECRET_KEY: somethingverysecret
   cache:
     paths:
