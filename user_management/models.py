@@ -6,7 +6,7 @@ class AtlasGroup(models.Model):
     name = models.CharField('Groep', max_length=50)
 
     def __str__(self):
-        return "{}".format(self.name)
+        return self.name
 
     class Meta:
         verbose_name = 'Groep'
@@ -16,4 +16,4 @@ class AtlasUser(AbstractUser):
     atlas_groups = models.ManyToManyField(AtlasGroup, blank=True)
 
     def __str__(self):
-        return '{} {}'.format(self.first_name, self.last_name)
+        return f"{self.first_name} {self.last_name}"

@@ -165,8 +165,8 @@ class Layer(models.Model):
             return ""
         result = []
         for attr in attributes.split():
-            result.append("'{}'".format(attr))
-        return "popupAttributes: [{}]".format(", ".join(result))
+            result.append(f"'{attr}'")
+        return f"popupAttributes: [{', '.join(result)}]"
 
     @property
     def search_fields(self):
@@ -175,12 +175,12 @@ class Layer(models.Model):
             return ""
         result = []
         for attr in search_fields.split():
-            result.append("'{}'".format(attr))
-        return "search_fields: [{}]".format(", ".join(result))
+            result.append(f"'{attr}'")
+        return f"search_fields: [{', '.join(result)}]"
 
     @property
     def slddiv(self):
-        return "sld_div_{}".format(self.layer_id)
+        return f"sld_div_{self.layer_id}"
 
     @property
     def layer_type_str(self):
@@ -188,43 +188,43 @@ class Layer(models.Model):
 
     @property
     def infodiv(self):
-        return "info_{}".format(self.layer_id)
+        return f"info_{self.layer_id}"
 
     @property
     def sld(self):
-        return "sld_{}".format(self.layer_id)
+        return f"sld_{self.layer_id}"
 
     @property
     def legend(self):
-        return "lgn_{}".format(self.layer_id)
+        return f"lgn_{self.layer_id}"
 
     @property
     def filterid(self):
-        return "flt_{}".format(self.layer_id)
+        return f"flt_{self.layer_id}"
 
     @property
     def filterdataid(self):
-        return "data_{}".format(self.layer_id)
+        return f"data_{self.layer_id}"
 
     @property
     def datazoekid(self):
-        return "zoek_data_{}".format(self.layer_id)
+        return f"zoek_data_{self.layer_id}"
 
     @property
     def params(self):
-        return "{{'layers': '{0}'}}".format(self.layer_name)
+        return f"{{'layers': '{self.layer_name}'}}"
 
     @property
     def source(self):
         # TODO: check server_type case.
 
-        return """
+        return f"""
 source: new ol.source.TileWMS({{
-    projection: '{0}',
-    url: '{1}',
-    params: {2},
-    serverType: '{3}'
-}})""".format(self.projection, self.url, self.params, self.server_type)
+    projection: '{self.projection}',
+    url: '{self.url}',
+    params: {self.params},
+    serverType: '{self.server_type}'
+}})"""
 
     @property
     def is_published(self):
