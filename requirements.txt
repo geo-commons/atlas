@@ -6,6 +6,6 @@ Django==2.2.24
 mistune==2.0.0rc1
 mozilla-django-oidc==2.0.0
 prospector==1.5.1
-psycopg2-binary==2.9.1
+psycopg2-binary==2.8.6
 requests==2.26.0
 uwsgi==2.0.19.1
