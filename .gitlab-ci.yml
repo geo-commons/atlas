@@ -5,6 +5,7 @@ stages:
 
 variables:
   REVIEW_BASE_DOMAIN: delta10-review.nl
+  FF_NETWORK_PER_BUILD: "true"
 
 Test:
   stage: Test
