@@ -16,7 +16,7 @@
     meta_naam: "{{ layer.meta_name }}",
     meta_soort: "{{ layer.meta_kind }}",
     meta_org: "{{ layer.meta_org }}",
-    meta_bijgewerkt: {{ layer.meta_updated }},
+    meta_bijgewerkt: "{{ layer.meta_updated }}",
     // metadata attributen
     {% if layer.layer_type %}
     categorie: "{{layer.layer_type}}",
