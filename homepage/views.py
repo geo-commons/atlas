@@ -76,8 +76,7 @@ class SavedDatasetView(FormView):
         if form.is_valid():
             dataset = SavedDataset()
             timestamp = datetime.now().strftime('%Y%m%d%H%M')
-            dataset.title = '{}-{}'.format(timestamp,
-                                           form.cleaned_data['title'])
+            dataset.title = f"{timestamp}-{form.cleaned_data['title']}"
             dataset.json = form.cleaned_data['json']
             if request.user.is_authenticated:
                 dataset.saved_by = request.user
@@ -92,8 +91,7 @@ def save_dataset_view(request, pk, type_):
 
     if type_ == 'csv':
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="{}.csv"'.\
-            format(dataset.title)
+        response['Content-Disposition'] = f"attachment; filename=\"{dataset.title}.csv\""
 
         data = dataset.json['features']
         headers = data[0]['properties'].keys()

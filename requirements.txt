@@ -1,11 +1,11 @@
 coverage==5.5
 django-constance[database]==2.8.0
 django-extensions==3.1.3
-django-webpack-loader==1.0.0
+django-webpack-loader==1.3.0
 Django==2.2.24
 mistune==2.0.0rc1
 mozilla-django-oidc==2.0.0
-prospector==1.3.1
+prospector==1.5.1
 psycopg2-binary==2.8.6
-requests==2.25.1
+requests==2.26.0
 uwsgi==2.0.19.1
