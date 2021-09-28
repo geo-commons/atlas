@@ -44,6 +44,8 @@ OIDC_OP_TOKEN_ENDPOINT = os.getenv('OIDC_TOKEN_ENDPOINT', 'http://localhost:6556
 OIDC_OP_USER_ENDPOINT = os.getenv('OIDC_USER_ENDPOINT', 'http://localhost:6556/userinfo')
 OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_JWKS_ENDPOINT', 'http://localhost:6556/keys')
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
