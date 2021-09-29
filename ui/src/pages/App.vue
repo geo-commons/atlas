@@ -50,6 +50,7 @@
                 <LayersPanel
                     v-if="!this.isEmbed"
                     :layers="this.layers"
+                    :position="this.position"
                     @toggle-layer="this.toggleLayer"
                     @set-layer-opacity="this.setLayerOpacity"
                 />

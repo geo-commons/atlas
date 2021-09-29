@@ -86,8 +86,10 @@ class Layer(models.Model):
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
 
     meta_name = models.CharField('Naam', max_length=128, null=True,)
-    meta_kind = models.CharField('Soort', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
-    meta_org = models.CharField('Organisatie', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+    meta_kind = models.CharField('Soort', max_length=128, null=True,
+                                 help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+    meta_org = models.CharField('Organisatie', max_length=128, null=True,
+                                help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_updated = models.CharField(
         'Laatst bijgewerkt', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
 
@@ -154,6 +156,22 @@ class Layer(models.Model):
 
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
+
+    extent_min_x = models.FloatField(
+        'Bereik minimum x', blank=True, default=None, null=True,
+        help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.')
+    extent_min_y = models.FloatField(
+        'Bereik minimum y', blank=True, default=None, null=True)
+    extent_max_x = models.FloatField(
+        'Bereik maximum x', blank=True, default=None, null=True)
+    extent_max_y = models.FloatField(
+        'Bereik maximum y', blank=True, default=None, null=True)
+
+    zoom_min = models.IntegerField(
+        'Zoomniveau minimum', blank=True, default=None, null=True,
+        help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.')
+    zoom_max = models.IntegerField(
+        'Zoomniveau maximum', blank=True, default=None, null=True)
 
     def __str__(self):
         return self.title
@@ -234,6 +252,20 @@ source: new ol.source.TileWMS({{
     def is_closed_dataset(self):
         return self.closed_dataset
 
+    @property
+    def extent(self):
+        value = [
+            self.extent_min_x,
+            self.extent_min_y,
+            self.extent_max_x,
+            self.extent_max_y
+        ]
+
+        if all(v is not None for v in value):
+            return value
+
+        return None
+
     def to_dict(self):
         return {
             'id': self.layer_id,
@@ -246,6 +278,9 @@ source: new ol.source.TileWMS({{
             'is_base': self.is_base,
             'is_visible': self.is_visible,
             'projection': self.projection,
+            'extent': self.extent,
+            'zoom_min': self.zoom_min,
+            'zoom_max': self.zoom_max,
             'category': {
                 'id': self.layer_type.id,
                 'title': self.layer_type.title
