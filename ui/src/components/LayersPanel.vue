@@ -128,6 +128,11 @@
                                         {{ layer.title }}
                                     </label>
                                     <!-- </div> -->
+                                    <LayerFit
+                                        v-if="!layer.is_disabled"
+                                        :layer="layer"
+                                        @click="() => onFit(layer)"
+                                    />
                                     <LayerInfo :layer="layer" />
                                 </li>
                             </ul>
@@ -159,6 +164,7 @@
 import { intersects } from 'ol/extent'
 import ExpandButton from './ExpandButton'
 import VisibleLayer from './VisibleLayer'
+import LayerFit from './LayerFit'
 import LayerInfo from './LayerInfo'
 
 export default {
@@ -166,6 +172,7 @@ export default {
     components: {
         ExpandButton,
         VisibleLayer,
+        LayerFit,
         LayerInfo,
     },
     data() {
@@ -183,6 +190,9 @@ export default {
         },
         setLayerOpacity(values) {
             this.$emit('set-layer-opacity', values)
+        },
+        onFit(selectedLayer) {
+            this.$emit('on-fit', selectedLayer.extent)
         },
     },
     computed: {
