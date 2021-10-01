@@ -29,6 +29,7 @@
 
         <div class="map">
             <Map
+                ref="map"
                 :position="this.position"
                 :layers="this.layers"
                 :tool="this.tool"
@@ -53,6 +54,7 @@
                     :position="this.position"
                     @toggle-layer="this.toggleLayer"
                     @set-layer-opacity="this.setLayerOpacity"
+                    @on-fit="(layer) => this.$refs.map.fit(layer)"
                 />
             </div>
             <div class="bottom-right-panels">

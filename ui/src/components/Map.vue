@@ -392,6 +392,9 @@ export default {
         toggleScaleType() {
             this.scaleType = this.scaleType === 'LINE' ? 'TEXT' : 'LINE'
         },
+        fit(geometryOrExtent, options) {
+            this.view.fit(geometryOrExtent, options)
+        },
     },
     data() {
         return {
