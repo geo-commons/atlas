@@ -121,6 +121,7 @@
                                         :name="layer.id"
                                         :id="layer.id"
                                         :checked="layer.is_visible"
+                                        :disabled="layer.is_disabled"
                                         @change="() => onSelectLayer(layer)"
                                     />
                                     <label :for="layer.id">
@@ -155,6 +156,7 @@
 </template>
 
 <script>
+import { intersects } from 'ol/extent'
 import ExpandButton from './ExpandButton'
 import VisibleLayer from './VisibleLayer'
 import LayerInfo from './LayerInfo'
@@ -203,6 +205,23 @@ export default {
 
                 const existingCategory = categories.find((c) => c.id === layer.category.id)
 
+                layer.is_disabled = false
+                if (layer.zoom_min && this.position.zoom < layer.zoom_min) {
+                    layer.is_disabled = true
+                }
+
+                if (layer.zoom_max && this.position.zoom > layer.zoom_max) {
+                    layer.is_disabled = true
+                }
+
+                if (
+                    layer.extent &&
+                    this.position.extent &&
+                    !intersects(layer.extent, this.position.extent)
+                ) {
+                    layer.is_disabled = true
+                }
+
                 if (existingCategory) {
                     existingCategory.layers.push(layer)
                     return
@@ -224,6 +243,7 @@ export default {
     },
     props: {
         layers: Array,
+        position: Object,
     },
 }
 </script>
@@ -363,6 +383,10 @@ export default {
     padding: 2px 0 2px 20px;
     user-select: none;
     word-break: break-word;
+}
+
+.sublayer > input:disabled + label {
+    text-decoration: line-through;
 }
 
 .layer-counter {

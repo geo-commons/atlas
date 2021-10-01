@@ -262,6 +262,7 @@ export default {
                 ...this.position,
                 center: view.getCenter(),
                 zoom: view.getZoom(),
+                extent: view.calculateExtent(this.map.getSize()),
             })
         })
 

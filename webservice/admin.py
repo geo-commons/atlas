@@ -31,7 +31,21 @@ class LayerAdmin(admin.ModelAdmin):
             'fields': ('layer_name', 'url', 'source_type', 'projection', 'server_type')
         }),
         ('Weergave', {
-            'fields': ('opacity', 'is_base', 'is_visible', 'not_in_atlas', 'isqueryable', '_popup_attributes', '_search_fields')
+            'fields': (
+                'opacity',
+                'is_base',
+                'is_visible',
+                'not_in_atlas',
+                'isqueryable',
+                '_popup_attributes',
+                '_search_fields',
+                'extent_min_x',
+                'extent_min_y',
+                'extent_max_x',
+                'extent_max_y',
+                'zoom_min',
+                'zoom_max'
+            )
         }),
         ('Metadata', {
             'fields': ('meta_name', 'meta_kind', 'meta_org', 'meta_updated')
