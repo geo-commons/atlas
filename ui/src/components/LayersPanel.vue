@@ -129,7 +129,7 @@
                                     </label>
                                     <!-- </div> -->
                                     <LayerFit
-                                        v-if="!layer.is_disabled"
+                                        v-if="!layer.is_disabled && layer.extent"
                                         :layer="layer"
                                         @click="() => onFit(layer)"
                                     />
