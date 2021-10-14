@@ -1,9 +1,7 @@
 .. toc:: Inhoud
    :depth: 3
 
-## Versie informatie
-
-![versieinformatie](https://gitlab.com/purmerend/atlas/-/releases)
+[Versieinformatie](https://gitlab.com/purmerend/atlas/-/releases)
 
 ## Opbouw van het scherm
 
