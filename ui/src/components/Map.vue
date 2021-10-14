@@ -27,10 +27,14 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import TileLayer from 'ol/layer/Tile'
 import TileWMS from 'ol/source/TileWMS'
+import { createXYZ } from 'ol/tilegrid'
 import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
 import WMTSSource from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
+import VectorTileLayer from 'ol/layer/VectorTile'
+import VectorTileSource from 'ol/source/VectorTile'
 import GeoJSON from 'ol/format/GeoJSON'
+import MVT from 'ol/format/MVT'
 import Projection from 'ol/proj/Projection'
 import { getPointResolution } from 'ol/proj'
 import { bbox as bboxStrategy } from 'ol/loadingstrategy'
@@ -178,6 +182,48 @@ export default {
                                     return layer.url + params.toString()
                                 },
                                 strategy: bboxStrategy,
+                            }),
+                            style: () => {
+                                if (layer.style) {
+                                    olParser
+                                        .writeStyle(layer.style)
+                                        .then((olStyle) =>
+                                            this.tileLayers[layer.id].setStyle(olStyle.output)
+                                        )
+                                        .catch((error) => console.error(error))
+                                }
+
+                                return [
+                                    new Style({
+                                        stroke: new Stroke({
+                                            color: 'blue',
+                                            width: 3,
+                                        }),
+                                        fill: new Fill({
+                                            color: 'rgba(0, 0, 255, 0.1)',
+                                        }),
+                                    }),
+                                    new Style({
+                                        image: new Circle({
+                                            radius: 10,
+                                            fill: new Fill({
+                                                color: 'blue',
+                                            }),
+                                        }),
+                                    }),
+                                ]
+                            },
+                        })
+                    } else if (layer.source_type === 'MVT') {
+                        tileLayer = new VectorTileLayer({
+                            id: layer.id,
+                            visible: layer.is_visible === true,
+                            layerName: layer.name,
+                            opacity: layer.opacity,
+                            source: new VectorTileSource({
+                                format: new MVT(),
+                                projection: 'EPSG:28992',
+                                url: layer.url,
                             }),
                             style: () => {
                                 if (layer.style) {

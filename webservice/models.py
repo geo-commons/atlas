@@ -68,11 +68,13 @@ class Layer(models.Model):
     SOURCE_WMS = 'WMS'
     SOURCE_WFS = 'WFS'
     SOURCE_WMTS = 'WMTS'
+    SOURCE_MVT = 'MVT'
     SOURCE_TYPES = [
         (SOURCE_WMS_WFS, 'WMS en WFS'),
         (SOURCE_WMS, 'WMS'),
         (SOURCE_WFS, 'WFS'),
-        (SOURCE_WMTS, 'WMTS')
+        (SOURCE_WMTS, 'WMTS'),
+        (SOURCE_MVT, 'MVT')
     ]
 
     objects = models.Manager()
@@ -98,7 +100,7 @@ class Layer(models.Model):
     visible = models.BooleanField('Zichtbaar', default=False)
 
     style = models.JSONField(
-        'Stijl', default=dict, help_text='Stijl voor een WFS laag in GeoStyler formaat', blank=True)
+        'Stijl', default=dict, help_text='Stijl voor een WFS laag in GeoStyler formaat', blank=True, null=True)
 
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
