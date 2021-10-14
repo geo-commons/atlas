@@ -44,6 +44,9 @@ OIDC_OP_TOKEN_ENDPOINT = os.getenv('OIDC_TOKEN_ENDPOINT', 'http://localhost:6556
 OIDC_OP_USER_ENDPOINT = os.getenv('OIDC_USER_ENDPOINT', 'http://localhost:6556/userinfo')
 OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_JWKS_ENDPOINT', 'http://localhost:6556/keys')
 
+OIDC_USERNAME_CLAIM = os.getenv('OIDC_USERNAME_CLAIM', 'sub')
+OIDC_ACTIVATE_ON_CREATE = os.getenv('OIDC_ACTIVATE_ON_CREATE', 'False')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 DATABASES = {
@@ -178,6 +181,7 @@ WEBPACK_LOADER = {
 LOGIN_URL = '/atlas/accounts/login/'
 LOGIN_REDIRECT_URL = '/atlas/'
 LOGOUT_REDIRECT_URL = '/atlas/'
+LOGIN_REDIRECT_URL_FAILURE = '/atlas/login/failure'
 
 LOGGING = {
     'version': 1,

@@ -1,0 +1,13 @@
+{% extends 'v3/_base.html' %}
+
+{% block content %}
+  <div class="login__container">
+      <div class="credentials__container">
+        Het inloggen is mislukt omdat je account (nog) niet geactiveerd is.<br />
+        Vraag de beheerder om je account te activeren.
+      </div>
+      <div class="sso__container">
+        <a href="{% url 'homepage:v3' '' %}" class="login__submit">Ga terug</a>
+      </div>
+  </div>
+{% endblock %}

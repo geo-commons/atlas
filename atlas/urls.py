@@ -37,6 +37,6 @@ if settings.AUTHENTICATION_ENABLE_OIDC:
     ]
 
 urlpatterns += [
-    path('atlas/', include('homepage.urls')),
+    path('atlas/', include('homepage.urls'), name='homepage'),
     path('', RedirectView.as_view(url='/atlas/'))
 ]

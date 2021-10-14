@@ -216,6 +216,11 @@ def v3_login(request):
         'title': 'Login'
     })
 
+def v3_login_failure(request):
+    return render(request, 'v3/login_failure.html', {
+        'title': 'Login mislukt'
+    })
+
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:
         # Do not return default base layers when the database contains base layers
