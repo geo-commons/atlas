@@ -6,7 +6,7 @@ import logging
 import requests
 from constance import config
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotFound
 from django.db.models import Q
 from django.shortcuts import HttpResponse, redirect, render, get_object_or_404
 from django.urls import reverse
@@ -211,6 +211,15 @@ def v3_help(request):
         'content': help_content
     })
 
+def v3_disclaimer(request):
+    if config.DISCLAIMER:
+        return render(request, 'v3/disclaimer.html', {
+            'title': 'Disclaimer',
+            'content': config.DISCLAIMER,
+        })
+
+    return HttpResponseNotFound('Er is geen disclaimer aanwezig')
+
 def v3_login(request):
     return render(request, 'v3/login.html', {
         'title': 'Login'
@@ -270,7 +279,8 @@ def _get_config():
                 'y': config.POSITION_CENTER_Y
             }
         },
-        'suggest_municipalities': config.SUGGEST_MUNICIPALITIES
+        'suggest_municipalities': config.SUGGEST_MUNICIPALITIES,
+        'show_disclaimer': config.DISCLAIMER != ''
     }
 
 def _get_user(request):

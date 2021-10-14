@@ -28,8 +28,11 @@
                             >Log uit</a
                         >
                     </li>
-                    <li><a href="/atlas/help" target="_blank">Help</a></li>
                     <li><button @click="() => toggleModal('embed')">Embed</button></li>
+                    <li><a href="/atlas/help" target="_blank">Help</a></li>
+                    <li v-if="showDisclaimer">
+                        <a href="/atlas/disclaimer" target="_blank">Disclaimer</a>
+                    </li>
                 </ul>
             </div>
         </transition>
@@ -59,6 +62,7 @@ export default {
     },
     props: {
         user: Object,
+        showDisclaimer: Boolean,
     },
 }
 </script>
