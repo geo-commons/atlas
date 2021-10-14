@@ -97,7 +97,8 @@ class Layer(models.Model):
         'Ondoorzichtigheid', max_digits=1, decimal_places=1, default=0.9)
     visible = models.BooleanField('Zichtbaar', default=False)
 
-    style = models.JSONField('Stijl', default=dict, help_text='Stijl voor een WFS laag in GeoStyler formaat')
+    style = models.JSONField(
+        'Stijl', default=dict, help_text='Stijl voor een WFS laag in GeoStyler formaat', blank=True)
 
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
