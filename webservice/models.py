@@ -97,6 +97,8 @@ class Layer(models.Model):
         'Ondoorzichtigheid', max_digits=1, decimal_places=1, default=0.9)
     visible = models.BooleanField('Zichtbaar', default=False)
 
+    style = models.JSONField('Stijl', default=dict, help_text='Stijl voor een WFS laag in GeoStyler formaat')
+
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
         blank=True, null=True)
@@ -273,6 +275,7 @@ source: new ol.source.TileWMS({{
             'title': self.title,
             'name': self.layer_name,
             'opacity': float(self.opacity),
+            'style': self.style,
             'url': self.url,
             'server_type': self.server_type,
             'is_base': self.is_base,

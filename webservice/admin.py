@@ -44,7 +44,8 @@ class LayerAdmin(admin.ModelAdmin):
                 'extent_max_x',
                 'extent_max_y',
                 'zoom_min',
-                'zoom_max'
+                'zoom_max',
+                'style'
             )
         }),
         ('Metadata', {
