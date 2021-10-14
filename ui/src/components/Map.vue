@@ -42,6 +42,9 @@ import constructDraw from '../utils/draw'
 import getMarkerIconUrl from '../utils/generate-marker-icon-url'
 import getLocationIconUrl from '../utils/generate-location-icon-url'
 
+import OpenLayersParser from 'geostyler-openlayers-parser'
+const olParser = new OpenLayersParser()
+
 // Register EPSG:28992 projection
 register(getDefinitions())
 
@@ -177,6 +180,15 @@ export default {
                                 strategy: bboxStrategy,
                             }),
                             style: () => {
+                                if (layer.style) {
+                                    olParser
+                                        .writeStyle(layer.style)
+                                        .then((olStyle) =>
+                                            this.tileLayers[layer.id].setStyle(olStyle.output)
+                                        )
+                                        .catch((error) => console.error(error))
+                                }
+
                                 return [
                                     new Style({
                                         stroke: new Stroke({
