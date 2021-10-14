@@ -1,6 +1,10 @@
 .. toc:: Inhoud
    :depth: 3
 
+## Versie informatie
+
+![versieinformatie](https://gitlab.com/purmerend/atlas/-/releases)
+
 ## Opbouw van het scherm
 
 Als Atlas wordt gestart is het volgende scherm te zien:
