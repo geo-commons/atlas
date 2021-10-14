@@ -18,6 +18,7 @@ urlpatterns = [
 
 urlpatterns += [
     path('help', views.v3_help, name='v3_help'),
+    path('disclaimer', views.v3_disclaimer, name='v3_disclaimer'),
     path('login', auth_views.LoginView.as_view(template_name='v3/login.html'), name='v3_login'),
     path('login/failure', views.v3_login_failure, name='v3_login_failure'),
     path('logout', auth_views.LogoutView.as_view(template_name='v3/logout.html'), name='v3_logout'),

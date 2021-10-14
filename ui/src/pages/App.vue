@@ -45,7 +45,12 @@
                     @set-tool="this.setTool"
                     @set-selected-area="this.setSelectedArea"
                 />
-                <MorePanel v-if="!this.isEmbed" :user="this.user" @toggle-modal="toggleModal" />
+                <MorePanel
+                    v-if="!this.isEmbed"
+                    :user="this.user"
+                    :showDisclaimer="this.config.show_disclaimer"
+                    @toggle-modal="toggleModal"
+                />
             </div>
             <div class="bottom-left-panels">
                 <LayersPanel
@@ -185,6 +190,7 @@ export default {
         layers: (state) => state.layers,
         tool: (state) => state.tool,
         user: (state) => state.user,
+        config: (state) => state.config,
         selectedArea: (state) => state.selectedArea,
     }),
     created() {
