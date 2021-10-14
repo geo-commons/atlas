@@ -1,7 +1,9 @@
 .. toc:: Inhoud
    :depth: 3
 
-[Versieinformatie](https://gitlab.com/purmerend/atlas/-/releases)
+[Versie-informatie](https://gitlab.com/purmerend/atlas/-/releases)
+
+
 
 ## Opbouw van het scherm
 
@@ -63,6 +65,9 @@ Via het zoekveld van het kaartlagenvenster kun je zoeken naar kaartlagen. Wannee
 Wanneer je bijvoorbeeld zoekt naar een kaartlaag met kadastrale informatie, dan kun je in het zoekveld 'kad' ingeven. Alle kaartlagen waarin 'kad' voorkomt, worden dan zichtbaar.
 ![zoek_lagen](https://gitlab.com/purmerend/atlas/uploads/c031819d00c2972ce3655fecc9a97de2/zoek_lagen.png)
 
+***
+* [Naar boven](#)
+***
 
 ## Legenda
 
