@@ -46,6 +46,7 @@ Om in te zoomen op een gebied is het ook mogelijk om shift in te drukken, en een
 ## Keuze van de achtergrondkaart
 
 ![image2](https://gitlab.com/purmerend/atlas/uploads/12fdedcf7b11e0fbfd33c55f91fae122/image2.png)
+
 Met deze knop kan het menu worden geopend waarin de gewenste achtergrondkaart ingesteld kan worden.
 
 ![image3](https://gitlab.com/purmerend/atlas/uploads/66b302b389237e4e6ad9992f7450828d/image3.png)
