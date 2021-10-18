@@ -69,6 +69,19 @@ Met deze knop kan het menu worden geopend waarin de gewenste achtergrondkaart in
 * [Naar boven](#)
 ***
 
+
+![locatie](https://gitlab.com/purmerend/atlas/uploads/d2162316a42769372be2dd8d1e6d493f/locatie.png)
+
+Op een mobiel device (telefoon, Ipad) met GPS, kan de huidige locatie worden getoond.
+Gebruik hiervoor bovenstaand icoon. Let op dat locatievoorzieningen aan moeten staan voor deze functie anders zal er een foutmelding verschijnen. De locatievoorziening moet aan staan voor de browser waarin Atlas geopend is.
+
+![locatie2](https://gitlab.com/purmerend/atlas/uploads/3a91e921e507db346b6203e8def445f7/locatie2.png)
+
+***
+* [Naar boven](#)
+***
+
+
 ##  Keuze van de zichtbare kaartlagen
 
 ![image4](https://gitlab.com/purmerend/atlas/uploads/6bf4a09f850e2632f9899a7eb669ad14/image4.png)
