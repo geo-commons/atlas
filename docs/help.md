@@ -27,8 +27,7 @@ Om in te zoomen op een gebied is het ook mogelijk om shift in te drukken, en een
 ## Keuze van de achtergrondkaart
 
 ![image2](https://gitlab.com/purmerend/atlas/uploads/12fdedcf7b11e0fbfd33c55f91fae122/image2.png)
-Met deze knop kan het menu worden geopend waarin de gewenste
-achtergrondkaart ingesteld kan worden.
+Met deze knop kan het menu worden geopend waarin de gewenste achtergrondkaart ingesteld kan worden.
 
 ![image3](https://gitlab.com/purmerend/atlas/uploads/66b302b389237e4e6ad9992f7450828d/image3.png)
 
@@ -39,9 +38,11 @@ achtergrondkaart ingesteld kan worden.
 ##  Keuze van de zichtbare kaartlagen
 
 ![image4](https://gitlab.com/purmerend/atlas/uploads/6bf4a09f850e2632f9899a7eb669ad14/image4.png)
+
 Met deze knop kan het menu worden geopend waarin de zichtbaarheid van de kaartlagen ingesteld kan worden.
 
 In het menu zijn diverse categorieën zichtbaar die met het pijltje opengeklapt kunnen worden, om de lagen te tonen.
+
 ![keuzevandezichtbarekaartlagen](https://gitlab.com/purmerend/atlas/uploads/d9a606640f2c90e47d3badd012698437/keuzevandezichtbarekaartlagen.png)!
 
 Een kaartlaag kan door middel van een vinkje te zetten zichtbaar gemaakt worden in het kaartbeeld. Achter de categorienaam wordt met een cijfer inzichtelijk gemaakt hoeveel kaartlagen in deze categorie op zichtbaar zijn ingesteld.
@@ -49,9 +50,11 @@ Een kaartlaag kan door middel van een vinkje te zetten zichtbaar gemaakt worden 
 ![keuzevandezichtbarekaartlagen2](https://gitlab.com/purmerend/atlas/uploads/1b8853a5b81c65808a93fe5f946ec520/keuzevandezichtbarekaartlagen2.png)
 
 ![icoonzichtbarelagen](https://gitlab.com/purmerend/atlas/uploads/3e3bb2a406c326bad81f2ed50320cf3e/icoonzichtbarelagen.png)
+
 Op het moment dat er 1 of meerdere lagen zichtbaar zijn gemaakt, verschijnt het icoon zichtbare lagen. Met deze knop kan er gewisseld worden tusen weergave van alle lagen, of weergave van alleen de zichtbare lagen in de lijst. Een zichtbare kaartlaag kan weer uitgezet worden door het vinkje in de lijst met alle lagen, uit te vinken.
 
 Een andere manier om een kaartlaag uit te zetten is om in de weergave met alleen zichtbare lagen, de knop Verberg van deze laag te gebruiken
+
 ![knopverberg](https://gitlab.com/purmerend/atlas/uploads/799b7ef01254e69c678302fb37522d32/knopverberg.png)
 ![keuzevandezichtbarekaartlagen3](https://gitlab.com/purmerend/atlas/uploads/42027c1983cd64bde6e366f132dd5dd0/keuzevandezichtbarekaartlagen3.png)
 
