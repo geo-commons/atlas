@@ -103,7 +103,7 @@ Er kan een adres gezicht worden met onderstaande zoekbalk. Selecteer een adres o
 * [Naar boven](#)
 ***
 
-## Details tonen
+## Details van objecten tonen
 
 Als er kaartlagen zichtbaar zijn, kunt u van bevraagbare objecten de details opgevraagd worden. Klik hiervoor in de kaart om een punt te
 plaatsen. Links wordt een paneel geopend met daarin de details van alle objecten die op de geklikte locatie zijn gevonden.
