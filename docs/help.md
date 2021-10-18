@@ -61,8 +61,8 @@ Een andere manier om een kaartlaag uit te zetten is om in de weergave met alleen
 
 ## Zoek op kaartlaag
 
-Via het zoekveld van het kaartlagenvenster kun je zoeken naar kaartlagen. Wanneer de eerste letter, of een deel van de naam van de laag, wordt ingegeven dan klapt automatisch de categorie open waarin deze kaartlaag zich bevindt.
-Wanneer je bijvoorbeeld zoekt naar een kaartlaag met kadastrale informatie, dan kun je in het zoekveld 'kad' ingeven. Alle kaartlagen waarin 'kad' voorkomt, worden dan zichtbaar.
+Via het zoekveld van het kaartlagenvenster kun je zoeken naar kaartlagen. Wanneer de eerste letter, of een deel van de naam van de laag, wordt ingegeven dan klapt automatisch de categorie open waarin deze kaartlaag zich bevindt. Wanneer je bijvoorbeeld zoekt naar een kaartlaag met kadastrale informatie, dan kun je in het zoekveld 'kad' ingeven. Alle kaartlagen waarin 'kad' voorkomt, worden dan zichtbaar.
+
 ![zoek_lagen](https://gitlab.com/purmerend/atlas/uploads/9b5eb36ad207a8a31fa046e2e1e1daa5/zoek_lagen.png)
 
 ***
