@@ -1,5 +1,24 @@
-.. toc:: Inhoud
-   :depth: 3
+# Help
+
+# Inhoud
+
+-   [Opbouw van het scherm](https://datalab.purmerend.nl/atlas/help#toc_1)
+-   [Pannen en zoomen](https://datalab.purmerend.nl/atlas/help#toc_2)
+-   [Keuze van de achtergrondkaart](https://datalab.purmerend.nl/atlas/help#toc_3)
+-   [Keuze van de zichtbare kaartlagen](https://datalab.purmerend.nl/atlas/help#toc_4)
+-   [Legenda](https://datalab.purmerend.nl/atlas/help#toc_5)
+-   [Zichtbaarheid transparantie/opacity](https://datalab.purmerend.nl/atlas/help#toc_6)
+-   [Zoek adres](https://datalab.purmerend.nl/atlas/help#toc_7)
+-   [Details tonen](https://datalab.purmerend.nl/atlas/help#toc_8)
+-   [Gekoppelde gegevens bekijken](https://datalab.purmerend.nl/atlas/help#toc_9)
+-   [Objecten selecteren op de kaart binnen een polygoon](https://datalab.purmerend.nl/atlas/help#toc_10)
+-   [Rondkijkfoto](https://datalab.purmerend.nl/atlas/help#toc_11)
+-   [Meten](https://datalab.purmerend.nl/atlas/help#toc_12)
+-   [Zoek op data](https://datalab.purmerend.nl/atlas/help#toc_13)
+-   [Printen](https://datalab.purmerend.nl/atlas/help#toc_14)
+-   [Huidige kaartscherm embedden in een andere webpagina](https://datalab.purmerend.nl/atlas/help#toc_15)
+-   [Huidige kaartscherm delen met een collega](https://datalab.purmerend.nl/atlas/help#toc_16)
+
 
 [Versie-informatie](https://gitlab.com/purmerend/atlas/-/releases)
 
