@@ -29,11 +29,24 @@
 
 Als Atlas wordt gestart is het volgende scherm te zien:
 
-![image1](https://gitlab.com/purmerend/atlas/uploads/409bb319174c5a62499c622c5e008001/image1.png)
+![image1](https://gitlab.com/purmerend/atlas/uploads/fd1294750b39db5f6e2aa75b1b7be8bd/startscherm.png)
 
 ***
 * [Naar boven](#)
 ***
+
+## Schaalindicator
+
+Via de schaalindicator rechtsonder in beeld, kun je de weergaveverhouding te zien. door er op te klikken kan gewisseld worden tussen een één op X weergave of een afstandsweergave.
+
+***
+* [Naar boven](#)
+***
+
+
+
+
+
 
 ## Pannen en zoomen
 
