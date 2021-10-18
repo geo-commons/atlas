@@ -116,7 +116,7 @@ De waarde 0 is volledig transparant, de waarde 100 is ondoorzichtig.
 
 ## Zoek adres
 
-Er kan een adres gezicht worden met onderstaande zoekbalk. Selecteer een adres om naar deze locatie in de kaart te verspringen. Als er kaartlagen geopend zijn, worden direct de detailgegevens van objecten op de adreslocatie getoond in het detailpanel.
+Er kan een adres gezocht worden met onderstaande zoekbalk. Selecteer een adres om naar deze locatie in de kaart te verspringen. Als er kaartlagen geopend zijn, worden direct de detailgegevens van objecten op de adreslocatie getoond in het detailpanel.
 
 ![kimono](https://gitlab.com/purmerend/atlas/uploads/b29c38b03ffb7ce8fc2d7d7cfbf99217/kimono.png)
 
