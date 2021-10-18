@@ -44,10 +44,6 @@ Via de schaalindicator rechtsonder in beeld, kun je de weergaveverhouding te zie
 ***
 
 
-
-
-
-
 ## Pannen en zoomen
 
 In- en uitzoomen kan door gebruik van de plus en min knoppen of door gebruik van het muiswiel.
@@ -69,6 +65,7 @@ Met deze knop kan het menu worden geopend waarin de gewenste achtergrondkaart in
 * [Naar boven](#)
 ***
 
+## GPS-locatie tonen
 
 ![locatie](https://gitlab.com/purmerend/atlas/uploads/d2162316a42769372be2dd8d1e6d493f/locatie.png)
 
