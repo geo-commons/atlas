@@ -73,7 +73,14 @@
 
             <template v-slot:default>
                 <div class="content">
-                    <img :src="legendImageUrl" :alt="`Legenda voor laag ${layer.title}`" />
+                    <img
+                        v-if="layer.source_type === 'WMS' || layer.source_type === 'WMS_WFS'"
+                        :src="legendImageUrl"
+                        :alt="`Legenda voor laag ${layer.title}`"
+                    />
+                    <span v-if="layer.source_type !== 'WMS' && layer.source_type !== 'WMS_WFS'"
+                        >Geen legenda beschikbaar</span
+                    >
                 </div>
             </template>
         </ExpandButton>

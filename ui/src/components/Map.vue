@@ -27,9 +27,9 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import TileLayer from 'ol/layer/Tile'
 import TileWMS from 'ol/source/TileWMS'
-import { createXYZ } from 'ol/tilegrid'
 import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
-import WMTSSource from 'ol/source/WMTS'
+import WMTSCapabilities from 'ol/format/WMTSCapabilities'
+import WMTSSource, { optionsFromCapabilities } from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
 import VectorTileLayer from 'ol/layer/VectorTile'
 import VectorTileSource from 'ol/source/VectorTile'
@@ -220,11 +220,7 @@ export default {
                             visible: layer.is_visible === true,
                             layerName: layer.name,
                             opacity: layer.opacity,
-                            source: new VectorTileSource({
-                                format: new MVT(),
-                                projection: 'EPSG:28992',
-                                url: layer.url,
-                            }),
+                            source: null,
                             style: () => {
                                 if (layer.style) {
                                     olParser
@@ -233,29 +229,53 @@ export default {
                                             this.tileLayers[layer.id].setStyle(olStyle.output)
                                         )
                                         .catch((error) => console.error(error))
-                                }
-
-                                return [
-                                    new Style({
-                                        stroke: new Stroke({
-                                            color: 'blue',
-                                            width: 3,
-                                        }),
-                                        fill: new Fill({
-                                            color: 'rgba(0, 0, 255, 0.1)',
-                                        }),
-                                    }),
-                                    new Style({
-                                        image: new Circle({
-                                            radius: 10,
-                                            fill: new Fill({
+                                } else {
+                                    return [
+                                        new Style({
+                                            stroke: new Stroke({
                                                 color: 'blue',
+                                                width: 3,
+                                            }),
+                                            fill: new Fill({
+                                                color: 'rgba(0, 0, 255, 0.1)',
                                             }),
                                         }),
-                                    }),
-                                ]
+                                        new Style({
+                                            image: new Circle({
+                                                radius: 10,
+                                                fill: new Fill({
+                                                    color: 'blue',
+                                                }),
+                                            }),
+                                        }),
+                                    ]
+                                }
                             },
                         })
+
+                        fetch(`${layer.url}?REQUEST=GetCapabilities`)
+                            .then((response) => {
+                                return response.text()
+                            })
+                            .then((body) => {
+                                const caps = new WMTSCapabilities().read(body)
+                                const wmts = new WMTSSource(
+                                    optionsFromCapabilities(caps, {
+                                        layer: layer.name,
+                                        matrixSet: 'EPSG:28992',
+                                        format: 'application/vnd.mapbox-vector-tile',
+                                    })
+                                )
+
+                                tileLayer.setSource(
+                                    new VectorTileSource({
+                                        projection: 'EPSG:28992',
+                                        format: new MVT(),
+                                        tileGrid: wmts.getTileGrid(),
+                                        tileUrlFunction: wmts.getTileUrlFunction(),
+                                    })
+                                )
+                            })
                     } else {
                         tileLayer = new TileLayer({
                             id: layer.id,
