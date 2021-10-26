@@ -126,7 +126,6 @@ export default {
 
 .header {
     display: flex;
-
     border-bottom: 1px solid var(--color-grey-50);
 }
 
@@ -140,6 +139,6 @@ export default {
     height: var(--width-button-large);
     padding: 0 0 0 12px;
     width: 100%;
-    font-size: var(--font-size-tiny);
+    font-size: var(--font-size-small);
 }
 </style>

@@ -23,6 +23,10 @@ export class GooglePanorama {
         const latlong = transform(position.marker, 'EPSG:28992', 'EPSG:4326')
         this.streetview.setPosition({ lat: latlong[1], lng: latlong[0] })
     }
+
+    resize() {
+        google.maps.event.trigger(this.streetview, 'resize')
+    }
 }
 
 export class StreetSmartPanorama {
@@ -71,5 +75,9 @@ export class StreetSmartPanorama {
                 viewer.toggle3DCursor(false)
             }
         )
+    }
+
+    resize() {
+        // StreetSmart watches for resize events automatically
     }
 }

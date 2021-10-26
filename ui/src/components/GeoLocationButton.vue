@@ -103,10 +103,6 @@ export default {
     height: var(--width-button-normal);
 }
 
-.iconbutton:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-50);
-}
-
 .blink {
     color: var(--color-primary);
     animation: blinker 1s ease infinite;
