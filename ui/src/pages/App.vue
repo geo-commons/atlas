@@ -5,19 +5,20 @@
         :class="{ showInfoPanel: showInfoPanel, showDataPanel }"
     >
         <SearchPanel
+            v-if="!this.showPanoramaPanel"
             :position="this.position"
             @set-position="this.setPosition"
             @toggle-data-panel="this.toggleDataPanel"
         />
         <PointInfoPanel
-            v-if="!this.isEmbed"
+            v-if="!this.isEmbed && !this.showPanoramaPanel"
             :layers="this.layers"
             :position="this.position"
             :showInfoPanel="!showDataPanel && showInfoPanel"
             @set-position="this.setPosition"
         />
         <DataPanel
-            v-if="!this.isEmbed"
+            v-if="!this.isEmbed && !this.showPanoramaPanel"
             ref="dataPanel"
             :layers="this.layers"
             :position="this.position"
@@ -27,9 +28,16 @@
             @toggle-data-panel="this.toggleDataPanel"
         />
 
-        <div class="map">
+        <div class="map-container">
+            <PanoramaPanel
+                class="panorama-panel"
+                :position="this.position"
+                :isOpen="showPanoramaPanel"
+                @toggle="togglePanoramaPanel"
+            />
             <Map
                 ref="map"
+                class="map"
                 :position="this.position"
                 :layers="this.layers"
                 :tool="this.tool"
@@ -40,13 +48,13 @@
             />
             <div class="top-right-panels">
                 <Tools
-                    v-if="!this.isEmbed"
+                    v-if="!this.isEmbed && !this.showPanoramaPanel"
                     :tool="this.tool"
                     @set-tool="this.setTool"
                     @set-selected-area="this.setSelectedArea"
                 />
                 <MorePanel
-                    v-if="!this.isEmbed"
+                    v-if="!this.isEmbed && !this.showPanoramaPanel"
                     :user="this.user"
                     :showDisclaimer="this.config.show_disclaimer"
                     @toggle-modal="toggleModal"
@@ -54,7 +62,7 @@
             </div>
             <div class="bottom-left-panels">
                 <LayersPanel
-                    v-if="!this.isEmbed"
+                    v-if="!this.isEmbed && !this.showPanoramaPanel"
                     :layers="this.layers"
                     :position="this.position"
                     @toggle-layer="this.toggleLayer"
@@ -63,74 +71,63 @@
                 />
             </div>
             <div class="bottom-right-panels">
-                <div class="bottom-right-wrapper">
-                    <div
-                        v-if="!this.isEmbed"
-                        class="bottom-right-buttons"
-                        :class="{
-                            isOpen: showBaseLayersPanel,
-                            showTogglePanorama: position.marker || showPanoramaPanel,
-                        }"
+                <div
+                    v-if="!this.isEmbed && !this.showPanoramaPanel"
+                    class="bottom-right-buttons"
+                    :class="{
+                        isOpen: showBaseLayersPanel,
+                        showTogglePanorama: position.marker || showPanoramaPanel,
+                    }"
+                >
+                    <button
+                        class="iconbutton"
+                        @click="togglePanoramaPanel"
+                        v-tippy="{ placement: 'left' }"
+                        content="Panorama"
+                        aria-label="Toon panorama"
                     >
-                        <button
-                            class="iconbutton"
-                            @click="togglePanoramaPanel"
-                            v-tippy="{ placement: 'left' }"
-                            content="Panorama"
-                            aria-label="Toon panorama"
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            width="24"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                width="24"
-                            >
-                                <path d="M0 0h24v24H0z" fill="none" />
-                                <path
-                                    d="M12 7C6.48 7 2 9.24 2 12c0 2.24 2.94 4.13 7 4.77V20l4-4-4-4v2.73c-3.15-.56-5-1.9-5-2.73 0-1.06 3.04-3 8-3s8 1.94 8 3c0 .73-1.46 1.89-4 2.53v2.05c3.53-.77 6-2.53 6-4.58 0-2.76-4.48-5-10-5z"
-                                />
-                            </svg>
-                        </button>
-                        <transition name="fade">
-                            <PanoramaPanel
-                                :position="this.position"
-                                :isOpen="showPanoramaPanel"
-                                @toggle="togglePanoramaPanel"
+                            <path d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                d="M12 7C6.48 7 2 9.24 2 12c0 2.24 2.94 4.13 7 4.77V20l4-4-4-4v2.73c-3.15-.56-5-1.9-5-2.73 0-1.06 3.04-3 8-3s8 1.94 8 3c0 .73-1.46 1.89-4 2.53v2.05c3.53-.77 6-2.53 6-4.58 0-2.76-4.48-5-10-5z"
                             />
-                        </transition>
-                        <button
-                            class="iconbutton"
-                            @click="toggleBaseLayersPanel"
-                            v-tippy="{ placement: 'left' }"
-                            content="Basislagen"
-                            aria-label="Toon basislagen"
-                            :aria-expanded="showBaseLayersPanel.toString()"
-                            aria-controls="baseLayers"
+                        </svg>
+                    </button>
+                    <button
+                        class="iconbutton"
+                        @click="toggleBaseLayersPanel"
+                        v-tippy="{ placement: 'left' }"
+                        content="Basislagen"
+                        aria-label="Toon basislagen"
+                        :aria-expanded="showBaseLayersPanel.toString()"
+                        aria-controls="baseLayers"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            width="24"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                width="24"
-                            >
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path
-                                    d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"
-                                />
-                            </svg>
-                        </button>
-                        <transition name="fade">
-                            <BaseLayersPanel
-                                v-if="showBaseLayersPanel"
-                                :layers="this.layers"
-                                @toggle-layer="this.toggleLayer"
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path
+                                d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"
                             />
-                        </transition>
-                    </div>
+                        </svg>
+                    </button>
+                    <transition name="fade">
+                        <BaseLayersPanel
+                            v-if="showBaseLayersPanel"
+                            :layers="this.layers"
+                            @toggle-layer="this.toggleLayer"
+                        />
+                    </transition>
                 </div>
-                <div class="bottom-right-wrapper">
-                    <GeoLocationButton @set-position="this.setPosition" />
-                </div>
+                <GeoLocationButton @set-position="this.setPosition" />
                 <ZoomPanel :position="this.position" @set-position="this.setPosition" />
             </div>
         </div>
@@ -351,7 +348,7 @@ export default {
 
     --color-alert: #eb0000;
 
-    --font-size-tiny: 14px;
+    --font-size-tiny: 12px;
     --font-size-small: 14px;
     --font-size-normal: 16px;
 
@@ -534,7 +531,7 @@ svg {
     padding: 0;
     border-radius: var(--radius-normal);
     font-family: inherit;
-    font-size: var(--font-size-tiny);
+    font-size: var(--font-size-small);
     font-weight: var(--font-weight-bold);
     letter-spacing: 0em;
 }
@@ -582,9 +579,19 @@ svg {
     display: flex;
 }
 
-.map {
-    position: relative;
+.map-container {
     flex-grow: 1;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+}
+
+.panorama-panel {
+    flex: 0 1 auto;
+}
+
+.map {
+    flex: 1 1 auto;
 }
 
 .bottom-left-panels {
@@ -632,8 +639,7 @@ svg {
     flex-direction: column;
 }
 
-.bottom-right-wrapper {
-    position: relative;
+.bottom-right-panels > *:not(:last-child) {
     margin-bottom: 12px;
 }
 

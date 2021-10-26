@@ -1,10 +1,10 @@
 <template>
-    <div ref="map" class="wrapper">
+    <div ref="map">
         <div class="scale" @click="this.toggleScaleType">
             <div
                 ref="scale-line-container"
                 :style="{ display: this.scaleType === 'LINE' ? 'block' : 'none' }"
-            ></div>
+            />
             <div
                 class="scale-text"
                 :style="{ display: this.scaleType === 'TEXT' ? 'block' : 'none' }"
@@ -471,33 +471,32 @@ export default {
 </script>
 
 <style scoped>
-.wrapper {
-    width: 100%;
-    height: 100%;
-}
-
 .scale {
-    z-index: 2;
     position: absolute;
-    right: calc(var(--padding-screen) * 2 + var(--width-button-large));
+    right: calc(var(--padding-screen) * 2 + var(--width-button-normal));
     bottom: var(--padding-screen);
-    font-size: 12px;
     background: rgba(255, 255, 255, 0.8);
-    color: #000;
+    font-size: var(--font-size-tiny);
+    font-weight: var(--font-weight-bold);
+    color: black;
     user-select: none;
+    cursor: pointer;
+    z-index: 1;
 }
 
-.scale >>> .scale-line {
-    border-radius: 4px;
-    padding: 2px;
+.scale >>> .scale-text {
+    height: 20px;
+    line-height: 20px;
+    padding: 0 4px;
 }
 
 .scale >>> .scale-line-inner {
-    border: 1px solid #000;
+    height: 20px;
+    line-height: 20px;
+    border: 2px solid black;
     border-top: none;
     text-align: center;
-    margin: 1px;
     will-change: contents, width;
-    transition: all 0.25s;
+    transition: all 0.25s ease;
 }
 </style>
