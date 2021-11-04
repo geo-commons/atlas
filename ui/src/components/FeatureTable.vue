@@ -277,7 +277,7 @@ export default {
             })
 
             const hiddenElement = document.createElement('a')
-            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(data)
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data)
             hiddenElement.target = '_blank'
             hiddenElement.download = `${filename}.csv`
             hiddenElement.click()
