@@ -66,7 +66,7 @@ In een GeoTiff formaat bestand is grafische en geografische informatie opgeslage
 Het [TIFF](https://nl.wikipedia.org/wiki/Tagged_image_file_format) formaat is een container formaat. Dat wil zeggen dat binnen een TIFF bestand verschillende compressiemethoden mogelijk zijn, JPEG is er daar één van.
 
 #### SRCNODATA
-In tegenstelling tot veel andere bestandsformaten ondersteund JPEG geen transparantie. De achtergrond (nadata area) van een luchtfoto zal wit of zwart zijn (of elke andere kleur) in plaats van transparant. Door de compressie van JPEG is er geen duidelijk onderscheid tussen data en nadat. Hierdoor kunnen er artefacten ontstaan aan de data-randen die als zwarte of witte lijntjes te zien kunnen zijn. GDAL maakt bij JPEG compressie standaard een zwarte achtergrond. Door de parameter '-srcnodata 255 255 255' te gebruiken, wordt een witte achtergrond aangemaakt. Dit valt minder op dan zwart.
+In tegenstelling tot veel andere bestandsformaten ondersteund JPEG geen transparantie. De achtergrond (nodata area) van een luchtfoto zal wit of zwart zijn (of elke andere kleur) in plaats van transparant. Door de compressie van JPEG is er geen duidelijk onderscheid tussen data en nodata. Hierdoor kunnen er artefacten ontstaan aan de data-randen die als zwarte of witte lijntjes te zien kunnen zijn. GDAL maakt bij JPEG compressie standaard een zwarte achtergrond. Door de parameter '-srcnodata 255 255 255' te gebruiken, wordt een witte achtergrond aangemaakt. Dit valt minder op dan zwart.
 Uiteraard kan in plaats van 255 255 255 elke andere kleur gekozen worden.
 
 #### GDAL_TRANSLATE
