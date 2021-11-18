@@ -127,7 +127,10 @@ class Layer(models.Model):
         'Servertype', max_length=50, default='geoserver')
 
     closed_dataset = models.BooleanField(
-        'Besloten', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.')
+        'Alleen intern zichtbaar', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.')
+
+    login_required = models.BooleanField(
+        'Vereis inlog voor deze dataset', default=False, help_text='Voor deze dataset is een inlog vereist.')
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
@@ -283,6 +286,7 @@ source: new ol.source.TileWMS({{
             'server_type': self.server_type,
             'is_base': self.is_base,
             'is_visible': self.is_visible,
+            'login_required': self.login_required,
             'projection': self.projection,
             'extent': self.extent,
             'zoom_min': self.zoom_min,

@@ -253,7 +253,7 @@ export default {
                             },
                         })
 
-                        fetch(`${layer.url}?REQUEST=GetCapabilities`)
+                        fetch(`${layer.url}?REQUEST=GetCapabilities`, this.getFetchParameters())
                             .then((response) => {
                                 return response.text()
                             })
@@ -273,6 +273,25 @@ export default {
                                         format: new MVT(),
                                         tileGrid: wmts.getTileGrid(),
                                         tileUrlFunction: wmts.getTileUrlFunction(),
+                                        tileLoadFunction: (tile, url) => {
+                                            tile.setLoader((extent, resolution, projection) => {
+                                                fetch(url, this.getFetchParameters()).then(
+                                                    (response) => {
+                                                        response.arrayBuffer().then((data) => {
+                                                            const format = tile.getFormat()
+                                                            const features = format.readFeatures(
+                                                                data,
+                                                                {
+                                                                    extent: extent,
+                                                                    featureProjection: projection,
+                                                                }
+                                                            )
+                                                            tile.setFeatures(features)
+                                                        })
+                                                    }
+                                                )
+                                            })
+                                        },
                                     })
                                 )
                             })
@@ -287,6 +306,34 @@ export default {
                                 url: layer.url,
                                 servertype: layer.server_type,
                                 params: { layers: layer.name },
+                                tileLoadFunction: (tile, src) => {
+                                    if (!this.user || !this.user.token) {
+                                        tile.getImage().src = src
+                                        return
+                                    }
+
+                                    const xhr = new XMLHttpRequest()
+                                    xhr.responseType = 'blob'
+                                    xhr.addEventListener('loadend', function (evt) {
+                                        const data = this.response
+                                        if (data !== undefined) {
+                                            tile.getImage().src = URL.createObjectURL(data)
+                                        } else {
+                                            tile.setState(TileState.ERROR)
+                                        }
+                                    })
+                                    xhr.addEventListener('error', function () {
+                                        tile.setState(TileState.ERROR)
+                                    })
+                                    xhr.open('GET', src)
+
+                                    xhr.setRequestHeader(
+                                        'Authorization',
+                                        `Bearer ${this.user.token}`
+                                    )
+
+                                    xhr.send()
+                                },
                             }),
                         })
                     }
@@ -473,6 +520,15 @@ export default {
         fit(geometryOrExtent, options) {
             this.view.fit(geometryOrExtent, options)
         },
+        getFetchParameters() {
+            if (this.user && this.user.token) {
+                return {
+                    headers: { Authorization: `Bearer ${this.user.token}` },
+                }
+            }
+
+            return {}
+        },
     },
     data() {
         return {
@@ -485,6 +541,7 @@ export default {
         layers: Array,
         tool: String,
         selectedArea: Object,
+        user: Object,
         padding: { type: Array, default: () => [0, 0, 0, 0] },
     },
 }

@@ -121,11 +121,17 @@
                                         :name="layer.id"
                                         :id="layer.id"
                                         :checked="layer.is_visible"
-                                        :disabled="layer.is_disabled"
+                                        :disabled="
+                                            layer.is_disabled ||
+                                            (layer.login_required && (!user || !user.token))
+                                        "
                                         @change="() => onSelectLayer(layer)"
                                     />
                                     <label :for="layer.id">
                                         {{ layer.title }}
+                                        <LayerAuthentication
+                                            v-if="layer.login_required && (!user || !user.token)"
+                                        />
                                     </label>
                                     <!-- </div> -->
                                     <LayerFit
@@ -164,6 +170,7 @@
 import { intersects } from 'ol/extent'
 import ExpandButton from './ExpandButton'
 import VisibleLayer from './VisibleLayer'
+import LayerAuthentication from './LayerAuthentication'
 import LayerFit from './LayerFit'
 import LayerInfo from './LayerInfo'
 
@@ -172,6 +179,7 @@ export default {
     components: {
         ExpandButton,
         VisibleLayer,
+        LayerAuthentication,
         LayerFit,
         LayerInfo,
     },
@@ -254,6 +262,7 @@ export default {
     props: {
         layers: Array,
         position: Object,
+        user: Object,
     },
 }
 </script>
@@ -386,7 +395,7 @@ export default {
 }
 
 .sublayer > label {
-    display: block;
+    display: flex;
     position: relative;
     width: 100%;
     cursor: pointer;

@@ -130,6 +130,7 @@ export default {
         isOpen: Boolean,
         filter: Object,
         position: Object,
+        user: Object,
     },
     mounted() {
         this.fetchFeatures()
@@ -194,7 +195,7 @@ export default {
                 const url = new URL(this.layer.url)
                 url.search = params.toString()
 
-                const result = await fetch(url.toString())
+                const result = await fetch(url.toString(), this.getFetchParameters())
                 const data = await result.json()
 
                 this.features = data.features
@@ -238,7 +239,7 @@ export default {
                 const url = new URL(this.layer.url)
                 url.search = params.toString()
 
-                const result = await fetch(url.toString())
+                const result = await fetch(url.toString(), this.getFetchParameters())
 
                 const data = await result.json()
                 const featureType = data.featureTypes[0]
@@ -292,6 +293,15 @@ export default {
                 center: center,
                 zoom: 18,
             })
+        },
+        getFetchParameters() {
+            if (this.user && this.user.token) {
+                return {
+                    headers: { Authorization: `Bearer ${this.user.token}` },
+                }
+            }
+
+            return {}
         },
     },
 }

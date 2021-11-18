@@ -60,6 +60,7 @@ export default {
         layer: Object,
         position: Object,
         isOpen: Boolean,
+        user: Object,
     },
     filters: {
         capitalize: function (value) {
@@ -112,7 +113,7 @@ export default {
             )
 
             try {
-                const result = await fetch(url)
+                const result = await fetch(url, this.getFetchParameters())
                 const data = await result.json()
                 this.features = data.features
             } catch (e) {
@@ -131,7 +132,10 @@ export default {
                 ['maxFeatures', '20'],
             ])
 
-            const result = await fetch(this.layer.url + params.toString())
+            const result = await fetch(
+                this.layer.url + params.toString(),
+                this.getFetchParameters()
+            )
             const data = await result.json()
 
             this.features = data.features
@@ -147,6 +151,15 @@ export default {
             }
 
             return Object.keys(fetchedProperties)
+        },
+        getFetchParameters() {
+            if (this.user && this.user.token) {
+                return {
+                    headers: { Authorization: `Bearer ${this.user.token}` },
+                }
+            }
+
+            return {}
         },
     },
 }

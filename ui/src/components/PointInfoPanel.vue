@@ -26,6 +26,7 @@
                 v-bind:key="visibleLayer.id"
                 :layer="visibleLayer"
                 :position="position"
+                :user="user"
             />
         </template>
     </SidePanel>
@@ -64,6 +65,7 @@ export default {
         position: Object,
         layers: Array,
         showInfoPanel: Boolean,
+        user: Object,
     },
 }
 </script>
