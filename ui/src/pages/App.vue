@@ -15,6 +15,7 @@
             :layers="this.layers"
             :position="this.position"
             :showInfoPanel="!showDataPanel && showInfoPanel"
+            :user="this.user"
             @set-position="this.setPosition"
         />
         <DataPanel
@@ -24,6 +25,7 @@
             :position="this.position"
             :selectedArea="this.selectedArea"
             :showDataPanel="showDataPanel"
+            :user="this.user"
             @set-position="this.setPosition"
             @toggle-data-panel="this.toggleDataPanel"
         />
@@ -36,6 +38,7 @@
                 @toggle="togglePanoramaPanel"
             />
             <Map
+                v-if="this.readyToRenderMap"
                 ref="map"
                 class="map"
                 :position="this.position"
@@ -43,6 +46,7 @@
                 :tool="this.tool"
                 :selectedArea="this.selectedArea"
                 :padding="this.mapPadding"
+                :user="this.user"
                 @set-position="this.setPosition"
                 @tool-used="this.toolUsed"
             />
@@ -65,6 +69,7 @@
                     v-if="!this.isEmbed && !this.showPanoramaPanel"
                     :layers="this.layers"
                     :position="this.position"
+                    :user="this.user"
                     @toggle-layer="this.toggleLayer"
                     @set-layer-opacity="this.setLayerOpacity"
                     @on-fit="(layer) => this.$refs.map.fit(layer)"
@@ -310,6 +315,36 @@ export default {
                 this.$set(this.mapPadding, 3, 0)
             }
         },
+        async fetchAccessToken() {
+            const response = await fetch('/atlas/api/v1/token')
+            if (!response.ok) {
+                this.readyToRenderMap = true
+                return false
+            }
+
+            const data = await response.json()
+            this.$store.commit('setUser', {
+                ...this.user,
+                token: data.token,
+            })
+
+            this.readyToRenderMap = true
+        },
+    },
+    created() {
+        if (!this.user) {
+            this.readyToRenderMap = true
+            return
+        }
+
+        this.fetchAccessToken()
+
+        this.fetchInterval = setInterval(() => {
+            this.fetchAccessToken()
+        }, 1000 * 60 * 10) // every ten minutes
+    },
+    destroyed() {
+        clearInterval(this.fetchInterval)
     },
     watch: {
         position(value) {
@@ -322,6 +357,7 @@ export default {
     },
     data() {
         return {
+            readyToRenderMap: false,
             showInfoPanel: Boolean(this.position && this.position.marker),
             showPanoramaPanel: false,
             showBaseLayersPanel: false,

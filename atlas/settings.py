@@ -47,6 +47,8 @@ OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_JWKS_ENDPOINT', 'http://localhost:6556/k
 OIDC_USERNAME_CLAIM = os.getenv('OIDC_USERNAME_CLAIM', 'sub')
 OIDC_ACTIVATE_ON_CREATE = os.getenv('OIDC_ACTIVATE_ON_CREATE', 'False')
 
+OIDC_STORE_ACCESS_TOKEN = True
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 DATABASES = {

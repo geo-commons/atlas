@@ -45,6 +45,7 @@
                 :position="position"
                 :selectedArea="selectedArea"
                 :query="query"
+                :user="user"
                 @set-position="setPosition"
             />
         </template>
@@ -96,6 +97,7 @@ export default {
         layers: Array,
         showDataPanel: Boolean,
         selectedArea: Object,
+        user: Object,
     },
 }
 </script>

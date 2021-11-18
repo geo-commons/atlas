@@ -44,6 +44,9 @@ export const createStore = (initialState) => {
             setAlert(state, alert) {
                 state.alert = alert
             },
+            setUser(state, user) {
+                state.user = user
+            },
         },
     })
 }

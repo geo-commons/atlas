@@ -230,6 +230,14 @@ def v3_login_failure(request):
         'title': 'Login mislukt'
     })
 
+def v3_token(request):
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'token': request.session.get('oidc_access_token')
+        })
+
+    return HttpResponse('Unauthorized', status=401)
+
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:
         # Do not return default base layers when the database contains base layers
