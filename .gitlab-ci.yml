@@ -28,7 +28,7 @@ Test:
     - pip install -r requirements.txt
     - python manage.py collectstatic --noinput
   script:
-    - python -m prospector
+    - python -m prospector -X
     - python -m coverage run manage.py test
     - python -m coverage report && python -m coverage html
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'

@@ -7,5 +7,6 @@ mistune==2.0.0rc1
 mozilla-django-oidc==2.0.0
 prospector==1.5.1
 psycopg2-binary==2.8.6
+pylint==2.11.1
 requests==2.26.0
-uwsgi==2.0.19.1
+uwsgi==2.0.20
