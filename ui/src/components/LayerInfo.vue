@@ -35,23 +35,80 @@
             </button>
         </template>
         <div class="container">
-            <div class="heading">
-                <h3 class="title">{{ layer.title }}</h3>
-                <span class="description">
-                    <markdown :source="layer.metadata.description" />
-                </span>
-            </div>
-            <div class="properties">
-                <div class="property">
-                    <div class="key">Beheerder</div>
-                    <div class="value">
-                        <markdown :source="layer.metadata.organization" />
+            <div v-if="!layer.metadata.ckan_url">
+                <div class="heading">
+                    <h3 class="title">{{ layer.title }}</h3>
+                    <span class="description">
+                        <markdown :source="layer.metadata.description" />
+                    </span>
+                </div>
+                <div class="properties">
+                    <div class="property">
+                        <div class="key">Beheerder</div>
+                        <div class="value">
+                            <markdown :source="layer.metadata.organization" />
+                        </div>
+                    </div>
+                    <div class="property">
+                        <div class="key">Bijgewerkt</div>
+                        <div class="value">
+                            <markdown :source="layer.metadata.updated" />
+                        </div>
                     </div>
                 </div>
-                <div class="property">
-                    <div class="key">Bijgewerkt</div>
-                    <div class="value">
-                        <markdown :source="layer.metadata.updated" />
+            </div>
+            <div v-if="layer.metadata.ckan_url">
+                <div v-if="loading">Bezig met laden...</div>
+                <div v-if="error">Er is een fout opgetreden tijdens het laden van de metadata</div>
+                <div v-if="!loading && !error">
+                    <div class="heading">
+                        <h3 class="title">{{ layer.title }}</h3>
+                        <span class="description">
+                            {{ metadata.notes }}
+                            <br />
+                            <a href="https://dpt.purmerend.nl/data/dataset/scholen" target="_blank"
+                                >Bekijk in CKAN</a
+                            >
+                        </span>
+                    </div>
+                    <div class="properties">
+                        <div class="property">
+                            <div class="key">Auteur</div>
+                            <div class="value">{{ metadata.author }}</div>
+                        </div>
+                        <div class="property">
+                            <div class="key">Auteur e-mail</div>
+                            <div class="value">{{ metadata.author_email }}</div>
+                        </div>
+                        <div class="property">
+                            <div class="key">Beheerder</div>
+                            <div class="value">{{ metadata.maintainer }}</div>
+                        </div>
+                        <div class="property">
+                            <div class="key">Beheerder e-mail</div>
+                            <div class="value">{{ metadata.maintainer_email }}</div>
+                        </div>
+                        <div class="property">
+                            <div class="key">Aangemaakt op</div>
+                            <div class="value">
+                                {{ new Date(metadata.metadata_created).toLocaleString() }}
+                            </div>
+                        </div>
+                        <div class="property">
+                            <div class="key">Laatst bijgewerkt</div>
+                            <div class="value">
+                                {{ new Date(metadata.metadata_modified).toLocaleString() }}
+                            </div>
+                        </div>
+                        <div class="property">
+                            <div class="key">Tags</div>
+                            <div class="value">
+                                {{
+                                    metadata.tags &&
+                                    metadata.tags.map((tag) => tag.display_name).join(', ')
+                                }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,9 +127,28 @@ export default {
     props: {
         layer: Object,
     },
-    created() {
+    data() {
+        return {
+            metadata: {},
+            loading: false,
+            error: false,
+        }
+    },
+    async created() {
         this.markdownOptions = {
             linkify: true,
+        }
+
+        if (!this.layer.metadata.ckan_url) {
+            return
+        }
+
+        try {
+            const result = await fetch(this.layer.metadata.ckan_url)
+            const data = await result.json()
+            this.metadata = data.result
+        } catch (e) {
+            this.error = true
         }
     },
 }

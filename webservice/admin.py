@@ -49,7 +49,7 @@ class LayerAdmin(admin.ModelAdmin):
             )
         }),
         ('Metadata', {
-            'fields': ('meta_name', 'meta_kind', 'meta_org', 'meta_updated')
+            'fields': ('meta_name', 'meta_kind', 'meta_org', 'meta_updated', 'ckan_url')
         }),
         ('Toegang', {
             'fields': ('closed_dataset', 'login_required', 'owner', 'users', 'atlas_groups')
