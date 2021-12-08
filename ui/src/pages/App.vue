@@ -628,6 +628,7 @@ svg {
 
 .map {
     flex: 1 1 auto;
+    height: 0; /* fixes incorrect display of .ol-viewport on Safari 13.1 */
 }
 
 .bottom-left-panels {
