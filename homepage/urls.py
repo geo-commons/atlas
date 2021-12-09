@@ -22,6 +22,7 @@ urlpatterns += [
     path('login', auth_views.LoginView.as_view(template_name='v3/login.html'), name='v3_login'),
     path('login/failure', views.v3_login_failure, name='v3_login_failure'),
     path('logout', auth_views.LogoutView.as_view(template_name='v3/logout.html'), name='v3_logout'),
+    path('admin2/', views.v3_admin, name='v3_admin'),
     path('api/v1/token', views.v3_token, name='v3_token'),
     re_path('embed', views.embed, name='embed'),
     re_path(r'((?P<theme_slug>[a-z0-9\-]+)?)', views.v3, name='v3'),
