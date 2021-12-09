@@ -8,6 +8,7 @@ from constance import config
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseNotFound
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponse, redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -237,6 +238,13 @@ def v3_token(request):
         })
 
     return HttpResponse('Unauthorized', status=401)
+
+@login_required(login_url='admin:login')
+def v3_admin(request):
+    if not request.user.is_superuser:
+        return redirect(reverse('admin:login'))
+
+    return render(request, 'v3/admin.html')
 
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:

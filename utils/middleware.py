@@ -13,6 +13,7 @@ def check_access_admin(get_response):
     """Middleware to intercept request to deny access to forbidden pages."""
 
     admin_url = reverse('admin:login').replace('login/', '')
+    admin2_url = '/atlas/admin2'
     formidden_urls = [reverse('homepage:downloads')]
 
     def middleware(request):
@@ -25,8 +26,9 @@ def check_access_admin(get_response):
             logger.warning("Flush user session.")
             request.session.flush()
 
-        if (path.startswith(admin_url)
-                or path in formidden_urls) and not is_ctrix(request):
+        if (path.startswith(admin_url) or
+            path.startswith(admin2_url) or
+                path in formidden_urls) and not is_ctrix(request):
             request.session.flush()
             logger.warning("Trying to access page within CTRIX.")
             raise PermissionDenied
