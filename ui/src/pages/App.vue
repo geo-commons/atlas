@@ -251,26 +251,15 @@ export default {
             this.$store.commit('setSelectedArea', selectedArea)
         },
         toolUsed(result) {
-            let measureResult
+            if (result && result.sketch) {
+                this.$store.commit('setSelectedArea', result.sketch.getGeometry())
+            }
 
             switch (result.tool) {
-                case 'MEASURE_AREA':
-                    measureResult = getArea(result.sketch.getGeometry())
-                    alert(`${Math.round(measureResult * 100) / 100} m2`)
-                    break
-                case 'MEASURE_LINE':
-                    measureResult = getLength(result.sketch.getGeometry())
-                    alert(`${Math.round(measureResult * 100) / 100} m`)
-                    break
                 case 'SELECT_AREA':
-                    this.$store.commit('setSelectedArea', result.sketch.getGeometry())
                     this.showDataPanel = true
                     break
             }
-
-            setTimeout(() => {
-                this.$store.commit('setTool', '')
-            }, 500)
         },
         toggleInfoPanel() {
             this.showInfoPanel = !this.showInfoPanel

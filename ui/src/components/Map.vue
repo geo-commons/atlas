@@ -1,5 +1,5 @@
 <template>
-    <div ref="map">
+    <div ref="map" class="map">
         <div class="scale" @click="this.toggleScaleType">
             <div
                 ref="scale-line-container"
@@ -356,7 +356,7 @@ export default {
                 this.$emit('tool-used', { tool: this.tool, sketch })
             }
 
-            this.draw = constructDraw(this.tool, onDrawStart, onDrawEnd)
+            this.draw = constructDraw(this.tool, this.map, onDrawStart, onDrawEnd)
             this.map.addInteraction(this.draw)
         }
 
@@ -488,8 +488,13 @@ export default {
             }
 
             if (value !== '') {
-                this.draw = constructDraw(value, onDrawStart, onDrawEnd)
+                this.draw = constructDraw(value, this.map, onDrawStart, onDrawEnd)
                 this.map.addInteraction(this.draw)
+            }
+
+            if (value === '') {
+                this.selectedAreaSource.clear()
+                this.map.removeOverlay(this.draw.measureTooltip)
             }
         },
         selectedArea(selectedArea) {
@@ -548,6 +553,46 @@ export default {
 </script>
 
 <style scoped>
+.map >>> .ol-tooltip {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    opacity: 0.7;
+    white-space: nowrap;
+    font-size: 12px;
+    cursor: default;
+    user-select: none;
+}
+
+.map >>> .ol-tooltip-measure {
+    opacity: 1;
+    font-weight: bold;
+}
+
+.map >>> .ol-tooltip-static {
+    background-color: #000000;
+    color: white;
+    border: 1px solid white;
+}
+
+.map >>> .ol-tooltip-measure:before,
+.map >>> .ol-tooltip-static:before {
+    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    margin-left: -7px;
+    left: 50%;
+}
+
+.map >>> .ol-tooltip-static:before {
+    border-top-color: #000000;
+}
+
 .scale {
     position: absolute;
     right: calc(var(--padding-screen) * 2 + var(--width-button-normal));
