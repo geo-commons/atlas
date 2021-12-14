@@ -11,7 +11,7 @@
     "core-js": "3.19.3",
     "es6-promise": "4.2.8",
     "geostyler-openlayers-parser": "3.0.0",
-    "markdown-it": "12.2.0",
+    "markdown-it": "12.3.0",
     "ol": "6.9.0",
     "proj4": "2.7.5",
     "vue": "2.6.14",
