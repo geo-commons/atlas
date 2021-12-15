@@ -37,13 +37,13 @@ export default {
     --font-size-tiny: 12px;
     --font-size-small: 14px;
     --font-size-normal: 16px;
-    --font-size-medium: 20px;
+    --font-size-large: 18px;
 
     --font-weight-normal: 400;
     --font-weight-bold: 700;
 
-    --radius-small: 3px;
-    --radius-normal: 6px;
+    --radius-small: 4px;
+    --radius-normal: 8px;
 
     --shadow-normal: 0 0 1px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 0, 0, 0.15);
 
@@ -133,6 +133,60 @@ ul {
 
 svg {
     flex-shrink: 0;
+}
+
+.container {
+    padding: 0 32px;
+}
+
+.iconbutton {
+    color: black;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-radius 0.1s;
+}
+
+.iconbutton[disabled] {
+    color: var(--color-grey-60);
+}
+
+.iconbutton.isActive {
+    color: var(--color-primary);
+}
+
+.iconbutton:not([disabled]):hover {
+    background: var(--color-grey-40);
+}
+
+.iconbutton:not([disabled]):active {
+    background: var(--color-grey-50);
+}
+
+.large-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    border: 2px solid var(--color-grey-60);
+    border-radius: var(--radius-normal);
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-bold);
+    color: black;
+    text-decoration: none;
+}
+
+.large-button svg {
+    margin-right: 6px;
+}
+
+.large-button:hover {
+    background: var(--color-grey-40);
+}
+
+.large-button:active {
+    background: var(--color-grey-50);
 }
 </style>
 
