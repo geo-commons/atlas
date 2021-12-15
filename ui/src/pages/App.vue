@@ -198,9 +198,21 @@ export default {
     created() {
         window.addEventListener('resize', this.onResizeWindow)
         this.setViewportHeight()
+
+        if (!this.user) {
+            this.readyToRenderMap = true
+            return
+        }
+
+        this.fetchAccessToken()
+
+        this.fetchInterval = setInterval(() => {
+            this.fetchAccessToken()
+        }, 1000 * 60 * 10) // every ten minutes
     },
     destroyed() {
         window.removeEventListener('resize', this.onResizeWindow)
+        clearInterval(this.fetchInterval)
     },
     methods: {
         onResizeWindow() {
@@ -319,21 +331,6 @@ export default {
 
             this.readyToRenderMap = true
         },
-    },
-    created() {
-        if (!this.user) {
-            this.readyToRenderMap = true
-            return
-        }
-
-        this.fetchAccessToken()
-
-        this.fetchInterval = setInterval(() => {
-            this.fetchAccessToken()
-        }, 1000 * 60 * 10) // every ten minutes
-    },
-    destroyed() {
-        clearInterval(this.fetchInterval)
     },
     watch: {
         position(value) {
