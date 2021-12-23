@@ -5,6 +5,7 @@ from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
 
 from user_management.models import AtlasGroup
+from utils.tools import is_ctrix
 
 
 class LayerManager(models.Manager):
@@ -357,3 +358,54 @@ class AtlasTheme(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class ViewerVisibleManager(models.Manager):
+    def for_request(self, request):
+        if is_ctrix(request) or request.user.is_authenticated:
+            return self.get_queryset()
+
+        return self.get_queryset().filter(models.Q(internal=False))
+
+class Viewer(models.Model):
+    TYPE_GOOGLE_MAPS = 'GOOGLE_MAPS'
+    TYPE_STREET_SMART = 'STREET_SMART'
+    TYPE_OBLIQUO = 'OBLIQUO'
+    VIEWER_TYPES = [
+        (TYPE_GOOGLE_MAPS, 'Google Maps'),
+        (TYPE_STREET_SMART, 'Street Smart'),
+        (TYPE_OBLIQUO, 'Obliquo'),
+    ]
+
+    ordering = models.PositiveIntegerField('Sortering', default=0, editable=True, db_index=True)
+    label = models.CharField(max_length=128)
+    type = models.CharField('Type', choices=VIEWER_TYPES, default=TYPE_GOOGLE_MAPS, max_length=20)
+    username = models.CharField(null=True, blank=True, max_length=128)
+    password = models.CharField(null=True, blank=True, max_length=128)
+    api_key = models.CharField(null=True, blank=True, max_length=128)
+    url = models.CharField(null=True, blank=True, max_length=255)
+    internal = models.BooleanField('Alleen intern zichtbaar', default=True,
+                                   help_text='Is alleen zichtbaar binnen interne omgeving.')
+
+    objects = models.Manager()
+    visible = ViewerVisibleManager()
+
+
+    class Meta:
+        verbose_name = 'Viewer'
+        verbose_name_plural = 'Viewers'
+        ordering = ['ordering', 'label']
+
+    def __str__(self):
+        return self.label
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'label': self.label,
+            'type': self.type,
+            'username': self.username,
+            'password': self.password,
+            'api_key': self.api_key,
+            'url': self.url
+        }

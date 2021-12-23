@@ -16,13 +16,13 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 
-from utils.context_processors import is_ctrix
+from utils.tools import is_ctrix
 from webservice.models import Layer
 
 from .forms import UploadDatasetForm
 from .lib import get_help_content
 from .models import SavedDataset
-from webservice.models import AtlasTheme
+from webservice.models import AtlasTheme, Viewer
 
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class HomePageView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request)).filter(~Q(not_in_atlas=True))
         context['data'] = {
-            'config': _get_config(),
+            'config': _get_config(self.request),
             'user': _get_user(self.request),
             'layers': _default_layers() + [ layer.to_dict() for layer in context['layers'] ]
         }
@@ -177,7 +177,7 @@ def embed(request):
     context = {
         'data': {
             'is_embed': True,
-            'config': _get_config(),
+            'config': _get_config(request),
             'user': _get_user(request),
             'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
         }
@@ -199,7 +199,7 @@ def v3(request, theme_slug=''):
 
     context['data'] = {
         'is_embed': False,
-        'config': _get_config(),
+        'config': _get_config(request),
         'user': _get_user(request),
         'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
     }
@@ -285,7 +285,7 @@ def _default_layers():
         },
     ]
 
-def _get_config():
+def _get_config(request):
     return {
         'organization_name': config.ORGANIZATION_NAME,
         'position': {
@@ -296,7 +296,8 @@ def _get_config():
             }
         },
         'suggest_municipalities': config.SUGGEST_MUNICIPALITIES,
-        'show_disclaimer': config.DISCLAIMER != ''
+        'show_disclaimer': config.DISCLAIMER != '',
+        'viewers': [ viewer.to_dict() for viewer in Viewer.visible.for_request(request) ],
     }
 
 def _get_user(request):

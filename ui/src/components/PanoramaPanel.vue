@@ -11,6 +11,11 @@
         @resize:move="this.onResize"
     >
         <div class="buttons">
+            <select name="viewer" v-if="config.viewers.length > 0" v-model="selectedViewerId">
+                <option v-for="(viewer, i) in config.viewers" :key="viewer.id" :value="i">
+                    {{ viewer.label }}
+                </option>
+            </select>
             <button
                 class="iconbutton"
                 :aria-label="isFullscreen ? 'Verkleinen' : 'Vergroten'"
@@ -75,23 +80,51 @@
                 </svg>
             </button>
         </div>
-        <div class="viewer" ref="viewer">
-            <div v-if="!viewer" class="message">
-                Er is geen panoramaweergave beschikbaar. Controleer de configuratie van Google Maps
-                of StreetSmart.
+        <div class="viewer" v-if="this.isOpen">
+            <div v-if="selectedViewer !== null && position.marker" class="viewer">
+                <google-maps
+                    ref="viewer"
+                    v-if="selectedViewer.type == 'GOOGLE_MAPS'"
+                    :position="position"
+                />
+                <obliquo
+                    ref="viewer"
+                    v-if="selectedViewer.type == 'OBLIQUO'"
+                    :position="position"
+                    :url="selectedViewer.url"
+                />
+                <street-smart
+                    ref="viewer"
+                    v-if="selectedViewer.type == 'STREET_SMART'"
+                    :position="position"
+                    :username="selectedViewer.username"
+                    :password="selectedViewer.password"
+                    :apiKey="selectedViewer.api_key"
+                />
+                <div v-if="!selectedViewer" class="message">
+                    Er is geen panoramaweergave beschikbaar. Configureer een viewer in het
+                    beheerpaneel.
+                </div>
             </div>
         </div>
     </vue-resizable>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import VueResizable from 'vue-resizable'
-import { GooglePanorama, StreetSmartPanorama } from '../utils/panorama'
+
+import GoogleMaps from '../viewers/GoogleMaps.vue'
+import Obliquo from '../viewers/Obliquo.vue'
+import StreetSmart from '../viewers/StreetSmart.vue'
 
 export default {
     name: 'PanoramaPanel',
     components: {
         VueResizable,
+        GoogleMaps,
+        Obliquo,
+        StreetSmart,
     },
     created() {
         window.addEventListener('resize', this.onResizeWindow)
@@ -105,9 +138,22 @@ export default {
         return {
             isFullscreen: false,
             viewer: null,
+            selectedViewerId: 0,
             windowWidth: 200,
             windowHeight: 200,
         }
+    },
+    computed: {
+        selectedViewer: function () {
+            if (this.selectedViewerId === null) {
+                return null
+            }
+
+            return this.config.viewers[this.selectedViewerId]
+        },
+        ...mapState({
+            config: (state) => state.config,
+        }),
     },
     methods: {
         toggle() {
@@ -121,7 +167,11 @@ export default {
             this.onResize()
         },
         onResize() {
-            this.viewer.resize()
+            if (!this.$refs.viewer) {
+                return
+            }
+
+            this.$refs.viewer.resize()
         },
         onResizeWindow() {
             this.setViewportWidth()
@@ -132,47 +182,6 @@ export default {
         },
         setViewportHeight() {
             this.windowHeight = window.innerHeight
-        },
-    },
-    watch: {
-        isOpen(value) {
-            // Make sure the div of the viewer is visible in the DOM
-            if (!this.$refs.viewer) {
-                return
-            }
-
-            // Initial viewer on the first appearance
-            if (!this.viewer && typeof StreetSmartApi !== 'undefined') {
-                this.viewer = new StreetSmartPanorama(this.$refs.viewer, this.position)
-                return
-            }
-
-            if (!this.viewer && typeof google !== 'undefined') {
-                this.viewer = new GooglePanorama(this.$refs.viewer, this.position)
-                return
-            }
-
-            // When the viewer is already initialized, only update the position
-            if (this.viewer) {
-                this.viewer.setPosition(this.position)
-            }
-        },
-        position(value) {
-            if (!this.isOpen) {
-                // do not update position when the viewer is not open
-                return
-            }
-
-            if (!this.viewer) {
-                // do not update the viewer when it is not initialized
-                return
-            }
-
-            if (!this.position.marker) {
-                return
-            }
-
-            this.viewer.setPosition(this.position)
         },
     },
     props: {
