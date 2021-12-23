@@ -1,0 +1,77 @@
+<template>
+    <div ref="viewer" class="street-smart"></div>
+</template>
+
+<script>
+export default {
+    name: 'StreetSmart',
+    mounted() {
+        const options = {
+            targetElement: this.$refs.viewer,
+            username: this.username,
+            password: this.password,
+            apiKey: this.apiKey,
+            srs: 'EPSG:28992',
+            locale: 'nl',
+        }
+
+        StreetSmartApi.init(options).then(() => {
+            this.setPosition(this.position.marker)
+        })
+    },
+    beforeDestroy() {
+        StreetSmartApi.destroy({
+            targetElement: this.$refs.viewer,
+        })
+    },
+    methods: {
+        resize() {
+            // streetsmart watches resize itself
+        },
+        setPosition(position) {
+            const options = {
+                viewerType: [StreetSmartApi.ViewerType.PANORAMA],
+                panoramaViewer: {
+                    closable: false,
+                    maximizable: false,
+                },
+                obliqueViewer: {
+                    closable: false,
+                    maximizable: false,
+                },
+            }
+
+            StreetSmartApi.open(`${position[0]}, ${position[1]}`, options).then((results) => {
+                if (!results || results.length === 0) {
+                    return
+                }
+
+                const viewer = results[0]
+                viewer.toggle3DCursor(false)
+            })
+        },
+    },
+    watch: {
+        position(value) {
+            if (!value.marker) {
+                return
+            }
+
+            this.setPosition(value.marker)
+        },
+    },
+    props: {
+        position: Object,
+        username: String,
+        password: String,
+        apiKey: String,
+    },
+}
+</script>
+
+<style scoped>
+.street-smart {
+    width: 100%;
+    height: 100%;
+}
+</style>

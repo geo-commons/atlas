@@ -1,12 +1,17 @@
 import logging
-
 from django.conf import settings
-from django.http import HttpRequest
+from webservice.models import Viewer
+from .tools import is_ctrix
 
 logger = logging.getLogger(__name__)
 
 def global_settings(request):
+    street_smart = Viewer.visible.for_request(request).filter(type=Viewer.TYPE_STREET_SMART)
+    google_maps = Viewer.visible.for_request(request).filter(type=Viewer.TYPE_GOOGLE_MAPS)
+
     return {
+        'street_smart': street_smart[0] if len(street_smart) > 0 else None,
+        'google_maps': google_maps[0] if len(google_maps) > 0 else None,
         'SMARTSTREET_USER': settings.SMARTSTREET_USER,
         'SMARTSTREET_PASSWORD': settings.SMARTSTREET_PASSWORD,
         'SMARTSTREET_API_KEY': settings.SMARTSTREET_API_KEY,
@@ -18,24 +23,6 @@ def global_settings(request):
         'AUTHENTICATION_ENABLE_CREDENTIALS': settings.AUTHENTICATION_ENABLE_CREDENTIALS,
         'AUTHENTICATION_ENABLE_OIDC': settings.AUTHENTICATION_ENABLE_OIDC
     }
-
-def is_ctrix(request: HttpRequest) -> bool:
-    """Check if ip address of the visitor is listed as a ctrix ip address. """
-
-    if settings.CTRIX_IPS == ['*']:
-        return True
-
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-
-    logger.info("IP: %s", ip)
-
-    return ip in settings.CTRIX_IPS
-
 
 def ctrix_context(request):
     return {

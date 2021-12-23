@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from utils.context_processors import is_ctrix
+from utils.tools import is_ctrix
 
 from .models import AtlasTheme, Category, Layer
 

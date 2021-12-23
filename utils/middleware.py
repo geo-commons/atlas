@@ -3,7 +3,7 @@ import logging
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
-from .context_processors import is_ctrix
+from .tools import is_ctrix
 
 
 logger = logging.getLogger(__name__)

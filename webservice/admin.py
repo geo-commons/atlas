@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .forms import LayerForm, LinkedDataForm
-from .models import Category, Layer, AtlasTheme, LinkedData
+from .models import Category, Layer, AtlasTheme, LinkedData, Viewer
 
 
 class LinkedDataInline(admin.TabularInline):
@@ -77,6 +77,13 @@ class ThemeAdmin(admin.ModelAdmin):
     search_fields = ['title']
 
 
+class ViewerAdmin(admin.ModelAdmin):
+    list_display = ('ordering', 'label', 'type', )
+    list_display_links = ('label',)
+    list_editable = ('ordering',)
+
+
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(AtlasTheme, ThemeAdmin)
+admin.site.register(Viewer, ViewerAdmin)
