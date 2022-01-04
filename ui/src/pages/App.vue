@@ -450,7 +450,6 @@ button {
     font: inherit;
     letter-spacing: inherit;
     text-align: left;
-    appearance: none;
 }
 
 input::placeholder {
