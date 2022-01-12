@@ -39,7 +39,7 @@ Test:
 
 Lint ui:
   stage: Test
-  image: node:14.18.2-alpine
+  image: node:17.3.1-alpine
   cache:
     paths:
       - ui/node_modules/

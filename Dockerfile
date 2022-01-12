@@ -1,5 +1,5 @@
 # UI
-FROM node:14.18.2-alpine AS ui-build
+FROM node:17.3.1-alpine AS ui-build
 WORKDIR /app/ui
 
 COPY ui/package.json \
