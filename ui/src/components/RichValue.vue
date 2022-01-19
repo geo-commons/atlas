@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span v-if="this.valueType === 'STRING'">{{ dataValue }}</span>
+        <markdown v-if="this.valueType === 'STRING'" :source="dataValue" />
         <a v-if="this.valueType === 'URL'" :href="dataValue" target="_blank" rel="noopener">{{
             dataValue.length >= 75
                 ? `${dataValue.substring(0, 36)}...${dataValue.substring(dataValue.length - 36)}`
@@ -17,12 +17,16 @@
 </template>
 
 <script>
+import Markdown from './Markdown'
+
 const imageRegex = /^(http|https).*(\.jpg|\.jpeg|\.png|\.gif)/
 const urlRegex = /^(http|https)/
 
 export default {
     name: 'RichValue',
-    components: {},
+    components: {
+        Markdown,
+    },
     computed: {
         valueType() {
             if (typeof this.dataValue !== 'string') {
