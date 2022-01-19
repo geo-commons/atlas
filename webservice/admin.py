@@ -23,6 +23,8 @@ class LayerAdmin(admin.ModelAdmin):
         LinkedDataInline,
     ]
 
+    save_as = True
+
     fieldsets = (
         (None, {
             'fields': ('title', 'layer_id', 'layer_type', 'published')
