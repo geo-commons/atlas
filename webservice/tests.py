@@ -9,12 +9,14 @@ class TestLayerModel(TestCase):
             layer_id="purm_stembureaus_2018",
             title="Stembureaus",
             layer_name="topp:Purm_Stembureaus_2018",
+            url='https://datalab.purmerend.nl/geoserver/topp/wms?',
             published=False,
             layer_type=Category.objects.create(
                 title='theme_layer'))
         self.open_dataset = Layer.objects.create(
             title="Purm",
             layer_name="",
+            url='https://datalab.purmerend.nl/geoserver/topp/wms?',
             closed_dataset=False,
             _popup_attributes="test\ntest1",
             layer_type=Category.objects.create(
