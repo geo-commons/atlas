@@ -121,8 +121,7 @@ class Layer(models.Model):
 
     url = models.CharField(
         'URL',
-        max_length=500,
-        default='https://datalab.purmerend.nl/geoserver/topp/wms?')
+        max_length=500)
 
     server_type = models.CharField(
         'Servertype', max_length=50, default='geoserver')
@@ -318,8 +317,7 @@ class LinkedData(models.Model):
 
     title = models.CharField(_('Titel'), max_length=128, null=True)
     layer_name = models.CharField(_('Laag naam'), max_length=128)
-    url = models.CharField(_('URL'), max_length=500,
-                           default='https://datalab.purmerend.nl/geoserver/topp/wms?')
+    url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
     popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,

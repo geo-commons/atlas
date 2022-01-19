@@ -7,7 +7,7 @@ from .models import Category, Layer, AtlasTheme, LinkedData, Viewer
 class LinkedDataInline(admin.TabularInline):
     form = LinkedDataForm
     model = LinkedData
-    extra = 1
+    extra = 0
 
 
 class LayerAdmin(admin.ModelAdmin):
