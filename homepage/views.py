@@ -173,13 +173,14 @@ def autocomplete_search(request):
 @xframe_options_exempt
 def embed(request):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context = {
         'data': {
             'is_embed': True,
             'config': _get_config(request),
             'user': _get_user(request),
-            'layers': _default_layers() + [ layer.to_dict() for layer in authorized_layers ]
+            'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
         }
     }
 
