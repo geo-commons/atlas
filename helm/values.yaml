@@ -48,7 +48,7 @@ oidcTokenEndpoint: http://localhost:6556/token
 oidcUserEndpoint: http://localhost:6556/userinfo
 oidcJwksEndpoint: http://localhost:6556/keys
 oidcUsernameClaim: sub
-oidcActivateOnCreate: false
+oidcActivateOnCreate: true
 
 imagePullSecrets: []
 nameOverride: ""
