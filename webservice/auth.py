@@ -13,6 +13,8 @@ class AtlasOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             user.is_active = False
             user.save()
 
+        return user
+
     def update_user(self, user, claims):
         user.first_name = claims.get('name')
         user.email = claims.get('email')
