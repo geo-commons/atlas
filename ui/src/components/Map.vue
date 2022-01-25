@@ -27,6 +27,7 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import TileLayer from 'ol/layer/Tile'
 import TileWMS from 'ol/source/TileWMS'
+import XYZ from 'ol/source/XYZ'
 import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import WMTSSource, { optionsFromCapabilities } from 'ol/source/WMTS'
@@ -158,6 +159,18 @@ export default {
                                     resolutions,
                                     matrixIds,
                                 }),
+                            }),
+                        })
+                    } else if (layer.source_type === 'XYZ') {
+                        tileLayer = new TileLayer({
+                            id: layer.id,
+                            visible: layer.is_visible === true,
+                            layerName: layer.name,
+                            opacity: layer.opacity,
+                            source: new XYZ({
+                                projection:
+                                    layer.projection === 'EPSG:28992' ? rdProjection : 'EPSG:3857',
+                                url: layer.url,
                             }),
                         })
                     } else if (layer.source_type === 'WFS') {
