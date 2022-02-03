@@ -245,7 +245,18 @@ def v3_admin(request):
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
 
-    return render(request, 'v3/admin.html')
+    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
+
+    context = {
+        'data':  {
+            'config': _get_config(request),
+            'user': _get_user(request),
+            'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
+        }
+    }
+
+    return render(request, 'v3/admin.html', context)
 
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:

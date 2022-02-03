@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <div class="buttons">
             <router-link to="/maps" class="large-button"
                 ><svg
@@ -57,6 +57,9 @@ export default {
 </script>
 
 <style scoped>
+.container {
+    padding: 14px 32px;
+}
 .buttons {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
