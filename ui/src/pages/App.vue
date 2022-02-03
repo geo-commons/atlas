@@ -150,7 +150,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import { getArea, getLength } from 'ol/sphere'
 import { isMobile } from '../utils/helpers'
 import Alert from '../components/Alert'
 import BaseLayersPanel from '../components/BaseLayersPanel'

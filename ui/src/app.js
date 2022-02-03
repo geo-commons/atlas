@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         config: data.config,
         position: settings.position,
         layers,
+        themes: data.themes,
         tool: '',
         user: data.user,
         selectedArea: null,

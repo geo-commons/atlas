@@ -17,7 +17,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 
 from utils.tools import is_ctrix
-from webservice.models import Layer
+from webservice.models import Layer, Theme
 
 from .forms import UploadDatasetForm
 from .lib import get_help_content
@@ -36,6 +36,7 @@ class HomePageView(TemplateView):
 
         context = super().get_context_data(**kwargs)
         context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request)).filter(~Q(not_in_atlas=True))
+
         context['data'] = {
             'config': _get_config(self.request),
             'user': _get_user(self.request),
@@ -188,6 +189,7 @@ def embed(request):
 
 def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    themes = Theme.objects.all()
 
     context = {}
 
@@ -202,7 +204,8 @@ def v3(request, theme_slug=''):
         'is_embed': False,
         'config': _get_config(request),
         'user': _get_user(request),
-        'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
+        'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ],
+        'themes': [ theme.to_dict() for theme in themes ]
     }
 
     return render(request, 'v3/app.html', context)
@@ -308,6 +311,7 @@ def _get_config(request):
             }
         },
         'suggest_municipalities': config.SUGGEST_MUNICIPALITIES,
+        'feature_show_themes': config.FEATURE_SHOW_THEMES,
         'show_disclaimer': config.DISCLAIMER != '',
         'viewers': [ viewer.to_dict() for viewer in Viewer.visible.for_request(request) ],
     }

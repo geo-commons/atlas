@@ -38,12 +38,19 @@
                     </div>
                 </template>
             </Search>
+            <Themes
+                v-if="this.config.feature_show_themes && !this.isEmbed && this.showThemes"
+                @close-themes="this.closeThemes"
+            />
         </div>
     </transition>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import Search from './Search'
+import Themes from './Themes'
 
 const suggestEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest'
 const freeEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/free'
@@ -52,10 +59,12 @@ export default {
     name: 'SearchPanel',
     components: {
         Search,
+        Themes,
     },
     data() {
         return {
             showSuggestions: false,
+            showThemes: true,
             results: [],
         }
     },
@@ -68,6 +77,10 @@ export default {
                 this.$store.commit('setSearchQuery', value)
             },
         },
+        ...mapState({
+            isEmbed: (state) => state.isEmbed,
+            config: (state) => state.config,
+        }),
     },
     props: {
         position: Object,
@@ -135,6 +148,9 @@ export default {
                     'Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.'
                 )
             }
+        },
+        closeThemes() {
+            this.showThemes = false
         },
     },
 }

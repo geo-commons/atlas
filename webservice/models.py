@@ -397,6 +397,13 @@ class Theme(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'icon': self.icon.url if self.icon else None
+        }
+
 
 class ViewerVisibleManager(models.Manager):
     def for_request(self, request):

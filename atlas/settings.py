@@ -226,19 +226,23 @@ CONSTANCE_CONFIG = {
     'POSITION_CENTER_X': (126910, 'Het centrum X-coordinaat van de opstartpositie'),
     'POSITION_CENTER_Y': (505834, 'Het centrum Y-coordinaat van de opstartpositie'),
     'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
-    'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico'))
+    'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico')),
+    'FEATURE_SHOW_THEMES': (False, 'Toon overzicht met thema\'s op startpagina')
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
     '1. Organisatie': (
         'ORGANIZATION_NAME',
         'FAVICON_URL',
-        'DISCLAIMER'
+        'DISCLAIMER',
     ),
     '2. Kaartconfiguratie': (
         'POSITION_CENTER_X',
         'POSITION_CENTER_Y',
         'POSITION_ZOOM',
         'SUGGEST_MUNICIPALITIES'
+    ),
+    '3. Feature flags': (
+        'FEATURE_SHOW_THEMES',
     )
 }
