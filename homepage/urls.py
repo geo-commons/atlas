@@ -1,7 +1,9 @@
 from django.contrib.auth import views as auth_views
-from django.urls import path, re_path
+from django.urls import path, re_path, include
+from rest_framework import routers
 from homepage import views
 from webservice.views import AtlasThemeDetailView
+from webservice import viewsets
 
 app_name = 'homepage'
 
@@ -16,6 +18,9 @@ urlpatterns = [
     path('v2/<slug:slug>', AtlasThemeDetailView.as_view(), name='atlastheme-detail'),
 ]
 
+router = routers.DefaultRouter()
+router.register(r'maps', viewsets.AtlasThemeViewSet, basename='maps')
+
 urlpatterns += [
     path('help', views.v3_help, name='v3_help'),
     path('disclaimer', views.v3_disclaimer, name='v3_disclaimer'),
@@ -24,6 +29,7 @@ urlpatterns += [
     path('logout', auth_views.LogoutView.as_view(template_name='v3/logout.html'), name='v3_logout'),
     path('admin2/', views.v3_admin, name='v3_admin'),
     path('api/v1/token', views.v3_token, name='v3_token'),
+    path('api/v1/', include(router.urls)),
     re_path('embed', views.embed, name='embed'),
     re_path(r'((?P<theme_slug>[a-z0-9\-]+)?)', views.v3, name='v3'),
 ]

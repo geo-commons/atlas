@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'atlas.apps.CustomConstance',
     'constance.backends.database',
     'mozilla_django_oidc',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -101,6 +102,12 @@ if AUTHENTICATION_ENABLE_OIDC:
     ]
 
 ROOT_URLCONF = 'atlas.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 TEMPLATES = [
     {

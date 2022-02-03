@@ -1,10 +1,10 @@
 <template>
-    <div class="container">Kan deze pagina niet vinden</div>
+    <div class="container">Gebruikers</div>
 </template>
 
 <script>
 export default {
-    name: 'NotFoundPage',
+    name: 'UserList',
 }
 </script>
 

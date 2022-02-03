@@ -3,18 +3,23 @@ import 'es6-promise/auto'
 import 'whatwg-fetch'
 
 import Vue from 'vue'
+import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import VueTippy, { TippyComponent } from 'vue-tippy'
 
+import { createStore } from './store'
+import { getSettingsFromPath } from './utils/router'
 import App from './admin/App'
 import Dashboard from './admin/pages/Dashboard'
-import Maps from './admin/pages/Maps'
-import Sources from './admin/pages/Sources'
-import Users from './admin/pages/Users'
+import MapList from './admin/pages/MapList'
+import MapCreate from './admin/pages/MapCreate/MapCreate'
+import SourceList from './admin/pages/SourceList'
+import UserList from './admin/pages/UserList'
 import NotFound from './admin/pages/NotFound'
 
 Vue.config.productionTip = false
 
+Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(VueTippy, {
     directive: 'tippy',
@@ -31,10 +36,11 @@ Vue.use(VueTippy, {
 Vue.component('tippy', TippyComponent)
 
 const routes = [
-    { path: '/', component: Dashboard, meta: { title: 'Dashboard' } },
-    { path: '/maps', component: Maps, meta: { title: 'Kaarten' } },
-    { path: '/sources', component: Sources, meta: { title: 'Bronnen' } },
-    { path: '/users', component: Users, meta: { title: 'Gebruikers' } },
+    { path: '/', component: Dashboard, meta: { title: 'Dashboard', menu: true } },
+    { path: '/maps', component: MapList, meta: { title: 'Kaarten', menu: true } },
+    { path: '/maps/create', component: MapCreate, meta: { title: 'Kaarten', menu: false } },
+    { path: '/sources', component: SourceList, meta: { title: 'Bronnen', menu: true } },
+    { path: '/users', component: UserList, meta: { title: 'Gebruikers', menu: true } },
     { path: '*', component: NotFound },
 ]
 
@@ -49,8 +55,31 @@ document.addEventListener('DOMContentLoaded', () => {
         return
     }
 
+    const data = JSON.parse(document.querySelector('#app-data').innerHTML)
+    const settings = getSettingsFromPath(data.config)
+
+    const layers = data.layers.map((layer) =>
+        settings.visibleLayers && settings.visibleLayers.includes(layer.id)
+            ? { ...layer, is_visible: true }
+            : layer
+    )
+
+    const initialState = {
+        isEmbed: data.is_embed,
+        config: data.config,
+        position: settings.position,
+        layers,
+        tool: '',
+        selectedArea: null,
+        searchQuery: '',
+        alert: '',
+    }
+
+    const store = createStore(initialState)
+
     new Vue({
         router,
+        store,
         el: '#app',
         render: (c) => c(App),
     })

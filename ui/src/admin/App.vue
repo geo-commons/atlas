@@ -1,21 +1,17 @@
 <template>
     <div class="app">
-        <Header />
-        <Content>
-            <router-view></router-view>
-        </Content>
+        <Menu v-if="this.$route.meta.menu" />
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-import Header from './components/Header.vue'
-import Content from './components/Content.vue'
+import Menu from './components/Menu.vue'
 
 export default {
     name: 'App',
     components: {
-        Header,
-        Content,
+        Menu,
     },
 }
 </script>
@@ -135,10 +131,6 @@ svg {
     flex-shrink: 0;
 }
 
-.container {
-    padding: 0 32px;
-}
-
 .iconbutton {
     color: black;
     flex-shrink: 0;
@@ -194,5 +186,7 @@ svg {
 .app {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
 }
 </style>

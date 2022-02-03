@@ -1,5 +1,5 @@
 <template>
-    <div class="header container">
+    <div class="header">
         <div class="nav">
             <router-link to="/">
                 <svg
@@ -57,12 +57,13 @@
 
 <script>
 export default {
-    name: 'Header',
+    name: 'Menu',
 }
 </script>
 
 <style scoped>
 .header {
+    padding: 0 32px;
     height: 56px;
     display: flex;
     align-items: stretch;
