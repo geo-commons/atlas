@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.generic.base import RedirectView
+from django.views.static import serve
 from django.conf import settings
 
 admin.site.site_header = 'Atlas beheer'
@@ -34,6 +35,13 @@ if settings.AUTHENTICATION_ENABLE_CREDENTIALS:
 if settings.AUTHENTICATION_ENABLE_OIDC:
     urlpatterns += [
         path('atlas/oidc/', include('mozilla_django_oidc.urls'))
+    ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^atlas/media/(?P<path>.*)$', serve, {
+            'document_root': settings.MEDIA_ROOT,
+        }),
     ]
 
 urlpatterns += [

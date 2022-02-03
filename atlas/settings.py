@@ -181,6 +181,9 @@ AUTH_USER_MODEL = 'user_management.AtlasUser'
 STATIC_URL = '/atlas/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+MEDIA_URL = '/atlas/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATS_FILE = os.path.join(BASE_DIR, 'ui', 'webpack-stats.json')

@@ -4,7 +4,7 @@ from django.views.generic.list import ListView
 
 from utils.tools import is_ctrix
 
-from .models import AtlasTheme, Category, Layer
+from .models import Map, Category, Layer
 
 
 class CategoryDetailView(TemplateView):
@@ -33,10 +33,10 @@ class LayerDetailView(TemplateView):
         return context
 
 
-class AtlasThemeDetailView(DetailView):
+class MapDetailView(DetailView):
     template_name = "main_content.html"
 
-    model = AtlasTheme
+    model = Map
 
     def get_context_data(self, **kwargs):
         user = self.request.user

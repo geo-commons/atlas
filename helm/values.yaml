@@ -54,7 +54,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-podSecurityContext: {}
+podSecurityContext:
+  fsGroup: 33
 
 securityContext: {}
 
@@ -80,6 +81,14 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+persistence:
+  media:
+    enabled: true
+    size: 1Gi
+    existingClaim: null
+    accessModes:
+      - ReadWriteOnce
 
 #########################
 ## PostgreSQL subchart ##

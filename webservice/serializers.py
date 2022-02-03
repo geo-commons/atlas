@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from .models import AtlasTheme
+from .models import Map
 
-class AtlasThemeSerializer(serializers.ModelSerializer):
+class MapSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AtlasTheme
+        model = Map
         fields = ['title', 'slug']

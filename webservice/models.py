@@ -1,3 +1,5 @@
+from os import path
+from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -343,18 +345,40 @@ class LinkedData(models.Model):
         }
 
 
-class AtlasTheme(models.Model):
+class Map(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=False, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar het thema.')
-    layers = models.ManyToManyField(Layer)
+                         help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.')
+    layers = models.ManyToManyField(Layer, verbose_name='Lagen')
 
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'
 
     class Meta:
+        verbose_name = 'Kaart'
+        verbose_name_plural = 'Kaarten'
+
+    def __str__(self):
+        return f"{self.title}"
+
+
+def validate_file_extension(value):
+    ext = path.splitext(value.name)[1]  # [0] returns path+filename
+    valid_extensions = ['.svg']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError('Unsupported file extension.')
+
+class Theme(models.Model):
+    title = models.CharField('Titel', max_length=128, null=True)
+    icon = models.FileField(upload_to='theme_icons/', blank=True, validators=[validate_file_extension])
+    layers = models.ManyToManyField(Layer, verbose_name='Lagen')
+    ordering = models.PositiveIntegerField('Sortering',
+                                           default=0, editable=True, db_index=True)
+
+    class Meta:
         verbose_name = 'Thema'
         verbose_name_plural = "Thema's"
+        ordering = ['ordering', 'title']
 
     def __str__(self):
         return f"{self.title}"
