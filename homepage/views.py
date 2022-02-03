@@ -22,7 +22,7 @@ from webservice.models import Layer
 from .forms import UploadDatasetForm
 from .lib import get_help_content
 from .models import SavedDataset
-from webservice.models import AtlasTheme, Viewer
+from webservice.models import Map, Viewer
 
 
 logger = logging.getLogger(__name__)
@@ -192,8 +192,8 @@ def v3(request, theme_slug=''):
     context = {}
 
     if theme_slug:
-        theme = get_object_or_404(AtlasTheme, slug=theme_slug)
-        visible_layers = authorized_layers.filter(atlastheme=theme)
+        theme = get_object_or_404(Map, slug=theme_slug)
+        visible_layers = authorized_layers.filter(map=theme)
         context['title'] = theme.title
     else:
         visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))

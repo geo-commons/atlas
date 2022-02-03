@@ -12,7 +12,7 @@
 * [WEBSERVICE](#webservice)
      * [Categorieën](#categorieën)
      * [Kaartlagen](#kaartlagen)
-     * [Thema](#thema)
+     * [Kaarten](#kaarten)
 * [HOMEPAGE](#homepage)
      * [Saved_datasets](#saved_datasets)
 * [AUTHENTICATIE EN AUTORISATIE](#authenticatie-en-autorisatie)
@@ -77,13 +77,13 @@ In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er
 
 <img src="/uploads/a8d17641ad4383eff163ec9121619711/webservice-beheer.png" alt="Webservice beheer" width="600"/>
 
-Binnen webservice kunnen Categorieën, kaartlagen en thema's worden toegevoegd.
-* Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. 
+Binnen webservice kunnen Categorieën, kaartlagen en kaarten worden toegevoegd.
+* Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond.
 Het aanmaken en toekennen van categorieën helpt bij het geordend houden van de legenda.
-* Kaartlagen zijn de datasets die binnen Atlas ontsloten worden. 
-Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere thema's. 
-* Thema's zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan. 
-Bij het aanmaken van een thema wordt een nieuwe url gecreëerd, waar een aparte instantie van Atlas wordt getoond met een beperkter aantal kaartlagen en beperktere functionaliteit.
+* Kaartlagen zijn de datasets die binnen Atlas ontsloten worden.
+Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere kaarten.
+* Kaarten zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan.
+Bij het aanmaken van een kaart wordt een nieuwe url gecreëerd, waar een aparte instantie van Atlas wordt getoond met een beperkter aantal kaartlagen en beperktere functionaliteit.
 
 ##### Categorieën
 Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het openklikken van een hoofdonderwerp/categorie
@@ -143,10 +143,10 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * [Naar boven](#inhoud)
 ***
 
-##### Thema
-Thema's zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om van een thema samen te stellen worden kaartlagen geselecteerd die bij dat thema horen. 
+##### Kaarten
+Kaarten zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om van een kaarten samen te stellen worden kaartlagen geselecteerd die bij die kaart horen. 
 
-Een thema verschijnt niet in het Atlas scherm. Bij het aanmaken van een thema wordt als het ware een aparte instantie van Atlas gecreëerd met een beperkter aantal kaartlagen en beperktere functionaliteit. Wanneer bijvoorbeeld een thema 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om dit thema op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
+Een kaart verschijnt niet in het Atlas scherm. Bij het aanmaken van een kaart wordt als het ware een aparte instantie van Atlas gecreëerd met een beperkter aantal kaartlagen en beperktere functionaliteit. Wanneer bijvoorbeeld een kaart 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om de kaart op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
 
 <img src="/uploads/822f1c6ac667ca0182b37874c68b322b/hondenbeleid.png" alt="hondenbeleid" width="500"/>
 

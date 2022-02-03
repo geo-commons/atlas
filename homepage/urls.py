@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, re_path, include
 from rest_framework import routers
 from homepage import views
-from webservice.views import AtlasThemeDetailView
+from webservice.views import MapDetailView
 from webservice import viewsets
 
 app_name = 'homepage'
@@ -15,11 +15,11 @@ urlpatterns = [
     path('v2/downloads/<int:pk>/<str:type_>', views.save_dataset_view, name='save_dataset_view'),
     path('v2/search_wfs', views.search_wfs, name='search_wfs'),
     path('v2/autocomplete_search', views.autocomplete_search, name='autocomplete_search'),
-    path('v2/<slug:slug>', AtlasThemeDetailView.as_view(), name='atlastheme-detail'),
+    path('v2/<slug:slug>', MapDetailView.as_view(), name='map-detail'),
 ]
 
 router = routers.DefaultRouter()
-router.register(r'maps', viewsets.AtlasThemeViewSet, basename='maps')
+router.register(r'maps', viewsets.MapViewSet, basename='maps')
 
 urlpatterns += [
     path('help', views.v3_help, name='v3_help'),
