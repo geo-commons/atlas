@@ -66,6 +66,18 @@ class Category(models.Model):
         ordering = ['ordering', 'title']
 
 
+class Source(models.Model):
+    title = models.CharField('Titel', max_length=128, null=True)
+    url = models.URLField()
+
+    class Meta:
+        verbose_name = 'Bron'
+        verbose_name_plural = 'Bronnen'
+
+    def __str__(self):
+        return f"{self.title}"
+
+
 class Layer(models.Model):
     SOURCE_WMS_WFS = 'WMS_WFS'
     SOURCE_WMS = 'WMS'
@@ -91,6 +103,8 @@ class Layer(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     layer_name = models.CharField(
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
+
+    layer_source = models.ForeignKey('Source', verbose_name='Bron', on_delete=models.SET_NULL, null=True)
 
     meta_name = models.CharField('Naam', max_length=128, null=True,)
     meta_kind = models.CharField('Soort', max_length=128, null=True,
@@ -122,10 +136,6 @@ class Layer(models.Model):
 
     projection = models.CharField(
         'Projectie', max_length=100, default='EPSG:28992')
-
-    url = models.CharField(
-        'URL',
-        max_length=500)
 
     server_type = models.CharField(
         'Servertype', max_length=50, default='geoserver')
@@ -277,6 +287,10 @@ source: new ol.source.TileWMS({{
             return value
 
         return None
+
+    @property
+    def url(self):
+        return self.layer_source.url if self.layer_source else ''
 
     def to_dict(self):
         return {

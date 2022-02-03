@@ -1,8 +1,11 @@
 from django.contrib import admin
 
 from .forms import LayerForm, LinkedDataForm
-from .models import Category, Theme, Layer, Map, LinkedData, Viewer
+from .models import Source, Category, Theme, Layer, Map, LinkedData, Viewer
 
+
+class SourceAdmin(admin.ModelAdmin):
+    list_display = ('title',)
 
 class LinkedDataInline(admin.TabularInline):
     form = LinkedDataForm
@@ -30,7 +33,7 @@ class LayerAdmin(admin.ModelAdmin):
             'fields': ('title', 'layer_id', 'layer_type', 'published')
         }),
         ('Bron', {
-            'fields': ('layer_name', 'url', 'source_type', 'projection', 'server_type')
+            'fields': ('layer_source', 'layer_name', 'source_type', 'projection', 'server_type')
         }),
         ('Weergave', {
             'fields': (
@@ -93,6 +96,7 @@ class ViewerAdmin(admin.ModelAdmin):
     list_editable = ('ordering',)
 
 
+admin.site.register(Source, SourceAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Theme, ThemeAdmin)
