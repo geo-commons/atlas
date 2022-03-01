@@ -117,7 +117,12 @@ export default {
             })
 
             const view = new View()
-            return wmsSource.getLegendUrl(view.getResolution())
+
+            const params = {
+                LEGEND_OPTIONS: 'forceTitles:off',
+            }
+
+            return wmsSource.getLegendUrl(view.getResolution(), params)
         },
     },
     methods: {
