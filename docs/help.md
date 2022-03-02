@@ -57,7 +57,7 @@ Om in te zoomen op een gebied is het ook mogelijk om shift in te drukken, en een
 
 Met deze knop kan het menu worden geopend waarin de gewenste achtergrondkaart ingesteld kan worden.
 
-![image3](https://gitlab.com/purmerend/atlas/uploads/66b302b389237e4e6ad9992f7450828d/image3.png)
+![achtergrondkaartkeuze](https://gitlab.com/purmerend/atlas/uploads/1b7d5caded2865395439a3bd9f81445d/achtergrondkaartkeuze.png)
 
 ***
 * [Naar boven](#)
@@ -117,8 +117,12 @@ Via het zoekveld van het kaartlagenvenster kun je zoeken naar kaartlagen. Wannee
 ## Legenda
 
 In de lijstweergave van zichtbare lagen ![icoonzichtbarelagen](https://gitlab.com/purmerend/atlas/uploads/3e3bb2a406c326bad81f2ed50320cf3e/icoonzichtbarelagen.png) kan de legenda van de zichtbare lagen geraadpleegd worden. Klik op de titel van de laag om daarvan de legenda te tonen.
+Klik op de video ""Legenda tonen" om de handelingen te zien.
 
 ![legenda](https://gitlab.com/purmerend/atlas/uploads/32800a30bce3c5e2f03831fb6d086d51/legenda.png)
+
+
+[![Toon de legenda](https://gitlab.com/purmerend/atlas/uploads/01591d6a7bcde321ea9e00c17ac0d89f/uitleglegenda.jpg)](https://gitlab.com/purmerend/atlas/uploads/a788408d3403ef39e77b7dd203b016de/uitleglegenda.mp4 "Toon de legenda")
 
 ***
 * [Naar boven](#)
