@@ -47,6 +47,7 @@
                 :query="query"
                 :user="user"
                 @set-position="setPosition"
+                @on-fit="onFit"
             />
         </template>
     </SidePanel>
@@ -75,6 +76,9 @@ export default {
         },
         setPosition(value) {
             this.$emit('set-position', value)
+        },
+        onFit(value) {
+            this.$emit('on-fit', value)
         },
     },
     computed: {
