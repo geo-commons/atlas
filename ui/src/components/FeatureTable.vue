@@ -290,9 +290,9 @@ export default {
             this.$emit('set-position', {
                 ...this.position,
                 marker: center,
-                center: center,
-                zoom: 18,
             })
+
+            this.$emit('on-fit', geometry.getExtent())
         },
         getFetchParameters() {
             if (this.user && this.user.token) {
