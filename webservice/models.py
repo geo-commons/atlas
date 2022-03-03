@@ -115,7 +115,7 @@ class Layer(models.Model):
         'Laatst bijgewerkt', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
 
     opacity = models.DecimalField(
-        'Ondoorzichtigheid', max_digits=1, decimal_places=1, default=0.9)
+        'Dekking', max_digits=1, decimal_places=1, default=0.9)
     visible = models.BooleanField('Zichtbaar', default=False)
 
     style = models.JSONField(
