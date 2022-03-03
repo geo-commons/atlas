@@ -73,5 +73,6 @@ export default {
 .street-smart {
     width: 100%;
     height: 100%;
+    padding-top: 32px; /* make sure buttons of Atlas do not overlap buttons of StreetSmart */
 }
 </style>
