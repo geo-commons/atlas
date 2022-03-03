@@ -1,5 +1,6 @@
 <template>
     <div>
+        <span v-if="this.valueType === 'NULL'">-</span>
         <markdown v-if="this.valueType === 'STRING'" :source="dataValue" />
         <a v-if="this.valueType === 'URL'" :href="dataValue" target="_blank" rel="noopener">{{
             dataValue.length >= 75
@@ -29,6 +30,10 @@ export default {
     },
     computed: {
         valueType() {
+            if (this.dataValue === null) {
+                return 'NULL'
+            }
+
             if (typeof this.dataValue !== 'string') {
                 return 'STRING'
             }
