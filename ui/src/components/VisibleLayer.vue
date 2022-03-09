@@ -12,7 +12,7 @@
                         min="0"
                         max="100"
                         step="10"
-                        :aria-label="`Dekking van laag ${layer.title} instellen`"
+                        :aria-label="`Transparantie van laag ${layer.title} instellen`"
                         :value="layer.opacity * 100"
                         @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
                     />
@@ -20,8 +20,8 @@
                         class="iconbutton"
                         :class="{ isActive: showSlider }"
                         v-tippy
-                        content="Dekking"
-                        aria-label="Toon dekking schuifregelaar"
+                        content="Transparantie"
+                        aria-label="Toon transparantie schuifregelaar"
                         @click="toggleSlider"
                     >
                         <svg
@@ -42,7 +42,7 @@
                         type="number"
                         :name="`${layer.id}-opacity`"
                         :id="`${layer.id}-opacity`"
-                        :aria-label="`Dekking van laag ${layer.title} instellen`"
+                        :aria-label="`Transparantie van laag ${layer.title} instellen`"
                         min="0"
                         max="100"
                         step="10"
