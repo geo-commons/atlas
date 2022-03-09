@@ -1,6 +1,8 @@
 <template>
     <div>
         <span v-if="this.valueType === 'NULL'">-</span>
+        <span v-if="this.valueType === 'NUMBER'">{{ dataValue }}</span>
+        <span v-if="this.valueType === 'UNKNOWN'">{{ dataValue }}</span>
         <markdown v-if="this.valueType === 'STRING'" :source="dataValue" />
         <a v-if="this.valueType === 'URL'" :href="dataValue" target="_blank" rel="noopener">{{
             dataValue.length >= 75
@@ -34,8 +36,12 @@ export default {
                 return 'NULL'
             }
 
+            if (typeof this.dataValue === 'number') {
+                return 'NUMBER'
+            }
+
             if (typeof this.dataValue !== 'string') {
-                return 'STRING'
+                return 'UNKNOWN'
             }
 
             if (this.dataValue.match(imageRegex)) {
