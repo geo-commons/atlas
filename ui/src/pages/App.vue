@@ -27,7 +27,7 @@
         </div>
 
         <PointInfoPanel
-            v-if="!this.isEmbed && !this.showPanoramaPanel"
+            v-if="!this.showPanoramaPanel"
             :layers="this.layers"
             :position="this.position"
             :showInfoPanel="!showDataPanel && showInfoPanel"
@@ -70,7 +70,8 @@
             </div>
             <div class="bottom-left-panels">
                 <LayersPanel
-                    v-if="!this.isEmbed && !this.showPanoramaPanel"
+                    v-if="!this.showPanoramaPanel"
+                    :isEmbed="this.isEmbed"
                     :layers="this.layers"
                     :position="this.position"
                     :user="this.user"
