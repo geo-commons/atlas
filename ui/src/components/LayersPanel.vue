@@ -5,10 +5,11 @@
                 class="buttons"
                 :class="{
                     isOpen: this.panel === 'layers' || this.panel === 'activeLayers',
-                    showVisibleLayers: visibleLayers.length > 0,
+                    showSecondButton: !this.isEmbed && visibleLayers.length > 0,
                 }"
             >
                 <button
+                    v-if="!this.isEmbed"
                     class="iconbutton"
                     :class="{ isActive: this.panel === 'layers' }"
                     @click="() => togglePanel('layers')"
@@ -33,6 +34,7 @@
                 </button>
 
                 <button
+                    v-if="visibleLayers.length > 0"
                     class="iconbutton"
                     :tabindex="visibleLayers.length > 0 ? 0 : -1"
                     :class="{ isActive: this.panel === 'activeLayers' }"
@@ -59,7 +61,10 @@
             </div>
 
             <transition name="fade">
-                <div class="counter visible-layer-counter" v-if="visibleLayers.length > 0">
+                <div
+                    class="counter visible-layer-counter"
+                    v-if="!this.isEmbed && visibleLayers.length > 0"
+                >
                     {{ visibleLayers.length }}
                 </div>
             </transition>
@@ -158,6 +163,8 @@
                     v-for="layer in visibleLayers"
                     v-bind:key="layer.id"
                     :layer="layer"
+                    :layerIsClosable="!isEmbed"
+                    :layerOpacityIsChangable="!isEmbed"
                     @set-layer-opacity="setLayerOpacity"
                     @toggle-layer="onSelectLayer"
                 />
@@ -263,6 +270,7 @@ export default {
         layers: Array,
         position: Object,
         user: Object,
+        isEmbed: Boolean,
     },
 }
 </script>
@@ -287,7 +295,7 @@ export default {
     border-top-right-radius: 0;
 }
 
-.buttons.showVisibleLayers {
+.buttons.showSecondButton {
     width: calc(var(--width-button-large) * 2 + 1px);
 }
 

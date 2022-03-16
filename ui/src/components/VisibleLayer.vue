@@ -3,53 +3,59 @@
         <ExpandButton :title="layer.title">
             <template v-slot:header>
                 <div class="buttons">
-                    <input
-                        v-if="showSlider"
-                        class="opacity-slider"
-                        type="range"
-                        id="opacity"
-                        name="opacity"
-                        min="0"
-                        max="100"
-                        step="10"
-                        :aria-label="`Transparantie van laag ${layer.title} instellen`"
-                        :value="layer.opacity * 100"
-                        @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
-                    />
-                    <button
-                        class="iconbutton"
-                        :class="{ isActive: showSlider }"
-                        v-tippy
-                        content="Transparantie"
-                        aria-label="Toon transparantie schuifregelaar"
-                        @click="toggleSlider"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            width="24"
+                    <div v-if="layerOpacityIsChangable">
+                        <input
+                            v-if="showSlider"
+                            class="opacity-slider"
+                            type="range"
+                            id="opacity"
+                            name="opacity"
+                            min="0"
+                            max="100"
+                            step="10"
+                            :aria-label="`Transparantie van laag ${layer.title} instellen`"
+                            :value="layer.opacity * 100"
+                            @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
+                        />
+                        <button
+                            class="iconbutton"
+                            :class="{ isActive: showSlider }"
+                            v-tippy
+                            content="Transparantie"
+                            aria-label="Toon transparantie schuifregelaar"
+                            @click="toggleSlider"
                         >
-                            <path d="M24 0H0v24h24V0zm0 0H0v24h24V0zM0 24h24V0H0v24z" fill="none" />
-                            <path
-                                fill="currentColor"
-                                d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                            />
-                        </svg>
-                    </button>
-                    <input
-                        class="opacity-input"
-                        type="number"
-                        :name="`${layer.id}-opacity`"
-                        :id="`${layer.id}-opacity`"
-                        :aria-label="`Transparantie van laag ${layer.title} instellen`"
-                        min="0"
-                        max="100"
-                        step="10"
-                        :value="layer.opacity * 100"
-                        @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
-                    />
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                width="24"
+                            >
+                                <path
+                                    d="M24 0H0v24h24V0zm0 0H0v24h24V0zM0 24h24V0H0v24z"
+                                    fill="none"
+                                />
+                                <path
+                                    fill="currentColor"
+                                    d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                />
+                            </svg>
+                        </button>
+                        <input
+                            class="opacity-input"
+                            type="number"
+                            :name="`${layer.id}-opacity`"
+                            :id="`${layer.id}-opacity`"
+                            :aria-label="`Transparantie van laag ${layer.title} instellen`"
+                            min="0"
+                            max="100"
+                            step="10"
+                            :value="layer.opacity * 100"
+                            @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
+                        />
+                    </div>
                     <button
+                        v-if="layerIsClosable"
                         class="iconbutton"
                         v-tippy="{ placement: 'right' }"
                         content="Sluit"
@@ -99,6 +105,8 @@ export default {
     },
     props: {
         layer: Object,
+        layerIsClosable: Boolean,
+        layerOpacityIsChangable: Boolean,
     },
     data() {
         return {
