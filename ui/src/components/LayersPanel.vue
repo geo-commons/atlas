@@ -325,31 +325,6 @@ export default {
     box-shadow: var(--shadow-normal);
 }
 
-@media (max-width: 575px) {
-    .showInfoPanel .layers,
-    .showInfoPanel .visible-layers,
-    .showDataPanel .layers,
-    .showDataPanel .visible-layers {
-        max-height: calc(
-            (60 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3))
-        );
-    }
-}
-
-@media (min-width: 576px) {
-    .showInfoPanel .layers,
-    .showInfoPanel .visible-layers {
-        max-width: calc(
-            100vw - (var(--padding-screen) * 3) - var(--width-button-normal) - var(--width-detail)
-        );
-    }
-
-    .showDataPanel .layers,
-    .showDataPanel .visible-layers {
-        max-width: calc(50vw - (var(--padding-screen) * 3) - var(--width-button-normal));
-    }
-}
-
 .layers-search {
     width: 100%;
     display: flex;

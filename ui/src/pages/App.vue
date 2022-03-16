@@ -4,12 +4,28 @@
         :style="computedStyle"
         :class="{ showInfoPanel: showInfoPanel, showDataPanel }"
     >
-        <SearchPanel
-            v-if="!this.showPanoramaPanel"
-            :position="this.position"
-            @set-position="this.setPosition"
-            @toggle-data-panel="this.toggleDataPanel"
-        />
+        <div class="map-container">
+            <PanoramaPanel
+                class="panorama-panel"
+                :position="this.position"
+                :isOpen="showPanoramaPanel"
+                @toggle="togglePanoramaPanel"
+            />
+            <Map
+                v-if="this.readyToRenderMap"
+                ref="map"
+                class="map"
+                :position="this.position"
+                :layers="this.layers"
+                :tool="this.tool"
+                :selectedArea="this.selectedArea"
+                :padding="this.mapPadding"
+                :user="this.user"
+                @set-position="this.setPosition"
+                @tool-used="this.toolUsed"
+            />
+        </div>
+
         <PointInfoPanel
             v-if="!this.isEmbed && !this.showPanoramaPanel"
             :layers="this.layers"
@@ -31,25 +47,12 @@
             @toggle-data-panel="this.toggleDataPanel"
         />
 
-        <div class="map-container">
-            <PanoramaPanel
-                class="panorama-panel"
+        <div class="ui-container">
+            <SearchPanel
+                v-if="!this.showPanoramaPanel"
                 :position="this.position"
-                :isOpen="showPanoramaPanel"
-                @toggle="togglePanoramaPanel"
-            />
-            <Map
-                v-if="this.readyToRenderMap"
-                ref="map"
-                class="map"
-                :position="this.position"
-                :layers="this.layers"
-                :tool="this.tool"
-                :selectedArea="this.selectedArea"
-                :padding="this.mapPadding"
-                :user="this.user"
                 @set-position="this.setPosition"
-                @tool-used="this.toolUsed"
+                @toggle-data-panel="this.toggleDataPanel"
             />
             <div class="top-right-panels">
                 <Tools
@@ -137,6 +140,7 @@
                 <ZoomPanel :position="this.position" @set-position="this.setPosition" />
             </div>
         </div>
+
         <transition name="fade">
             <EmbedModal
                 v-if="modal === 'embed'"
@@ -597,14 +601,39 @@ svg {
 
 <style scoped>
 .container {
+    position: relative;
     width: 100%;
     height: 100%;
     display: flex;
 }
 
-.map-container {
+@media (max-width: 575px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .ui-container {
+        order: -1;
+    }
+}
+
+.ui-container {
     flex-grow: 1;
+    height: 100%;
     position: relative;
+    pointer-events: none;
+}
+
+.ui-container > * {
+    pointer-events: auto;
+}
+
+.map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-flow: column;
 }
@@ -622,24 +651,6 @@ svg {
     position: absolute;
     bottom: var(--padding-screen);
     left: var(--padding-screen);
-}
-
-@media (max-width: 575px) {
-    .showInfoPanel .bottom-left-panels,
-    .showDataPanel .bottom-left-panels,
-    .showInfoPanel .bottom-right-panels,
-    .showDataPanel .bottom-right-panels {
-        bottom: calc((40 * var(--vh)) + var(--padding-screen));
-    }
-}
-
-@media (min-width: 576px) {
-    .showInfoPanel .bottom-left-panels {
-        left: calc(var(--padding-screen) + var(--width-detail));
-    }
-    .showDataPanel .bottom-left-panels {
-        left: calc(var(--padding-screen) + 50%);
-    }
 }
 
 .top-right-panels {

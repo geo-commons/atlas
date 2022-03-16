@@ -71,18 +71,6 @@ export default {
 </script>
 
 <style scoped>
-.open-button {
-    position: fixed;
-    top: var(--padding-screen);
-    z-index: 1;
-    width: 24px;
-    height: var(--width-button-large);
-    background: white;
-    border-top-right-radius: var(--radius-small);
-    border-bottom-right-radius: var(--radius-small);
-    box-shadow: var(--shadow-normal);
-}
-
 h1 {
     font-size: var(--font-size-normal);
 }

@@ -62,7 +62,7 @@ export default {
 <style scoped>
 .wrapper {
     position: absolute;
-    bottom: var(--width-button-normal);
+    bottom: 100%;
     right: 0;
     padding: 8px 12px;
     background: white;

@@ -177,12 +177,6 @@ export default {
     border-left: 1px solid var(--color-grey-50);
 }
 
-.open-button {
-    width: 24px;
-    height: var(--width-button-large);
-    border-left: 1px solid var(--color-grey-50);
-}
-
 .results {
     width: 100%;
     border-top: 1px solid var(--color-grey-50);
