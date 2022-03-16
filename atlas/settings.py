@@ -96,7 +96,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if AUTHENTICATION_ENABLE_OIDC:
+if AUTHENTICATION_ENABLE_OIDC and os.getenv('OIDC_SESSION_REFRESH', 'False') == 'True':
     MIDDLEWARE += [
         'mozilla_django_oidc.middleware.SessionRefresh',
     ]

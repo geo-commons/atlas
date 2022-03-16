@@ -49,6 +49,7 @@ oidcUserEndpoint: http://localhost:6556/userinfo
 oidcJwksEndpoint: http://localhost:6556/keys
 oidcUsernameClaim: sub
 oidcActivateOnCreate: true
+oidcSessionRefresh: false
 
 imagePullSecrets: []
 nameOverride: ""
