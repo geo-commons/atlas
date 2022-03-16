@@ -1,45 +1,43 @@
 <template>
-    <transition name="fade">
-        <div class="wrapper">
-            <Search
-                :showSuggestions="showSuggestions"
-                @show-data-panel="toggleDataPanel"
-                @on-submit="onSearch"
-            >
-                <template v-slot:default>
-                    <input
-                        v-model="query"
-                        @keyup="onSearch"
-                        type="search"
-                        name="search"
-                        placeholder="Zoek adres"
-                        autocomplete="off"
-                        aria-autocomplete="list"
-                        role="combobox"
-                        aria-owns="search-results"
-                        :aria-expanded="showSuggestions && results.length"
-                    />
-                </template>
+    <div class="wrapper">
+        <Search
+            :showSuggestions="showSuggestions"
+            @show-data-panel="toggleDataPanel"
+            @on-submit="onSearch"
+        >
+            <template v-slot:default>
+                <input
+                    v-model="query"
+                    @keyup="onSearch"
+                    type="search"
+                    name="search"
+                    placeholder="Zoek adres"
+                    autocomplete="off"
+                    aria-autocomplete="list"
+                    role="combobox"
+                    aria-owns="search-results"
+                    :aria-expanded="showSuggestions && results.length"
+                />
+            </template>
 
-                <template v-slot:suggestions>
-                    <div class="results" v-if="showSuggestions && results.length">
-                        <ul class="list" id="search-results" role="listbox">
-                            <li
-                                role="option"
-                                tabindex="-1"
-                                aria-selected="false"
-                                v-for="result in results"
-                                :key="result.id"
-                                @click="(e) => onNavigate(e, result.id)"
-                            >
-                                <a href="#">{{ result.weergavenaam }}</a>
-                            </li>
-                        </ul>
-                    </div>
-                </template>
-            </Search>
-        </div>
-    </transition>
+            <template v-slot:suggestions>
+                <div class="results" v-if="showSuggestions && results.length">
+                    <ul class="list" id="search-results" role="listbox">
+                        <li
+                            role="option"
+                            tabindex="-1"
+                            aria-selected="false"
+                            v-for="result in results"
+                            :key="result.id"
+                            @click="(e) => onNavigate(e, result.id)"
+                        >
+                            <a href="#">{{ result.weergavenaam }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </template>
+        </Search>
+    </div>
 </template>
 
 <script>
@@ -142,12 +140,17 @@ export default {
 
 <style scoped>
 .wrapper {
-    position: fixed;
-    z-index: 1;
+    position: absolute;
     left: 0;
     padding: var(--padding-screen);
     padding-bottom: 0;
     width: var(--width-detail);
     max-width: 100%;
+}
+
+@media (min-width: 576px) {
+    .showDataPanel .wrapper {
+        display: none;
+    }
 }
 </style>

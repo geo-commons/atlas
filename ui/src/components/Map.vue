@@ -1,5 +1,6 @@
 <template>
     <div ref="map" class="map">
+        <!-- Move to ui-container? -->
         <div class="scale" @click="this.toggleScaleType">
             <div
                 ref="scale-line-container"
