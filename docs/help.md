@@ -122,8 +122,8 @@ Klik op de video ""Legenda tonen" om de handelingen te zien.
 
 ![legenda](https://gitlab.com/purmerend/atlas/uploads/32800a30bce3c5e2f03831fb6d086d51/legenda.png)
 
-
-[![Toon de legenda](https://gitlab.com/purmerend/atlas/uploads/8caca608eaf763590fa8123838d80443/uitleglegenda1.jpg)](https://gitlab.com/purmerend/atlas/uploads/67e022e1676fe08e4554d21195a9d692/uitleglegenda1.mp4 "Toon de legenda")
+Klik op de afbeelding voor animatie
+[<img src="/uploads/8caca608eaf763590fa8123838d80443/uitleglegenda1.jpg" alt="Toon de legenda" width="400"/>](https://gitlab.com/purmerend/atlas/uploads/67e022e1676fe08e4554d21195a9d692/uitleglegenda1.mp4 "Toon de legenda")
 
 ***
 * [Naar boven](#)
