@@ -4,19 +4,20 @@
 - [Keuze van de achtergrondkaart](help#toc_4)
 - [GPS-locatie tonen](help#toc_5)
 - [Keuze van de zichtbare kaartlagen](help#toc_6)
-- [Zoek op kaartlaag](help#toc_7)
-- [Legenda](help#toc_8)
-- [Zichtbaarheid transparantie/opacity](help#toc_9)
-- [Zoek adres](help#toc_10)
-- [Details van objecten tonen](help#toc_11)
-- [Gekoppelde gegevens bekijken](help#toc_12)
-- [Objecten selecteren op de kaart binnen een polygoon](help#toc_13)
-- [Rondkijkfoto](help#toc_14)
-- [Meten](help#toc_15)
-- [Zoek op data](help#toc_16)
-- [Printen](help#toc_17)
-- [Huidige kaartscherm embedden in een andere webpagina](help#toc_18)
-- [Huidige kaartscherm delen met een collega](help#toc_19)
+- [Toon metadata van een kaartlaag](help#toc_7)
+- [Zoek op kaartlaag](help#toc_8)
+- [Legenda](help#toc_9)
+- [Zichtbaarheid transparantie/opacity](help#toc_10)
+- [Zoek adres](help#toc_11)
+- [Details van objecten tonen](help#toc_12)
+- [Gekoppelde gegevens bekijken](help#toc_13)
+- [Objecten selecteren op de kaart binnen een polygoon](help#toc_14)
+- [Rondkijkfoto](help#toc_15)
+- [Meten](help#toc_16)
+- [Zoek op data](help#toc_17)
+- [Printen](help#toc_18)
+- [Huidige kaartscherm embedden in een andere webpagina](help#toc_19)
+- [Huidige kaartscherm delen met een collega](help#toc_20)
 
 
 [Versie-informatie](https://gitlab.com/purmerend/atlas/-/releases)
@@ -100,6 +101,17 @@ Een andere manier om een kaartlaag uit te zetten is om in de weergave met alleen
 
 ![knopverberg](https://gitlab.com/purmerend/atlas/uploads/799b7ef01254e69c678302fb37522d32/knopverberg.png)
 ![keuzevandezichtbarekaartlagen3](https://gitlab.com/purmerend/atlas/uploads/42027c1983cd64bde6e366f132dd5dd0/keuzevandezichtbarekaartlagen3.png)
+
+***
+* [Naar boven](#)
+***
+
+## Toon metadata van een kaartlaag
+
+Wanneer met de muis over de verschillende kaartlagen gegaan wordt, dan verschijnt elke keer het ⓘ symbool. Klikken hierop toont de metadata voor die kaartlaag.
+
+<img src="/uploads/0cf3ec8232f103c472025b5f623027d5/toon-metadata.png" alt="Webservice beheer" width="600"/>
+
 
 ***
 * [Naar boven](#)
