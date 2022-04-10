@@ -361,9 +361,10 @@ class LinkedData(models.Model):
 
 class Map(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
-    slug = AutoSlugField('Kort kenmerk', blank=False, populate_from='title', editable=True,
+    slug = AutoSlugField('Kort kenmerk', blank=True, populate_from='title', editable=True,
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.')
     layers = models.ManyToManyField(Layer, verbose_name='Lagen')
+    features = models.JSONField(default=dict, blank=True, verbose_name='Functies')
 
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'
@@ -371,6 +372,7 @@ class Map(models.Model):
     class Meta:
         verbose_name = 'Kaart'
         verbose_name_plural = 'Kaarten'
+        ordering = ['title']
 
     def __str__(self):
         return f"{self.title}"

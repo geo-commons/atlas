@@ -1,5 +1,5 @@
 <template>
-    <div class="header">
+    <div class="header container">
         <div class="nav">
             <router-link to="/">
                 <svg
@@ -63,7 +63,6 @@ export default {
 
 <style scoped>
 .header {
-    padding: 0 32px;
     height: 56px;
     display: flex;
     align-items: stretch;

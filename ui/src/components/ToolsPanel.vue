@@ -2,6 +2,7 @@
     <div class="wrapper">
         <div class="buttons" :class="{ showMeasureMenu }">
             <button
+                v-if="this.features.selectarea"
                 class="iconbutton"
                 :class="{ isActive: tool === 'SELECT_AREA' }"
                 @click="toggleSelectArea"
@@ -19,6 +20,7 @@
             </button>
 
             <button
+                v-if="this.features.measure"
                 class="iconbutton"
                 :class="{ isActive: tool === 'MEASURE_AREA' || tool === 'MEASURE_LINE' }"
                 @click="toggleMeasure"
@@ -63,7 +65,7 @@
 
 <script>
 export default {
-    name: 'Tools',
+    name: 'ToolsPanel',
     data() {
         return {
             showMeasureMenu: false,
@@ -93,6 +95,15 @@ export default {
     },
     props: {
         tool: String,
+        features: {
+            type: Object,
+            default: () => {
+                return {
+                    selectarea: true,
+                    measure: true,
+                }
+            },
+        },
     },
 }
 </script>

@@ -5,4 +5,4 @@ from .models import Map
 class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
-        fields = ['title', 'slug']
+        fields = ['id', 'title', 'slug', 'features']

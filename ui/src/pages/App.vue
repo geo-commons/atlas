@@ -11,7 +11,7 @@
                 :isOpen="showPanoramaPanel"
                 @toggle="togglePanoramaPanel"
             />
-            <Map
+            <OpenLayersRenderer
                 v-if="this.readyToRenderMap"
                 ref="map"
                 class="map"
@@ -55,7 +55,7 @@
                 @toggle-data-panel="this.toggleDataPanel"
             />
             <div class="top-right-panels">
-                <Tools
+                <ToolsPanel
                     v-if="!this.isEmbed && !this.showPanoramaPanel"
                     :tool="this.tool"
                     @set-tool="this.setTool"
@@ -156,15 +156,14 @@
 
 <script>
 import { mapState } from 'vuex'
-import { getArea, getLength } from 'ol/sphere'
 import { isMobile } from '../utils/helpers'
 import Alert from '../components/Alert'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
 import LayersPanel from '../components/LayersPanel'
-import Map from '../components/Map'
-import Tools from '../components/Tools'
+import OpenLayersRenderer from '../components/Map/renderers/OpenLayers'
+import ToolsPanel from '../components/ToolsPanel'
 import MorePanel from '../components/MorePanel'
 import PanoramaPanel from '../components/PanoramaPanel'
 import PointInfoPanel from '../components/PointInfoPanel'
@@ -182,8 +181,8 @@ export default {
         DataPanel,
         EmbedModal,
         LayersPanel,
-        Map,
-        Tools,
+        OpenLayersRenderer,
+        ToolsPanel,
         MorePanel,
         PanoramaPanel,
         PointInfoPanel,
