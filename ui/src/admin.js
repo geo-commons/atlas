@@ -12,7 +12,7 @@ import { getSettingsFromPath } from './utils/router'
 import App from './admin/App'
 import Dashboard from './admin/pages/Dashboard'
 import MapList from './admin/pages/MapList'
-import MapCreate from './admin/pages/MapCreate/MapCreate'
+import MapCreateUpdate from './admin/pages/MapCreateUpdate'
 import SourceList from './admin/pages/SourceList'
 import UserList from './admin/pages/UserList'
 import NotFound from './admin/pages/NotFound'
@@ -38,7 +38,12 @@ Vue.component('tippy', TippyComponent)
 const routes = [
     { path: '/', component: Dashboard, meta: { title: 'Dashboard', menu: true } },
     { path: '/maps', component: MapList, meta: { title: 'Kaarten', menu: true } },
-    { path: '/maps/create', component: MapCreate, meta: { title: 'Kaarten', menu: false } },
+    { path: '/maps/create', component: MapCreateUpdate, meta: { title: 'Kaarten', menu: false } },
+    {
+        path: '/maps/update/:id',
+        component: MapCreateUpdate,
+        meta: { title: 'Kaarten', menu: false },
+    },
     { path: '/sources', component: SourceList, meta: { title: 'Bronnen', menu: true } },
     { path: '/users', component: UserList, meta: { title: 'Gebruikers', menu: true } },
     { path: '*', component: NotFound },

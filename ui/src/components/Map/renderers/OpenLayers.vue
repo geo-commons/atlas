@@ -1,7 +1,11 @@
 <template>
     <div ref="map" class="map">
         <!-- Move to ui-container? -->
-        <div class="scale" @click="this.toggleScaleType">
+        <div
+            class="scale"
+            @click="this.toggleScaleType"
+            :style="{ display: this.features.scale ? 'block' : 'none' }"
+        >
             <div
                 ref="scale-line-container"
                 :style="{ display: this.scaleType === 'LINE' ? 'block' : 'none' }"
@@ -43,10 +47,10 @@ import { bbox as bboxStrategy } from 'ol/loadingstrategy'
 import { getTopLeft } from 'ol/extent.js'
 import { register } from 'ol/proj/proj4'
 
-import { getDefinitions } from '../utils/projections'
-import constructDraw from '../utils/draw'
-import getMarkerIconUrl from '../utils/generate-marker-icon-url'
-import getLocationIconUrl from '../utils/generate-location-icon-url'
+import { getDefinitions } from '../../../utils/projections'
+import constructDraw from '../../../utils/draw'
+import getMarkerIconUrl from '../../../utils/generate-marker-icon-url'
+import getLocationIconUrl from '../../../utils/generate-location-icon-url'
 
 import OpenLayersParser from 'geostyler-openlayers-parser'
 const olParser = new OpenLayersParser()
@@ -73,7 +77,7 @@ for (var i = 0; i < 15; ++i) {
 }
 
 export default {
-    name: 'Map',
+    name: 'OpenLayers',
     mounted() {
         this.markerSource = new VectorSource()
         this.markerLayer = new VectorLayer({
@@ -561,6 +565,14 @@ export default {
         tool: String,
         selectedArea: Object,
         user: Object,
+        features: {
+            type: Object,
+            default: () => {
+                return {
+                    scale: true,
+                }
+            },
+        },
         padding: { type: Array, default: () => [0, 0, 0, 0] },
     },
 }

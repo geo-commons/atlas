@@ -18,11 +18,14 @@ export default {
 
 <style>
 :root {
+    --color-primary: #424bff;
+
     --color-text-grey: rgba(0, 0, 0, 0.55);
 
     --color-grey-40: #f5f5f5;
     --color-grey-50: #eaeaea;
     --color-grey-60: #dadada;
+    --color-grey-80: #949494;
 
     --color-icon-grey: rgba(0, 0, 0, 0.42);
 
@@ -30,13 +33,16 @@ export default {
 
     --color-alert: #eb0000;
 
+    --color-hover: rgba(0, 0, 0, 0.03);
+    --color-active: rgba(0, 0, 0, 0.06);
+
     --font-size-tiny: 12px;
     --font-size-small: 14px;
     --font-size-normal: 16px;
     --font-size-large: 18px;
 
-    --font-weight-normal: 400;
-    --font-weight-bold: 700;
+    --font-weight-normal: 300;
+    --font-weight-bold: 500;
 
     --radius-small: 4px;
     --radius-normal: 8px;
@@ -71,13 +77,13 @@ export default {
     }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap');
 
 html {
-    font-family: 'PT Sans', sans-serif;
-    letter-spacing: -0.005em;
+    font-family: 'Roboto', sans-serif;
     font-size: var(--font-size-normal);
     font-weight: var(--font-weight-normal);
+    line-height: 1.5;
 }
 
 *,
@@ -156,29 +162,128 @@ svg {
     background: var(--color-grey-50);
 }
 
-.large-button {
+.button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.button {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 56px;
-    border: 2px solid var(--color-grey-60);
+    height: 40px;
+    padding: 0 20px;
     border-radius: var(--radius-normal);
-    font-size: var(--font-size-large);
+    line-height: 1;
+    font-size: var(--font-size-normal);
     font-weight: var(--font-weight-bold);
-    color: black;
     text-decoration: none;
+    overflow: hidden;
 }
 
-.large-button svg {
+.button.__primary {
+    background: var(--color-primary);
+    color: white;
+}
+.button.__secondary {
+    background: white;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}
+.button.__tertiary {
+    background: white;
+    border: 2px solid var(--color-grey-60);
+    color: black;
+}
+.button.__alert {
+    background: white;
+    border: 2px solid var(--color-alert);
+    color: var(--color-alert);
+}
+
+.button.__large {
+    height: 56px;
+    font-size: var(--font-size-large);
+    border-width: 2px;
+}
+
+.button svg {
     margin-right: 6px;
 }
 
-.large-button:hover {
-    background: var(--color-grey-40);
+.button:hover:before {
+    background: var(--color-hover);
+}
+.button:active:before {
+    background: var(--color-active);
 }
 
-.large-button:active {
-    background: var(--color-grey-50);
+@media (max-width: 575px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    .section {
+        padding: 32px 0;
+    }
+}
+
+@media (min-width: 576px) {
+    .container {
+        padding: 0 32px;
+    }
+
+    .section {
+        padding: 40px 0;
+    }
+}
+
+.section + .section {
+    padding-top: 0;
+}
+
+.flexer {
+    display: flex;
+    justify-content: center;
+}
+
+.flexer > *:not(:last-child) {
+    margin-right: 12px;
+}
+
+.sidebar {
+    flex-shrink: 0;
+    position: relative;
+    width: var(--width-detail);
+    z-index: 1;
+    box-shadow: var(--shadow-normal);
+}
+
+.sidebar h1 {
+    margin: 0 0 24px;
+    font-size: var(--font-size-normal);
+    font-weight: var(--font-weight-bold);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar h1 svg {
+    margin-right: 6px;
+}
+
+.sidebar input[type='text'] {
+    width: 100%;
+    border: 1px solid var(--color-grey-80);
+    border-radius: var(--radius-small);
+    padding: 0 16px;
+    height: 40px;
 }
 </style>
 
