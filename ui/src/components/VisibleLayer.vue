@@ -3,7 +3,7 @@
         <ExpandButton :title="layer.title">
             <template v-slot:header>
                 <div class="buttons">
-                    <div v-if="layerOpacityIsChangable">
+                    <div v-if="layerOpacityIsChangable" class="opacity-wrapper">
                         <input
                             v-if="showSlider"
                             class="opacity-slider"
@@ -150,6 +150,10 @@ export default {
 <style scoped>
 .layer-wrapper:not(:last-child) {
     border-bottom: 1px solid var(--color-grey-50);
+}
+
+.opacity-wrapper {
+    display: flex;
 }
 
 .opacity-input {
