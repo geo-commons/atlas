@@ -119,9 +119,6 @@ export default {
     display: flex;
 }
 
-@media (max-width: 575px) {
-}
-
 @media (min-width: 576px) {
     .data-search {
         margin: 0 auto;

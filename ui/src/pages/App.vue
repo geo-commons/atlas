@@ -618,6 +618,7 @@ svg {
 }
 
 .ui-container {
+    z-index: 1;
     flex-grow: 1;
     height: 100%;
     position: relative;
