@@ -20,6 +20,7 @@ urlpatterns = [
 
 router = routers.DefaultRouter()
 router.register(r'maps', viewsets.MapViewSet, basename='maps')
+router.register(r'layers', viewsets.LayerViewSet, basename='layers')
 
 urlpatterns += [
     path('help', views.v3_help, name='v3_help'),

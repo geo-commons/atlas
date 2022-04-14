@@ -1,10 +1,12 @@
 <template>
     <div class="map-update" v-if="this.data">
         <div class="sidebar">
-            <div class="content">
+            <div class="sidebar-content">
                 <MapLayers
                     v-if="this.sidebar === 'Layers'"
                     @show-form="() => this.showSidebar('Form')"
+                    @change="this.updateLayers"
+                    :initialData="this.data"
                 />
                 <MapForm
                     v-if="this.sidebar === 'Form'"
@@ -21,7 +23,7 @@
         <Map
             ref="map"
             :position="this.position"
-            :layers="this.layers"
+            :layers="this.visibleLayers"
             :tool="this.tool"
             :selectedArea="this.selectedArea"
             :padding="this.mapPadding"
@@ -49,11 +51,29 @@ export default {
     created() {
         this.getMap()
     },
-    computed: mapState({
-        position: (state) => state.position,
-        layers: (state) => state.layers,
-        config: (state) => state.config,
-    }),
+    computed: {
+        ...mapState({
+            position: (state) => state.position,
+            layers: (state) => state.layers,
+            config: (state) => state.config,
+        }),
+        visibleLayers() {
+            if (this.data.layers) {
+                return this.layers
+                    .filter(
+                        (layer) => this.data.layers.includes(layer.internal_id) || layer.is_base
+                    )
+                    .map((layer) => {
+                        return {
+                            ...layer,
+                            is_visible: !layer.is_base ? true : layer.is_visible,
+                        }
+                    })
+            }
+
+            return this.layers
+        },
+    },
     data() {
         return {
             data: null,
@@ -137,6 +157,9 @@ export default {
         showSidebar(sidebar) {
             this.sidebar = sidebar
         },
+        updateLayers(layerIds) {
+            this.data.layers = layerIds
+        },
     },
 }
 </script>
@@ -148,10 +171,10 @@ export default {
     flex-direction: row;
 }
 
-.content {
+.sidebar-content {
     max-height: 100%;
     overflow-y: auto;
-    padding: 24px var(--padding-screen) 80px;
+    padding: 16px var(--padding-screen) 80px;
 }
 
 .button.__alert {
