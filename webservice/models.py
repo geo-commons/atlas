@@ -425,7 +425,8 @@ class Viewer(models.Model):
     api_key = models.CharField(null=True, blank=True, max_length=128)
     url = models.CharField(null=True, blank=True, max_length=255)
     internal = models.BooleanField('Alleen intern zichtbaar', default=True,
-                                   help_text='Is alleen zichtbaar binnen interne omgeving.')
+                                   help_text='Is alleen zichtbaar binnen interne omgeving. Hou er rekening mee dat de gebruikernaam, '
+                                   'het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.')
 
     objects = models.Manager()
     visible = ViewerVisibleManager()
