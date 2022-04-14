@@ -5,43 +5,102 @@
 <script>
 export default {
     name: 'Obliquo',
+    async mounted() {
+        await this.getLoginToken()
+
+        if (this.position.marker) {
+            this.src = await this.getLink(this.position.marker)
+        }
+    },
     methods: {
         resize() {
             // iframe resize is not required
         },
-    },
-    computed: {
-        src() {
-            if (!this.position.marker) {
+        async getLoginToken() {
+            const loginUrl = new URL(this.url)
+            loginUrl.pathname = '/manager/auth'
+
+            const loginParameters = {
+                email: this.username,
+                password: this.password,
+            }
+
+            const loginResult = await fetch(loginUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginParameters),
+            })
+
+            if (!loginResult.ok) {
+                console.error('Could not login to Obliquo', loginResult)
                 return
             }
 
-            const params = new URLSearchParams([
-                ['x', this.position.marker[0]],
-                ['y', this.position.marker[1]],
-                ['srs', '28992'],
-                ['mode', 'pano'],
-            ])
+            const loginData = await loginResult.json()
 
-            const url = new URL(this.url)
-            url.search = params.toString()
+            this.token = loginData.token
+        },
+        async getLink(position) {
+            if (!this.token) {
+                return
+            }
 
-            return url.toString()
+            const elinkUrl = new URL(this.url)
+            elinkUrl.pathname = '/manager/elink'
+
+            const elinkParameters = {
+                x: position[0],
+                y: position[1],
+                srid: 28992,
+            }
+
+            const elinkResult = await fetch(elinkUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${this.token}`,
+                },
+                body: JSON.stringify(elinkParameters),
+            })
+
+            if (!elinkResult.ok) {
+                console.error('Could not fetch elink for Obliquo', elinkResult)
+                return
+            }
+
+            const elinkData = await elinkResult.json()
+
+            const linkParams = new URLSearchParams([['e', elinkData.linkID]])
+
+            const linkUrl = new URL(this.url)
+            linkUrl.pathname = ''
+            linkUrl.search = linkParams
+
+            return linkUrl.toString()
         },
     },
     watch: {
-        position(value) {
-            if (!value.marker) {
+        async position(newValue, oldValue) {
+            if (newValue.marker === oldValue.marker) {
                 return
             }
 
-            const latlong = transform(value.marker, 'EPSG:28992', 'EPSG:4326')
-            this.streetview.setPosition({ lat: latlong[1], lng: latlong[0] })
+            this.src = await this.getLink(newValue.marker)
         },
+    },
+    data() {
+        return {
+            token: '',
+            src: '',
+        }
     },
     props: {
         position: Object,
         url: String,
+        username: String,
+        password: String,
     },
 }
 </script>

@@ -8,7 +8,9 @@
         :fitParent="true"
         :style="{ display: isOpen ? 'block' : 'none' }"
         dragSelector="undefined"
+        @resize:start="this.resizeStart"
         @resize:move="this.onResize"
+        @resize:end="this.resizeEnd"
     >
         <div class="buttons">
             <select name="viewer" v-if="config.viewers.length > 0" v-model="selectedViewerId">
@@ -80,7 +82,7 @@
                 </svg>
             </button>
         </div>
-        <div class="viewer" v-if="this.isOpen">
+        <div :class="{ viewer: true, isResizing: this.isResizing }" v-if="this.isOpen">
             <div v-if="selectedViewer !== null && position.marker" class="viewer">
                 <google-maps
                     ref="viewer"
@@ -92,6 +94,8 @@
                     v-if="selectedViewer.type == 'OBLIQUO'"
                     :position="position"
                     :url="selectedViewer.url"
+                    :username="selectedViewer.username"
+                    :password="selectedViewer.password"
                 />
                 <street-smart
                     ref="viewer"
@@ -137,6 +141,7 @@ export default {
     data() {
         return {
             isFullscreen: false,
+            isResizing: false,
             viewer: null,
             selectedViewerId: 0,
             windowWidth: 200,
@@ -165,6 +170,12 @@ export default {
             await this.$nextTick()
 
             this.onResize()
+        },
+        resizeStart() {
+            this.isResizing = true
+        },
+        resizeEnd() {
+            this.isResizing = false
         },
         onResize() {
             if (!this.$refs.viewer) {
@@ -238,6 +249,10 @@ export default {
     overflow: hidden;
     /* Show viewer on top of .scale */
     z-index: 2;
+}
+
+.viewer.isResizing {
+    pointer-events: none;
 }
 
 .buttons .iconbutton:first-child {
