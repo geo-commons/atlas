@@ -21,7 +21,8 @@
                 :selectedArea="this.selectedArea"
                 :padding="this.mapPadding"
                 :user="this.user"
-                @set-position="this.setPosition"
+                :features="{ scale: true }"
+                @position-changed="this.setPosition"
                 @tool-used="this.toolUsed"
             />
         </div>
@@ -162,7 +163,7 @@ import BaseLayersPanel from '../components/BaseLayersPanel'
 import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
 import LayersPanel from '../components/LayersPanel'
-import OpenLayersRenderer from '../components/Map/renderers/OpenLayers'
+import OpenLayersRenderer from '../components/Map/renderers/OpenLayers/OpenLayers'
 import ToolsPanel from '../components/ToolsPanel'
 import MorePanel from '../components/MorePanel'
 import PanoramaPanel from '../components/PanoramaPanel'

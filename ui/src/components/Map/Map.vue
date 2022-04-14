@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import OpenLayersRenderer from './renderers/OpenLayers'
+import OpenLayersRenderer from './renderers/OpenLayers/OpenLayers'
 
 import SearchPanel from '../SearchPanel'
 import LayersPanel from '../LayersPanel'

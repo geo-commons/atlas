@@ -15,10 +15,11 @@
             </svg>
             Kaart
         </h1>
+
         <input
             type="text"
             name="title"
-            class="input"
+            class="title-input"
             placeholder="Titel van de kaart"
             v-model="data.title"
             required
@@ -28,27 +29,26 @@
             <button type="button" @click="() => this.$emit('show-layers')" class="setting">
                 <svg
                     class="setting-icon"
-                    width="28px"
-                    height="28px"
-                    viewBox="0 0 28 28"
+                    width="24px"
+                    height="24px"
+                    viewBox="0 0 24 24"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                 >
-                    <title>icon/layers</title>
-                    <g
-                        id="icon/layers"
-                        stroke="none"
-                        stroke-width="1"
-                        fill="none"
-                        fill-rule="evenodd"
-                    >
-                        <path
-                            d="M13.99,21.7805 L6.62,15.62075 L5,16.97525 L14,24.50025 L23,16.97525 L21.37,15.61 L13.99,21.7805 Z M14,19.05 L21.36,12.89025 L23,11.525 L14,4 L5,11.525 L6.63,12.89025 L14,19.05 Z M14,6.71975 L19.74,11.525 L14,16.33025 L8.26,11.525 L14,6.71975 Z"
-                            id="Shape"
+                    <title>Artboard</title>
+                    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g
+                            id="lagen"
+                            transform="translate(3.000000, 2.000000)"
                             fill="#000000"
                             fill-rule="nonzero"
-                        ></path>
+                        >
+                            <path
+                                d="M8.99,17.7805 L1.62,11.62075 L0,12.97525 L9,20.50025 L18,12.97525 L16.37,11.61 L8.99,17.7805 Z M9,15.05 L16.36,8.89025 L18,7.525 L9,0 L0,7.525 L1.63,8.89025 L9,15.05 Z M9,2.71975 L14.74,7.525 L9,12.33025 L3.26,7.525 L9,2.71975 Z"
+                                id="Shape"
+                            ></path>
+                        </g>
                     </g>
                 </svg>
                 Lagen
@@ -194,6 +194,14 @@ export default {
     width: 100%;
 }
 
+.title-input {
+    margin-top: 16px;
+}
+
+.settings {
+    margin-top: 32px;
+}
+
 .flexer {
     position: absolute;
     bottom: var(--padding-screen);
@@ -201,34 +209,17 @@ export default {
     right: 0;
 }
 
-.settings {
-    margin: 32px calc(var(--padding-screen) * -1) 0;
-}
-
-.setting {
-    width: 100%;
-    height: 40px;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    font-weight: var(--font-weight-bold);
-    border-top: 1px solid var(--color-grey-60);
-}
-
-.setting:last-child {
-    border-bottom: 1px solid var(--color-grey-60);
-}
-
 .setting-icon {
     margin-right: 10px;
 }
 
 .setting-chevron {
+    width: 32px;
     margin-left: auto;
 }
 
 .setting input[type='checkbox'] {
-    width: 28px;
+    width: 24px;
     margin-right: 10px;
     cursor: pointer;
 }

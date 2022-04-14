@@ -295,6 +295,7 @@ source: new ol.source.TileWMS({{
     def to_dict(self):
         return {
             'id': self.layer_id,
+            'internal_id': self.id,
             'source_type': self.source_type,
             'title': self.title,
             'name': self.layer_name,
@@ -363,7 +364,7 @@ class Map(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, populate_from='title', editable=True,
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.')
-    layers = models.ManyToManyField(Layer, verbose_name='Lagen')
+    layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
     features = models.JSONField(default=dict, blank=True, verbose_name='Functies')
 
     def get_absolute_url(self):

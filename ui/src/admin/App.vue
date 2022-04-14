@@ -162,6 +162,16 @@ svg {
     background: var(--color-grey-50);
 }
 
+.iconbutton.__normal {
+    width: 40px;
+    height: 40px;
+}
+
+.iconbutton.__outline {
+    border-radius: var(--radius-normal);
+    border: 2px solid var(--color-grey-60);
+}
+
 .button:before {
     content: '';
     position: absolute;
@@ -265,7 +275,8 @@ svg {
 }
 
 .sidebar h1 {
-    margin: 0 0 24px;
+    height: 40px;
+    margin: 0;
     font-size: var(--font-size-normal);
     font-weight: var(--font-weight-bold);
 
@@ -276,6 +287,30 @@ svg {
 
 .sidebar h1 svg {
     margin-right: 6px;
+}
+
+.sidebar h2 {
+    margin: 24px 0 8px;
+    font-size: var(--font-size-normal);
+    font-weight: var(--font-weight-bold);
+}
+
+.settings {
+    margin: 0 calc(var(--padding-screen) * -1);
+}
+
+.setting {
+    width: 100%;
+    height: 41px;
+    padding: 0 8px 0 16px;
+    display: flex;
+    align-items: center;
+    font-weight: var(--font-weight-bold);
+    border-top: 1px solid var(--color-grey-60);
+}
+
+.setting:last-child {
+    border-bottom: 1px solid var(--color-grey-60);
 }
 
 .sidebar input[type='text'] {
