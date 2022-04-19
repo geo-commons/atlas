@@ -1,28 +1,31 @@
-# Handleiding Admin Module Atlas versie 2.2.4
+# Handleiding Admin Module Atlas versie 3.8.5
 
 ## Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt Atlas geconfigureerd.
+
+#### LET OP: (*) Deze opties zijn bij het maken van deze handleiding nog niet functioneel (06-04-2022)
 
 ### Inhoud
 
 * [INTRODUCTIE](#introductie)
 * [HOOFDSCHERM](#hoofdscherm)
-* [USER_MANAGEMENT](#user_management)
-     * [Gebruikers](#gebruikers)
-     * [Atlas_groups](#atlas_groups)
-* [WEBSERVICE](#webservice)
+* [CONFIGURATIE](#configuratie)
+* [GEBRUIKERSBEHEER](#gebruikersbeheer)
+     * [Groepen](#groepen)
+* [KAARTEN](#kaarten)
      * [Categorieën](#categorieën)
      * [Kaartlagen](#kaartlagen)
      * [Kaarten](#kaarten)
 * [HOMEPAGE](#homepage)
      * [Saved_datasets](#saved_datasets)
-* [AUTHENTICATIE EN AUTORISATIE](#authenticatie-en-autorisatie)
-     * [Groepen](#groepen)
 #### INTRODUCTIE
 
-Bij het installeren van Atlas wordt in de laatste stap een superuser aangemaakt. In de README.MD file is dit beschreven.  Met deze gebruiker (superuser) kan in de adminmodule worden ingelogd op http://localhost:8000/atlas/admin/ .
+Bij het installeren van Atlas wordt in de laatste stap een superuser aangemaakt. In de README.MD file is dit beschreven.  Met deze gebruiker (superuser) kan in de adminmodule worden ingelogd op http://localhost:8000/atlas/admin/ . Let op dat de url eindigt met een /.  
+Binnen de adminmodule kunnen additionele gebruikers worden aangemaakt en rechten worden toegekend. Alleen gebruikers met supergebruikerstatus hebben toegang tot de adminmodule.  
+Via de parameter CTRIX_IPS (zie README.md) kan worden bepaald welke ip adressen toegang hebben tot de adminmodule. Om beveiligingsredenen zouden deze ip adressen altijd binnen het netwerk van de interne WFS server moeten liggen.  
+Het inloggen in de adminmodule verloopt via Single-Sign-On. Het openen van de adminmodule buiten het interne netwerk leidt tot een foutmelding
+<img src="/uploads/f576c11e29eed968c24000ba110e9786/inlog-admin-sso.png" alt="Inlogscherm Adminmodule" width="300"/>
 
 
-Let op dat de url eindigt met een /.
 
 ***
 * [Naar boven](#inhoud)
@@ -32,24 +35,40 @@ Let op dat de url eindigt met een /.
 
 Het hoofdscherm **Websitebeheer** laat een aantal onderdelen zien die ingesteld kunnen worden.
 
-<img src="/uploads/7478bfaf4c2986cecdd3f3bb819f60db/hoofdscherm.png" alt="Hoofdscherm Admin module" width="1000"/>
+<img src="/uploads/aa975c1f520d44e7ecbf35ecae0751d5/hoofdmenu.png" alt="Hoofdscherm Admin module" width="500"/>
 
 
 ***
 * [Naar boven](#inhoud)
 ***
 
-#### USER_MANAGEMENT
-In user management bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden
-aan een Atlas group. Het gebruikersbeheer heeft geen relatie met groepen in authenticatie en autorisatie.
+#### CONFIGURATIE
+Hier kunnen de globale instellingen gedaan worden die in Atlas getoond worden.  
+Config. 
+
+1. Organisatie
+
+ORGANIZATION_NAME   De naam van de organisatie die getoond moet worden.  
+FAVICON_URL         Het icoon dat in de tabbalk van de browser zichtbaar wordt.  
+DISCLAIMER          Mogelijke voorwaardelijkheidsverklaring. Als deze niet is ingevuld is de optie ook niet aanwezig in het Atlasscherm.
+
+2. Kaartconfiguratie  
+
+POSITION_CENTER_X        Het centrum X-coördinaat van de opstartpositie.  
+POSITION_CENTER_Y        Het centrum Y-coördinaat van de opstartpositie.  
+POSITION_ZOOM            Het zoomniveau van de opstartpositie.  
+SUGGEST_MUNICIPALITIES   Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit).  
+
+***
+* [Naar boven](#inhoud)
+***
+
+##### GEBRUIKERSBEHEER
+In het gebruikersbeheerscherm bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden aan een Atlas groep.   
+(*) Groepen kunnen aangemaakt worden om toegang tot lagen te configureren. 
 
 
-##### Gebruikers
-Klik in het user management beheer scherm bij gebruikers op Toevoegen om een gebruiker toe te voegen.
-
-<img src="/uploads/1b8d33f8a57599b0381758859a5c4138/user-magement-beheer.png" alt="Gebruikersbeheer" width="600"/>
-
-In het volgende scherm kan een gebruikersnaam en wachtwoord worden ingegeven. De gebruikersnaam moet 150 tekens of minder lang zijn. Alleen letters, cijfers en @/,/+/-/_ tekens zijn toegestaan. Aan het wachtwoord zijn de volgende beperkingen gebonden: 
+In het gebruikersscherm kan een gebruiker worden toegevoegd of bewerkt. Voor een nieuwe gebruiker moet een gebruikersnaam en wachtwoord worden ingegeven. De gebruikersnaam moet 150 tekens of minder lang zijn. Alleen letters, cijfers en @/,/+/-/_ tekens zijn toegestaan. Aan het wachtwoord zijn de volgende beperkingen gebonden: 
 * Uw wachtwoord mag niet te veel lijken op uw overige persoonlijke informatie. 
 * Uw wachtwoord moet minstens 8 tekens lang zijn. 
 * Uw wachtwoord mag geen veelgebruikt wachtwoord zijn. 
@@ -63,8 +82,11 @@ In het Gebruiker Wijzigen scherm kan uitgebreide gebruikersinformatie worden toe
 
 <img src="/uploads/7307bf8f38c0d8794bf9e425e4640c71/_gebruikerswijzigen2.png" alt="gebruiker wijzigen 2" width="1400"/>
 
+***
+* [Naar boven](#inhoud)
+***
 
-##### Atlas_groups
+##### Groepen
 In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er ook gebruikers zijn aangemaakt kunnen deze hier aan de groep worden toegvoegd.
 
 <img src="/uploads/4c3cb144ebbf90680b36214e215a4128/atlas-groep-toevoegen.png" alt="atlas groep toevoegen" width="1400"/>
@@ -73,32 +95,36 @@ In het Atlas Groep Toevoegen scherm kunnen groepen worden aangemaakt. Wanneer er
 * [Naar boven](#inhoud)
 ***
 
-#### WEBSERVICE
+#### KAARTEN
 
-<img src="/uploads/a8d17641ad4383eff163ec9121619711/webservice-beheer.png" alt="Webservice beheer" width="600"/>
-
-Binnen webservice kunnen Categorieën, kaartlagen en kaarten worden toegevoegd.
-* Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond.
+Binnen kaarten kunnen Bronnen, Categorieën, Kaarten, Kaartlagen en Viewers worden toegevoegd. De optie Thema's is vervangen door Kaarten en komt te vervallen.
+* Bronnen bevat mogelijke URL's vanwaar de kaartlagen geserveerd worden.
+* Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. (*) Daarnaast kunnen Categorieën als tegel op het hoofdscherm weergegeven worden.
 Het aanmaken en toekennen van categorieën helpt bij het geordend houden van de legenda.
 * Kaartlagen zijn de datasets die binnen Atlas ontsloten worden.
 Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere kaarten.
 * Kaarten zijn verzamelde kaartlagen die samen over een bepaald onderwerp gaan.
 Bij het aanmaken van een kaart wordt een nieuwe url gecreëerd, waar een aparte instantie van Atlas wordt getoond met een beperkter aantal kaartlagen en beperktere functionaliteit.
+* Viewers bevat de externe applicaties die worden gebruikt voor rondkijkfoto's (bijv. Google Maps)
+
+***
+* [Naar boven](#inhoud)
+***
 
 ##### Categorieën
 Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het openklikken van een hoofdonderwerp/categorie
 zorgt ervoor dat eronder de verschillende kaartlagen van die categorie in de legenda worden getoond.
-Bij het toevoegen van een kaartlaag wordt aangegeven onder welke categorie deze valt.
-Categorieën worden getoond op alfabetische volgorde, onder Achtergrondkaarten en Luchtfoto's. Hou hier rekening mee bij het aanmaken van een categorie.
+Bij het toevoegen van een kaartlaag wordt aangegeven onder welke categorie deze valt. 
+(*) Er kan voor gekozen worden om een categorie als tegel op het hoofdscherm weer te geven of alleen in de lijstweergave of beide.
 
-<img src="/uploads/32f72073d636bb6178f0da5ec3a47ea2/categorieenkopie.png" alt="categorieën" width="500"/>
+<img src="/uploads/d4c30aacd2dc65073eb3c39881516990/categorieen.png" alt="categorieën" width="400"/>
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
-* **Title:** (De naam zoals die in het viewer scherm van Atlas komt te staan, denk hierbij om de alfabetische volgorde)
-* **Javascript type:** (default waarde: themelayer:true)
-* **Gesloten thema** (Is deze categorie in alle omgevingen zichtbaar of alleen intern?)
+* **Titel:** (De naam zoals die in het viewer scherm van Atlas komt te staan)
+* **Sortering:** (default waarde: 0)
+
  
-<img src="/uploads/da7708c048d82f68c69ed0e062651027/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
+<img src="/uploads/2c695502d3e2ad833349e805601b6a00/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
 
 
 ***
@@ -107,52 +133,70 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
 
 ##### Kaartlagen
 Kaartlagen zijn de datasets die binnen Atlas ontsloten worden. 
-Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere thema's. 
+Kaartlagen kunnen worden toegevoegd aan Atlas en/of aan één of meerdere kaarten. 
 
-<img src="/uploads/e3ffddfcbfe4dc3573a07816a9c55b36/kaartlagenkopie.png" alt="kaartlagen" width="500"/>
+Bij het aanmaken van een nieuwe kaartlaag kan gekozen worden om een nieuwe kaartlaag toe te voegen of een bestaande te bewerken en deze als nieuwe kaartlaag op te slaan. Dit kan handig zijn als niet alle gegevens opnieuw ingevoerd te hoeven worden.
 
 
 De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
-* **Layer_id:** (Een uniek ID dat de layer onderscheid van andere. De invoer mag geen verbindingsstreepje - bevatten) 
-* **Title:** (De naam zoals die verschijnt in de legenda van Atlas. De invoer mag geen 'speciale' tekens bevatten)
-* **Layer_name:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver.)
+* **Titel:** (De naam zoals die verschijnt in de legenda van Atlas. De invoer mag geen 'speciale' tekens bevatten)
+* **Kort kenmerk:** (Een uniek ID dat de layer onderscheid van andere. 
+* **Categorie:** (selecteer onder welke categorie deze layer komt)
+* **Gepubliceerd:** (wordt de laag gepubliceerd of niet. deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden.)(Default: uit)  
+
+* **Bron:** (Selecteer er één zoals die bij 'Bronnen' zijn geconfigureerd). 
+* **Laagnaam:** (De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver.)
+* **Brontype:** (Selecteer het type voor deze laag)
+* **Projectie:** (De projectie waarin de kaartlaag bevraagd wordt. Default: EPSG:28992)
+* **Server type:** (standaard: geoserver)  
+
+* **Transparantie:** (default 0,9)
+
 * **Meta_naam:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Adressen(BAG))
 * **Meta_soort:** (Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Basisregistratie)
 * **Meta_org:** ([Wanneer meta data wordt bijgehouden, kan hier een omschrijving worden ingevuld, bv: Geoinformatie
 * **Meta_bijgewerkt:** (De waarde wordt door Javascript geëvalueerd (Bijv:"01-01-2018",getDate("year"). Default: getDate("full"))
-* **Opacity:** (default 0,9)
-* **Visible:** (is deze layer zichtbaar in de viewer?)
-* **Categorie:** (selecteer onder welke categorie deze layer komt)
-* **ISqueryable:** (maak het mogelijk de laag te bevragen door in de kaart te klikken (popup attriutes) én maak de layer zichtbaar in de zoekfunctie )
-* **Popup attributes:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond.)
-* **Search fields:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden. Als dit leeg gelaten wordt, worden alle attributen zoekvelden.)
-* **Projection:** (De projectie waarin de kaartlaag bevraagd wordt. Default: EPSG:28992)
-* **Url:** De URL van de layer (http://GEOSERVER_URL/wms?...) Het gebruikte endpoint (zie ook de <a href="https://docs.geoserver.org/stable/en/user/geowebcache/webadmin/defaults.html#gwc-webadmin-defaults">Geoserver handleiding</a>)
-* **Server type:** (standaard: geoserver)
-* **Gesloten data:** (is de layer ook buiten het interne netwerk zichtbaar)
-* **Gepubliceerd:** (wordt de laag gepubliceerd of niet. deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden.)(Default: aan)
-* **Alleen in een thema, niet in Atlas:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in de thema's waaraan deze is toegevoegd)
-* **Owner:** (Wie is eigenaar van deze layer) 
-* **Users:** (Welke gebruikers hebben toegang tot deze kaartlaag? 
-* **Atlas groups:** (Welke Atlas gebruikersgroepen hebben toegang tot deze kaartlaag? )
-* **Ordening:** (uniek nummer dat de rangschikking binnen het viewer scherm bepaalt. Let op: dit nummer moet uniek zijn, anders zullen de lagen binnen Atlas niet laden)
+* **Is basislaag:** (Aanzetten als de laag als achtergrondlaag moet dienen)
+* **Is standaard zichtbaar:** (Eigenlijk zelfde als hierboven maar komt bovenop de basislaag)
+* **Toon laag alleen in een themakaart:** (Kaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in de kaarten waaraan deze is toegevoegd. Wanneer deze optie niet is aangevinkt is de laag zowel in een kaart als in het hoofdscherm zichtbaar)
+* **Kan doorzocht worden:** (maak het mogelijk de laag te bevragen door in de kaart te klikken (popup attriutes) én maak de layer zichtbaar in de zoekfunctie )
+* **Toon deze velden:** ([Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond.)
+* **Doorzoek deze velden:** (Selecteer de velden waar bij Zoeken op Data op gezocht kan worden. Als dit leeg gelaten wordt, worden alle attributen zoekvelden.)
+* **Bereik minimum x:** (Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt)
+* **Bereik minimum y:** (Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt)
+* **Bereik maximum x:** (Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt)
+* **Bereik maximum y:** (Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt)
+* **Zoomniveau minimum:** (Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt)
+* **Zoomniveau maximum:** (Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt)
+* **Stijl:** (Voeg een stijlbestand in Geostyler formaat toe. Hiermee wordt de WFS stijl in Geoserver overruled)
+* **Naam:** (Vul een naam in voor de laag als metadata. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
+* **Soort:** (Vul een categorie in voor de laag als metadata. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
+* **Organisatie:** (Vul de eigenaar van de betreffende data in. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
+* **Laatst bijgewerkt:** (Datum laatst bijgewerkt. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
+* **Alleen intern zichtbaar:** (is de kaartlaag ook buiten het interne netwerk zichtbaar)
+* **Vereis inlog voor deze dataset:** (Wanneer deze optie is aangevinkt, dan verschijnt de laag met een slotje ten teken dat men moet inloggen om de laag te zien)
 
-<img src="/uploads/98dd32f3456b99db5bd98525f6122b19/kaartlaag-toevoegen.png" alt="kaartlaag toevoegen" width="700"/>
+
+* **Eigenaar:** (Wie is eigenaar van deze layer)   
+* **Gebruikers:** (Welke gebruikers hebben toegang tot deze kaartlaag?   
+* **Groepen:** (Welke Atlas gebruikersgroepen hebben toegang tot deze kaartlaag? )
+* **Gekoppelde Data:** (...)
+
+
 
 ***
 * [Naar boven](#inhoud)
 ***
 
 ##### Kaarten
-Kaarten zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om van een kaarten samen te stellen worden kaartlagen geselecteerd die bij die kaart horen. 
-
+Kaarten zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om een kaart samen te stellen worden kaartlagen geselecteerd die bij die kaart horen.  
 Een kaart verschijnt niet in het Atlas scherm. Bij het aanmaken van een kaart wordt als het ware een aparte instantie van Atlas gecreëerd met een beperkter aantal kaartlagen en beperktere functionaliteit. Wanneer bijvoorbeeld een kaart 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om de kaart op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
 
-<img src="/uploads/822f1c6ac667ca0182b37874c68b322b/hondenbeleid.png" alt="hondenbeleid" width="500"/>
+<img src="/uploads/0ac41b64d0d39964456faccfb95e744a/hondenbeleid.png" alt="hondenbeleid" width="500"/>
 
 
 
-De volgende velden moeten worden ingevuld bij het toevoegen van een Thema:
+De volgende velden moeten worden ingevuld bij het toevoegen van een kaart:
 * **Title:** ([De naam zoals die ook bij de url ingegeven moet worden)
 * **Layers:** (De layers die binnen het Thema vallen)
 Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
@@ -183,23 +227,6 @@ Ook is het mogelijk om via cut & paste zelf datasets toe te voegen voor eventuee
 * [Naar boven](#inhoud)
 ***
 
-
-#### AUTHENTICATIE EN AUTORISATIE
-
-##### Groepen
-##### Versie 2.2.4: Deze functie is voor toekomstig gebruik!
-Binnen authenticatie en autorisatie kunnen gebruikersgroepen aangemaakt en bewerkt worden. Per groep kunnen rechten worden toegekend voor bewerkingen binnen Atlas en de toegang tot data. 
-Versie 2.2.4: Deze functie is voor toekomstig gebruik, er is nog geen koppeling met Atlas gebruikersgroepen
-
-<img src="/uploads/993faa161f2e10a09bc77a72533c1536/auth-en-autorisatie.png" alt="Authenticatie en autorisatie" width="700"/>
-
-Per groep kunnen rechten worden toegekend. Klik in het "Authenticatie en autorisatie" scherm naast het groene plus teken op Toevoegen om een groep toe te voegen. In het "groep toevoegen" scherm kan nu een naam voor de nieuwe groep worden opgegeven en kunnen rechten voor deze nieuwe groep vanuit de linker kolom naar de rechter kolom worden verplaatst.
-
-<img src="/uploads/abeaa04c8cd16b8477b2b775a15ec91b/groep-toevoegen.png" alt="Authenticatie en autorisatie: groep toevoegen" width="1400"/>
-
-***
-* [Naar boven](#inhoud)
-***
 
 
 
