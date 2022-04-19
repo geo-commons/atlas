@@ -110,7 +110,7 @@ Een andere manier om een kaartlaag uit te zetten is om in de weergave met alleen
 
 Wanneer met de muis over de verschillende kaartlagen gegaan wordt, dan verschijnt elke keer het ⓘ symbool. Klikken hierop toont de metadata voor die kaartlaag.
 
-<img src="/uploads/0cf3ec8232f103c472025b5f623027d5/toon-metadata.png" alt="Webservice beheer" width="600"/>
+![metadata](https://gitlab.com/purmerend/atlas/uploads/0cf3ec8232f103c472025b5f623027d5/toon-metadata.png)
 
 
 ***
