@@ -130,7 +130,7 @@ Via het zoekveld van het kaartlagenvenster kun je zoeken naar kaartlagen. Wannee
 ## Legenda
 
 In de lijstweergave van zichtbare lagen ![icoonzichtbarelagen](https://gitlab.com/purmerend/atlas/uploads/3e3bb2a406c326bad81f2ed50320cf3e/icoonzichtbarelagen.png) kan de legenda van de zichtbare lagen geraadpleegd worden. Klik op de titel van de laag om daarvan de legenda te tonen.
-Klik op de video ""Legenda tonen" om de handelingen te zien.
+Klik op de video "Legenda tonen" om de handelingen te zien.
 
 ![legenda](https://gitlab.com/purmerend/atlas/uploads/32800a30bce3c5e2f03831fb6d086d51/legenda.png)
 
