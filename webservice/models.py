@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.db.models import Q
 from django_extensions.db.fields import AutoSlugField
 
 from user_management.models import AtlasGroup
@@ -11,41 +12,20 @@ from utils.tools import is_ctrix
 
 
 class LayerManager(models.Manager):
-    def __closed_unowned_datasets(self):
-        return self.filter(closed_dataset=True)\
-            .filter(published=True)\
-            .filter(users=None)\
-            .filter(atlas_groups=None)
-
-    def __closed_dataset_user(self, user):
-        return self.filter(users=user).filter(published=True)
-
-    def __closed_dataset_group(self, user):
-        return self.filter(published=True).filter(
-            atlas_groups__in=user.atlas_groups.all())
-
-    def user_or_group(self, user="", ctrix=False):
-        open_dataset = self.filter(closed_dataset=False)\
-            .filter(published=True)
-
-        closed_dataset = self.__closed_unowned_datasets()
+    def user_or_group(self, user=None, ctrix=False):
+        open_datasets = Q(published=True) & Q(closed_dataset=False)
+        closed_unassigned_datasets = Q(published=True) & Q(closed_dataset=True) & Q(users=None) & Q(atlas_groups=None)
 
         if not ctrix:
-            return open_dataset
+            return self.filter(open_datasets).distinct()
 
-        if user and user.is_anonymous and ctrix:
-            result = open_dataset | closed_dataset
-            return result
+        if user.is_anonymous:
+            return self.filter(open_datasets | closed_unassigned_datasets).distinct()
 
-        closed_dataset_user = self.__closed_dataset_user(user)
-        closed_dataset_group = self.__closed_dataset_group(user)
+        closed_and_assigned_to_user = Q(published=True) & Q(closed_dataset=True) & Q(users=user)
+        closed_and_assigned_to_group = Q(published=True) & Q(closed_dataset=True) & Q(atlas_groups__in=user.atlas_groups.all())
 
-        result = open_dataset\
-            | closed_dataset\
-            | closed_dataset_group\
-            | closed_dataset_user
-
-        return result
+        return self.filter(open_datasets | closed_unassigned_datasets | closed_and_assigned_to_user | closed_and_assigned_to_group).distinct()
 
 
 class Category(models.Model):
