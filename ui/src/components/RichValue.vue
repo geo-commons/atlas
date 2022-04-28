@@ -1,6 +1,5 @@
 <template>
     <div>
-        <span v-if="this.valueType === 'NULL'">-</span>
         <span v-if="this.valueType === 'NUMBER'">{{ dataValue }}</span>
         <span v-if="this.valueType === 'UNKNOWN'">{{ dataValue }}</span>
         <markdown v-if="this.valueType === 'STRING'" :source="dataValue" />
