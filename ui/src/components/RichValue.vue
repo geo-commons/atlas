@@ -3,6 +3,7 @@
         <span v-if="this.valueType === 'NULL'">-</span>
         <span v-if="this.valueType === 'NUMBER'">{{ dataValue }}</span>
         <span v-if="this.valueType === 'UNKNOWN'">{{ dataValue }}</span>
+        <span v-if="this.valueType === 'DATE'">{{ friendlyDate(dataValue) }}</span>
         <markdown v-if="this.valueType === 'STRING'" :source="dataValue" />
         <a v-if="this.valueType === 'URL'" :href="dataValue" target="_blank" rel="noopener">{{
             dataValue.length >= 75
@@ -24,6 +25,7 @@ import Markdown from './Markdown'
 
 const imageRegex = /^(http|https).*(\.jpg|\.jpeg|\.png|\.gif)/
 const urlRegex = /^(http|https)/
+const dateRegex = /^(\d{4})-(\d{2})-(\d{2})Z/
 
 export default {
     name: 'RichValue',
@@ -52,7 +54,17 @@ export default {
                 return 'URL'
             }
 
+            if (this.dataValue.match(dateRegex)) {
+                return 'DATE'
+            }
+
             return 'STRING'
+        },
+    },
+    methods: {
+        friendlyDate(value) {
+            const parsedDate = dateRegex.exec(value)
+            return `${parsedDate[3]}-${parsedDate[2]}-${parsedDate[1]}`
         },
     },
     props: {
