@@ -310,10 +310,31 @@ export default {
     border-right: 1px solid var(--color-grey-50);
 }
 
+.counter {
+    flex-shrink: 0;
+    height: 18px;
+    min-width: 18px;
+    border-radius: 9px;
+    border: 2px solid var(--color-primary);
+    padding: 0 3px;
+    background: white;
+    color: var(--color-primary);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    line-height: 14px;
+    text-align: center;
+    white-space: nowrap;
+    user-select: none;
+}
+
 .visible-layer-counter {
     position: absolute;
     top: 2px;
     left: calc(100% - 8px);
+}
+
+.layer-counter {
+    margin: 7px 8px 0 4px;
 }
 
 .layers,
@@ -389,9 +410,5 @@ export default {
 
 .sublayer > input:disabled + label {
     text-decoration: line-through;
-}
-
-.layer-counter {
-    margin: 7px 8px 0 4px;
 }
 </style>
