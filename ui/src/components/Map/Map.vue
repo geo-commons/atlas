@@ -54,10 +54,11 @@
             </div>
             <div class="bottom-left-panels">
                 <LayersPanel
-                    v-if="this.features.layerlist"
+                    v-if="this.features.layerlist || this.features.legend"
                     :layers="this.layers"
                     :position="this.position"
                     :user="this.user"
+                    :isEmbed="this.features.legend && !this.features.layerlist"
                     @toggle-layer="this.toggleLayer"
                     @set-layer-opacity="this.setLayerOpacity"
                     @on-fit="(layer) => this.$refs.map.fit(layer)"
