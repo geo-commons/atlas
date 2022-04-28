@@ -22,11 +22,8 @@
         </div>
         <Map
             ref="map"
-            :position="this.position"
-            :layers="this.visibleLayers"
-            :tool="this.tool"
-            :selectedArea="this.selectedArea"
-            :padding="this.mapPadding"
+            :initialPosition="this.position"
+            :initialLayers="this.visibleLayers"
             :user="this.user"
             :features="this.data.features"
         />
@@ -77,7 +74,6 @@ export default {
     data() {
         return {
             data: null,
-            tool: '',
             mapPadding: [0, 0, 0, 0],
             selectedArea: null,
             user: null,
