@@ -160,6 +160,16 @@
                 />
                 <label for="features.layerlist">Lagenlijst</label>
             </div>
+
+            <div class="setting">
+                <input
+                    id="features.legend"
+                    type="checkbox"
+                    name="features.legend"
+                    v-model="data.features.legend"
+                />
+                <label for="features.legend">Legenda</label>
+            </div>
         </div>
 
         <div class="flexer">
