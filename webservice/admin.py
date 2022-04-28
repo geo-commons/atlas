@@ -13,6 +13,20 @@ class LinkedDataInline(admin.TabularInline):
     extra = 0
 
 
+
+@admin.action(description='Geselecteerde kaartlagen dupliceren')
+def duplicate_layer(_modeladmin, _request, queryset):
+    for layer in queryset.all():
+        layer.pk = None
+        layer.published = False
+
+        i = 2
+        while Layer.objects.filter(title=f'{layer.title} ({i})').count() > 0:
+            i += 1
+
+        layer.title = f'{layer.title} ({i})'
+        layer.save()
+
 class LayerAdmin(admin.ModelAdmin):
     form = LayerForm
 
@@ -21,6 +35,8 @@ class LayerAdmin(admin.ModelAdmin):
     list_display_links = ('title',)
     list_editable = ('ordering',)
     list_filter = ('layer_type', 'closed_dataset')
+
+    actions = [duplicate_layer]
 
     inlines = [
         LinkedDataInline,
