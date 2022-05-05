@@ -80,7 +80,7 @@ class Layer(models.Model):
     FORMAT_TYPES = [
         (FORMAT_PNG, 'image/png'),
         (FORMAT_JPEG, 'image/jpeg'),
-        (FORMAT_JPEG, 'image/vnd.jpeg-png'),
+        (FORMAT_JPEG_PNG, 'image/vnd.jpeg-png'),
     ]
 
     objects = models.Manager()
