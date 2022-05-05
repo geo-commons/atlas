@@ -19,7 +19,9 @@
             :is="getComponent(layer.source_type)"
             :name="layer.name"
             :url="layer.url"
+            :format="layer.format"
             :isVisible="layer.is_visible === true"
+            :zIndex="layer.is_base ? 0 : 1"
             :vectorStyle="layer.style"
             :opacity="layer.opacity"
         >
@@ -50,7 +52,7 @@
 </template>
 
 <script>
-import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
+import { Icon, Style, Fill, Stroke } from 'ol/style'
 import Feature from 'ol/Feature'
 import { Point } from 'ol/geom'
 

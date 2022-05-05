@@ -20,6 +20,7 @@ export default {
             name: this.name,
             visible: this.isVisible,
             opacity: this.opacity,
+            zIndex: this.zIndex,
             source: new XYZSource({
                 url: this.url,
                 projection: rdProjection,
@@ -37,6 +38,7 @@ export default {
         layer: String,
         isVisible: Boolean,
         opacity: Number,
+        zIndex: Number,
     },
     watch: {
         url(value) {

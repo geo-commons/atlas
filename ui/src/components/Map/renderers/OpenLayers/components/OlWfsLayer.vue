@@ -62,6 +62,7 @@ export default {
             visible: this.isVisible,
             source: this.source,
             opacity: this.opacity,
+            zIndex: this.zIndex,
             selectable: true,
         })
 
@@ -78,6 +79,7 @@ export default {
         isVisible: Boolean,
         opacity: Number,
         vectorStyle: Object,
+        zIndex: Number,
     },
     watch: {
         url(value) {

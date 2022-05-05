@@ -49,7 +49,7 @@ class LayerAdmin(admin.ModelAdmin):
             'fields': ('title', 'layer_id', 'layer_type', 'published')
         }),
         ('Bron', {
-            'fields': ('layer_source', 'layer_name', 'source_type', 'projection', 'server_type')
+            'fields': ('layer_source', 'layer_name', 'source_type', 'projection', 'server_type', 'format')
         }),
         ('Weergave', {
             'fields': (

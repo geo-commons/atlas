@@ -5,26 +5,13 @@
 <script>
 import TileLayer from 'ol/layer/Tile'
 import Projection from 'ol/proj/Projection'
-import WMTSTileGrid from 'ol/tilegrid/WMTS'
-import WMTSSource from 'ol/source/WMTS'
-import { getTopLeft } from 'ol/extent.js'
+import WMTSCapabilities from 'ol/format/WMTSCapabilities'
+import WMTSSource, { optionsFromCapabilities } from 'ol/source/WMTS'
 
 const rdProjection = new Projection({
     code: 'EPSG:28992',
     extent: [-285401.92, 22598.08, 595401.92, 903401.92],
 })
-
-// can be calculated based on resolution z0, written out for clarity
-// see https://www.geonovum.nl/uploads/standards/downloads/nederlandse_richtlijn_tiling_-_versie_1.1.pdf
-const resolutions = [
-    3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84,
-    0.42, 0.21,
-]
-
-const matrixIds = new Array(15)
-for (var i = 0; i < 15; ++i) {
-    matrixIds[i] = i
-}
 
 export default {
     name: 'WmtsLayer',
@@ -34,21 +21,15 @@ export default {
             name: this.name,
             visible: this.isVisible,
             opacity: this.opacity,
-            source: new WMTSSource({
-                url: this.url,
-                layer: this.name,
-                projection: rdProjection,
-                matrixSet: 'EPSG:28992',
-                format: 'image/png',
-                tileGrid: new WMTSTileGrid({
-                    origin: getTopLeft(rdProjection.getExtent()),
-                    resolutions,
-                    matrixIds,
-                }),
-            }),
+            source: null,
+            zIndex: this.zIndex,
         })
 
         this.map.addLayer(this.tileLayer)
+
+        if (this.isVisible) {
+            this.setSource()
+        }
     },
     destroyed() {
         this.map.removeLayer(this.tileLayer)
@@ -59,6 +40,8 @@ export default {
         layer: String,
         isVisible: Boolean,
         opacity: Number,
+        zIndex: Number,
+        format: String,
     },
     watch: {
         url(value) {
@@ -69,9 +52,38 @@ export default {
         },
         isVisible(value) {
             this.tileLayer.set('visible', value)
+
+            if (value && !this.tileLayer.getSource()) {
+                this.setSource()
+            }
         },
         opacity(value) {
             this.tileLayer.set('opacity', value)
+        },
+    },
+    methods: {
+        async setSource() {
+            const response = await fetch(`${this.url}?REQUEST=GetCapabilities&service=wmts`)
+            const body = await response.text()
+            const caps = new WMTSCapabilities().read(body)
+            const wmts = new WMTSSource(
+                optionsFromCapabilities(caps, {
+                    layer: this.name,
+                    matrixSet: 'EPSG:28992',
+                    format: this.format,
+                })
+            )
+
+            this.tileLayer.setSource(
+                new WMTSSource({
+                    url: this.url,
+                    layer: this.name,
+                    projection: rdProjection,
+                    matrixSet: 'EPSG:28992',
+                    format: this.format,
+                    tileGrid: wmts.getTileGrid(),
+                })
+            )
         },
     },
 }
