@@ -27,6 +27,7 @@ export default {
             visible: this.isVisible,
             opacity: this.opacity,
             source: this.source,
+            zIndex: this.zIndex,
         })
 
         this.map.addLayer(this.tileLayer)
@@ -40,6 +41,8 @@ export default {
         layer: String,
         isVisible: Boolean,
         opacity: Number,
+        zIndex: Number,
+        format: String,
     },
     watch: {
         url(value) {

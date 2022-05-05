@@ -74,6 +74,15 @@ class Layer(models.Model):
         (SOURCE_MVT, 'MVT')
     ]
 
+    FORMAT_PNG = 'image/png'
+    FORMAT_JPEG = 'image/jpeg'
+    FORMAT_JPEG_PNG = 'image/vnd.jpeg-png'
+    FORMAT_TYPES = [
+        (FORMAT_PNG, 'image/png'),
+        (FORMAT_JPEG, 'image/jpeg'),
+        (FORMAT_JPEG, 'image/vnd.jpeg-png'),
+    ]
+
     objects = models.Manager()
     authorized = LayerManager()
 
@@ -85,6 +94,8 @@ class Layer(models.Model):
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
 
     layer_source = models.ForeignKey('Source', verbose_name='Bron', on_delete=models.SET_NULL, null=True)
+
+    format = models.CharField('Formaat', max_length=128, choices=FORMAT_TYPES, default=FORMAT_PNG)
 
     meta_name = models.CharField('Naam', max_length=128, null=True,)
     meta_kind = models.CharField('Soort', max_length=128, null=True,
@@ -288,6 +299,7 @@ source: new ol.source.TileWMS({{
             'login_required': self.login_required,
             'projection': self.projection,
             'extent': self.extent,
+            'format': self.format,
             'zoom_min': self.zoom_min,
             'zoom_max': self.zoom_max,
             'category': {

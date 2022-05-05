@@ -56,6 +56,7 @@ export default {
             name: this.name,
             visible: this.isVisible,
             opacity: this.opacity,
+            zIndex: this.zIndex,
             source: null,
             selectable: true,
         })
@@ -74,6 +75,7 @@ export default {
         layer: String,
         isVisible: Boolean,
         opacity: Number,
+        zIndex: Number,
     },
     watch: {
         url(value) {
