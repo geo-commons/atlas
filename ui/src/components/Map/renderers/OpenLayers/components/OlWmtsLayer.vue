@@ -4,14 +4,8 @@
 
 <script>
 import TileLayer from 'ol/layer/Tile'
-import Projection from 'ol/proj/Projection'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import WMTSSource, { optionsFromCapabilities } from 'ol/source/WMTS'
-
-const rdProjection = new Projection({
-    code: 'EPSG:28992',
-    extent: [-285401.92, 22598.08, 595401.92, 903401.92],
-})
 
 export default {
     name: 'WmtsLayer',
@@ -78,7 +72,7 @@ export default {
                 new WMTSSource({
                     url: this.url,
                     layer: this.name,
-                    projection: rdProjection,
+                    projection: 'EPSG:28992',
                     matrixSet: 'EPSG:28992',
                     format: this.format,
                     tileGrid: wmts.getTileGrid(),
