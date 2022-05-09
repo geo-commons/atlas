@@ -4,13 +4,7 @@
 
 <script>
 import TileLayer from 'ol/layer/Tile'
-import Projection from 'ol/proj/Projection'
 import TileWMSSource from 'ol/source/TileWMS'
-
-const rdProjection = new Projection({
-    code: 'EPSG:28992',
-    extent: [-285401.92, 22598.08, 595401.92, 903401.92],
-})
 
 export default {
     name: 'WmsLayer',
@@ -18,8 +12,13 @@ export default {
     created() {
         this.source = new TileWMSSource({
             url: this.url,
-            params: { layers: this.name },
-            projection: rdProjection,
+            params: {
+                VERSION: '1.1.1',
+                FORMAT: this.format,
+                LAYERS: this.name,
+                tiled: true,
+            },
+            projection: 'EPSG:28992',
         })
 
         this.tileLayer = new TileLayer({

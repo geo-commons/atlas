@@ -7,11 +7,6 @@ import TileLayer from 'ol/layer/Tile'
 import Projection from 'ol/proj/Projection'
 import XYZSource from 'ol/source/XYZ'
 
-const rdProjection = new Projection({
-    code: 'EPSG:28992',
-    extent: [-285401.92, 22598.08, 595401.92, 903401.92],
-})
-
 export default {
     name: 'OlXyzLayer',
     inject: ['map'],
@@ -23,7 +18,7 @@ export default {
             zIndex: this.zIndex,
             source: new XYZSource({
                 url: this.url,
-                projection: rdProjection,
+                projection: 'EPSG:28992',
             }),
         })
 
