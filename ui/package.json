@@ -12,7 +12,7 @@
     "es6-promise": "4.2.8",
     "geostyler-openlayers-parser": "3.0.0",
     "js-cookie": "3.0.1",
-    "markdown-it": "12.3.0",
+    "markdown-it": "13.0.1",
     "ol": "6.14.1",
     "proj4": "2.7.5",
     "vue": "2.6.14",
