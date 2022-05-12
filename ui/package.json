@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "3.20.0",
+    "ejs": "^3.1.8",
     "es6-promise": "4.2.8",
     "geostyler-openlayers-parser": "3.0.0",
     "js-cookie": "3.0.1",

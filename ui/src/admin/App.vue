@@ -22,6 +22,8 @@ export default {
 
     --color-text-grey: rgba(0, 0, 0, 0.55);
 
+    --color-grey-20: #eaeaea; /* divider (list items, files) */
+    --color-grey-30: #dddddd; /* divider (sections, header) */
     --color-grey-40: #f5f5f5;
     --color-grey-50: #eaeaea;
     --color-grey-60: #dadada;

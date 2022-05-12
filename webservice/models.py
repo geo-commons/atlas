@@ -358,6 +358,7 @@ class Map(models.Model):
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.')
     layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
     features = models.JSONField(default=dict, blank=True, verbose_name='Functies')
+    settings = models.JSONField(default=dict, blank=True, verbose_name='Instellingen')
 
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'

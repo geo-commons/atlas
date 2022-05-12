@@ -8,9 +8,16 @@
                     @change="this.updateLayers"
                     :initialData="this.data"
                 />
+                <ListPanelAdmin
+                    v-if="this.sidebar === 'List'"
+                    @show-form="() => this.showSidebar('Form')"
+                    @change="this.updateLayers"
+                    :initialData="this.data"
+                />
                 <MapForm
                     v-if="this.sidebar === 'Form'"
                     @show-layers="() => this.showSidebar('Layers')"
+                    @show-list="() => this.showSidebar('List')"
                     @delete="this.deleteMap"
                     @submit="this.saveMap"
                     :initialData="this.data"
@@ -26,6 +33,7 @@
             :initialLayers="this.visibleLayers"
             :user="this.user"
             :features="this.data.features"
+            :settings="this.data.settings"
         />
     </div>
 </template>
@@ -37,13 +45,15 @@ import { mapState } from 'vuex'
 import Map from '../../components/Map/Map'
 import MapForm from '../components/MapForm'
 import MapLayers from '../components/MapLayers'
+import ListPanelAdmin from '../components/ListPanelAdmin'
 
 export default {
-    name: 'MapUpdate',
+    name: 'MapCreateUpdate',
     components: {
         Map,
         MapForm,
         MapLayers,
+        ListPanelAdmin,
     },
     created() {
         this.getMap()
@@ -98,6 +108,7 @@ export default {
 
             this.data = {
                 features: {},
+                settings: {},
             }
         },
         async saveMap(data) {
