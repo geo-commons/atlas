@@ -83,11 +83,9 @@ export default {
     },
     methods: {
         fit(geometryOrExtent, options) {
-            this.view.padding = options.padding
-            this.view.fit(geometryOrExtent, { duration: options.duration })
+            this.view.fit(geometryOrExtent, options)
         },
-        centerOn(coordinates, options) {
-            this.view.padding = options.padding
+        centerOn(coordinates) {
             this.view.animate({ center: coordinates, duration: 100 })
         },
         adjustZoom(delta) {

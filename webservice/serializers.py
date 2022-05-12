@@ -5,7 +5,7 @@ from .models import Map, Layer
 class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
-        fields = ['id', 'title', 'slug', 'features', 'layers']
+        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers']
 
 
 class LayerSerializer(serializers.ModelSerializer):

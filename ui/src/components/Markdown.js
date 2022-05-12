@@ -6,6 +6,9 @@ const Markdown = Vue.extend({
     props: {
         source: {
             required: true,
+            default: function () {
+                return ''
+            },
         },
         options: {
             required: false,

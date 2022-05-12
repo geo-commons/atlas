@@ -16,6 +16,15 @@
             />
         </div>
 
+        <ListPanel
+            v-if="this.showList && this.layers.length > 0"
+            ref="listPanel"
+            :layer="this.layers[1]"
+            :titleTemplate="this.settings.title"
+            :shortDescriptionTemplate="this.settings.short_description"
+            @hidePanel="this.toggleList"
+            @on-fit="(feature) => this.$refs.map.fit(feature, { maxZoom: 19 })"
+        />
         <PointInfoPanel
             v-if="!this.showPanoramaPanel"
             :layers="this.layers"
@@ -44,6 +53,31 @@
                 @set-position="this.setPosition"
                 @toggle-data-panel="this.toggleDataPanel"
             />
+
+            <div class="toggle-buttons">
+                <Button
+                    v-if="this.features.list && !this.showList"
+                    size="large"
+                    label="Lijst"
+                    dropShadow
+                    @click="this.toggleList"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        enable-background="new 0 0 24 24"
+                        height="24px"
+                        viewBox="0 0 24 24"
+                        width="24px"
+                        fill="#000000"
+                    >
+                        <rect fill="none" height="24" width="24" />
+                        <path
+                            d="M3,5v14h18V5H3z M7,7v2H5V7H7z M5,13v-2h2v2H5z M5,15h2v2H5V15z M19,17H9v-2h10V17z M19,13H9v-2h10V13z M19,9H9V7h10V9z"
+                        />
+                    </svg>
+                </Button>
+            </div>
+
             <div class="top-right-panels">
                 <ToolsPanel
                     :features="this.features"
@@ -81,6 +115,8 @@ const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locati
 
 import OpenLayersRenderer from './renderers/OpenLayers/OpenLayers'
 
+import Button from '../Button'
+import ListPanel from '../ListPanel'
 import DataPanel from '../DataPanel'
 import PointInfoPanel from '../PointInfoPanel'
 import SearchPanel from '../SearchPanel'
@@ -103,16 +139,24 @@ export default {
                 }
             },
         },
+        settings: {
+            type: Object,
+            default: () => {
+                return {}
+            },
+        },
         isEmbed: {
             type: Boolean,
             default: () => false,
         },
     },
     components: {
+        Button,
         SearchPanel,
         LayersPanel,
         DataPanel,
         PointInfoPanel,
+        ListPanel,
         OpenLayersRenderer,
         ToolsPanel,
         ZoomPanel,
@@ -126,6 +170,7 @@ export default {
             selectedArea: null,
             showDataPanel: false,
             showPanoramaPanel: false,
+            showList: false,
         }
     },
     methods: {
@@ -164,6 +209,9 @@ export default {
             if (!this.showDataPanel) {
                 this.selectedArea = null
             }
+        },
+        toggleList() {
+            this.showList = !this.showList
         },
         setTool(tool) {
             this.tool = tool
@@ -275,5 +323,16 @@ export default {
 
 .bottom-right-panels > *:not(:last-child) {
     margin-bottom: 12px;
+}
+
+.toggle-buttons {
+    position: absolute;
+    top: var(--padding-screen);
+    left: var(--padding-screen);
+    display: flex;
+}
+
+.toggle-buttons > *:not(:last-child) {
+    margin-right: 8px;
 }
 </style>

@@ -1,0 +1,156 @@
+<template>
+    <Panel :title="layer.title" @hidePanel="this.hidePanel">
+        <ul>
+            <li
+                v-for="feature in features"
+                v-bind:key="feature.id"
+                class="list-item"
+                @click="selectFeature(feature)"
+            >
+                <div class="header">
+                    <span class="name">
+                        <Template :source="titleTemplate" :data="feature.properties" />
+                    </span>
+                </div>
+                <div class="address">
+                    <Template :source="shortDescriptionTemplate" :data="feature.properties" />
+                </div>
+            </li>
+        </ul>
+    </Panel>
+</template>
+
+<script>
+import Template from './Template'
+import GeoJSON from 'ol/format/GeoJSON'
+
+import Panel from './Panel'
+
+export default {
+    name: 'ListPanel',
+    components: {
+        Panel,
+        Template,
+    },
+    props: {
+        layer: Object,
+        titleTemplate: String,
+        shortDescriptionTemplate: String,
+    },
+    mounted() {
+        this.fetchFeatures()
+    },
+    data() {
+        return {
+            features: [],
+            error: false,
+            loading: false,
+        }
+    },
+    methods: {
+        selectFeature(feature) {
+            const geometry = new GeoJSON().readFeature(feature).getGeometry()
+            this.$emit('on-fit', geometry.getExtent())
+        },
+        hidePanel() {
+            this.$emit('hidePanel')
+        },
+        async fetchFeatures() {
+            this.loading = true
+            this.error = false
+
+            const params = new URLSearchParams([
+                ['service', 'WFS'],
+                ['version', '1.0.0'],
+                ['request', 'GetFeature'],
+                ['typename', this.layer.name],
+                ['outputFormat', 'application/json'],
+                ['maxFeatures', '5000'],
+            ])
+
+            try {
+                const url = new URL(this.layer.url)
+                url.search = params.toString()
+
+                const result = await fetch(url.toString())
+                const data = await result.json()
+
+                this.features = data.features
+            } catch (e) {
+                console.error(e)
+                this.error = true
+                this.features = []
+            }
+
+            this.loading = false
+        },
+        formatLength(length) {
+            if (length > 1000) {
+                return Math.round(length / 1000) + ' ' + 'km'
+            }
+
+            return Math.round(length) + ' ' + 'm'
+        },
+    },
+}
+</script>
+
+<style scoped>
+.list-item {
+    display: block;
+    padding: 12px 16px;
+}
+
+.list-item:not(:last-child) {
+    border-bottom: 1px solid var(--color-grey-20);
+}
+
+.list-item:not([disabled]) {
+    cursor: pointer;
+}
+
+.list-item:not([disabled]):hover {
+    background: var(--color-hover);
+}
+
+.list-item:not([disabled]):active {
+    background: var(--color-active);
+}
+
+.list-item:not([disabled]):hover .name,
+.list-item:not([disabled]):active .name {
+    text-decoration: underline;
+}
+
+.header {
+    display: flex;
+}
+
+.name {
+    color: var(--color-primary);
+}
+
+.type {
+    display: flex;
+    align-content: center;
+    font-size: var(--font-size-small);
+    color: var(--color-text-grey);
+    margin-top: 2px;
+}
+
+.type img {
+    margin-left: 5px;
+}
+
+.distance {
+    margin-left: auto;
+    flex-shrink: 0;
+    color: var(--color-text-grey);
+    font-size: var(--font-size-small);
+}
+
+.address {
+    margin-top: 4px;
+    font-size: var(--font-size-small);
+}
+</style>
