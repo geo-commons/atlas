@@ -13,7 +13,7 @@ import WMTSSource, { optionsFromCapabilities } from 'ol/source/WMTS'
 
 const rdProjection = new Projection({
     code: 'EPSG:28992',
-    extent: [-285401.92, 22598.08, 595401.92, 903401.92],
+    units: 'm',
 })
 
 const DEFAULT_STYLE = [
@@ -110,7 +110,7 @@ export default {
 
             this.tileLayer.setSource(
                 new VectorTileSource({
-                    projection: 'EPSG:28992',
+                    projection: rdProjection,
                     format: new MVT(),
                     tileGrid: wmts.getTileGrid(),
                     tileUrlFunction: wmts.getTileUrlFunction(),

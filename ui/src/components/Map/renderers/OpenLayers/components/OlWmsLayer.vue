@@ -3,8 +3,14 @@
 </template>
 
 <script>
+import Projection from 'ol/proj/Projection'
 import TileLayer from 'ol/layer/Tile'
 import TileWMSSource from 'ol/source/TileWMS'
+
+const rdProjection = new Projection({
+    code: 'EPSG:28992',
+    units: 'm',
+})
 
 export default {
     name: 'WmsLayer',
@@ -17,8 +23,9 @@ export default {
                 FORMAT: this.format,
                 LAYERS: this.name,
                 tiled: true,
+                tilesOrigin: 117000 + ',' + 498000.00000000023,
             },
-            projection: 'EPSG:28992',
+            projection: rdProjection,
         })
 
         this.tileLayer = new TileLayer({

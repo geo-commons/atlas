@@ -3,17 +3,23 @@
 </template>
 
 <script>
+import Projection from 'ol/proj/Projection'
 import { getPointResolution } from 'ol/proj'
 import View from 'ol/View'
 
 const DEFAULT_DPI = 25.4 / 0.28
+
+const rdProjection = new Projection({
+    code: 'EPSG:28992',
+    units: 'm',
+})
 
 export default {
     name: 'ol-view',
     inject: ['map'],
     mounted() {
         this.view = new View({
-            projection: 'EPSG:28992',
+            projection: rdProjection,
             constrainResolution: true,
             enableRotation: false,
             center: this.position.center,
