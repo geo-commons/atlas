@@ -38,7 +38,7 @@ zorgt voor de conversie tussen formaten
 voegt overzichten toe.
 
 ```bash
-gdaladdo --config BIGGTIFF_OVERVIEW YES --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL -r average <input-bestand.tif> 2 4 8 16
+gdaladdo --config BIGGTIFF_OVERVIEW YES --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL -r average <input-bestand.tif> 2 4 8 16 32
 ```
 
 Afhankelijk van de grootte van de originele luchtfoto (de grootte van het grondgebied) en de gebruikte hardware, kan gdalladdo een half uur tot een hele dag of langer bezig zijn.
