@@ -32,6 +32,7 @@
             :selectable="false"
             :vectorStyle="this.MARKER_STYLE"
             :features="markerFeatures"
+            :zIndex="2"
         />
         <ol-vector-layer
             name="geolocation"
@@ -39,6 +40,7 @@
             :isVisible="true"
             :vectorStyle="this.GEOLOCATION_STYLE"
             :features="geolocationFeatures"
+            :zIndex="2"
         />
         <ol-vector-layer
             ref="selectedArea"
@@ -47,6 +49,7 @@
             :isVisible="true"
             :vectorStyle="this.SELECTED_AREA_STYLE"
             :features="selectedAreaFeatures"
+            :zIndex="2"
         />
     </ol-map>
 </template>
