@@ -134,7 +134,6 @@ export default {
     },
     mounted() {
         this.fetchFeatures()
-        this.fetchSearchProperties()
     },
     watch: {
         query: 'fetchFeatures',
@@ -155,6 +154,42 @@ export default {
             this.loading = true
             this.error = false
 
+            if (this.layer.source && this.layer.source.type == 'REST') {
+                this.fetchFeaturesFromREST()
+            } else {
+                this.fetchFeaturesFromWFS()
+                this.fetchSearchProperties()
+            }
+
+            this.loading = false
+        },
+        async fetchFeaturesFromREST() {
+            try {
+                const result = await fetch(this.layer.source.url)
+                const rawData = await result.json()
+
+                this.features = rawData.map((feature) => {
+                    return {
+                        properties: feature,
+                    }
+                })
+
+                this.numberMatched = this.features.length
+
+                if (this.displayProperties.length === 0 && rawData.length > 0) {
+                    // cache first retrieval of properties into this.displayProperties
+                    const fetchedProperties = Object.keys(rawData[0])
+
+                    this.displayProperties =
+                        this.layer.display_properties.length > 0
+                            ? this.layer.display_properties
+                            : fetchedProperties
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        },
+        async fetchFeaturesFromWFS() {
             const params = new URLSearchParams([
                 ['service', 'WFS'],
                 ['version', '1.0.0'],
@@ -218,11 +253,9 @@ export default {
                 this.searchProperties = []
                 this.numberMatched = 0
             }
-
-            this.loading = false
         },
         async fetchSearchProperties() {
-            if (this.layer.search_properties.length > 0) {
+            if (this.layer.search_properties && this.layer.search_properties.length > 0) {
                 this.searchProperties = this.layer.search_properties
                 return
             }

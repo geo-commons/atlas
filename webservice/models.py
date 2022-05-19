@@ -47,8 +47,18 @@ class Category(models.Model):
 
 
 class Source(models.Model):
+    TYPE_GEO = 'GEO'
+    TYPE_REST = 'REST'
+
+    TYPES = [
+        (TYPE_GEO, 'Geo'),
+        (TYPE_REST, 'REST'),
+    ]
+
     title = models.CharField('Titel', max_length=128, null=True)
     url = models.URLField()
+    type = models.CharField(max_length=25, choices=TYPES, default=TYPE_GEO)
+    allow_authentication = models.BooleanField('Sta authenticatie toe', default=False)
 
     class Meta:
         verbose_name = 'Bron'
@@ -56,6 +66,14 @@ class Source(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'url': self.url,
+            'type': self.type,
+            'allow_authentication': self.allow_authentication
+        }
 
 
 class Layer(models.Model):
@@ -323,8 +341,10 @@ source: new ol.source.TileWMS({{
 
 
 class LinkedData(models.Model):
-    source = models.ForeignKey(
+    parent = models.ForeignKey(
         Layer, on_delete=models.CASCADE, related_name='linked_data')
+
+    source = models.ForeignKey('Source', on_delete=models.CASCADE, related_name='linked_data', null=True)
 
     title = models.CharField(_('Titel'), max_length=128, null=True)
     layer_name = models.CharField(_('Laag naam'), max_length=128)
@@ -344,6 +364,7 @@ class LinkedData(models.Model):
     def to_dict(self):
         return {
             'title': self.title,
+            'source': self.source.to_dict() if self.source else None,
             'name': self.layer_name,
             'url': self.url,
             'source_key': self.source_key,
