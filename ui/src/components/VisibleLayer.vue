@@ -127,7 +127,7 @@ export default {
             const view = new View()
 
             const params = {
-                LEGEND_OPTIONS: 'forceTitles:off',
+                LEGEND_OPTIONS: 'forceTitles:off;forceLabels:on',
             }
 
             return wmsSource.getLegendUrl(view.getResolution(), params)
