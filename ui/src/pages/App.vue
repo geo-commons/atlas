@@ -44,7 +44,7 @@
             :showDataPanel="showDataPanel"
             :user="this.user"
             @set-position="this.setPosition"
-            @on-fit="(layer) => this.$refs.map.fit(layer, { maxZoom: 19 })"
+            @on-fit="(layer) => this.$refs.map.fit(layer, { maxZoom: 18 })"
             @toggle-data-panel="this.toggleDataPanel"
         />
 

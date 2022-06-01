@@ -23,7 +23,7 @@
             :titleTemplate="this.settings.title"
             :shortDescriptionTemplate="this.settings.short_description"
             @hidePanel="this.toggleList"
-            @on-fit="(feature) => this.$refs.map.fit(feature, { maxZoom: 19 })"
+            @on-fit="(feature) => this.$refs.map.fit(feature, { maxZoom: 18 })"
         />
         <PointInfoPanel
             v-if="!this.showPanoramaPanel"
@@ -42,7 +42,7 @@
             :showDataPanel="showDataPanel"
             :user="this.user"
             @set-position="this.setPosition"
-            @on-fit="(layer) => this.$refs.map.fit(layer, { maxZoom: 19 })"
+            @on-fit="(layer) => this.$refs.map.fit(layer, { maxZoom: 18 })"
             @toggle-data-panel="this.toggleDataPanel"
         />
 
