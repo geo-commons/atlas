@@ -30,6 +30,7 @@
             name="marker"
             :isVisible="true"
             :selectable="false"
+            :zIndex="2"
             :vectorStyle="this.MARKER_STYLE"
             :features="markerFeatures"
         />
@@ -37,6 +38,7 @@
             name="geolocation"
             :selectable="false"
             :isVisible="true"
+            :zIndex="2"
             :vectorStyle="this.GEOLOCATION_STYLE"
             :features="geolocationFeatures"
         />
@@ -45,6 +47,7 @@
             name="selectedArea"
             :selectable="false"
             :isVisible="true"
+            :zIndex="2"
             :vectorStyle="this.SELECTED_AREA_STYLE"
             :features="selectedAreaFeatures"
         />
