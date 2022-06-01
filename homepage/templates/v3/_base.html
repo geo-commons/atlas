@@ -15,7 +15,6 @@
   <body>
     {% block content %}{% endblock %}
     {% render_bundle "app" %}
-    {% render_bundle "map" %}
 
     {% if google_maps %}
       <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps.api_key }}"></script>

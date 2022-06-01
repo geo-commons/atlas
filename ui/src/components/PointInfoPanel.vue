@@ -44,7 +44,7 @@ export default {
     },
     methods: {
         closeInfoPanel() {
-            this.$emit('set-searchquery', '')
+            this.searchQuery = ''
             this.$emit('set-position', { ...this.position, marker: null })
         },
     },
@@ -52,11 +52,18 @@ export default {
         visibleLayers() {
             return this.layers.filter((layer) => layer.is_visible && !layer.is_base)
         },
+        searchQuery: {
+            get() {
+                return this.$store.state.searchQuery
+            },
+            set(value) {
+                this.$store.commit('setSearchQuery', value)
+            },
+        },
     },
     props: {
         position: Object,
         layers: Array,
-        searchQuery: String,
         showInfoPanel: Boolean,
         user: Object,
     },

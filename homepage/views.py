@@ -190,24 +190,17 @@ def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
 
     context = {}
-    features = {}
-    settings = {}
 
     if theme_slug:
         theme = get_object_or_404(Map, slug=theme_slug)
+        visible_layers = authorized_layers.filter(map=theme)
         context['title'] = theme.title
-        context['map'] = theme
-        visible_layers = authorized_layers.filter(Q(map=theme) | Q(is_base=True))
-        features = theme.features
-        settings = theme.settings
     else:
         visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context['data'] = {
         'is_embed': False,
         'config': _get_config(request),
-        'features': features,
-        'settings': settings,
         'user': _get_user(request),
         'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
     }

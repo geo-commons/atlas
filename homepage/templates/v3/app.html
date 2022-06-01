@@ -1,12 +1,6 @@
 {% extends 'v3/_base.html' %}
 
 {% block content %}
-  {% if map %}
-    <div id="map" class="app"></div>
-    {{ data|json_script:"map-data" }}
-  {% else %}
-    <div id="app" class="app"></div>
-    {{ data|json_script:"app-data" }}
-  {% endif %}
-
+  <div id="app" class="app"></div>
+  {{ data|json_script:"app-data" }}
 {% endblock %}

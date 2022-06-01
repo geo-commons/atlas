@@ -24,7 +24,6 @@ module.exports = {
 
     pages: {
         app: { entry: 'src/app.js' },
-        map: { entry: 'src/map.js' },
         admin: { entry: 'src/admin.js' },
     },
 }
