@@ -1,5 +1,10 @@
 <template>
-    <ExpandButton :title="this.computedTitle" :isOpen="isOpen" class="feature">
+    <ExpandButton
+        :title="this.computedTitle"
+        :isOpen="isOpen"
+        @toggle="toggleExpand"
+        class="feature"
+    >
         <template v-slot:header>
             <button
                 class="iconbutton"
@@ -88,7 +93,25 @@
                                         </button>
                                     </td>
                                     <td v-for="property in displayProperties" v-bind:key="property">
-                                        {{ feature.properties[property] }}
+                                        <span v-if="templates && templates[property]">
+                                            {{
+                                                renderedTemplate(
+                                                    templates[property],
+                                                    feature.properties
+                                                        ? feature.properties
+                                                        : feature
+                                                )
+                                            }}
+                                        </span>
+                                        <span
+                                            v-if="!templates || (templates && !templates[property])"
+                                        >
+                                            {{
+                                                feature.properties
+                                                    ? feature.properties[property]
+                                                    : feature[property]
+                                            }}
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -101,6 +124,8 @@
 </template>
 
 <script>
+import ejs from 'ejs'
+import { mapState } from 'vuex'
 import GeoJSON from 'ol/format/GeoJSON'
 import { getCenter } from 'ol/extent'
 
@@ -120,7 +145,7 @@ export default {
             searchProperties: [],
             loading: false,
             error: false,
-            numberMatched: 0,
+            numberMatched: null,
         }
     },
     props: {
@@ -130,11 +155,12 @@ export default {
         isOpen: Boolean,
         filter: Object,
         position: Object,
-        user: Object,
+        templates: Object,
     },
     mounted() {
-        this.fetchFeatures()
-        this.fetchSearchProperties()
+        if (this.isOpen && this.features.length === 0) {
+            this.fetchFeatures()
+        }
     },
     watch: {
         query: 'fetchFeatures',
@@ -149,9 +175,27 @@ export default {
 
             return this.layer.title
         },
+        ...mapState({
+            user: (state) => state.user,
+        }),
     },
     methods: {
-        async fetchFeatures() {
+        toggleExpand(isOpen) {
+            if (isOpen) {
+                this.fetchFeatures()
+            }
+        },
+        fetchFeatures() {
+            switch (this.layer.source) {
+                case 'REST':
+                    this.fetchFeaturesFromREST()
+                    break
+                default:
+                    this.fetchFeaturesFromWFS()
+                    this.fetchSearchPropertiesFromWFS()
+            }
+        },
+        async fetchFeaturesFromWFS() {
             this.loading = true
             this.error = false
 
@@ -221,7 +265,7 @@ export default {
 
             this.loading = false
         },
-        async fetchSearchProperties() {
+        async fetchSearchPropertiesFromWFS() {
             if (this.layer.search_properties.length > 0) {
                 this.searchProperties = this.layer.search_properties
                 return
@@ -254,6 +298,24 @@ export default {
                 console.error(e)
             }
         },
+        async fetchFeaturesFromREST() {
+            try {
+                const url = new URL(ejs.render(this.layer.url, { filter: this.filter }))
+                const result = await fetch(url.toString(), this.getFetchParameters())
+                const data = await result.json()
+                this.features = data._embedded['zakelijkGerechtigden']
+                this.numberMatched = this.features.length
+
+                const fetchedProperties = Object.keys(this.features[0])
+
+                this.displayProperties =
+                    this.layer.display_properties.length > 0
+                        ? this.layer.display_properties
+                        : fetchedProperties
+            } catch (e) {
+                console.error(e)
+            }
+        },
         downloadCSV() {
             const separator = ';'
             const filename = this.layer.title
@@ -269,11 +331,12 @@ export default {
             this.features.forEach((feature) => {
                 data +=
                     this.displayProperties
-                        .map((property) =>
-                            feature.properties[property] !== null
+                        .map((property) => {
+                            const root = feature.properties ? feature.properties : feature
+                            return root[property] !== null
                                 ? `"${String(feature.properties[property]).replace(/\"/g, '""')}"`
                                 : ''
-                        )
+                        })
                         .join(separator) + '\n'
             })
 
@@ -302,6 +365,9 @@ export default {
             }
 
             return {}
+        },
+        renderedTemplate(template, data) {
+            return ejs.render(template, data)
         },
     },
 }

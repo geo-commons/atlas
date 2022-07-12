@@ -50,6 +50,7 @@ export default {
     methods: {
         toggle() {
             this.showContent = !this.showContent
+            this.$emit('toggle', this.showContent)
         },
     },
     props: {

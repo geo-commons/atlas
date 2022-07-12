@@ -323,9 +323,17 @@ source: new ol.source.TileWMS({{
 
 
 class LinkedData(models.Model):
-    source = models.ForeignKey(
+    SOURCE_WFS = 'WFS'
+    SOURCE_REST = 'REST'
+    SOURCE_TYPES = [
+        (SOURCE_WFS, 'WFS'),
+        (SOURCE_REST, 'REST'),
+    ]
+
+    parent = models.ForeignKey(
         Layer, on_delete=models.CASCADE, related_name='linked_data')
 
+    source = models.CharField(max_length=10, choices=SOURCE_TYPES)
     title = models.CharField(_('Titel'), max_length=128, null=True)
     layer_name = models.CharField(_('Laag naam'), max_length=128)
     url = models.CharField(_('URL'), max_length=500)
@@ -333,6 +341,7 @@ class LinkedData(models.Model):
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
     popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.')
+    templates = models.JSONField(default=dict, blank=True, verbose_name='Templates')
 
     class Meta:
         verbose_name = 'Gekoppelde data'
@@ -346,9 +355,11 @@ class LinkedData(models.Model):
             'title': self.title,
             'name': self.layer_name,
             'url': self.url,
+            'source': self.source,
             'source_key': self.source_key,
             'target_key': self.target_key,
-            'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else []
+            'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else [],
+            'templates': self.templates
         }
 
 

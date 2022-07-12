@@ -45,7 +45,6 @@
                 :position="position"
                 :selectedArea="selectedArea"
                 :query="query"
-                :user="user"
                 @set-position="setPosition"
                 @on-fit="onFit"
             />

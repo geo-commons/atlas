@@ -28,6 +28,7 @@
                         value: features[0].properties[linkedData.source_key],
                     }"
                     :position="position"
+                    :templates="linkedData.templates"
                     @set-position="setPosition"
                 />
             </div>
