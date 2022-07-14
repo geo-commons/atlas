@@ -15,7 +15,6 @@
                 @tool-used="this.toolUsed"
             />
         </div>
-
         <ListPanel
             v-if="this.showList && this.layers.length > 0"
             ref="listPanel"

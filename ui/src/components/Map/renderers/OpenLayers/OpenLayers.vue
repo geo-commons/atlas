@@ -21,6 +21,7 @@
             :url="layer.url"
             :format="layer.format"
             :isVisible="layer.is_visible === true"
+            :loginRequired="layer.login_required"
             :zIndex="layer.is_base ? 0 : 1"
             :vectorStyle="layer.style"
             :opacity="layer.opacity"
