@@ -313,7 +313,8 @@ source: new ol.source.TileWMS({{
                 'organization': self.meta_org,
                 'updated': self.meta_updated
             },
-            'linked_data': [item.to_dict() for item in self.linked_data.all()]
+            'linked_data': [item.to_dict() for item in self.linked_data.all()],
+            'templates': [item.to_dict() for item in self.templates.all()]
         }
 
     class Meta:
@@ -333,7 +334,6 @@ class LinkedData(models.Model):
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
     popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.')
-
     class Meta:
         verbose_name = 'Gekoppelde data'
         verbose_name_plural = 'Gekoppelde data'
@@ -349,6 +349,41 @@ class LinkedData(models.Model):
             'source_key': self.source_key,
             'target_key': self.target_key,
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else []
+        }
+
+
+class Template(models.Model):
+    layer = models.ForeignKey(
+        Layer, on_delete=models.CASCADE, related_name='templates')
+
+    source = models.ForeignKey('Source', on_delete=models.CASCADE)
+    endpoint = models.CharField(_('Endpoint'), max_length=500)
+    title = models.CharField('Titel', max_length=128)
+    list = models.CharField(_('Veld met lijst'), max_length=128, blank=True, null=True)
+    headers = models.TextField(_('Kopjes'), max_length=128, blank=True, null=True,
+                               help_text='Voer één veld per regel in.')
+    fields = models.TextField(_('Velden'), blank=True, null=True,
+                              help_text='Voer één veld per regel in.')
+    ordering = models.PositiveIntegerField('Sortering',
+                                           default=0, editable=True, db_index=True)
+
+
+    class Meta:
+        verbose_name = 'Template'
+        verbose_name_plural = 'Templates'
+        ordering = ['ordering']
+
+    def __str__(self):
+        return self.title
+
+    def to_dict(self):
+        return {
+            'source': self.source.url,
+            'endpoint': self.endpoint,
+            'title': self.title,
+            'list': self.list,
+            'headers': self.headers.split('\r\n') if self.headers else [],
+            'fields': self.fields.split('\r\n') if self.fields else [],
         }
 
 

@@ -96,9 +96,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if AUTHENTICATION_ENABLE_OIDC and os.getenv('OIDC_SESSION_REFRESH', 'False') == 'True':
+if AUTHENTICATION_ENABLE_OIDC:
     MIDDLEWARE += [
-        'mozilla_django_oidc.middleware.SessionRefresh',
+        'utils.middleware.LogoutWhenOIDCTokenIsExpiredMiddleware'
     ]
 
 ROOT_URLCONF = 'atlas.urls'
@@ -171,7 +171,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'nl'
-TIME_ZONE = 'CET'
+TIME_ZONE = 'Europe/Amsterdam'
 USE_I18N = True
 USE_L10N = False
 USE_TZ = True
@@ -213,7 +213,11 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        }
+        },
+        'mozilla_django_oidc': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
     }
 }
 

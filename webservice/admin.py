@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .forms import LayerForm, LinkedDataForm
-from .models import Source, Category, Theme, Layer, Map, LinkedData, Viewer
+from .models import Source, Category, Theme, Layer, Template, Map, LinkedData, Viewer
 
 
 class SourceAdmin(admin.ModelAdmin):
@@ -12,6 +12,10 @@ class LinkedDataInline(admin.TabularInline):
     model = LinkedData
     extra = 0
 
+
+class TemplateInline(admin.StackedInline):
+    model = Template
+    extra = 0
 
 
 @admin.action(description='Geselecteerde kaartlagen dupliceren')
@@ -40,6 +44,7 @@ class LayerAdmin(admin.ModelAdmin):
 
     inlines = [
         LinkedDataInline,
+        TemplateInline,
     ]
 
     save_as = True

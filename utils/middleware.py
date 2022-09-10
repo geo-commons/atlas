@@ -1,7 +1,13 @@
+import json
 import logging
+import time
 
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth import logout
+from django.utils.deprecation import MiddlewareMixin
+from django.utils.encoding import smart_bytes
 from django.urls import reverse
+from josepy.jws import JWS
 
 from .tools import is_ctrix
 
@@ -38,3 +44,22 @@ def check_access_admin(get_response):
         return response
 
     return middleware
+
+
+class LogoutWhenOIDCTokenIsExpiredMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        if not request.user.is_authenticated:
+            return
+
+        if not request.session.get('oidc_access_token'):
+            return
+
+        token = smart_bytes(request.session.get('oidc_access_token'))
+        jws = JWS.from_compact(token)
+
+        try:
+            payload = json.loads(jws.payload)
+            if payload['exp'] < time.time():
+                logout(request)
+        except json.JSONDecodeError:
+            pass
