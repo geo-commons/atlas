@@ -222,7 +222,7 @@ export default {
             this.loading = false
         },
         async fetchSearchProperties() {
-            if (this.layer.search_properties.length > 0) {
+            if (this.layer.search_properties && this.layer.search_properties.length > 0) {
                 this.searchProperties = this.layer.search_properties
                 return
             }

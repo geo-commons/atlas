@@ -16,6 +16,12 @@ const Markdown = Vue.extend({
                 return { linkify: true }
             },
         },
+        inline: {
+            required: false,
+            default: function () {
+                return true
+            },
+        },
     },
     data() {
         return {
@@ -25,7 +31,12 @@ const Markdown = Vue.extend({
     computed: {
         content() {
             const src = this.source
-            return this.md?.renderInline(src)
+
+            if (this.inline) {
+                return this.md?.renderInline(src)
+            }
+
+            return this.md?.render(src)
         },
     },
     created() {
