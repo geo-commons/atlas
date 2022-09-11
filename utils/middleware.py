@@ -2,8 +2,8 @@ import json
 import logging
 import time
 
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
+from django.http import HttpResponseForbidden
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.encoding import smart_bytes
 from django.urls import reverse
@@ -18,30 +18,23 @@ logger = logging.getLogger(__name__)
 def check_access_admin(get_response):
     """Middleware to intercept request to deny access to forbidden pages."""
 
-    admin_url = reverse('admin:login').replace('login/', '')
-    admin2_url = '/atlas/admin2'
-    formidden_urls = [reverse('homepage:downloads')]
+    forbidden_urls = [
+        reverse('admin:index'),
+        reverse('homepage:v3_admin'),
+        reverse('homepage:downloads')
+    ]
 
     def middleware(request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
         path = request.path
-        logger.info("Path: %s is_ctrix: %s", path, is_ctrix(request))
 
-        if not request.user.is_anonymous and not is_ctrix(request):
-            logger.warning("Flush user session.")
-            request.session.flush()
+        if is_ctrix(request):
+            return get_response(request)
 
-        if (path.startswith(admin_url) or
-            path.startswith(admin2_url) or
-                path in formidden_urls) and not is_ctrix(request):
-            request.session.flush()
-            logger.warning("Trying to access page within CTRIX.")
-            raise PermissionDenied
+        for forbidden_url in forbidden_urls:
+            if path.startswith(forbidden_url):
+                return HttpResponseForbidden('Je hebt geen toegang tot deze pagina vanaf deze locatie')
 
-        response = get_response(request)
-
-        return response
+        return get_response(request)
 
     return middleware
 
