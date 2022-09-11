@@ -196,7 +196,7 @@ WEBPACK_LOADER = {
     }
 }
 
-LOGIN_URL = '/atlas/accounts/login/'
+LOGIN_URL = '/atlas/login'
 LOGIN_REDIRECT_URL = '/atlas/'
 LOGOUT_REDIRECT_URL = '/atlas/'
 LOGIN_REDIRECT_URL_FAILURE = '/atlas/login/failure'
