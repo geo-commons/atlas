@@ -120,7 +120,7 @@ class Layer(models.Model):
                                       help_text='Deze instelling is alleen van toepassing op Atlas versie 2 en wordt binnenkort verwijderd')
 
     _popup_attributes = models.CharField(
-        'Toon deze velden', max_length=500, blank=True, null=True)
+        'Voer één veld per regel in. Bij geen invoer worden alle velden getoond', max_length=500, blank=True, null=True)
 
     _search_fields = models.CharField(
         'Zoek in deze velden', max_length=500, blank=True, null=True)
