@@ -1,7 +1,7 @@
 <template>
     <ExpandButton :title="template.title" class="template">
         <p v-if="this.error">{{ this.error }}</p>
-        <Table v-if="!this.error" class="table">
+        <Table v-if="!this.error && template.headers.length > 0" class="table">
             <table>
                 <thead>
                     <tr>
@@ -19,6 +19,11 @@
                 </tbody>
             </table>
         </Table>
+        <markdown
+            v-if="!this.error && template.headers.length === 0"
+            :inline="false"
+            :source="renderString(template.template, fetchedData)"
+        />
     </ExpandButton>
 </template>
 
@@ -29,6 +34,7 @@ import fetchDot from 'fetch-dot'
 
 import ExpandButton from './ExpandButton'
 import Table from './Table'
+import Markdown from './Markdown'
 
 nunjucks.configure({ autoescaping: true })
 
@@ -37,6 +43,7 @@ export default {
     components: {
         ExpandButton,
         Table,
+        Markdown,
     },
     props: {
         layer: Object,
@@ -80,7 +87,12 @@ export default {
                 }
 
                 const data = await result.json()
-                this.fetchedData = fetchDot(this.template.list, data)
+
+                if (this.template.list) {
+                    this.fetchedData = fetchDot(this.template.list, data)
+                } else {
+                    this.fetchedData = data
+                }
             } catch (error) {
                 console.error('Catched error', error)
 

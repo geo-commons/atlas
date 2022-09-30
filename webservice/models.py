@@ -120,7 +120,7 @@ class Layer(models.Model):
                                       help_text='Deze instelling is alleen van toepassing op Atlas versie 2 en wordt binnenkort verwijderd')
 
     _popup_attributes = models.CharField(
-        'Toon deze velden', max_length=500, blank=True, null=True)
+        'Voer één veld per regel in. Bij geen invoer worden alle velden getoond', max_length=500, blank=True, null=True)
 
     _search_fields = models.CharField(
         'Zoek in deze velden', max_length=500, blank=True, null=True)
@@ -359,11 +359,12 @@ class Template(models.Model):
     source = models.ForeignKey('Source', on_delete=models.CASCADE)
     endpoint = models.CharField(_('Endpoint'), max_length=500)
     title = models.CharField('Titel', max_length=128)
-    list = models.CharField(_('Veld met lijst'), max_length=128, blank=True, null=True)
-    headers = models.TextField(_('Kopjes'), max_length=128, blank=True, null=True,
+    list = models.CharField(_('Tabel Veld met lijst'), max_length=128, blank=True, null=True)
+    headers = models.TextField(_('Tabel kopjes'), max_length=128, blank=True, null=True,
                                help_text='Voer één veld per regel in.')
-    fields = models.TextField(_('Velden'), blank=True, null=True,
+    fields = models.TextField(_('Tabel velden'), blank=True, null=True,
                               help_text='Voer één veld per regel in.')
+    template = models.TextField(_('Vrij veld template'), blank=True, null=True, help_text='Het is mogelijk om Markdown te gebruiken.')
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 
@@ -384,6 +385,7 @@ class Template(models.Model):
             'list': self.list,
             'headers': self.headers.split('\r\n') if self.headers else [],
             'fields': self.fields.split('\r\n') if self.fields else [],
+            'template': self.template
         }
 
 
