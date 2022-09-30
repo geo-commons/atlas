@@ -18,6 +18,7 @@ export default {
             style: this.vectorStyle,
             visible: this.isVisible,
             opacity: this.opacity,
+            zIndex: this.zIndex,
             properties: {
                 selectable: this.selectable,
             },
@@ -35,6 +36,8 @@ export default {
         features: Array,
         selectable: Boolean,
         isVisible: Boolean,
+        opacity: Number,
+        zIndex: Number,
     },
     watch: {
         features(features) {
