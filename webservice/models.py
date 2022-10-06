@@ -333,7 +333,7 @@ class LinkedData(models.Model):
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
     popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,
-                                        help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.')
+                                        help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
     class Meta:
         verbose_name = 'Gekoppelde data'
         verbose_name_plural = 'Gekoppelde data'
