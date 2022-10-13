@@ -49,6 +49,8 @@ class Category(models.Model):
 class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     url = models.URLField()
+    authenticate = models.BooleanField('Verstuur authenticatieinformatie naar bron', default=False,
+                                       help_text='Configureer dit alleen voor vertrouwde bronnen')
 
     class Meta:
         verbose_name = 'Bron'
@@ -302,6 +304,9 @@ source: new ol.source.TileWMS({{
             'format': self.format,
             'zoom_min': self.zoom_min,
             'zoom_max': self.zoom_max,
+            'source': {
+                'authenticate': self.layer_source.authenticate if self.layer_source else False
+            },
             'category': {
                 'id': self.layer_type.id,
                 'title': self.layer_type.title

@@ -180,7 +180,7 @@ export default {
             return Object.keys(fetchedProperties)
         },
         getFetchParameters() {
-            if (this.user && this.user.token) {
+            if (this.layer.source.authenticate && this.user && this.user.token) {
                 return {
                     headers: { Authorization: `Bearer ${this.user.token}` },
                 }
