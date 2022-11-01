@@ -18,6 +18,7 @@
 - [Printen](help#toc_18)
 - [Huidige kaartscherm embedden in een andere webpagina](help#toc_19)
 - [Huidige kaartscherm delen met een collega](help#toc_20)
+- [Gebruikte afkortingen](help#toc_20)
 
 
 [Versie-informatie](https://gitlab.com/purmerend/atlas/-/releases)
@@ -295,6 +296,24 @@ betreffende:
 -   Middelpunt van de kaart
 -   Schaal van de kaart
 -   Zichtbare lagen in de kaart
+
+***
+* [Naar boven](#)
+***
+
+## Gebruikte afkortingen
+
+In gemeenteland worden veel afkortingen gebruikt. Het is niet vanzelfsprekend dat iedereen weet waar deze afkortingen voor staan. Daarom hier een opsomming van de afkortingen die binnen Atlas gebruikt worden.
+
+- AFWC  Amsterdamse Federatie van Woningcorporaties
+- APV   Algemene Plaatselijke Verordening
+- BAG   Basisregistratie Adressen en Gebouwen
+- BGT   Basisregistratie Grootschalige Topografie
+- BRK   Basisregistratie Kadaster
+- HHNK  Hoogheemraadschap Hollands Noorderkwartier
+- PWN   Provinciaal Waterleidingbedrijf Noord-Holland
+- RIVM  Rijksinstituut voor Volksgezondheid en Milieu
+- WOZ   Waardering Ontroerende Zaken
 
 ***
 * [Naar boven](#)
