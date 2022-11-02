@@ -19,6 +19,7 @@
 - [Huidige kaartscherm embedden in een andere webpagina](help#toc_19)
 - [Huidige kaartscherm delen met een collega](help#toc_20)
 - [Gebruikte afkortingen](help#toc_20)
+- [Inloggen binnen Atlas, intern en extern](help#toc_21)
 
 
 [Versie-informatie](https://gitlab.com/purmerend/atlas/-/releases)
@@ -307,10 +308,14 @@ In gemeenteland worden veel afkortingen gebruikt. Het is niet vanzelfsprekend da
 
 - AFWC  Amsterdamse Federatie van Woningcorporaties
 - APV   Algemene Plaatselijke Verordening
+- AVG   Algemene Verordening Gegevensbescherming 
 - BAG   Basisregistratie Adressen en Gebouwen
 - BGT   Basisregistratie Grootschalige Topografie
 - BRK   Basisregistratie Kadaster
+- BRP   Basisregistratie Personen (Opvolger GBA - gemeentelijke basisadministratie persoonsgegevens)
 - HHNK  Hoogheemraadschap Hollands Noorderkwartier
+- NGR   Nationaal Georegister 
+- PDOK  Publieke Dienstverlening Op de Kaart
 - PWN   Provinciaal Waterleidingbedrijf Noord-Holland
 - RIVM  Rijksinstituut voor Volksgezondheid en Milieu
 - WOZ   Waardering Ontroerende Zaken
@@ -318,3 +323,28 @@ In gemeenteland worden veel afkortingen gebruikt. Het is niet vanzelfsprekend da
 ***
 * [Naar boven](#)
 ***
+
+## Inloggen binnen Atlas, intern en extern
+
+Atlas bevat zogenaamde open en gesloten kaartlagen. De open kaartlagen zijn te bekijken voor iedereen die toegang tot Atlas heeft. 
+De gesloten kaartlagen zijn alleen voor bepaalde gebruikersgroepen te bekijken. Voor alle gesloten kaartlagen geldt dat de gebruiker binnen Atlas moet inloggen. Daarnaast is het zo dat sommige kaartlagen
+alleen zichtbaar zijn wanneer de gebruiker ook binnen het Purmerend netwerk is ingelogd.
+De login binnen Atlas werkt volgens het 'Single Sign On'(SSO) principe. Wanneer een gebruiker binnen het netwerk van Purmerend al is ingelogd, dan is het inloggen binnen Atlas slechts een kwestie van op de 
+login-knop klikken. Probeert een gebruiker extern binnen Atlas in te loggen dan is het nodig eenmalig de accountnaam en wachtwoord in te geven. Dit is de standaard 2-factor authenticatie (2FA) login.
+Wanneer geprobeert wordt om gesloten kaartlaaggegevens op te vragen zonder ingelogd te zijn, dan is alleen de melding: "U moet ingelogd zijn om deze data te bekijken" zichtbaar. Wanneer geprobeert wordt om
+gesloten kaartlaaggegevens op te vragen zonder rechten hiervoor, dan is alleen de melding: "U heeft geen rechten om deze data te bekijken" zichtbaar. Mocht je onterecht een van deze meldingen zien, neem dan
+contact op met Datalab@Purmerend.nl .
+
+![loginscherm](https://gitlab.com/purmerend/atlas/uploads/f4978cd1560eeafb6d9767a47918b40a/loginscherm.png)
+
+Klik linksboven in het Atlas-scherm op de drie verticale puntjes om het optiemenu met de loginkeuze te tonen.
+
+![externe_inlog](https://gitlab.com/purmerend/atlas/uploads/9ab7b887853637a42058a27b3f263a3b/externe_inlog.png)
+
+Wanneer extern binnen Atlas wordt ingelogt, dan is het nodig gebruikersnaam en wachtwoord in te geven.
+
+***
+* [Naar boven](#)
+***
+
+
