@@ -1,4 +1,4 @@
-# Handleiding Admin Module Atlas versie 3.8.5
+# Handleiding Admin Module Atlas versie 3.14.0
 
 ## Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt Atlas geconfigureerd.
 
@@ -12,11 +12,12 @@
 * [GEBRUIKERSBEHEER](#gebruikersbeheer)
      * [Groepen](#groepen)
 * [KAARTEN](#kaarten)
+     * [Bronnen](#bronnen)
      * [Categorieën](#categorieën)
      * [Kaartlagen](#kaartlagen)
-     * [Kaarten](#kaarten)
-* [HOMEPAGE](#homepage)
-     * [Saved_datasets](#saved_datasets)
+     * [Kaarten](#kaarten) 
+     * [Viewers](#viewers)      
+
 #### INTRODUCTIE
 
 Bij het installeren van Atlas wordt in de laatste stap een superuser aangemaakt. In de README.MD file is dit beschreven.  Met deze gebruiker (superuser) kan in de adminmodule worden ingelogd op http://localhost:8000/atlas/admin/ . Let op dat de url eindigt met een /.  
@@ -111,6 +112,27 @@ Bij het aanmaken van een kaart wordt een nieuwe url gecreëerd, waar een aparte 
 * [Naar boven](#inhoud)
 ***
 
+##### Bronnen
+Binnen Bronnen kunnen meerdere endpoints geconfigureerd worden. Wanneer bijvoorbeeld een Geoserver met meerdere omgevingen gebruikt wordt of als ook externe kaartlagen gebruikt worden, 
+kan dit handig zijn. Bronnen kunnen toegevoegd, bewerkt of verwijderd worden. 
+
+<img src="/uploads/fc4e7d08a4892f4f5e794b24ba9a12f4/bronnen1.png" alt="bronnen" width="400"/>
+
+Klik op een bron om deze te bewerken of te verwijderen. Om meerdere bronnen te verwijderen kunnen deze geselecteerd worden, kies bij Actie "Geselecteerde Bronnen verwijderen".
+Klik links bovenin op "BRON TOEVOEGEN" om een nieuwe bron toe te voegen.
+
+<img src="/uploads/182aca8e81713fc601a6d9ab3fcfe660/bronnen2.png" alt="bronnen" width="400"/>
+
+Vul bij een nieuwe bron een titel in voor deze bron en het endpoint als Url. Voor de achtergrondkaarten van PDOK is dit bijvoorbeeld: https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0.
+
+<img src="/uploads/693c387e1607edcf5a8744cd5f9caa39/bronnen3.png" alt="bronnen" width="400"/>
+
+De bewerkingsgeschiedenis kan bekeken worden door op de knop "Geschiedenis" te klikken.
+
+***
+* [Naar boven](#inhoud)
+***
+
 ##### Categorieën
 Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het openklikken van een hoofdonderwerp/categorie
 zorgt ervoor dat eronder de verschillende kaartlagen van die categorie in de legenda worden getoond.
@@ -126,6 +148,26 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
  
 <img src="/uploads/2c695502d3e2ad833349e805601b6a00/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
 
+
+***
+* [Naar boven](#inhoud)
+***
+
+##### Kaarten
+Kaarten zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om een kaart samen te stellen worden kaartlagen geselecteerd die bij die kaart horen.  
+Een kaart verschijnt niet in het Atlas scherm. Bij het aanmaken van een kaart wordt als het ware een aparte instantie van Atlas gecreëerd met een beperkter aantal kaartlagen en beperktere functionaliteit. Wanneer bijvoorbeeld een kaart 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om de kaart op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
+
+<img src="/uploads/0ac41b64d0d39964456faccfb95e744a/hondenbeleid.png" alt="hondenbeleid" width="500"/>
+
+
+
+De volgende velden moeten worden ingevuld bij het toevoegen van een kaart:
+* **Titel:** De naam zoals die ook bij de url ingegeven moet worden
+* **Kort kenmerk:** Unieke omschrijving van de kaart.
+* **Lagen:** De layers die binnen de kaart vallen
+Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
+
+<img src="/uploads/384998c34ef0fa226aca9ca97b686685/kaart-toevoegen.png" alt="Kaart Toevoegen" width="700"/>
 
 ***
 * [Naar boven](#inhoud)
@@ -180,62 +222,28 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 * **Eigenaar:** (Wie is eigenaar van deze layer)   
 * **Gebruikers:** (Welke gebruikers hebben toegang tot deze kaartlaag?   
 * **Groepen:** (Welke Atlas gebruikersgroepen hebben toegang tot deze kaartlaag? )
-* **Gekoppelde Data:** (...)
-
-
-
-***
-* [Naar boven](#inhoud)
-***
-
-##### Kaarten
-Kaarten zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om een kaart samen te stellen worden kaartlagen geselecteerd die bij die kaart horen.  
-Een kaart verschijnt niet in het Atlas scherm. Bij het aanmaken van een kaart wordt als het ware een aparte instantie van Atlas gecreëerd met een beperkter aantal kaartlagen en beperktere functionaliteit. Wanneer bijvoorbeeld een kaart 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en  'hondenbakken' zitten, dan kan de url om de kaart op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/hondenbeleid
-
-<img src="/uploads/0ac41b64d0d39964456faccfb95e744a/hondenbeleid.png" alt="hondenbeleid" width="500"/>
-
-
-
-De volgende velden moeten worden ingevuld bij het toevoegen van een kaart:
-* **Title:** ([De naam zoals die ook bij de url ingegeven moet worden)
-* **Layers:** (De layers die binnen het Thema vallen)
-Houd 'Control', of 'Command' op een Mac, ingedrukt om meerdere kaartlagen te selecteren.
-
-<img src="/uploads/de986950d607214fb299ead6ddceea15/thema-toevoegen.png" alt="Thema Toevoegen" width="700"/>
+* **Gekoppelde Data:** (Met deze optie kunnen overeenkomstige gegevens van andere kaartlagen gekoppeld worden en zichtbaar gemaakt.
+        * Titel: Omschrijving van de gekoppelde laag
+        * Laag naam: Omgeving:laagnaam
+        * URL: Endpoint van de laag.
+        * Bronsleutel: Overeenkomstige veldnaam van de bronlaag
+        * Doelsleutel: Overeenkomstige veldnaam van de te koppelen laag
+        * Toon deze velden: Wanneer dit veld leeg blijft, worden alle velden getoond.)
+        
+Sla de gegevens op na het aanmaken van een gekoppelde laag.
 
 ***
 * [Naar boven](#inhoud)
 ***
 
-#### HOMEPAGE
+##### Viewers
 
-##### Saved_datasets
+Binnen Atlas kunnen verschillende viewers geconfigureerd worden voor zogenaamde rondkijk of 360 graden foto's. Op dit moment zijn dat Street Smart van Cyclomedia, Google StreetView en Obliquo.
+Voor Google StreetView is alleen een API key nodig. Voor Street Smart is ook een gebruikersnaam en wachtwoord naast de API key nodig.
 
-Binnen Atlas bestaat de mogelijkheid om adressen binnen een kaart te selecteren. Dit kan door middel van de CTRL toets ingedrukt te houden en tegelijkertijd met de muis een gebied met adressen te selecteren. Ook kunnen adressen geselecteerd worden met behulp van de selectietool rechtsboven in het Atlas scherm. Deze adres-selecties worden op het scherm getoond maar kunnen ook gedownload worden. Binnen Atlas zelf worden deze selecties in de database opgeslagen. Via de "Saved Datasets" optie, kunnen deze selecties beheerd worden.
-
-<img src="/uploads/6e24a14bced7de4e249788295521bad8/saved-datasets.png" alt="Saved datasets" width="600"/>
-
-Wanneer een "saved dataset" wordt geselecteerd, dan zal de inhoud in het JSON scherm getoond worden.
-
-<img src="/uploads/37b1076c9dd8a046eefa55a6bfb42453/saved-dataset-wijzigen.png" alt="Saved dataset wijzigen" width="600"/>
-
-Ook is het mogelijk om via cut & paste zelf datasets toe te voegen voor eventueel toekomstig gebruik.
-
-<img src="/uploads/1c5b79fa7cac606e932504428185c628/dataset-toevoegen.png" alt="Dataset toevoegen" width="1400"/>
 
 ***
 * [Naar boven](#inhoud)
 ***
-
-
-
-
-
-
-
-
-
-
-
 
 
