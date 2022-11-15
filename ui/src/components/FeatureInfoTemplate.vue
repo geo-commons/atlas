@@ -67,7 +67,7 @@ export default {
     methods: {
         async fetchData() {
             const url = new URL(
-                this.template.source +
+                this.template.source.url +
                     nunjucks.renderString(this.template.endpoint, this.feature.properties)
             )
 
@@ -101,7 +101,7 @@ export default {
             }
         },
         getFetchParameters() {
-            if (this.layer.source.authenticate && this.user && this.user.token) {
+            if (this.template.source.authenticate && this.user && this.user.token) {
                 return {
                     headers: { Authorization: `Bearer ${this.user.token}` },
                 }

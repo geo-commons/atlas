@@ -384,7 +384,10 @@ class Template(models.Model):
 
     def to_dict(self):
         return {
-            'source': self.source.url,
+            'source': {
+                'authenticate': self.source.authenticate,
+                'url': self.source.url
+            },
             'endpoint': self.endpoint,
             'title': self.title,
             'list': self.list,
