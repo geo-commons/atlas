@@ -37,9 +37,12 @@
         <div class="container">
             <div class="heading">
                 <h3 class="title">{{ layer.title }}</h3>
-                <span class="description">
+                <div class="description">
                     <markdown :source="layer.metadata.description" />
-                </span>
+                </div>
+                <div v-if="layer.metadata.link" class="link">
+                    <a :href="layer.metadata.link" target="_blank">Meer informatie</a>
+                </div>
             </div>
             <div class="properties">
                 <div class="property">

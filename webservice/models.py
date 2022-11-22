@@ -100,12 +100,15 @@ class Layer(models.Model):
     format = models.CharField('Formaat', max_length=128, choices=FORMAT_TYPES, default=FORMAT_PNG)
 
     meta_name = models.CharField('Naam', max_length=128, null=True,)
-    meta_kind = models.CharField('Soort', max_length=128, null=True,
+    meta_description = models.TextField('Omschrijving', null=True,
                                  help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_org = models.CharField('Organisatie', max_length=128, null=True,
                                 help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_updated = models.CharField(
         'Laatst bijgewerkt', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+    meta_link = models.URLField(
+        'Meer informatie', max_length=200, blank=True, null=True, help_text='Link naar metadatacatalogus met meer informatie')
+
 
     opacity = models.DecimalField(
         'Transparantie', max_digits=1, decimal_places=1, default=0.9)
@@ -314,9 +317,10 @@ source: new ol.source.TileWMS({{
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
             'metadata': {
-                'description': self.meta_kind,
+                'description': self.meta_description,
                 'organization': self.meta_org,
-                'updated': self.meta_updated
+                'updated': self.meta_updated,
+                'link': self.meta_link
             },
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
             'templates': [item.to_dict() for item in self.templates.all()]
