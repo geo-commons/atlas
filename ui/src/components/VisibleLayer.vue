@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import Projection from 'ol/proj/Projection'
 import TileWMS from 'ol/source/TileWMS'
 import View from 'ol/View'
 import ExpandButton from './ExpandButton'
@@ -107,6 +108,7 @@ export default {
         layer: Object,
         layerIsClosable: Boolean,
         layerOpacityIsChangable: Boolean,
+        position: Object,
     },
     data() {
         return {
@@ -124,7 +126,18 @@ export default {
                 },
             })
 
-            const view = new View()
+            const rdProjection = new Projection({
+                code: 'EPSG:28992',
+                units: 'm',
+            })
+
+            const view = new View({
+                projection: rdProjection,
+                constrainResolution: true,
+                enableRotation: false,
+                center: this.position.center,
+                zoom: this.position.zoom,
+            })
 
             const params = {
                 LEGEND_OPTIONS: 'forceTitles:off;forceLabels:on',
