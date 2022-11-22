@@ -162,6 +162,7 @@
                 <VisibleLayer
                     v-for="layer in visibleLayers"
                     v-bind:key="layer.id"
+                    :position="position"
                     :layer="layer"
                     :layerIsClosable="!isEmbed"
                     :layerOpacityIsChangable="!isEmbed"
