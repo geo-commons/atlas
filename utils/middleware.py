@@ -20,8 +20,7 @@ def check_access_admin(get_response):
 
     forbidden_urls = [
         reverse('admin:index'),
-        reverse('homepage:v3_admin'),
-        reverse('homepage:downloads')
+        reverse('homepage:v3_admin')
     ]
 
     def middleware(request):
