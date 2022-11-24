@@ -230,7 +230,9 @@ CONSTANCE_CONFIG = {
     'POSITION_CENTER_X': (126910, 'Het centrum X-coordinaat van de opstartpositie'),
     'POSITION_CENTER_Y': (505834, 'Het centrum Y-coordinaat van de opstartpositie'),
     'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
-    'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico'))
+    'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico')),
+    'MATOMO_URL': ('', ('Configureer de URL van Matomo om statistieken bij te houden')),
+    'MATOMO_SITE_ID': ('', ('Configureer het site ID van Matomo om statistieken bij te houden'))
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -244,5 +246,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'POSITION_CENTER_Y',
         'POSITION_ZOOM',
         'SUGGEST_MUNICIPALITIES'
+    ),
+    '3. Matomo': (
+        'MATOMO_URL',
+        'MATOMO_SITE_ID'
     )
 }

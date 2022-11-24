@@ -18,8 +18,6 @@ def global_settings(request):
         'WFS_URL_CTRIX': settings.WFS_URL_CTRIX,
         'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY,
         'SENTRY_DSN': settings.SENTRY_DSN,
-        'MATOMO_URL': settings.MATOMO_URL,
-        'MATOMO_SITE_ID': settings.MATOMO_SITE_ID,
         'AUTHENTICATION_ENABLE_CREDENTIALS': settings.AUTHENTICATION_ENABLE_CREDENTIALS,
         'AUTHENTICATION_ENABLE_OIDC': settings.AUTHENTICATION_ENABLE_OIDC
     }
