@@ -68,7 +68,9 @@ export default {
             if (this.data.layers) {
                 return this.layers
                     .filter(
-                        (layer) => this.data.layers.includes(layer.internal_id) || layer.is_base
+                        (layer) =>
+                            this.data.layers.includes(layer.internal_id) ||
+                            (layer.is_base && layer.is_visible)
                     )
                     .map((layer) => {
                         return {

@@ -3,8 +3,10 @@
 </template>
 
 <script>
-import ejs from 'ejs'
+import nunjucks from 'nunjucks'
 import Markdown from './Markdown'
+
+nunjucks.configure({ autoescaping: true })
 
 export default {
     name: 'Template',
@@ -14,7 +16,7 @@ export default {
     computed: {
         parsedSource() {
             try {
-                return ejs.render(this.source, this.data)
+                return nunjucks.renderString(this.source, this.data)
             } catch (e) {
                 return ''
             }
