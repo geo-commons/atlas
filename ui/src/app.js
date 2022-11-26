@@ -10,6 +10,7 @@ import App from './pages/App'
 import LegacyEmbedModal from './pages/LegacyEmbedModal'
 import { createStore } from './store'
 import { getSettingsFromPath } from './utils/router'
+import { isMobile } from './utils/helpers'
 import detectKeyboard from './utils/detect-keyboard'
 
 Vue.use(Vuex)
@@ -53,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tool: '',
         user: data.user,
         selectedArea: null,
+        initiallyShowLayerList:
+            settings.visibleLayers.length === 0 && !isMobile() && !data.is_embed,
         searchQuery: '',
         alert: '',
     }

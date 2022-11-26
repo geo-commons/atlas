@@ -193,7 +193,7 @@ export default {
     },
     data() {
         return {
-            panel: '',
+            panel: this.initiallyShowLayerList ? 'layers' : '',
             searchQuery: '',
         }
     },
@@ -272,6 +272,7 @@ export default {
         position: Object,
         user: Object,
         isEmbed: Boolean,
+        initiallyShowLayerList: Boolean,
     },
 }
 </script>

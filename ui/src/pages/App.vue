@@ -76,6 +76,7 @@
                     :layers="this.layers"
                     :position="this.position"
                     :user="this.user"
+                    :initiallyShowLayerList="this.initiallyShowLayerList"
                     @toggle-layer="this.toggleLayer"
                     @set-layer-opacity="this.setLayerOpacity"
                     @on-fit="(layer) => this.$refs.map.fit(layer)"
@@ -200,6 +201,7 @@ export default {
         user: (state) => state.user,
         config: (state) => state.config,
         selectedArea: (state) => state.selectedArea,
+        initiallyShowLayerList: (state) => state.initiallyShowLayerList,
     }),
     created() {
         window.addEventListener('resize', this.onResizeWindow)
