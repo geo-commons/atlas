@@ -160,12 +160,13 @@
                 id="visibleLayers"
             >
                 <VisibleLayer
-                    v-for="layer in visibleLayers"
+                    v-for="(layer, i) in visibleLayers"
                     v-bind:key="layer.id"
                     :position="position"
                     :layer="layer"
                     :layerIsClosable="!isEmbed"
                     :layerOpacityIsChangable="!isEmbed"
+                    :isOpen="i === 0"
                     @set-layer-opacity="setLayerOpacity"
                     @toggle-layer="onSelectLayer"
                 />
@@ -192,13 +193,25 @@ export default {
         LayerInfo,
     },
     data() {
+        const visibleLayers = this.layers.filter((layer) => layer.category && layer.is_visible)
+
         return {
-            panel: this.initiallyShowLayerList ? 'layers' : '',
+            panel:
+                visibleLayers.length > 0
+                    ? 'activeLayers'
+                    : this.initiallyShowLayerList
+                    ? 'layers'
+                    : '',
             searchQuery: '',
         }
     },
     methods: {
         togglePanel(selectedPanel) {
+            if (this.panel === 'layers' && selectedPanel === 'layers') {
+                this.panel = 'activeLayers'
+                return
+            }
+
             this.panel = selectedPanel !== this.panel ? selectedPanel : ''
         },
         onSelectLayer(selectedLayer) {

@@ -1,6 +1,6 @@
 <template>
     <li class="layer-wrapper">
-        <ExpandButton :title="layer.title">
+        <ExpandButton :title="layer.title" :isOpen="isOpen">
             <template v-slot:header>
                 <div class="buttons">
                     <div v-if="layerOpacityIsChangable" class="opacity-wrapper">
@@ -27,9 +27,9 @@
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                height="24"
+                                height="18"
                                 viewBox="0 0 24 24"
-                                width="24"
+                                width="18"
                             >
                                 <path
                                     d="M24 0H0v24h24V0zm0 0H0v24h24V0zM0 24h24V0H0v24z"
@@ -54,6 +54,7 @@
                             @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
                         />
                     </div>
+                    <LayerInfo :layer="layer" :showAlways="true" />
                     <button
                         v-if="layerIsClosable"
                         class="iconbutton"
@@ -64,9 +65,10 @@
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            height="24"
+                            height="18"
                             viewBox="0 0 24 24"
-                            width="24"
+                            width="18"
+                            opacity=".87"
                         >
                             <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
                             <path
@@ -98,17 +100,20 @@ import Projection from 'ol/proj/Projection'
 import TileWMS from 'ol/source/TileWMS'
 import View from 'ol/View'
 import ExpandButton from './ExpandButton'
+import LayerInfo from './LayerInfo'
 
 export default {
     name: 'VisibleLayer',
     components: {
         ExpandButton,
+        LayerInfo,
     },
     props: {
         layer: Object,
         layerIsClosable: Boolean,
         layerOpacityIsChangable: Boolean,
         position: Object,
+        isOpen: Boolean,
     },
     data() {
         return {
@@ -193,7 +198,8 @@ export default {
 }
 
 .iconbutton {
-    width: var(--width-button-normal);
+    width: 24px;
+    height: 24px;
 }
 
 .content {
@@ -202,7 +208,7 @@ export default {
 }
 
 .buttons {
-    height: var(--width-button-normal);
     display: flex;
+    align-items: center;
 }
 </style>

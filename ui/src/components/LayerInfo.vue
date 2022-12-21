@@ -9,7 +9,10 @@
         :a11y="false"
     >
         <template v-slot:trigger>
-            <button class="iconbutton" aria-label="Toon meer informatie">
+            <button
+                :class="{ iconbutton: true, showAlways: showAlways }"
+                aria-label="Toon meer informatie"
+            >
                 <svg
                     width="16px"
                     height="16px"
@@ -72,6 +75,7 @@ export default {
     },
     props: {
         layer: Object,
+        showAlways: Boolean,
     },
     created() {
         this.markdownOptions = {
@@ -86,6 +90,9 @@ export default {
     width: 24px;
     height: 24px;
     border-radius: 50%;
+}
+
+.iconbutton:not(.showAlways) {
     opacity: 0;
 }
 
