@@ -112,6 +112,7 @@ Deploy acceptance:
       --set ingress.hosts[0].host=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set ingress.hosts[0].paths[0].path=/atlas \
       --set ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
+      --set persistence.media.storageClassName=standard-retain \
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \

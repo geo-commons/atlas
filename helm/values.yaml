@@ -94,6 +94,7 @@ persistence:
     existingClaim: null
     accessModes:
       - ReadWriteOnce
+    storageClassName: ""
 
 #########################
 ## PostgreSQL subchart ##
