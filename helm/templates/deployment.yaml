@@ -12,6 +12,7 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
@@ -32,8 +33,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
-            - secretRef:
+            - configMapRef:
                 name: {{ include "atlas.fullname" . }}
+            - secretRef:
+                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ include "atlas.fullname" . }}{{ end }}
           volumeMounts:
             - name: media
               mountPath: /app/media

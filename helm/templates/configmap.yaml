@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "atlas.fullname" . }}
+  labels:
+    {{- include "atlas.labels" . | nindent 4 }}
+data:
+  DEBUG: "{{ if .Values.https }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
+  ALLOWED_HOSTS: "{{ .Values.allowedHosts }}"
+  CTRIX_IPS: "{{ .Values.ctrixIps }}"
+  DB_HOST: "{{ .Values.dbHost }}"
+  DB_USER: "{{ .Values.dbUser }}"
+  DB_NAME: "{{ .Values.dbName }}"
+  WFS_URL: "{{ .Values.wfsUrl }}"
+  WFS_URL_CTRIX: "{{ .Values.wfsUrlCtrix }}"
+  SMARTSTREET_USER: "{{ .Values.smartstreetUser }}"
+  MATOMO_URL: "{{ .Values.matomoUrl }}"
+  MATOMO_SITE_ID: "{{ .Values.matomoSiteId }}"
+  AUTHENTICATION_ENABLE_CREDENTIALS: "{{ if .Values.authenticationEnableCredentials }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
+  AUTHENTICATION_ENABLE_OIDC: "{{ if .Values.authenticationEnableOidc }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
+  OIDC_CLIENT_ID: "{{ .Values.oidcClientId }}"
+  OIDC_SIGN_ALGO: "{{ .Values.oidcSignAlgo }}"
+  OIDC_SCOPES: "{{ .Values.oidcScopes }}"
+  OIDC_AUTHORIZATION_ENDPOINT: "{{ .Values.oidcAuthorizationEndpoint }}"
+  OIDC_TOKEN_ENDPOINT: "{{ .Values.oidcTokenEndpoint }}"
+  OIDC_USER_ENDPOINT: "{{ .Values.oidcUserEndpoint }}"
+  OIDC_JWKS_ENDPOINT: "{{ .Values.oidcJwksEndpoint }}"
+  OIDC_USERNAME_CLAIM: "{{ .Values.oidcUsernameClaim }}"
+  OIDC_ACTIVATE_ON_CREATE: "{{ if .Values.oidcActivateOnCreate }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
