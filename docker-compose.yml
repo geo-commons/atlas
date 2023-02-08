@@ -21,7 +21,7 @@ services:
     ports:
       - 8000:8000
   postgres:
-    image: postgres:11.14
+    image: postgres:15.1
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
