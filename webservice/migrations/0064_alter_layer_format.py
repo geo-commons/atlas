@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='layer',
             name='format',
-            field=models.CharField(choices=[('image/png', 'image/png'), ('image/jpeg', 'image/jpeg'), ('image/vnd.jpeg-png', 'image/vnd.jpeg-png')], default='image/png', max_length=128, verbose_name='Formaat'),
+            field=models.CharField(choices=[('image/png', 'image/png'), ('image/jpeg', 'image/jpeg'), (
+                'image/vnd.jpeg-png', 'image/vnd.jpeg-png')], default='image/png', max_length=128, verbose_name='Formaat'),
         ),
     ]

@@ -90,7 +90,7 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
         }
     })
 
-    draw.on('drawend', (e) => {
+    draw.on('drawend', () => {
         onDrawEnd(sketch)
 
         if (measure === 'MEASURE_LINE' || measure === 'MEASURE_AREA') {

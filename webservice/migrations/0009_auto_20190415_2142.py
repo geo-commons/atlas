@@ -12,11 +12,13 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='atlastheme',
-            options={'verbose_name': 'Thema', 'verbose_name_plural': "Thema's"},
+            options={'verbose_name': 'Thema',
+                     'verbose_name_plural': "Thema's"},
         ),
         migrations.AddField(
             model_name='layer',
             name='not_in_atlas',
-            field=models.BooleanField(default=False, help_text='\nKaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema.\n        ', verbose_name='Alleen in een thema, niet in Atlas'),
+            field=models.BooleanField(default=False, help_text='\nKaartlaag wordt niet in Atlas getoond, alleen als kaartlaag in een thema.\n        ',
+                                      verbose_name='Alleen in een thema, niet in Atlas'),
         ),
     ]

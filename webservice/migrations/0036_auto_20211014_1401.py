@@ -13,31 +13,37 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='layer',
             name='extent_max_x',
-            field=models.FloatField(blank=True, default=None, null=True, verbose_name='Bereik maximum x'),
+            field=models.FloatField(
+                blank=True, default=None, null=True, verbose_name='Bereik maximum x'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='extent_max_y',
-            field=models.FloatField(blank=True, default=None, null=True, verbose_name='Bereik maximum y'),
+            field=models.FloatField(
+                blank=True, default=None, null=True, verbose_name='Bereik maximum y'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='extent_min_x',
-            field=models.FloatField(blank=True, default=None, help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.', null=True, verbose_name='Bereik minimum x'),
+            field=models.FloatField(
+                blank=True, default=None, help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.', null=True, verbose_name='Bereik minimum x'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='extent_min_y',
-            field=models.FloatField(blank=True, default=None, null=True, verbose_name='Bereik minimum y'),
+            field=models.FloatField(
+                blank=True, default=None, null=True, verbose_name='Bereik minimum y'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='zoom_max',
-            field=models.IntegerField(blank=True, default=None, null=True, verbose_name='Zoomniveau maximum'),
+            field=models.IntegerField(
+                blank=True, default=None, null=True, verbose_name='Zoomniveau maximum'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='zoom_min',
-            field=models.IntegerField(blank=True, default=None, help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.', null=True, verbose_name='Zoomniveau minimum'),
+            field=models.IntegerField(
+                blank=True, default=None, help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.', null=True, verbose_name='Zoomniveau minimum'),
         ),
     ]

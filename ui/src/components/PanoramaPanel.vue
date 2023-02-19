@@ -89,7 +89,7 @@
                     v-if="selectedViewer.type == 'GOOGLE_MAPS'"
                     :position="position"
                 />
-                <obliquo
+                <obliquo-viewer
                     ref="viewer"
                     v-if="selectedViewer.type == 'OBLIQUO'"
                     :position="position"
@@ -119,7 +119,7 @@ import { mapState } from 'vuex'
 import VueResizable from 'vue-resizable'
 
 import GoogleMaps from '../viewers/GoogleMaps.vue'
-import Obliquo from '../viewers/Obliquo.vue'
+import ObliquoViewer from '../viewers/ObliquoViewer.vue'
 import StreetSmart from '../viewers/StreetSmart.vue'
 
 export default {
@@ -127,7 +127,7 @@ export default {
     components: {
         VueResizable,
         GoogleMaps,
-        Obliquo,
+        ObliquoViewer,
         StreetSmart,
     },
     created() {

@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <Search
+        <SearchForm
             :showSuggestions="showSuggestions"
             @show-data-panel="toggleDataPanel"
             @on-submit="onSearch"
@@ -36,12 +36,12 @@
                     </ul>
                 </div>
             </template>
-        </Search>
+        </SearchForm>
     </div>
 </template>
 
 <script>
-import Search from './Search'
+import SearchForm from './SearchForm'
 
 const suggestEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest'
 const freeEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/free'
@@ -49,7 +49,7 @@ const freeEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/f
 export default {
     name: 'SearchPanel',
     components: {
-        Search,
+        SearchForm,
     },
     data() {
         return {

@@ -14,15 +14,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Template',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('endpoint', models.CharField(max_length=500, verbose_name='Endpoint')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('endpoint', models.CharField(
+                    max_length=500, verbose_name='Endpoint')),
                 ('title', models.CharField(max_length=128, verbose_name='Titel')),
-                ('list', models.CharField(blank=True, max_length=128, null=True, verbose_name='Veld met lijst')),
-                ('headers', models.TextField(blank=True, help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.', max_length=128, null=True, verbose_name='Kopjes')),
-                ('fields', models.TextField(blank=True, help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.', null=True, verbose_name='Velden')),
-                ('ordering', models.PositiveIntegerField(db_index=True, default=0, verbose_name='Sortering')),
-                ('layer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='templates', to='webservice.layer')),
-                ('source', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webservice.source')),
+                ('list', models.CharField(blank=True, max_length=128,
+                 null=True, verbose_name='Veld met lijst')),
+                ('headers', models.TextField(blank=True, help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.',
+                 max_length=128, null=True, verbose_name='Kopjes')),
+                ('fields', models.TextField(
+                    blank=True, help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.', null=True, verbose_name='Velden')),
+                ('ordering', models.PositiveIntegerField(
+                    db_index=True, default=0, verbose_name='Sortering')),
+                ('layer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='templates', to='webservice.layer')),
+                ('source', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='webservice.source')),
             ],
             options={
                 'verbose_name': 'Template',

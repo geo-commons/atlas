@@ -197,7 +197,7 @@
 
 <script>
 export default {
-    name: 'Layers',
+    name: 'MapLayers',
     async created() {
         await this.getLayers()
 

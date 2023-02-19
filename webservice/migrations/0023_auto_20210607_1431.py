@@ -3,10 +3,11 @@
 from django.db import migrations, models
 
 
-def update_wms_to_wms_and_wfs(apps, schema_editor):
+def update_wms_to_wms_and_wfs(apps, _):
     # Update exiting layers to SOURCE_WMS_WFS as this is the new default value
     Layer = apps.get_model('webservice', 'Layer')
     Layer.objects.filter(source_type='WMS').update(source_type='WMS_WFS')
+
 
 class Migration(migrations.Migration):
 
@@ -17,12 +18,14 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='layer',
-            options={'ordering': ['ordering', 'title'], 'verbose_name': 'Kaartlaag', 'verbose_name_plural': 'Kaartlagen'},
+            options={'ordering': [
+                'ordering', 'title'], 'verbose_name': 'Kaartlaag', 'verbose_name_plural': 'Kaartlagen'},
         ),
         migrations.AlterField(
             model_name='layer',
             name='source_type',
-            field=models.CharField(choices=[('WMS_WFS', 'WMS en WFS'), ('WMS', 'WMS'), ('WMTS', 'WMTS')], default='WMS_WFS', max_length=20, verbose_name='Brontype'),
+            field=models.CharField(choices=[('WMS_WFS', 'WMS en WFS'), ('WMS', 'WMS'), (
+                'WMTS', 'WMTS')], default='WMS_WFS', max_length=20, verbose_name='Brontype'),
         ),
         migrations.RunPython(update_wms_to_wms_and_wfs),
     ]

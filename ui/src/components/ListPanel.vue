@@ -1,5 +1,5 @@
 <template>
-    <Panel :title="layer.title" @hidePanel="this.hidePanel">
+    <PanelDisplay :title="layer.title" @hidePanel="this.hidePanel">
         <ul>
             <li
                 v-for="feature in features"
@@ -9,28 +9,28 @@
             >
                 <div class="header">
                     <span class="name">
-                        <Template :source="titleTemplate" :data="feature.properties" />
+                        <MarkdownTemplate :source="titleTemplate" :data="feature.properties" />
                     </span>
                 </div>
                 <div class="address">
-                    <Template :source="shortDescriptionTemplate" :data="feature.properties" />
+                    <MarkdownTemplate :source="shortDescriptionTemplate" :data="feature.properties" />
                 </div>
             </li>
         </ul>
-    </Panel>
+    </PanelDisplay>
 </template>
 
 <script>
-import Template from './Template'
+import MarkdownTemplate from './MarkdownTemplate'
 import GeoJSON from 'ol/format/GeoJSON'
 
-import Panel from './Panel'
+import PanelDisplay from './PanelDisplay'
 
 export default {
     name: 'ListPanel',
     components: {
-        Panel,
-        Template,
+        PanelDisplay,
+        MarkdownTemplate,
     },
     props: {
         layer: Object,

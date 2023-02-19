@@ -13,17 +13,24 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='layer',
-            options={'ordering': ['layer_type__ordering', 'layer_type__title', 'ordering', 'title'], 'verbose_name': 'Kaartlaag', 'verbose_name_plural': 'Kaartlagen'},
+            options={'ordering': ['layer_type__ordering', 'layer_type__title', 'ordering',
+                                  'title'], 'verbose_name': 'Kaartlaag', 'verbose_name_plural': 'Kaartlagen'},
         ),
         migrations.CreateModel(
             name='AdditionalData',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('layer_name', models.CharField(max_length=128, verbose_name='Laag naam')),
-                ('source_key', models.CharField(max_length=128, verbose_name='Bronsleutel')),
-                ('target_key', models.CharField(max_length=128, verbose_name='Doelsleutel')),
-                ('popup_attributes', models.CharField(blank=True, max_length=250, null=True, verbose_name='Toon deze attributen')),
-                ('source', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webservice.Layer')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('layer_name', models.CharField(
+                    max_length=128, verbose_name='Laag naam')),
+                ('source_key', models.CharField(
+                    max_length=128, verbose_name='Bronsleutel')),
+                ('target_key', models.CharField(
+                    max_length=128, verbose_name='Doelsleutel')),
+                ('popup_attributes', models.CharField(
+                    blank=True, max_length=250, null=True, verbose_name='Toon deze attributen')),
+                ('source', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='webservice.Layer')),
             ],
         ),
     ]

@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='linkeddata',
             name='popup_attributes',
-            field=models.CharField(blank=True, help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.', max_length=250, null=True, verbose_name='Toon deze velden'),
+            field=models.CharField(blank=True, help_text='Voer één veld per regel in. Bij een leeg veld worden alle velden getoond.',
+                                   max_length=250, null=True, verbose_name='Toon deze velden'),
         ),
     ]

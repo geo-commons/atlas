@@ -27,7 +27,7 @@
                 </form>
             </div>
         </div>
-        <Map
+        <MapRenderer
             ref="map"
             :initialPosition="this.position"
             :initialLayers="this.visibleLayers"
@@ -42,7 +42,7 @@
 import Cookies from 'js-cookie'
 import { mapState } from 'vuex'
 
-import Map from '../../components/Map/Map'
+import MapRenderer from '../../components/MapRenderer/MapRenderer'
 import MapForm from '../components/MapForm'
 import MapLayers from '../components/MapLayers'
 import ListPanelAdmin from '../components/ListPanelAdmin'
@@ -50,7 +50,7 @@ import ListPanelAdmin from '../components/ListPanelAdmin'
 export default {
     name: 'MapCreateUpdate',
     components: {
-        Map,
+        MapRenderer,
         MapForm,
         MapLayers,
         ListPanelAdmin,

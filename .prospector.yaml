@@ -1,4 +1,22 @@
+strictness: medium
+test-warnings: false
+doc-warnings: false
+inherits:
+  - strictness_medium
 uses:
   - django
+autodetect: false
+pylint:
+  run: true
+  options:
+    max-line-length: 300
+pycodestyle:
+  run: true
+  options:
+    max-line-length: 300
+mccabe:
+  run: false
 dodgy:
+  run: false
+pyflakes:
   run: false

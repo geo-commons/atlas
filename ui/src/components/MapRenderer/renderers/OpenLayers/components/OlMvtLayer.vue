@@ -4,12 +4,15 @@
 
 <script>
 import Projection from 'ol/proj/Projection'
-import { Icon, Style, Fill, Stroke, Circle } from 'ol/style'
+import { Style, Fill, Stroke, Circle } from 'ol/style'
 import VectorTileLayer from 'ol/layer/VectorTile'
 import VectorTileSource from 'ol/source/VectorTile'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import MVT from 'ol/format/MVT'
 import WMTSSource, { optionsFromCapabilities } from 'ol/source/WMTS'
+import OpenLayersParser from 'geostyler-openlayers-parser'
+
+const olParser = new OpenLayersParser()
 
 const rdProjection = new Projection({
     code: 'EPSG:28992',
@@ -34,13 +37,6 @@ const DEFAULT_STYLE = [
             }),
         }),
     }),
-]
-
-// can be calculated based on resolution z0, written out for clarity
-// see https://www.geonovum.nl/uploads/standards/downloads/nederlandse_richtlijn_tiling_-_versie_1.1.pdf
-const resolutions = [
-    3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84,
-    0.42, 0.21,
 ]
 
 const matrixIds = new Array(15)
@@ -78,7 +74,7 @@ export default {
         zIndex: Number,
     },
     watch: {
-        url(value) {
+        url() {
             this.setSource(this.url, this.name)
         },
         name(value) {

@@ -13,24 +13,30 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='map',
-            options={'verbose_name': 'Kaart', 'verbose_name_plural': 'Kaarten'},
+            options={'verbose_name': 'Kaart',
+                     'verbose_name_plural': 'Kaarten'},
         ),
         migrations.AlterField(
             model_name='map',
             name='layers',
-            field=models.ManyToManyField(to='webservice.Layer', verbose_name='Lagen'),
+            field=models.ManyToManyField(
+                to='webservice.Layer', verbose_name='Lagen'),
         ),
         migrations.AlterField(
             model_name='map',
             name='slug',
-            field=django_extensions.db.fields.AutoSlugField(blank=True, editable=False, help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.', populate_from='title', verbose_name='Kort kenmerk'),
+            field=django_extensions.db.fields.AutoSlugField(
+                blank=True, editable=False, help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.', populate_from='title', verbose_name='Kort kenmerk'),
         ),
         migrations.CreateModel(
             name='Theme',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=128, null=True, verbose_name='Titel')),
-                ('layers', models.ManyToManyField(to='webservice.Layer', verbose_name='Lagen')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(
+                    max_length=128, null=True, verbose_name='Titel')),
+                ('layers', models.ManyToManyField(
+                    to='webservice.Layer', verbose_name='Lagen')),
             ],
             options={
                 'verbose_name': 'Thema',

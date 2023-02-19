@@ -14,7 +14,7 @@
                     <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
                 </svg>
                 <h3>{{ title }}</h3>
-                <Button size="large" @click="hidePanel">
+                <PrimaryButton size="large" @click="hidePanel">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         height="24px"
@@ -27,7 +27,7 @@
                             d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
                         />
                     </svg>
-                </Button>
+                </PrimaryButton>
             </slot>
         </div>
         <div class="content" ref="content">
@@ -37,12 +37,12 @@
 </template>
 
 <script>
-import Button from './Button.vue'
+import PrimaryButton from './PrimaryButton.vue'
 
 export default {
-    name: 'Panel',
+    name: 'PanelDisplay',
     components: {
-        Button,
+        PrimaryButton,
     },
     props: {
         id: Number,

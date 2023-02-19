@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='themelayer',
             name='meta_updated',
-            field=models.CharField(help_text='\nDe waarde wordt door javascript geëvalueerd\n(Bijv: "01-01-2018", getDate("year"))\'\n        ', max_length=128, null=True, verbose_name='meta_bijgewerkt'),
+            field=models.CharField(help_text='\nDe waarde wordt door javascript geëvalueerd\n(Bijv: "01-01-2018", getDate("year"))\'\n        ',
+                                   max_length=128, null=True, verbose_name='meta_bijgewerkt'),
         ),
     ]

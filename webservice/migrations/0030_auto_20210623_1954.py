@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='layer',
             name='source_type',
-            field=models.CharField(choices=[('WMS_WFS', 'WMS en WFS'), ('WMS', 'WMS'), ('WFS', 'WFS'), ('WMTS', 'WMTS')], default='WMS_WFS', help_text='"WMS en WFS" en WFS is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.', max_length=20, verbose_name='Brontype'),
+            field=models.CharField(choices=[('WMS_WFS', 'WMS en WFS'), ('WMS', 'WMS'), ('WFS', 'WFS'), ('WMTS', 'WMTS')], default='WMS_WFS',
+                                   help_text='"WMS en WFS" en WFS is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.', max_length=20, verbose_name='Brontype'),
         ),
     ]

@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='layer',
             name='_popup_attributes',
-            field=models.CharField(blank=True, max_length=500, null=True, verbose_name='Voer één veld per regel in. Bij geen invoer worden alle velden getoond'),
+            field=models.CharField(blank=True, max_length=500, null=True,
+                                   verbose_name='Voer één veld per regel in. Bij geen invoer worden alle velden getoond'),
         ),
     ]

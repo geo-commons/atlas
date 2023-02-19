@@ -60,7 +60,7 @@
 import { mapState } from 'vuex'
 
 export default {
-    name: 'Search',
+    name: 'SearchForm',
     props: {
         showBorder: Boolean,
     },

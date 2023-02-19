@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='atlastheme',
             name='slug',
-            field=django_extensions.db.fields.AutoSlugField(blank=True, editable=False, help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar het thema.', populate_from='title', verbose_name='Kort kenmerk'),
+            field=django_extensions.db.fields.AutoSlugField(
+                blank=True, editable=False, help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar het thema.', populate_from='title', verbose_name='Kort kenmerk'),
         ),
     ]

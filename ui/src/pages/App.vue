@@ -152,19 +152,19 @@
                 @toggle-modal="toggleModal"
             />
         </transition>
-        <Alert :alert="this.alert" />
+        <AlertMessage :alert="this.alert" />
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import { isMobile } from '../utils/helpers'
-import Alert from '../components/Alert'
+import AlertMessage from '../components/AlertMessage'
 import BaseLayersPanel from '../components/BaseLayersPanel'
 import DataPanel from '../components/DataPanel'
 import EmbedModal from '../components/EmbedModal'
 import LayersPanel from '../components/LayersPanel'
-import OpenLayersRenderer from '../components/Map/renderers/OpenLayers/OpenLayers'
+import OpenLayersRenderer from '../components/MapRenderer/renderers/OpenLayers/OpenLayers'
 import ToolsPanel from '../components/ToolsPanel'
 import MorePanel from '../components/MorePanel'
 import PanoramaPanel from '../components/PanoramaPanel'
@@ -178,7 +178,7 @@ const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locati
 export default {
     name: 'App',
     components: {
-        Alert,
+        AlertMessage,
         BaseLayersPanel,
         DataPanel,
         EmbedModal,
@@ -345,7 +345,7 @@ export default {
             this.showInfoPanel = Boolean(value.marker)
             this.pushHistoryState()
         },
-        layers(value) {
+        layers() {
             this.pushHistoryState()
         },
     },

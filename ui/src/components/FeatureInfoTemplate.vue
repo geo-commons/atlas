@@ -1,7 +1,7 @@
 <template>
     <ExpandButton :title="template.title" class="template">
         <p v-if="this.error">{{ this.error }}</p>
-        <Table v-if="!this.error && template.headers.length > 0" class="table">
+        <table-list v-if="!this.error && template.headers.length > 0" class="table">
             <table>
                 <thead>
                     <tr>
@@ -18,7 +18,7 @@
                     </tr>
                 </tbody>
             </table>
-        </Table>
+        </table-list>
         <markdown
             v-if="!this.error && template.headers.length === 0"
             :inline="false"
@@ -33,7 +33,7 @@ import { mapState } from 'vuex'
 import fetchDot from 'fetch-dot'
 
 import ExpandButton from './ExpandButton'
-import Table from './Table'
+import TableList from './TableList'
 import Markdown from './Markdown'
 
 nunjucks.configure({ autoescaping: true })
@@ -42,7 +42,7 @@ export default {
     name: 'FeatureInfoTemplate',
     components: {
         ExpandButton,
-        Table,
+        TableList,
         Markdown,
     },
     props: {

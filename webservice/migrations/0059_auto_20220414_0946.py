@@ -12,11 +12,13 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='map',
-            options={'ordering': ['title'], 'verbose_name': 'Kaart', 'verbose_name_plural': 'Kaarten'},
+            options={'ordering': [
+                'title'], 'verbose_name': 'Kaart', 'verbose_name_plural': 'Kaarten'},
         ),
         migrations.AlterField(
             model_name='viewer',
             name='internal',
-            field=models.BooleanField(default=True, help_text='Is alleen zichtbaar binnen interne omgeving. Hou er rekening mee dat de gebruikernaam, het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.', verbose_name='Alleen intern zichtbaar'),
+            field=models.BooleanField(
+                default=True, help_text='Is alleen zichtbaar binnen interne omgeving. Hou er rekening mee dat de gebruikernaam, het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.', verbose_name='Alleen intern zichtbaar'),
         ),
     ]

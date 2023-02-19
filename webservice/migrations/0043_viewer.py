@@ -2,7 +2,8 @@
 import os
 from django.db import migrations, models
 
-def migrate_viewers_from_environment_variables(apps, schema_editor):
+
+def migrate_viewers_from_environment_variables(apps, _):
     # Read existing environment variables and create viewers
     Viewer = apps.get_model('webservice', 'Viewer')
 
@@ -35,15 +36,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Viewer',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ordering', models.PositiveIntegerField(db_index=True, default=0, verbose_name='Sortering')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('ordering', models.PositiveIntegerField(
+                    db_index=True, default=0, verbose_name='Sortering')),
                 ('label', models.CharField(max_length=128)),
-                ('type', models.CharField(choices=[('GOOGLE_MAPS', 'Google Maps'), ('STREET_SMART', 'Street Smart'), ('OBLIQUO', 'Obliquo')], default='GOOGLE_MAPS', max_length=20, verbose_name='Type')),
+                ('type', models.CharField(choices=[('GOOGLE_MAPS', 'Google Maps'), ('STREET_SMART', 'Street Smart'), (
+                    'OBLIQUO', 'Obliquo')], default='GOOGLE_MAPS', max_length=20, verbose_name='Type')),
                 ('username', models.CharField(blank=True, max_length=128, null=True)),
                 ('password', models.CharField(blank=True, max_length=128, null=True)),
                 ('api_key', models.CharField(blank=True, max_length=128, null=True)),
                 ('url', models.CharField(blank=True, max_length=255, null=True)),
-                ('internal', models.BooleanField(default=True, help_text='Is alleen zichtbaar binnen interne omgeving.', verbose_name='Alleen intern zichtbaar')),
+                ('internal', models.BooleanField(
+                    default=True, help_text='Is alleen zichtbaar binnen interne omgeving.', verbose_name='Alleen intern zichtbaar')),
             ],
             options={
                 'verbose_name': 'Viewer',
@@ -51,5 +56,6 @@ class Migration(migrations.Migration):
                 'ordering': ['label'],
             },
         ),
-        migrations.RunPython(migrate_viewers_from_environment_variables, migrations.RunPython.noop),
+        migrations.RunPython(
+            migrate_viewers_from_environment_variables, migrations.RunPython.noop),
     ]
