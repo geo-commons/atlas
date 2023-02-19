@@ -14,21 +14,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='atlastheme',
             name='slug',
-            field=django_extensions.db.fields.AutoSlugField(blank=True, editable=False, help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar de laag.', populate_from='title', verbose_name='Kort kenmerk'),
+            field=django_extensions.db.fields.AutoSlugField(
+                blank=True, editable=False, help_text='Een uniek kort kenmerk voor het thema in Atlas. Dit kenmerk komt terug in links naar de laag.', populate_from='title', verbose_name='Kort kenmerk'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='closed_dataset',
-            field=models.BooleanField(default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.', verbose_name='Besloten'),
+            field=models.BooleanField(
+                default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.', verbose_name='Besloten'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='layer_id',
-            field=models.CharField(default='', help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.', max_length=128, null=True, verbose_name='Kort kenmerk'),
+            field=models.CharField(default='', help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.',
+                                   max_length=128, null=True, verbose_name='Kort kenmerk'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='layer_name',
-            field=models.CharField(help_text='De naam van de laag op de geoserver.', max_length=128, null=True, verbose_name='Laagnaam'),
+            field=models.CharField(help_text='De naam van de laag op de geoserver.',
+                                   max_length=128, null=True, verbose_name='Laagnaam'),
         ),
     ]

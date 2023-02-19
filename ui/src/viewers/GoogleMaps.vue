@@ -14,6 +14,7 @@ export default {
     name: 'GoogleMaps',
     mounted() {
         const latlong = transform(this.position.marker, 'EPSG:28992', 'EPSG:4326')
+        // eslint-disable-next-line no-undef
         this.streetview = new google.maps.StreetViewPanorama(this.$refs.viewer, {
             position: {
                 lat: latlong[1],
@@ -25,6 +26,7 @@ export default {
     },
     methods: {
         resize() {
+            // eslint-disable-next-line no-undef
             google.maps.event.trigger(this.streetview, 'resize')
         },
     },

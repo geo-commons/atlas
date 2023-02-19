@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='layer',
             name='isqueryable',
-            field=models.BooleanField(default=True, help_text='Deze instelling is alleen van toepassing op Atlas versie 2 en wordt binnenkort verwijderd', verbose_name='Kan doorzocht worden'),
+            field=models.BooleanField(
+                default=True, help_text='Deze instelling is alleen van toepassing op Atlas versie 2 en wordt binnenkort verwijderd', verbose_name='Kan doorzocht worden'),
         ),
     ]

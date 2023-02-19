@@ -29,7 +29,7 @@ export default {
 
         this.map.setView(this.view)
 
-        this.map.on('moveend', (e) => {
+        this.map.on('moveend', () => {
             const view = this.map.getView()
 
             const resolution = getPointResolution(

@@ -41,7 +41,7 @@
                     >Geen weergave beschikbaar.</span
                 >
                 <div v-if="!loading && !error && displayProperties.length > 0">
-                    <Table class="table">
+                    <table-list class="table">
                         <table>
                             <thead>
                                 <tr>
@@ -93,7 +93,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </Table>
+                    </table-list>
                 </div>
             </div>
         </template>
@@ -104,13 +104,13 @@
 import GeoJSON from 'ol/format/GeoJSON'
 import { getCenter } from 'ol/extent'
 
-import Table from './Table'
+import TableList from './TableList'
 import ExpandButton from './ExpandButton'
 
 export default {
     name: 'FeatureTable',
     components: {
-        Table,
+        TableList,
         ExpandButton,
     },
     data() {
@@ -258,12 +258,12 @@ export default {
             const separator = ';'
             const filename = this.layer.title
                 .replace(' ', '-')
-                .replace(/[^a-z0-9\-]/gi, '')
+                .replace(/[^a-z0-9-]/gi, '')
                 .toLowerCase()
 
             let data =
                 this.displayProperties
-                    .map((property) => `"${property.replace(/\"/g, '""')}"`)
+                    .map((property) => `"${property.replace(/"/g, '""')}"`)
                     .join(separator) + '\n'
 
             this.features.forEach((feature) => {
@@ -271,7 +271,7 @@ export default {
                     this.displayProperties
                         .map((property) =>
                             feature.properties[property] !== null
-                                ? `"${String(feature.properties[property]).replace(/\"/g, '""')}"`
+                                ? `"${String(feature.properties[property]).replace(/"/g, '""')}"`
                                 : ''
                         )
                         .join(separator) + '\n'

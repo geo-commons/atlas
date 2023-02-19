@@ -1,7 +1,7 @@
 <template>
     <ExpandButton v-if="features.length > 0" :title="layer.title" :isOpen="isOpen" class="feature">
         <div v-for="feature in features" v-bind:key="feature.id">
-            <Table>
+            <table-list>
                 <table>
                     <tbody>
                         <tr
@@ -18,7 +18,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </Table>
+            </table-list>
 
             <div
                 v-for="(linkedData, key) in layer.linked_data"
@@ -56,7 +56,7 @@ import nunjucks from 'nunjucks'
 import { mapState } from 'vuex'
 
 import FeatureTable from './FeatureTable'
-import Table from './Table'
+import TableList from './TableList'
 import TileWMS from 'ol/source/TileWMS'
 import View from 'ol/View'
 import ExpandButton from './ExpandButton'
@@ -68,7 +68,7 @@ nunjucks.configure({ autoescaping: true })
 export default {
     name: 'FeatureInfo',
     components: {
-        Table,
+        TableList,
         FeatureTable,
         ExpandButton,
         RichValue,

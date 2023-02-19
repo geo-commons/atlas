@@ -22,7 +22,7 @@
                         />
                     </svg>
                 </button>
-                <Search :showBorder="true" @on-submit="onSearch" class="data-search">
+                <SearchForm :showBorder="true" @on-submit="onSearch" class="data-search">
                     <template v-slot:default>
                         <input
                             ref="queryInput"
@@ -32,7 +32,7 @@
                             autocomplete="off"
                         />
                     </template>
-                </Search>
+                </SearchForm>
             </div>
         </template>
 
@@ -56,7 +56,7 @@
 <script>
 import SidePanel from './SidePanel'
 import FeatureTable from './FeatureTable'
-import Search from './Search'
+import SearchForm from './SearchForm'
 
 const visibleSourceTypes = ['WMS_WFS', 'WFS']
 
@@ -65,7 +65,7 @@ export default {
     components: {
         SidePanel,
         FeatureTable,
-        Search,
+        SearchForm,
     },
     methods: {
         onSearch() {

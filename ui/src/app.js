@@ -28,7 +28,7 @@ Vue.use(VueTippy, {
     boundary: 'viewport',
     delay: [1000, 0],
 })
-Vue.component('tippy', TippyComponent)
+Vue.component('VueTippy', TippyComponent)
 
 // Atlas v3
 document.addEventListener('DOMContentLoaded', () => {

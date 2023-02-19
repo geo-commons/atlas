@@ -1,8 +1,0 @@
-// .eslintrc.js
-module.exports = {
-    extends: ['plugin:vue/essential', 'plugin:prettier/recommended'],
-    plugins: ['prettier'],
-    rules: {
-        'prettier/prettier': 'error',
-    },
-}

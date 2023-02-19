@@ -54,7 +54,7 @@
             />
 
             <div class="toggle-buttons">
-                <Button
+                <PrimaryButton
                     v-if="this.features.list && !this.showList"
                     size="large"
                     label="Lijst"
@@ -74,7 +74,7 @@
                             d="M3,5v14h18V5H3z M7,7v2H5V7H7z M5,13v-2h2v2H5z M5,15h2v2H5V15z M19,17H9v-2h10V17z M19,13H9v-2h10V13z M19,9H9V7h10V9z"
                         />
                     </svg>
-                </Button>
+                </PrimaryButton>
             </div>
 
             <div class="top-right-panels">
@@ -114,7 +114,7 @@ const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locati
 
 import OpenLayersRenderer from './renderers/OpenLayers/OpenLayers'
 
-import Button from '../Button'
+import PrimaryButton from '../PrimaryButton'
 import ListPanel from '../ListPanel'
 import DataPanel from '../DataPanel'
 import PointInfoPanel from '../PointInfoPanel'
@@ -125,7 +125,7 @@ import ZoomPanel from '../ZoomPanel'
 import GeoLocationButton from '../GeoLocationButton'
 
 export default {
-    name: 'Map',
+    name: 'MapRenderer',
     props: {
         initialLayers: Array,
         initialPosition: Object,
@@ -150,7 +150,7 @@ export default {
         },
     },
     components: {
-        Button,
+        PrimaryButton,
         SearchPanel,
         LayersPanel,
         DataPanel,

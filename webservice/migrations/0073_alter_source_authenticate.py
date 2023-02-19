@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='source',
             name='authenticate',
-            field=models.BooleanField(default=False, help_text='Configureer dit alleen voor vertrouwde bronnen', verbose_name='Verstuur authenticatieinformatie naar bron'),
+            field=models.BooleanField(default=False, help_text='Configureer dit alleen voor vertrouwde bronnen',
+                                      verbose_name='Verstuur authenticatieinformatie naar bron'),
         ),
     ]

@@ -13,16 +13,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='layer',
             name='meta_kind',
-            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld', max_length=128, null=True, verbose_name='Soort'),
+            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld',
+                                   max_length=128, null=True, verbose_name='Soort'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='meta_org',
-            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld', max_length=128, null=True, verbose_name='Organisatie'),
+            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld',
+                                   max_length=128, null=True, verbose_name='Organisatie'),
         ),
         migrations.AlterField(
             model_name='layer',
             name='meta_updated',
-            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld', max_length=128, null=True, verbose_name='Laatst bijgewerkt'),
+            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld',
+                                   max_length=128, null=True, verbose_name='Laatst bijgewerkt'),
         ),
     ]

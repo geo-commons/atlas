@@ -15,12 +15,12 @@ export default {
             locale: 'nl',
         }
 
-        StreetSmartApi.init(options).then(() => {
+        window.StreetSmartApi.init(options).then(() => {
             this.setPosition(this.position.marker)
         })
     },
     beforeDestroy() {
-        StreetSmartApi.destroy({
+        window.StreetSmartApi.destroy({
             targetElement: this.$refs.viewer,
         })
     },
@@ -30,7 +30,7 @@ export default {
         },
         setPosition(position) {
             const options = {
-                viewerType: [StreetSmartApi.ViewerType.PANORAMA],
+                viewerType: [window.StreetSmartApi.ViewerType.PANORAMA],
                 panoramaViewer: {
                     closable: false,
                     maximizable: false,
@@ -41,7 +41,7 @@ export default {
                 },
             }
 
-            StreetSmartApi.open(`${position[0]}, ${position[1]}`, options).then((results) => {
+            window.StreetSmartApi.open(`${position[0]}, ${position[1]}`, options).then((results) => {
                 if (!results || results.length === 0) {
                     return
                 }

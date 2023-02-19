@@ -9,7 +9,7 @@ import Markdown from './Markdown'
 nunjucks.configure({ autoescaping: true })
 
 export default {
-    name: 'Template',
+    name: 'MarkdownTemplate',
     components: {
         Markdown,
     },

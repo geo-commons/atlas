@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='layer',
             name='meta_description',
-            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld', max_length=128, null=True, verbose_name='Omschrijving'),
+            field=models.CharField(help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld',
+                                   max_length=128, null=True, verbose_name='Omschrijving'),
         ),
     ]

@@ -13,7 +13,7 @@
 
 <script>
 export default {
-    name: 'Button',
+    name: 'PrimaryButton',
     props: {
         size: {
             type: String,

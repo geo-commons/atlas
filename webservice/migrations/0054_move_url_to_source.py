@@ -2,7 +2,8 @@
 
 from django.db import migrations
 
-def move_urls_to_source(apps, schema_editor):
+
+def move_urls_to_source(apps, _):
     Layer = apps.get_model('webservice', 'Layer')
     Source = apps.get_model('webservice', 'Source')
 
@@ -13,7 +14,8 @@ def move_urls_to_source(apps, schema_editor):
 
     for layer in Layer.objects.all():
         if layer.url not in url_to_source:
-            source = Source.objects.create(title=layer.url[:128], url=layer.url)
+            source = Source.objects.create(
+                title=layer.url[:128], url=layer.url)
             url_to_source[layer.url] = source
 
         layer.layer_source = url_to_source[layer.url]

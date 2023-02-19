@@ -10,7 +10,7 @@ import VueTippy, { TippyComponent } from 'vue-tippy'
 import { createStore } from './store'
 import { getSettingsFromPath } from './utils/router'
 import App from './admin/App'
-import Dashboard from './admin/pages/Dashboard'
+import AdminDashboard from './admin/pages/AdminDashboard'
 import MapList from './admin/pages/MapList'
 import MapCreateUpdate from './admin/pages/MapCreateUpdate'
 import SourceList from './admin/pages/SourceList'
@@ -33,10 +33,10 @@ Vue.use(VueTippy, {
     boundary: 'viewport',
     delay: [1000, 0],
 })
-Vue.component('tippy', TippyComponent)
+Vue.component('VueTippy', TippyComponent)
 
 const routes = [
-    { path: '/', component: Dashboard, meta: { title: 'Dashboard', menu: true } },
+    { path: '/', component: AdminDashboard, meta: { title: 'Dashboard', menu: true } },
     { path: '/maps', component: MapList, meta: { title: 'Kaarten', menu: true } },
     { path: '/maps/create', component: MapCreateUpdate, meta: { title: 'Kaarten', menu: false } },
     {

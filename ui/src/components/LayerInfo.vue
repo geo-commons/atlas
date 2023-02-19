@@ -1,5 +1,5 @@
 <template>
-    <tippy
+    <vue-tippy
         arrow
         placement="right-start"
         theme="popover"
@@ -62,7 +62,7 @@
                 </div>
             </div>
         </div>
-    </tippy>
+    </vue-tippy>
 </template>
 
 <script>

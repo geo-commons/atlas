@@ -41,7 +41,7 @@
 
 <script>
 export default {
-    name: 'Alert',
+    name: 'AlertMessage',
     props: {
         alert: String,
     },

@@ -57,7 +57,7 @@
 
 <script>
 export default {
-    name: 'Menu',
+    name: 'MainMenu',
 }
 </script>
 

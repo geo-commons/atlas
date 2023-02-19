@@ -1,17 +1,17 @@
 <template>
     <div class="app">
-        <Menu v-if="this.$route.meta.menu" />
+        <AppMenu v-if="this.$route.meta.menu" />
         <router-view></router-view>
     </div>
 </template>
 
 <script>
-import Menu from './components/Menu.vue'
+import AppMenu from './components/MainMenu.vue'
 
 export default {
     name: 'App',
     components: {
-        Menu,
+        AppMenu,
     },
 }
 </script>
