@@ -145,7 +145,7 @@ export default {
             })
 
             const params = {
-                LEGEND_OPTIONS: 'forceTitles:off;forceLabels:on',
+                LEGEND_OPTIONS: 'forceTitles:off;forceLabels:on;fontAntiAliasing:true',
             }
 
             return wmsSource.getLegendUrl(view.getResolution(), params)
