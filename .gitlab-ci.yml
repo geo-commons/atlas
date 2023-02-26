@@ -106,6 +106,7 @@ Deploy acceptance:
       cd helm/
       helm dependency update
       helm upgrade --install atlas-acc . \
+      --namespace atlas-acc \
       --set image.repository=$CI_REGISTRY_IMAGE \
       --set image.tag=$CI_COMMIT_SHA \
       --set allowedHosts=atlas-acc.$REVIEW_BASE_DOMAIN \
