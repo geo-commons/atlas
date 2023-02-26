@@ -101,6 +101,8 @@ Deploy acceptance:
   image: registry.gitlab.com/commonground/core/review-app-deployer:latest
   script:
     - |
+      kubectl config get-contexts
+      kubectl config use-context purmerend/atlas:review
       cd helm/
       helm dependency update
       helm upgrade --install atlas-acc . \
