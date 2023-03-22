@@ -59,6 +59,7 @@ export default {
         this.map.removeLayer(this.tileLayer)
     },
     props: {
+        id: String,
         name: String,
         url: String,
         layer: String,
@@ -67,6 +68,7 @@ export default {
         opacity: Number,
         zIndex: Number,
         format: String,
+        filters: Object,
     },
     watch: {
         url(value) {
@@ -81,6 +83,29 @@ export default {
         opacity(value) {
             this.tileLayer.set('opacity', value)
         },
+        filters(value) {
+            if (!value[this.id]) {
+                return
+            }
+
+            const cqlFilters = []
+
+            Object.keys(value[this.id]).forEach((key) => {
+                if (value[this.id][key].length == 0) {
+                    return
+                }
+
+                const values = value[this.id][key].map((value) => `'${value}'`).join(',')
+                cqlFilters.push(`${key} IN (${values})`)
+            })
+
+            this.source.updateParams({
+                ...this.source.getParams(),
+                CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(' AND ') : null
+            })
+
+            this.source.refresh()
+        }
     },
     computed: mapState({
         user: (state) => state.user,
