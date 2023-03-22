@@ -11,6 +11,7 @@
                 :padding="[0, 0, 0, 0]"
                 :user="this.user"
                 :features="this.features"
+                :filters="this.filters"
                 @position-changed="this.setPosition"
                 @tool-used="this.toolUsed"
             />
@@ -23,6 +24,16 @@
             :shortDescriptionTemplate="this.settings.short_description"
             @hidePanel="this.toggleList"
             @on-fit="(feature) => this.$refs.map.fit(feature, { maxZoom: 18 })"
+        />
+        <FilterPanel
+            v-if="this.showFilters"
+            ref="filterPanel"
+            :layer="this.layers[1]"
+            :facets="this.settings.facets"
+            :filters="this.filters"
+            :user="this.user"
+            @hidePanel="this.toggleFilters"
+            @update-filters="(value) => this.filters = value"
         />
         <PointInfoPanel
             v-if="!this.showPanoramaPanel"
@@ -75,6 +86,24 @@
                         />
                     </svg>
                 </PrimaryButton>
+                <PrimaryButton
+                    v-if="this.features.filters && !this.showFilters"
+                    size="large"
+                    label="Verfijn"
+                    dropShadow
+                    @click="this.toggleFilters"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 0 24 24"
+                        width="24px"
+                        fill="#000000"
+                    >
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
+                    </svg>
+                </PrimaryButton>
             </div>
 
             <div class="top-right-panels">
@@ -116,6 +145,7 @@ import OpenLayersRenderer from './renderers/OpenLayers/OpenLayers'
 
 import PrimaryButton from '../PrimaryButton'
 import ListPanel from '../ListPanel'
+import FilterPanel from '../FilterPanel'
 import DataPanel from '../DataPanel'
 import PointInfoPanel from '../PointInfoPanel'
 import SearchPanel from '../SearchPanel'
@@ -141,7 +171,9 @@ export default {
         settings: {
             type: Object,
             default: () => {
-                return {}
+                return {
+                    facets: []
+                }
             },
         },
         isEmbed: {
@@ -156,6 +188,7 @@ export default {
         DataPanel,
         PointInfoPanel,
         ListPanel,
+        FilterPanel,
         OpenLayersRenderer,
         ToolsPanel,
         ZoomPanel,
@@ -170,6 +203,8 @@ export default {
             showDataPanel: false,
             showPanoramaPanel: false,
             showList: false,
+            showFilters: false,
+            filters: {}
         }
     },
     methods: {
@@ -211,6 +246,9 @@ export default {
         },
         toggleList() {
             this.showList = !this.showList
+        },
+        toggleFilters() {
+            this.showFilters = !this.showFilters
         },
         setTool(tool) {
             this.tool = tool

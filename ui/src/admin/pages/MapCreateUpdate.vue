@@ -14,10 +14,19 @@
                     @change="this.updateLayers"
                     :initialData="this.data"
                 />
+                <FiltersPanelAdmin
+                    v-if="this.sidebar === 'Filters'"
+                    @show-form="() => this.showSidebar('Form')"
+                    @change="this.updateLayers"
+                    :initialData="this.data"
+                    :layer="this.visibleLayers.length > 1 ? this.visibleLayers[1] : null"
+                    :user="this.user"
+                />
                 <MapForm
                     v-if="this.sidebar === 'Form'"
                     @show-layers="() => this.showSidebar('Layers')"
                     @show-list="() => this.showSidebar('List')"
+                    @show-filters="() => this.showSidebar('Filters')"
                     @delete="this.deleteMap"
                     @submit="this.saveMap"
                     :initialData="this.data"
@@ -46,6 +55,7 @@ import MapRenderer from '../../components/MapRenderer/MapRenderer'
 import MapForm from '../components/MapForm'
 import MapLayers from '../components/MapLayers'
 import ListPanelAdmin from '../components/ListPanelAdmin'
+import FiltersPanelAdmin from '../components/FiltersPanelAdmin'
 
 export default {
     name: 'MapCreateUpdate',
@@ -54,6 +64,7 @@ export default {
         MapForm,
         MapLayers,
         ListPanelAdmin,
+        FiltersPanelAdmin,
     },
     created() {
         this.getMap()
@@ -110,7 +121,9 @@ export default {
 
             this.data = {
                 features: {},
-                settings: {},
+                settings: {
+                    facets: []
+                },
             }
         },
         async saveMap(data) {
@@ -169,6 +182,9 @@ export default {
         updateLayers(layerIds) {
             this.data.layers = layerIds
         },
+        updateConfig(config) {
+            this.data.config = config
+        }
     },
 }
 </script>

@@ -17,9 +17,11 @@
             v-for="layer in layers"
             v-bind:key="layer.id"
             :is="getComponent(layer.source_type)"
+            :id="layer.id"
             :name="layer.name"
             :url="layer.url"
             :format="layer.format"
+            :filters="filters"
             :isVisible="layer.is_visible === true"
             :loginRequired="layer.login_required"
             :zIndex="layer.is_base ? 0 : 1"
@@ -120,6 +122,7 @@ export default {
         selectedArea: Object,
         user: Object,
         features: Object,
+        filters: Object,
         padding: { type: Array, default: () => [0, 0, 0, 0] },
     },
     methods: {
