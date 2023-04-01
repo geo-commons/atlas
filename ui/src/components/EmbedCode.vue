@@ -75,11 +75,15 @@ export default {
     },
     computed: {
         embedUrl() {
+            const baseLayer = this.layers
+                .filter((l) => l.is_visible && l.is_base)
+                .map((l) => l.id)
+
             return `${encodeURI(window.location.origin)}/atlas/embed/@${encodeURIComponent(
                 this.position.center[0]
             )},${encodeURIComponent(this.position.center[1])},${encodeURIComponent(
                 this.position.zoom
-            )}z/layers=${this.visibleLayers.map((l) => encodeURIComponent(l.id)).join(',')}`
+            )}z/layers=${this.visibleLayers.map((l) => encodeURIComponent(l.id)).join(',')}/base=${baseLayer.length > 0 ? baseLayer[0] : ''}`
         },
         embedCode() {
             return `<iframe src="${this.embedUrl}" width="560" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>`

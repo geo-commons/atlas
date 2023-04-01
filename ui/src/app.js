@@ -40,11 +40,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = JSON.parse(document.querySelector('#app-data').innerHTML)
     const settings = getSettingsFromPath(data.config)
 
-    const layers = data.layers.map((layer) =>
-        settings.visibleLayers && settings.visibleLayers.includes(layer.id)
-            ? { ...layer, is_visible: true }
-            : layer
-    )
+    const layers = data.layers.map((layer) => {
+        if (layer.is_base) {
+            return {
+                ...layer,
+                is_visible: settings.visibleBase ? settings.visibleBase == layer.id : layer.is_visible
+            }
+        }
+
+        if (!layer.is_base) {
+            return {
+                ...layer,
+                is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible
+            }
+        }
+    })
 
     const initialState = {
         isEmbed: data.is_embed,
