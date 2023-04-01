@@ -427,21 +427,6 @@ def validate_file_extension(value):
     if not ext.lower() in valid_extensions:
         raise ValidationError('Unsupported file extension.')
 
-class Theme(models.Model):
-    title = models.CharField('Titel', max_length=128, null=True)
-    icon = models.FileField(upload_to='theme_icons/', blank=True, validators=[validate_file_extension])
-    layers = models.ManyToManyField(Layer, verbose_name='Lagen')
-    ordering = models.PositiveIntegerField('Sortering',
-                                           default=0, editable=True, db_index=True)
-
-    class Meta:
-        verbose_name = 'Thema'
-        verbose_name_plural = "Thema's"
-        ordering = ['ordering', 'title']
-
-    def __str__(self):
-        return f"{self.title}"
-
 
 class ViewerVisibleManager(models.Manager):
     def for_request(self, request):

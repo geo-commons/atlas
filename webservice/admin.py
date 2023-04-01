@@ -1,11 +1,13 @@
 from django.contrib import admin
-
+from import_export.admin import ImportExportActionModelAdmin
 from .forms import LayerForm, LinkedDataForm
-from .models import Source, Category, Theme, Layer, Template, Map, LinkedData, Viewer
+from .models import Source, Category, Layer, Template, Map, LinkedData, Viewer
+from .resources import CategoryResource, LayerResource, SourceResource, MapResource
 
-
-class SourceAdmin(admin.ModelAdmin):
+class SourceAdmin(ImportExportActionModelAdmin):
     list_display = ('title',)
+    resource_classes = [SourceResource]
+
 
 class LinkedDataInline(admin.TabularInline):
     form = LinkedDataForm
@@ -31,7 +33,7 @@ def duplicate_layer(_modeladmin, _request, queryset):
         layer.title = f'{layer.title} ({i})'
         layer.save()
 
-class LayerAdmin(admin.ModelAdmin):
+class LayerAdmin(ImportExportActionModelAdmin):
     form = LayerForm
 
     list_display = ('ordering', 'title', 'layer_type', 'closed_dataset',
@@ -41,6 +43,8 @@ class LayerAdmin(admin.ModelAdmin):
     list_filter = ('layer_type', 'closed_dataset')
 
     actions = [duplicate_layer]
+
+    resource_classes = [LayerResource]
 
     inlines = [
         LinkedDataInline,
@@ -87,28 +91,21 @@ class LayerAdmin(admin.ModelAdmin):
     search_fields = ['title']
 
 
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ImportExportActionModelAdmin):
     list_display = ('ordering', 'title')
     list_display_links = ('title',)
     list_editable = ('ordering',)
-
     search_fields = ['title']
+    resource_classes = [CategoryResource]
 
 
-class ThemeAdmin(admin.ModelAdmin):
-    list_display = ('ordering', 'title')
-    list_display_links = ('title',)
-    list_editable = ('ordering',)
-
-    search_fields = ['title']
-
-
-class MapAdmin(admin.ModelAdmin):
+class MapAdmin(ImportExportActionModelAdmin):
     list_display = ('title', )
     fields = ('title', 'slug', 'layers')
     prepopulated_fields = {'slug': ('title', )}
 
     search_fields = ['title']
+    resource_classes = [MapResource]
 
 
 class ViewerAdmin(admin.ModelAdmin):
@@ -120,6 +117,5 @@ class ViewerAdmin(admin.ModelAdmin):
 admin.site.register(Source, SourceAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(Theme, ThemeAdmin)
 admin.site.register(Map, MapAdmin)
 admin.site.register(Viewer, ViewerAdmin)

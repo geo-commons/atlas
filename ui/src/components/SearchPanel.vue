@@ -43,8 +43,8 @@
 <script>
 import SearchForm from './SearchForm'
 
-const suggestEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest'
-const freeEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/v3/free'
+const suggestEndpoint = 'https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest'
+const freeEndpoint = 'https://api.pdok.nl/bzk/locatieserver/search/v3_1/free'
 
 export default {
     name: 'SearchPanel',

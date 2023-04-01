@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'mozilla_django_oidc',
     'rest_framework',
+    'import_export',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
