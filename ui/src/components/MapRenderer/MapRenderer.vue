@@ -8,6 +8,7 @@
                 :layers="this.layers"
                 :tool="this.tool"
                 :selectedArea="this.selectedArea"
+                :highlightedFeatures="this.highlightedFeatures"
                 :padding="[0, 0, 0, 0]"
                 :user="this.user"
                 :features="this.features"
@@ -141,6 +142,9 @@
 <script>
 const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/revgeo'
 
+import GeoJSON from 'ol/format/GeoJSON'
+import TileWMS from 'ol/source/TileWMS'
+import View from 'ol/View'
 import OpenLayersRenderer from './renderers/OpenLayers/OpenLayers'
 
 import PrimaryButton from '../PrimaryButton'
@@ -198,6 +202,7 @@ export default {
         return {
             layers: this.initialLayers,
             position: this.initialPosition,
+            highlightedFeatures: [],
             tool: '',
             selectedArea: null,
             showDataPanel: false,
@@ -215,6 +220,10 @@ export default {
                 return
             }
 
+            this.reverseGeocode(position)
+            this.getFeatureInfo(position)
+        },
+        async reverseGeocode(position) {
             try {
                 const result = await fetch(
                     `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`
@@ -236,6 +245,47 @@ export default {
             } catch (e) {
                 console.error(e)
             }
+        },
+        async getFeatureInfo(position) {
+            this.highlightedFeatures = []
+
+            const visibleLayers = this.layers.filter((layer) => !layer.is_base && layer.is_visible)
+            visibleLayers.forEach(async (layer) => {
+                const wmsSource = new TileWMS({
+                    url: layer.url,
+                    servertype: layer.server_type,
+                    params: {
+                        LAYERS: layer.name,
+                        TILED: true,
+                    },
+                })
+
+                const view = new View({
+                    center: this.position.center,
+                    zoom: this.position.zoom,
+                })
+
+                const url = wmsSource.getFeatureInfoUrl(
+                    position.marker,
+                    view.getResolution(),
+                    'EPSG:28992',
+                    {
+                        info_format: 'application/json',
+                        feature_count: 20,
+                    }
+                )
+
+                try {
+                    const result = await fetch(url)
+                    const data = await result.json()
+                    this.highlightedFeatures = [
+                        ...this.highlightedFeatures,
+                        ...data.features.map(feature => new GeoJSON().readFeature(feature))
+                    ]
+                } catch (e) {
+                    console.error(e)
+                }
+            })
         },
         toggleDataPanel() {
             this.showDataPanel = !this.showDataPanel
