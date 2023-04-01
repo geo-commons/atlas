@@ -36,7 +36,7 @@
       :selectable="false"
       :vectorStyle="this.MARKER_STYLE"
       :features="markerFeatures"
-      :zIndex="2"
+      :zIndex="3"
     />
     <ol-vector-layer
       name="geolocation"
@@ -44,7 +44,7 @@
       :isVisible="true"
       :vectorStyle="this.GEOLOCATION_STYLE"
       :features="geolocationFeatures"
-      :zIndex="2"
+      :zIndex="3"
     />
     <ol-vector-layer
       ref="selectedArea"
@@ -54,6 +54,15 @@
       :vectorStyle="this.SELECTED_AREA_STYLE"
       :features="selectedAreaFeatures"
       :zIndex="2"
+    />
+    <ol-vector-layer
+        ref="highlightedSelection"
+        name="highlightedSelection"
+        :selectable="true"
+        :isVisible="true"
+        :vectorStyle="this.HIGHLIGHTED_SELECTION_STYLE"
+        :features="highlightedFeatures"
+        :zIndex="2"
     />
   </ol-map>
 </template>
@@ -99,6 +108,11 @@ const SELECTED_AREA_STYLE = new Style({
   fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
 });
 
+const HIGHLIGHTED_SELECTION_STYLE = new Style({
+    stroke: new Stroke({ color: 'rgba(0, 102, 255, 1)', width: 5 }),
+    fill: new Fill({ color: 'rgba(0, 102, 255, 0.2)' }),
+})
+
 export default {
   name: "OpenLayers",
   components: {
@@ -117,6 +131,7 @@ export default {
     this.MARKER_STYLE = MARKER_STYLE;
     this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
     this.SELECTED_AREA_STYLE = SELECTED_AREA_STYLE;
+    this.HIGHLIGHTED_SELECTION_STYLE = HIGHLIGHTED_SELECTION_STYLE
   },
   props: {
     position: Object,
@@ -125,6 +140,7 @@ export default {
     selectedArea: Object,
     user: Object,
     features: Object,
+    highlightedFeatures: Array,
     filters: Object,
     padding: { type: Array, default: () => [0, 0, 0, 0] },
   },
