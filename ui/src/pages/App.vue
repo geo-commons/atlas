@@ -298,15 +298,20 @@ export default {
             const x = encodeURIComponent(this.position.center[0].toFixed(2))
             const y = encodeURIComponent(this.position.center[1].toFixed(2))
             const zoom = encodeURIComponent(this.position.zoom)
+
             const layers = this.layers
                 .filter((l) => l.is_visible && !l.is_base)
                 .map((l) => l.id)
                 .join(',')
 
+            const baseLayer = this.layers
+                .filter((l) => l.is_visible && l.is_base)
+                .map((l) => l.id)
+
             window.history.replaceState(
                 {},
                 '',
-                `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}`
+                `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ''}`
             )
         },
         toggleModal(modal) {

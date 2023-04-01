@@ -1,6 +1,6 @@
 export const getSettingsFromPath = (defaultConfig) => {
     const pathExpression =
-        /@(?<x>[0-9.]+),(?<y>[0-9.]+),(?<zoom>[0-9.]+)z(?:\/layers=(?<layers>[a-zA-Z0-9.\-_,]+))?/
+        /@(?<x>[0-9.]+),(?<y>[0-9.]+),(?<zoom>[0-9.]+)z(?:\/layers=(?<layers>[a-zA-Z0-9.\-_,]*))?(?:\/base=(?<base>[a-zA-Z0-9.\-_,]*))?/
     const match = window.location.pathname.match(pathExpression) || { groups: {} }
 
     return {
@@ -13,6 +13,7 @@ export const getSettingsFromPath = (defaultConfig) => {
             marker: null,
             geolocation: null,
         },
+        visibleBase: match.groups.base ? match.groups.base : null,
         visibleLayers: match.groups.layers ? match.groups.layers.split(',') : [],
     }
 }
