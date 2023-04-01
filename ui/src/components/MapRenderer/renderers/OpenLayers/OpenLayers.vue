@@ -140,7 +140,7 @@ export default {
     selectedArea: Object,
     user: Object,
     features: Object,
-    highlightedFeatures: Array,
+    highlightedFeatures: { type: Array, default: () => [] },
     filters: Object,
     padding: { type: Array, default: () => [0, 0, 0, 0] },
   },
