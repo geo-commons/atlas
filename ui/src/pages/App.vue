@@ -584,6 +584,11 @@ svg {
     background-color: #0066ff;
 }
 
+.tippy-tooltip.popover-theme .tippy-backdrop {
+    /* TODO: var(--color-primary) doesn't work */
+    background-color: white;
+}
+
 .tippy-tooltip.popover-theme {
     background-color: white;
     font-size: var(--font-size-small);
