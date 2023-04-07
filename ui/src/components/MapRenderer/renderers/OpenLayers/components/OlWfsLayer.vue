@@ -125,7 +125,7 @@ export default {
     },
     methods: {
         async applyStyle(inputStyle) {
-            if (!inputStyle) {
+            if (!inputStyle || Object.keys(inputStyle).length === 0) {
                 return this.tileLayer.setStyle(DEFAULT_STYLE)
             }
 
