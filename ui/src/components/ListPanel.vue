@@ -2,7 +2,7 @@
     <PanelDisplay :title="layer.title" @hidePanel="this.hidePanel">
         <ul>
             <li
-                v-for="feature in features"
+                v-for="feature in filteredFeatures"
                 v-bind:key="feature.id"
                 class="list-item"
                 @click="selectFeature(feature)"
@@ -36,6 +36,7 @@ export default {
         layer: Object,
         titleTemplate: String,
         shortDescriptionTemplate: String,
+        filters: Object,
     },
     mounted() {
         this.fetchFeatures()
@@ -45,6 +46,29 @@ export default {
             features: [],
             error: false,
             loading: false,
+        }
+    },
+    computed: {
+        filteredFeatures() {
+            const filters = this.filters[this.layer.id]
+            if (!filters || Object.keys(filters).length === 0) {
+                return this.features
+            }
+
+            return this.features.filter((feature) => {
+                let isVisible = true
+                Object.keys(filters).map((key) => {
+                    if (filters[key].length === 0) {
+                        return
+                    }
+
+                    if (!filters[key].includes(feature.properties[key])) {
+                        isVisible = false
+                    }
+                })
+
+                return isVisible
+            })
         }
     },
     methods: {

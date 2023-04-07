@@ -23,6 +23,7 @@
             :layer="this.layers[1]"
             :titleTemplate="this.settings.title"
             :shortDescriptionTemplate="this.settings.short_description"
+            :filters="this.filters"
             @hidePanel="this.toggleList"
             @on-fit="(feature) => this.$refs.map.fit(feature, { maxZoom: 18 })"
         />
