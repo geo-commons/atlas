@@ -173,7 +173,7 @@ import SearchPanel from '../components/SearchPanel'
 import ZoomPanel from '../components/ZoomPanel'
 import GeoLocationButton from '../components/GeoLocationButton'
 
-const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/revgeo'
+const reverseGeocodingEndpoint = 'https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse'
 
 export default {
     name: 'App',

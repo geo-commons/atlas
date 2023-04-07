@@ -140,7 +140,7 @@
 </template>
 
 <script>
-const reverseGeocodingEndpoint = 'https://geodata.nationaalgeoregister.nl/locatieserver/revgeo'
+const reverseGeocodingEndpoint = 'https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse'
 
 import GeoJSON from 'ol/format/GeoJSON'
 import TileWMS from 'ol/source/TileWMS'
