@@ -1,6 +1,6 @@
 <template>
     <PanelDisplay title="Verfijn resultaten" @hidePanel="this.hidePanel">
-        <ExpandButton v-for="facet in facets" v-bind:key="facet" :title="facet" isOpen>
+        <ExpandButton v-for="facet in facets" v-bind:key="facet" :title="layer.friendly_fields && layer.friendly_fields[facet] ? layer.friendly_fields[facet] : facet" isOpen>
             <ul v-if="facetValues[facet]">
                 <li v-for="value in facetValues[facet]" v-bind:key="value">
                     <CheckboxField

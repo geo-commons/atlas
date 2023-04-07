@@ -47,7 +47,7 @@
                                 <tr>
                                     <th></th>
                                     <th v-for="property in displayProperties" v-bind:key="property">
-                                        {{ property }}
+                                        {{ layer.friendly_fields && layer.friendly_fields[property] ? layer.friendly_fields[property] : property }}
                                     </th>
                                 </tr>
                             </thead>

@@ -75,7 +75,8 @@ class LayerAdmin(ImportExportActionModelAdmin):
                 'extent_max_y',
                 'zoom_min',
                 'zoom_max',
-                'style'
+                'style',
+                'friendly_fields'
             )
         }),
         ('Metadata', {

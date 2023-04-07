@@ -117,6 +117,9 @@ class Layer(models.Model):
     style = models.JSONField(
         'Stijl', default=dict, help_text='Stijl voor een WFS laag in GeoStyler formaat', blank=True, null=True)
 
+    friendly_fields = models.JSONField(
+        'Vriendelijke veldnamen', default=dict, help_text='Maak veldnamen vriendelijk', blank=True, null=True)
+
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
         blank=True, null=True)
@@ -297,6 +300,7 @@ source: new ol.source.TileWMS({{
             'name': self.layer_name,
             'opacity': float(self.opacity),
             'style': self.style,
+            'friendly_fields': self.friendly_fields,
             'url': self.url,
             'server_type': self.server_type,
             'is_base': self.is_base,

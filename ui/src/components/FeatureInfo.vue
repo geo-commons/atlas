@@ -8,7 +8,7 @@
                             v-for="property in filterProperties(feature.properties)"
                             v-bind:key="property"
                         >
-                            <td>{{ property | capitalize }}</td>
+                            <td>{{ layer.friendly_fields && layer.friendly_fields[property] ? layer.friendly_fields[property] : property | capitalize }}</td>
                             <td>
                                 <RichValue
                                     :dataKey="property"
