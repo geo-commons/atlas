@@ -46,5 +46,6 @@ if settings.DEBUG:
 
 urlpatterns += [
     path('atlas/', include('homepage.urls'), name='homepage'),
+    path('data/brp/', include('brp.urls'), name='brp'),
     path('', RedirectView.as_view(url='/atlas/'))
 ]
