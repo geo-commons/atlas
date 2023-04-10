@@ -22,6 +22,7 @@
                 :padding="this.mapPadding"
                 :user="this.user"
                 :features="{ scale: true }"
+                :drawFeatures="this.drawFeatures"
                 @position-changed="this.setPosition"
                 @tool-used="this.toolUsed"
             />
@@ -61,6 +62,7 @@
                     :tool="this.tool"
                     @set-tool="this.setTool"
                     @set-selected-area="this.setSelectedArea"
+                    @clear-draw="() => this.drawFeatures = []"
                 />
                 <MorePanel
                     v-if="!this.isEmbed && !this.showPanoramaPanel"
@@ -271,13 +273,17 @@ export default {
             this.$store.commit('setSelectedArea', selectedArea)
         },
         toolUsed(result) {
-            if (result && result.sketch) {
-                this.$store.commit('setSelectedArea', result.sketch.getGeometry())
-            }
-
             switch (result.tool) {
                 case 'SELECT_AREA':
                     this.showDataPanel = true
+                    this.$store.commit('setSelectedArea', result.sketch.getGeometry())
+                    break
+                case 'DRAW_POINT':
+                case 'DRAW_LINE':
+                case 'DRAW_POLYGON':
+                case 'DRAW_CIRCLE':
+                case 'DRAW_LABEL':
+                    this.drawFeatures.push(result.sketch)
                     break
             }
         },
@@ -362,6 +368,7 @@ export default {
             showBaseLayersPanel: false,
             showDataPanel: false,
             computedStyle: { '--color-primary': '#0066FF' },
+            drawFeatures: [],
             modal: '',
             mapPadding: [0, 0, 0, 0],
         }

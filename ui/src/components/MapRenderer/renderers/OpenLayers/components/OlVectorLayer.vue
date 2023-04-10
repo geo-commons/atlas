@@ -32,7 +32,7 @@ export default {
     },
     props: {
         name: String,
-        vectorStyle: Object,
+        vectorStyle: [Object, Function],
         features: Array,
         selectable: Boolean,
         isVisible: Boolean,
