@@ -159,8 +159,11 @@ export default {
                 ['maxFeatures', '20'],
             ])
 
+            const url = new URL(this.layer.url)
+            url.search = params.toString()
+
             const result = await fetch(
-                this.layer.url + params.toString(),
+                url.toString(),
                 this.getFetchParameters()
             )
             const data = await result.json()
