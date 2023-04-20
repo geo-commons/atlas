@@ -52,6 +52,7 @@
             <SearchPanel
                 v-if="!this.showPanoramaPanel"
                 :position="this.position"
+                :layers="this.layers"
                 @set-position="this.setPosition"
                 @toggle-data-panel="this.toggleDataPanel"
             />

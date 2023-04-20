@@ -22,7 +22,12 @@
                         />
                     </svg>
                 </button>
-                <SearchForm :showBorder="true" @on-submit="onSearch" class="data-search">
+                <SearchForm 
+                    :showBorder="true"
+                    :hasVisibleLayers="visibleLayers.length > 0"
+                    @on-submit="onSearch" 
+                    class="data-search"
+                >
                     <template v-slot:default>
                         <input
                             ref="queryInput"

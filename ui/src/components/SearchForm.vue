@@ -2,7 +2,7 @@
     <div class="search-wrapper" :class="{ showBorder }">
         <form class="search" autocomplete="off" method="GET" @submit="onSubmit">
             <button
-                v-if="this.$listeners['show-data-panel'] && !this.isEmbed"
+                v-if="this.$listeners['show-data-panel'] && !this.isEmbed && hasVisibleLayers"
                 class="iconbutton toggle-button"
                 type="button"
                 v-tippy="{ placement: 'bottom' }"
@@ -63,6 +63,7 @@ export default {
     name: 'SearchForm',
     props: {
         showBorder: Boolean,
+        hasVisibleLayers: Boolean,
     },
     methods: {
         onSubmit(e) {
