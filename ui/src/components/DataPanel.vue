@@ -46,6 +46,7 @@
                 v-for="visibleLayer in visibleLayers"
                 v-bind:key="visibleLayer.id"
                 :isOpen="visibleLayers.length === 1"
+                :isFilterable="true"
                 :layer="visibleLayer"
                 :position="position"
                 :selectedArea="selectedArea"

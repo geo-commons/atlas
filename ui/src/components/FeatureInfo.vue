@@ -29,7 +29,7 @@
                     <b>{{ linkedData.title }}</b>
                     <FeatureTable
                         :layer="linkedData"
-                        :filter="{
+                        :overallFilter="{
                             key: linkedData.target_key,
                             value: features[0].properties[linkedData.source_key],
                         }"
