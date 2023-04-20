@@ -26,6 +26,7 @@ export default {
     },
     props: {
         layers: Array,
+        tool: String,
     },
 }
 </script>
