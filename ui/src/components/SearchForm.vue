@@ -93,6 +93,12 @@ export default {
     transition: box-shadow 0.1s;
 }
 
+@media print {
+    .search-wrapper {
+        visibility: hidden;
+    }
+}
+
 .search-wrapper:not(.showBorder) {
     box-shadow: var(--shadow-normal);
 }

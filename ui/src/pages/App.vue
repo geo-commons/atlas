@@ -689,6 +689,12 @@ svg {
     flex-direction: column;
 }
 
+@media print {
+    .bottom-right-panels {
+        visibility: hidden;
+    }
+}
+
 .bottom-right-panels > *:not(:last-child) {
     margin-bottom: 12px;
 }

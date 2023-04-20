@@ -80,6 +80,12 @@ export default {
     box-shadow: var(--shadow-normal);
 }
 
+@media print {
+    .iconbutton {
+        visibility: hidden;
+    }
+}
+
 .iconbutton.isOpen {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;

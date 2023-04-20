@@ -122,6 +122,12 @@ export default {
     box-shadow: var(--shadow-normal);
 }
 
+@media print {
+    .buttons {
+        visibility: hidden;
+    }
+}
+
 .buttons.showMeasureMenu {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
