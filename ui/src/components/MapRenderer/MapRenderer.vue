@@ -9,12 +9,14 @@
                 :tool="this.tool"
                 :selectedArea="this.selectedArea"
                 :highlightedFeatures="this.highlightedFeatures"
+                :selectedFeatures="this.selectedFeatures"
                 :padding="[0, 0, 0, 0]"
                 :user="this.user"
                 :features="this.features"
                 :filters="this.filters"
                 @position-changed="this.setPosition"
                 @tool-used="this.toolUsed"
+                @features-selected="this.featuresSelected"
             />
         </div>
         <ListPanel
@@ -38,12 +40,18 @@
             @update-filters="(value) => this.filters = value"
         />
         <PointInfoPanel
-            v-if="!this.showPanoramaPanel"
+            v-if="!this.showPanoramaPanel && this.features.markerOnClick"
             :layers="this.layers"
             :position="this.position"
-            :showInfoPanel="!showDataPanel && showInfoPanel"
+            :showPanel="!showDataPanel && showInfoPanel"
             :user="this.user"
             @set-position="this.setPosition"
+        />
+        <DetailPanel
+            v-if="!this.showPanoramaPanel && !this.features.markerOnClick && this.features.detail"
+            :showPanel="this.selectedFeatures.length > 0"
+            :features="this.selectedFeatures"
+            @features-selected="this.featuresSelected"
         />
         <DataPanel
             v-if="!this.isEmbed && !this.showPanoramaPanel"
@@ -153,6 +161,7 @@ import ListPanel from '../ListPanel'
 import FilterPanel from '../FilterPanel'
 import DataPanel from '../DataPanel'
 import PointInfoPanel from '../PointInfoPanel'
+import DetailPanel from '../DetailPanel'
 import SearchPanel from '../SearchPanel'
 import LayersPanel from '../LayersPanel'
 import ToolsPanel from '../ToolsPanel'
@@ -192,6 +201,7 @@ export default {
         LayersPanel,
         DataPanel,
         PointInfoPanel,
+        DetailPanel,
         ListPanel,
         FilterPanel,
         OpenLayersRenderer,
@@ -204,6 +214,7 @@ export default {
             layers: this.initialLayers,
             position: this.initialPosition,
             highlightedFeatures: [],
+            selectedFeatures: [],
             tool: '',
             selectedArea: null,
             showDataPanel: false,
@@ -216,6 +227,7 @@ export default {
     methods: {
         async setPosition(position) {
             this.position = position
+            this.$emit('position-changed', position)
 
             if (!position.marker) {
                 return
@@ -250,7 +262,7 @@ export default {
         async getFeatureInfo(position) {
             this.highlightedFeatures = []
 
-            const visibleLayers = this.layers.filter((layer) => !layer.is_base && layer.is_visible)
+            const visibleLayers = this.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible)
             visibleLayers.forEach(async (layer) => {
                 const wmsSource = new TileWMS({
                     url: layer.url,
@@ -314,6 +326,9 @@ export default {
                     this.showDataPanel = true
                     break
             }
+        },
+        featuresSelected(selectedFeatures) {
+            this.selectedFeatures = selectedFeatures
         },
         setSelectedArea(selectedArea) {
             this.selectedArea = selectedArea

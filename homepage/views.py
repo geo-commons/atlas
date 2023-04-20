@@ -105,6 +105,23 @@ def v3_admin(request):
 
     return render(request, 'v3/admin.html', context)
 
+@xframe_options_exempt
+def v3_map(request, slug):
+    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
+    visible_map = get_object_or_404(Map, slug=slug)
+
+    context = {
+        'data':  {
+            'config': _get_config(request),
+            'user': _get_user(request),
+            'map': visible_map.to_dict(),
+            'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
+        }
+    }
+
+    return render(request, 'v3/map.html', context)
+
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:
         # Do not return default base layers when the database contains base layers

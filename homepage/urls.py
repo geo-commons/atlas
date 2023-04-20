@@ -20,5 +20,6 @@ urlpatterns = [
     path('api/v1/token', views.v3_token, name='v3_token'),
     path('api/v1/', include(api_router.urls)),
     re_path('embed', views.embed, name='embed'),
+    re_path(r'maps\/((?P<slug>[a-z0-9\-]+)?)', views.v3_map, name='v3_map'),
     re_path(r'((?P<theme_slug>[a-z0-9\-]+)?)', views.v3, name='v3'),
 ]

@@ -21,7 +21,7 @@
                 :selectedArea="this.selectedArea"
                 :padding="this.mapPadding"
                 :user="this.user"
-                :features="{ scale: true }"
+                :features="{ scale: true, markerOnClick: true }"
                 @position-changed="this.setPosition"
                 @tool-used="this.toolUsed"
             />
@@ -31,7 +31,7 @@
             v-if="!this.showPanoramaPanel"
             :layers="this.layers"
             :position="this.position"
-            :showInfoPanel="!showDataPanel && showInfoPanel"
+            :showPanel="!showDataPanel && showInfoPanel"
             :user="this.user"
             @set-position="this.setPosition"
         />

@@ -124,9 +124,6 @@ class Layer(models.Model):
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
         blank=True, null=True)
 
-    isqueryable = models.BooleanField('Kan doorzocht worden', default=True,
-                                      help_text='Deze instelling is alleen van toepassing op Atlas versie 2 en wordt binnenkort verwijderd')
-
     _popup_attributes = models.CharField(
         'Voer één veld per regel in. Bij geen invoer worden alle velden getoond', max_length=500, blank=True, null=True)
 
@@ -153,6 +150,8 @@ class Layer(models.Model):
 
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
+    is_selectable = models.BooleanField('Is selecteerbaar', default=True)
+    show_in_detail_panel = models.BooleanField('Toon laag in detail- en dataweergave', default=True)
 
     not_in_atlas = models.BooleanField(
         'Toon laag alleen in een themakaart',
@@ -305,6 +304,8 @@ source: new ol.source.TileWMS({{
             'server_type': self.server_type,
             'is_base': self.is_base,
             'is_visible': self.is_visible,
+            'is_selectable': self.is_selectable,
+            'show_in_detail_panel': self.show_in_detail_panel,
             'login_required': self.login_required,
             'projection': self.projection,
             'extent': self.extent,
@@ -423,6 +424,15 @@ class Map(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'slug': self.slug,
+            'layers': [ layer.id for layer in self.layers.all() ],
+            'features': self.features,
+            'settings': self.settings
+        }
 
 
 def validate_file_extension(value):

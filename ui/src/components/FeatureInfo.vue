@@ -155,7 +155,7 @@ export default {
                 ['typename', this.layer.name],
                 ['outputFormat', 'application/json'],
                 ['srsname', this.layer.projection],
-                ['bbox', `${this.position.marker.join(',')},${this.position.marker.join(',')}`],
+                ['bbox', `${this.position.marker[0]-10},${this.position.marker[1]-10},${this.position.marker[0]+10},${this.position.marker[1]+10}`],
                 ['maxFeatures', '20'],
             ])
 

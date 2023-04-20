@@ -11,7 +11,7 @@
     "core-js": "3.28.0",
     "es6-promise": "4.2.8",
     "fetch-dot": "1.2.0",
-    "geostyler-openlayers-parser": "4.1.0",
+    "geostyler-openlayers-parser": "4.1.2",
     "js-cookie": "3.0.1",
     "markdown-it": "13.0.1",
     "nunjucks": "3.2.3",

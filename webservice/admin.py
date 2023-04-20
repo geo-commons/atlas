@@ -65,8 +65,9 @@ class LayerAdmin(ImportExportActionModelAdmin):
                 'opacity',
                 'is_base',
                 'is_visible',
+                'is_selectable',
+                'show_in_detail_panel',
                 'not_in_atlas',
-                'isqueryable',
                 '_popup_attributes',
                 '_search_fields',
                 'extent_min_x',
@@ -102,7 +103,7 @@ class CategoryAdmin(ImportExportActionModelAdmin):
 
 class MapAdmin(ImportExportActionModelAdmin):
     list_display = ('title', )
-    fields = ('title', 'slug', 'layers')
+    fields = ('title', 'slug', 'layers', 'features', 'settings')
     prepopulated_fields = {'slug': ('title', )}
 
     search_fields = ['title']
