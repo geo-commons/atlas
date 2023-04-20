@@ -55,10 +55,12 @@ export default {
                 return
             }
 
-            this.$emit('position-changed', {
-                ...this.position,
-                marker: e.coordinate,
-            })
+            if (this.markerOnClick) {
+                this.$emit('position-changed', {
+                    ...this.position,
+                    marker: e.coordinate,
+                })
+            }
         })
     },
     watch: {
@@ -96,6 +98,7 @@ export default {
         position: Object,
         padding: Array,
         isVisible: Boolean,
+        markerOnClick: Boolean,
         tool: String,
     },
 }

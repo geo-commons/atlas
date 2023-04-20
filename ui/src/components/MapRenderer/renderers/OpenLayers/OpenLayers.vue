@@ -5,11 +5,13 @@
       :position="position"
       :padding="padding"
       :tool="tool"
+      :markerOnClick="this.features.markerOnClick"
       @position-changed="onPositionChanged"
     />
-    <ol-interaction
+    <ol-draw-interaction
       v-if="this.tool"
       :tool="tool"
+      :layers="layers"
       @draw-start="startUsingTool"
       @draw-end="toolUsed"
     />
@@ -24,10 +26,13 @@
       :format="layer.format"
       :filters="filters"
       :isVisible="layer.is_visible === true"
+      :isSelectable="layer.is_selectable === true"
       :loginRequired="layer.login_required"
+      :selectedFeatures="selectedFeatures"
       :zIndex="layer.is_base ? 0 : 1"
       :vectorStyle="layer.style"
       :opacity="layer.opacity"
+      @features-selected="featuresSelected"
     >
     </component>
     <ol-vector-layer
@@ -74,7 +79,7 @@ import { Point } from "ol/geom";
 
 import OlMap from "./components/OlMap";
 import OlView from "./components/OlView";
-import OlInteraction from "./components/OlInteraction";
+import OlDrawInteraction from "./components/OlDrawInteraction";
 import OlDragZoom from "./components/OlDragZoom";
 import OlWmtsLayer from "./components/OlWmtsLayer";
 import OlWmsLayer from "./components/OlWmsLayer";
@@ -118,7 +123,7 @@ export default {
   components: {
     OlMap,
     OlView,
-    OlInteraction,
+    OlDrawInteraction,
     OlDragZoom,
     OlWmtsLayer,
     OlWmsLayer,
@@ -140,6 +145,7 @@ export default {
     selectedArea: Object,
     user: Object,
     features: Object,
+    selectedFeatures: Array,
     highlightedFeatures: { type: Array, default: () => [] },
     filters: Object,
     padding: { type: Array, default: () => [0, 0, 0, 0] },
@@ -177,6 +183,9 @@ export default {
     fit(geometryOrExtent, options) {
       this.$refs.view.fit(geometryOrExtent, options);
     },
+    featuresSelected(features) {
+      this.$emit('features-selected', features)
+    }
   },
   computed: {
     markerFeatures() {

@@ -1,5 +1,5 @@
 <template>
-    <SidePanel :showPanel="showInfoPanel">
+    <SidePanel :showPanel="showPanel">
         <template v-slot:search>
             <button
                 class="iconbutton close-button"
@@ -36,7 +36,7 @@ import SidePanel from './SidePanel'
 import FeatureInfo from './FeatureInfo'
 
 export default {
-    name: 'MorePanel',
+    name: 'PointInfoPanel',
     components: {
         SidePanel,
         FeatureInfo,
@@ -49,7 +49,7 @@ export default {
     },
     computed: {
         visibleLayers() {
-            return this.layers.filter((layer) => layer.is_visible && !layer.is_base)
+            return this.layers.filter((layer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base)
         },
         searchQuery: {
             get() {
@@ -63,7 +63,7 @@ export default {
     props: {
         position: Object,
         layers: Array,
-        showInfoPanel: Boolean,
+        showPanel: Boolean,
     },
 }
 </script>

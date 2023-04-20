@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import Select from 'ol/interaction/Select'
 import VectorLayer from 'ol/layer/Vector'
 import { bbox as bboxStrategy } from 'ol/loadingstrategy'
 import GeoJSON from 'ol/format/GeoJSON'
@@ -35,7 +36,7 @@ const DEFAULT_STYLE = [
 export default {
     name: 'WfsLayer',
     inject: ['map'],
-    created() {
+    async created() {
         this.source = new VectorSource({
             format: new GeoJSON(),
             strategy: bboxStrategy,
@@ -63,13 +64,30 @@ export default {
             source: this.source,
             opacity: this.opacity,
             zIndex: this.zIndex,
-            selectable: true,
+            selectable: this.isSelectable,
         })
 
         this.map.addLayer(this.tileLayer)
-        this.applyStyle(this.vectorStyle)
+
+        const style = await this.getStyle(this.vectorStyle && this.vectorStyle['default'] ? this.vectorStyle['default'] : this.vectorStyle)
+        this.tileLayer.setStyle(style)
+
+        if (this.isSelectable) {
+            const activeStyle = await this.getStyle(this.vectorStyle && this.vectorStyle['active'] ? this.vectorStyle['active'] : this.vectorStyle)
+            this.select = new Select({
+                layers: [this.tileLayer],
+                style: activeStyle
+            })
+
+            this.select.on('select', this.onSelectFeatures)
+            this.map.addInteraction(this.select)
+        }
     },
     destroyed() {
+        if (this.select) {
+            this.map.removeInteraction(this.select)
+        }
+
         this.map.removeLayer(this.tileLayer)
     },
     props: {
@@ -78,6 +96,8 @@ export default {
         url: String,
         layer: String,
         isVisible: Boolean,
+        isSelectable: Boolean,
+        selectedFeatures: Array,
         opacity: Number,
         vectorStyle: Object,
         zIndex: Number,
@@ -121,21 +141,36 @@ export default {
             })
 
             this.source.refresh()
+        },
+        selectedFeatures(features) {
+            if (this.select && features && features.length === 0) {
+                this.select.getFeatures().clear()
+            }
         }
     },
     methods: {
-        async applyStyle(inputStyle) {
+        async getStyle(inputStyle) {
             if (!inputStyle) {
-                return this.tileLayer.setStyle(DEFAULT_STYLE)
+                return DEFAULT_STYLE
             }
 
             try {
                 const olStyle = await olParser.writeStyle(inputStyle)
-                this.tileLayer.setStyle(olStyle.output)
+                return olStyle.output
             } catch (e) {
                 console.error('Unable to parse style', e)
             }
+
+            return DEFAULT_STYLE
         },
+        onSelectFeatures(e) {
+            const features = e.target.getFeatures().getArray()
+            if (features.length === 0) {
+                return
+            }
+
+            this.$emit('features-selected', features)
+        }
     },
 }
 </script>

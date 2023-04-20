@@ -6,7 +6,7 @@
 import constructDraw from '../../../../../utils/draw'
 
 export default {
-    name: 'ol-interaction',
+    name: 'ol-draw-interaction',
     inject: ['map'],
     created() {
         const onDrawStart = () => {
@@ -25,7 +25,7 @@ export default {
         this.map.removeInteraction(this.draw)
     },
     props: {
-        tool: String,
+        layers: Array,
     },
 }
 </script>

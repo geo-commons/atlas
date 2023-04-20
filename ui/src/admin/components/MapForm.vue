@@ -143,6 +143,16 @@
 
             <div class="setting">
                 <input
+                    id="features.markerOnClick"
+                    type="checkbox"
+                    name="features.markerOnClick"
+                    v-model="data.features.markerOnClick"
+                />
+                <label for="features.markerOnClick">Prikker bij klik</label>
+            </div>
+
+            <div class="setting">
+                <input
                     id="features.layerlist"
                     type="checkbox"
                     name="features.layerlist"
@@ -208,6 +218,16 @@
                         </g>
                     </svg>
                 </button>
+            </div>
+
+            <div class="setting">
+                <input
+                    id="features.detail"
+                    type="checkbox"
+                    name="features.detail"
+                    v-model="data.features.detail"
+                />
+                <label for="features.detail">Detailweergave</label>
             </div>
 
             <div class="setting">
