@@ -1,7 +1,6 @@
 <template>
     <vue-tippy
-        arrow
-        placement="right-start"
+        placement="left-end"
         theme="popover"
         trigger="click"
         :distance="8"
