@@ -62,6 +62,7 @@
             <SearchPanel
                 v-if="this.features.searchbar"
                 :position="this.position"
+                :layers="this.layers"
                 @set-position="this.setPosition"
                 @toggle-data-panel="this.toggleDataPanel"
             />

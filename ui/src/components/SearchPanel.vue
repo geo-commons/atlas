@@ -2,6 +2,7 @@
     <div class="wrapper">
         <SearchForm
             :showSuggestions="showSuggestions"
+            :hasVisibleLayers="this.visibleLayers.length > 0"
             @show-data-panel="toggleDataPanel"
             @on-submit="onSearch"
         >
@@ -46,6 +47,8 @@ import SearchForm from './SearchForm'
 const suggestEndpoint = 'https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest'
 const freeEndpoint = 'https://api.pdok.nl/bzk/locatieserver/search/v3_1/free'
 
+const visibleSourceTypes = ['WMS_WFS', 'WFS']
+
 export default {
     name: 'SearchPanel',
     components: {
@@ -66,9 +69,19 @@ export default {
                 this.$store.commit('setSearchQuery', value)
             },
         },
+        visibleLayers() {
+            return this.layers.filter(
+                (layer) =>
+                layer.is_visible &&
+                !layer.is_base &&
+                visibleSourceTypes.includes(layer.source_type)
+            )
+        },
+        
     },
     props: {
         position: Object,
+        layers: Array
     },
     methods: {
         toggleDataPanel() {
