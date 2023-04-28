@@ -11,3 +11,6 @@ htmlcov
 
 /ui/node_modules
 /ui/webpack-stats.json
+
+!.vscode/
+.vscode/tasks.json
