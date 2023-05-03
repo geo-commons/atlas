@@ -1,208 +1,220 @@
 <template>
-    <div class="map-update" v-if="this.data">
-        <div class="sidebar">
-            <div class="sidebar-content">
-                <MapLayers
-                    v-if="this.sidebar === 'Layers'"
-                    @show-form="() => this.showSidebar('Form')"
-                    @change="this.updateLayers"
-                    :initialData="this.data"
-                />
-                <ListPanelAdmin
-                    v-if="this.sidebar === 'List'"
-                    @show-form="() => this.showSidebar('Form')"
-                    @change="this.updateLayers"
-                    :initialData="this.data"
-                />
-                <FiltersPanelAdmin
-                    v-if="this.sidebar === 'Filters'"
-                    @show-form="() => this.showSidebar('Form')"
-                    @change="this.updateLayers"
-                    :initialData="this.data"
-                    :layer="this.visibleLayers.length > 1 ? this.visibleLayers[1] : null"
-                    :user="this.user"
-                />
-                <MapForm
-                    v-if="this.sidebar === 'Form'"
-                    @show-layers="() => this.showSidebar('Layers')"
-                    @show-list="() => this.showSidebar('List')"
-                    @show-filters="() => this.showSidebar('Filters')"
-                    @delete="this.deleteMap"
-                    @submit="this.saveMap"
-                    :initialData="this.data"
-                />
-                <form v-if="this.sidebar === 'Form'" method="POST" @submit="this.deleteMap">
-                    <button class="button __alert">Verwijder kaart</button>
-                </form>
-            </div>
-        </div>
-        <MapRenderer
-            ref="map"
-            :initialPosition="this.position"
-            :initialLayers="this.visibleLayers"
-            :user="this.user"
-            :features="this.data.features"
-            :settings="this.data.settings"
+  <div v-if="data" class="map-update">
+    <div class="sidebar">
+      <div class="sidebar-content">
+        <MapLayers
+          v-if="sidebar === 'Layers'"
+          :initial-data="data"
+          @show-form="() => showSidebar('Form')"
+          @change="updateLayers"
         />
+        <ListPanelAdmin
+          v-if="sidebar === 'List'"
+          :initial-data="data"
+          @show-form="() => showSidebar('Form')"
+          @change="updateLayers"
+        />
+        <FiltersPanelAdmin
+          v-if="sidebar === 'Filters'"
+          :initial-data="data"
+          :layer="visibleLayers.length > 1 ? visibleLayers[1] : null"
+          :user="user"
+          @show-form="() => showSidebar('Form')"
+          @change="updateLayers"
+        />
+        <MapForm
+          v-if="sidebar === 'Form'"
+          :initial-data="data"
+          @show-layers="() => showSidebar('Layers')"
+          @show-list="() => showSidebar('List')"
+          @show-filters="() => showSidebar('Filters')"
+          @delete="deleteMap"
+          @submit="saveMap"
+        />
+        <form
+          v-if="sidebar === 'Form'"
+          method="POST"
+          @submit="deleteMap"
+        >
+          <button class="button __alert">Verwijder kaart</button>
+        </form>
+      </div>
     </div>
+    <MapRenderer
+      ref="map"
+      :initial-position="position"
+      :initial-layers="visibleLayers"
+      :user="user"
+      :features="data.features"
+      :settings="data.settings"
+    />
+  </div>
 </template>
 
 <script>
-import Cookies from 'js-cookie'
-import { mapState } from 'vuex'
+import Cookies from "js-cookie";
+import { mapState } from "vuex";
 
-import MapRenderer from '../../components/MapRenderer/MapRenderer'
-import MapForm from '../components/MapForm'
-import MapLayers from '../components/MapLayers'
-import ListPanelAdmin from '../components/ListPanelAdmin'
-import FiltersPanelAdmin from '../components/FiltersPanelAdmin'
+import MapRenderer from "../../components/MapRenderer/MapRenderer";
+import MapForm from "../components/MapForm";
+import MapLayers from "../components/MapLayers";
+import ListPanelAdmin from "../components/ListPanelAdmin";
+import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
 
 export default {
-    name: 'MapCreateUpdate',
-    components: {
-        MapRenderer,
-        MapForm,
-        MapLayers,
-        ListPanelAdmin,
-        FiltersPanelAdmin,
-    },
-    created() {
-        this.getMap()
-    },
-    computed: {
-        ...mapState({
-            position: (state) => state.position,
-            layers: (state) => state.layers,
-            config: (state) => state.config,
-        }),
-        visibleLayers() {
-            if (this.data.layers) {
-                return this.layers
-                    .filter(
-                        (layer) =>
-                            this.data.layers.includes(layer.internal_id) ||
-                            (layer.is_base && layer.is_visible)
-                    )
-                    .map((layer) => {
-                        return {
-                            ...layer,
-                            is_visible: !layer.is_base ? true : layer.is_visible,
-                        }
-                    })
-            }
+  name: "MapCreateUpdate",
+  components: {
+    MapRenderer,
+    MapForm,
+    MapLayers,
+    ListPanelAdmin,
+    FiltersPanelAdmin,
+  },
+  created() {
+    this.getMap();
+  },
+  computed: {
+    ...mapState({
+      position: (state) => state.position,
+      layers: (state) => state.layers,
+      config: (state) => state.config,
+    }),
+    visibleLayers() {
+      if (this.data.layers) {
+        return this.layers
+          .filter(
+            (layer) =>
+              this.data.layers.includes(layer.internal_id) ||
+              (layer.is_base && layer.is_visible)
+          )
+          .map((layer) => {
+            return {
+              ...layer,
+              is_visible: !layer.is_base ? true : layer.is_visible,
+            };
+          });
+      }
 
-            return this.layers
-        },
+      return this.layers;
     },
-    data() {
-        return {
-            data: null,
-            mapPadding: [0, 0, 0, 0],
-            selectedArea: null,
-            user: null,
-            sidebar: 'Form',
+  },
+  data() {
+    return {
+      data: null,
+      mapPadding: [0, 0, 0, 0],
+      selectedArea: null,
+      user: null,
+      sidebar: "Form",
+    };
+  },
+  methods: {
+    async getMap() {
+      if (this.$route.params.id) {
+        const result = await fetch(
+          `/atlas/api/v1/maps/${this.$route.params.id}/`,
+          {
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        if (!result.ok) {
+          console.error("Could not fetch maps");
         }
+
+        this.data = await result.json();
+        return;
+      }
+
+      this.data = {
+        features: {},
+        settings: {
+          facets: [],
+        },
+      };
     },
-    methods: {
-        async getMap() {
-            if (this.$route.params.id) {
-                const result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
-                    credentials: 'same-origin',
-                    headers: { 'Content-Type': 'application/json' },
-                })
+    async saveMap(data) {
+      let result;
 
-                if (!result.ok) {
-                    console.error('Could not fetch maps')
-                }
+      if (this.$route.params.id) {
+        result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
+          method: "PUT",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": Cookies.get("csrftoken"),
+          },
+          body: JSON.stringify(data),
+        });
+      } else {
+        result = await fetch(`/atlas/api/v1/maps/`, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": Cookies.get("csrftoken"),
+          },
+          body: JSON.stringify(data),
+        });
+      }
 
-                this.data = await result.json()
-                return
-            }
+      if (result.ok) {
+        this.$router.push(`/maps`);
+      }
+    },
+    async deleteMap(e) {
+      e.preventDefault();
 
-            this.data = {
-                features: {},
-                settings: {
-                    facets: []
-                },
-            }
-        },
-        async saveMap(data) {
-            let result
+      const acknowledged = confirm(
+        "Weet je zeker dat je de kaart wil verwijderen?"
+      );
+      if (!acknowledged) {
+        return;
+      }
 
-            if (this.$route.params.id) {
-                result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
-                    method: 'PUT',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': Cookies.get('csrftoken'),
-                    },
-                    body: JSON.stringify(data),
-                })
-            } else {
-                result = await fetch(`/atlas/api/v1/maps/`, {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': Cookies.get('csrftoken'),
-                    },
-                    body: JSON.stringify(data),
-                })
-            }
-
-            if (result.ok) {
-                this.$router.push(`/maps`)
-            }
-        },
-        async deleteMap(e) {
-            e.preventDefault()
-
-            const acknowledged = confirm('Weet je zeker dat je de kaart wil verwijderen?')
-            if (!acknowledged) {
-                return
-            }
-
-            const result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
-                method: 'DELETE',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': Cookies.get('csrftoken'),
-                },
-            })
-
-            if (result.ok) {
-                this.$router.push(`/maps`)
-            }
-        },
-        showSidebar(sidebar) {
-            this.sidebar = sidebar
-        },
-        updateLayers(layerIds) {
-            this.data.layers = layerIds
-        },
-        updateConfig(config) {
-            this.data.config = config
+      const result = await fetch(
+        `/atlas/api/v1/maps/${this.$route.params.id}/`,
+        {
+          method: "DELETE",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": Cookies.get("csrftoken"),
+          },
         }
+      );
+
+      if (result.ok) {
+        this.$router.push(`/maps`);
+      }
     },
-}
+    showSidebar(sidebar) {
+      this.sidebar = sidebar;
+    },
+    updateLayers(layerIds) {
+      this.data.layers = layerIds;
+    },
+    updateConfig(config) {
+      this.data.config = config;
+    },
+  },
+};
 </script>
 
 <style scoped>
 .map-update {
-    display: flex;
-    height: 100%;
-    flex-direction: row;
+  display: flex;
+  height: 100%;
+  flex-direction: row;
 }
 
 .sidebar-content {
-    max-height: 100%;
-    overflow-y: auto;
-    padding: 16px var(--padding-screen) 80px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 16px var(--padding-screen) 80px;
 }
 
 .button.__alert {
-    margin: 32px auto 0;
+  margin: 32px auto 0;
 }
 </style>

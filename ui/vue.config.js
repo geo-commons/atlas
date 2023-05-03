@@ -1,29 +1,34 @@
-const BundleTracker = require('webpack-bundle-tracker')
+const BundleTracker = require("webpack-bundle-tracker");
 
-const DEPLOYMENT_PATH = '/atlas/static/dist/'
+const DEPLOYMENT_PATH = "/atlas/static/dist/";
 
 module.exports = {
-    publicPath: process.env.NODE_ENV === 'production' ? DEPLOYMENT_PATH : 'http://localhost:8081/',
-    outputDir: '../homepage/static/dist',
+  publicPath:
+    process.env.NODE_ENV === "production"
+      ? DEPLOYMENT_PATH
+      : "http://localhost:8081/",
+  outputDir: "../homepage/static/dist",
 
-    devServer: {
-        port: 8081,
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-        },
+  devServer: {
+    port: 8081,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
     },
+  },
 
-    configureWebpack: {
-        plugins: [new BundleTracker({ path: __dirname, filename: 'webpack-stats.json' })],
-    },
+  configureWebpack: {
+    plugins: [
+      new BundleTracker({ path: __dirname, filename: "webpack-stats.json" }),
+    ],
+  },
 
-    css: {
-        sourceMap: true,
-    },
+  css: {
+    sourceMap: true,
+  },
 
-    pages: {
-        app: { entry: 'src/app.js' },
-        map: { entry: 'src/map.js' },
-        admin: { entry: 'src/admin.js' },
-    },
-}
+  pages: {
+    app: { entry: "src/app.js" },
+    map: { entry: "src/map.js" },
+    admin: { entry: "src/admin.js" },
+  },
+};
