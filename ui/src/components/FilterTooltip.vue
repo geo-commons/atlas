@@ -4,12 +4,12 @@
     placement="bottom-start"
     theme="popover"
     trigger="click"
-    :onShown="() => $refs.valueInput.focus()"
+    :on-shown="() => $refs.valueInput.focus()"
     :distance="8"
     :delay="[0, 0]"
     :a11y="false"
   >
-    <template v-slot:trigger>
+    <template #trigger>
       <button class="iconbutton">
         {{
           layer.friendly_fields && layer.friendly_fields[property]
@@ -29,7 +29,12 @@
     </template>
     <div class="container">
       <form method="POST" @submit="updateFilter">
-        <input ref="valueInput" type="text" v-model="value" placeholder="Filter op waarde" />
+        <input
+          ref="valueInput"
+          v-model="value"
+          type="text"
+          placeholder="Filter op waarde"
+        />
         <button type="submit">Opslaan</button>
       </form>
     </div>
@@ -46,29 +51,32 @@ export default {
   },
   data() {
     return {
-      value: this.FieldFilters && this.fieldFilters[this.property] ? this.fieldFilters[this.property] : "",
+      value:
+        this.FieldFilters && this.fieldFilters[this.property]
+          ? this.fieldFilters[this.property]
+          : "",
     };
   },
   watch: {
     fieldFilters(newValue) {
-      console.log(newValue)
-    }
+      console.log(newValue);
+    },
   },
   methods: {
     updateFilter(e) {
-      e.preventDefault()
+      e.preventDefault();
 
       if (this.value) {
-        this.$emit('change', {
-            ...this.fieldFilters,
-            [this.property]: this.value,
-          })
-        return
+        this.$emit("change", {
+          ...this.fieldFilters,
+          [this.property]: this.value,
+        });
+        return;
       }
 
-      const newFieldFilter = { ...this.fieldFilters }
-      delete newFieldFilter[this.property]
-      this.$emit('change', newFieldFilter)
+      const newFieldFilter = { ...this.fieldFilters };
+      delete newFieldFilter[this.property];
+      this.$emit("change", newFieldFilter);
     },
   },
 };

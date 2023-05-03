@@ -1,11 +1,11 @@
 <template>
   <MapRenderer
     ref="map"
-    :initialPosition="this.position"
-    :initialLayers="this.visibleLayers"
-    :user="this.user"
-    :features="this.map.features"
-    :settings="this.map.settings"
+    :initial-position="position"
+    :initial-layers="visibleLayers"
+    :user="user"
+    :features="map.features"
+    :settings="map.settings"
     @position-changed="positionChanged"
   />
 </template>
@@ -50,6 +50,15 @@ export default {
       return this.layers;
     },
   },
+  watch: {
+    position(value) {
+      this.showInfoPanel = Boolean(value.marker);
+      this.pushHistoryState();
+    },
+    layers() {
+      this.pushHistoryState();
+    },
+  },
   methods: {
     pushHistoryState() {
       const basePath = /(.*?)(@|$)/.exec(window.location.pathname);
@@ -77,15 +86,6 @@ export default {
     },
     positionChanged(position) {
       this.$store.commit("setPosition", position);
-    },
-  },
-  watch: {
-    position(value) {
-      this.showInfoPanel = Boolean(value.marker);
-      this.pushHistoryState();
-    },
-    layers() {
-      this.pushHistoryState();
     },
   },
 };

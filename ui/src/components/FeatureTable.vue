@@ -1,9 +1,9 @@
 <template>
-  <ExpandButton :title="this.computedTitle" :isOpen="isOpen" class="feature">
-    <template v-slot:header>
+  <ExpandButton :title="computedTitle" :is-open="isOpen" class="feature">
+    <template #header>
       <button
-        class="iconbutton"
         v-tippy="{ placement: 'right' }"
+        class="iconbutton"
         content="Download CSV"
         aria-label="Download CSV"
         @click="downloadCSV"
@@ -30,8 +30,8 @@
               fill-rule="nonzero"
             >
               <path
-                d="M342,177 L342,180 L354,180 L354,177 L356,177 L356,180 C356,181.104569 355.104569,182 354,182 L342,182 C340.895431,182 340,181.104569 340,180 L340,177 L342,177 Z M349,166 L349,174.17 L351.59,171.59 L353,173 L348,178 L343,173 L344.41,171.59 L347,174.17 L347,166 L349,166 Z"
                 id="Combined-Shape"
+                d="M342,177 L342,180 L354,180 L354,177 L356,177 L356,180 C356,181.104569 355.104569,182 354,182 L342,182 C340.895431,182 340,181.104569 340,180 L340,177 L342,177 Z M349,166 L349,174.17 L351.59,171.59 L353,173 L348,178 L343,173 L344.41,171.59 L347,174.17 L347,166 L349,166 Z"
               ></path>
             </g>
           </g>
@@ -39,7 +39,7 @@
       </button>
     </template>
 
-    <template v-slot:default>
+    <template #default>
       <div>
         <span v-if="error">Er is een fout opgetreden tijdens het laden.</span>
         <span v-if="loading">Bezig met laden...</span>
@@ -52,28 +52,25 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th
-                    v-for="property in displayProperties"
-                    v-bind:key="property"
-                  >
+                  <th v-for="property in displayProperties" :key="property">
                     <div>
                       <FilterTooltip
                         :layer="layer"
                         :property="property"
-                        :fieldFilters="fieldFilters"
-                        @change="(value) => fieldFilters = value"
+                        :field-filters="fieldFilters"
+                        @change="(value) => (fieldFilters = value)"
                       />
                     </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="feature in features" v-bind:key="feature.id">
+                <tr v-for="feature in features" :key="feature.id">
                   <td>
                     <button
                       v-if="feature.geometry"
-                      class="iconbutton pin-button"
                       v-tippy="{ placement: 'right' }"
+                      class="iconbutton pin-button"
                       content="Bekijk op kaart"
                       aria-label="Bekijk op kaart"
                       @click="() => showFeature(feature)"
@@ -94,8 +91,8 @@
                           fill-rule="evenodd"
                         >
                           <path
-                            d="M5,0 C7.5155,0 9.55,2.0345 9.55,4.55 C9.55,7.9625 5,13 5,13 C5,13 0.45,7.9625 0.45,4.55 C0.45,2.0345 2.4845,0 5,0 Z M5,1.3 C3.206,1.3 1.75,2.756 1.75,4.55 C1.75,6.4025 3.648,9.2365 5,10.972 C6.378,9.2235 8.25,6.422 8.25,4.55 C8.25,2.756 6.794,1.3 5,1.3 Z M5,2.925 C5.89746272,2.925 6.625,3.65253728 6.625,4.55 C6.625,5.44746272 5.89746272,6.175 5,6.175 C4.10253728,6.175 3.375,5.44746272 3.375,4.55 C3.375,3.65253728 4.10253728,2.925 5,2.925 Z"
                             id="Combined-Shape"
+                            d="M5,0 C7.5155,0 9.55,2.0345 9.55,4.55 C9.55,7.9625 5,13 5,13 C5,13 0.45,7.9625 0.45,4.55 C0.45,2.0345 2.4845,0 5,0 Z M5,1.3 C3.206,1.3 1.75,2.756 1.75,4.55 C1.75,6.4025 3.648,9.2365 5,10.972 C6.378,9.2235 8.25,6.422 8.25,4.55 C8.25,2.756 6.794,1.3 5,1.3 Z M5,2.925 C5.89746272,2.925 6.625,3.65253728 6.625,4.55 C6.625,5.44746272 5.89746272,6.175 5,6.175 C4.10253728,6.175 3.375,5.44746272 3.375,4.55 C3.375,3.65253728 4.10253728,2.925 5,2.925 Z"
                             fill="#000000"
                             fill-rule="nonzero"
                           ></path>
@@ -103,10 +100,7 @@
                       </svg>
                     </button>
                   </td>
-                  <td
-                    v-for="property in displayProperties"
-                    v-bind:key="property"
-                  >
+                  <td v-for="property in displayProperties" :key="property">
                     {{ feature.properties[property] }}
                   </td>
                 </tr>
@@ -134,6 +128,16 @@ export default {
     FilterTooltip,
     TableList,
   },
+  props: {
+    layer: Object,
+    query: String,
+    selectedArea: Object,
+    isOpen: Boolean,
+    isFilterable: Boolean,
+    overallFilter: Object,
+    position: Object,
+    user: Object,
+  },
   data() {
     return {
       features: [],
@@ -145,26 +149,6 @@ export default {
       numberMatched: 0,
     };
   },
-  props: {
-    layer: Object,
-    query: String,
-    selectedArea: Object,
-    isOpen: Boolean,
-    isFilterable: Boolean,
-    overallFilter: Object,
-    position: Object,
-    user: Object,
-  },
-  mounted() {
-    this.fetchFeatures();
-    this.fetchSearchProperties();
-  },
-  watch: {
-    query: "fetchFeatures",
-    selectedArea: "fetchFeatures",
-    filter: "fetchFeatures",
-    fieldFilters: "fetchFeatures"
-  },
   computed: {
     computedTitle() {
       if (this.numberMatched !== null) {
@@ -173,6 +157,16 @@ export default {
 
       return this.layer.title;
     },
+  },
+  watch: {
+    query: "fetchFeatures",
+    selectedArea: "fetchFeatures",
+    filter: "fetchFeatures",
+    fieldFilters: "fetchFeatures",
+  },
+  mounted() {
+    this.fetchFeatures();
+    this.fetchSearchProperties();
   },
   methods: {
     async fetchFeatures() {
@@ -200,8 +194,8 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          filters.push(`${key} = '${this.fieldFilters[key]}'`)
-        })
+          filters.push(`${key} = '${this.fieldFilters[key]}'`);
+        });
       }
 
       if (this.selectedArea) {
@@ -218,7 +212,10 @@ export default {
       }
 
       if (this.overallFilter) {
-        params.set("cql_filter", `${this.overallFilter.key} = '${this.overallFilter.value}'`);
+        params.set(
+          "cql_filter",
+          `${this.overallFilter.key} = '${this.overallFilter.value}'`
+        );
       }
 
       try {

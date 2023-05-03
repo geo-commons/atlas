@@ -1,178 +1,188 @@
 <template>
-    <div v-if="false"></div>
+  <div v-if="false"></div>
 </template>
 
 <script>
-import Select from 'ol/interaction/Select'
-import VectorLayer from 'ol/layer/Vector'
-import { bbox as bboxStrategy } from 'ol/loadingstrategy'
-import GeoJSON from 'ol/format/GeoJSON'
-import VectorSource from 'ol/source/Vector'
-import { Style, Fill, Stroke, Circle } from 'ol/style'
-import OpenLayersParser from 'geostyler-openlayers-parser'
+import Select from "ol/interaction/Select";
+import VectorLayer from "ol/layer/Vector";
+import { bbox as bboxStrategy } from "ol/loadingstrategy";
+import GeoJSON from "ol/format/GeoJSON";
+import VectorSource from "ol/source/Vector";
+import { Style, Fill, Stroke, Circle } from "ol/style";
+import OpenLayersParser from "geostyler-openlayers-parser";
 
-const olParser = new OpenLayersParser()
+const olParser = new OpenLayersParser();
 
 const DEFAULT_STYLE = [
-    new Style({
-        stroke: new Stroke({
-            color: 'blue',
-            width: 3,
-        }),
-        fill: new Fill({
-            color: 'rgba(0, 0, 255, 0.1)',
-        }),
+  new Style({
+    stroke: new Stroke({
+      color: "blue",
+      width: 3,
     }),
-    new Style({
-        image: new Circle({
-            radius: 10,
-            fill: new Fill({
-                color: 'blue',
-            }),
-        }),
+    fill: new Fill({
+      color: "rgba(0, 0, 255, 0.1)",
     }),
-]
+  }),
+  new Style({
+    image: new Circle({
+      radius: 10,
+      fill: new Fill({
+        color: "blue",
+      }),
+    }),
+  }),
+];
 
 export default {
-    name: 'WfsLayer',
-    inject: ['map'],
-    async created() {
-        this.source = new VectorSource({
-            format: new GeoJSON(),
-            strategy: bboxStrategy,
-            url: (extent) => {
-                const params = new URLSearchParams([
-                    ['service', 'WFS'],
-                    ['version', '1.0.0'],
-                    ['request', 'GetFeature'],
-                    ['typename', this.name],
-                    ['outputFormat', 'application/json'],
-                    ['srsname', 'EPSG:28992'],
-                    ['bbox', extent.join(',')],
-                ])
-
-                const url = new URL(this.url)
-                url.search = params.toString()
-
-                return url.toString()
-            },
-        })
-
-        this.tileLayer = new VectorLayer({
-            name: this.name,
-            visible: this.isVisible,
-            source: this.source,
-            opacity: this.opacity,
-            zIndex: this.zIndex,
-            selectable: this.isSelectable,
-        })
-
-        this.map.addLayer(this.tileLayer)
-
-        const style = await this.getStyle(this.vectorStyle && this.vectorStyle['default'] ? this.vectorStyle['default'] : this.vectorStyle)
-        this.tileLayer.setStyle(style)
-
-        if (this.isSelectable) {
-            const activeStyle = await this.getStyle(this.vectorStyle && this.vectorStyle['active'] ? this.vectorStyle['active'] : this.vectorStyle)
-            this.select = new Select({
-                layers: [this.tileLayer],
-                style: activeStyle
-            })
-
-            this.select.on('select', this.onSelectFeatures)
-            this.map.addInteraction(this.select)
-        }
+  name: "WfsLayer",
+  inject: ["map"],
+  props: {
+    id: String,
+    name: String,
+    url: String,
+    layer: String,
+    isVisible: Boolean,
+    isSelectable: Boolean,
+    selectedFeatures: Array,
+    opacity: Number,
+    vectorStyle: Object,
+    zIndex: Number,
+    filters: Object,
+  },
+  watch: {
+    url(value) {
+      this.source.set("url", value);
     },
-    destroyed() {
-        if (this.select) {
-            this.map.removeInteraction(this.select)
+    name(value) {
+      this.tileLayer.set("name", value);
+    },
+    isVisible(value) {
+      this.tileLayer.set("visible", value);
+    },
+    opacity(value) {
+      this.tileLayer.set("opacity", value);
+    },
+    vectorStyle(value) {
+      this.applyStyle(value);
+    },
+    filters(value) {
+      if (!value[this.id]) {
+        return;
+      }
+
+      const cqlFilters = [];
+
+      Object.keys(value[this.id]).forEach((key) => {
+        if (value[this.id][key].length == 0) {
+          return;
         }
 
-        this.map.removeLayer(this.tileLayer)
+        const values = value[this.id][key]
+          .map((value) => `'${value}'`)
+          .join(",");
+        cqlFilters.push(`${key} IN (${values})`);
+      });
+
+      this.source.updateParams({
+        ...this.source.getParams(),
+        CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(" AND ") : null,
+      });
+
+      this.source.refresh();
     },
-    props: {
-        id: String,
-        name: String,
-        url: String,
-        layer: String,
-        isVisible: Boolean,
-        isSelectable: Boolean,
-        selectedFeatures: Array,
-        opacity: Number,
-        vectorStyle: Object,
-        zIndex: Number,
-        filters: Object,
+    selectedFeatures(features) {
+      if (this.select && features && features.length === 0) {
+        this.select.getFeatures().clear();
+      }
     },
-    watch: {
-        url(value) {
-            this.source.set('url', value)
-        },
-        name(value) {
-            this.tileLayer.set('name', value)
-        },
-        isVisible(value) {
-            this.tileLayer.set('visible', value)
-        },
-        opacity(value) {
-            this.tileLayer.set('opacity', value)
-        },
-        vectorStyle(value) {
-            this.applyStyle(value)
-        },
-        filters(value) {
-            if (!value[this.id]) {
-                return
-            }
+  },
+  async created() {
+    this.source = new VectorSource({
+      format: new GeoJSON(),
+      strategy: bboxStrategy,
+      url: (extent) => {
+        const params = new URLSearchParams([
+          ["service", "WFS"],
+          ["version", "1.0.0"],
+          ["request", "GetFeature"],
+          ["typename", this.name],
+          ["outputFormat", "application/json"],
+          ["srsname", "EPSG:28992"],
+          ["bbox", extent.join(",")],
+        ]);
 
-            const cqlFilters = []
+        const url = new URL(this.url);
+        url.search = params.toString();
 
-            Object.keys(value[this.id]).forEach((key) => {
-                if (value[this.id][key].length == 0) {
-                    return
-                }
+        return url.toString();
+      },
+    });
 
-                const values = value[this.id][key].map((value) => `'${value}'`).join(',')
-                cqlFilters.push(`${key} IN (${values})`)
-            })
+    this.tileLayer = new VectorLayer({
+      name: this.name,
+      visible: this.isVisible,
+      source: this.source,
+      opacity: this.opacity,
+      zIndex: this.zIndex,
+      selectable: this.isSelectable,
+    });
 
-            this.source.updateParams({
-                ...this.source.getParams(),
-                CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(' AND ') : null
-            })
+    this.map.addLayer(this.tileLayer);
 
-            this.source.refresh()
-        },
-        selectedFeatures(features) {
-            if (this.select && features && features.length === 0) {
-                this.select.getFeatures().clear()
-            }
-        }
+    const style = await this.getStyle(
+      this.vectorStyle && this.vectorStyle["default"]
+        ? this.vectorStyle["default"]
+        : this.vectorStyle
+    );
+    this.tileLayer.setStyle(style);
+
+    if (this.isSelectable) {
+      const activeStyle = await this.getStyle(
+        this.vectorStyle && this.vectorStyle["active"]
+          ? this.vectorStyle["active"]
+          : this.vectorStyle
+      );
+      this.select = new Select({
+        layers: [this.tileLayer],
+        style: activeStyle,
+      });
+
+      this.select.on("select", this.onSelectFeatures);
+      this.map.addInteraction(this.select);
+    }
+  },
+  destroyed() {
+    if (this.select) {
+      this.map.removeInteraction(this.select);
+    }
+
+    this.map.removeLayer(this.tileLayer);
+  },
+  methods: {
+    async getStyle(inputStyle) {
+      if (!inputStyle) {
+        return DEFAULT_STYLE;
+      }
+
+      try {
+        const olStyle = await olParser.writeStyle(inputStyle);
+        return olStyle.output;
+      } catch (e) {
+        console.error("Unable to parse style", e);
+      }
+
+      return DEFAULT_STYLE;
     },
-    methods: {
-        async getStyle(inputStyle) {
-            if (!inputStyle) {
-                return DEFAULT_STYLE
-            }
+    onSelectFeatures(e) {
+      const features = e.target.getFeatures().getArray();
+      if (features.length === 0) {
+        return;
+      }
 
-            try {
-                const olStyle = await olParser.writeStyle(inputStyle)
-                return olStyle.output
-            } catch (e) {
-                console.error('Unable to parse style', e)
-            }
-
-            return DEFAULT_STYLE
-        },
-        onSelectFeatures(e) {
-            const features = e.target.getFeatures().getArray()
-            if (features.length === 0) {
-                return
-            }
-
-            this.$emit('features-selected', features)
-        }
+      this.$emit("features-selected", features);
     },
-}
+  },
+};
 </script>
 
 <style scoped></style>

@@ -1,1 +1,30 @@
-{"status":"done","chunks":{"app":["js/chunk-vendors.js","js/app.js"],"embed":["js/chunk-vendors.js","js/embed.js"]},"publicPath":"http://localhost:8081/","assets":{"js/app.js":{"name":"js/app.js","publicPath":"http://localhost:8081/js/app.js"},"js/chunk-vendors.js":{"name":"js/chunk-vendors.js","publicPath":"http://localhost:8081/js/chunk-vendors.js"},"js/embed.js":{"name":"js/embed.js","publicPath":"http://localhost:8081/js/embed.js"},"app.html":{"name":"app.html","publicPath":"http://localhost:8081/app.html"},"embed.html":{"name":"embed.html","publicPath":"http://localhost:8081/embed.html"}}}
+{
+  "status": "done",
+  "chunks": {
+    "app": ["js/chunk-vendors.js", "js/app.js"],
+    "embed": ["js/chunk-vendors.js", "js/embed.js"]
+  },
+  "publicPath": "http://localhost:8081/",
+  "assets": {
+    "js/app.js": {
+      "name": "js/app.js",
+      "publicPath": "http://localhost:8081/js/app.js"
+    },
+    "js/chunk-vendors.js": {
+      "name": "js/chunk-vendors.js",
+      "publicPath": "http://localhost:8081/js/chunk-vendors.js"
+    },
+    "js/embed.js": {
+      "name": "js/embed.js",
+      "publicPath": "http://localhost:8081/js/embed.js"
+    },
+    "app.html": {
+      "name": "app.html",
+      "publicPath": "http://localhost:8081/app.html"
+    },
+    "embed.html": {
+      "name": "embed.html",
+      "publicPath": "http://localhost:8081/embed.html"
+    }
+  }
+}

@@ -1,15 +1,15 @@
 <template>
-    <div class="container">Gebruikers</div>
+  <div class="container">Gebruikers</div>
 </template>
 
 <script>
 export default {
-    name: 'UserList',
-}
+  name: "UserList",
+};
 </script>
 
 <style scoped>
 .container {
-    padding: 14px 32px;
+  padding: 14px 32px;
 }
 </style>

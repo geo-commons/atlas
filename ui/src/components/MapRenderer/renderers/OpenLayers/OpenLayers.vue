@@ -5,11 +5,11 @@
       :position="position"
       :padding="padding"
       :tool="tool"
-      :markerOnClick="this.features.markerOnClick"
+      :marker-on-click="features.markerOnClick"
       @position-changed="onPositionChanged"
     />
     <ol-draw-interaction
-      v-if="this.tool"
+      v-if="tool"
       :tool="tool"
       :layers="layers"
       @draw-start="startUsingTool"
@@ -17,57 +17,57 @@
     />
     <ol-drag-zoom />
     <component
-      v-for="layer in layers"
-      v-bind:key="layer.id"
       :is="getComponent(layer.source_type)"
+      v-for="layer in layers"
       :id="layer.id"
+      :key="layer.id"
       :name="layer.name"
       :url="layer.url"
       :format="layer.format"
       :filters="filters"
-      :isVisible="layer.is_visible === true"
-      :isSelectable="layer.is_selectable === true"
-      :loginRequired="layer.login_required"
-      :selectedFeatures="selectedFeatures"
-      :zIndex="layer.is_base ? 0 : 1"
-      :vectorStyle="layer.style"
+      :is-visible="layer.is_visible === true"
+      :is-selectable="layer.is_selectable === true"
+      :login-required="layer.login_required"
+      :selected-features="selectedFeatures"
+      :z-index="layer.is_base ? 0 : 1"
+      :vector-style="layer.style"
       :opacity="layer.opacity"
       @features-selected="featuresSelected"
     >
     </component>
     <ol-vector-layer
       name="marker"
-      :isVisible="true"
+      :is-visible="true"
       :selectable="false"
-      :vectorStyle="this.MARKER_STYLE"
+      :vector-style="MARKER_STYLE"
       :features="markerFeatures"
-      :zIndex="3"
+      :z-index="3"
     />
     <ol-vector-layer
       name="geolocation"
       :selectable="false"
-      :isVisible="true"
-      :vectorStyle="this.GEOLOCATION_STYLE"
+      :is-visible="true"
+      :vector-style="GEOLOCATION_STYLE"
       :features="geolocationFeatures"
-      :zIndex="3"
+      :z-index="3"
     />
     <ol-vector-layer
       ref="selectedArea"
       name="selectedArea"
       :selectable="false"
-      :isVisible="true"
-      :vectorStyle="this.SELECTED_AREA_STYLE"
+      :is-visible="true"
+      :vector-style="SELECTED_AREA_STYLE"
       :features="selectedAreaFeatures"
-      :zIndex="2"
+      :z-index="2"
     />
     <ol-vector-layer
-        ref="highlightedSelection"
-        name="highlightedSelection"
-        :selectable="true"
-        :isVisible="true"
-        :vectorStyle="this.HIGHLIGHTED_SELECTION_STYLE"
-        :features="highlightedFeatures"
-        :zIndex="2"
+      ref="highlightedSelection"
+      name="highlightedSelection"
+      :selectable="true"
+      :is-visible="true"
+      :vector-style="HIGHLIGHTED_SELECTION_STYLE"
+      :features="highlightedFeatures"
+      :z-index="2"
     />
   </ol-map>
 </template>
@@ -114,9 +114,9 @@ const SELECTED_AREA_STYLE = new Style({
 });
 
 const HIGHLIGHTED_SELECTION_STYLE = new Style({
-    stroke: new Stroke({ color: 'rgba(0, 102, 255, 1)', width: 5 }),
-    fill: new Fill({ color: 'rgba(0, 102, 255, 0.2)' }),
-})
+  stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
+  fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
+});
 
 export default {
   name: "OpenLayers",
@@ -132,12 +132,6 @@ export default {
     OlMvtLayer,
     OlVectorLayer,
   },
-  created() {
-    this.MARKER_STYLE = MARKER_STYLE;
-    this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
-    this.SELECTED_AREA_STYLE = SELECTED_AREA_STYLE;
-    this.HIGHLIGHTED_SELECTION_STYLE = HIGHLIGHTED_SELECTION_STYLE
-  },
   props: {
     position: Object,
     layers: Array,
@@ -149,43 +143,6 @@ export default {
     highlightedFeatures: { type: Array, default: () => [] },
     filters: Object,
     padding: { type: Array, default: () => [0, 0, 0, 0] },
-  },
-  methods: {
-    getComponent(sourceType) {
-      switch (sourceType) {
-        case "WMTS":
-          return "ol-wmts-layer";
-        case "WMS":
-        case "WMS_WFS":
-          return "ol-wms-layer";
-        case "WFS":
-          return "ol-wfs-layer";
-        case "XYZ":
-          return "ol-xyz-layer";
-        case "MVT":
-          return "ol-mvt-layer";
-        default:
-          return "ol-wms-layer";
-      }
-    },
-    onPositionChanged(position) {
-      this.$emit("position-changed", position);
-    },
-    getMarkerFeature(marker) {
-      return new Feature({ geometry: new Point([marker[0], marker[1]]) });
-    },
-    startUsingTool() {
-      this.$refs.selectedArea.clear();
-    },
-    toolUsed(result) {
-      this.$emit("tool-used", result);
-    },
-    fit(geometryOrExtent, options) {
-      this.$refs.view.fit(geometryOrExtent, options);
-    },
-    featuresSelected(features) {
-      this.$emit('features-selected', features)
-    }
   },
   computed: {
     markerFeatures() {
@@ -231,6 +188,49 @@ export default {
       }
 
       this.$refs.selectedArea.clear();
+    },
+  },
+  created() {
+    this.MARKER_STYLE = MARKER_STYLE;
+    this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
+    this.SELECTED_AREA_STYLE = SELECTED_AREA_STYLE;
+    this.HIGHLIGHTED_SELECTION_STYLE = HIGHLIGHTED_SELECTION_STYLE;
+  },
+  methods: {
+    getComponent(sourceType) {
+      switch (sourceType) {
+        case "WMTS":
+          return "ol-wmts-layer";
+        case "WMS":
+        case "WMS_WFS":
+          return "ol-wms-layer";
+        case "WFS":
+          return "ol-wfs-layer";
+        case "XYZ":
+          return "ol-xyz-layer";
+        case "MVT":
+          return "ol-mvt-layer";
+        default:
+          return "ol-wms-layer";
+      }
+    },
+    onPositionChanged(position) {
+      this.$emit("position-changed", position);
+    },
+    getMarkerFeature(marker) {
+      return new Feature({ geometry: new Point([marker[0], marker[1]]) });
+    },
+    startUsingTool() {
+      this.$refs.selectedArea.clear();
+    },
+    toolUsed(result) {
+      this.$emit("tool-used", result);
+    },
+    fit(geometryOrExtent, options) {
+      this.$refs.view.fit(geometryOrExtent, options);
+    },
+    featuresSelected(features) {
+      this.$emit("features-selected", features);
     },
   },
 };
