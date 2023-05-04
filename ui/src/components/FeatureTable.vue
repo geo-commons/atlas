@@ -52,20 +52,24 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th v-for="property in displayProperties" :key="property">
-                    <div>
-                      <FilterTooltip
-                        :layer="layer"
-                        :property="property"
-                        :field-filters="fieldFilters"
-                        @change="(value) => (fieldFilters = value)"
-                      />
-                    </div>
+                  <th
+                    v-for="property in displayProperties"
+                    v-bind:key="property"
+                  >
+                    <FeatureTableHeaderItem
+                      :layer="layer"
+                      :property="property"
+                      :fieldFilters="fieldFilters"
+                      :sortKey="sortKey"
+                      :sortAscending="sortAscending"
+                      @change="(filter) => (fieldFilters = filter)"
+                      @sort="(column) => sortColumn(column)"
+                    />
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="feature in features" :key="feature.id">
+                <tr v-for="feature in sortedFeatures" v-bind:key="feature.id">
                   <td>
                     <button
                       v-if="feature.geometry"
@@ -117,15 +121,15 @@
 import GeoJSON from "ol/format/GeoJSON";
 import { getCenter } from "ol/extent";
 
-import FilterTooltip from "./FilterTooltip";
 import TableList from "./TableList";
 import ExpandButton from "./ExpandButton";
+import FeatureTableHeaderItem from "./FeatureTableHeaderItem.vue";
 
 export default {
   name: "FeatureTable",
   components: {
     ExpandButton,
-    FilterTooltip,
+    FeatureTableHeaderItem,
     TableList,
   },
   props: {
@@ -147,7 +151,15 @@ export default {
       loading: false,
       error: false,
       numberMatched: 0,
+      sortKey: "",
+      sortAscending: true,
     };
+  },
+  watch: {
+    query: "fetchFeatures",
+    selectedArea: "fetchFeatures",
+    filter: "fetchFeatures",
+    fieldFilters: "fetchFeatures",
   },
   computed: {
     computedTitle() {
@@ -157,12 +169,18 @@ export default {
 
       return this.layer.title;
     },
-  },
-  watch: {
-    query: "fetchFeatures",
-    selectedArea: "fetchFeatures",
-    filter: "fetchFeatures",
-    fieldFilters: "fetchFeatures",
+    sortedFeatures() {
+      if (this.sortKey && this.features) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        return this.features.sort((a, b) => {
+          const textA = a.properties[this.sortKey];
+          const textB = b.properties[this.sortKey];
+          return this.sortAlphabetically(textA, textB, this.sortAscending);
+        });
+      }
+
+      return this.features;
+    },
   },
   mounted() {
     this.fetchFeatures();
@@ -341,6 +359,36 @@ export default {
       }
 
       return {};
+    },
+    sortColumn(prop) {
+      if (this.sortKey !== prop) {
+        this.sortKey = prop;
+        this.sortAscending = true;
+      } else {
+        this.sortAscending = !this.sortAscending;
+      }
+    },
+    sortAlphabetically(a, b, ascending) {
+      // equal items sort equally
+      if (a === b) {
+        return 0;
+      }
+
+      // nulls and empty strings sort after anything else
+      if (a === null || a === "") {
+        return 1;
+      }
+      if (b === null || b === "") {
+        return -1;
+      }
+
+      // otherwise, if we're ascending, lowest sorts first
+      if (ascending) {
+        return a < b ? -1 : 1;
+      }
+
+      // if descending, highest sorts first
+      return a < b ? 1 : -1;
     },
   },
 };

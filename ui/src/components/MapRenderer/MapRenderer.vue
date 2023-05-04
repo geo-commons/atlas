@@ -7,88 +7,88 @@
       <OpenLayersRenderer
         ref="map"
         class="renderer"
-        :position="position"
-        :layers="layers"
-        :tool="tool"
-        :selected-area="selectedArea"
-        :highlighted-features="highlightedFeatures"
-        :selected-features="selectedFeatures"
+        :position="this.position"
+        :layers="this.layers"
+        :tool="this.tool"
+        :selectedArea="this.selectedArea"
+        :highlightedFeatures="this.highlightedFeatures"
+        :selectedFeatures="this.selectedFeatures"
         :padding="[0, 0, 0, 0]"
-        :user="user"
-        :features="features"
-        :filters="filters"
-        @position-changed="setPosition"
-        @tool-used="toolUsed"
-        @features-selected="featuresSelected"
+        :user="this.user"
+        :features="this.features"
+        :filters="this.filters"
+        @position-changed="this.setPosition"
+        @tool-used="this.toolUsed"
+        @features-selected="this.featuresSelected"
       />
     </div>
     <ListPanel
-      v-if="showList && layers.length > 0"
+      v-if="this.showList && this.layers.length > 0"
       ref="listPanel"
-      :layer="layers[1]"
-      :title-template="settings.title"
-      :short-description-template="settings.short_description"
-      :filters="filters"
-      @hidePanel="toggleList"
-      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
+      :layer="this.layers[1]"
+      :titleTemplate="this.settings.title"
+      :shortDescriptionTemplate="this.settings.short_description"
+      :filters="this.filters"
+      @hidePanel="this.toggleList"
+      @on-fit="(feature) => this.$refs.map.fit(feature, { maxZoom: 18 })"
     />
     <FilterPanel
-      v-if="showFilters"
+      v-if="this.showFilters"
       ref="filterPanel"
-      :layer="layers[1]"
-      :facets="settings.facets"
-      :filters="filters"
-      :user="user"
-      @hidePanel="toggleFilters"
-      @update-filters="(value) => (filters = value)"
+      :layer="this.layers[1]"
+      :facets="this.settings.facets"
+      :filters="this.filters"
+      :user="this.user"
+      @hidePanel="this.toggleFilters"
+      @update-filters="(value) => (this.filters = value)"
     />
     <PointInfoPanel
-      v-if="!showPanoramaPanel && features.markerOnClick"
-      :layers="layers"
-      :position="position"
-      :show-panel="!showDataPanel && showInfoPanel"
-      :user="user"
-      @set-position="setPosition"
+      v-if="!this.showPanoramaPanel && this.features.markerOnClick"
+      :layers="this.layers"
+      :position="this.position"
+      :showPanel="!showDataPanel && showInfoPanel"
+      :user="this.user"
+      @set-position="this.setPosition"
     />
     <DetailPanel
       v-if="
-        !showPanoramaPanel &&
-        !features.markerOnClick &&
-        features.detail
+        !this.showPanoramaPanel &&
+        !this.features.markerOnClick &&
+        this.features.detail
       "
-      :show-panel="selectedFeatures.length > 0"
-      :features="selectedFeatures"
-      @features-selected="featuresSelected"
+      :showPanel="this.selectedFeatures.length > 0"
+      :features="this.selectedFeatures"
+      @features-selected="this.featuresSelected"
     />
     <DataPanel
-      v-if="!isEmbed && !showPanoramaPanel"
+      v-if="!this.isEmbed && !this.showPanoramaPanel"
       ref="dataPanel"
-      :layers="layers"
-      :position="position"
-      :selected-area="selectedArea"
-      :show-data-panel="showDataPanel"
-      :user="user"
-      @set-position="setPosition"
-      @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 18 })"
-      @toggle-data-panel="toggleDataPanel"
+      :layers="this.layers"
+      :position="this.position"
+      :selectedArea="this.selectedArea"
+      :showDataPanel="showDataPanel"
+      :user="this.user"
+      @set-position="this.setPosition"
+      @on-fit="(layer) => this.$refs.map.fit(layer, { maxZoom: 18 })"
+      @toggle-data-panel="this.toggleDataPanel"
     />
 
     <div class="ui-container">
       <SearchPanel
-        v-if="features.searchbar"
-        :position="position"
-        :layers="layers"
-        @set-position="setPosition"
-        @toggle-data-panel="toggleDataPanel"
+        v-if="this.features.searchbar"
+        :position="this.position"
+        :layers="this.layers"
+        @set-position="this.setPosition"
+        @toggle-data-panel="this.toggleDataPanel"
       />
 
       <div class="toggle-buttons">
         <PrimaryButton
-          v-if="features.list && !showList"
+          v-if="this.features.list && !this.showList"
           size="large"
           label="Lijst"
-          drop-shadow
-          @click="toggleList"
+          dropShadow
+          @click="this.toggleList"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -105,11 +105,11 @@
           </svg>
         </PrimaryButton>
         <PrimaryButton
-          v-if="features.filters && !showFilters"
+          v-if="this.features.filters && !this.showFilters"
           size="large"
           label="Verfijn"
-          drop-shadow
-          @click="toggleFilters"
+          dropShadow
+          @click="this.toggleFilters"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -126,33 +126,33 @@
 
       <div class="top-right-panels">
         <ToolsPanel
-          :features="features"
-          :tool="tool"
-          @set-tool="setTool"
-          @set-selected-area="setSelectedArea"
+          :features="this.features"
+          :tool="this.tool"
+          @set-tool="this.setTool"
+          @set-selected-area="this.setSelectedArea"
         />
       </div>
       <div class="bottom-left-panels">
         <LayersPanel
-          v-if="features.layerlist || features.legend"
-          :layers="layers"
-          :position="position"
-          :user="user"
-          :is-embed="features.legend && !features.layerlist"
-          @toggle-layer="toggleLayer"
-          @set-layer-opacity="setLayerOpacity"
-          @on-fit="(layer) => $refs.map.fit(layer)"
+          v-if="this.features.layerlist || this.features.legend"
+          :layers="this.layers"
+          :position="this.position"
+          :user="this.user"
+          :isEmbed="this.features.legend && !this.features.layerlist"
+          @toggle-layer="this.toggleLayer"
+          @set-layer-opacity="this.setLayerOpacity"
+          @on-fit="(layer) => this.$refs.map.fit(layer)"
         />
       </div>
       <div class="bottom-right-panels">
         <GeoLocationButton
-          v-if="features.gps"
-          @set-position="setPosition"
+          v-if="this.features.gps"
+          @set-position="this.setPosition"
         />
         <ZoomPanel
-          v-if="features.zoom"
-          :position="position"
-          @set-position="setPosition"
+          v-if="this.features.zoom"
+          :position="this.position"
+          @set-position="this.setPosition"
         />
       </div>
     </div>
@@ -182,20 +182,6 @@ import GeoLocationButton from "../GeoLocationButton";
 
 export default {
   name: "MapRenderer",
-  components: {
-    PrimaryButton,
-    SearchPanel,
-    LayersPanel,
-    DataPanel,
-    PointInfoPanel,
-    DetailPanel,
-    ListPanel,
-    FilterPanel,
-    OpenLayersRenderer,
-    ToolsPanel,
-    ZoomPanel,
-    GeoLocationButton,
-  },
   props: {
     initialLayers: Array,
     initialPosition: Object,
@@ -221,6 +207,20 @@ export default {
       default: () => false,
     },
   },
+  components: {
+    PrimaryButton,
+    SearchPanel,
+    LayersPanel,
+    DataPanel,
+    PointInfoPanel,
+    DetailPanel,
+    ListPanel,
+    FilterPanel,
+    OpenLayersRenderer,
+    ToolsPanel,
+    ZoomPanel,
+    GeoLocationButton,
+  },
   data() {
     return {
       layers: this.initialLayers,
@@ -235,19 +235,6 @@ export default {
       showFilters: false,
       filters: {},
     };
-  },
-  computed: {
-    showInfoPanel() {
-      return this.position.marker ? true : false;
-    },
-  },
-  watch: {
-    initialPosition(value) {
-      this.position = value;
-    },
-    initialLayers(value) {
-      this.layers = value;
-    },
   },
   methods: {
     async setPosition(position) {
@@ -373,8 +360,72 @@ export default {
       );
     },
   },
+  watch: {
+    initialPosition(value) {
+      this.position = value;
+    },
+    initialLayers(value) {
+      this.layers = value;
+    },
+  },
+  computed: {
+    showInfoPanel() {
+      return this.position.marker ? true : false;
+    },
+  },
 };
 </script>
+
+<style>
+.tippy-tooltip {
+  padding: 0;
+  border-radius: var(--radius-normal);
+  font-family: inherit;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0em;
+}
+
+.tippy-tooltip .tippy-content {
+  padding: 3px 7px 4px;
+}
+
+.tippy-tooltip.dark-theme .tippy-backdrop {
+  background-color: var(--color-tooltip-dark);
+}
+
+.tippy-tooltip.primary-theme .tippy-backdrop {
+  /* TODO: var(--color-primary) doesn't work */
+  background-color: #0066ff;
+}
+
+.tippy-tooltip.popover-theme .tippy-backdrop {
+  /* TODO: var(--color-primary) doesn't work */
+  background-color: white;
+}
+
+.tippy-tooltip.popover-theme {
+  background-color: white;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-normal);
+  color: #000000;
+  letter-spacing: inherit;
+  box-shadow: var(--shadow-normal);
+}
+
+.tippy-tooltip.popover-theme[x-placement^="left"] .tippy-arrow {
+  border-left-color: white;
+}
+
+.tippy-tooltip.popover-theme[x-placement^="right"] .tippy-arrow {
+  border-right-color: white;
+}
+
+.tippy-tooltip.popover-theme .tippy-content {
+  padding: 0;
+  overflow: auto;
+}
+</style>
 
 <style scoped>
 .map-container {
