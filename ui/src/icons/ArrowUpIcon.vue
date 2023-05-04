@@ -1,0 +1,16 @@
+<template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="20"
+    viewBox="0 96 960 960"
+    width="20"
+  >
+    <path d="m291 720-51-51 240-240 240 240-51 51-189-189-189 189Z" />
+  </svg>
+</template>
+
+<script>
+export default {
+  name: 'ArrowUpIcon',
+};
+</script>

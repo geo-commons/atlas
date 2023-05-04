@@ -9,41 +9,38 @@
     :delay="[0, 0]"
     :a11y="false"
   >
-    <template #trigger>
-      <button class="iconbutton">
-        {{
-          layer.friendly_fields && layer.friendly_fields[property]
-            ? layer.friendly_fields[property]
-            : property
-        }}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="20px"
-          width="20px"
-          viewBox="0 96 960 960"
-        >
-          <path d="M480 711 240 471l43-43 197 198 197-197 43 43-240 239Z" />
-        </svg>
+    <template v-slot:trigger>
+      <button
+        class="iconbutton"
+        aria-label="Filter kolom"
+        content="Filter"
+        v-tippy="{ placement: 'bottom' }"
+      >
+        <FilterIcon />
       </button>
-      {{ fieldFilters && fieldFilters[property] ? fieldFilters[property] : "" }}
     </template>
     <div class="container">
       <form method="POST" @submit="updateFilter">
         <input
           ref="valueInput"
-          v-model="value"
           type="text"
+          v-model="value"
           placeholder="Filter op waarde"
         />
-        <button type="submit">Opslaan</button>
+        <button type="submit">Toepassen</button>
       </form>
     </div>
   </vue-tippy>
 </template>
 
 <script>
+import FilterIcon from "../icons/FilterIcon.vue";
+
 export default {
   name: "FilterTooltip",
+  components: {
+    FilterIcon,
+  },
   props: {
     layer: Object,
     property: String,
