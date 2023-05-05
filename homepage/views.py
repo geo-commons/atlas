@@ -19,7 +19,8 @@ help_content = get_help_content()
 
 @xframe_options_exempt
 def embed(request):
-    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    authorized_layers = Layer.authorized.user_or_group(
+        request.user, is_ctrix(request))
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context = {
@@ -27,14 +28,16 @@ def embed(request):
             'is_embed': True,
             'config': _get_config(request),
             'user': _get_user(request),
-            'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
+            'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
         }
     }
 
     return render(request, 'v3/app.html', context)
 
+
 def v3(request, theme_slug=''):
-    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    authorized_layers = Layer.authorized.user_or_group(
+        request.user, is_ctrix(request))
 
     context = {}
 
@@ -49,16 +52,18 @@ def v3(request, theme_slug=''):
         'is_embed': False,
         'config': _get_config(request),
         'user': _get_user(request),
-        'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
+        'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
     }
 
     return render(request, 'v3/app.html', context)
+
 
 def v3_help(request):
     return render(request, 'v3/help.html', {
         'title': 'Help',
         'content': help_content
     })
+
 
 def v3_disclaimer(request):
     if config.DISCLAIMER:
@@ -69,15 +74,18 @@ def v3_disclaimer(request):
 
     return HttpResponseNotFound('Er is geen disclaimer aanwezig')
 
+
 def v3_login(request):
     return render(request, 'v3/login.html', {
         'title': 'Login'
     })
 
+
 def v3_login_failure(request):
     return render(request, 'v3/login_failure.html', {
         'title': 'Login mislukt'
     })
+
 
 def v3_token(request):
     if request.user.is_authenticated:
@@ -87,27 +95,31 @@ def v3_token(request):
 
     return HttpResponse('Unauthorized', status=401)
 
+
 @login_required(login_url='admin:login')
 def v3_admin(request):
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
 
-    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    authorized_layers = Layer.authorized.user_or_group(
+        request.user, is_ctrix(request))
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context = {
         'data':  {
             'config': _get_config(request),
             'user': _get_user(request),
-            'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
+            'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
         }
     }
 
     return render(request, 'v3/admin.html', context)
 
+
 @xframe_options_exempt
 def v3_map(request, slug):
-    authorized_layers = Layer.authorized.user_or_group(request.user, is_ctrix(request))
+    authorized_layers = Layer.authorized.user_or_group(
+        request.user, is_ctrix(request))
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
     visible_map = get_object_or_404(Map, slug=slug)
 
@@ -116,11 +128,12 @@ def v3_map(request, slug):
             'config': _get_config(request),
             'user': _get_user(request),
             'map': visible_map.to_dict(),
-            'layers': _default_layers() + [ layer.to_dict() for layer in visible_layers ]
+            'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
         }
     }
 
     return render(request, 'v3/map.html', context)
+
 
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:
@@ -161,6 +174,7 @@ def _default_layers():
         },
     ]
 
+
 def _get_config(request):
     return {
         'organization_name': config.ORGANIZATION_NAME,
@@ -173,8 +187,9 @@ def _get_config(request):
         },
         'suggest_municipalities': config.SUGGEST_MUNICIPALITIES,
         'show_disclaimer': config.DISCLAIMER != '',
-        'viewers': [ viewer.to_dict() for viewer in Viewer.visible.for_request(request) ],
+        'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }
+
 
 def _get_user(request):
     user = request.user
@@ -185,6 +200,5 @@ def _get_user(request):
     return {
         'id': user.id,
         'username': user.username,
-        'first_name': user.first_name,
-        'last_name': user.last_name
+        'name': user.name,
     }

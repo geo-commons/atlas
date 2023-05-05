@@ -5,8 +5,9 @@ from user_management.models import AtlasUser
 
 class AtlasOIDCAuthenticationBackend(OIDCAuthenticationBackend):
     def create_user(self, claims):
-        user = self.UserModel.objects.create_user(claims.get(settings.OIDC_USERNAME_CLAIM), claims.get('email'))
-        user.first_name = claims.get('name')
+        user = self.UserModel.objects.create_user(claims.get(
+            settings.OIDC_USERNAME_CLAIM), claims.get('email'))
+        user.name = claims.get('name')
         user.save()
 
         if settings.OIDC_ACTIVATE_ON_CREATE != 'True':
@@ -16,7 +17,7 @@ class AtlasOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         return user
 
     def update_user(self, user, claims):
-        user.first_name = claims.get('name')
+        user.name = claims.get('name')
         user.email = claims.get('email')
         user.save()
 
