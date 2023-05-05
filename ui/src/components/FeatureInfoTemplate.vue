@@ -79,6 +79,9 @@ export default {
             this.error = "U moet ingelogd zijn om deze data te bekijken.";
           } else if (result.status == 403) {
             this.error = "U heeft geen rechten om deze data te bekijken.";
+          } else if (result.status == 502 || result.status == 504) {
+            this.error =
+              "De databron kan niet bereikt worden. Probeer het later opnieuw.";
           } else {
             this.error =
               "Onbekende fout opgetreden. Probeer het later opnieuw.";
