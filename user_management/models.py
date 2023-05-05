@@ -12,8 +12,11 @@ class AtlasGroup(models.Model):
         verbose_name = 'Groep'
         verbose_name_plural = 'Groepen'
 
+
 class AtlasUser(AbstractUser):
     atlas_groups = models.ManyToManyField(AtlasGroup, blank=True)
+    name = models.CharField(
+        'Volledige naam', max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.username
