@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import SearchForm from "./SearchForm";
+import SearchForm from "@/components/SearchForm.vue";
 
 const suggestEndpoint =
   "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
