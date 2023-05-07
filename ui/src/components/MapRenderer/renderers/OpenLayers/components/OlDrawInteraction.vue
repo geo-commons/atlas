@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import Circle from "ol/geom/Circle";
+import { fromCircle } from "ol/geom/Polygon";
 import constructDraw from "../../../../../utils/draw";
 
 export default {
@@ -11,6 +13,27 @@ export default {
   props: {
     layers: Array,
     tool: String,
+  },
+  watch: {
+    tool(tool) {
+      this.map.removeInteraction(this.draw);
+
+      const onDrawStart = () => {
+        this.$emit("draw-start");
+      };
+
+      const onDrawEnd = (sketch) => {
+        const geometry = sketch.getGeometry();
+        if (geometry instanceof Circle) {
+          sketch.setGeometry(fromCircle(geometry));
+        }
+
+        this.$emit("draw-end", { tool: tool, sketch });
+      };
+
+      this.draw = constructDraw(tool, this.map, onDrawStart, onDrawEnd);
+      this.map.addInteraction(this.draw);
+    },
   },
   created() {
     const onDrawStart = () => {

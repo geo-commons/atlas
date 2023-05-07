@@ -345,6 +345,8 @@ export default {
 
       switch (result.tool) {
         case "SELECT_POLYGON":
+        case "SELECT_CIRCLE":
+        case "SELECT_BOX":
           this.showDataPanel = true;
           break;
       }

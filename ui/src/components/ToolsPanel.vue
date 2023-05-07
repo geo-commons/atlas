@@ -5,7 +5,12 @@
         v-if="features.selectarea"
         v-tippy="{ placement: 'bottom' }"
         class="iconbutton"
-        :class="{ isActive: tool === 'SELECT_POLYGON' }"
+        :class="{
+          isActive:
+            tool === 'SELECT_POLYGON' ||
+            tool === 'SELECT_CIRCLE' ||
+            tool == 'SELECT_BOX',
+        }"
         content="Selecteer gebied"
         aria-label="Selecteer gebied"
         @click="toggleSelectArea"
@@ -99,17 +104,32 @@ export default {
       }
     },
     toggleSelectArea() {
-      if (this.tool !== "SELECT_POLYGON") {
+      if (this.tool === "") {
         this.$emit("set-tool", "SELECT_POLYGON");
+        console.log(document.addEventListener("keypress", this.keyPress));
       } else {
         // toggle off when the user is currently selecting an area
         this.$emit("set-tool", "");
         this.$emit("set-selected-area", null);
+        document.removeEventListener("keypress", this.keyPress);
       }
     },
     setMeasureTool(chosenTool) {
       this.$emit("set-tool", this.tool !== chosenTool ? chosenTool : "");
       this.showMeasureMenu = false;
+    },
+    keyPress(e) {
+      if (e.code !== "KeyS") {
+        return;
+      }
+
+      if (this.tool === "SELECT_POLYGON") {
+        this.$emit("set-tool", "SELECT_CIRCLE");
+      } else if (this.tool === "SELECT_CIRCLE") {
+        this.$emit("set-tool", "SELECT_BOX");
+      } else {
+        this.$emit("set-tool", "SELECT_POLYGON");
+      }
     },
   },
 };

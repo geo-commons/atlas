@@ -1,4 +1,4 @@
-import Draw from "ol/interaction/Draw";
+import Draw, { createBox } from "ol/interaction/Draw";
 import VectorSource from "ol/source/Vector";
 import Overlay from "ol/Overlay";
 import { getArea, getLength } from "ol/sphere";
@@ -10,12 +10,15 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
   const mapping = {
     MEASURE_AREA: "Polygon",
     SELECT_POLYGON: "Polygon",
+    SELECT_CIRCLE: "Circle",
+    SELECT_BOX: "Circle", // including geometryFunction createBox
     MEASURE_LINE: "LineString",
   };
 
   const draw = new Draw({
     source: source,
     type: mapping[measure],
+    geometryFunction: measure === "SELECT_BOX" ? createBox() : null,
     style: new Style({
       fill: new Fill({
         color: "rgba(255, 255, 255, 0.2)",

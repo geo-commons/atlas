@@ -52,16 +52,13 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th
-                    v-for="property in displayProperties"
-                    v-bind:key="property"
-                  >
+                  <th v-for="property in displayProperties" :key="property">
                     <FeatureTableHeaderItem
                       :layer="layer"
                       :property="property"
-                      :fieldFilters="fieldFilters"
-                      :sortKey="sortKey"
-                      :sortAscending="sortAscending"
+                      :field-filters="fieldFilters"
+                      :sort-key="sortKey"
+                      :sort-ascending="sortAscending"
                       @change="(filter) => (fieldFilters = filter)"
                       @sort="(column) => sortColumn(column)"
                     />
@@ -69,7 +66,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="feature in sortedFeatures" v-bind:key="feature.id">
+                <tr v-for="feature in sortedFeatures" :key="feature.id">
                   <td>
                     <button
                       v-if="feature.geometry"
@@ -119,6 +116,7 @@
 
 <script>
 import GeoJSON from "ol/format/GeoJSON";
+import WKT from "ol/format/WKT";
 import { getCenter } from "ol/extent";
 
 import TableList from "./TableList";
@@ -155,12 +153,6 @@ export default {
       sortAscending: true,
     };
   },
-  watch: {
-    query: "fetchFeatures",
-    selectedArea: "fetchFeatures",
-    filter: "fetchFeatures",
-    fieldFilters: "fetchFeatures",
-  },
   computed: {
     computedTitle() {
       if (this.numberMatched !== null) {
@@ -181,6 +173,12 @@ export default {
 
       return this.features;
     },
+  },
+  watch: {
+    query: "fetchFeatures",
+    selectedArea: "fetchFeatures",
+    filter: "fetchFeatures",
+    fieldFilters: "fetchFeatures",
   },
   mounted() {
     this.fetchFeatures();
@@ -217,12 +215,9 @@ export default {
       }
 
       if (this.selectedArea) {
-        filters.push(
-          `INTERSECTS(geom,POLYGON((${this.selectedArea
-            .getCoordinates()[0]
-            .map((c) => `${c[0]} ${c[1]}`)
-            .join(",")})))`
-        );
+        const wktFormat = new WKT();
+        const polygon = wktFormat.writeGeometry(this.selectedArea);
+        filters.push(`INTERSECTS(geom,${polygon})`);
       }
 
       if (filters.length > 0) {
