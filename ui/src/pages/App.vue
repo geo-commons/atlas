@@ -287,7 +287,7 @@ export default {
       }
 
       switch (result.tool) {
-        case "SELECT_AREA":
+        case "SELECT_POLYGON":
           this.showDataPanel = true;
           break;
       }

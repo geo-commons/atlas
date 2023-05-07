@@ -5,7 +5,7 @@
         v-if="features.selectarea"
         v-tippy="{ placement: 'bottom' }"
         class="iconbutton"
-        :class="{ isActive: tool === 'SELECT_AREA' }"
+        :class="{ isActive: tool === 'SELECT_POLYGON' }"
         content="Selecteer gebied"
         aria-label="Selecteer gebied"
         @click="toggleSelectArea"
@@ -99,8 +99,8 @@ export default {
       }
     },
     toggleSelectArea() {
-      if (this.tool !== "SELECT_AREA") {
-        this.$emit("set-tool", "SELECT_AREA");
+      if (this.tool !== "SELECT_POLYGON") {
+        this.$emit("set-tool", "SELECT_POLYGON");
       } else {
         // toggle off when the user is currently selecting an area
         this.$emit("set-tool", "");

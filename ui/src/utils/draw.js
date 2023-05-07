@@ -9,7 +9,7 @@ const source = new VectorSource();
 const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
   const mapping = {
     MEASURE_AREA: "Polygon",
-    SELECT_AREA: "Polygon",
+    SELECT_POLYGON: "Polygon",
     MEASURE_LINE: "LineString",
   };
 
