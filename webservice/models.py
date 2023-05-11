@@ -14,7 +14,8 @@ from utils.tools import is_ctrix
 class LayerManager(models.Manager):
     def user_or_group(self, user=None, ctrix=False):
         open_datasets = Q(published=True) & Q(closed_dataset=False)
-        closed_unassigned_datasets = Q(published=True) & Q(closed_dataset=True) & Q(users=None) & Q(atlas_groups=None)
+        closed_unassigned_datasets = Q(published=True) & Q(
+            closed_dataset=True) & Q(users=None) & Q(atlas_groups=None)
 
         if not ctrix:
             return self.filter(open_datasets).distinct()
@@ -22,8 +23,10 @@ class LayerManager(models.Manager):
         if user.is_anonymous:
             return self.filter(open_datasets | closed_unassigned_datasets).distinct()
 
-        closed_and_assigned_to_user = Q(published=True) & Q(closed_dataset=True) & Q(users=user)
-        closed_and_assigned_to_group = Q(published=True) & Q(closed_dataset=True) & Q(atlas_groups__in=user.atlas_groups.all())
+        closed_and_assigned_to_user = Q(published=True) & Q(
+            closed_dataset=True) & Q(users=user)
+        closed_and_assigned_to_group = Q(published=True) & Q(
+            closed_dataset=True) & Q(atlas_groups__in=user.atlas_groups.all())
 
         return self.filter(open_datasets | closed_unassigned_datasets | closed_and_assigned_to_user | closed_and_assigned_to_group).distinct()
 
@@ -95,20 +98,21 @@ class Layer(models.Model):
     layer_name = models.CharField(
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
 
-    layer_source = models.ForeignKey('Source', verbose_name='Bron', on_delete=models.SET_NULL, null=True)
+    layer_source = models.ForeignKey(
+        'Source', verbose_name='Bron', on_delete=models.SET_NULL, null=True)
 
-    format = models.CharField('Formaat', max_length=128, choices=FORMAT_TYPES, default=FORMAT_PNG)
+    format = models.CharField(
+        'Formaat', max_length=128, choices=FORMAT_TYPES, default=FORMAT_PNG)
 
     meta_name = models.CharField('Naam', max_length=128, null=True,)
     meta_description = models.TextField('Omschrijving', null=True,
-                                 help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+                                        help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_org = models.CharField('Organisatie', max_length=128, null=True,
                                 help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_updated = models.CharField(
         'Laatst bijgewerkt', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_link = models.URLField(
         'Meer informatie', max_length=200, blank=True, null=True, help_text='Link naar metadatacatalogus met meer informatie')
-
 
     opacity = models.DecimalField(
         'Transparantie', max_digits=1, decimal_places=1, default=0.9)
@@ -151,7 +155,8 @@ class Layer(models.Model):
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
-    show_in_detail_panel = models.BooleanField('Toon laag in detail- en dataweergave', default=True)
+    show_in_detail_panel = models.BooleanField(
+        'Toon laag in detail- en dataweergave', default=True)
 
     not_in_atlas = models.BooleanField(
         'Toon laag alleen in een themakaart',
@@ -348,6 +353,7 @@ class LinkedData(models.Model):
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
     popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
+
     class Meta:
         verbose_name = 'Gekoppelde data'
         verbose_name_plural = 'Gekoppelde data'
@@ -373,15 +379,16 @@ class Template(models.Model):
     source = models.ForeignKey('Source', on_delete=models.CASCADE)
     endpoint = models.CharField(_('Endpoint'), max_length=500)
     title = models.CharField('Titel', max_length=128)
-    list = models.CharField(_('Tabel Veld met lijst'), max_length=128, blank=True, null=True)
+    list = models.CharField(_('Tabel Veld met lijst'),
+                            max_length=128, blank=True, null=True)
     headers = models.TextField(_('Tabel kopjes'), max_length=128, blank=True, null=True,
                                help_text='Voer één veld per regel in.')
     fields = models.TextField(_('Tabel velden'), blank=True, null=True,
                               help_text='Voer één veld per regel in.')
-    template = models.TextField(_('Vrij veld template'), blank=True, null=True, help_text='Het is mogelijk om Markdown te gebruiken.')
+    template = models.TextField(_('Vrij veld template'), blank=True,
+                                null=True, help_text='Het is mogelijk om Markdown te gebruiken.')
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
-
 
     class Meta:
         verbose_name = 'Template'
@@ -411,8 +418,10 @@ class Map(models.Model):
     slug = AutoSlugField('Kort kenmerk', blank=True, populate_from='title', editable=True,
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.')
     layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
-    features = models.JSONField(default=dict, blank=True, verbose_name='Functies')
-    settings = models.JSONField(default=dict, blank=True, verbose_name='Instellingen')
+    features = models.JSONField(
+        default=dict, blank=True, verbose_name='Functies')
+    settings = models.JSONField(
+        default=dict, blank=True, verbose_name='Instellingen')
 
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'
@@ -429,7 +438,7 @@ class Map(models.Model):
         return {
             'title': self.title,
             'slug': self.slug,
-            'layers': [ layer.id for layer in self.layers.all() ],
+            'layers': [layer.id for layer in self.layers.all()],
             'features': self.features,
             'settings': self.settings
         }
@@ -449,19 +458,24 @@ class ViewerVisibleManager(models.Manager):
 
         return self.get_queryset().filter(models.Q(internal=False))
 
+
 class Viewer(models.Model):
     TYPE_GOOGLE_MAPS = 'GOOGLE_MAPS'
     TYPE_STREET_SMART = 'STREET_SMART'
     TYPE_OBLIQUO = 'OBLIQUO'
+    TYPE_IFRAME = 'IFRAME'
     VIEWER_TYPES = [
         (TYPE_GOOGLE_MAPS, 'Google Maps'),
         (TYPE_STREET_SMART, 'Street Smart'),
         (TYPE_OBLIQUO, 'Obliquo'),
+        (TYPE_IFRAME, 'Iframe'),
     ]
 
-    ordering = models.PositiveIntegerField('Sortering', default=0, editable=True, db_index=True)
+    ordering = models.PositiveIntegerField(
+        'Sortering', default=0, editable=True, db_index=True)
     label = models.CharField(max_length=128)
-    type = models.CharField('Type', choices=VIEWER_TYPES, default=TYPE_GOOGLE_MAPS, max_length=20)
+    type = models.CharField('Type', choices=VIEWER_TYPES,
+                            default=TYPE_GOOGLE_MAPS, max_length=20)
     username = models.CharField(null=True, blank=True, max_length=128)
     password = models.CharField(null=True, blank=True, max_length=128)
     api_key = models.CharField(null=True, blank=True, max_length=128)
@@ -472,7 +486,6 @@ class Viewer(models.Model):
 
     objects = models.Manager()
     visible = ViewerVisibleManager()
-
 
     class Meta:
         verbose_name = 'Viewer'
