@@ -90,10 +90,7 @@
         </svg>
       </button>
     </div>
-    <div
-      v-if="isOpen"
-      :class="{ viewer: true, isResizing: isResizing }"
-    >
+    <div v-if="isOpen" :class="{ viewer: true, isResizing: isResizing }">
       <div v-if="selectedViewer !== null && position.marker" class="viewer">
         <google-maps
           v-if="selectedViewer.type == 'GOOGLE_MAPS'"
@@ -116,6 +113,12 @@
           :password="selectedViewer.password"
           :api-key="selectedViewer.api_key"
         />
+        <iframe-viewer
+          v-if="selectedViewer.type == 'IFRAME'"
+          ref="viewer"
+          :position="position"
+          :url="selectedViewer.url"
+        />
         <div v-if="!selectedViewer" class="message">
           Er is geen panoramaweergave beschikbaar. Configureer een viewer in het
           beheerpaneel.
@@ -132,6 +135,7 @@ import VueResizable from "vue-resizable";
 import GoogleMaps from "../viewers/GoogleMaps.vue";
 import ObliquoViewer from "../viewers/ObliquoViewer.vue";
 import StreetSmart from "../viewers/StreetSmart.vue";
+import IframeViewer from "../viewers/IframeViewer.vue";
 
 export default {
   name: "PanoramaPanel",
@@ -140,6 +144,7 @@ export default {
     GoogleMaps,
     ObliquoViewer,
     StreetSmart,
+    IframeViewer,
   },
   data() {
     return {
