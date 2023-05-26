@@ -239,7 +239,7 @@ export default {
 }
 
 .exit-fullscreen {
-  right: 0;
+  right: 1px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-top-left-radius: var(--radius-small);
