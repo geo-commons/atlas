@@ -47,21 +47,18 @@
           >Geen weergave beschikbaar.</span
         >
         <div v-if="!loading && !error && displayProperties.length > 0">
-          <table-list class="table">
+          <table-list class="table table-height">
             <table>
               <thead>
                 <tr>
                   <th></th>
-                  <th
-                    v-for="property in displayProperties"
-                    v-bind:key="property"
-                  >
+                  <th v-for="property in displayProperties" :key="property">
                     <FeatureTableHeaderItem
                       :layer="layer"
                       :property="property"
-                      :fieldFilters="fieldFilters"
-                      :sortKey="sortKey"
-                      :sortAscending="sortAscending"
+                      :field-filters="fieldFilters"
+                      :sort-key="sortKey"
+                      :sort-ascending="sortAscending"
                       @change="(filter) => (fieldFilters = filter)"
                       @sort="(column) => sortColumn(column)"
                     />
@@ -69,7 +66,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="feature in sortedFeatures" v-bind:key="feature.id">
+                <tr v-for="feature in sortedFeatures" :key="feature.id">
                   <td>
                     <button
                       v-if="feature.geometry"
@@ -155,12 +152,6 @@ export default {
       sortAscending: true,
     };
   },
-  watch: {
-    query: "fetchFeatures",
-    selectedArea: "fetchFeatures",
-    filter: "fetchFeatures",
-    fieldFilters: "fetchFeatures",
-  },
   computed: {
     computedTitle() {
       if (this.numberMatched !== null) {
@@ -181,6 +172,12 @@ export default {
 
       return this.features;
     },
+  },
+  watch: {
+    query: "fetchFeatures",
+    selectedArea: "fetchFeatures",
+    filter: "fetchFeatures",
+    fieldFilters: "fetchFeatures",
   },
   mounted() {
     this.fetchFeatures();
@@ -401,6 +398,10 @@ export default {
 
 .table {
   margin: 0 0 24px;
+}
+
+.table-height {
+  height: 80vh;
 }
 
 .iconbutton {
