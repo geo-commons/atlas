@@ -5,48 +5,45 @@
         <MapLayers
           v-if="sidebar === 'Layers'"
           :initial-data="data"
-          @show-form="() => showSidebar('Form')"
           @change="updateLayers"
+          @show-form="() => showSidebar('Form')"
         />
         <ListPanelAdmin
           v-if="sidebar === 'List'"
           :initial-data="data"
-          @show-form="() => showSidebar('Form')"
+          :layers="visibleLayers"
           @change="updateLayers"
+          @show-form="() => showSidebar('Form')"
         />
         <FiltersPanelAdmin
           v-if="sidebar === 'Filters'"
           :initial-data="data"
-          :layer="visibleLayers.length > 1 ? visibleLayers[1] : null"
+          :layers="visibleLayers"
           :user="user"
-          @show-form="() => showSidebar('Form')"
           @change="updateLayers"
+          @show-form="() => showSidebar('Form')"
         />
         <MapForm
           v-if="sidebar === 'Form'"
           :initial-data="data"
+          @delete="deleteMap"
+          @submit="saveMap"
           @show-layers="() => showSidebar('Layers')"
           @show-list="() => showSidebar('List')"
           @show-filters="() => showSidebar('Filters')"
-          @delete="deleteMap"
-          @submit="saveMap"
         />
-        <form
-          v-if="sidebar === 'Form'"
-          method="POST"
-          @submit="deleteMap"
-        >
+        <form v-if="sidebar === 'Form'" method="POST" @submit="deleteMap">
           <button class="button __alert">Verwijder kaart</button>
         </form>
       </div>
     </div>
     <MapRenderer
       ref="map"
-      :initial-position="position"
-      :initial-layers="visibleLayers"
-      :user="user"
       :features="data.features"
+      :initial-layers="visibleLayers"
+      :initial-position="position"
       :settings="data.settings"
+      :user="user"
     />
   </div>
 </template>
@@ -70,8 +67,14 @@ export default {
     ListPanelAdmin,
     FiltersPanelAdmin,
   },
-  created() {
-    this.getMap();
+  data() {
+    return {
+      data: null,
+      mapPadding: [0, 0, 0, 0],
+      selectedArea: null,
+      user: null,
+      sidebar: "Form",
+    };
   },
   computed: {
     ...mapState({
@@ -98,14 +101,20 @@ export default {
       return this.layers;
     },
   },
-  data() {
-    return {
-      data: null,
-      mapPadding: [0, 0, 0, 0],
-      selectedArea: null,
-      user: null,
-      sidebar: "Form",
-    };
+  watch: {
+    "data.features.filters"(newValue) {
+      if (!newValue) {
+        this.resetSelectedFilter();
+      }
+    },
+    "data.features.list"(newValue) {
+      if (!newValue) {
+        this.resetSelectedList();
+      }
+    },
+  },
+  created() {
+    this.getMap();
   },
   methods: {
     async getMap() {
@@ -130,6 +139,8 @@ export default {
         features: {},
         settings: {
           facets: [],
+          filterLayerId: null,
+          listLayerId: null,
         },
       };
     },
@@ -193,6 +204,13 @@ export default {
     },
     updateLayers(layerIds) {
       this.data.layers = layerIds;
+    },
+    resetSelectedFilter() {
+      this.data.settings.filterLayerId = null;
+      this.data.settings.facets = [];
+    },
+    resetSelectedList() {
+      this.data.settings.listLayerId = null;
     },
     updateConfig(config) {
       this.data.config = config;

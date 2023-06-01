@@ -202,16 +202,19 @@ svg {
   background: var(--color-primary);
   color: white;
 }
+
 .button.__secondary {
   background: white;
   border: 2px solid var(--color-primary);
   color: var(--color-primary);
 }
+
 .button.__tertiary {
   background: white;
   border: 2px solid var(--color-grey-60);
   color: black;
 }
+
 .button.__alert {
   background: white;
   border: 2px solid var(--color-alert);
@@ -231,6 +234,7 @@ svg {
 .button:hover:before {
   background: var(--color-hover);
 }
+
 .button:active:before {
   background: var(--color-active);
 }
@@ -317,10 +321,15 @@ svg {
 
 .sidebar input[type="text"] {
   width: 100%;
-  border: 1px solid var(--color-grey-80);
-  border-radius: var(--radius-small);
+  border: 1px solid var(--color-grey-60);
+  border-radius: var(--radius-normal);
   padding: 0 16px;
   height: 40px;
+}
+
+.edit-field-border {
+  border-radius: var(--radius-normal);
+  border: 1px solid var(--color-grey-60);
 }
 </style>
 
