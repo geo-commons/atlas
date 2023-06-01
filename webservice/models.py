@@ -1,5 +1,6 @@
 from os import path
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -115,7 +116,7 @@ class Layer(models.Model):
         'Meer informatie', max_length=200, blank=True, null=True, help_text='Link naar metadatacatalogus met meer informatie')
 
     opacity = models.DecimalField(
-        'Transparantie', max_digits=1, decimal_places=1, default=0.9)
+        'Transparantie', max_digits=2, decimal_places=1, default=0.9, validators=[MinValueValidator(0), MaxValueValidator(1)])
     visible = models.BooleanField('Zichtbaar', default=False)
 
     style = models.JSONField(
