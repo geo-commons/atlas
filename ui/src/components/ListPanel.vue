@@ -1,6 +1,10 @@
 <template>
-  <PanelDisplay :title="layer.title" @hidePanel="hidePanel">
-    <ul>
+  <PanelDisplay :title="layerDisplayName" @hidePanel="hidePanel">
+    <p v-if="!layer" class="info-text">
+      De lijstweergave is nog niet geconfigureerd.
+    </p>
+
+    <ul v-if="layer">
       <li
         v-for="feature in filteredFeatures"
         :key="feature.id"
@@ -73,9 +77,17 @@ export default {
         return isVisible;
       });
     },
+    layerDisplayName() {
+      return this.layer ? this.layer.title : "";
+    },
+  },
+  watch: {
+    layer: "fetchFeatures",
   },
   mounted() {
-    this.fetchFeatures();
+    if (this.layer) {
+      this.fetchFeatures();
+    }
   },
   methods: {
     selectFeature(feature) {
@@ -182,5 +194,9 @@ export default {
 .address {
   margin-top: 4px;
   font-size: var(--font-size-small);
+}
+
+.info-text {
+  margin: 30px 20px;
 }
 </style>

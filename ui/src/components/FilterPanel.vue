@@ -1,5 +1,9 @@
 <template>
   <PanelDisplay title="Verfijn resultaten" @hidePanel="hidePanel">
+    <p v-if="facets.length <= 0" class="info-text">
+      Er zijn nog geen filters geconfigureerd.
+    </p>
+
     <ExpandButton
       v-for="facet in facets"
       :key="facet"
@@ -160,4 +164,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.info-text {
+  margin: 30px 20px;
+}
+</style>
