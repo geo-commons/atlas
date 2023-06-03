@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.views import SuccessURLAllowedHostsMixin
+from django.contrib.auth.views import RedirectURLMixin
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login)
@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
 
-class LoginView(SuccessURLAllowedHostsMixin, FormView):
+class LoginView(RedirectURLMixin, FormView):
     """
     Display the login form and handle the login action.
     """
