@@ -160,10 +160,6 @@ export default {
 
 <style scoped>
 .wrapper {
-  position: absolute;
-  left: 0;
-  padding: var(--padding-screen);
-  padding-bottom: 0;
   width: var(--width-detail);
   max-width: 100%;
 }

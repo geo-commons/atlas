@@ -32,9 +32,6 @@
           @show-list="() => showSidebar('List')"
           @show-filters="() => showSidebar('Filters')"
         />
-        <form v-if="sidebar === 'Form'" method="POST" @submit="deleteMap">
-          <button class="button __alert">Verwijder kaart</button>
-        </form>
       </div>
     </div>
     <MapRenderer

@@ -1,5 +1,9 @@
 <template>
-  <SidePanel large :show-panel="showDataPanel">
+  <SidePanel
+    large
+    :show-panel="showDataPanel"
+    @toggle-full-side-panel="toggleFullScreen"
+  >
     <template #search>
       <div class="flexer">
         <button
@@ -22,22 +26,24 @@
             />
           </svg>
         </button>
-        <SearchForm
-          :show-border="true"
-          :has-visible-layers="visibleLayers.length > 0"
-          class="data-search"
-          @on-submit="onSearch"
-        >
-          <template #default>
-            <input
-              ref="queryInput"
-              type="search"
-              name="search"
-              placeholder="Zoek data"
-              autocomplete="off"
-            />
-          </template>
-        </SearchForm>
+        <div class="top-left-panels">
+          <SearchForm
+            :show-border="true"
+            :has-visible-layers="visibleLayers.length > 0"
+            class="data-search"
+            @on-submit="onSearch"
+          >
+            <template #default>
+              <input
+                ref="queryInput"
+                type="search"
+                name="search"
+                placeholder="Zoek data"
+                autocomplete="off"
+              />
+            </template>
+          </SearchForm>
+        </div>
       </div>
     </template>
 
@@ -107,6 +113,9 @@ export default {
     },
     onFit(value) {
       this.$emit("on-fit", value);
+    },
+    toggleFullScreen() {
+      this.$emit("toggle-full-side-panel");
     },
   },
 };

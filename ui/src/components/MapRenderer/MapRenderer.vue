@@ -67,57 +67,41 @@
       @set-position="setPosition"
       @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 18 })"
       @toggle-data-panel="toggleDataPanel"
+      @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
 
-    <div class="ui-container">
-      <SearchPanel
-        v-if="features.searchbar"
-        :position="position"
-        :layers="layers"
-        @set-position="setPosition"
-        @toggle-data-panel="toggleDataPanel"
-      />
-
-      <div class="toggle-buttons">
-        <PrimaryButton
-          v-if="features.list && !showList"
-          size="large"
-          label="Lijst"
-          drop-shadow
-          @click="toggleList"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            enable-background="new 0 0 24 24"
-            height="24px"
-            viewBox="0 0 24 24"
-            width="24px"
-            fill="#000000"
+    <div
+      v-show="!showDataPanel || !showDataPanelFullScreen"
+      class="ui-container"
+    >
+      <div class="top-left-panels">
+        <SearchPanel
+          v-if="features.searchbar"
+          :position="position"
+          :layers="layers"
+          @set-position="setPosition"
+          @toggle-data-panel="toggleDataPanel"
+        />
+        <div class="toggle-buttons">
+          <PrimaryButton
+            v-if="features.list && !showList"
+            size="large"
+            label="Lijst"
+            drop-shadow
+            @click="toggleList"
           >
-            <rect fill="none" height="24" width="24" />
-            <path
-              d="M3,5v14h18V5H3z M7,7v2H5V7H7z M5,13v-2h2v2H5z M5,15h2v2H5V15z M19,17H9v-2h10V17z M19,13H9v-2h10V13z M19,9H9V7h10V9z"
-            />
-          </svg>
-        </PrimaryButton>
-        <PrimaryButton
-          v-if="features.filters && !showFilters"
-          size="large"
-          label="Verfijn"
-          drop-shadow
-          @click="toggleFilters"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 0 24 24"
-            width="24px"
-            fill="#000000"
+            <ListIcon />
+          </PrimaryButton>
+          <PrimaryButton
+            v-if="features.filters && !showFilters"
+            size="large"
+            label="Verfijn"
+            drop-shadow
+            @click="toggleFilters"
           >
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
-          </svg>
-        </PrimaryButton>
+            <FilterListIcon />
+          </PrimaryButton>
+        </div>
       </div>
 
       <div class="top-right-panels">
@@ -153,6 +137,8 @@
 </template>
 
 <script>
+import ListIcon from "@/icons/ListIcon.vue";
+
 const reverseGeocodingEndpoint =
   "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -172,10 +158,13 @@ import LayersPanel from "../LayersPanel";
 import ToolsPanel from "../ToolsPanel";
 import ZoomPanel from "../ZoomPanel";
 import GeoLocationButton from "../GeoLocationButton";
+import FilterListIcon from "@/icons/FilterListIcon.vue";
 
 export default {
   name: "MapRenderer",
   components: {
+    FilterListIcon,
+    ListIcon,
     PrimaryButton,
     SearchPanel,
     LayersPanel,
@@ -223,6 +212,7 @@ export default {
       tool: "",
       selectedArea: null,
       showDataPanel: false,
+      showDataPanelFullScreen: false,
       showPanoramaPanel: false,
       showList: false,
       showFilters: false,
@@ -324,10 +314,12 @@ export default {
     },
     toggleDataPanel() {
       this.showDataPanel = !this.showDataPanel;
-
       if (!this.showDataPanel) {
         this.selectedArea = null;
       }
+    },
+    toggleDataPanelFullScreen() {
+      this.showDataPanelFullScreen = !this.showDataPanelFullScreen;
     },
     toggleList() {
       this.showList = !this.showList;
@@ -471,10 +463,27 @@ export default {
 }
 
 .top-right-panels {
-  z-index: 1;
   position: absolute;
-  top: var(--padding-screen);
+  top: calc((var(--padding-screen) * 2) + var(--width-button-large));
   right: var(--padding-screen);
+  display: flex;
+}
+
+.top-left-panels {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: var(--padding-screen);
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 576px) {
+  .showDataPanel .top-left-panels {
+    display: none;
+  }
 }
 
 .bottom-left-panels {
@@ -498,9 +507,6 @@ export default {
 }
 
 .toggle-buttons {
-  position: absolute;
-  top: var(--padding-screen);
-  left: var(--padding-screen);
   display: flex;
 }
 

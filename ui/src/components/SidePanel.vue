@@ -100,6 +100,7 @@ export default {
     },
     toggleFullScreen() {
       this.fullScreen = !this.fullScreen;
+      this.$emit("toggle-full-side-panel");
     },
   },
 };
@@ -143,6 +144,7 @@ export default {
 }
 
 .header {
+  display: flex;
   width: 100%;
   padding: var(--padding-screen);
   padding-bottom: 0;
@@ -240,10 +242,7 @@ export default {
 
 .exit-fullscreen {
   right: 1px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: var(--radius-small);
-  border-bottom-left-radius: var(--radius-small);
+  border-radius: var(--radius-small) 0 0 var(--radius-small);
   border: 1px solid var(--color-grey-60);
   border-right: none;
   box-shadow: none;
