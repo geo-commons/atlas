@@ -11,7 +11,7 @@ Test:
   stage: Test
   image: python:3.11
   services:
-    - postgres:15.2-alpine
+    - postgres:15.3-alpine
   variables:
     DB_HOST: postgres
     DB_NAME: postgres
@@ -39,7 +39,7 @@ Test:
 
 Lint ui:
   stage: Test
-  image: node:20.0.0-alpine
+  image: node:20.2.0-alpine
   cache:
     paths:
       - ui/node_modules/
@@ -51,9 +51,9 @@ Lint ui:
 
 Build:
   stage: Build
-  image: docker:23.0.1-git
+  image: docker:23.0.6-git
   services:
-    - docker:23.0.1-dind
+    - docker:23.0.6-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
@@ -65,9 +65,9 @@ Build:
 
 Deploy Docker latest tag:
   stage: Deploy
-  image: docker:23.0.1
+  image: docker:23.0.6
   services:
-    - docker:23.0.1-dind
+    - docker:23.0.6-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
@@ -81,9 +81,9 @@ Deploy Docker latest tag:
 
 Deploy Docker version tag:
   stage: Deploy
-  image: docker:23.0.1-git
+  image: docker:23.0.6-git
   services:
-    - docker:23.0.1-dind
+    - docker:23.0.6-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
