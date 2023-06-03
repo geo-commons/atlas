@@ -46,16 +46,22 @@
       @set-position="setPosition"
       @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 18 })"
       @toggle-data-panel="toggleDataPanel"
+      @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
+    <div
+      v-show="!showDataPanel || !showDataPanelFullScreen"
+      class="ui-container"
+    >
+      <div class="top-left-panels">
+        <SearchPanel
+          v-if="!showPanoramaPanel"
+          :position="position"
+          :layers="layers"
+          @set-position="setPosition"
+          @toggle-data-panel="toggleDataPanel"
+        />
+      </div>
 
-    <div class="ui-container">
-      <SearchPanel
-        v-if="!showPanoramaPanel"
-        :position="position"
-        :layers="layers"
-        @set-position="setPosition"
-        @toggle-data-panel="toggleDataPanel"
-      />
       <div class="top-right-panels">
         <ToolsPanel
           v-if="!isEmbed && !showPanoramaPanel"
@@ -342,6 +348,9 @@ export default {
         this.$set(this.mapPadding, 3, 0);
       }
     },
+    toggleDataPanelFullScreen() {
+      this.showDataPanelFullScreen = !this.showDataPanelFullScreen;
+    },
     async fetchAccessToken() {
       const response = await fetch("/atlas/api/v1/token");
       if (!response.ok) {
@@ -365,6 +374,7 @@ export default {
       showPanoramaPanel: false,
       showBaseLayersPanel: false,
       showDataPanel: false,
+      showDataPanelFullScreen: false,
       computedStyle: { "--color-primary": "#0066FF" },
       modal: "",
       mapPadding: [0, 0, 0, 0],
@@ -561,6 +571,7 @@ svg {
 .fade-leave-active {
   transition: opacity 0.1s;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
@@ -678,9 +689,24 @@ svg {
   display: flex;
 }
 
+.top-left-panels {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: var(--padding-screen);
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 @media (min-width: 576px) {
   .top-right-panels {
     top: var(--padding-screen);
+  }
+
+  .showDataPanel .top-left-panels {
+    display: none;
   }
 }
 
