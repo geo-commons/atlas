@@ -9,13 +9,16 @@ app_name = 'homepage'
 api_router = routers.DefaultRouter()
 api_router.register(r'maps', viewsets.MapViewSet, basename='maps')
 api_router.register(r'layers', viewsets.LayerViewSet, basename='layers')
+api_router.register(r'users', viewsets.UserViewSet, basename='users')
 
 urlpatterns = [
     path('help', views.v3_help, name='v3_help'),
     path('disclaimer', views.v3_disclaimer, name='v3_disclaimer'),
-    path('login', viewclasses.LoginView.as_view(template_name='v3/login.html'), name='v3_login'),
+    path('login', viewclasses.LoginView.as_view(
+        template_name='v3/login.html'), name='v3_login'),
     path('login/failure', views.v3_login_failure, name='v3_login_failure'),
-    path('logout', auth_views.LogoutView.as_view(template_name='v3/logout.html'), name='v3_logout'),
+    path('logout', auth_views.LogoutView.as_view(
+        template_name='v3/logout.html'), name='v3_logout'),
     path('admin2/', views.v3_admin, name='v3_admin'),
     path('api/v1/token', views.v3_token, name='v3_token'),
     path('api/v1/', include(api_router.urls)),
