@@ -56,6 +56,7 @@ export default {
     zIndex: Number,
     minZoom: Number,
     maxZoom: Number,
+    clientStyle: Object,
   },
   watch: {
     url() {
@@ -71,7 +72,7 @@ export default {
     opacity(value) {
       this.tileLayer.set("opacity", value);
     },
-    vectorStyle(value) {
+    clientStyle(value) {
       this.applyStyle(value);
     },
   },
@@ -90,7 +91,7 @@ export default {
     this.map.addLayer(this.tileLayer);
 
     this.setSource(this.url, this.name);
-    this.applyStyle(this.vectorStyle);
+    this.applyStyle(this.clientStyle);
   },
   destroyed() {
     this.map.removeLayer(this.tileLayer);

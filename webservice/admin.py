@@ -4,6 +4,7 @@ from .forms import LayerForm, LinkedDataForm
 from .models import Source, Category, Layer, Template, Map, LinkedData, Viewer
 from .resources import CategoryResource, LayerResource, SourceResource, MapResource
 
+
 class SourceAdmin(ImportExportActionModelAdmin):
     list_display = ('title',)
     resource_classes = [SourceResource]
@@ -32,6 +33,7 @@ def duplicate_layer(_modeladmin, _request, queryset):
 
         layer.title = f'{layer.title} ({i})'
         layer.save()
+
 
 class LayerAdmin(ImportExportActionModelAdmin):
     form = LayerForm
@@ -76,7 +78,8 @@ class LayerAdmin(ImportExportActionModelAdmin):
                 'extent_max_y',
                 'zoom_min',
                 'zoom_max',
-                'style',
+                'server_style',
+                'client_style',
                 'friendly_fields'
             )
         }),

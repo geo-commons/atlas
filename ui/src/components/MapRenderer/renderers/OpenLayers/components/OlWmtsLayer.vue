@@ -22,6 +22,7 @@ export default {
     layer: String,
     isVisible: Boolean,
     opacity: Number,
+    serverStyle: String,
     zIndex: Number,
     format: String,
     minZoom: Number,
@@ -87,6 +88,7 @@ export default {
           projection: rdProjection,
           matrixSet: "EPSG:28992",
           format: this.format,
+          STYLES: this.serverStyle ? this.serverStyle : null,
           tileGrid: wmts.getTileGrid(),
         })
       );

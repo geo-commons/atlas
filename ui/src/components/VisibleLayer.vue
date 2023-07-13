@@ -154,6 +154,7 @@ export default {
       });
 
       const params = {
+        STYLE: this.layer.server_style ? this.layer.server_style : undefined,
         LEGEND_OPTIONS: "forceTitles:off;forceLabels:on;fontAntiAliasing:true",
       };
 
