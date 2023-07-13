@@ -30,6 +30,8 @@
       :login-required="layer.login_required"
       :selected-features="selectedFeatures"
       :z-index="layer.is_base ? 0 : 1"
+      :min-zoom="layer.zoom_min"
+      :max-zoom="layer.zoom_max"
       :vector-style="layer.style"
       :opacity="layer.opacity"
       @features-selected="featuresSelected"

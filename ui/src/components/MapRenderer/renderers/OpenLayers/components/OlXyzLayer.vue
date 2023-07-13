@@ -22,6 +22,8 @@ export default {
     isVisible: Boolean,
     opacity: Number,
     zIndex: Number,
+    minZoom: Number,
+    maxZoom: Number,
   },
   watch: {
     url(value) {
@@ -46,6 +48,8 @@ export default {
       source: new XYZSource({
         url: this.url,
         projection: rdProjection,
+        minZoom: this.minZoom ? this.minZoom - 1 : undefined,
+        maxZoom: this.maxZoom ? this.maxZoom : undefined,
       }),
     });
 

@@ -24,6 +24,8 @@ export default {
     opacity: Number,
     zIndex: Number,
     format: String,
+    minZoom: Number,
+    maxZoom: Number,
   },
   watch: {
     url(value) {
@@ -50,6 +52,8 @@ export default {
       opacity: this.opacity,
       source: null,
       zIndex: this.zIndex,
+      minZoom: this.minZoom ? this.minZoom - 1 : undefined,
+      maxZoom: this.maxZoom ? this.maxZoom : undefined,
     });
 
     this.map.addLayer(this.tileLayer);
