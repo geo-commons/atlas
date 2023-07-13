@@ -54,6 +54,8 @@ export default {
     isVisible: Boolean,
     opacity: Number,
     zIndex: Number,
+    minZoom: Number,
+    maxZoom: Number,
   },
   watch: {
     url() {
@@ -81,6 +83,8 @@ export default {
       zIndex: this.zIndex,
       source: null,
       selectable: true,
+      minZoom: this.minZoom ? this.minZoom - 1 : undefined,
+      maxZoom: this.maxZoom ? this.maxZoom : undefined,
     });
 
     this.map.addLayer(this.tileLayer);
