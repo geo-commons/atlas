@@ -32,7 +32,8 @@
       :z-index="layer.is_base ? 0 : 1"
       :min-zoom="layer.zoom_min"
       :max-zoom="layer.zoom_max"
-      :vector-style="layer.style"
+      :client-style="layer.client_style"
+      :server-style="layer.server_style"
       :opacity="layer.opacity"
       @features-selected="featuresSelected"
     >

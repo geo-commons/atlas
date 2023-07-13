@@ -119,8 +119,11 @@ class Layer(models.Model):
         'Transparantie', max_digits=2, decimal_places=1, default=0.9, validators=[MinValueValidator(0), MaxValueValidator(1)])
     visible = models.BooleanField('Zichtbaar', default=False)
 
-    style = models.JSONField(
-        'Stijl', default=dict, help_text='Stijl voor een WFS laag in GeoStyler formaat', blank=True, null=True)
+    server_style = models.CharField(
+        'Stijlnaam voor WMS / WMTS laag', max_length=128, blank=True, null=True, help_text='Stijlnaam zoals beschikbaar op de server')
+
+    client_style = models.JSONField(
+        'Stijl voor WFS / MVT laag', default=dict, help_text='Stijl in GeoStyler formaat', blank=True, null=True)
 
     friendly_fields = models.JSONField(
         'Vriendelijke veldnamen', default=dict, help_text='Maak veldnamen vriendelijk', blank=True, null=True)
@@ -304,7 +307,8 @@ source: new ol.source.TileWMS({{
             'title': self.title,
             'name': self.layer_name,
             'opacity': float(self.opacity),
-            'style': self.style,
+            'server_style': self.server_style,
+            'client_style': self.client_style,
             'friendly_fields': self.friendly_fields,
             'url': self.url,
             'server_type': self.server_type,

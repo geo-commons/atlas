@@ -45,7 +45,7 @@ export default {
     isSelectable: Boolean,
     selectedFeatures: Array,
     opacity: Number,
-    vectorStyle: Object,
+    clientStyle: Object,
     zIndex: Number,
     filters: Object,
     minZoom: Number,
@@ -64,7 +64,7 @@ export default {
     opacity(value) {
       this.tileLayer.set("opacity", value);
     },
-    vectorStyle(value) {
+    clientStyle(value) {
       this.applyStyle(value);
     },
     filters(value) {
@@ -134,18 +134,19 @@ export default {
     this.map.addLayer(this.tileLayer);
 
     const style = await this.getStyle(
-      this.vectorStyle && this.vectorStyle["default"]
-        ? this.vectorStyle["default"]
-        : this.vectorStyle
+      this.clientStyle && this.clientStyle["default"]
+        ? this.clientStyle["default"]
+        : this.clientStyle
     );
     this.tileLayer.setStyle(style);
 
     if (this.isSelectable) {
       const activeStyle = await this.getStyle(
-        this.vectorStyle && this.vectorStyle["active"]
-          ? this.vectorStyle["active"]
-          : this.vectorStyle
+        this.clientStyle && this.clientStyle["active"]
+          ? this.clientStyle["active"]
+          : this.clientStyle
       );
+
       this.select = new Select({
         layers: [this.tileLayer],
         style: activeStyle,
