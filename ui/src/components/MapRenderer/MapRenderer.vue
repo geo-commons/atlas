@@ -299,7 +299,9 @@ export default {
         );
 
         try {
-          const result = await fetch(url);
+          const result = await fetch(url, {
+            credentials: "include",
+          });
           const data = await result.json();
           this.highlightedFeatures = [
             ...this.highlightedFeatures,

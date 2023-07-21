@@ -109,6 +109,19 @@
 
       <div class="setting">
         <input
+<<<<<<< Updated upstream
+=======
+          id="features.datapanel"
+          v-model="data.features.datapanel"
+          type="checkbox"
+          name="features.datapanel"
+        />
+        <label for="features.searchbar">Toon dataweergave</label>
+      </div>
+
+      <div class="setting">
+        <input
+>>>>>>> Stashed changes
           id="features.selectarea"
           v-model="data.features.selectarea"
           type="checkbox"

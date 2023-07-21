@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import Map, Layer
 
+
 class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
@@ -11,4 +12,4 @@ class MapSerializer(serializers.ModelSerializer):
 class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'layer_id', 'layer_name', 'layer_source']

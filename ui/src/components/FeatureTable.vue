@@ -355,7 +355,9 @@ export default {
         };
       }
 
-      return {};
+      return {
+        credentials: "include",
+      };
     },
     sortColumn(prop) {
       if (this.sortKey !== prop) {

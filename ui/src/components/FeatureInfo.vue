@@ -210,7 +210,9 @@ export default {
         };
       }
 
-      return {};
+      return {
+        credentials: "include",
+      };
     },
   },
 };
