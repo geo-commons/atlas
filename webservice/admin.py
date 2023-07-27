@@ -1,13 +1,9 @@
 from django.contrib import admin
 from import_export.admin import ImportExportActionModelAdmin
+from import_export.formats import base_formats
 from .forms import LayerForm, LinkedDataForm
 from .models import Source, Category, Layer, Template, Map, LinkedData, Viewer
 from .resources import CategoryResource, LayerResource, SourceResource, MapResource
-
-
-class SourceAdmin(ImportExportActionModelAdmin):
-    list_display = ('title',)
-    resource_classes = [SourceResource]
 
 
 class LinkedDataInline(admin.TabularInline):
@@ -35,7 +31,31 @@ def duplicate_layer(_modeladmin, _request, queryset):
         layer.save()
 
 
-class LayerAdmin(ImportExportActionModelAdmin):
+class CustomImportExportActionModelAdmin(ImportExportActionModelAdmin):
+    def get_export_formats(self):
+        formats = (
+            base_formats.JSON,
+        )
+
+        return [f for f in formats if f().can_export()]
+
+    def get_import_formats(self):
+        formats = (
+            base_formats.JSON,
+        )
+
+        return [f for f in formats if f().can_import()]
+
+    class Meta:
+        abstract = True
+
+
+class SourceAdmin(CustomImportExportActionModelAdmin):
+    list_display = ('title',)
+    resource_classes = [SourceResource]
+
+
+class LayerAdmin(CustomImportExportActionModelAdmin):
     form = LayerForm
 
     list_display = ('ordering', 'title', 'layer_type', 'closed_dataset',
@@ -94,7 +114,7 @@ class LayerAdmin(ImportExportActionModelAdmin):
     search_fields = ['title']
 
 
-class CategoryAdmin(ImportExportActionModelAdmin):
+class CategoryAdmin(CustomImportExportActionModelAdmin):
     list_display = ('ordering', 'title')
     list_display_links = ('title',)
     list_editable = ('ordering',)
@@ -102,7 +122,7 @@ class CategoryAdmin(ImportExportActionModelAdmin):
     resource_classes = [CategoryResource]
 
 
-class MapAdmin(ImportExportActionModelAdmin):
+class MapAdmin(CustomImportExportActionModelAdmin):
     list_display = ('title', )
     fields = ('title', 'slug', 'layers', 'features', 'settings')
     prepopulated_fields = {'slug': ('title', )}
