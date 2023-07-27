@@ -57,7 +57,7 @@ class LayerAdmin(ImportExportActionModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'layer_id', 'layer_type', 'published')
+            'fields': ('title', 'slug', 'layer_type', 'published')
         }),
         ('Bron', {
             'fields': ('layer_source', 'layer_name', 'source_type', 'projection', 'server_type', 'format')
@@ -90,8 +90,6 @@ class LayerAdmin(ImportExportActionModelAdmin):
             'fields': ('closed_dataset', 'login_required', 'owner', 'users', 'atlas_groups')
         })
     )
-
-    prepopulated_fields = {'layer_id': ('title', )}
 
     search_fields = ['title']
 

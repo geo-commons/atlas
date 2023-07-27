@@ -36,8 +36,9 @@ class Category(models.Model):
     objects = models.Manager()
 
     title = models.CharField('Titel', max_length=128, null=True)
+    slug = AutoSlugField('Kort kenmerk', blank=False, unique=True, populate_from='title', editable=True,
+                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.')
 
-    slug = AutoSlugField(blank=False, populate_from='title', overwrite=True)
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 
@@ -52,6 +53,9 @@ class Category(models.Model):
 
 class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
+    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title', editable=True,
+                         help_text='Een uniek kort kenmerk voor de bron in Atlas.')
+
     url = models.URLField()
     authenticate = models.BooleanField('Verstuur authenticatieinformatie naar bron', default=False,
                                        help_text='Configureer dit alleen voor vertrouwde bronnen')
@@ -92,9 +96,10 @@ class Layer(models.Model):
     objects = models.Manager()
     authorized = LayerManager()
 
-    layer_id = models.CharField(
+    slug = models.CharField(
         'Kort kenmerk', max_length=128, null=True, default='',
         help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.')
+
     title = models.CharField('Titel', max_length=128, null=True)
     layer_name = models.CharField(
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
@@ -227,7 +232,7 @@ class Layer(models.Model):
 
     @property
     def slddiv(self):
-        return f"sld_div_{self.layer_id}"
+        return f"sld_div_{self.slug}"
 
     @property
     def layer_type_str(self):
@@ -235,19 +240,19 @@ class Layer(models.Model):
 
     @property
     def infodiv(self):
-        return f"info_{self.layer_id}"
+        return f"info_{self.slug}"
 
     @property
     def sld(self):
-        return f"sld_{self.layer_id}"
+        return f"sld_{self.slug}"
 
     @property
     def legend(self):
-        return f"lgn_{self.layer_id}"
+        return f"lgn_{self.slug}"
 
     @property
     def filterid(self):
-        return f"flt_{self.layer_id}"
+        return f"flt_{self.slug}"
 
     @property
     def filterdataid(self):
@@ -420,8 +425,9 @@ class Template(models.Model):
 
 class Map(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
-    slug = AutoSlugField('Kort kenmerk', blank=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaart in Atlas. Dit kenmerk komt terug in links naar het thema.')
+    slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
+                         help_text='Een uniek kort kenmerk voor de kaart in Atlas.')
+
     layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
     features = models.JSONField(
         default=dict, blank=True, verbose_name='Functies')

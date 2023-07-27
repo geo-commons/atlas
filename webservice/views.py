@@ -14,7 +14,8 @@ class CategoryDetailView(TemplateView):
         user = self.request.user
 
         context = super().get_context_data(**kwargs)
-        context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request))
+        context['layers'] = Layer.authorized.user_or_group(
+            user, is_ctrix(self.request))
 
         return context
 
@@ -25,7 +26,8 @@ class LayerDetailView(TemplateView):
     def get_context_data(self, **kwargs):
         user = self.request.user
 
-        layer = Layer.authorized.user_or_group(user, is_ctrix(self.request)).get(layer_id=kwargs['layer_id'])
+        layer = Layer.authorized.user_or_group(
+            user, is_ctrix(self.request)).get(slug=kwargs['slug'])
 
         context = super().get_context_data(**kwargs)
         context['layers'] = [layer]
@@ -42,7 +44,8 @@ class MapDetailView(DetailView):
         user = self.request.user
 
         context = super().get_context_data(**kwargs)
-        context['layers'] = Layer.authorized.user_or_group(user, is_ctrix(self.request)).filter(atlastheme=context['atlastheme'])
+        context['layers'] = Layer.authorized.user_or_group(
+            user, is_ctrix(self.request)).filter(atlastheme=context['atlastheme'])
         context['homepage'] = False
 
         return context
