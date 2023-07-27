@@ -8,6 +8,7 @@ app_name = 'homepage'
 
 api_router = routers.DefaultRouter()
 api_router.register(r'maps', viewsets.MapViewSet, basename='maps')
+api_router.register(r'sources', viewsets.SourceViewSet, basename='sources')
 api_router.register(r'layers', viewsets.LayerViewSet, basename='layers')
 api_router.register(r'drawings', viewsets.DrawingViewSet, basename='drawings')
 

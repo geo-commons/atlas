@@ -319,12 +319,18 @@ svg {
   border-bottom: 1px solid var(--color-grey-60);
 }
 
-.sidebar input[type="text"] {
+input[type="text"],
+input[type="url"] {
   width: 100%;
   border: 1px solid var(--color-grey-60);
   border-radius: var(--radius-normal);
   padding: 0 16px;
   height: 40px;
+}
+
+input[type="checkbox"] {
+  padding: 0 16px;
+  margin-right: 5px;
 }
 
 .edit-field-border {
