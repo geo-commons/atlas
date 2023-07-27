@@ -11,6 +11,6 @@
 
 <script>
 export default {
-  name: 'ArrowDownIcon',
+  name: "ArrowDownIcon",
 };
 </script>
