@@ -26,11 +26,7 @@
     />
 
     <div class="settings">
-      <button
-        type="button"
-        class="setting"
-        @click="() => $emit('show-layers')"
-      >
+      <button type="button" class="setting" @click="() => $emit('show-layers')">
         <svg
           class="setting-icon"
           width="24px"
@@ -105,6 +101,16 @@
           name="features.searchbar"
         />
         <label for="features.searchbar">Toon zoekbalk</label>
+      </div>
+
+      <div class="setting">
+        <input
+          id="features.datapanel"
+          v-model="data.features.datapanel"
+          type="checkbox"
+          name="features.datapanel"
+        />
+        <label for="features.datapanel">Toon dataweegave</label>
       </div>
 
       <div class="setting">

@@ -3,6 +3,7 @@
     <SearchForm
       :show-suggestions="showSuggestions"
       :has-visible-layers="visibleLayers.length > 0"
+      :features="features"
       @show-data-panel="toggleDataPanel"
       @on-submit="onSearch"
     >
@@ -58,6 +59,7 @@ export default {
   props: {
     position: Object,
     layers: Array,
+    features: Object,
   },
   data() {
     return {

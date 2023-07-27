@@ -79,10 +79,20 @@
           v-if="features.searchbar"
           :position="position"
           :layers="layers"
+          :features="features"
           @set-position="setPosition"
           @toggle-data-panel="toggleDataPanel"
         />
         <div class="toggle-buttons">
+          <div
+            v-if="features.datapanel && !features.searchbar"
+            class="datapanel-btn-wrapper"
+          >
+            <DataPanelButton
+              :is-subcomponent="false"
+              @show-data-panel="toggleDataPanel"
+            />
+          </div>
           <PrimaryButton
             v-if="features.list && !showList"
             size="large"
@@ -159,6 +169,7 @@ import ToolsPanel from "../ToolsPanel";
 import ZoomPanel from "../ZoomPanel";
 import GeoLocationButton from "../GeoLocationButton";
 import FilterListIcon from "@/icons/FilterListIcon.vue";
+import DataPanelButton from "../DataPanelButton.vue";
 
 export default {
   name: "MapRenderer",
@@ -177,6 +188,7 @@ export default {
     ToolsPanel,
     ZoomPanel,
     GeoLocationButton,
+    DataPanelButton,
   },
   props: {
     initialLayers: Array,
@@ -512,5 +524,16 @@ export default {
 
 .toggle-buttons > *:not(:last-child) {
   margin-right: 8px;
+}
+
+.datapanel-btn-wrapper {
+  display: flex;
+  background: white;
+  width: var(--width-button-large);
+  overflow: hidden;
+  border-radius: var(--radius-normal);
+  box-shadow: var(--shadow-normal);
+  transition: width 0.1s ease, border-radius 0.1s;
+  height: var(--width-button-large);
 }
 </style>

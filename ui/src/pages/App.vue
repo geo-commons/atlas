@@ -57,6 +57,7 @@
           v-if="!showPanoramaPanel"
           :position="position"
           :layers="layers"
+          :features="{ dataPanel: true }"
           @set-position="setPosition"
           @toggle-data-panel="toggleDataPanel"
         />
