@@ -6,7 +6,7 @@ from webservice.models import Layer, Category
 class TestLayerModel(TestCase):
     def setUp(self):
         self.closed_dataset = Layer.objects.create(
-            layer_id="purm_stembureaus_2018",
+            slug="purm_stembureaus_2018",
             title="Stembureaus",
             layer_name="topp:Purm_Stembureaus_2018",
             published=False,
@@ -87,7 +87,7 @@ source: new ol.source.TileWMS({
 class TestLayerOrdering(TestCase):
     def setUp(self):
         self.stembureaus = Layer.objects.create(
-            layer_id="purm_stembureaus_2018",
+            slug="purm_stembureaus_2018",
             title="Stembureaus",
             layer_name="topp:Purm_Stembureaus_2018",
             closed_dataset=False,

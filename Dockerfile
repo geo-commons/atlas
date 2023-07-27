@@ -1,10 +1,10 @@
 # UI
-FROM node:20.2.0-alpine AS ui-build
+FROM node:19.7.0-alpine AS ui-build
 WORKDIR /app/ui
 
 COPY ui/package.json \
-     ui/package-lock.json \
-     /app/ui/
+    ui/package-lock.json \
+    /app/ui/
 RUN npm install
 
 COPY ui /app/ui
