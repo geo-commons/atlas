@@ -256,11 +256,11 @@ class Layer(models.Model):
 
     @property
     def filterdataid(self):
-        return f"data_{self.layer_id}"
+        return f"data_{self.slug}"
 
     @property
     def datazoekid(self):
-        return f"zoek_data_{self.layer_id}"
+        return f"zoek_data_{self.slug}"
 
     @property
     def params(self):
@@ -306,7 +306,7 @@ source: new ol.source.TileWMS({{
 
     def to_dict(self):
         return {
-            'id': self.layer_id,
+            'id': self.slug,
             'internal_id': self.id,
             'source_type': self.source_type,
             'title': self.title,
