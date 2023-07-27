@@ -33,9 +33,11 @@
       <div class="details">
         <h3>{{ firstFeature.title }}</h3>
 
-        <p v-if="firstFeature.description">
-          {{ firstFeature.description }}
-        </p>
+        <markdown
+          v-if="firstFeature.description"
+          :source="firstFeature.description"
+          :inline="false"
+        />
       </div>
 
       <div class="links">
@@ -104,12 +106,14 @@
 </template>
 
 <script>
+import Markdown from "./Markdown";
 import SidePanel from "./SidePanel";
 
 export default {
   name: "DetailPanel",
   components: {
     SidePanel,
+    Markdown,
   },
   props: {
     features: Array,
