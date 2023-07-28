@@ -1,14 +1,15 @@
 <template>
   <div class="flex flex-column">
-    <div class="table-header-container">
-      <span @click="() => sortColumn()" class="header-text">
+    <div class="flex-center table-header-container">
+      <span class="header-text" @click="() => sortColumn()">
         {{ headerText }}
       </span>
       <button
-        @click="() => sortColumn()"
-        aria-label="Sorteer kolom"
         v-tippy="{ placement: 'bottom' }"
+        aria-label="Sorteer kolom"
         content="Sorteer"
+        class="flex-center"
+        @click="() => sortColumn()"
       >
         <SortIcon v-if="property !== sortKey" />
         <ArrowUpIcon v-if="property === sortKey && sortAscending" />
@@ -17,7 +18,7 @@
       <FilterTooltip
         :layer="layer"
         :property="property"
-        :fieldFilters="fieldFilters"
+        :field-filters="fieldFilters"
         @change="(value) => updateFilter(value)"
       />
     </div>
@@ -25,9 +26,9 @@
       {{ fieldFilters && fieldFilters[property] ? fieldFilters[property] : "" }}
       <button
         v-if="fieldFilters && fieldFilters[property]"
+        v-tippy="{ placement: 'bottom' }"
         class="iconbutton"
         aria-label="Verwijder filter"
-        v-tippy="{ placement: 'bottom' }"
         content="Verwijder"
         @click="() => removeFilter()"
       >
@@ -52,11 +53,6 @@ export default {
     ArrowUpIcon,
     ArrowDownIcon,
     SortIcon,
-  },
-  data() {
-    return {
-      test: {},
-    };
   },
   props: {
     layer: Object,
@@ -91,10 +87,14 @@ export default {
 
 <style scoped>
 .table-header-container {
-  display: flex;
   font-weight: 500;
   gap: 3px;
   text-transform: capitalize;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
 }
 
 .header-text {

@@ -1,74 +1,165 @@
 <template>
-  <table-list class="table table-border">
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th v-for="property in displayProperties" :key="property">
-            <FeatureTableHeaderItem
-              :layer="layer"
-              :property="property"
-              :field-filters="fieldFilters"
-              :sort-key="sortKey"
-              :sort-ascending="sortAscending"
-              @change="(filter) => (fieldFilters = filter)"
-              @sort="(column) => sortColumn(column)"
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="feature in sortedFeatures" :key="feature.id">
-          <td>
-            <button
-              v-if="feature.geometry"
-              v-tippy="{ placement: 'right' }"
-              class="iconbutton pin-button"
-              content="Bekijk op kaart"
-              aria-label="Bekijk op kaart"
-              @click="() => showFeature(feature)"
+  <ExpandButton :title="computedTitle" :is-open="isOpen" class="feature">
+    <template #header>
+      <button
+        v-tippy="{ placement: 'right' }"
+        class="iconbutton"
+        content="Download CSV"
+        aria-label="Download CSV"
+        @click="downloadCSV"
+      >
+        <svg
+          width="16px"
+          height="16px"
+          viewBox="0 0 16 16"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <g
+            id="sketches"
+            stroke="none"
+            stroke-width="1"
+            fill="none"
+            fill-rule="evenodd"
+          >
+            <g
+              id="originals"
+              transform="translate(-340.000000, -166.000000)"
+              fill="#000000"
+              fill-rule="nonzero"
             >
-              <PinIcon />
-            </button>
-          </td>
-          <td v-for="property in displayProperties" :key="property">
-            {{ feature.properties[property] }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </table-list>
+              <path
+                id="Combined-Shape"
+                d="M342,177 L342,180 L354,180 L354,177 L356,177 L356,180 C356,181.104569 355.104569,182 354,182 L342,182 C340.895431,182 340,181.104569 340,180 L340,177 L342,177 Z M349,166 L349,174.17 L351.59,171.59 L353,173 L348,178 L343,173 L344.41,171.59 L347,174.17 L347,166 L349,166 Z"
+              ></path>
+            </g>
+          </g>
+        </svg>
+      </button>
+    </template>
+
+    <template #default>
+      <div>
+        <span v-if="error">Er is een fout opgetreden tijdens het laden.</span>
+        <span v-if="loading">Bezig met laden...</span>
+        <span v-if="!loading && !error && displayProperties.length === 0"
+          >Geen weergave beschikbaar.</span
+        >
+        <div v-if="!loading && !error && displayProperties.length > 0">
+          <table-list class="table table-height">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th v-for="property in displayProperties" :key="property">
+                    <FeatureTableHeaderItem
+                      :layer="layer"
+                      :property="property"
+                      :field-filters="fieldFilters"
+                      :sort-key="sortKey"
+                      :sort-ascending="sortAscending"
+                      @change="(filter) => (fieldFilters = filter)"
+                      @sort="(column) => sortColumn(column)"
+                    />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="feature in sortedFeatures" :key="feature.id">
+                  <td>
+                    <button
+                      v-if="feature.geometry"
+                      v-tippy="{ placement: 'right' }"
+                      class="iconbutton pin-button"
+                      content="Bekijk op kaart"
+                      aria-label="Bekijk op kaart"
+                      @click="() => showFeature(feature)"
+                    >
+                      <svg
+                        width="10px"
+                        height="14px"
+                        viewBox="0 0 10 14"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                      >
+                        <g
+                          id="pin"
+                          stroke="none"
+                          stroke-width="1"
+                          fill="none"
+                          fill-rule="evenodd"
+                        >
+                          <path
+                            id="Combined-Shape"
+                            d="M5,0 C7.5155,0 9.55,2.0345 9.55,4.55 C9.55,7.9625 5,13 5,13 C5,13 0.45,7.9625 0.45,4.55 C0.45,2.0345 2.4845,0 5,0 Z M5,1.3 C3.206,1.3 1.75,2.756 1.75,4.55 C1.75,6.4025 3.648,9.2365 5,10.972 C6.378,9.2235 8.25,6.422 8.25,4.55 C8.25,2.756 6.794,1.3 5,1.3 Z M5,2.925 C5.89746272,2.925 6.625,3.65253728 6.625,4.55 C6.625,5.44746272 5.89746272,6.175 5,6.175 C4.10253728,6.175 3.375,5.44746272 3.375,4.55 C3.375,3.65253728 4.10253728,2.925 5,2.925 Z"
+                            fill="#000000"
+                            fill-rule="nonzero"
+                          ></path>
+                        </g>
+                      </svg>
+                    </button>
+                  </td>
+                  <td v-for="property in displayProperties" :key="property">
+                    {{ feature.properties[property] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </table-list>
+        </div>
+      </div>
+    </template>
+  </ExpandButton>
 </template>
 
 <script>
-import FeatureTableHeaderItem from "./FeatureTableHeaderItem.vue";
-import TableList from "./TableList.vue";
-import PinIcon from "../icons/PinIcon.vue";
 import GeoJSON from "ol/format/GeoJSON";
-import { getFeatureCenterCoordinates } from "../utils/geometry-helpers";
+import { getCenter } from "ol/extent";
+
+import TableList from "./TableList";
+import ExpandButton from "./ExpandButton";
+import FeatureTableHeaderItem from "./FeatureTableHeaderItem.vue";
 
 export default {
-  name: "FeatureTable",
+  name: "FeatureTableExpandable",
   components: {
+    ExpandButton,
     FeatureTableHeaderItem,
     TableList,
-    PinIcon,
   },
   props: {
     layer: Object,
-    position: Object,
     query: String,
+    selectedArea: Object,
+    isOpen: Boolean,
+    isFilterable: Boolean,
+    overallFilter: Object,
+    position: Object,
+    user: Object,
   },
   data() {
     return {
-      sortKey: "",
-      sortAscending: true,
       features: [],
       displayProperties: [],
+      searchProperties: [],
       fieldFilters: {},
+      loading: false,
+      error: false,
+      numberMatched: 0,
+      sortKey: "",
+      sortAscending: true,
     };
   },
   computed: {
+    computedTitle() {
+      if (this.numberMatched !== null) {
+        return `${this.layer.title} (${this.numberMatched})`;
+      }
+
+      return this.layer.title;
+    },
     sortedFeatures() {
       if (this.sortKey && this.features) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -243,7 +334,7 @@ export default {
     },
     showFeature(feature) {
       const geometry = new GeoJSON().readFeature(feature).getGeometry();
-      const center = getFeatureCenterCoordinates(feature);
+      const center = getCenter(geometry.getExtent());
 
       this.$emit("set-position", {
         ...this.position,
@@ -301,6 +392,18 @@ export default {
 </script>
 
 <style scoped>
+.feature:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-50);
+}
+
+.table {
+  margin: 0 0 24px;
+}
+
+.table-height {
+  height: 80vh;
+}
+
 .iconbutton {
   width: var(--width-button-normal);
 }
@@ -317,14 +420,5 @@ td:first-child {
 
 .table-header {
   display: flex;
-}
-
-tbody > tr:hover {
-  background-color: var(--color-grey-40);
-}
-
-.table-border {
-  border: solid 1px var(--color-grey-60);
-  border-radius: 6px;
 }
 </style>

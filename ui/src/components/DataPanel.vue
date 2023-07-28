@@ -5,79 +5,79 @@
     @toggle-full-side-panel="toggleFullScreen"
   >
     <template #search>
-      <div class="flexer">
+      <div class="flexer" :class="{ 'full-window-padding': fullSizeWindow }">
+        <div v-if="selectedLayerId != null" class="selected-layer-wrapper">
+          <button
+            v-tippy="{ placement: 'bottom' }"
+            class="iconbutton __normal __outline"
+            type="button"
+            aria-label="Ga terug"
+            content="Terug"
+            @click="resetSelectedLayer()"
+          >
+            <ArrowLeftIcon />
+          </button>
+          <h2 class="no-margin">{{ selectedLayer.title }}</h2>
+        </div>
         <button
           v-tippy
-          class="iconbutton close-button"
+          class="iconbutton __normal __outline"
           type="button"
           content="Sluit paneel"
           aria-label="Sluit paneel"
           @click="toggleDataPanel"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-          >
-            <path d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-            />
-          </svg>
+          <close-icon-large />
         </button>
-        <div class="top-left-panels">
-          <SearchForm
-            :show-border="true"
-            :has-visible-layers="visibleLayers.length > 0"
-            class="data-search"
-            @on-submit="onSearch"
-          >
-            <template #default>
-              <input
-                ref="queryInput"
-                type="search"
-                name="search"
-                placeholder="Zoek data"
-                autocomplete="off"
-              />
-            </template>
-          </SearchForm>
-        </div>
       </div>
     </template>
 
     <template #default>
-      <FeatureTable
-        v-for="visibleLayer in visibleLayers"
-        :key="visibleLayer.id"
-        :is-open="visibleLayers.length === 1"
-        :is-filterable="true"
-        :layer="visibleLayer"
+      <div v-if="visibleLayers.length == 0" class="flex-center">
+        <p>Selecteer eerst een laag om verder te gaan</p>
+      </div>
+      <DataPanelDetailView
+        v-if="selectedLayerId != null"
+        :layer="selectedLayer"
         :position="position"
         :selected-area="selectedArea"
         :query="query"
         :user="user"
-        @set-position="setPosition"
-        @on-fit="onFit"
+        @set-position="(position) => setPosition(position)"
+        @on-fit="(position) => onFit(position)"
+        @show-layers="() => resetSelectedLayer()"
       />
+      <div v-if="selectedLayerId == null">
+        <SelectButton
+          v-for="layer in visibleLayers"
+          :id="layer.id"
+          :key="layer.id"
+          :title="layer.title"
+          class="select-border"
+          @select-item="(layerId) => showSelectedLayer(layerId)"
+        />
+      </div>
     </template>
   </SidePanel>
 </template>
 
 <script>
+import DataPanelDetailView from "./DataPanelDetailView.vue";
 import SidePanel from "./SidePanel";
-import FeatureTable from "./FeatureTable";
-import SearchForm from "./SearchForm";
+import SelectButton from "./SelectButton.vue";
+import ArrowLeftIcon from "../icons/ArrowLeftIcon.vue";
+import CloseIconLarge from "../icons/CloseIconLarge.vue";
 
 const visibleSourceTypes = ["WMS_WFS", "WFS"];
 
 export default {
   name: "DataPanel",
   components: {
+    DataPanelDetailView,
     SidePanel,
-    FeatureTable,
-    SearchForm,
+    SelectButton,
+    ArrowLeftIcon,
+    CloseIconLarge,
   },
   props: {
     position: Object,
@@ -85,9 +85,11 @@ export default {
     showDataPanel: Boolean,
     selectedArea: Object,
     user: Object,
+    fullSizeWindow: Boolean,
   },
   data() {
     return {
+      selectedLayerId: null,
       query: "",
     };
   },
@@ -100,11 +102,17 @@ export default {
           visibleSourceTypes.includes(layer.source_type)
       );
     },
+    selectedLayer() {
+      if (this.selectedLayerId != null) {
+        return this.visibleLayers.find((layer) => {
+          return layer.id === this.selectedLayerId;
+        });
+      }
+
+      return null;
+    },
   },
   methods: {
-    onSearch() {
-      this.query = this.$refs.queryInput.value;
-    },
     toggleDataPanel() {
       this.$emit("toggle-data-panel");
     },
@@ -117,6 +125,12 @@ export default {
     toggleFullScreen() {
       this.$emit("toggle-full-side-panel");
     },
+    showSelectedLayer(layerId) {
+      this.selectedLayerId = layerId;
+    },
+    resetSelectedLayer() {
+      this.selectedLayerId = null;
+    },
   },
 };
 </script>
@@ -127,21 +141,37 @@ export default {
   height: var(--width-button-large);
   border-radius: var(--radius-normal);
   border: 1px solid var(--color-grey-60);
-  margin-right: 12px;
 }
 
 .flexer {
   display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
-@media (min-width: 576px) {
-  .data-search {
-    margin: 0 auto;
-    max-width: var(--width-detail);
-  }
+.no-margin {
+  margin: 0;
+}
 
-  .flexer {
-    padding-right: calc(var(--width-button-large) + 12px);
+.iconbutton {
+  width: var(--width-button-normal);
+}
+
+@media screen and (min-width: 800px) {
+  .full-window-padding {
+    padding-right: 18px;
   }
+}
+
+.select-border:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-50);
+}
+
+.selected-layer-wrapper {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
 }
 </style>
