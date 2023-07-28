@@ -49,6 +49,7 @@
       :show-panel="!showDataPanel && showInfoPanel"
       :user="user"
       @set-position="setPosition"
+      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"

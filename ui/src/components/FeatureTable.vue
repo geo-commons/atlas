@@ -116,8 +116,7 @@
 
 <script>
 import GeoJSON from "ol/format/GeoJSON";
-import { getCenter } from "ol/extent";
-
+import { getFeatureCenterCoordinates } from "../utils/geometry-helpers";
 import TableList from "./TableList";
 import ExpandButton from "./ExpandButton";
 import FeatureTableHeaderItem from "./FeatureTableHeaderItem.vue";
@@ -334,7 +333,7 @@ export default {
     },
     showFeature(feature) {
       const geometry = new GeoJSON().readFeature(feature).getGeometry();
-      const center = getCenter(geometry.getExtent());
+      const center = getFeatureCenterCoordinates(feature);
 
       this.$emit("set-position", {
         ...this.position,

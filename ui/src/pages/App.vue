@@ -34,6 +34,7 @@
       :show-panel="!showDataPanel && showInfoPanel"
       :user="user"
       @set-position="setPosition"
+      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
     />
     <DataPanel
       v-if="!isEmbed && !showPanoramaPanel"
@@ -201,6 +202,19 @@ export default {
     ZoomPanel,
     GeoLocationButton,
   },
+  data() {
+    return {
+      readyToRenderMap: false,
+      showInfoPanel: Boolean(this.position && this.position.marker),
+      showPanoramaPanel: false,
+      showBaseLayersPanel: false,
+      showDataPanel: false,
+      showDataPanelFullScreen: false,
+      computedStyle: { "--color-primary": "#0066FF" },
+      modal: "",
+      mapPadding: [0, 0, 0, 0],
+    };
+  },
   computed: mapState({
     isEmbed: (state) => state.isEmbed,
     alert: (state) => state.alert,
@@ -367,19 +381,6 @@ export default {
 
       this.readyToRenderMap = true;
     },
-  },
-  data() {
-    return {
-      readyToRenderMap: false,
-      showInfoPanel: Boolean(this.position && this.position.marker),
-      showPanoramaPanel: false,
-      showBaseLayersPanel: false,
-      showDataPanel: false,
-      showDataPanelFullScreen: false,
-      computedStyle: { "--color-primary": "#0066FF" },
-      modal: "",
-      mapPadding: [0, 0, 0, 0],
-    };
   },
 };
 </script>

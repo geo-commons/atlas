@@ -31,6 +31,7 @@
         :is-open="visibleLayers.length === 1"
         :layer="visibleLayer"
         :position="position"
+        @show-selected-feature="onFeatureSelect"
       />
     </template>
   </SidePanel>
@@ -39,6 +40,8 @@
 <script>
 import SidePanel from "./SidePanel";
 import FeatureInfo from "./FeatureInfo";
+import GeoJSON from "ol/format/GeoJSON";
+import { getFeatureCenterCoordinates } from "../utils/geometry-helpers";
 
 export default {
   name: "PointInfoPanel",
@@ -71,6 +74,19 @@ export default {
     closeInfoPanel() {
       this.searchQuery = "";
       this.$emit("set-position", { ...this.position, marker: null });
+    },
+    onFeatureSelect(feature) {
+      const geometry = new GeoJSON().readFeature(feature).getGeometry();
+      const geometryExtend = geometry.getExtent();
+      const center = getFeatureCenterCoordinates(feature);
+
+      this.$emit("on-fit", geometryExtend);
+
+      this.$emit("set-position", {
+        ...this.position,
+        marker: center,
+        center: center,
+      });
     },
   },
 };

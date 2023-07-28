@@ -1,11 +1,16 @@
 <template>
   <ExpandButton
     v-if="features.length > 0"
-    :title="layer.title"
+    :title="featureInfoTitle"
     :is-open="isOpen"
     class="feature"
   >
-    <div v-for="feature in features" :key="feature.id">
+    <div
+      v-for="feature in features"
+      :key="feature.id"
+      class="border-bottom feature-select"
+      @click="() => $emit('show-selected-feature', feature)"
+    >
       <table-list>
         <table>
           <tbody>
@@ -104,16 +109,23 @@ export default {
       features: [],
     };
   },
+  computed: {
+    ...mapState({
+      user: (state) => state.user,
+    }),
+    featureInfoTitle() {
+      if (this.features.length > 1) {
+        return `${this.layer.title} (${this.features.length})`;
+      }
+
+      return this.layer.title;
+    },
+  },
   watch: {
     position: "fetchFeatures",
   },
   mounted() {
     this.fetchFeatures();
-  },
-  computed: {
-    ...mapState({
-      user: (state) => state.user,
-    }),
   },
   methods: {
     fetchFeatures() {
@@ -183,7 +195,6 @@ export default {
 
       const result = await fetch(url.toString(), this.getFetchParameters());
       const data = await result.json();
-
       this.features = data.features;
     },
     setPosition(value) {
@@ -254,5 +265,20 @@ export default {
 
 .table-wrapper td:last-child {
   width: 70%;
+}
+
+.separator-line {
+  border: 0;
+  border-top: 1px solid var(--color-grey-50);
+  margin: 0 20px;
+}
+
+.border-bottom:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-50);
+}
+
+.feature-select:hover {
+  background: var(--color-grey-40);
+  cursor: pointer;
 }
 </style>
