@@ -65,6 +65,7 @@
       :selected-area="selectedArea"
       :show-data-panel="showDataPanel"
       :user="user"
+      :full-size-window="showDataPanelFullScreen"
       @set-position="setPosition"
       @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 18 })"
       @toggle-data-panel="toggleDataPanel"
@@ -384,54 +385,7 @@ export default {
 </script>
 
 <style>
-.tippy-tooltip {
-  padding: 0;
-  border-radius: var(--radius-normal);
-  font-family: inherit;
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0em;
-}
-
-.tippy-tooltip .tippy-content {
-  padding: 3px 7px 4px;
-}
-
-.tippy-tooltip.dark-theme .tippy-backdrop {
-  background-color: var(--color-tooltip-dark);
-}
-
-.tippy-tooltip.primary-theme .tippy-backdrop {
-  /* TODO: var(--color-primary) doesn't work */
-  background-color: #0066ff;
-}
-
-.tippy-tooltip.popover-theme .tippy-backdrop {
-  /* TODO: var(--color-primary) doesn't work */
-  background-color: white;
-}
-
-.tippy-tooltip.popover-theme {
-  background-color: white;
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-normal);
-  color: #000000;
-  letter-spacing: inherit;
-  box-shadow: var(--shadow-normal);
-}
-
-.tippy-tooltip.popover-theme[x-placement^="left"] .tippy-arrow {
-  border-left-color: white;
-}
-
-.tippy-tooltip.popover-theme[x-placement^="right"] .tippy-arrow {
-  border-right-color: white;
-}
-
-.tippy-tooltip.popover-theme .tippy-content {
-  padding: 0;
-  overflow: auto;
-}
+@import "../../assets/styles/main.css";
 </style>
 
 <style scoped>

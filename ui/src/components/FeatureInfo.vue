@@ -43,7 +43,7 @@
       >
         <div v-if="features[0].properties[linkedData.source_key]">
           <b>{{ linkedData.title }}</b>
-          <FeatureTable
+          <FeatureTableExpandable
             :layer="linkedData"
             :overall-filter="{
               key: linkedData.target_key,
@@ -71,7 +71,7 @@
 import nunjucks from "nunjucks";
 import { mapState } from "vuex";
 
-import FeatureTable from "./FeatureTable";
+import FeatureTableExpandable from "./FeatureTableExpandable";
 import TableList from "./TableList";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
@@ -85,7 +85,7 @@ export default {
   name: "FeatureInfo",
   components: {
     TableList,
-    FeatureTable,
+    FeatureTableExpandable,
     ExpandButton,
     RichValue,
     FeatureInfoTemplate,

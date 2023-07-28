@@ -23,12 +23,11 @@ export default {
 }
 
 .table-wrapper thead tr {
-  background: var(--color-grey-40);
+  background: var(--color-grey-50);
 }
 
 .table-wrapper th {
   font-weight: var(--font-weight-normal);
-  color: var(--color-text-grey);
   text-align: left;
   padding-top: 7px !important;
   padding-bottom: 7px !important;
