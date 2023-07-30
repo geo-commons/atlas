@@ -73,25 +73,17 @@ export default {
       );
       const body = await response.text();
       const caps = new WMTSCapabilities().read(body);
-      const wmts = new WMTSSource(
+      const wmtsSource = new WMTSSource(
         optionsFromCapabilities(caps, {
           layer: this.name,
           matrixSet: "EPSG:28992",
+          projection: rdProjection,
           format: this.format,
+          STYLES: this.serverStyle ? this.serverStyle : null,
         })
       );
 
-      this.tileLayer.setSource(
-        new WMTSSource({
-          url: this.url,
-          layer: this.name,
-          projection: rdProjection,
-          matrixSet: "EPSG:28992",
-          format: this.format,
-          STYLES: this.serverStyle ? this.serverStyle : null,
-          tileGrid: wmts.getTileGrid(),
-        })
-      );
+      this.tileLayer.setSource(wmtsSource);
     },
   },
 };
