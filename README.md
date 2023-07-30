@@ -1,4 +1,4 @@
-# Atlas 
+# Atlas
 
 Atlas is a geo portal that provides a user-friendly interface for layers on a WMS, WFS, WMTS and vector tiles (MVT) server. Atlas is developed by [Datalab Purmerend](https://datalab.purmerend.nl/), part of Gemeente Purmerend and [Delta10](https://www.delta10.nl).
 
