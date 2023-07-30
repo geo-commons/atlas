@@ -1,12 +1,18 @@
 import logging
+from os import path
+from tempfile import TemporaryDirectory
 
 from constance import config
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound, StreamingHttpResponse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.shortcuts import HttpResponse, redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.http import require_http_methods
+import fiona
+from io import BytesIO
 
 from utils.tools import is_ctrix
 from webservice.models import Layer, Map, Viewer
@@ -133,6 +139,48 @@ def v3_map(request, slug):
     }
 
     return render(request, 'v3/map.html', context)
+
+
+@require_http_methods(['POST'])
+def v3_convert(request, output_format):
+    formats = {
+        'ESRI Shapefile': '.shp.zip',
+        'GeoJSON': '.geojson',
+        'GPKG': '.gpkg',
+        'GML': '.gml',
+        'SQLite': '.sqlite3'
+    }
+
+    if output_format not in formats:
+        raise ValidationError(
+            f"Invalid output format provided: {output_format}"
+        )
+
+    file_name = f'output{formats[output_format]}'
+
+    temp_dir = TemporaryDirectory()  # pylint: disable=consider-using-with
+    output_file = path.join(temp_dir.name, file_name)
+
+    with fiona.open(BytesIO(request.body), driver='GeoJSON') as inputCollection:
+        # GeoJSON, ESRI Shapefile, GPKG, SQLite, GML
+        with fiona.open(output_file, 'w', driver=output_format, schema=inputCollection.schema, crs=inputCollection.crs) as outputCollection:
+            for feature in inputCollection:
+                outputCollection.write(feature)
+
+    def file_iterator(file_path, chunk_size=8192):
+        with open(file_path, 'rb') as f:
+            while True:
+                data = f.read(chunk_size)
+                if not data:
+                    break
+                yield data
+
+        temp_dir.cleanup()
+
+    response = StreamingHttpResponse(file_iterator(output_file))
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = f'attachment; filename={file_name}'
+    return response
 
 
 def _default_layers():

@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import FeatureTableHeaderItem from "./FeatureTableHeaderItem.vue";
 import TableList from "./TableList.vue";
 import PinIcon from "../icons/PinIcon.vue";
@@ -64,23 +65,25 @@ export default {
     return {
       sortKey: "",
       sortAscending: true,
-      features: [],
+      featureCollection: {
+        features: [],
+      },
       displayProperties: [],
       fieldFilters: {},
     };
   },
   computed: {
     sortedFeatures() {
-      if (this.sortKey && this.features) {
+      if (this.sortKey && this.featureCollection.features) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.features.sort((a, b) => {
+        return this.featureCollection.features.sort((a, b) => {
           const textA = a.properties[this.sortKey];
           const textB = b.properties[this.sortKey];
           return this.sortAlphabetically(textA, textB, this.sortAscending);
         });
       }
 
-      return this.features;
+      return this.featureCollection.features;
     },
   },
   watch: {
@@ -150,7 +153,7 @@ export default {
         const result = await fetch(url.toString(), this.getFetchParameters());
         const data = await result.json();
 
-        this.features = data.features;
+        this.featureCollection = data;
         this.numberMatched = data.numberMatched;
 
         if (this.displayProperties.length === 0 && data.features.length > 0) {
@@ -165,7 +168,7 @@ export default {
       } catch (e) {
         console.error(e);
         this.error = true;
-        this.features = [];
+        this.featureCollection = { features: [] };
         this.displayProperties = [];
         this.searchProperties = [];
         this.numberMatched = 0;
@@ -221,7 +224,7 @@ export default {
           .map((property) => `"${property.replace(/"/g, '""')}"`)
           .join(separator) + "\n";
 
-      this.features.forEach((feature) => {
+      this.featureCollection.features.forEach((feature) => {
         data +=
           this.displayProperties
             .map((property) =>
@@ -242,6 +245,43 @@ export default {
       hiddenElement.download = `${filename}.csv`;
       hiddenElement.click();
     },
+    async download(outputFormat) {
+      const result = await fetch(`/atlas/convert/${outputFormat}`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+        body: JSON.stringify({
+          outputFormat,
+          featureCollection: this.featureCollection,
+        }),
+      });
+
+      const formats = {
+        "ESRI Shapefile": ".shp.zip",
+        GeoJSON: ".geojson",
+        GPKG: ".gpkg",
+        GML: ".gml",
+        SQLite: ".sqlite3",
+      };
+
+      const filename = this.layer.title
+        .replace(" ", "-")
+        .replace(/[^a-z0-9-]/gi, "")
+        .toLowerCase();
+
+      const data = await result.blob();
+      const url = window.URL.createObjectURL(data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${filename}${formats[outputFormat]}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    },
+
     showFeature(feature) {
       const geometry = new GeoJSON().readFeature(feature).getGeometry();
       const center = getFeatureCenterCoordinates(feature);
