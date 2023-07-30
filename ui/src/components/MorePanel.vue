@@ -4,7 +4,7 @@
       v-tippy="{ placement: 'bottom' }"
       class="iconbutton"
       :class="{ isOpen }"
-      content="opties"
+      content="Opties"
       aria-label="Toon meer opties"
       @click="toggle"
     >
