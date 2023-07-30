@@ -60,7 +60,8 @@ export default {
     },
   },
   methods: {
-    toggle() {
+    toggle(e) {
+      e.stopPropagation();
       this.showContent = !this.showContent;
     },
   },

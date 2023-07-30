@@ -47,7 +47,7 @@
           >Geen weergave beschikbaar.</span
         >
         <div v-if="!loading && !error && displayProperties.length > 0">
-          <table-list class="table table-height">
+          <table-list class="table">
             <table>
               <thead>
                 <tr>
@@ -398,10 +398,6 @@ export default {
 
 .table {
   margin: 0 0 24px;
-}
-
-.table-height {
-  height: 80vh;
 }
 
 .iconbutton {
