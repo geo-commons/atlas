@@ -34,6 +34,9 @@
             >
           </li>
           <li><button @click="() => toggleModal('embed')">Embed</button></li>
+          <li v-if="config.features.print">
+            <button @click="() => toggleModal('print')">Print</button>
+          </li>
           <li><a href="/atlas/help" target="_blank">Help</a></li>
           <li v-if="showDisclaimer">
             <a href="/atlas/disclaimer" target="_blank">Disclaimer</a>
@@ -45,6 +48,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "MorePanel",
   props: {
@@ -60,6 +65,9 @@ export default {
     nextUrl() {
       return window.location.pathname;
     },
+    ...mapState({
+      config: (state) => state.config,
+    }),
   },
   methods: {
     toggle() {

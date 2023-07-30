@@ -1,5 +1,5 @@
 <template>
-  <ol-map :features="features">
+  <ol-map ref="map" :features="features">
     <ol-view
       ref="view"
       :position="position"
@@ -79,6 +79,8 @@
 import { Icon, Style, Fill, Stroke } from "ol/style";
 import Feature from "ol/Feature";
 import { Point } from "ol/geom";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 import OlMap from "./components/OlMap";
 import OlView from "./components/OlView";
@@ -234,6 +236,127 @@ export default {
     },
     featuresSelected(features) {
       this.$emit("features-selected", features);
+    },
+    printToPdf(settings) {
+      const margin = 0;
+
+      const dims = {
+        a0: [1189, 841],
+        a1: [841, 594],
+        a2: [594, 420],
+        a3: [420, 297],
+        a4: [297, 210],
+      };
+
+      const resolution = 150;
+
+      let dim = dims[settings.format].map((d) => d - margin * 2);
+      if (settings.orientation === "portrait") {
+        dim = dim.reverse();
+      }
+
+      const map = this.$refs.map.map;
+      const view = map.getView();
+
+      const width = Math.round((dim[0] * resolution) / 25.4);
+      const height = Math.round((dim[1] * resolution) / 25.4);
+      const size = map.getSize();
+      const viewResolution = view.getResolution();
+
+      map.once("rendercomplete", function () {
+        const mapCanvas = document.createElement("canvas");
+        mapCanvas.width = width;
+        mapCanvas.height = height;
+        const mapContext = mapCanvas.getContext("2d");
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".ol-layer canvas"),
+          function (canvas) {
+            if (canvas.width > 0) {
+              mapContext.globalAlpha = 1;
+              const transform = canvas.style.transform;
+              // Get the transform parameters from the style's transform matrix
+              const matrix = transform
+                .match(/^matrix\(([^(]*)\)$/)[1]
+                .split(",")
+                .map(Number);
+              // Apply the transform to the export map context
+              CanvasRenderingContext2D.prototype.setTransform.apply(
+                mapContext,
+                matrix
+              );
+              mapContext.drawImage(canvas, 0, 0);
+            }
+          }
+        );
+
+        mapContext.globalAlpha = 1;
+        mapContext.setTransform(1, 0, 0, 1, 0, 0);
+
+        html2canvas(document.querySelector(".scale")).then((scale) => {
+          mapCanvas.toBlob((blob) => {
+            const url = window.URL || window.webkitURL;
+            const imgSrc = url.createObjectURL(blob);
+
+            const img = new Image();
+            img.src = imgSrc;
+
+            const pdf = new jsPDF(
+              settings.orientation,
+              undefined,
+              settings.format
+            );
+
+            pdf.addImage(img, "JPEG", margin, margin, dim[0], dim[1]);
+
+            pdf.setFontSize(16);
+            pdf.text(10, 10, settings.title);
+            pdf.setFontSize(12);
+
+            if (settings.showDateTime) {
+              pdf.text(10, 15, new Date().toLocaleString());
+            }
+
+            pdf.text(10, 20, settings.remarks);
+
+            if (settings.showLegend) {
+              const legends = document.getElementsByClassName("legend");
+              for (let i = 0; i < legends.length; i++) {
+                pdf.addImage(
+                  legends[i],
+                  "JPEG",
+                  dim[0] - legends[i].width / 5 - 5,
+                  5,
+                  legends[i].width / 5,
+                  legends[i].height / 5
+                );
+              }
+            }
+
+            if (settings.showScale) {
+              pdf.addImage(
+                scale.toDataURL(),
+                "JPEG",
+                10,
+                dim[1] - 10,
+                scale.width / 5,
+                scale.height / 5
+              );
+            }
+
+            pdf.save(`atlas-${new Date().toISOString()}.pdf`);
+
+            map.setSize(size);
+            view.setResolution(viewResolution);
+            document.body.style.cursor = "auto";
+          });
+        });
+      });
+
+      // Set print size
+      const printSize = [width, height];
+      map.setSize(printSize);
+      const scaling = Math.min(width / size[0], height / size[1]);
+      view.setResolution(viewResolution / scaling);
     },
   },
 };
