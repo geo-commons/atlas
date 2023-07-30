@@ -9,6 +9,7 @@ app_name = 'homepage'
 api_router = routers.DefaultRouter()
 api_router.register(r'maps', viewsets.MapViewSet, basename='maps')
 api_router.register(r'layers', viewsets.LayerViewSet, basename='layers')
+api_router.register(r'drawings', viewsets.DrawingViewSet, basename='drawings')
 
 urlpatterns = [
     path('help', views.v3_help, name='v3_help'),

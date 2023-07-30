@@ -72,11 +72,20 @@
       :features="highlightedFeatures"
       :z-index="2"
     />
+    <ol-vector-layer
+      ref="draw"
+      name="draw"
+      :selectable="true"
+      :is-visible="true"
+      :vector-style="DRAW_STYLE"
+      :features="drawFeatures"
+      :z-index="2"
+    />
   </ol-map>
 </template>
 
 <script>
-import { Icon, Style, Fill, Stroke } from "ol/style";
+import { Icon, Circle, Style, Fill, Stroke, Text } from "ol/style";
 import Feature from "ol/Feature";
 import { Point } from "ol/geom";
 import { jsPDF } from "jspdf";
@@ -123,6 +132,26 @@ const HIGHLIGHTED_SELECTION_STYLE = new Style({
   fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
 });
 
+const DRAW_STYLE = (feature) =>
+  new Style({
+    image: feature.get("label")
+      ? null
+      : new Circle({
+          radius: 8,
+          fill: new Fill({
+            color: "rgba(0, 102, 255, 1)",
+          }),
+        }),
+    stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
+    fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
+    text: new Text({
+      text: feature.get("label"),
+      fill: new Fill({ color: "rgba(0, 102, 255, 1)" }),
+      font: "22px bold PT Sans, sans-serif",
+      stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 1 }),
+    }),
+  });
+
 export default {
   name: "OpenLayers",
   components: {
@@ -146,6 +175,7 @@ export default {
     features: Object,
     selectedFeatures: Array,
     highlightedFeatures: { type: Array, default: () => [] },
+    drawFeatures: { type: Array, default: () => [] },
     filters: Object,
     padding: { type: Array, default: () => [0, 0, 0, 0] },
   },
@@ -194,12 +224,16 @@ export default {
 
       this.$refs.selectedArea.clear();
     },
+    drawFeatures(features) {
+      this.$emit("features-drawn", features);
+    },
   },
   created() {
     this.MARKER_STYLE = MARKER_STYLE;
     this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
     this.SELECTED_AREA_STYLE = SELECTED_AREA_STYLE;
     this.HIGHLIGHTED_SELECTION_STYLE = HIGHLIGHTED_SELECTION_STYLE;
+    this.DRAW_STYLE = DRAW_STYLE;
   },
   methods: {
     getComponent(sourceType) {

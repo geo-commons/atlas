@@ -1,7 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, mixins
 
-from .models import Map, Layer
-from .serializers import MapSerializer, LayerSerializer
+from .models import Drawing, Map, Layer
+from .serializers import DrawingSerializer, MapSerializer, LayerSerializer
+
 
 class MapViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
@@ -19,3 +20,9 @@ class LayerViewSet(viewsets.ModelViewSet):
 
     search_fields = []
     filterset_fields = []
+
+
+class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Drawing.objects.all()
+    serializer_class = DrawingSerializer

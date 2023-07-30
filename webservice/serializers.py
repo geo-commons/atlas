@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Map, Layer
+from .models import Drawing, Map, Layer
+
 
 class MapSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,3 +13,9 @@ class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
         fields = ['id', 'title']
+
+
+class DrawingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Drawing
+        fields = ['id', 'features']

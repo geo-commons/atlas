@@ -47,6 +47,9 @@ export const createStore = (initialState) => {
       setUser(state, user) {
         state.user = user;
       },
+      setDrawing(state, drawing) {
+        state.drawing = drawing;
+      },
     },
   });
 };

@@ -22,6 +22,8 @@
         :padding="mapPadding"
         :user="user"
         :features="{ scale: true, markerOnClick: true }"
+        :draw-features="drawFeatures"
+        :drawing="drawing"
         @position-changed="setPosition"
         @tool-used="toolUsed"
       />
@@ -69,8 +71,13 @@
         <ToolsPanel
           v-if="!isEmbed && !showPanoramaPanel"
           :tool="tool"
+          :user="user"
+          :draw-features="drawFeatures"
+          :config="config"
           @set-tool="setTool"
           @set-selected-area="setSelectedArea"
+          @drawing-saved="drawingSaved"
+          @clear-draw="() => (drawFeatures = [])"
         />
         <MorePanel
           v-if="!isEmbed && !showPanoramaPanel"
@@ -166,12 +173,20 @@
         @toggle-modal="toggleModal"
         @print-map-to-pdf="printMapToPdf"
       />
+      <DrawingModal
+        v-if="modal === 'drawing'"
+        :layers="layers"
+        :position="position"
+        :drawing="drawing"
+        @toggle-modal="toggleModal"
+      />
     </transition>
     <AlertMessage :alert="alert" />
   </div>
 </template>
 
 <script>
+import GeoJSON from "ol/format/GeoJSON";
 import { mapState } from "vuex";
 import { isMobile } from "../utils/helpers";
 import AlertMessage from "../components/AlertMessage";
@@ -179,6 +194,7 @@ import BaseLayersPanel from "../components/BaseLayersPanel";
 import DataPanel from "../components/DataPanel";
 import EmbedModal from "../components/EmbedModal";
 import PrintModal from "../components/PrintModal";
+import DrawingModal from "../components/DrawingModal";
 import LayersPanel from "../components/LayersPanel";
 import OpenLayersRenderer from "../components/MapRenderer/renderers/OpenLayers/OpenLayers";
 import ToolsPanel from "../components/ToolsPanel";
@@ -200,6 +216,7 @@ export default {
     DataPanel,
     EmbedModal,
     PrintModal,
+    DrawingModal,
     LayersPanel,
     OpenLayersRenderer,
     ToolsPanel,
@@ -219,6 +236,7 @@ export default {
       showDataPanel: false,
       showDataPanelFullScreen: false,
       computedStyle: { "--color-primary": "#0066FF" },
+      drawFeatures: [],
       modal: "",
       mapPadding: [0, 0, 0, 0],
     };
@@ -233,6 +251,7 @@ export default {
     config: (state) => state.config,
     selectedArea: (state) => state.selectedArea,
     initiallyShowLayerList: (state) => state.initiallyShowLayerList,
+    drawing: (state) => state.drawing,
   }),
   watch: {
     position(value) {
@@ -242,10 +261,17 @@ export default {
     layers() {
       this.pushHistoryState();
     },
+    drawing() {
+      this.pushHistoryState();
+    },
   },
   created() {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
+
+    if (this.drawing) {
+      this.fetchDrawing();
+    }
 
     if (!this.user) {
       this.readyToRenderMap = true;
@@ -311,13 +337,20 @@ export default {
       this.$store.commit("setSelectedArea", selectedArea);
     },
     toolUsed(result) {
-      if (result && result.sketch) {
-        this.$store.commit("setSelectedArea", result.sketch.getGeometry());
-      }
-
       switch (result.tool) {
+        case "MEASURE_AREA":
+        case "MEASURE_LINE":
+          this.$store.commit("setSelectedArea", result.sketch.getGeometry());
+          break;
         case "SELECT_AREA":
           this.showDataPanel = true;
+          this.$store.commit("setSelectedArea", result.sketch.getGeometry());
+          break;
+        case "DRAW_POINT":
+        case "DRAW_LINE":
+        case "DRAW_POLYGON":
+        case "DRAW_LABEL":
+          this.drawFeatures.push(result.sketch);
           break;
       }
     },
@@ -353,7 +386,7 @@ export default {
         "",
         `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${
           baseLayer.length > 0 ? baseLayer[0] : ""
-        }`
+        }/drawing=${this.drawing ? this.drawing : ""}`
       );
     },
     toggleModal(modal) {
@@ -391,6 +424,23 @@ export default {
       });
 
       this.readyToRenderMap = true;
+    },
+    async fetchDrawing() {
+      const response = await fetch(`/atlas/api/v1/drawings/${this.drawing}/`);
+      if (!response.ok) {
+        return false;
+      }
+
+      const data = await response.json();
+
+      const geojsonFormat = new GeoJSON();
+      this.drawFeatures = data.features.map((feature) =>
+        geojsonFormat.readFeature(feature)
+      );
+    },
+    drawingSaved(id) {
+      this.$store.commit("setDrawing", id);
+      this.modal = "drawing";
     },
   },
 };
