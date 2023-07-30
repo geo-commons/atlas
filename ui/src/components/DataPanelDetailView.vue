@@ -1,16 +1,65 @@
 <template>
   <div v-if="layer" class="detail-panel-wrapper">
     <div class="header">
-      <div class="sticky-btn">
-        <button
-          v-tippy="{ placement: 'right' }"
-          class="iconbutton __normal __outline sticky-btn"
-          content="Download CSV"
-          aria-label="Download CSV"
-          @click="downloadCSV"
+      <div>
+        <vue-tippy
+          :arrow="false"
+          placement="bottom-start"
+          theme="popover"
+          trigger="click"
+          :distance="8"
+          :delay="[0, 0]"
+          :a11y="true"
         >
-          <download-icon />
-        </button>
+          <template #trigger>
+            <button
+              v-tippy="{ placement: 'right' }"
+              class="iconbutton __normal __outline"
+              content="Download"
+              aria-label="Download"
+            >
+              <download-icon />
+            </button>
+          </template>
+          <div class="container">
+            <div class="menu">
+              <ul class="list">
+                <li>
+                  <button @click="$refs.featureTable.downloadCSV()">
+                    Download CSV
+                  </button>
+                </li>
+                <li>
+                  <button
+                    @click="$refs.featureTable.download('ESRI Shapefile')"
+                  >
+                    Download ESRI Shape
+                  </button>
+                </li>
+                <li>
+                  <button @click="$refs.featureTable.download('GeoJSON')">
+                    Download GeoJSON
+                  </button>
+                </li>
+                <li>
+                  <button @click="$refs.featureTable.download('GPKG')">
+                    Download GeoPackage
+                  </button>
+                </li>
+                <li>
+                  <button @click="$refs.featureTable.download('GML')">
+                    Download GML
+                  </button>
+                </li>
+                <li>
+                  <button @click="$refs.featureTable.download('SQLite')">
+                    Download SQLite
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </vue-tippy>
       </div>
       <SearchForm
         :show-border="true"
@@ -30,6 +79,7 @@
       </SearchForm>
     </div>
     <FeatureTable
+      ref="featureTable"
       :layer="layer"
       :position="position"
       :query="query"
@@ -82,39 +132,6 @@ export default {
     onSearch() {
       this.query = this.$refs.queryInput.value;
     },
-    downloadCSV() {
-      const separator = ";";
-      const filename = this.layer.title
-        .replace(" ", "-")
-        .replace(/[^a-z0-9-]/gi, "")
-        .toLowerCase();
-
-      let data =
-        this.displayProperties
-          .map((property) => `"${property.replace(/"/g, '""')}"`)
-          .join(separator) + "\n";
-
-      this.features.forEach((feature) => {
-        data +=
-          this.displayProperties
-            .map((property) =>
-              feature.properties[property] !== null
-                ? `"${String(feature.properties[property]).replace(
-                    /"/g,
-                    '""'
-                  )}"`
-                : ""
-            )
-            .join(separator) + "\n";
-      });
-
-      const hiddenElement = document.createElement("a");
-      hiddenElement.href =
-        "data:text/csv;charset=utf-8," + encodeURIComponent(data);
-      hiddenElement.target = "_blank";
-      hiddenElement.download = `${filename}.csv`;
-      hiddenElement.click();
-    },
   },
 };
 </script>
@@ -130,19 +147,9 @@ export default {
 .header {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 25px;
   padding-bottom: 18px;
-}
-
-.sticky-btn {
-  margin: auto 0;
-}
-
-@media screen and (min-width: 800px) {
-  .sticky-btn {
-    width: 100%;
-  }
 }
 
 @media (min-width: 576px) {
