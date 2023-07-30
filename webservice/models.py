@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.db.models import Q
 from django_extensions.db.fields import AutoSlugField
+import uuid
 
 from user_management.models import AtlasGroup
 from utils.tools import is_ctrix
@@ -516,3 +517,15 @@ class Viewer(models.Model):
             'api_key': self.api_key,
             'url': self.url
         }
+
+
+class Drawing(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    features = models.JSONField()
+
+    class Meta:
+        verbose_name = 'Tekening'
+        verbose_name_plural = 'Tekeningen'
+
+    def __str__(self):
+        return str(self.id)

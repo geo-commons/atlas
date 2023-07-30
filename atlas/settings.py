@@ -244,6 +244,7 @@ CONSTANCE_CONFIG = {
     'MATOMO_URL': ('', ('Configureer de URL van Matomo om statistieken bij te houden')),
     'MATOMO_SITE_ID': ('', ('Configureer het site ID van Matomo om statistieken bij te houden')),
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
+    'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -264,5 +265,6 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ),
     '4. Features': (
         'FEATURE_PRINT',
+        'FEATURE_DRAW'
     )
 }

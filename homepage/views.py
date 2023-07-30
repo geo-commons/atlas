@@ -237,6 +237,7 @@ def _get_config(request):
         'show_disclaimer': config.DISCLAIMER != '',
         'features': {
             'print': config.FEATURE_PRINT,
+            'draw': config.FEATURE_DRAW
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }

@@ -2,7 +2,7 @@ import Draw from "ol/interaction/Draw";
 import VectorSource from "ol/source/Vector";
 import Overlay from "ol/Overlay";
 import { getArea, getLength } from "ol/sphere";
-import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style } from "ol/style";
 
 const source = new VectorSource();
 
@@ -11,6 +11,10 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
     MEASURE_AREA: "Polygon",
     SELECT_AREA: "Polygon",
     MEASURE_LINE: "LineString",
+    DRAW_POINT: "Point",
+    DRAW_LINE: "LineString",
+    DRAW_POLYGON: "Polygon",
+    DRAW_LABEL: "Point",
   };
 
   const draw = new Draw({
@@ -25,7 +29,7 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
         lineDash: [10, 10],
         width: 2,
       }),
-      image: new CircleStyle({
+      image: new Circle({
         radius: 5,
         stroke: new Stroke({
           color: "rgba(0, 0, 0, 0.7)",
@@ -95,13 +99,20 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
   });
 
   draw.on("drawend", () => {
-    onDrawEnd(sketch);
+    if (measure === "DRAW_LABEL") {
+      const result = prompt("Voer het tekstlabel in");
+      sketch.setProperties({
+        label: result,
+      });
+    }
 
     if (measure === "MEASURE_LINE" || measure === "MEASURE_AREA") {
       measureTooltipElement.className = "ol-tooltip ol-tooltip-static";
       measureTooltip.setOffset([0, -7]);
       measureTooltipElement = null;
     }
+
+    onDrawEnd(sketch);
   });
 
   return draw;
