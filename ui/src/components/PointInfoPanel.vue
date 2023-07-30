@@ -21,7 +21,9 @@
           />
         </svg>
       </button>
-      <h1>{{ searchQuery }}</h1>
+      <div class="search-query">
+        <h1>{{ searchQuery }}</h1>
+      </div>
     </template>
 
     <template #default>
@@ -95,6 +97,11 @@ export default {
 <style scoped>
 h1 {
   font-size: var(--font-size-normal);
+}
+
+.search-query {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .close-button {
