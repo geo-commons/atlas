@@ -1,4 +1,5 @@
 from django.contrib import admin
+from reversion.admin import VersionAdmin
 from import_export.admin import ImportExportActionModelAdmin
 from import_export.formats import base_formats
 from .forms import LayerForm, LinkedDataForm
@@ -50,12 +51,12 @@ class CustomImportExportActionModelAdmin(ImportExportActionModelAdmin):
         abstract = True
 
 
-class SourceAdmin(CustomImportExportActionModelAdmin):
+class SourceAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title',)
     resource_classes = [SourceResource]
 
 
-class LayerAdmin(CustomImportExportActionModelAdmin):
+class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     form = LayerForm
 
     list_display = ('ordering', 'title', 'layer_type', 'closed_dataset',
@@ -114,7 +115,7 @@ class LayerAdmin(CustomImportExportActionModelAdmin):
     search_fields = ['title']
 
 
-class CategoryAdmin(CustomImportExportActionModelAdmin):
+class CategoryAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('ordering', 'title')
     list_display_links = ('title',)
     list_editable = ('ordering',)
@@ -122,7 +123,7 @@ class CategoryAdmin(CustomImportExportActionModelAdmin):
     resource_classes = [CategoryResource]
 
 
-class MapAdmin(CustomImportExportActionModelAdmin):
+class MapAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title', )
     fields = ('title', 'slug', 'layers', 'features', 'settings')
     prepopulated_fields = {'slug': ('title', )}
@@ -131,7 +132,7 @@ class MapAdmin(CustomImportExportActionModelAdmin):
     resource_classes = [MapResource]
 
 
-class ViewerAdmin(admin.ModelAdmin):
+class ViewerAdmin(VersionAdmin, admin.ModelAdmin):
     list_display = ('ordering', 'label', 'type', )
     list_display_links = ('label',)
     list_editable = ('ordering',)
