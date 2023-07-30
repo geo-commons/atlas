@@ -58,6 +58,7 @@ export default {
     layer: Object,
     position: Object,
     query: String,
+    selectedArea: Object,
   },
   data() {
     return {

@@ -33,6 +33,7 @@
       :layer="layer"
       :position="position"
       :query="query"
+      :selected-area="selectedArea"
       @set-position="(value) => onSetPosition(value)"
       @on-fit="(value) => onFit(value)"
     />
