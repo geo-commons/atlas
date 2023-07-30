@@ -89,6 +89,7 @@
             v-if="
               layer.source_type === 'WMS' || layer.source_type === 'WMS_WFS'
             "
+            class="legend"
             :src="legendImageUrl"
             :alt="`Legenda voor laag ${layer.title}`"
           />

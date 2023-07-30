@@ -87,6 +87,7 @@ export default {
   created() {
     this.source = new TileWMSSource({
       url: this.url,
+      crossOrigin: "anonymous",
       params: {
         VERSION: "1.1.1",
         FORMAT: this.format,

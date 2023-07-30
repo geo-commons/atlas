@@ -79,6 +79,7 @@ export default {
           matrixSet: "EPSG:28992",
           projection: rdProjection,
           format: this.format,
+          crossOrigin: "anonymous",
           STYLES: this.serverStyle ? this.serverStyle : null,
         })
       );

@@ -187,6 +187,9 @@ def _get_config(request):
         },
         'suggest_municipalities': config.SUGGEST_MUNICIPALITIES,
         'show_disclaimer': config.DISCLAIMER != '',
+        'features': {
+            'print': config.FEATURE_PRINT,
+        },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }
 

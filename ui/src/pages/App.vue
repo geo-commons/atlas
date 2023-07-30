@@ -161,6 +161,11 @@
         :position="position"
         @toggle-modal="toggleModal"
       />
+      <PrintModal
+        v-if="modal === 'print'"
+        @toggle-modal="toggleModal"
+        @print-map-to-pdf="printMapToPdf"
+      />
     </transition>
     <AlertMessage :alert="alert" />
   </div>
@@ -173,6 +178,7 @@ import AlertMessage from "../components/AlertMessage";
 import BaseLayersPanel from "../components/BaseLayersPanel";
 import DataPanel from "../components/DataPanel";
 import EmbedModal from "../components/EmbedModal";
+import PrintModal from "../components/PrintModal";
 import LayersPanel from "../components/LayersPanel";
 import OpenLayersRenderer from "../components/MapRenderer/renderers/OpenLayers/OpenLayers";
 import ToolsPanel from "../components/ToolsPanel";
@@ -193,6 +199,7 @@ export default {
     BaseLayersPanel,
     DataPanel,
     EmbedModal,
+    PrintModal,
     LayersPanel,
     OpenLayersRenderer,
     ToolsPanel,
@@ -351,6 +358,9 @@ export default {
     },
     toggleModal(modal) {
       this.modal = modal;
+    },
+    printMapToPdf(settings) {
+      this.$refs.map.printToPdf(settings);
     },
     toggleDataPanel() {
       this.showDataPanel = !this.showDataPanel;
