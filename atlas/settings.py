@@ -4,7 +4,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG_DEFAULT = 'True'
-SECRET_KEY_DEFAULT = 'changemetosomethingsecret' # noqa
+SECRET_KEY_DEFAULT = 'changemetosomethingsecret'  # noqa
 ALLOWED_HOSTS_DEFAULT = 'localhost,127.0.0.1,[::1]'
 
 if os.getenv('ATLAS_ENVIRONMENT') == 'production':
@@ -32,18 +32,25 @@ MATOMO_SITE_ID = os.getenv('MATOMO_SITE_ID', '')
 
 SENTRY_DSN = os.getenv('SENTRY_DSN', '')
 
-AUTHENTICATION_ENABLE_CREDENTIALS = os.getenv('AUTHENTICATION_ENABLE_CREDENTIALS', 'True') == 'True'
-AUTHENTICATION_ENABLE_OIDC = os.getenv('AUTHENTICATION_ENABLE_OIDC', 'False') == 'True'
-OIDC_AD_ADD_AUTH_REQUEST_EXTRA_PARAMS = os.getenv('OIDC_AD_ADD_AUTH_REQUEST_EXTRA_PARAMS', 'False') == 'True'
+AUTHENTICATION_ENABLE_CREDENTIALS = os.getenv(
+    'AUTHENTICATION_ENABLE_CREDENTIALS', 'True') == 'True'
+AUTHENTICATION_ENABLE_OIDC = os.getenv(
+    'AUTHENTICATION_ENABLE_OIDC', 'False') == 'True'
+OIDC_AD_ADD_AUTH_REQUEST_EXTRA_PARAMS = os.getenv(
+    'OIDC_AD_ADD_AUTH_REQUEST_EXTRA_PARAMS', 'False') == 'True'
 
 OIDC_RP_CLIENT_ID = os.getenv('OIDC_CLIENT_ID', 'atlas')
 OIDC_RP_CLIENT_SECRET = os.getenv('OIDC_CLIENT_SECRET', 'somethingsecret')
 OIDC_RP_SIGN_ALGO = os.getenv('OIDC_SIGN_ALGO', 'RS256')
 OIDC_RP_SCOPES = os.getenv('OIDC_SCOPES', 'openid email profile')
-OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv('OIDC_AUTHORIZATION_ENDPOINT', 'http://localhost:6556/auth')
-OIDC_OP_TOKEN_ENDPOINT = os.getenv('OIDC_TOKEN_ENDPOINT', 'http://localhost:6556/token')
-OIDC_OP_USER_ENDPOINT = os.getenv('OIDC_USER_ENDPOINT', 'http://localhost:6556/userinfo')
-OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_JWKS_ENDPOINT', 'http://localhost:6556/keys')
+OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv(
+    'OIDC_AUTHORIZATION_ENDPOINT', 'http://localhost:6556/auth')
+OIDC_OP_TOKEN_ENDPOINT = os.getenv(
+    'OIDC_TOKEN_ENDPOINT', 'http://localhost:6556/token')
+OIDC_OP_USER_ENDPOINT = os.getenv(
+    'OIDC_USER_ENDPOINT', 'http://localhost:6556/userinfo')
+OIDC_OP_JWKS_ENDPOINT = os.getenv(
+    'OIDC_JWKS_ENDPOINT', 'http://localhost:6556/keys')
 
 OIDC_USERNAME_CLAIM = os.getenv('OIDC_USERNAME_CLAIM', 'sub')
 OIDC_ACTIVATE_ON_CREATE = os.getenv('OIDC_ACTIVATE_ON_CREATE', 'True')
@@ -78,6 +85,7 @@ INSTALLED_APPS = [
     'mozilla_django_oidc',
     'rest_framework',
     'import_export',
+    'reversion',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -150,7 +158,8 @@ if AUTHENTICATION_ENABLE_CREDENTIALS:
     AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')
 
 if AUTHENTICATION_ENABLE_OIDC:
-    AUTHENTICATION_BACKENDS.append('webservice.auth.AtlasOIDCAuthenticationBackend')
+    AUTHENTICATION_BACKENDS.append(
+        'webservice.auth.AtlasOIDCAuthenticationBackend')
 
 AUTH_PASSWORD_VALIDATORS = [
     {
