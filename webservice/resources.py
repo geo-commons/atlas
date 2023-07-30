@@ -22,7 +22,7 @@ class LayerResource(resources.ModelResource):
 
     class Meta:
         model = Layer
-        exclude = ('id', )
+        exclude = ('id', 'owner', 'users', 'atlas_groups')
         import_id_fields = ('slug', )
 
 
