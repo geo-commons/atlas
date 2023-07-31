@@ -78,6 +78,7 @@ DATABASES = {
 INSTALLED_APPS = [
     'homepage',
     'webservice',
+    'catalog',
     'user_management',
     'webpack_loader',
     'atlas.apps.CustomConstance',

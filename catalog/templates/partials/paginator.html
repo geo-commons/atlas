@@ -1,0 +1,35 @@
+<nav aria-label="Paginering" class="pagination filter-hx-indicator">
+    <ul class="pagination__list" hx-boost="true" hx-target="#list-results">
+        <li>
+            {% if page_obj.has_previous %}
+                <a href="?{{ page_kwarg }}={{ page_obj.previous_page_number }}{{ filter_query }}"
+                   class="pagination__list__link"
+                   aria-label="Vorige pagina">«</a>
+            {% else %}
+                <a class="pagination__list__link" aria-label="Vorige pagina">«</a>
+            {% endif %}
+        </li>
+        {% for page_number in page_range %}
+            <li>
+                {% if page_number == page_obj.paginator.ELLIPSIS %}
+                    <a class="pagination__list__spacer">{{ page_number }}</a>
+                {% else %}
+                    <a href="?{{ page_kwarg }}={{ page_number }}{{ filter_query }}"
+                       class="pagination__list__link"
+                       aria-label="Pagina {{ page_number }}"
+                       {% if page_number == page_obj.number %}aria-current="page"{% endif %}>{{ page_number }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        <li>
+            {% if page_obj.has_next %}
+                <a href="?{{ page_kwarg }}={{ page_obj.next_page_number }}{{ filter_query }}"
+                   class="pagination__list__link"
+                   aria-label="Volgende pagina">»</a>
+            {% else %}
+                <a class="pagination__list__link" aria-label="Volgende pagina">»</a>
+            {% endif %}
+        </li>
+    </ul>
+</nav>
+

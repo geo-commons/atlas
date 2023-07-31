@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<h1 class="mb-5">{{ title }}</h1>
+<p class="mb-0"></p>
+<div id="list-results" class="page-search">
+    <div class="filters">{% include "partials/facet_filters.html" %}</div>
+<div class="results">
+    <div class="results__header">
+        {% if paginator.count %}<span class="results-count filter-hx-indicator">{{ paginator.count }} dataset{{ paginator.count | pluralize:"s" }}</span>{% endif %}
+    </div>
+    <div class="filter-hx-indicator filter-spinner mb-04">
+        <div class="spinner"></div>
+    </div>
+    {% if paginator.count %}
+        <ul class="results__list results__list--shadow filter-hx-indicator">
+            {% for dataset in object_list %}
+                {% include "partials/dataset_item.html" with dataset=dataset %}
+            {% endfor %}
+        </ul>
+        {% include "partials/paginator.html" %}
+    {% else %}
+        Geen datasets gevonden
+    {% endif %}
+</div>
+
+
+</div>
+{% endblock %}

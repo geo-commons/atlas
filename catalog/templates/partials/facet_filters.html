@@ -1,0 +1,50 @@
+<form class="facet-filters"
+      action="{{ request.path_info }}"
+      hx-boost="true"
+      hx-target="#list-results"
+      hx-trigger="submit, change delay:500ms"
+      hx-indicator=".filter-hx-indicator">
+    <div class="facet-filters__query">
+        <label for="query">{{ search_label }}</label>
+        <div class="search-field">
+            <input id="query"
+                   type="search"
+                   name="q"
+                   value="{{ form.q.value|default:'' }}"
+                   placeholder="Voer een zoekterm in">
+            <svg viewBox="0 0 12 12">
+                <path d="M8.576 7.547h-.542l-.192-.185A4.44 4.44 0 0 0 8.92 4.46a4.46 4.46 0 1 0-4.46 4.46 4.44 4.44 0 0 0 2.903-1.078l.185.192v.542L10.977 12 12 10.978l-3.424-3.43zm-4.116 0A3.083 3.083 0 0 1 1.372 4.46 3.083 3.083 0 0 1 4.46 1.372 3.083 3.083 0 0 1 7.547 4.46 3.083 3.083 0 0 1 4.46 7.547z" fill="#757575" fill-rule="nonzero">
+                </path>
+            </svg>
+        </div>
+        <button class="button facet-filters__filter-toggle js-click-to-toggle"
+                aria-expanded="false"
+                data-label-target-hidden="Verberg filters"
+                data-label-target-shown="Toon filters"
+                aria-controls="js-filters"
+                type="button">Toon filters</button>
+    </div>
+
+    <div id="js-filters" class="facet-filters-wrapper">
+        <ul class="facet-filters__list">
+            {% for field_name, field in form.fields.items %}
+                <li>
+                    <h3 class="facet-filters__list__heading">{{ field.label }}</h3>
+                    {% for choice, value in field.choices %}
+                        <div class="facet-filters__list__option">
+                            <input id="{{ field_name }}_{{ choice }}"
+                                   name="{{ field_name }}"
+                                   value="{{ value }}"
+                                   type="checkbox"
+                                   {% if choice.selected %}checked{% endif %}>
+                            <label for="{{ field_name }}_{{ choice }}">
+                                {{ value }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit" class="button mt-4 w-100">Filter</button>
+    </div>
+</form>

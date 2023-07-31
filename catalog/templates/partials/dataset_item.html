@@ -1,0 +1,11 @@
+<li>
+    <a href="/catalog/datasets/{{ dataset.slug }}" class="api-item">
+        <div class="api-item__left">
+            <h4 class="api-item__left__title mb-3">{{ dataset.title }}</h4>
+        {% if dataset.abstract %}
+            <p class="api-item__left__description">{{ dataset.abstract | truncatewords:42 }}</p>
+        {% endif %}
+        </div>
+    </a>
+</li>
+

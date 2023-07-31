@@ -1,0 +1,153 @@
+{% extends "layouts/base.html" %}
+{% load static i18n %}
+
+{% block content %}
+    <div class="page-api-detail mb-md">
+        <a href="{% url 'catalog:datasets' %}"
+           class="link-arrow link-arrow--left link-arrow--secondary mb-md">Terug naar dataset overzicht</a>
+        <div class="heading-row">
+            <h1 class="mb-md">{{ dataset.title }}</h1>
+        </div>
+        <div class="intro vertical-sm mb-lg">
+            <div class="intro__text">
+                <p>{{ dataset.abstract }}</p>
+            </div>
+        </div>
+        <dl class="api-props vertical-sm">
+            <div>
+                <dt>API Authenticatie</dt>
+                <dd>
+                    
+                </dd>
+            </div>
+            <div>
+                <dt>Gebruik</dt>
+                <dd>
+                    {% if api.terms_government_only %}
+                        Alleen overheid
+                    {% else %}
+                        Iedereen
+                    {% endif %}
+                </dd>
+            </div>
+            <div>
+                <dt>Kosten</dt>
+                <dd>
+                    {% if api.terms_pay_per_use %}
+                        Kosten voor gebruik
+                    {% else %}
+                        Gratis
+                    {% endif %}
+                </dd>
+            </div>
+            <div>
+                <dt>Uptime garantie</dt>
+                <dd>
+                    {% if api.terms_uptime_guarantee %}
+                        {% language "nl" %}
+                            {{ api.terms_uptime_guarantee | floatformat:-2 }}{% endlanguage %}%
+                        {% else %}
+                            Geen
+                        {% endif %}
+                    </dd>
+                </div>
+                <div>
+                    <dt>Helpdesk respons</dt>
+                    <dd>
+                        {% if api.terms_support_response_time %}
+                            {{ api.terms_support_response_time }}
+                            werkdag{{ api.terms_support_response_time | pluralize:"en" }}
+                        {% else %}
+                            Geen
+                        {% endif %}
+                    </dd>
+                </div>
+            </dl>
+            <div class="environments card card--padding-md mb-md">
+                <h2 class="card__title">Omgevingen</h2>
+                {% for environment in api.environments.all %}
+                    <div class="environments__env">
+                        <h3>{{ environment.name }}</h3>
+                        <div class="environments__env__urls">
+                            <code class="code">{{ environment.api_url }}</code>
+                            {% if environment.specification_url %}
+                                <a href="{% url 'web:api_specification' api.api_id environment.name %}"
+                                   class="button">Specificatie</a>
+                            {% else %}
+                                <span class="button button--disabled">Specificatie</span>
+                            {% endif %}
+                            {% if environment.documentation_url %}
+                                <a href="{{ environment.documentation_url }}"
+                                   class="button button--external-link"
+                                   target="_blank"
+                                   rel="noopener noreferrer">Documentatie
+                                   <img src="{% static 'images/icons/external-link.svg' %}"
+                                         width="16"
+                                         height="16"
+                                         alt="">
+                                </a>
+                            {% else %}
+                                <span class="button button--disabled">Documentatie</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if api.forum_url %}
+                <div class="forum">
+                    <h2>Forum</h2>
+                    <a href="{{ api.forum_url }}"
+                       class="button button--external-link ml-4"
+                       target="_blank"
+                       rel="noopener noreferrer">Ga naar volledige forum
+                        <img src="{% static 'images/icons/external-link.svg' %}"
+                             width="16"
+                             height="16"
+                             alt="">
+                    </a>
+                </div>
+            {% endif %}
+            {% with repository_list=api.related_repositories.all %}
+                {% if repository_list %}
+                    <div class="related-repositories card">
+                        <h2 class="card__title">Code</h2>
+                        <p>
+                            {{ repository_list | length }} open source
+                            {% if repository_list.count == 1 %}
+                                project gebruikt
+                            {% else %}
+                                projecten gebruiken
+                            {% endif %}
+                            deze API
+                        </p>
+                        <ul class="list-reset">
+                            {% for repository in repository_list %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% if implemented_by_api_list %}
+                <div class="related-apis card card--padding-md">
+                    <h2 class="card__title">Geïmplementeerd door</h2>
+                    <ul class="list-reset">
+                        {% for api in implemented_by_api_list %}
+
+                        {% empty %}Er zijn momenteel geen API's die verwijzen naar deze referentie-implementatie.
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% elif implemented_for_api_list %}
+                <div class="related-apis card card--padding-md">
+                    <h2 class="card__title">
+                        Referentie implementatie{{ implemented_for_api_list | pluralize:"s" }}
+                    </h2>
+                    <ul class="list-reset">
+                        {% for api in implemented_for_api_list %}
+                            
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+{% endblock %}

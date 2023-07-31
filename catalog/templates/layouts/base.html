@@ -1,0 +1,90 @@
+{% load static %}<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Description" content="Eén centrale plek voor de developer die voor of met de overheid ontwikkelt">
+    <meta name="theme-color" content="#4b5363">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+    <title>{% if title %}{{ title }} · {% endif %}Datacatalogus · {{ config.ORGANIZATION_NAME }}</title>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <div class="header__top">
+            <div class="container">
+                <ul class="header__top__nav-list" aria-label="Gerelateerde websites">
+                    <li class="header__top__nav-list__li">
+                        <a href="#content" class="header__top__nav-list__hidden-link">Naar hoofdinhoud</a>
+                    </li>
+                    <li class="header__top__nav-list__li active">
+                        <a href="/catalog/" aria-current="page">Catalogus</a>
+                    </li>
+                    <li class="header__top__nav-list__li">
+                        <a href="/atlas/">Kaart</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="header__text">
+                <span class="header__text__title">Datacatalogus {{ config.ORGANIZATION_NAME }}</span>
+                <span class="header__text__tagline">Een overzicht van datasets</span>
+            </div>
+        </div>
+        <nav class="container">
+            <ul class="header__nav-primary" aria-label="Website navigatie">
+                <li>
+                    <a href="{% url 'catalog:index' %}"{% if request.resolver_match.view_name == "catalog:index" %} class="active"{% endif %}>Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'catalog:datasets' %}"{% if 'catalog:datasets' in request.resolver_match.view_name %} class="active"{% endif %}>Datasets</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container mb-11">
+        {% block content %}{% endblock %}
+    </div>
+    <section class="pre-footer">
+        <div class="container">
+            <div class="py-11">
+                <h3 class="pre-footer__heading">Wensen of feedback?</h3>
+                <p>
+                    Deze website is 'permanent beta' en zal worden aangepast naar de behoeften van gebruikers.
+                    <br>
+                    Wensen en opmerkingen kunnen via een melding op GitLab doorgegeven worden.
+                </p>
+                <a href="https://gitlab.com/commonground/don/developer.overheid.nl/-/issues/new" class="button"
+                    target="_blank" rel="noopener noreferrer">
+                    <svg width="16" height="16" viewBox="0 0 24 24">
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path
+                            d="M5.68 7.314l-1.82 5.914L12 19.442l8.14-6.214-1.82-5.914L16.643 11H7.356L5.681 7.314zM15.357 9l2.888-6.354a.4.4 0 0 1 .747.048l3.367 10.945a.5.5 0 0 1-.174.544L12 21.958 1.816 14.183a.5.5 0 0 1-.174-.544L5.009 2.694a.4.4 0 0 1 .747-.048L8.644 9h6.712z">
+                        </path>
+                    </svg>
+                    Melding maken op GitLab
+                    <svg width="16" height="16" viewBox="0 0 24 24">
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path
+                            d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"
+                            fill="#757575"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__content__logos">
+                </div>
+                <div class="footer__content__links">
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% block tail %}{% endblock %}
+</body>
+</html>

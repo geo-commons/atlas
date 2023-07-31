@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 from django.views.generic.base import RedirectView
 from django.views.static import serve
 from django.conf import settings
+from . import admin as custom_admin
 
 admin.site.site_header = 'Atlas beheer'
 admin.site.site_title = 'Atlas beheer'
@@ -25,6 +26,7 @@ admin.site.site_url = '/atlas'
 
 urlpatterns = [
     path('atlas/admin/', admin.site.urls),
+    path('catalog/admin/', custom_admin.site.urls),
 ]
 
 if settings.AUTHENTICATION_ENABLE_CREDENTIALS:
@@ -46,5 +48,6 @@ if settings.DEBUG:
 
 urlpatterns += [
     path('atlas/', include('homepage.urls'), name='homepage'),
+    path('catalog/', include('catalog.urls'), name='catalog'),
     path('', RedirectView.as_view(url='/atlas/'))
 ]
