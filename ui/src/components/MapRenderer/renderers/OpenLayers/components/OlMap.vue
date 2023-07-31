@@ -1,5 +1,5 @@
 <template>
-  <div ref="map" class="map" tabindex="0" aria-label="Interactieve kaart">
+  <div ref="map" class="map">
     <slot></slot>
     <div
       class="scale"
