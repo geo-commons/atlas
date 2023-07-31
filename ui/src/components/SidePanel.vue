@@ -110,7 +110,7 @@ export default {
 .wrapper {
   position: relative;
   flex-shrink: 0;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   background: white;
   box-shadow: var(--shadow-normal);
