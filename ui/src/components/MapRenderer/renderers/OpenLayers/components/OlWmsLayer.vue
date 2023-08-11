@@ -92,7 +92,7 @@ export default {
         VERSION: "1.1.1",
         FORMAT: this.format,
         LAYERS: this.name,
-        STYLES: this.serverStyle ? this.serverStyle : null,
+        STYLES: this.serverStyle ? this.serverStyle : "",
         tiled: true,
         tilesOrigin: 117000 + "," + 498000.00000000023,
       },
