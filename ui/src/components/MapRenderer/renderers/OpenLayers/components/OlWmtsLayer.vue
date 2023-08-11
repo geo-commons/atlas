@@ -80,7 +80,7 @@ export default {
           projection: rdProjection,
           format: this.format,
           crossOrigin: "anonymous",
-          STYLES: this.serverStyle ? this.serverStyle : null,
+          style: this.serverStyle ? this.serverStyle : null,
         })
       );
 
