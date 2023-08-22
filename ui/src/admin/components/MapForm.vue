@@ -110,7 +110,7 @@
           type="checkbox"
           name="features.datapanel"
         />
-        <label for="features.datapanel">Toon dataweegave</label>
+        <label for="features.datapanel">Toon dataweergave</label>
       </div>
 
       <div class="setting">
