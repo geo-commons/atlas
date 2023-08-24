@@ -6,6 +6,8 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VueRouter from "vue-router";
 import VueTippy, { TippyComponent } from "vue-tippy";
+import { extend } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
 
 import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
@@ -14,6 +16,7 @@ import AdminDashboard from "./admin/pages/AdminDashboard";
 import MapList from "./admin/pages/MapList";
 import MapCreateUpdate from "./admin/pages/MapCreateUpdate";
 import SourceList from "./admin/pages/SourceList";
+import SourceCreateUpdate from "./admin/pages/SourceCreateUpdate";
 import UserList from "./admin/pages/UserList";
 import NotFound from "./admin/pages/NotFound";
 
@@ -35,6 +38,11 @@ Vue.use(VueTippy, {
 });
 Vue.component("VueTippy", TippyComponent);
 
+extend("required", {
+  ...required,
+  message: "Dit veld is verplicht",
+});
+
 const routes = [
   {
     path: "/",
@@ -55,6 +63,16 @@ const routes = [
   {
     path: "/sources",
     component: SourceList,
+    meta: { title: "Bronnen", menu: true },
+  },
+  {
+    path: "/sources/create",
+    component: SourceCreateUpdate,
+    meta: { title: "Bronnen", menu: true },
+  },
+  {
+    path: "/sources/update/:id",
+    component: SourceCreateUpdate,
     meta: { title: "Bronnen", menu: true },
   },
   {
