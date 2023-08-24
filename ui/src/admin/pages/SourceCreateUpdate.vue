@@ -45,12 +45,21 @@
         </form>
       </validation-observer>
     </div>
+    <h2>Layers</h2>
+    <ul>
+      <li v-for="(layer, i) in layersFromCapabilities" :key="i">
+        {{ layer.Name }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
 import Cookies from "js-cookie";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
+import WMSCapabilities from "ol/format/WMSCapabilities.js";
+
+const wmsCapabilitiesParser = new WMSCapabilities();
 
 export default {
   name: "SourceCreateUpdate",
@@ -63,6 +72,15 @@ export default {
       data: null,
       layersFromCapabilities: [],
     };
+  },
+  watch: {
+    data(value) {
+      if (!value || !value.url) {
+        return;
+      }
+
+      this.getCapabilities(value.url);
+    },
   },
   created() {
     this.getSource();
@@ -123,6 +141,21 @@ export default {
       if (result.ok) {
         this.$router.push(`/sources`);
       }
+    },
+    async getCapabilities(url) {
+      const params = new URLSearchParams([
+        ["service", "WMS"],
+        ["version", "1.3.0"],
+        ["request", "GetCapabilities"],
+      ]);
+
+      const parsedUrl = new URL(url);
+      parsedUrl.search = params.toString();
+
+      const result = await fetch(parsedUrl.toString());
+      const text = await result.text();
+      const wmsResult = wmsCapabilitiesParser.read(text);
+      this.layersFromCapabilities = wmsResult.Capability.Layer.Layer;
     },
   },
 };
