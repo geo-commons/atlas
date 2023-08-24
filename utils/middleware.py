@@ -9,7 +9,7 @@ from django.utils.encoding import smart_bytes
 from django.urls import reverse
 from josepy.jws import JWS
 
-from .tools import is_ctrix
+from .tools import is_allowed_to_access_admin
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def check_access_admin(get_response):
     def middleware(request):
         path = request.path
 
-        if is_ctrix(request):
+        if is_allowed_to_access_admin(request):
             return get_response(request)
 
         for forbidden_url in forbidden_urls:

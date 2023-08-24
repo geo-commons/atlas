@@ -16,10 +16,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY_DEFAULT)
 DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ALLOWED_HOSTS_DEFAULT).split(',')
-CTRIX_IPS = os.getenv('CTRIX_IPS', '*').split(',')
-
-WFS_URL = os.getenv('WFS_URL', '')
-WFS_URL_CTRIX = os.getenv('WFS_URL_CTRIX', '')
+INTERNAL_IPS = list(filter(None, os.getenv('INTERNAL_IPS', '').split(',')))
+ADMIN_IPS = list(filter(None, os.getenv('ADMIN_IPS', '').split(',')))
 
 SMARTSTREET_USER = os.getenv('SMARTSTREET_USER', '')
 SMARTSTREET_PASSWORD = os.getenv('SMARTSTREET_PASSWORD', '')
@@ -131,7 +129,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'utils.context_processors.global_settings',
-                'utils.context_processors.ctrix_context',
                 'utils.context_processors.homepage',
             ],
         },

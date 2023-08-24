@@ -13,7 +13,9 @@ podAnnotations: {}
 debug: false
 secretKey: something-secret
 allowedHosts: atlas.example.com
-ctrixIps: "*"
+
+internalIps: ""
+adminIps: ""
 
 dbHost: atlas-postgresql
 dbUser: atlas
@@ -23,9 +25,6 @@ dbName: atlas
 loadDemoData: false
 
 existingSecret: null # Refer to existing secret to avoid managing secrets through Helm
-
-wfsUrl: ""
-wfsUrlCtrix: ""
 
 smartstreetUser: ""
 smartstreetPassword: ""

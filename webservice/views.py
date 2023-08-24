@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from utils.tools import is_ctrix
+from utils.tools import is_internal
 
 from .models import Map, Category, Layer
 
@@ -15,7 +15,7 @@ class CategoryDetailView(TemplateView):
 
         context = super().get_context_data(**kwargs)
         context['layers'] = Layer.authorized.user_or_group(
-            user, is_ctrix(self.request))
+            user, is_internal(self.request))
 
         return context
 
@@ -27,7 +27,7 @@ class LayerDetailView(TemplateView):
         user = self.request.user
 
         layer = Layer.authorized.user_or_group(
-            user, is_ctrix(self.request)).get(slug=kwargs['slug'])
+            user, is_internal(self.request)).get(slug=kwargs['slug'])
 
         context = super().get_context_data(**kwargs)
         context['layers'] = [layer]
@@ -45,7 +45,7 @@ class MapDetailView(DetailView):
 
         context = super().get_context_data(**kwargs)
         context['layers'] = Layer.authorized.user_or_group(
-            user, is_ctrix(self.request)).filter(atlastheme=context['atlastheme'])
+            user, is_internal(self.request)).filter(atlastheme=context['atlastheme'])
         context['homepage'] = False
 
         return context

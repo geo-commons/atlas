@@ -14,7 +14,7 @@ from django.views.decorators.http import require_http_methods
 import fiona
 from io import BytesIO
 
-from utils.tools import is_ctrix
+from utils.tools import is_internal
 from webservice.models import Layer, Map, Viewer
 from .lib import get_help_content
 
@@ -26,7 +26,7 @@ help_content = get_help_content()
 @xframe_options_exempt
 def embed(request):
     authorized_layers = Layer.authorized.user_or_group(
-        request.user, is_ctrix(request))
+        request.user, is_internal(request))
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context = {
@@ -43,7 +43,7 @@ def embed(request):
 
 def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.user_or_group(
-        request.user, is_ctrix(request))
+        request.user, is_internal(request))
 
     context = {}
 
@@ -108,7 +108,7 @@ def v3_admin(request):
         return redirect(reverse('admin:login'))
 
     authorized_layers = Layer.authorized.user_or_group(
-        request.user, is_ctrix(request))
+        request.user, is_internal(request))
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context = {
@@ -125,7 +125,7 @@ def v3_admin(request):
 @xframe_options_exempt
 def v3_map(request, slug):
     authorized_layers = Layer.authorized.user_or_group(
-        request.user, is_ctrix(request))
+        request.user, is_internal(request))
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
     visible_map = get_object_or_404(Map, slug=slug)
 
