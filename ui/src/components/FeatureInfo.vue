@@ -70,7 +70,7 @@
 <script>
 import nunjucks from "nunjucks";
 import { mapState } from "vuex";
-
+import { getForViewAndSize } from "ol/extent";
 import FeatureTableExpandable from "./FeatureTableExpandable";
 import TableList from "./TableList";
 import TileWMS from "ol/source/TileWMS";
@@ -174,6 +174,18 @@ export default {
       }
     },
     async fetchFeaturesFromWFS() {
+      const view = new View({
+        center: this.position.center,
+        zoom: this.position.zoom,
+      });
+
+      const extent = getForViewAndSize(
+        this.position.marker,
+        view.getResolution(),
+        0,
+        [1, 1]
+      );
+
       const params = new URLSearchParams([
         ["service", "WFS"],
         ["version", "2.0.0"],
@@ -181,12 +193,7 @@ export default {
         ["typename", this.layer.name],
         ["outputFormat", "application/json"],
         ["srsname", this.layer.projection],
-        [
-          "bbox",
-          `${this.position.marker[0] - 10},${this.position.marker[1] - 10},${
-            this.position.marker[0] + 10
-          },${this.position.marker[1] + 10}`,
-        ],
+        ["bbox", extent.join(",")],
         ["maxFeatures", "20"],
       ]);
 
