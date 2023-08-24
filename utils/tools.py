@@ -1,15 +1,26 @@
 import logging
 from django.conf import settings
-from django.http import HttpRequest
 
 logger = logging.getLogger(__name__)
 
-def is_ctrix(request: HttpRequest) -> bool:
-    """Check if ip address of the visitor is listed as a ctrix ip address. """
 
-    if settings.CTRIX_IPS == ['*']:
+def is_internal(request):
+    if not settings.INTERNAL_IPS:
+        return False
+
+    client_ip = get_client_ip(request)
+    return client_ip in settings.INTERNAL_IPS
+
+
+def is_allowed_to_access_admin(request):
+    if not settings.ADMIN_IPS:
         return True
 
+    client_ip = get_client_ip(request)
+    return client_ip in settings.ADMIN_IPS
+
+
+def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
     if x_forwarded_for:
@@ -17,6 +28,4 @@ def is_ctrix(request: HttpRequest) -> bool:
     else:
         ip = request.META.get('REMOTE_ADDR')
 
-    logger.info("IP: %s", ip)
-
-    return ip in settings.CTRIX_IPS
+    return ip

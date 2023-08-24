@@ -10,16 +10,16 @@ from django_extensions.db.fields import AutoSlugField
 import uuid
 
 from user_management.models import AtlasGroup
-from utils.tools import is_ctrix
+from utils.tools import is_internal
 
 
 class LayerManager(models.Manager):
-    def user_or_group(self, user=None, ctrix=False):
+    def user_or_group(self, user=None, is_internal=False):
         open_datasets = Q(published=True) & Q(closed_dataset=False)
         closed_unassigned_datasets = Q(published=True) & Q(
             closed_dataset=True) & Q(users=None) & Q(atlas_groups=None)
 
-        if not ctrix:
+        if not is_internal:
             return self.filter(open_datasets).distinct()
 
         if user.is_anonymous:
@@ -465,7 +465,7 @@ def validate_file_extension(value):
 
 class ViewerVisibleManager(models.Manager):
     def for_request(self, request):
-        if is_ctrix(request) or request.user.is_authenticated:
+        if is_internal(request) or request.user.is_authenticated:
             return self.get_queryset()
 
         return self.get_queryset().filter(models.Q(internal=False))
@@ -492,9 +492,8 @@ class Viewer(models.Model):
     password = models.CharField(null=True, blank=True, max_length=128)
     api_key = models.CharField(null=True, blank=True, max_length=128)
     url = models.CharField(null=True, blank=True, max_length=255)
-    internal = models.BooleanField('Alleen intern zichtbaar', default=True,
-                                   help_text='Is alleen zichtbaar binnen interne omgeving. Hou er rekening mee dat de gebruikernaam, '
-                                   'het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.')
+    internal = models.BooleanField('Alleen zichtbaar voor ingelogde gebruikers en interne omgeving', default=True,
+                                   help_text='Hou er rekening mee dat de gebruikernaam, het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.')
 
     objects = models.Manager()
     visible = ViewerVisibleManager()

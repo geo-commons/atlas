@@ -120,8 +120,7 @@ Deploy acceptance:
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
-      --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY \
-      --set ctrixIps=$CTRIX_IPS
+      --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY
   environment:
     name: review/acc
     url: https://atlas-acc.$REVIEW_BASE_DOMAIN/atlas/

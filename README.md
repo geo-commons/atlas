@@ -1,4 +1,4 @@
-# Atlas 
+# Atlas
 
 Atlas is a geo portal that provides a user-friendly interface for layers on a WMS, WFS, WMTS and vector tiles (MVT) server. Atlas is developed by [Datalab Purmerend](https://datalab.purmerend.nl/), part of Gemeente Purmerend and [Delta10](https://www.delta10.nl).
 
@@ -24,13 +24,12 @@ Adjust the `.env` file to configure the application and create a secure producti
 - DEBUG: [Django](https://https://www.djangoproject.com/) [debug mode](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-DEBUG). (default: False)
 - SECRET_KEY: Django [secret key](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-SECRET_KEY). Replace with a generated password in production. (default: changemetosomethingsecret)
 - ALLOWED_HOSTS: Django [allowed hosts](https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts) setting. A comma-seperated list of hosts that are allowed to serve the application. (default: localhost,127.0.0.1,[::1])
-- CTRIX_IPS: A comma-seperated list of IP's that are internal in the application.
+- ADMIN_IPS: A comma-seperated list of IP's that are allowed to access the admin.
+- INTERNAL_IPS: A comma-seperated list of IP's that are seen as internal.
 - DB_HOST: The host of the [Postgres](https://https://www.postgresql.org/) database. (default: postgres)
 - DB_USER: The username of the Postgres database. (default: atlas)
 - DB_PASSWORD: The password of the Postgres database. Replace with a generated password in production. (default: atlas)
 - DB_NAME: The database name of the Postgres database. (default: atlas)
-- WFS_URL: The URL of the external WFS server (e.g. [Geoserver](https://github.com/geoserver/geoserver)).
-- WFS_URL_CTRIX: The URL if the internal WFS server (e.g. Geoserver).
 - SMARTSTREET_USER: The username of the [Cyclomedia](https://www.cyclomedia.com/) Smartstreet API (used internally).
 - SMARTSTREET_PASSWORD: The password of the Cyclomedia Smartstreet API (used internally).
 - SMARTSTREET_API_KEY: The API key of the Cyclomedia Smartstreet API (used internally).
