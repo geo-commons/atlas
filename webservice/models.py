@@ -64,6 +64,7 @@ class Source(models.Model):
     class Meta:
         verbose_name = 'Bron'
         verbose_name_plural = 'Bronnen'
+        ordering = ['title']
 
     def __str__(self):
         return f"{self.title}"
