@@ -55,7 +55,7 @@ class Category(models.Model):
 class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de bron in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de bron in Atlas. Dit veld wordt tevens gebruikt in het Metadata Beheer Systeem van de gemeente Purmerend')
 
     url = models.URLField()
     authenticate = models.BooleanField('Verstuur authenticatieinformatie naar bron', default=False,
