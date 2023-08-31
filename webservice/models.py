@@ -36,6 +36,8 @@ class LayerManager(models.Manager):
 class Category(models.Model):
     objects = models.Manager()
 
+    # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
+    # so inform them when changing.
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=False, unique=True, populate_from='title', editable=True,
                          help_text='Een uniek kort kenmerk voor de categorie in Atlas.')
@@ -55,7 +57,7 @@ class Category(models.Model):
 class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de bron in Atlas. Dit veld wordt tevens gebruikt in het Metadata Beheer Systeem van de gemeente Purmerend')
+                         help_text='Een uniek kort kenmerk voor de bron in Atlas.')
 
     url = models.URLField()
     authenticate = models.BooleanField('Verstuur authenticatieinformatie naar bron', default=False,
@@ -98,11 +100,16 @@ class Layer(models.Model):
     objects = models.Manager()
     authorized = LayerManager()
 
+    # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
+    # so inform them when changing.
     slug = models.CharField(
         'Kort kenmerk', max_length=128, null=True, default='',
         help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.')
 
     title = models.CharField('Titel', max_length=128, null=True)
+
+    # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
+    # so inform them when changing.
     layer_name = models.CharField(
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
 
@@ -112,6 +119,8 @@ class Layer(models.Model):
     format = models.CharField(
         'Formaat', max_length=128, choices=FORMAT_TYPES, default=FORMAT_PNG)
 
+    # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on the meta_* fields
+    # so inform them when changing.
     meta_name = models.CharField('Naam', max_length=128, null=True,)
     meta_description = models.TextField('Omschrijving', null=True,
                                         help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
@@ -145,6 +154,8 @@ class Layer(models.Model):
     _search_fields = models.CharField(
         'Zoek in deze velden', max_length=500, blank=True, null=True)
 
+    # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
+    # so inform them when changing.
     projection = models.CharField(
         'Projectie', max_length=100, default='EPSG:28992')
 
