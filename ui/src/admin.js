@@ -13,6 +13,7 @@ import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
 import App from "./admin/App";
 import AdminDashboard from "./admin/pages/AdminDashboard";
+import LayerList from "./admin/pages/LayerList";
 import MapList from "./admin/pages/MapList";
 import MapCreateUpdate from "./admin/pages/MapCreateUpdate";
 import SourceList from "./admin/pages/SourceList";
@@ -74,6 +75,11 @@ const routes = [
     path: "/sources/update/:id",
     component: SourceCreateUpdate,
     meta: { title: "Bronnen", menu: true },
+  },
+  {
+    path: "/layers",
+    component: LayerList,
+    meta: { title: "Lagen", menu: true },
   },
   {
     path: "/users",
