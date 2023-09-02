@@ -64,10 +64,29 @@
     <div v-if="layers.length > 0" class="section">
       <!-- v-for="layer in layers" :key="layer.id" -->
       <ul>
-        <li v-for="layer in visibleLayers" :key="layer.id">
+        <li v-for="layer in paginatedData" :key="layer.id">
           {{ layer.title }}
         </li>
       </ul>
+    </div>
+    <div style="display: flex; gap: 20px">
+      <button
+        :disabled="pageNumber === 0"
+        class="button __tertiary __large"
+        @click="prevPage"
+      >
+        Previous
+      </button>
+      1
+      {{ pageNumber + 1 }}
+      {{ pageCount }}
+      <button
+        :disabled="pageNumber >= pageCount - 1"
+        class="button __tertiary __large"
+        @click="nextPage"
+      >
+        Next
+      </button>
     </div>
   </div>
 </template>
@@ -79,6 +98,8 @@ export default {
     return {
       layers: [],
       searchQuery: "",
+      pageNumber: 0,
+      nrOfRecords: 20,
     };
   },
   computed: {
@@ -92,6 +113,15 @@ export default {
           layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !==
           -1
       );
+    },
+    pageCount() {
+      let nrOfPages = this.visibleLayers.length;
+      return Math.ceil(nrOfPages / this.nrOfRecords);
+    },
+    paginatedData() {
+      const start = this.pageNumber * this.nrOfRecords;
+      const end = start + this.nrOfRecords;
+      return this.visibleLayers.slice(start, end);
     },
   },
   created() {
@@ -110,6 +140,12 @@ export default {
 
       this.layers = await result.json();
     },
+    nextPage() {
+      this.pageNumber++;
+    },
+    prevPage() {
+      this.pageNumber--;
+    },
   },
 };
 </script>
@@ -125,6 +161,7 @@ export default {
 
 .search-wrapper {
   width: clamp(250px, 35%, 400px);
+  height: 56px;
   position: relative;
   border: 2px solid var(--color-grey-60);
   border-radius: var(--radius-normal);
