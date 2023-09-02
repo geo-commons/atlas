@@ -19,28 +19,55 @@
         </router-link>
       </button>
     </div>
+    <div class="search-wrapper">
+      <svg
+        width="18px"
+        height="18px"
+        viewBox="0 0 18 18"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <g
+          id="Admin"
+          stroke="none"
+          stroke-width="1"
+          fill="none"
+          fill-rule="evenodd"
+        >
+          <g
+            id="Kaart---Lagen"
+            transform="translate(-45.000000, -183.000000)"
+            fill="#000000"
+            fill-rule="nonzero"
+          >
+            <g
+              id="search_black_24dp"
+              transform="translate(42.000000, 180.000000)"
+            >
+              <path
+                id="Shape"
+                d="M15.5,14 L14.71,14 L14.43,13.73 C15.41,12.59 16,11.11 16,9.5 C16,5.91 13.09,3 9.5,3 C5.91,3 3,5.91 3,9.5 C3,13.09 5.91,16 9.5,16 C11.11,16 12.59,15.41 13.73,14.43 L14,14.71 L14,15.5 L19,20.49 L20.49,19 L15.5,14 Z M9.5,14 C7.01,14 5,11.99 5,9.5 C5,7.01 7.01,5 9.5,5 C11.99,5 14,7.01 14,9.5 C14,11.99 11.99,14 9.5,14 Z"
+              ></path>
+            </g>
+          </g>
+        </g>
+      </svg>
+      <input
+        id="layers-search"
+        v-model="searchQuery"
+        type="search"
+        name="query"
+        placeholder="Zoek laag"
+      />
+    </div>
     <div v-if="layers.length > 0" class="section">
-      <table>
-        <thead>
-          <tr>
-            <td>Titel</td>
-            <td>Categorie</td>
-            <td>Verwijderen</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="layer in layers" :key="layer.id">
-            <td>
-              <button>
-                <router-link :to="`/layers/update/${layer.id}`">{{
-                  layer.title
-                }}</router-link>
-              </button>
-            </td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- v-for="layer in layers" :key="layer.id" -->
+      <ul>
+        <li v-for="layer in visibleLayers" :key="layer.id">
+          {{ layer.title }}
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -51,7 +78,21 @@ export default {
   data() {
     return {
       layers: [],
+      searchQuery: "",
     };
+  },
+  computed: {
+    visibleLayers() {
+      if (!this.searchQuery) {
+        return this.layers;
+      }
+
+      return this.layers.filter(
+        (layer) =>
+          layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !==
+          -1
+      );
+    },
   },
   created() {
     this.getLayers();
@@ -80,6 +121,28 @@ export default {
 
 .button {
   max-width: 300px;
+}
+
+.search-wrapper {
+  width: clamp(250px, 35%, 400px);
+  position: relative;
+  border: 2px solid var(--color-grey-60);
+  border-radius: var(--radius-normal);
+}
+
+.search-wrapper svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 16px;
+  margin: auto 0;
+  pointer-events: none;
+}
+
+.search-wrapper input {
+  width: 100%;
+  height: 48px;
+  padding: 0 0 0 48px;
 }
 
 /* source? */
