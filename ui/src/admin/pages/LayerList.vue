@@ -172,7 +172,6 @@ ul.layers-list > li:not(:last-child) {
 /* todo: use margin: 0 auto for reactive centering */
 .search-wrapper {
   width: clamp(250px, 35%, 400px);
-  height: 56px;
   position: relative;
   /* margin-left: auto; */
   border: 2px solid var(--color-grey-60);
