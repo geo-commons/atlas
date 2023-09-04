@@ -30,6 +30,8 @@ export default {
       const properties = {
         lat: latlong[1],
         lon: latlong[0],
+        x: this.position.marker[0],
+        y: this.position.marker[1],
       };
 
       return nunjucks.renderString(this.url, properties);
