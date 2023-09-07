@@ -36,7 +36,7 @@ export default {
     url: String,
     layer: String,
     isVisible: Boolean,
-    loginRequired: Boolean,
+    sendTokenWithRequest: Boolean,
     opacity: Number,
     zIndex: Number,
     format: String,
@@ -97,10 +97,9 @@ export default {
         tilesOrigin: 117000 + "," + 498000.00000000023,
       },
       projection: rdProjection,
-      tileLoadFunction:
-        this.loginRequired && this.user
-          ? authenticatedTileLoader(this.user.token)
-          : null,
+      tileLoadFunction: this.sendTokenWithRequest
+        ? authenticatedTileLoader(this.user.token)
+        : null,
     });
 
     this.tileLayer = new TileLayer({

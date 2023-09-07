@@ -4,16 +4,19 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG_DEFAULT = 'True'
+DEBUG_API_PROXY_DEFAULT = 'http://localhost:8050/api/'
 SECRET_KEY_DEFAULT = 'changemetosomethingsecret'  # noqa
 ALLOWED_HOSTS_DEFAULT = 'localhost,127.0.0.1,[::1]'
 
 if os.getenv('ATLAS_ENVIRONMENT') == 'production':
     DEBUG_DEFAULT = 'False'
+    DEBUG_API_PROXY_DEFAULT = ''
     SECRET_KEY_DEFAULT = None
     ALLOWED_HOSTS_DEFAULT = ''
 
 SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY_DEFAULT)
 DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
+DEBUG_API_PROXY = os.getenv('DEBUG_API_PROXY', DEBUG_API_PROXY_DEFAULT)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ALLOWED_HOSTS_DEFAULT).split(',')
 INTERNAL_IPS = list(filter(None, os.getenv('INTERNAL_IPS', '').split(',')))
@@ -82,8 +85,10 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'mozilla_django_oidc',
     'rest_framework',
+    'django_filters',
     'import_export',
     'reversion',
+    'revproxy',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -113,6 +118,9 @@ ROOT_URLCONF = 'atlas.urls'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
     ]
 }
 
