@@ -23,12 +23,13 @@ class SourceViewSet(viewsets.ModelViewSet):
 
 
 class LayerViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAdminUser]
-    queryset = Layer.objects.all()
     serializer_class = LayerSerializer
 
     search_fields = []
-    filterset_fields = []
+    filterset_fields = ['layer_source']
+
+    def get_queryset(self):
+        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups')
 
 
 class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

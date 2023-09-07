@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 from django.views.generic.base import RedirectView
 from django.views.static import serve
 from django.conf import settings
+from revproxy.views import ProxyView
 
 admin.site.site_header = 'Atlas beheer'
 admin.site.site_title = 'Atlas beheer'
@@ -42,6 +43,12 @@ if settings.DEBUG:
         re_path(r'^atlas/media/(?P<path>.*)$', serve, {
             'document_root': settings.MEDIA_ROOT,
         }),
+    ]
+
+    urlpatterns += [
+        re_path(r'^api/(?P<path>.*)$', ProxyView.as_view(
+            upstream='http://localhost:8050/api/'
+        )),
     ]
 
 urlpatterns += [

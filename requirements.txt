@@ -1,3 +1,4 @@
+https://github.com/jazzband/django-revproxy/archive/refs/tags/0.11.0.zip
 coverage==7.2.7
 django-constance[database]==2.9.1
 django-extensions==3.2.1

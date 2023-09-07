@@ -27,7 +27,11 @@
       :filters="filters"
       :is-visible="layer.is_visible === true"
       :is-selectable="layer.is_selectable === true"
-      :login-required="layer.login_required"
+      :send-token-with-request="
+        layer.login_required && layer.source.authenticate && user && user.token
+          ? true
+          : false
+      "
       :selected-features="selectedFeatures"
       :z-index="layer.is_base ? 0 : 1"
       :min-zoom="layer.zoom_min"
