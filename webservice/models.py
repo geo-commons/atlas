@@ -14,23 +14,21 @@ from utils.tools import is_internal
 
 
 class LayerManager(models.Manager):
-    def user_or_group(self, user=None, is_internal=False):
+    def for_request(self, request):
         open_datasets = Q(published=True) & Q(closed_dataset=False)
         closed_unassigned_datasets = Q(published=True) & Q(
-            closed_dataset=True) & Q(users=None) & Q(atlas_groups=None)
+            closed_dataset=True) & Q(atlas_groups=None)
 
-        if not is_internal:
+        if not is_internal(request):
             return self.filter(open_datasets).distinct()
 
-        if user.is_anonymous:
+        if request.user.is_anonymous:
             return self.filter(open_datasets | closed_unassigned_datasets).distinct()
 
-        closed_and_assigned_to_user = Q(published=True) & Q(
-            closed_dataset=True) & Q(users=user)
         closed_and_assigned_to_group = Q(published=True) & Q(
-            closed_dataset=True) & Q(atlas_groups__in=user.atlas_groups.all())
+            closed_dataset=True) & Q(atlas_groups__in=request.user.atlas_groups.all())
 
-        return self.filter(open_datasets | closed_unassigned_datasets | closed_and_assigned_to_user | closed_and_assigned_to_group).distinct()
+        return self.filter(open_datasets | closed_unassigned_datasets | closed_and_assigned_to_group).distinct()
 
 
 class Category(models.Model):
@@ -166,7 +164,7 @@ class Layer(models.Model):
         'Alleen intern zichtbaar', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.')
 
     login_required = models.BooleanField(
-        'Vereis inlog voor deze dataset', default=False, help_text='Voor deze dataset is een inlog vereist.')
+        'Vereis inlog voor deze dataset', default=False, help_text='De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.')
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
@@ -193,10 +191,8 @@ class Layer(models.Model):
         on_delete=models.PROTECT,
         related_name='owner')
 
-    users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, verbose_name='Gebruikers')
     atlas_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen')
+        AtlasGroup, blank=True, verbose_name='Groepen', help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
     updated_at = models.DateTimeField('updated_at', auto_now=True)
