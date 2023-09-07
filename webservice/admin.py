@@ -59,11 +59,13 @@ class SourceAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
 class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     form = LayerForm
 
-    list_display = ('ordering', 'title', 'layer_type', 'closed_dataset',
+    list_display = ('ordering', 'title', 'layer_type', 'closed_dataset', 'login_required',
                     'published')
     list_display_links = ('title',)
     list_editable = ('ordering',)
-    list_filter = ('layer_type', 'closed_dataset')
+    list_filter = ('layer_type', 'closed_dataset', 'login_required')
+
+    filter_horizontal = ('atlas_groups', )
 
     actions = [duplicate_layer]
 
@@ -105,10 +107,10 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
             )
         }),
         ('Metadata', {
-            'fields': ('meta_name', 'meta_description', 'meta_org', 'meta_updated', 'meta_link')
+            'fields': ('meta_name', 'meta_description', 'meta_org', 'meta_updated', 'meta_link', 'owner')
         }),
         ('Toegang', {
-            'fields': ('closed_dataset', 'login_required', 'owner', 'users', 'atlas_groups')
+            'fields': ('closed_dataset', 'login_required', 'atlas_groups')
         })
     )
 

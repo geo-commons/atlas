@@ -9,6 +9,9 @@ from .models import AtlasUser, AtlasGroup
 class AtlasUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'name',
                     'is_staff', 'is_superuser', 'is_active')
+
+    filter_horizontal = ('atlas_groups', )
+
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {

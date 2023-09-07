@@ -109,7 +109,7 @@ class TestLayerOrdering(TestCase):
             ordering=0)
 
     def test_ordering(self):
-        layers = list(Layer.authorized.user_or_group())
+        layers = list(Layer.objects.all())
         self.assertListEqual(
             [self.purm, self.purm2, self.stembureaus],
             layers)
