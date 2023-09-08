@@ -1,71 +1,102 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="top-menu-container">
       <button>
         <router-link to="/layer/create" class="button __tertiary __large">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 0 24 24"
-            width="24px"
-            fill="#000000"
-          >
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path
-              d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-            />
-          </svg>
-          Maak laag
+          <add-icon />
+          <span style="padding-right: 6px">Maak laag</span>
         </router-link>
       </button>
-    </div>
-    <div class="search-wrapper">
-      <svg
-        width="18px"
-        height="18px"
-        viewBox="0 0 18 18"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-      >
-        <g
-          id="Admin"
-          stroke="none"
-          stroke-width="1"
-          fill="none"
-          fill-rule="evenodd"
+      <div class="search-wrapper">
+        <svg
+          width="18px"
+          height="18px"
+          viewBox="0 0 18 18"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
         >
           <g
-            id="Kaart---Lagen"
-            transform="translate(-45.000000, -183.000000)"
-            fill="#000000"
-            fill-rule="nonzero"
+            id="Admin"
+            stroke="none"
+            stroke-width="1"
+            fill="none"
+            fill-rule="evenodd"
           >
             <g
-              id="search_black_24dp"
-              transform="translate(42.000000, 180.000000)"
+              id="Kaart---Lagen"
+              transform="translate(-45.000000, -183.000000)"
+              fill="#000000"
+              fill-rule="nonzero"
             >
-              <path
-                id="Shape"
-                d="M15.5,14 L14.71,14 L14.43,13.73 C15.41,12.59 16,11.11 16,9.5 C16,5.91 13.09,3 9.5,3 C5.91,3 3,5.91 3,9.5 C3,13.09 5.91,16 9.5,16 C11.11,16 12.59,15.41 13.73,14.43 L14,14.71 L14,15.5 L19,20.49 L20.49,19 L15.5,14 Z M9.5,14 C7.01,14 5,11.99 5,9.5 C5,7.01 7.01,5 9.5,5 C11.99,5 14,7.01 14,9.5 C14,11.99 11.99,14 9.5,14 Z"
-              ></path>
+              <g
+                id="search_black_24dp"
+                transform="translate(42.000000, 180.000000)"
+              >
+                <path
+                  id="Shape"
+                  d="M15.5,14 L14.71,14 L14.43,13.73 C15.41,12.59 16,11.11 16,9.5 C16,5.91 13.09,3 9.5,3 C5.91,3 3,5.91 3,9.5 C3,13.09 5.91,16 9.5,16 C11.11,16 12.59,15.41 13.73,14.43 L14,14.71 L14,15.5 L19,20.49 L20.49,19 L15.5,14 Z M9.5,14 C7.01,14 5,11.99 5,9.5 C5,7.01 7.01,5 9.5,5 C11.99,5 14,7.01 14,9.5 C14,11.99 11.99,14 9.5,14 Z"
+                ></path>
+              </g>
             </g>
           </g>
-        </g>
-      </svg>
-      <input
-        id="layers-search"
-        v-model="searchQuery"
-        type="search"
-        name="query"
-        placeholder="Zoek laag"
-      />
+        </svg>
+        <input
+          id="layers-search"
+          v-model="searchQuery"
+          type="search"
+          name="query"
+          placeholder="Zoek laag"
+        />
+      </div>
     </div>
-    <div v-if="layers.length > 0" class="section">
+    <div v-if="layers.length > 0" class="">
       <!-- v-for="layer in layers" :key="layer.id" -->
       <ul>
-        <li v-for="layer in paginatedData" :key="layer.id">
-          {{ layer.title }}
+        <li
+          v-for="layer in paginatedData"
+          :key="layer.id"
+          class="layer-item-wrapper"
+        >
+          <button>
+            <router-link :to="`/layers/update/${layer.id}`">{{
+              layer.title
+            }}</router-link>
+          </button>
+          <div class="buttons">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              class="iconbutton"
+              aria-label="Bewerk laag"
+              content="Bewerk"
+              type="button"
+            >
+              <router-link :to="`/layers/update/${layer.id}`" class="flex">
+                <edit-icon />
+              </router-link>
+            </button>
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              class="iconbutton"
+              aria-label="Verwijder laag"
+              content="Verwijder"
+              type="button"
+              @click="deleteLayer(layer)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 0 24 24"
+                width="24px"
+                fill="#000000"
+              >
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
+                />
+              </svg>
+            </button>
+          </div>
         </li>
       </ul>
     </div>
@@ -92,14 +123,19 @@
 </template>
 
 <script>
+import AddIcon from "../../icons/AddIcon.vue";
+import Cookies from "js-cookie";
+import EditIcon from "../../icons/EditIcon.vue";
+
 export default {
   name: "LayerList",
+  components: { AddIcon, EditIcon },
   data() {
     return {
       layers: [],
       searchQuery: "",
       pageNumber: 0,
-      nrOfRecords: 20,
+      nrOfRecords: 10,
     };
   },
   computed: {
@@ -140,6 +176,27 @@ export default {
 
       this.layers = await result.json();
     },
+    async deleteLayer(layer) {
+      const acknowledged = confirm(
+        "Weet je zeker dat je de laag wil verwijderen?"
+      );
+      if (!acknowledged) {
+        return;
+      }
+
+      const result = await fetch(`/atlas/api/v1/layers/${layer.id}/`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+      });
+
+      if (result.ok) {
+        this.getLayers();
+      }
+    },
     nextPage() {
       this.pageNumber++;
     },
@@ -151,8 +208,25 @@ export default {
 </script>
 
 <style scoped>
+.top-menu-container {
+  width: 70%;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* todo: move to general place */
+.flex {
+  display: flex;
+}
+
 .buttons {
   display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
 }
 
 .button {
@@ -163,6 +237,7 @@ export default {
   width: clamp(250px, 35%, 400px);
   height: 56px;
   position: relative;
+  /* margin-left: auto; */
   border: 2px solid var(--color-grey-60);
   border-radius: var(--radius-normal);
 }
@@ -182,15 +257,19 @@ export default {
   padding: 0 0 0 48px;
 }
 
-/* source? */
-.source {
+.layer-item-wrapper {
   display: flex;
   align-items: center;
-  border: 2px solid var(--color-grey-60);
+  width: clamp(400px, 35%, 700px);
   border-radius: var(--radius-normal);
-  margin-top: 16px;
+  padding: 10px 10px;
 }
 
+.layer-item-wrapper:hover {
+  background: var(--color-grey-20);
+}
+
+/* source? */
 .source a {
   padding: 12px 0 12px 20px;
   flex-grow: 1;
