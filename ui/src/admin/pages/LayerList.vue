@@ -233,6 +233,7 @@ export default {
   max-width: 300px;
 }
 
+/* todo: use margin: 0 auto for reactive centering */
 .search-wrapper {
   width: clamp(250px, 35%, 400px);
   height: 56px;
