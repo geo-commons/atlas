@@ -1,6 +1,7 @@
 <template>
   <div ref="map" class="map">
     <slot></slot>
+    <div id="popup"></div>
     <div
       class="scale"
       :style="{ display: features.scale ? 'block' : 'none' }"
@@ -21,7 +22,9 @@
 </template>
 
 <script>
+import tippy from "tippy.js";
 import Map from "ol/Map";
+import Overlay from "ol/Overlay";
 import ScaleLine from "ol/control/ScaleLine";
 import { register } from "ol/proj/proj4";
 import { getPointResolution } from "ol/proj";
@@ -54,6 +57,18 @@ export default {
   mounted() {
     this.map.setTarget(this.$refs["map"]);
 
+    const popupOverlay = new Overlay({
+      element: document.getElementById("popup"),
+    });
+    this.map.addOverlay(popupOverlay);
+
+    const tippyElement = tippy(popupOverlay.getElement(), {
+      showOnCreate: false,
+      maxWidth: 350,
+      theme: "dark",
+      appendTo: "parent",
+    });
+
     // show pointer on clickable features
     this.map.on("pointermove", (e) => {
       if (e.dragging) {
@@ -66,6 +81,19 @@ export default {
       });
 
       this.map.getTarget().style.cursor = hit ? "pointer" : "";
+
+      if (hit) {
+        const features = this.map.getFeaturesAtPixel(pixel, {
+          layerFilter: (layer) => layer.get("selectable"),
+        });
+
+        const firstFeature = features[0];
+        popupOverlay.setPosition(firstFeature.getFlatCoordinates());
+        tippyElement.setContent(firstFeature.getProperties().naam_vesti);
+        tippyElement.show();
+      } else {
+        tippyElement.hide();
+      }
     });
 
     this.map.on("moveend", () => {

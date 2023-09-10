@@ -89,10 +89,13 @@ class Layer(models.Model):
     FORMAT_PNG = 'image/png'
     FORMAT_JPEG = 'image/jpeg'
     FORMAT_JPEG_PNG = 'image/vnd.jpeg-png'
+    FORMAT_MVT = 'application/vnd.mapbox-vector-tile'
+
     FORMAT_TYPES = [
         (FORMAT_PNG, 'image/png'),
         (FORMAT_JPEG, 'image/jpeg'),
         (FORMAT_JPEG_PNG, 'image/vnd.jpeg-png'),
+        (FORMAT_MVT, 'application/vnd.mapbox-vector-tile'),
     ]
 
     objects = models.Manager()
@@ -141,6 +144,9 @@ class Layer(models.Model):
 
     friendly_fields = models.JSONField(
         'Vriendelijke veldnamen', default=dict, help_text='Maak veldnamen vriendelijk', blank=True, null=True)
+
+    tooltip = models.CharField(
+        max_length=255, blank=True, null=True, default=None)
 
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,

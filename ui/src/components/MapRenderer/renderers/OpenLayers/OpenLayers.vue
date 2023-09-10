@@ -39,6 +39,7 @@
       :client-style="layer.client_style"
       :server-style="layer.server_style"
       :opacity="layer.opacity"
+      :tooltip="layer.tooltip"
       @features-selected="featuresSelected"
     >
     </component>
