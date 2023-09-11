@@ -1,43 +1,75 @@
 <template>
-  <table-list class="table table-border">
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th v-for="property in displayProperties" :key="property">
-            <FeatureTableHeaderItem
-              :layer="layer"
-              :property="property"
-              :field-filters="fieldFilters"
-              :sort-key="sortKey"
-              :sort-ascending="sortAscending"
-              @change="(filter) => (fieldFilters = filter)"
-              @sort="(column) => sortColumn(column)"
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="feature in sortedFeatures" :key="feature.id">
-          <td>
-            <button
-              v-if="feature.geometry"
-              v-tippy="{ placement: 'right' }"
-              class="iconbutton pin-button"
-              content="Bekijk op kaart"
-              aria-label="Bekijk op kaart"
-              @click="() => showFeature(feature)"
-            >
-              <PinIcon />
-            </button>
-          </td>
-          <td v-for="property in displayProperties" :key="property">
-            {{ feature.properties[property] }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </table-list>
+  <div>
+    <div class="toggle-filter-container">
+      <switch-slider @toggleSwitch="toggleFilters()" />
+      <div>Activeer filters</div>
+    </div>
+    <div v-if="showFilters" class="filter-padding filter-grid">
+      <div>
+        <label for="selected_columns" class="filter-label-padding"
+          >Kolom(men) om op te filteren</label
+        >
+        <multiselect
+          id="selected_columns"
+          v-model="selectedFilterProperties"
+          :options="displayProperties"
+          :multiple="true"
+          :show-labels="false"
+          :placeholder="'Kies kolom(men)'"
+          open-direction="bottom"
+          @remove="(filter) => removeFilter(filter)"
+        />
+      </div>
+      <div v-if="selectedFilterProperties" class="selected-filter-container">
+        <div v-for="property in selectedFilterProperties" :key="property">
+          <FilterSelect
+            :feature-collection="featureCollection"
+            :field-filters="fieldFilters"
+            :filter-property="property"
+            @onFilterChange="(v) => setFieldFilters(v)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <table-list class="table table-border table-margin">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th v-for="property in displayProperties" :key="property">
+              <FeatureTableHeaderItem
+                :layer="layer"
+                :property="property"
+                :sort-key="sortKey"
+                :sort-ascending="sortAscending"
+                @sort="(column) => sortColumn(column)"
+              />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="feature in sortedFeatures" :key="feature.id">
+            <td>
+              <button
+                v-if="feature.geometry"
+                v-tippy="{ placement: 'right' }"
+                class="iconbutton pin-button"
+                content="Bekijk op kaart"
+                aria-label="Bekijk op kaart"
+                @click="() => showFeature(feature)"
+              >
+                <PinIcon />
+              </button>
+            </td>
+            <td v-for="property in displayProperties" :key="property">
+              {{ feature.properties[property] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </table-list>
+  </div>
 </template>
 
 <script>
@@ -47,6 +79,9 @@ import TableList from "./TableList.vue";
 import PinIcon from "../icons/PinIcon.vue";
 import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "../utils/geometry-helpers";
+import Multiselect from "vue-multiselect";
+import FilterSelect from "./FilterSelect.vue";
+import SwitchSlider from "./SwitchSlider.vue";
 
 export default {
   name: "FeatureTable",
@@ -54,6 +89,9 @@ export default {
     FeatureTableHeaderItem,
     TableList,
     PinIcon,
+    FilterSelect,
+    Multiselect,
+    SwitchSlider,
   },
   props: {
     layer: Object,
@@ -70,6 +108,8 @@ export default {
       },
       displayProperties: [],
       fieldFilters: {},
+      selectedFilterProperties: [],
+      showFilters: false,
     };
   },
   computed: {
@@ -337,6 +377,26 @@ export default {
       // if descending, highest sorts first
       return a < b ? 1 : -1;
     },
+    setFieldFilters(v) {
+      this.fieldFilters = v;
+    },
+    resetFieldFilters() {
+      this.fieldFilters = {};
+      this.selectedFilterProperties = [];
+    },
+    toggleFilters() {
+      this.showFilters = !this.showFilters;
+
+      if (!this.showFilters) {
+        this.resetFieldFilters();
+      }
+    },
+    removeFilter(filter) {
+      if (filter in this.fieldFilters) {
+        delete this.fieldFilters[filter];
+        this.fetchFeatures();
+      }
+    },
   },
 };
 </script>
@@ -351,13 +411,9 @@ export default {
   height: 26px;
 }
 
-td:first-child {
+.table-wrapper td:first-child {
   width: var(--width-button-large);
-  padding: 0 !important;
-}
-
-.table-header {
-  display: flex;
+  padding-left: 0;
 }
 
 tbody > tr:hover {
@@ -367,5 +423,51 @@ tbody > tr:hover {
 .table-border {
   border: solid 1px var(--color-grey-60);
   border-radius: 6px;
+}
+
+.table-margin {
+  margin-top: 20px;
+}
+
+.filter-label-padding {
+  padding-left: 8px;
+}
+
+.selected-filter-container {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-padding {
+  padding-top: 10px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: clamp(200px, 35%, 400px) auto;
+  grid-template-rows: auto;
+  grid-gap: 1rem;
+}
+
+@media (max-width: 576px) {
+  .filter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-gap: 1rem;
+  }
+
+  .selected-filter-container {
+    justify-content: flex-start;
+  }
+}
+
+.toggle-filter-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
 }
 </style>
