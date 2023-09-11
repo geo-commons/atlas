@@ -18,7 +18,7 @@ export default {
 
 .table-wrapper table {
   width: 100%;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-normal);
   border-collapse: collapse;
 }
 
@@ -26,16 +26,15 @@ export default {
   background: var(--color-grey-50);
 }
 
-.table-wrapper th {
+.table-wrapper thead tr th {
   font-weight: var(--font-weight-normal);
   text-align: left;
-  padding-top: 7px !important;
-  padding-bottom: 7px !important;
+  padding: 12px 4px;
 }
 
 .table-wrapper th,
 .table-wrapper td {
-  padding: 4px;
+  padding: 8px 4px;
   vertical-align: top;
 }
 

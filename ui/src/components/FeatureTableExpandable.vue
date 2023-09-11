@@ -17,10 +17,8 @@
                     <FeatureTableHeaderItem
                       :layer="layer"
                       :property="property"
-                      :field-filters="fieldFilters"
                       :sort-key="sortKey"
                       :sort-ascending="sortAscending"
-                      @change="(filter) => (fieldFilters = filter)"
                       @sort="(column) => sortColumn(column)"
                     />
                   </th>

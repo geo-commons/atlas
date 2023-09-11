@@ -16,10 +16,11 @@ export default {
 };
 </script>
 
+<!-- Include multiselect -->
+<style src="vue-multiselect/dist/vue-multiselect.min.css" />
 <style>
+@import "../assets/styles/main.css";
 :root {
-  --color-primary: #424bff;
-
   --color-text-grey: rgba(0, 0, 0, 0.55);
 
   --color-grey-20: #eaeaea; /* divider (list items, files) */
@@ -336,6 +337,10 @@ input[type="checkbox"] {
 .edit-field-border {
   border-radius: var(--radius-normal);
   border: 1px solid var(--color-grey-60);
+}
+
+.multiselect__tags > input {
+  border: none;
 }
 </style>
 

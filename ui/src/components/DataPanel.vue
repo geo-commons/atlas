@@ -19,6 +19,9 @@
           </button>
           <h2 class="no-margin">{{ selectedLayer.title }}</h2>
         </div>
+        <div v-if="selectedLayerId == null" class="selected-layer-wrapper">
+          <h2 class="no-margin">Zichtbare lagen</h2>
+        </div>
         <button
           v-tippy
           class="iconbutton __normal __outline"

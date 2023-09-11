@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-column">
-    <div class="flex-center table-header-container">
+    <div class="table-header-container">
       <span class="header-text" @click="() => sortColumn()">
         {{ headerText }}
       </span>
@@ -11,28 +11,10 @@
         class="flex-center"
         @click="() => sortColumn()"
       >
-        <SortIcon v-if="property !== sortKey" />
-        <ArrowUpIcon v-if="property === sortKey && sortAscending" />
-        <ArrowDownIcon v-if="property === sortKey && !sortAscending" />
-      </button>
-      <FilterTooltip
-        :layer="layer"
-        :property="property"
-        :field-filters="fieldFilters"
-        @change="(value) => updateFilter(value)"
-      />
-    </div>
-    <div class="flex">
-      {{ fieldFilters && fieldFilters[property] ? fieldFilters[property] : "" }}
-      <button
-        v-if="fieldFilters && fieldFilters[property]"
-        v-tippy="{ placement: 'bottom' }"
-        class="iconbutton"
-        aria-label="Verwijder filter"
-        content="Verwijder"
-        @click="() => removeFilter()"
-      >
-        <CloseIcon />
+        <span class="icon-min-width flex-center">
+          <ArrowUpIcon v-if="property === sortKey && sortAscending" />
+          <ArrowDownIcon v-if="property === sortKey && !sortAscending" />
+        </span>
       </button>
     </div>
   </div>
@@ -41,23 +23,16 @@
 <script>
 import ArrowDownIcon from "../icons/ArrowDownIcon.vue";
 import ArrowUpIcon from "../icons/ArrowUpIcon.vue";
-import CloseIcon from "../icons/CloseIcon.vue";
-import FilterTooltip from "./FilterTooltip.vue";
-import SortIcon from "../icons/SortIcon.vue";
 
 export default {
   name: "FeatureTableHeaderItem",
   components: {
-    FilterTooltip,
-    CloseIcon,
     ArrowUpIcon,
     ArrowDownIcon,
-    SortIcon,
   },
   props: {
     layer: Object,
     property: String,
-    fieldFilters: Object,
     sortKey: String,
     sortAscending: Boolean,
   },
@@ -70,14 +45,6 @@ export default {
     },
   },
   methods: {
-    updateFilter(filter) {
-      this.$emit("change", filter);
-    },
-    removeFilter() {
-      const newFieldFilter = { ...this.fieldFilters };
-      delete newFieldFilter[this.property];
-      this.$emit("change", newFieldFilter);
-    },
     sortColumn() {
       this.$emit("sort", this.property);
     },
@@ -87,25 +54,18 @@ export default {
 
 <style scoped>
 .table-header-container {
-  font-weight: 500;
+  display: flex;
+  font-weight: var(--font-weight-normal);
   gap: 3px;
   text-transform: capitalize;
-}
-
-.flex-center {
-  display: flex;
-  align-items: center;
+  justify-content: flex-start;
 }
 
 .header-text {
   cursor: pointer;
 }
 
-.flex {
-  display: flex;
-}
-
-.flex-column {
-  flex-direction: column;
+.icon-min-width {
+  min-width: 24px;
 }
 </style>
