@@ -53,5 +53,6 @@ if settings.DEBUG:
 
 urlpatterns += [
     path('atlas/', include('homepage.urls'), name='homepage'),
+    path("__debug__/", include("debug_toolbar.urls")),
     path('', RedirectView.as_view(url='/atlas/'))
 ]
