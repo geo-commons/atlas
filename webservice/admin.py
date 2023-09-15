@@ -54,6 +54,7 @@ class CustomImportExportActionModelAdmin(ImportExportActionModelAdmin):
 class SourceAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title',)
     resource_classes = [SourceResource]
+    filter_horizontal = ('atlas_groups', )
 
 
 class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):

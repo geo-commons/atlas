@@ -53,11 +53,31 @@ class Category(models.Model):
 
 
 class Source(models.Model):
+    SOURCE_OWS = 'OWS'
+    SOURCE_WMTS = 'WMTS'
+    SOURCE_REST = 'REST'
+
+    SOURCE_TYPES = [
+        (SOURCE_OWS, 'OWS'),
+        (SOURCE_WMTS, 'WMTS'),
+        (SOURCE_REST, 'REST'),
+    ]
+
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title', editable=True,
                          help_text='Een uniek kort kenmerk voor de bron in Atlas.')
 
+    source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_OWS, max_length=20,
+                                   help_text='Selecteer het type bron')
+
     url = models.URLField()
+
+    login_required = models.BooleanField(
+        'Vereis inlog voor deze bron', default=False, help_text='De inhoud van deze bron kan alleen bekeken worden door ingelogde gebruikers.')
+
+    atlas_groups = models.ManyToManyField(
+        AtlasGroup, blank=True, verbose_name='Groepen', help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
+
     authenticate = models.BooleanField('Verstuur authenticatieinformatie naar bron', default=False,
                                        help_text='Configureer dit alleen voor vertrouwde bronnen')
 

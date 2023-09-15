@@ -1,9 +1,9 @@
-https://github.com/jazzband/django-revproxy/archive/refs/tags/0.11.0.zip
 coverage==7.2.7
 django-constance[database]==2.9.1
 django-extensions==3.2.1
 django-filter==23.2
 django-import-export==3.2.0
+djangorestframework-simplejwt==5.3.0
 django-reversion==5.0.4
 django-webpack-loader==2.0.0
 Django==4.1.9
@@ -18,3 +18,4 @@ pycodestyle==2.10.0
 pylint==2.17.4
 requests==2.31.0
 uwsgi==2.0.21
+https://github.com/jazzband/django-revproxy/archive/refs/tags/0.11.0.zip
