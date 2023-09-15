@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 import sys
 
@@ -7,12 +8,18 @@ DEBUG_DEFAULT = 'True'
 DEBUG_API_PROXY_DEFAULT = 'http://localhost:8050/api/'
 SECRET_KEY_DEFAULT = 'changemetosomethingsecret'  # noqa
 ALLOWED_HOSTS_DEFAULT = 'localhost,127.0.0.1,[::1]'
+DEFAULT_SESSION_COOKIE_SECURE = 'False'
+DEFAULT_SESSION_EXPIRE_AT_BROWSER_CLOSE = 'False'
+DEFAULT_SESSION_COOKIE_AGE = '1909600'  # 2 weeks
 
 if os.getenv('ATLAS_ENVIRONMENT') == 'production':
     DEBUG_DEFAULT = 'False'
     DEBUG_API_PROXY_DEFAULT = ''
     SECRET_KEY_DEFAULT = None
     ALLOWED_HOSTS_DEFAULT = ''
+    DEFAULT_SESSION_COOKIE_SECURE = 'True'
+    DEFAULT_SESSION_EXPIRE_AT_BROWSER_CLOSE = 'True'
+    DEFAULT_SESSION_COOKIE_AGE = '28800'  # 8 hours
 
 SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY_DEFAULT)
 DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
@@ -60,8 +67,6 @@ if OIDC_AD_ADD_AUTH_REQUEST_EXTRA_PARAMS:
     OIDC_AUTH_REQUEST_EXTRA_PARAMS = {
         'resource': 'urn:microsoft:userinfo'
     }
-
-OIDC_STORE_ACCESS_TOKEN = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -116,12 +121,21 @@ if AUTHENTICATION_ENABLE_OIDC:
 ROOT_URLCONF = 'atlas.urls'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ]
+}
+
+SIMPLE_JWT = {
+    # The Javascript frontend requests new tokens every 5 minutes
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=7),
 }
 
 TEMPLATES = [
@@ -184,6 +198,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+SESSION_COOKIE_NAME = 'atlas_session'
+SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SECURE = os.getenv(
+    'SESSION_COOKIE_SECURE', DEFAULT_SESSION_COOKIE_SECURE) == 'True'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = os.getenv(
+    'SESSION_EXPIRE_AT_BROWSER_CLOSE', DEFAULT_SESSION_EXPIRE_AT_BROWSER_CLOSE) == 'True'
+SESSION_COOKIE_AGE = int(os.getenv(
+    'SESSION_COOKIE_AGE', DEFAULT_SESSION_COOKIE_AGE))
 
 LANGUAGE_CODE = 'nl'
 TIME_ZONE = 'Europe/Amsterdam'

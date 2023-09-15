@@ -186,6 +186,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import GeoJSON from "ol/format/GeoJSON";
 import { mapState } from "vuex";
 import { isMobile } from "../utils/helpers";
@@ -282,7 +283,7 @@ export default {
 
     this.fetchInterval = setInterval(() => {
       this.fetchAccessToken();
-    }, 1000 * 60 * 10); // every ten minutes
+    }, 1000 * 60 * 5); // every 5 minutes
   },
   destroyed() {
     window.removeEventListener("resize", this.onResizeWindow);
@@ -411,7 +412,15 @@ export default {
       this.showDataPanelFullScreen = !this.showDataPanelFullScreen;
     },
     async fetchAccessToken() {
-      const response = await fetch("/atlas/api/v1/token");
+      const response = await fetch("/atlas/api/v1/token", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+      });
+
       if (!response.ok) {
         this.readyToRenderMap = true;
         return false;
