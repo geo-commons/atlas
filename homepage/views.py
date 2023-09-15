@@ -1,6 +1,6 @@
 import logging
 
-from constance import config
+from constance.admin import get_values
 from django.http import HttpResponseNotFound
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -34,7 +34,9 @@ def embed(request):
 
 
 def v3(request, theme_slug=''):
-    authorized_layers = Layer.authorized.for_request(request)
+    authorized_layers = Layer.authorized.for_request(request).prefetch_related(
+        'layer_source', 'layer_type', 'linked_data', 'templates'
+    )
 
     context = {}
 
@@ -63,10 +65,12 @@ def v3_help(request):
 
 
 def v3_disclaimer(request):
-    if config.DISCLAIMER:
+    config = get_values()
+
+    if config.get('DISCLAIMER'):
         return render(request, 'v3/disclaimer.html', {
             'title': 'Disclaimer',
-            'content': config.DISCLAIMER,
+            'content': config.get('DISCLAIMER'),
         })
 
     return HttpResponseNotFound('Er is geen disclaimer aanwezig')
@@ -89,7 +93,9 @@ def v3_admin(request):
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
 
-    authorized_layers = Layer.authorized.for_request(request)
+    authorized_layers = Layer.authorized.for_request(request).prefetch_related(
+        'layer_source', 'layer_type', 'linked_data', 'templates'
+    )
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context = {
@@ -105,7 +111,9 @@ def v3_admin(request):
 
 @xframe_options_exempt
 def v3_map(request, slug):
-    authorized_layers = Layer.authorized.for_request(request)
+    authorized_layers = Layer.authorized.for_request(request).prefetch_related(
+        'layer_source', 'layer_type', 'linked_data', 'templates'
+    )
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
     visible_map = get_object_or_404(Map, slug=slug)
 
@@ -162,20 +170,22 @@ def _default_layers():
 
 
 def _get_config(request):
+    config = get_values()
+
     return {
-        'organization_name': config.ORGANIZATION_NAME,
+        'organization_name': config.get('ORGANIZATION_NAME'),
         'position': {
-            'zoom': config.POSITION_ZOOM,
+            'zoom': config.get('POSITION_ZOOM'),
             'center': {
-                'x': config.POSITION_CENTER_X,
-                'y': config.POSITION_CENTER_Y
+                'x': config.get('POSITION_CENTER_X'),
+                'y': config.get('POSITION_CENTER_Y')
             }
         },
-        'suggest_municipalities': config.SUGGEST_MUNICIPALITIES,
-        'show_disclaimer': config.DISCLAIMER != '',
+        'suggest_municipalities': config.get('SUGGEST_MUNICIPALITIES'),
+        'show_disclaimer': config.get('DISCLAIMER') != '',
         'features': {
-            'print': config.FEATURE_PRINT,
-            'draw': config.FEATURE_DRAW
+            'print': config.get('FEATURE_PRINT'),
+            'draw': config.get('FEATURE_DRAW')
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }
