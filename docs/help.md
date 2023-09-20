@@ -21,10 +21,7 @@
 - [Gebruikte afkortingen](help#toc_20)
 - [Inloggen binnen Atlas, intern en extern](help#toc_21)
 
-
 [Versie-informatie](https://gitlab.com/purmerend/atlas/-/releases)
-
-
 
 ## Opbouw van het scherm
 
@@ -32,27 +29,32 @@ Als Atlas wordt gestart is het volgende scherm te zien:
 
 ![image1](https://gitlab.com/purmerend/atlas/uploads/fd1294750b39db5f6e2aa75b1b7be8bd/startscherm.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Schaalindicator
 
 Via de schaalindicator rechtsonder in beeld, kun je de weergaveverhouding te zien. door er op te klikken kan gewisseld worden tussen een één op X weergave of een afstandsweergave.
 
-***
-* [Naar boven](#)
-***
+---
 
+- [Naar boven](#)
+
+---
 
 ## Pannen en zoomen
 
 In- en uitzoomen kan door gebruik van de plus en min knoppen of door gebruik van het muiswiel.
 Om in te zoomen op een gebied is het ook mogelijk om shift in te drukken, en een rechthoek te trekken in de kaart. Verschuiven van de kaart kan door middel van klikken en aansluitend slepen in de kaart.
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Keuze van de achtergrondkaart
 
@@ -62,10 +64,11 @@ Met deze knop kan het menu worden geopend waarin de gewenste achtergrondkaart in
 
 ![achtergrondkaartkeuze](https://gitlab.com/purmerend/atlas/uploads/1b7d5caded2865395439a3bd9f81445d/achtergrondkaartkeuze.png)
 
+---
 
-***
-* [Naar boven](#)
-***
+- [Naar boven](#)
+
+---
 
 ## GPS-locatie tonen
 
@@ -76,12 +79,13 @@ Gebruik hiervoor bovenstaand icoon. Let op dat locatievoorzieningen aan moeten s
 
 ![locatie2](https://gitlab.com/purmerend/atlas/uploads/3a91e921e507db346b6203e8def445f7/locatie2.png)
 
-***
-* [Naar boven](#)
-***
+---
 
+- [Naar boven](#)
 
-##  Keuze van de zichtbare kaartlagen
+---
+
+## Keuze van de zichtbare kaartlagen
 
 ![image4](https://gitlab.com/purmerend/atlas/uploads/6bf4a09f850e2632f9899a7eb669ad14/image4.png)
 
@@ -104,9 +108,11 @@ Een andere manier om een kaartlaag uit te zetten is om in de weergave met alleen
 ![knopverberg](https://gitlab.com/purmerend/atlas/uploads/799b7ef01254e69c678302fb37522d32/knopverberg.png)
 ![keuzevandezichtbarekaartlagen3](https://gitlab.com/purmerend/atlas/uploads/42027c1983cd64bde6e366f132dd5dd0/keuzevandezichtbarekaartlagen3.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Toon metadata van een kaartlaag
 
@@ -114,10 +120,11 @@ Wanneer met de muis over de verschillende kaartlagen gegaan wordt, dan verschijn
 
 ![metadata](https://gitlab.com/purmerend/atlas/uploads/0cf3ec8232f103c472025b5f623027d5/toon-metadata.png)
 
+---
 
-***
-* [Naar boven](#)
-***
+- [Naar boven](#)
+
+---
 
 ## Zoek op kaartlaag
 
@@ -125,9 +132,11 @@ Via het zoekveld van het kaartlagenvenster kun je zoeken naar kaartlagen. Wannee
 
 ![zoek_lagen](https://gitlab.com/purmerend/atlas/uploads/9b5eb36ad207a8a31fa046e2e1e1daa5/zoek_lagen.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Legenda
 
@@ -136,12 +145,13 @@ Klik op de video "Legenda tonen" om de handelingen te zien.
 
 ![legenda](https://gitlab.com/purmerend/atlas/uploads/32800a30bce3c5e2f03831fb6d086d51/legenda.png)
 
-
 [![Toon de legenda](https://gitlab.com/purmerend/atlas/uploads/8caca608eaf763590fa8123838d80443/uitleglegenda1.jpg)](https://gitlab.com/purmerend/atlas/uploads/67e022e1676fe08e4554d21195a9d692/uitleglegenda1.mp4 "Toon de legenda")
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Zichtbaarheid transparantie/opacity
 
@@ -150,9 +160,11 @@ De waarde 0 is volledig transparant, de waarde 100 is ondoorzichtig.
 
 ![zichtbaarheid](https://gitlab.com/purmerend/atlas/uploads/996504b4613070232853dd282dd9707d/zichtbaarheid.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Zoek adres
 
@@ -160,9 +172,11 @@ Er kan een adres gezocht worden met onderstaande zoekbalk. Selecteer een adres o
 
 ![kimono](https://gitlab.com/purmerend/atlas/uploads/b29c38b03ffb7ce8fc2d7d7cfbf99217/kimono.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Details van objecten tonen
 
@@ -175,10 +189,11 @@ Met de Toon details knop kan het detail paneel ingeklapt en uitgeklapt worden.
 
 ![toondetails2](https://gitlab.com/purmerend/atlas/uploads/50e0e44d7528c5d78c3ecc43e77eb12b/toondetails2.png)
 
+---
 
-***
-* [Naar boven](#)
-***
+- [Naar boven](#)
+
+---
 
 ## Gekoppelde gegevens bekijken
 
@@ -189,11 +204,11 @@ Als de beheerder gekoppelde tabellen heeft geconfigureerd, zijn bij het opvragen
 
 ![gekoppeldegegevens](https://gitlab.com/purmerend/atlas/uploads/9b8882b42a67c5272d2cce02e69ef438/gekoppeldegegevens.png)
 
-***
-* [Naar boven](#)
-***
+---
 
+- [Naar boven](#)
 
+---
 
 ## Objecten selecteren op de kaart binnen een polygoon
 
@@ -201,9 +216,11 @@ Met de knop Selecteer gebied kunnen objecten binnen een vlak gezocht worden. Er 
 
 ![objectenselecteren](https://gitlab.com/purmerend/atlas/uploads/788dbd7c5a0ed457ce9cf1062cecf38a/objectenselecteren.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 Teken een vlak in de kaart.
 
@@ -217,12 +234,13 @@ In dit voorbeeld is gekozen voor het selecteren van bomen binnen een vlak.
 
 Als u adressen in een vlak wilt selecteren zet dan de laag BAG Adressen (onder categorie Basisregistraties) zichtbaar. De geselecteerde objecten kunnen gedownload worden naar een csv (comma seperated value) bestand. Een dergelijk bestand kan bijvoorbeeld in Excel geopend worden.
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Rondkijkfoto
-
 
 Om de cyclorama's (rondkijkfoto's) en obliekfoto te openen, moet er eerst een locatie in de kaart aangegeven worden. Na een klik in de kaart
 verschijnt er een locatiesymbool in de kaart, en verschijnt rechts onderin de panoramaknop.
@@ -236,9 +254,11 @@ Het panorama scherm kan vergroot worden en gesloten worden met de getoonde knopp
 
 ![rondkijkfoto2](https://gitlab.com/purmerend/atlas/uploads/5046b3b15f58111bf25ec244e4bbf6c9/rondkijkfoto2.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Meten
 
@@ -246,9 +266,11 @@ Met de meetknop kunnen afstanden en oppervlaktes in de kaart gemeten worden. Kie
 
 ![meten](https://gitlab.com/purmerend/atlas/uploads/7cb9eb7ff579db9db346ccc2d5f4d16c/meten.png)
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Zoek op data
 
@@ -257,10 +279,11 @@ Met de knop Zoek op data, die naast zoek op adres staat, kunnen de gegevens van 
 Bij het openen van het zoek-op-data paneel worden de tabellen met gegevens van alle zichtbare lagen geopend. Klik op een laagnaam om de tabel open te klappen.
 Binnen de tabel kan gezocht worden op een aantal, door de beheerder ingestelde, zoekvelden. Na intypen van een zoekterm worden de resultaten per kaartlaag in het scherm weergegeven. Via het symbool Bekijk op kaart kan per gevonden resultaat naar het desbetreffende object in de kaart ingezoomd worden.
 
+---
 
-***
-* [Naar boven](#)
-***
+- [Naar boven](#)
+
+---
 
 ## Printen
 
@@ -273,18 +296,22 @@ Wanneer Atlas geopend is in de Firefox browser dan kan via de rechtermuisknop oo
 schermafbeelding maken**, en volg de aanwijzingen op het scherm. Het opslaan en printen van de schermselectie verloopt verder hetzelfde als
 met het knipprogramma.
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Huidige kaartscherm embedden in een andere webpagina
 
 In het \"Knoppen/Tools\" gedeelte van het scherm (rechtsboven) bestaat nu ook een functie Insluiten. Door hierop te klikken verschijnt het
 huidige scherm met de HTML code om deze op te vragen. Gebruik de code om deze kaartweergave met alle geselecteerde lagen weer te geven in een andere webpagina.
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Huidige kaartscherm delen met een collega
 
@@ -294,46 +321,50 @@ adresbalk van de browser vermeld. Daardoor is het mogelijk om de instellingen me
 Iemand die via de gedeelde link Atlas opent, ziet dezelfde instellingen
 betreffende:
 
--   Middelpunt van de kaart
--   Schaal van de kaart
--   Zichtbare lagen in de kaart
+- Middelpunt van de kaart
+- Schaal van de kaart
+- Zichtbare lagen in de kaart
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Gebruikte afkortingen
 
 In gemeenteland worden veel afkortingen gebruikt. Het is niet vanzelfsprekend dat iedereen weet waar deze afkortingen voor staan. Daarom hier een opsomming van de afkortingen die binnen Atlas gebruikt worden.
 
-- AFWC  Amsterdamse Federatie van Woningcorporaties
-- APV   Algemene Plaatselijke Verordening
-- AVG   Algemene Verordening Gegevensbescherming 
-- BAG   Basisregistratie Adressen en Gebouwen
-- BGT   Basisregistratie Grootschalige Topografie
-- BRK   Basisregistratie Kadaster
-- BRP   Basisregistratie Personen (Opvolger GBA - gemeentelijke basisadministratie persoonsgegevens)
-- HHNK  Hoogheemraadschap Hollands Noorderkwartier
-- NGR   Nationaal Georegister 
-- PDOK  Publieke Dienstverlening Op de Kaart
-- PWN   Provinciaal Waterleidingbedrijf Noord-Holland
-- RIVM  Rijksinstituut voor Volksgezondheid en Milieu
-- WOZ   Waardering Ontroerende Zaken
+- AFWC Amsterdamse Federatie van Woningcorporaties
+- APV Algemene Plaatselijke Verordening
+- AVG Algemene Verordening Gegevensbescherming
+- BAG Basisregistratie Adressen en Gebouwen
+- BGT Basisregistratie Grootschalige Topografie
+- BRK Basisregistratie Kadaster
+- BRP Basisregistratie Personen (Opvolger GBA - gemeentelijke basisadministratie persoonsgegevens)
+- HHNK Hoogheemraadschap Hollands Noorderkwartier
+- NGR Nationaal Georegister
+- PDOK Publieke Dienstverlening Op de Kaart
+- PWN Provinciaal Waterleidingbedrijf Noord-Holland
+- RIVM Rijksinstituut voor Volksgezondheid en Milieu
+- WOZ Waardering Ontroerende Zaken
 
-***
-* [Naar boven](#)
-***
+---
+
+- [Naar boven](#)
+
+---
 
 ## Inloggen binnen Atlas, intern en extern
 
-Atlas bevat zogenaamde open en gesloten kaartlagen. De open kaartlagen zijn te bekijken voor iedereen die toegang tot Atlas heeft. 
+Atlas bevat zogenaamde open en gesloten kaartlagen. De open kaartlagen zijn te bekijken voor iedereen die toegang tot Atlas heeft.
 De gesloten kaartlagen zijn alleen voor bepaalde gebruikersgroepen te bekijken. Voor alle gesloten kaartlagen geldt dat de gebruiker binnen Atlas moet inloggen. Daarnaast is het zo dat sommige kaartlagen
 alleen zichtbaar zijn wanneer de gebruiker ook binnen het Purmerend netwerk is ingelogd.
-De login binnen Atlas werkt volgens het 'Single Sign On'(SSO) principe. Wanneer een gebruiker binnen het netwerk van Purmerend al is ingelogd, dan is het inloggen binnen Atlas slechts een kwestie van op de 
+De login binnen Atlas werkt volgens het 'Single Sign On'(SSO) principe. Wanneer een gebruiker binnen het netwerk van Purmerend al is ingelogd, dan is het inloggen binnen Atlas slechts een kwestie van op de
 login-knop klikken. Probeert een gebruiker extern binnen Atlas in te loggen dan is het nodig eenmalig de accountnaam en wachtwoord in te geven. Dit is de standaard 2-factor authenticatie (2FA) login.
 Wanneer geprobeert wordt om gesloten kaartlaaggegevens op te vragen zonder ingelogd te zijn, dan is alleen de melding: "U moet ingelogd zijn om deze data te bekijken" zichtbaar. Wanneer geprobeert wordt om
 gesloten kaartlaaggegevens op te vragen zonder rechten hiervoor, dan is alleen de melding: "U heeft geen rechten om deze data te bekijken" zichtbaar. Mocht je onterecht een van deze meldingen zien, neem dan
-contact op met Datalab@Purmerend.nl .
+contact op met de beheerder van Atlas.
 
 ![loginscherm](https://gitlab.com/purmerend/atlas/uploads/f4978cd1560eeafb6d9767a47918b40a/loginscherm.png)
 
@@ -343,8 +374,8 @@ Klik linksboven in het Atlas-scherm op de drie verticale puntjes om het optiemen
 
 Wanneer extern binnen Atlas wordt ingelogt, dan is het nodig gebruikersnaam en wachtwoord in te geven.
 
-***
-* [Naar boven](#)
-***
+---
 
+- [Naar boven](#)
 
+---
