@@ -30,5 +30,6 @@ module.exports = {
     app: { entry: "src/app.js" },
     map: { entry: "src/map.js" },
     admin: { entry: "src/admin.js" },
+    tables: { entry: "src/tables.js" },
   },
 };

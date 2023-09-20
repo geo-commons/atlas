@@ -83,6 +83,7 @@ DATABASES = {
 
 INSTALLED_APPS = [
     'homepage',
+    'tables',
     'webservice',
     'user_management',
     'webpack_loader',
