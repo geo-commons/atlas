@@ -9,11 +9,11 @@ from .models import AtlasUser, AtlasGroup
 class AtlasUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'name',
                     'is_staff', 'is_superuser', 'is_active')
-
+    readonly_fields = ('external_id',)
     filter_horizontal = ('atlas_groups', )
 
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        (None, {'fields': ('username', 'external_id', 'password')}),
         (_('Personal info'), {
          'fields': ('name', 'email')}),
         (_('Permissions'), {

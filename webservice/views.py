@@ -55,6 +55,9 @@ def v3_authorize(request):
                 'id': request.user.id,
                 'username': request.user.username,
                 'name': request.user.name,
+                'groups': [
+                    g.slug for g in request.user.atlas_groups.filter(slug__isnull=False)
+                ]
             } if request.user.is_authenticated else None
         })
 
