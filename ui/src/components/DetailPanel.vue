@@ -35,6 +35,7 @@
 
         <markdown
           v-if="firstFeature.description"
+          class="description"
           :source="firstFeature.description"
           :inline="false"
         />
