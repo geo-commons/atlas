@@ -188,6 +188,11 @@ a {
   color: var(--color-primary);
 }
 
+.description >>> ul {
+  margin: 20px;
+  list-style-type: disc;
+}
+
 .featured-image {
   width: 100%;
   margin-top: calc(var(--padding-screen) * -1 + var(--width-button-large) * -1);
