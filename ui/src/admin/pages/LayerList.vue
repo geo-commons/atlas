@@ -51,49 +51,51 @@
       </div>
     </div>
 
-    <PaginationComponent
-      :items="layers"
-      :nr-of-records="nrOfRecords"
-      @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
-    >
-      <template #default>
-        <div v-if="layers.length > 0" class="">
-          <ul class="layers-list">
-            <li v-for="layer in paginatedData" :key="layer.id">
-              <div class="menu-item-wrapper">
-                <router-link
-                  class="layer-item-wrapper"
-                  :to="`/layers/update/${layer.id}`"
-                >
-                  {{ layer.title }}
-                </router-link>
-                <button
-                  v-tippy="{ placement: 'bottom' }"
-                  class="iconbutton round-icon-btn"
-                  aria-label="Verwijder laag"
-                  content="Verwijder"
-                  type="button"
-                  @click="deleteLayer(layer)"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    width="24px"
-                    fill="#000000"
+    <div class="layers-list-wrapper">
+      <PaginationComponent
+        :items="layers"
+        :nr-of-records="nrOfRecords"
+        @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
+      >
+        <template #default>
+          <div v-if="layers.length > 0" class="">
+            <ul class="layers-list">
+              <li v-for="layer in paginatedData" :key="layer.id">
+                <div class="menu-item-wrapper">
+                  <router-link
+                    class="layer-item-wrapper"
+                    :to="`/layers/update/${layer.id}`"
                   >
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path
-                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </template>
-    </PaginationComponent>
+                    {{ layer.title }}
+                  </router-link>
+                  <button
+                    v-tippy="{ placement: 'bottom' }"
+                    class="iconbutton round-icon-btn"
+                    aria-label="Verwijder laag"
+                    content="Verwijder"
+                    type="button"
+                    @click="deleteLayer(layer)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 0 24 24"
+                      width="24px"
+                      fill="#000000"
+                    >
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </template>
+      </PaginationComponent>
+    </div>
   </div>
 </template>
 
@@ -181,7 +183,7 @@ export default {
   gap: 30px;
 }
 
-ul.layers-list {
+.layers-list-wrapper {
   width: clamp(400px, 35%, 700px);
 }
 
@@ -194,23 +196,10 @@ ul.layers-list > li:not(:last-child) {
   align-items: center;
 }
 
-/* todo: move to general place */
-.flex {
-  display: flex;
-}
-
 .round-icon-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  align-items: center;
-  margin-left: auto;
 }
 
 .button {

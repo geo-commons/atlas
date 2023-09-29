@@ -4,7 +4,7 @@
       <slot></slot>
     </div>
 
-    <div class="" style="padding-top: 10px">
+    <div class="flex-center">
       <ul class="pagination">
         <!--      <li>-->
         <!--        <button class="iconbutton pagination-btn" @click="firstPage">-->
@@ -121,6 +121,10 @@ export default {
   border-radius: var(--radius-small);
   width: 30px;
   height: 30px;
+}
+
+.pagination {
+  padding-top: 10px;
 }
 
 ul.pagination > li {
