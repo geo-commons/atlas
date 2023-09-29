@@ -50,91 +50,66 @@
         />
       </div>
     </div>
-    <div v-if="layers.length > 0" class="">
-      <!-- v-for="layer in layers" :key="layer.id" -->
-      <ul>
-        <li
-          v-for="layer in paginatedData"
-          :key="layer.id"
-          class="layer-item-wrapper"
-        >
-          <button>
-            <router-link :to="`/layers/update/${layer.id}`">{{
-              layer.title
-            }}</router-link>
-          </button>
-          <div class="buttons">
-            <button
-              v-tippy="{ placement: 'bottom' }"
-              class="iconbutton"
-              aria-label="Bewerk laag"
-              content="Bewerk"
-              type="button"
-            >
-              <router-link :to="`/layers/update/${layer.id}`" class="flex">
-                <edit-icon />
-              </router-link>
-            </button>
-            <button
-              v-tippy="{ placement: 'bottom' }"
-              class="iconbutton"
-              aria-label="Verwijder laag"
-              content="Verwijder"
-              type="button"
-              @click="deleteLayer(layer)"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 0 24 24"
-                width="24px"
-                fill="#000000"
-              >
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path
-                  d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                />
-              </svg>
-            </button>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div style="display: flex; gap: 20px">
-      <button
-        :disabled="pageNumber === 0"
-        class="button __tertiary __large"
-        @click="prevPage"
-      >
-        Previous
-      </button>
-      1
-      {{ pageNumber + 1 }}
-      {{ pageCount }}
-      <button
-        :disabled="pageNumber >= pageCount - 1"
-        class="button __tertiary __large"
-        @click="nextPage"
-      >
-        Next
-      </button>
-    </div>
+
+    <PaginationComponent
+      :items="layers"
+      :nr-of-records="nrOfRecords"
+      @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
+    >
+      <template #default>
+        <div v-if="layers.length > 0" class="">
+          <ul class="layers-list">
+            <li v-for="layer in paginatedData" :key="layer.id">
+              <div class="menu-item-wrapper">
+                <router-link
+                  class="layer-item-wrapper"
+                  :to="`/layers/update/${layer.id}`"
+                >
+                  {{ layer.title }}
+                </router-link>
+                <button
+                  v-tippy="{ placement: 'bottom' }"
+                  class="iconbutton round-icon-btn"
+                  aria-label="Verwijder laag"
+                  content="Verwijder"
+                  type="button"
+                  @click="deleteLayer(layer)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 0 24 24"
+                    width="24px"
+                    fill="#000000"
+                  >
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </template>
+    </PaginationComponent>
   </div>
 </template>
 
 <script>
 import AddIcon from "../../icons/AddIcon.vue";
 import Cookies from "js-cookie";
-import EditIcon from "../../icons/EditIcon.vue";
+import PaginationComponent from "@/components/Pagination.vue";
 
 export default {
   name: "LayerList",
-  components: { AddIcon, EditIcon },
+  components: { PaginationComponent, AddIcon },
   data() {
     return {
       layers: [],
       searchQuery: "",
-      pageNumber: 0,
+      currentPageNumber: 0,
       nrOfRecords: 10,
     };
   },
@@ -150,12 +125,8 @@ export default {
           -1
       );
     },
-    pageCount() {
-      let nrOfPages = this.visibleLayers.length;
-      return Math.ceil(nrOfPages / this.nrOfRecords);
-    },
     paginatedData() {
-      const start = this.pageNumber * this.nrOfRecords;
+      const start = this.currentPageNumber * this.nrOfRecords;
       const end = start + this.nrOfRecords;
       return this.visibleLayers.slice(start, end);
     },
@@ -197,12 +168,6 @@ export default {
         this.getLayers();
       }
     },
-    nextPage() {
-      this.pageNumber++;
-    },
-    prevPage() {
-      this.pageNumber--;
-    },
   },
 };
 </script>
@@ -216,9 +181,28 @@ export default {
   gap: 30px;
 }
 
+ul.layers-list {
+  width: clamp(400px, 35%, 700px);
+}
+
+ul.layers-list > li:not(:last-child) {
+  //border-bottom: 1px solid var(--color-grey-60);
+}
+
+.menu-item-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 /* todo: move to general place */
 .flex {
   display: flex;
+}
+
+.round-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .buttons {
@@ -261,34 +245,14 @@ export default {
 .layer-item-wrapper {
   display: flex;
   align-items: center;
-  width: clamp(400px, 35%, 700px);
+  flex-grow: 1;
+  text-decoration: none;
+  color: var(--color-text-grey);
   border-radius: var(--radius-normal);
   padding: 10px 10px;
 }
 
 .layer-item-wrapper:hover {
-  background: var(--color-grey-20);
-}
-
-/* source? */
-.source a {
-  padding: 12px 0 12px 20px;
-  flex-grow: 1;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  text-decoration: none;
-}
-
-.source a:hover,
-.source a:focus {
-  text-decoration: underline;
-}
-
-.source .iconbutton {
-  margin-right: 8px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  background: var(--color-grey-40);
 }
 </style>
