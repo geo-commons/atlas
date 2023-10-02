@@ -16,23 +16,9 @@
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
-          <g
-            id="Admin"
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd"
-          >
-            <g
-              id="Kaart---Lagen"
-              transform="translate(-45.000000, -183.000000)"
-              fill="#000000"
-              fill-rule="nonzero"
-            >
-              <g
-                id="search_black_24dp"
-                transform="translate(42.000000, 180.000000)"
-              >
+          <g id="Admin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Kaart---Lagen" transform="translate(-45.000000, -183.000000)" fill="#000000" fill-rule="nonzero">
+              <g id="search_black_24dp" transform="translate(42.000000, 180.000000)">
                 <path
                   id="Shape"
                   d="M15.5,14 L14.71,14 L14.43,13.73 C15.41,12.59 16,11.11 16,9.5 C16,5.91 13.09,3 9.5,3 C5.91,3 3,5.91 3,9.5 C3,13.09 5.91,16 9.5,16 C11.11,16 12.59,15.41 13.73,14.43 L14,14.71 L14,15.5 L19,20.49 L20.49,19 L15.5,14 Z M9.5,14 C7.01,14 5,11.99 5,9.5 C5,7.01 7.01,5 9.5,5 C11.99,5 14,7.01 14,9.5 C14,11.99 11.99,14 9.5,14 Z"
@@ -41,58 +27,35 @@
             </g>
           </g>
         </svg>
-        <input
-          id="layers-search"
-          v-model="searchQuery"
-          type="search"
-          name="query"
-          placeholder="Zoek laag"
-        />
+        <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
       </div>
     </div>
 
-    <div class="layers-list-wrapper">
-      <PaginationComponent
-        :items="layers"
-        :nr-of-records="nrOfRecords"
-        @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
-      >
+    <div v-if="layers.length > 0" class="layers-list-wrapper">
+      <PaginationComponent :items="layers" :nr-of-records="nrOfRecords" @page-change="(pageNumber) => (currentPageNumber = pageNumber)">
         <template #default>
-          <div v-if="layers.length > 0" class="">
-            <ul class="layers-list">
-              <li v-for="layer in paginatedData" :key="layer.id">
-                <div class="menu-item-wrapper">
-                  <router-link
-                    class="layer-item-wrapper"
-                    :to="`/layers/update/${layer.id}`"
-                  >
-                    {{ layer.title }}
-                  </router-link>
-                  <button
-                    v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round"
-                    aria-label="Verwijder laag"
-                    content="Verwijder"
-                    type="button"
-                    @click="deleteLayer(layer)"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      width="24px"
-                      fill="#000000"
-                    >
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path
-                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <ul class="layers-list">
+            <li v-for="layer in paginatedData" :key="layer.id">
+              <div class="menu-item-wrapper">
+                <router-link class="layer-item-wrapper" :to="`/layers/update/${layer.id}`">
+                  {{ layer.title }}
+                </router-link>
+                <button
+                  v-tippy="{ placement: 'bottom' }"
+                  class="iconbutton __normal __round"
+                  aria-label="Verwijder laag"
+                  content="Verwijder"
+                  type="button"
+                  @click="deleteLayer(layer)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </button>
+              </div>
+            </li>
+          </ul>
         </template>
       </PaginationComponent>
     </div>
@@ -111,7 +74,7 @@ export default {
     return {
       layers: [],
       searchQuery: "",
-      currentPageNumber: 0,
+      currentPageNumber: 1,
       nrOfRecords: 10,
     };
   },
@@ -121,14 +84,10 @@ export default {
         return this.layers;
       }
 
-      return this.layers.filter(
-        (layer) =>
-          layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !==
-          -1
-      );
+      return this.layers.filter((layer) => layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1).slice;
     },
     paginatedData() {
-      const start = this.currentPageNumber * this.nrOfRecords;
+      const start = (this.currentPageNumber - 1) * this.nrOfRecords;
       const end = start + this.nrOfRecords;
       return this.visibleLayers.slice(start, end);
     },
@@ -148,11 +107,10 @@ export default {
       }
 
       this.layers = await result.json();
+      this.layers = this.layers.slice(0, 65);
     },
     async deleteLayer(layer) {
-      const acknowledged = confirm(
-        "Weet je zeker dat je de laag wil verwijderen?"
-      );
+      const acknowledged = confirm("Weet je zeker dat je de laag wil verwijderen?");
       if (!acknowledged) {
         return;
       }

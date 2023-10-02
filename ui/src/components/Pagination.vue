@@ -4,55 +4,34 @@
       <slot></slot>
     </div>
 
-    <div class="flex-center">
+    <div v-if="items && pages.length > 1" class="flex-center">
       <ul class="pagination">
-        <!--      <li>-->
-        <!--        <button class="iconbutton pagination-btn" @click="firstPage">-->
-        <!--          <DoubleChevronLeftIcon />-->
-        <!--        </button>-->
-        <!--      </li>-->
         <li>
-          <button
-            :disabled="pageNumber === 0"
-            class="iconbutton pagination-btn"
-            @click="prevPage"
-          >
+          <button v-show="currentPageNumber > 1" class="iconbutton pagination-btn bg-color" @click="prevPage">
             <ChevronLeftIcon />
           </button>
         </li>
-        <li>
-          <button class="iconbutton pagination-btn" @click="firstPage">
-            1
+        <li :class="`${currentPageNumber === 1 ? 'active-page' : ''}`">
+          <button class="iconbutton pagination-btn" @click="firstPage">1</button>
+        </li>
+        <li v-if="hasElipses && currentPageNumber >= 5">...</li>
+        <li v-for="page in visiblePageLabels" :key="page.label" :class="`${currentPageNumber === page.label ? 'active-page' : ''}`">
+          <span v-if="page.disabled">...</span>
+          <button v-else class="iconbutton pagination-btn" @click="gotoPage(page.label)">
+            {{ page.label }}
           </button>
         </li>
-        <li>
-          <button class="iconbutton pagination-btn" @click="lastPage">
-            {{ pageNumber + 1 }}
-          </button>
-        </li>
-        <li>
+        <li v-if="hasElipses && currentPageNumber <= pageCount - 4">...</li>
+        <li :class="`${currentPageNumber === pageCount ? 'active-page' : ''}`">
           <button class="iconbutton pagination-btn" @click="lastPage">
             {{ pageCount }}
           </button>
         </li>
         <li>
-          <button
-            :disabled="pageNumber >= pageCount - 1"
-            class="iconbutton pagination-btn"
-            @click="nextPage"
-          >
+          <button v-show="currentPageNumber < pageCount" class="iconbutton pagination-btn bg-color" @click="nextPage">
             <ChevronRightIcon />
           </button>
         </li>
-        <!--      <li>-->
-        <!--        <button-->
-        <!--          :disabled="pageNumber >= pageCount - 1"-->
-        <!--          class="iconbutton pagination-btn"-->
-        <!--          @click="lastPage"-->
-        <!--        >-->
-        <!--          <DoubleChevronRightIcon />-->
-        <!--        </button>-->
-        <!--      </li>-->
       </ul>
     </div>
   </div>
@@ -61,24 +40,22 @@
 <script>
 import ChevronLeftIcon from "@/icons/ChevronLeftIcon.vue";
 import ChevronRightIcon from "@/icons/ChevronRightIcon.vue";
-// import DoubleChevronRightIcon from "@/icons/DoubleChevronRightIcon.vue";
-// import DoubleChevronLeftIcon from "@/icons/DoubleChevronLeftIcon.vue";
 
 export default {
   name: "PaginationComponent",
   components: {
     ChevronLeftIcon,
-    // DoubleChevronLeftIcon,
-    // DoubleChevronRightIcon,
     ChevronRightIcon,
   },
   props: {
     items: Array,
     nrOfRecords: { default: 10, type: Number },
+    displayRange: { default: 5, type: Number },
   },
   data() {
     return {
-      pageNumber: 0,
+      currentPageNumber: 1,
+      pages: [],
     };
   },
   computed: {
@@ -86,29 +63,69 @@ export default {
       let nrOfPages = this.items.length;
       return Math.ceil(nrOfPages / this.nrOfRecords);
     },
-    paginatedData() {
-      const start = this.pageNumber * this.nrOfRecords;
-      const end = start + this.nrOfRecords;
-      return this.items.slice(start, end);
+    visiblePageLabels() {
+      // comment
+      if (this.pageCount <= this.displayRange) {
+        return this.pages.slice(1, this.pageCount - 1);
+      }
+
+      // Return the first page numbers when the current page number is smaller than the display range.
+      if (this.currentPageNumber < this.displayRange) {
+        return this.pages.slice(1, 5);
+        // console.log("minder dan 5", this.pages);
+        // output = this.pages.slice(1, 5);
+        // return output;
+      }
+
+      // Return the last page numbers when being in range of the final page number.
+      if (this.currentPageNumber > this.pageCount - 4) {
+        output = this.pages.slice(this.pageCount - 5, this.pageCount - 1);
+        return output;
+      }
+
+      let valPrev = this.currentPageNumber - 1; // for easier navigation - gives one previous page
+      let valNext = this.currentPageNumber + 1; // one next page
+
+      let output = [];
+
+      output = this.pages.slice(valPrev, valNext);
+      console.log(output);
+      // return output;
+      return this.pages.slice(valPrev - 1, valNext);
+    },
+    hasElipses() {
+      return this.pageCount > this.displayRange + 1;
     },
   },
-  mounted() {},
+  mounted() {
+    for (let i = 1; i <= this.pageCount; i += 1) {
+      this.pages.push({
+        label: i,
+      });
+    }
+
+    console.log(this.pages);
+  },
   methods: {
     nextPage() {
-      this.pageNumber++;
-      this.$emit("page-change", this.pageNumber);
+      this.currentPageNumber++;
+      this.$emit("page-change", this.currentPageNumber);
     },
     prevPage() {
-      this.pageNumber--;
-      this.$emit("page-change", this.pageNumber);
+      this.currentPageNumber--;
+      this.$emit("page-change", this.currentPageNumber);
     },
     firstPage() {
-      this.pageNumber = 0;
-      this.$emit("page-change", this.pageNumber);
+      this.currentPageNumber = 1;
+      this.$emit("page-change", this.currentPageNumber);
     },
     lastPage() {
-      this.pageNumber = this.pageCount - 1;
-      this.$emit("page-change", this.pageNumber);
+      this.currentPageNumber = this.pageCount;
+      this.$emit("page-change", this.currentPageNumber);
+    },
+    gotoPage(pageNr) {
+      this.currentPageNumber = pageNr;
+      this.$emit("page-change", this.currentPageNumber);
     },
   },
 };
@@ -116,15 +133,23 @@ export default {
 
 <style scoped>
 .pagination-btn {
-  //border: solid 1px var(--color-grey-60);
-  background: var(--color-grey-20);
   border-radius: var(--radius-small);
   width: 30px;
   height: 30px;
 }
 
+.bg-color {
+  background: var(--color-grey-20);
+}
+
+.active-page {
+  border-radius: var(--radius-small);
+  border: 1px solid var(--color-primary);
+}
+
 .pagination {
-  padding-top: 10px;
+  //padding-top: 10px;
+  padding: 10px 0;
 }
 
 ul.pagination > li {
