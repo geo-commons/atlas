@@ -31,8 +31,8 @@
       </div>
     </div>
 
-    <div v-if="layers.length > 0" class="layers-list-wrapper">
-      <PaginationComponent :items="layers" :nr-of-records="nrOfRecords" @page-change="(pageNumber) => (currentPageNumber = pageNumber)">
+    <div v-if="visibleLayers.length > 0" class="layers-list-wrapper">
+      <PaginationComponent :items="visibleLayers" :nr-of-records="nrOfRecords" @page-change="(pageNumber) => (currentPageNumber = pageNumber)">
         <template #default>
           <ul class="layers-list">
             <li v-for="layer in paginatedData" :key="layer.id">
@@ -84,7 +84,7 @@ export default {
         return this.layers;
       }
 
-      return this.layers.filter((layer) => layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1).slice;
+      return this.layers.filter((layer) => layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1);
     },
     paginatedData() {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
@@ -107,7 +107,6 @@ export default {
       }
 
       this.layers = await result.json();
-      this.layers = this.layers.slice(0, 65);
     },
     async deleteLayer(layer) {
       const acknowledged = confirm("Weet je zeker dat je de laag wil verwijderen?");
@@ -142,11 +141,11 @@ export default {
 }
 
 .layers-list-wrapper {
-  width: clamp(400px, 35%, 700px);
+  width: clamp(335px, 70%, 800px);
 }
 
 ul.layers-list > li:not(:last-child) {
-  //border-bottom: 1px solid var(--color-grey-60);
+  border-bottom: 1px solid var(--color-grey-60);
 }
 
 .menu-item-wrapper {

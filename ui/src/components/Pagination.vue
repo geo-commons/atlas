@@ -14,14 +14,13 @@
         <li :class="`${currentPageNumber === 1 ? 'active-page' : ''}`">
           <button class="iconbutton pagination-btn" @click="firstPage">1</button>
         </li>
-        <li v-if="hasElipses && currentPageNumber >= 5">...</li>
-        <li v-for="page in visiblePageLabels" :key="page.label" :class="`${currentPageNumber === page.label ? 'active-page' : ''}`">
-          <span v-if="page.disabled">...</span>
-          <button v-else class="iconbutton pagination-btn" @click="gotoPage(page.label)">
+        <li v-if="hasEllipses && currentPageNumber >= displayRange">...</li>
+        <li v-for="page in visiblePages" :key="page.label" :class="`${currentPageNumber === page.label ? 'active-page' : ''}`">
+          <button class="iconbutton pagination-btn" @click="gotoPage(page.label)">
             {{ page.label }}
           </button>
         </li>
-        <li v-if="hasElipses && currentPageNumber <= pageCount - 4">...</li>
+        <li v-if="hasEllipses && currentPageNumber <= pageCount - (displayRange - 1)">...</li>
         <li :class="`${currentPageNumber === pageCount ? 'active-page' : ''}`">
           <button class="iconbutton pagination-btn" @click="lastPage">
             {{ pageCount }}
@@ -63,50 +62,48 @@ export default {
       let nrOfPages = this.items.length;
       return Math.ceil(nrOfPages / this.nrOfRecords);
     },
-    visiblePageLabels() {
-      // comment
+    visiblePages() {
+      // When the  total number of pages is smaller than the range of pages that will be shown,
+      // simply return the page number minus first and last page.
       if (this.pageCount <= this.displayRange) {
         return this.pages.slice(1, this.pageCount - 1);
       }
 
       // Return the first page numbers when the current page number is smaller than the display range.
       if (this.currentPageNumber < this.displayRange) {
-        return this.pages.slice(1, 5);
-        // console.log("minder dan 5", this.pages);
-        // output = this.pages.slice(1, 5);
-        // return output;
+        return this.pages.slice(1, this.displayRange);
       }
 
-      // Return the last page numbers when being in range of the final page number.
-      if (this.currentPageNumber > this.pageCount - 4) {
-        output = this.pages.slice(this.pageCount - 5, this.pageCount - 1);
-        return output;
+      // Return the last page numbers when being in range of the page count number.
+      if (this.currentPageNumber > this.pageCount - (this.displayRange - 1)) {
+        return this.pages.slice(this.pageCount - this.displayRange, this.pageCount - 1);
       }
 
-      let valPrev = this.currentPageNumber - 1; // for easier navigation - gives one previous page
-      let valNext = this.currentPageNumber + 1; // one next page
-
-      let output = [];
-
-      output = this.pages.slice(valPrev, valNext);
-      console.log(output);
-      // return output;
-      return this.pages.slice(valPrev - 1, valNext);
+      // Compute the range for the pages array to slice.
+      // Due to how slice computes its indexes valPrev is -2.
+      let valPrev = this.currentPageNumber - 2;
+      let valNext = this.currentPageNumber + 1;
+      return this.pages.slice(valPrev, valNext);
     },
-    hasElipses() {
+    hasEllipses() {
       return this.pageCount > this.displayRange + 1;
     },
   },
+  watch: {
+    items: "getPageNrArray",
+  },
   mounted() {
-    for (let i = 1; i <= this.pageCount; i += 1) {
-      this.pages.push({
-        label: i,
-      });
-    }
-
-    console.log(this.pages);
+    this.getPageNrArray();
   },
   methods: {
+    getPageNrArray() {
+      this.pages = [];
+      for (let i = 1; i <= this.pageCount; i += 1) {
+        this.pages.push({
+          label: i,
+        });
+      }
+    },
     nextPage() {
       this.currentPageNumber++;
       this.$emit("page-change", this.currentPageNumber);
@@ -148,7 +145,6 @@ export default {
 }
 
 .pagination {
-  //padding-top: 10px;
   padding: 10px 0;
 }
 
