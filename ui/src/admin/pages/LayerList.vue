@@ -70,7 +70,7 @@
                   </router-link>
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton round-icon-btn"
+                    class="iconbutton __normal __round"
                     aria-label="Verwijder laag"
                     content="Verwijder"
                     type="button"
@@ -194,12 +194,6 @@ ul.layers-list > li:not(:last-child) {
 .menu-item-wrapper {
   display: flex;
   align-items: center;
-}
-
-.round-icon-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
 }
 
 .button {
