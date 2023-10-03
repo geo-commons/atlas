@@ -14,13 +14,13 @@
         <li :class="`${currentPageNumber === 1 ? 'active-page' : ''}`">
           <button class="iconbutton pagination-btn" @click="firstPage">1</button>
         </li>
-        <li v-if="hasEllipses && currentPageNumber >= displayRange">...</li>
+        <li v-if="hasEllipses && currentPageNumber >= displayRange" class="flex-center ellipses-wrapper">...</li>
         <li v-for="page in visiblePages" :key="page.label" :class="`${currentPageNumber === page.label ? 'active-page' : ''}`">
           <button class="iconbutton pagination-btn" @click="gotoPage(page.label)">
             {{ page.label }}
           </button>
         </li>
-        <li v-if="hasEllipses && currentPageNumber <= pageCount - (displayRange - 1)">...</li>
+        <li v-if="hasEllipses && currentPageNumber <= pageCount - (displayRange - 1)" class="flex-center ellipses-wrapper">...</li>
         <li :class="`${currentPageNumber === pageCount ? 'active-page' : ''}`">
           <button class="iconbutton pagination-btn" @click="lastPage">
             {{ pageCount }}
@@ -154,5 +154,9 @@ ul.pagination > li {
 
 ul.pagination > li:not(:last-child) {
   margin-right: 6px;
+}
+
+.ellipses-wrapper {
+  height: 30px;
 }
 </style>
