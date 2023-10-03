@@ -2,7 +2,7 @@
   <div class="container">
     <div class="top-menu-container">
       <button>
-        <router-link to="/layer/create" class="button __tertiary __large">
+        <router-link to="/layers/create" class="button __tertiary __large">
           <add-icon />
           <span style="padding-right: 6px">Maak laag</span>
         </router-link>

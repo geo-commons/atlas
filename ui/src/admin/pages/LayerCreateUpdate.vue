@@ -13,7 +13,7 @@
           </div>
 
           <div class="flexer">
-            <router-link to="/sources" class="button __tertiary">Annuleer</router-link>
+            <router-link to="/layers" class="button __tertiary">Annuleer</router-link>
             <button class="button __primary" type="submit">Opslaan</button>
           </div>
         </form>
@@ -51,7 +51,7 @@ export default {
         });
 
         if (!result.ok) {
-          console.error("Could not fetch source");
+          console.error("Could not fetch layer");
         }
 
         this.data = await result.json();
