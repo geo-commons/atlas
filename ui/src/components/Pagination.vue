@@ -15,9 +15,9 @@
           <button class="iconbutton pagination-btn" @click="firstPage">1</button>
         </li>
         <li v-if="hasEllipses && currentPageNumber >= displayRange" class="flex-center ellipses-wrapper">...</li>
-        <li v-for="page in visiblePages" :key="page.label" :class="`${currentPageNumber === page.label ? 'active-page' : ''}`">
-          <button class="iconbutton pagination-btn" @click="gotoPage(page.label)">
-            {{ page.label }}
+        <li v-for="pageNr in visiblePages" :key="pageNr" :class="`${currentPageNumber === pageNr ? 'active-page' : ''}`">
+          <button class="iconbutton pagination-btn" @click="gotoPage(pageNr)">
+            {{ pageNr }}
           </button>
         </li>
         <li v-if="hasEllipses && currentPageNumber <= pageCount - (displayRange - 1)" class="flex-center ellipses-wrapper">...</li>
@@ -90,7 +90,7 @@ export default {
     },
   },
   watch: {
-    items: "getPageNrArray",
+    items: "resetPagination",
   },
   mounted() {
     this.getPageNrArray();
@@ -99,9 +99,7 @@ export default {
     getPageNrArray() {
       this.pages = [];
       for (let i = 1; i <= this.pageCount; i += 1) {
-        this.pages.push({
-          label: i,
-        });
+        this.pages.push(i);
       }
     },
     nextPage() {
@@ -123,6 +121,10 @@ export default {
     gotoPage(pageNr) {
       this.currentPageNumber = pageNr;
       this.$emit("page-change", this.currentPageNumber);
+    },
+    resetPagination() {
+      this.getPageNrArray();
+      this.firstPage();
     },
   },
 };
