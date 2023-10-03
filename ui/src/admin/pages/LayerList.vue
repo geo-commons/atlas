@@ -1,12 +1,11 @@
 <template>
   <div class="container">
     <div class="top-menu-container">
-      <button>
-        <router-link to="/layers/create" class="button __tertiary __large">
-          <add-icon />
-          <span style="padding-right: 6px">Maak laag</span>
-        </router-link>
-      </button>
+      <router-link to="/layers/create" class="button __tertiary __large">
+        <add-icon />
+        <span style="padding-right: 6px">Maak laag</span>
+      </router-link>
+      <button class="button __tertiary __large" @click="openFormModal">Nieuwe laag</button>
       <div class="search-wrapper">
         <svg
           width="18px"
@@ -30,6 +29,11 @@
         <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
       </div>
     </div>
+
+    <FormModal v-show="showFormModal" @close="closeFormModal">
+      <template #header> header </template>
+      <template #body> body </template>
+    </FormModal>
 
     <div v-if="visibleLayers.length > 0" class="layers-list-wrapper">
       <PaginationComponent :items="visibleLayers" :nr-of-records="nrOfRecords" @page-change="(pageNumber) => (currentPageNumber = pageNumber)">
@@ -66,16 +70,18 @@
 import AddIcon from "../../icons/AddIcon.vue";
 import Cookies from "js-cookie";
 import PaginationComponent from "@/components/Pagination.vue";
+import FormModal from "@/components/FormModal.vue";
 
 export default {
   name: "LayerList",
-  components: { PaginationComponent, AddIcon },
+  components: { FormModal, PaginationComponent, AddIcon },
   data() {
     return {
       layers: [],
       searchQuery: "",
       currentPageNumber: 1,
       nrOfRecords: 10,
+      showFormModal: false,
     };
   },
   computed: {
@@ -126,6 +132,12 @@ export default {
       if (result.ok) {
         this.getLayers();
       }
+    },
+    openFormModal() {
+      this.showFormModal = true;
+    },
+    closeFormModal() {
+      this.showFormModal = false;
     },
   },
 };
