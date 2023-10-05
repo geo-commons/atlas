@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, StreamingHttpResponse
-from django.shortcuts import HttpResponse, get_object_or_404
+from django.shortcuts import HttpResponse
 from django.views.decorators.http import require_http_methods
 import fiona
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -32,13 +32,19 @@ def v3_authorize(request):
             'message': 'The header X-Source-Slug is not defined'
         }, status=400)
 
-    source = get_object_or_404(Source, slug=source_slug)
+    try:
+        source = Source.objects.get(slug=source_slug)
+    except Source.DoesNotExist:
+        return JsonResponse({
+            'allow': False,
+            'message': f'could not find source with slug {source_slug}'
+        }, status=400)
 
     if not can_request_access_source(request, source):
         return JsonResponse({
             'allow': False,
-            'message': 'unauthorized'
-        }, status=401)
+            'message': f'user does not have access to source {source_slug}'
+        }, status=403 if request.user.is_authenticated else 401)
 
     result = False
     if source.source_type == Source.SOURCE_OWS:
@@ -63,8 +69,8 @@ def v3_authorize(request):
 
     return JsonResponse({
         'allow': False,
-        'message': 'unauthorized request for user'
-    }, status=401)
+        'message': f'user does not have access to layer of source {source_slug}'
+    }, status=403 if request.user.is_authenticated else 401)
 
 
 @require_http_methods(['POST'])
