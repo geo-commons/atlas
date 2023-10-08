@@ -452,7 +452,54 @@ class Template(models.Model):
         }
 
 
+class MapManager(models.Manager):
+    def for_request(self, request):
+        if request.user.is_anonymous:
+            return self.filter(login_required=False)
+
+        return self.all()
+
+
+class SelectionManager(models.Manager):
+    def for_request(self, request):
+        if request.user.is_anonymous:
+            return self.filter(login_required=False)
+
+        return self.all()
+
+
+class Selection(models.Model):
+    objects = models.Manager()
+    authorized = SelectionManager()
+
+    title = models.CharField('Titel', max_length=128, null=True)
+    slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
+                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.')
+
+    layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
+
+    login_required = models.BooleanField(
+        'Vereis inlog voor deze selectie', default=False, help_text='De selectie kan alleen bekeken worden door ingelogde gebruikers.')
+
+    class Meta:
+        verbose_name = 'Selectie'
+        verbose_name_plural = 'Selecties'
+
+    def __str__(self):
+        return self.title
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'slug': self.slug,
+            'layers': [layer.to_dict() for layer in self.layers.all()]
+        }
+
+
 class Map(models.Model):
+    objects = models.Manager()
+    authorized = MapManager()
+
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas.')
@@ -462,6 +509,9 @@ class Map(models.Model):
         default=dict, blank=True, verbose_name='Functies')
     settings = models.JSONField(
         default=dict, blank=True, verbose_name='Instellingen')
+
+    login_required = models.BooleanField(
+        'Vereis inlog voor deze kaart', default=False, help_text='De inhoud van deze kaart kan alleen bekeken worden door ingelogde gebruikers.')
 
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'

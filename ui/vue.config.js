@@ -3,10 +3,7 @@ const BundleTracker = require("webpack-bundle-tracker");
 const DEPLOYMENT_PATH = "/atlas/static/dist/";
 
 module.exports = {
-  publicPath:
-    process.env.NODE_ENV === "production"
-      ? DEPLOYMENT_PATH
-      : "http://localhost:8081/",
+  publicPath: process.env.NODE_ENV === "production" ? DEPLOYMENT_PATH : "http://localhost:8081/",
   outputDir: "../homepage/static/dist",
 
   devServer: {
@@ -17,9 +14,7 @@ module.exports = {
   },
 
   configureWebpack: {
-    plugins: [
-      new BundleTracker({ path: __dirname, filename: "webpack-stats.json" }),
-    ],
+    plugins: [new BundleTracker({ path: __dirname, filename: "webpack-stats.json" })],
   },
 
   css: {
@@ -31,5 +26,6 @@ module.exports = {
     map: { entry: "src/map.js" },
     admin: { entry: "src/admin.js" },
     tables: { entry: "src/tables.js" },
+    portal: { entry: "src/portal.js" },
   },
 };

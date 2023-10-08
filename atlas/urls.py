@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from django.views.generic.base import RedirectView
 from django.views.static import serve
 from django.conf import settings
 from revproxy.views import ProxyView
@@ -54,6 +53,5 @@ if settings.DEBUG:
 urlpatterns += [
     path('atlas/', include('homepage.urls'), name='homepage'),
     path('tables/', include('tables.urls'), name='tables'),
-    path("__debug__/", include("debug_toolbar.urls")),
-    path('', RedirectView.as_view(url='/atlas/'))
+    path('', include('portal.urls'), name='portal')
 ]

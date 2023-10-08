@@ -19,6 +19,7 @@ class Table(models.Model):
         (METHOD_POST, 'POST'),
     ]
 
+    objects = models.Manager()
     authorized = TableManager()
 
     title = models.CharField('Titel', max_length=128)
@@ -38,8 +39,8 @@ class Table(models.Model):
     list_fields = models.TextField(
         'Velden in lijstweergave', blank=True, null=True)
 
-    search_fields = models.TextField(
-        'Velden waarop gezocht kan worden', blank=True, null=True)
+    search_fields = models.JSONField(
+        'Velden waarop gezocht kan worden', blank=True, default=list)
 
     login_required = models.BooleanField(
         'Vereis inlog voor deze tabel', default=False, help_text='De tabel is alleen zichtbaar voor ingelogde gebruikers.')
@@ -71,7 +72,7 @@ class Table(models.Model):
             'list_query': self.list_query,
             'list_headings': self.list_headings.split('\r\n') if self.list_headings else [],
             'list_fields': self.list_fields.split('\r\n') if self.list_fields else [],
-            'search_fields': self.search_fields.split('\r\n') if self.search_fields else [],
+            'search_fields': self.search_fields,
             'login_required': self.login_required,
             'created_at': self.created_at,
             'updated_at': self.updated_at

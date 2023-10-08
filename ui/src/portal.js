@@ -4,15 +4,18 @@ import "whatwg-fetch";
 
 import Vue from "vue";
 import Vuex from "vuex";
+import VueRouter from "vue-router";
 import VueTippy, { TippyComponent } from "vue-tippy";
 
 import { createStore } from "./store";
-import { getSettingsFromPath } from "./utils/router";
-import App from "./map/App";
+import App from "./portal/App";
+import IndexView from "./portal/pages/IndexView";
+import NotFound from "./portal/pages/NotFound";
 
 Vue.config.productionTip = false;
 
 Vue.use(Vuex);
+Vue.use(VueRouter);
 Vue.use(VueTippy, {
   directive: "tippy",
   distance: 5,
@@ -27,7 +30,13 @@ Vue.use(VueTippy, {
 });
 Vue.component("VueTippy", TippyComponent);
 
-// Atlas v3
+const routes = [
+  { path: "/", component: IndexView },
+  { path: "*", component: NotFound },
+];
+
+const router = new VueRouter({ routes });
+
 document.addEventListener("DOMContentLoaded", () => {
   const el = document.querySelector("#app");
   if (!el) {
@@ -35,30 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const data = JSON.parse(document.querySelector("#app-data").innerHTML);
-  const settings = getSettingsFromPath(data.config);
-
-  const layers = data.layers.map((layer) =>
-    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer
-  );
-
-  const initialState = {
-    isEmbed: data.is_embed,
-    config: data.config,
-    user: data.user,
-    position: settings.position,
-    layers,
-    tool: "",
-    selectedArea: null,
-    searchQuery: "",
-    alert: "",
-    map: data.map,
-  };
-
-  const store = createStore(initialState);
+  const store = createStore(data);
 
   new Vue({
-    store,
     el: "#app",
+    router,
+    store,
     render: (c) => c(App),
   });
 });

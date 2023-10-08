@@ -1,23 +1,17 @@
 <template>
   <div class="app">
-    <header-menu v-if="config.features.portal" />
+    <header-menu />
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
-import HeaderMenu from "../components/HeaderMenu";
+import HeaderMenu from "../components/HeaderMenu.vue";
 
 export default {
   name: "App",
   components: {
     HeaderMenu,
-  },
-  computed: {
-    ...mapState({
-      config: (state) => state.config,
-    }),
   },
 };
 </script>
@@ -34,8 +28,6 @@ export default {
 <style>
 @import "../assets/styles/main.css";
 :root {
-  --color-primary: #0066ff;
-
   --color-text-grey: rgba(0, 0, 0, 0.55);
 
   --color-grey-20: #eaeaea; /* divider (list items, files) */
@@ -143,34 +135,5 @@ html.keyboard-user *:focus {
   .section {
     padding: 40px 0;
   }
-}
-
-.button:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.button {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  padding: 0 20px;
-  border-radius: var(--radius-normal);
-  line-height: 1;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
-  text-decoration: none;
-  overflow: hidden;
-}
-
-.button.__primary {
-  background: var(--color-primary);
-  color: white;
 }
 </style>

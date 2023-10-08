@@ -1,22 +1,27 @@
 <template>
-  <MapRenderer
-    ref="map"
-    :initial-position="position"
-    :initial-layers="visibleLayers"
-    :user="user"
-    :features="map.features"
-    :settings="map.settings"
-    @position-changed="positionChanged"
-  />
+  <div class="app">
+    <header-menu v-if="config.features.portal" />
+    <map-renderer
+      ref="map"
+      :initial-position="position"
+      :initial-layers="visibleLayers"
+      :user="user"
+      :features="map.features"
+      :settings="map.settings"
+      @position-changed="positionChanged"
+    />
+  </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import HeaderMenu from "../components/HeaderMenu";
 import MapRenderer from "../components/MapRenderer/MapRenderer";
 
 export default {
   name: "App",
   components: {
+    HeaderMenu,
     MapRenderer,
   },
   data() {
@@ -34,11 +39,7 @@ export default {
     visibleLayers() {
       if (this.map.layers) {
         return this.layers
-          .filter(
-            (layer) =>
-              this.map.layers.includes(layer.internal_id) ||
-              (layer.is_base && layer.is_visible)
-          )
+          .filter((layer) => this.map.layers.includes(layer.internal_id) || (layer.is_base && layer.is_visible))
           .map((layer) => {
             return {
               ...layer,
@@ -72,17 +73,9 @@ export default {
         .map((l) => l.id)
         .join(",");
 
-      const baseLayer = this.visibleLayers
-        .filter((l) => l.is_base)
-        .map((l) => l.id);
+      const baseLayer = this.visibleLayers.filter((l) => l.is_base).map((l) => l.id);
 
-      window.history.replaceState(
-        {},
-        "",
-        `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${
-          baseLayer.length > 0 ? baseLayer[0] : ""
-        }`
-      );
+      window.history.replaceState({}, "", `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}`);
     },
     positionChanged(position) {
       this.$store.commit("setPosition", position);
