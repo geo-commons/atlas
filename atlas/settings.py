@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     'homepage',
     'tables',
     'webservice',
+    'portal',
     'user_management',
     'webpack_loader',
     'atlas.apps.CustomConstance',
@@ -281,6 +282,7 @@ CONSTANCE_CONFIG = {
     'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico')),
     'MATOMO_URL': ('', ('Configureer de URL van Matomo om statistieken bij te houden')),
     'MATOMO_SITE_ID': ('', ('Configureer het site ID van Matomo om statistieken bij te houden')),
+    'FEATURE_PORTAL': (False, ('Portaalfunctionaliteit')),
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
     'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
 }
@@ -302,6 +304,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'MATOMO_SITE_ID'
     ),
     '4. Features': (
+        'FEATURE_PORTAL',
         'FEATURE_PRINT',
         'FEATURE_DRAW'
     )

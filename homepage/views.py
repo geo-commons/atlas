@@ -115,10 +115,11 @@ def v3_map(request, slug):
         'layer_source', 'layer_type', 'linked_data', 'templates'
     )
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
-    visible_map = get_object_or_404(Map, slug=slug)
+    visible_map = get_object_or_404(
+        Map.authorized.for_request(request), slug=slug)
 
     context = {
-        'data':  {
+        'data': {
             'config': _get_config(request),
             'user': _get_user(request),
             'map': visible_map.to_dict(),
@@ -185,7 +186,8 @@ def _get_config(request):
         'show_disclaimer': config.get('DISCLAIMER') != '',
         'features': {
             'print': config.get('FEATURE_PRINT'),
-            'draw': config.get('FEATURE_DRAW')
+            'draw': config.get('FEATURE_DRAW'),
+            'portal': config.get('FEATURE_PORTAL'),
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }

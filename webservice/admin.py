@@ -3,8 +3,8 @@ from reversion.admin import VersionAdmin
 from import_export.admin import ImportExportActionModelAdmin
 from import_export.formats import base_formats
 from .forms import LayerForm, LinkedDataForm
-from .models import Source, Category, Layer, Template, Map, LinkedData, Viewer
-from .resources import CategoryResource, LayerResource, SourceResource, MapResource
+from .models import Source, Category, Layer, Template, Selection, Map, LinkedData, Viewer
+from .resources import CategoryResource, LayerResource, SourceResource, SelectionResource, MapResource
 
 
 class LinkedDataInline(admin.TabularInline):
@@ -126,10 +126,21 @@ class CategoryAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     resource_classes = [CategoryResource]
 
 
+class SelectionAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
+    list_display = ('title', )
+    fields = ('title', 'slug', 'layers', 'login_required')
+    prepopulated_fields = {'slug': ('title', )}
+    filter_horizontal = ('layers', )
+
+    search_fields = ['title']
+    resource_classes = [SelectionResource]
+
+
 class MapAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title', )
     fields = ('title', 'slug', 'layers', 'features', 'settings')
     prepopulated_fields = {'slug': ('title', )}
+    filter_horizontal = ('layers', )
 
     search_fields = ['title']
     resource_classes = [MapResource]
@@ -144,5 +155,6 @@ class ViewerAdmin(VersionAdmin, admin.ModelAdmin):
 admin.site.register(Source, SourceAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Selection, SelectionAdmin)
 admin.site.register(Map, MapAdmin)
 admin.site.register(Viewer, ViewerAdmin)

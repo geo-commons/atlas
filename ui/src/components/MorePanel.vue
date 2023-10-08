@@ -1,19 +1,7 @@
 <template>
   <div class="wrapper">
-    <button
-      v-tippy="{ placement: 'bottom' }"
-      class="iconbutton"
-      :class="{ isOpen }"
-      content="Opties"
-      aria-label="Toon meer opties"
-      @click="toggle"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
+    <button v-tippy="{ placement: 'bottom' }" class="iconbutton" :class="{ isOpen }" content="Opties" aria-label="Toon meer opties" @click="toggle">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
         <path d="M0 0h24v24H0V0z" fill="none" />
         <path
           d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
@@ -24,14 +12,10 @@
       <div v-if="isOpen" class="menu">
         <ul class="list">
           <li v-if="!user">
-            <a :href="`/atlas/login?next=${encodeURIComponent(nextUrl)}`"
-              >Log in</a
-            >
+            <a :href="`/atlas/login?next=${encodeURIComponent(nextUrl)}`">Log in</a>
           </li>
-          <li v-if="user">
-            <a :href="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`"
-              >Log uit</a
-            >
+          <li v-if="user && !config.features.portal">
+            <a :href="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`">Log uit</a>
           </li>
           <li><button @click="() => toggleModal('embed')">Embed</button></li>
           <li v-if="config.features.print">
