@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" :class="{ showInfoPanel: showInfoPanel, showDataPanel }" :style="computedStyle">
     <header-menu v-if="!isEmbed && config.features.portal" />
     <div class="map-container">
       <div class="renderer-container">
