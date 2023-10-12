@@ -84,69 +84,10 @@ export default {
 };
 </script>
 
+<!-- Include multiselect -->
+<style src="vue-multiselect/dist/vue-multiselect.min.css" />
 <style>
-:root {
-  --color-primary: #424bff;
-
-  --color-text-grey: rgba(0, 0, 0, 0.55);
-
-  --color-grey-20: #eaeaea; /* divider (list items, files) */
-  --color-grey-30: #dddddd; /* divider (sections, header) */
-  --color-grey-40: #f5f5f5;
-  --color-grey-50: #eaeaea;
-  --color-grey-60: #dadada;
-  --color-grey-80: #949494;
-
-  --color-icon-grey: rgba(0, 0, 0, 0.42);
-
-  --color-tooltip-dark: #222222;
-
-  --color-alert: #eb0000;
-
-  --color-hover: rgba(0, 0, 0, 0.03);
-  --color-active: rgba(0, 0, 0, 0.06);
-
-  --font-size-tiny: 12px;
-  --font-size-small: 14px;
-  --font-size-normal: 16px;
-  --font-size-large: 18px;
-
-  --font-weight-normal: 300;
-  --font-weight-bold: 500;
-
-  --radius-small: 4px;
-  --radius-normal: 8px;
-
-  --shadow-normal: 0 0 1px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 0, 0, 0.15);
-
-  --padding-screen: 8px;
-
-  --width-detail: 100vw;
-  --width-button-small: 24px;
-  --width-button-normal: 32px;
-  --width-button-large: 40px;
-}
-
-@media (min-width: 576px) {
-  :root {
-    --width-detail: 300px;
-    --padding-screen: 16px;
-  }
-}
-
-@media (min-width: 768px) {
-  :root {
-    --width-detail: 350px;
-  }
-}
-
-@media (min-width: 1200px) {
-  :root {
-    --width-detail: 400px;
-    --padding-screen: 20px;
-  }
-}
-
+@import "../assets/styles/main.css";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
 
 html {
@@ -389,6 +330,40 @@ svg {
   border-radius: var(--radius-small);
   padding: 0 16px;
   height: 40px;
+}
+
+.multiselect__tags > input {
+  border: none;
+}
+
+/* For some reason map/App.vue does not allow multiselect style to be overridden via main.css. */
+/* Override multiselect style */
+.multiselect__tag {
+  background: var(--color-white);
+  border: solid 1px var(--color-primary);
+  color: var(--color-primary);
+}
+
+.multiselect__tag-icon:focus,
+.multiselect__tag-icon:hover {
+  background: var(--color-primary);
+}
+
+.multiselect__option--highlight {
+  background: var(--color-primary);
+}
+
+.multiselect__placeholder {
+  color: var(--color-text-grey);
+}
+
+.multiselect__tags {
+  border-color: var(--color-grey-60);
+  border-radius: var(--radius-normal);
+}
+.multiselect__tag-icon:after {
+  color: var(--color-primary);
+  font-size: var(--font-size-large);
 }
 </style>
 

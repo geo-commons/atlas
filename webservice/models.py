@@ -15,6 +15,9 @@ from utils.tools import is_internal
 
 class LayerManager(models.Manager):
     def for_request(self, request):
+        if request.user.is_authenticated and request.user.is_superuser:
+            return self.distinct()
+        
         open_datasets = Q(published=True) & Q(closed_dataset=False)
         closed_unassigned_datasets = Q(published=True) & Q(
             closed_dataset=True) & Q(atlas_groups=None)
@@ -118,11 +121,13 @@ class Layer(models.Model):
     objects = models.Manager()
     authorized = LayerManager()
 
+    def get_slug(self):
+        return self.title if not self.slug else self.slug
+
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
     # so inform them when changing.
-    slug = models.CharField(
-        'Kort kenmerk', max_length=128, null=True, default='',
-        help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.')
+    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='get_slug', editable=True,
+                         help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)')
 
     title = models.CharField('Titel', max_length=128, null=True)
 

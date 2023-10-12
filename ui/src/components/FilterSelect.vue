@@ -1,12 +1,12 @@
 <template>
-  <div v-if="filters && filterProperty" class="flex-column filter-min-width">
+  <div v-if="filterOptions && filterProperty" class="flex-column filter-min-width">
     <label :for="filterProperty" class="filter-label-padding">{{
-      filterProperty
+      filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
     <multiselect
       :id="filterProperty"
       v-model="selectedItems"
-      :options="filters"
+      :options="filterOptions"
       placeholder="Kies waarde"
       :show-labels="false"
       open-direction="bottom"
@@ -23,19 +23,15 @@ export default {
 
   components: { Multiselect },
   props: {
-    featureCollection: Object,
+    filterOptions: Array,
     fieldFilters: Object,
     filterProperty: String,
+    filterPropertyDisplayName: String,
   },
   data() {
     return {
       selectedItems: "",
-      filters: null,
     };
-  },
-  computed: {},
-  mounted() {
-    this.getFiltersByProperty();
   },
   methods: {
     updateFieldFilters() {
@@ -51,23 +47,6 @@ export default {
       delete newFieldFilter[this.filterProperty];
       this.$emit("onFilterChange", newFieldFilter);
     },
-    getFiltersByProperty() {
-      // initialize filters for relevant feature property
-      if (!this.filters) {
-        let featurePropSet = new Set();
-
-        if (this.featureCollection.features && this.filterProperty) {
-          this.featureCollection.features.forEach((feature) => {
-            if (feature.properties[this.filterProperty]) {
-              featurePropSet.add(feature.properties[this.filterProperty]);
-            }
-          });
-        }
-        this.filters = [...featurePropSet];
-      }
-
-      return this.filters;
-    },
   },
 };
 </script>
@@ -78,5 +57,11 @@ export default {
 
 .filter-label-padding {
   padding-left: 8px;
+}
+
+@media (max-width: 576px) {
+  .filter-min-width {
+    width: 100%;
+  }
 }
 </style>

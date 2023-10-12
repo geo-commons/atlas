@@ -4,7 +4,19 @@
       <slot></slot>
     </div>
 
-    <div v-if="items && pages.length > 1" class="flex-center">
+    <div v-if="items && pages.length > 1" class="pagination-wrapper">
+      <div class="nr-pages-wrapper">
+        <multiselect
+          id="selected_columns"
+          v-model="internalNrOfRecords"
+          :placeholder="'Kies aantal'"
+          :options="nrRecordsOptions"
+          :show-labels="false"
+          @input="(value) => updateNrOfRecords(value)"
+        />
+        <label>Aantal rijen per pagina</label>
+      </div>
+
       <ul class="pagination">
         <li>
           <button v-show="currentPageNumber > 1" class="iconbutton pagination-btn bg-color" @click="prevPage">
@@ -15,12 +27,21 @@
           <button class="iconbutton pagination-btn" @click="firstPage">1</button>
         </li>
         <li v-if="hasEllipses && currentPageNumber >= displayRange" class="flex-center ellipses-wrapper">...</li>
-        <li v-for="pageNr in visiblePages" :key="pageNr" :class="`${currentPageNumber === pageNr ? 'active-page' : ''}`">
+        <li
+          v-for="pageNr in visiblePages"
+          :key="pageNr"
+          :class="`${currentPageNumber === pageNr ? 'active-page' : ''}`"
+        >
           <button class="iconbutton pagination-btn" @click="gotoPage(pageNr)">
             {{ pageNr }}
           </button>
         </li>
-        <li v-if="hasEllipses && currentPageNumber <= pageCount - (displayRange - 1)" class="flex-center ellipses-wrapper">...</li>
+        <li
+          v-if="hasEllipses && currentPageNumber <= pageCount - (displayRange - 1)"
+          class="flex-center ellipses-wrapper"
+        >
+          ...
+        </li>
         <li :class="`${currentPageNumber === pageCount ? 'active-page' : ''}`">
           <button class="iconbutton pagination-btn" @click="lastPage">
             {{ pageCount }}
@@ -32,6 +53,8 @@
           </button>
         </li>
       </ul>
+
+      <span>Totaal aantal resultaten: {{ items.length }}</span>
     </div>
   </div>
 </template>
@@ -39,10 +62,12 @@
 <script>
 import ChevronLeftIcon from "@/icons/ChevronLeftIcon.vue";
 import ChevronRightIcon from "@/icons/ChevronRightIcon.vue";
+import Multiselect from "vue-multiselect";
 
 export default {
   name: "PaginationComponent",
   components: {
+    Multiselect,
     ChevronLeftIcon,
     ChevronRightIcon,
   },
@@ -55,6 +80,9 @@ export default {
     return {
       currentPageNumber: 1,
       pages: [],
+      // todo: think about making this more dynamic?
+      nrRecordsOptions: [10, 15, 20, 30, 50, 100, 200, 500],
+      internalNrOfRecords: this.nrOfRecords,
     };
   },
   computed: {
@@ -102,6 +130,10 @@ export default {
         this.pages.push(i);
       }
     },
+    updateNrOfRecords(value) {
+      this.$emit("records-change", value);
+      this.resetPagination();
+    },
     nextPage() {
       this.currentPageNumber++;
       this.$emit("page-change", this.currentPageNumber);
@@ -131,6 +163,10 @@ export default {
 </script>
 
 <style scoped>
+.content {
+  overflow: auto;
+}
+
 .pagination-btn {
   border-radius: var(--radius-small);
   width: 30px;
@@ -138,7 +174,25 @@ export default {
 }
 
 .bg-color {
-  background: var(--color-grey-20);
+  background: var(--color-grey-60);
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 5px;
+  padding-bottom: var(--padding-screen);
+}
+
+.nr-pages-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nr-pages-wrapper > .multiselect {
+  width: fit-content;
 }
 
 .active-page {
@@ -160,5 +214,14 @@ ul.pagination > li:not(:last-child) {
 
 .ellipses-wrapper {
   height: 30px;
+}
+
+@media (max-width: 576px) {
+  .pagination-wrapper {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: var(--padding-screen);
+  }
 }
 </style>

@@ -25,24 +25,16 @@ import ArrowDownIcon from "../icons/ArrowDownIcon.vue";
 import ArrowUpIcon from "../icons/ArrowUpIcon.vue";
 
 export default {
-  name: "FeatureTableHeaderItem",
+  name: "SortableTableHeaderItem",
   components: {
     ArrowUpIcon,
     ArrowDownIcon,
   },
   props: {
-    layer: Object,
+    headerText: String,
     property: String,
     sortKey: String,
     sortAscending: Boolean,
-  },
-  computed: {
-    headerText() {
-      return this.layer.friendly_fields &&
-        this.layer.friendly_fields[this.property]
-        ? this.layer.friendly_fields[this.property]
-        : this.property;
-    },
   },
   methods: {
     sortColumn() {
