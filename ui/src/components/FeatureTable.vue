@@ -6,9 +6,7 @@
     </div>
     <div v-if="showFilters" class="filter-padding filter-grid">
       <div>
-        <label for="selected_columns" class="filter-label-padding"
-          >Kolom(men) om op te filteren</label
-        >
+        <label for="selected_columns" class="filter-label-padding">Kolom(men) om op te filteren</label>
         <multiselect
           id="selected_columns"
           v-model="selectedFilterProperties"
@@ -23,7 +21,7 @@
       <div v-if="selectedFilterProperties" class="selected-filter-container">
         <div v-for="property in selectedFilterProperties" :key="property">
           <FilterSelect
-            :feature-collection="featureCollection"
+            :filter-options="getFilterOptions(property)"
             :field-filters="fieldFilters"
             :filter-property="property"
             @onFilterChange="(v) => setFieldFilters(v)"
@@ -38,8 +36,8 @@
           <tr>
             <th></th>
             <th v-for="property in displayProperties" :key="property">
-              <FeatureTableHeaderItem
-                :layer="layer"
+              <SortableTableHeaderItem
+                :header-text="headerText(property)"
                 :property="property"
                 :sort-key="sortKey"
                 :sort-ascending="sortAscending"
@@ -74,19 +72,20 @@
 
 <script>
 import Cookies from "js-cookie";
-import FeatureTableHeaderItem from "./FeatureTableHeaderItem.vue";
+import SortableTableHeaderItem from "./SortableTableHeaderItem.vue";
 import TableList from "./TableList.vue";
 import PinIcon from "../icons/PinIcon.vue";
 import GeoJSON from "ol/format/GeoJSON";
-import { getFeatureCenterCoordinates } from "../utils/geometry-helpers";
+import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import Multiselect from "vue-multiselect";
 import FilterSelect from "./FilterSelect.vue";
 import SwitchSlider from "./SwitchSlider.vue";
+import { sortAlphabetically } from "@/utils/table-sort-helpers";
 
 export default {
   name: "FeatureTable",
   components: {
-    FeatureTableHeaderItem,
+    SortableTableHeaderItem,
     TableList,
     PinIcon,
     FilterSelect,
@@ -115,11 +114,10 @@ export default {
   computed: {
     sortedFeatures() {
       if (this.sortKey && this.featureCollection.features) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.featureCollection.features.sort((a, b) => {
+        return this.featureCollection.features.slice(0).sort((a, b) => {
           const textA = a.properties[this.sortKey];
           const textB = b.properties[this.sortKey];
-          return this.sortAlphabetically(textA, textB, this.sortAscending);
+          return sortAlphabetically(textA, textB, this.sortAscending);
         });
       }
 
@@ -153,11 +151,7 @@ export default {
       const filters = [];
 
       if (this.query && this.searchProperties.length > 0) {
-        filters.push(
-          this.searchProperties
-            .map((key) => `${key} ILIKE '%${this.query}%'`)
-            .join(" OR ")
-        );
+        filters.push(this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(" OR "));
       }
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
@@ -180,10 +174,7 @@ export default {
       }
 
       if (this.overallFilter) {
-        params.set(
-          "cql_filter",
-          `${this.overallFilter.key} = '${this.overallFilter.value}'`
-        );
+        params.set("cql_filter", `${this.overallFilter.key} = '${this.overallFilter.value}'`);
       }
 
       try {
@@ -201,9 +192,7 @@ export default {
           const fetchedProperties = Object.keys(data.features[0].properties);
 
           this.displayProperties =
-            this.layer.display_properties.length > 0
-              ? this.layer.display_properties
-              : fetchedProperties;
+            this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
         }
       } catch (e) {
         console.error(e);
@@ -217,10 +206,7 @@ export default {
       this.loading = false;
     },
     async fetchSearchProperties() {
-      if (
-        this.layer.search_properties &&
-        this.layer.search_properties.length > 0
-      ) {
+      if (this.layer.search_properties && this.layer.search_properties.length > 0) {
         this.searchProperties = this.layer.search_properties;
         return;
       }
@@ -243,9 +229,7 @@ export default {
         const featureType = data.featureTypes[0];
 
         // Only search through properties with type string
-        const stringProperties = featureType.properties.filter(
-          (p) => p.localType === "string"
-        );
+        const stringProperties = featureType.properties.filter((p) => p.localType === "string");
 
         this.searchProperties = stringProperties.map((p) => p.name);
       } catch (e) {
@@ -259,28 +243,21 @@ export default {
         .replace(/[^a-z0-9-]/gi, "")
         .toLowerCase();
 
-      let data =
-        this.displayProperties
-          .map((property) => `"${property.replace(/"/g, '""')}"`)
-          .join(separator) + "\n";
+      let data = this.displayProperties.map((property) => `"${property.replace(/"/g, '""')}"`).join(separator) + "\n";
 
       this.featureCollection.features.forEach((feature) => {
         data +=
           this.displayProperties
             .map((property) =>
               feature.properties[property] !== null
-                ? `"${String(feature.properties[property]).replace(
-                    /"/g,
-                    '""'
-                  )}"`
+                ? `"${String(feature.properties[property]).replace(/"/g, '""')}"`
                 : ""
             )
             .join(separator) + "\n";
       });
 
       const hiddenElement = document.createElement("a");
-      hiddenElement.href =
-        "data:text/csv;charset=utf-8," + encodeURIComponent(data);
+      hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
       hiddenElement.target = "_blank";
       hiddenElement.download = `${filename}.csv`;
       hiddenElement.click();
@@ -321,7 +298,6 @@ export default {
       a.click();
       a.remove();
     },
-
     showFeature(feature) {
       const geometry = new GeoJSON().readFeature(feature).getGeometry();
       const center = getFeatureCenterCoordinates(feature);
@@ -334,12 +310,7 @@ export default {
       this.$emit("on-fit", geometry.getExtent());
     },
     getFetchParameters() {
-      if (
-        this.layer.source &&
-        this.layer.source.authenticate &&
-        this.user &&
-        this.user.token
-      ) {
+      if (this.layer.source && this.layer.source.authenticate && this.user && this.user.token) {
         return {
           headers: { Authorization: `Bearer ${this.user.token}` },
         };
@@ -355,27 +326,21 @@ export default {
         this.sortAscending = !this.sortAscending;
       }
     },
-    sortAlphabetically(a, b, ascending) {
-      // equal items sort equally
-      if (a === b) {
-        return 0;
-      }
+    getFilterOptions(property) {
+      // initialize filters for relevant feature property
+      let filters = [];
+      let featurePropSet = new Set();
 
-      // nulls and empty strings sort after anything else
-      if (a === null || a === "") {
-        return 1;
+      if (this.featureCollection.features && property) {
+        this.featureCollection.features.forEach((feature) => {
+          if (feature.properties[property]) {
+            featurePropSet.add(feature.properties[property]);
+          }
+        });
       }
-      if (b === null || b === "") {
-        return -1;
-      }
+      filters = [...featurePropSet];
 
-      // otherwise, if we're ascending, lowest sorts first
-      if (ascending) {
-        return a < b ? -1 : 1;
-      }
-
-      // if descending, highest sorts first
-      return a < b ? 1 : -1;
+      return filters;
     },
     setFieldFilters(v) {
       this.fieldFilters = v;
@@ -396,6 +361,11 @@ export default {
         delete this.fieldFilters[filter];
         this.fetchFeatures();
       }
+    },
+    headerText(property) {
+      return this.layer.friendly_fields && this.layer.friendly_fields[property]
+        ? this.layer.friendly_fields[property]
+        : property;
     },
   },
 };
@@ -449,6 +419,7 @@ tbody > tr:hover {
   grid-template-columns: clamp(200px, 35%, 400px) auto;
   grid-template-rows: auto;
   grid-gap: 1rem;
+  align-items: end;
 }
 
 @media (max-width: 576px) {
@@ -461,6 +432,7 @@ tbody > tr:hover {
 
   .selected-filter-container {
     justify-content: flex-start;
+    flex-direction: column;
   }
 }
 

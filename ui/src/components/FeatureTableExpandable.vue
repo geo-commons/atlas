@@ -4,9 +4,7 @@
       <div>
         <span v-if="error">Er is een fout opgetreden tijdens het laden.</span>
         <span v-if="loading">Bezig met laden...</span>
-        <span v-if="!loading && !error && displayProperties.length === 0"
-          >Geen weergave beschikbaar.</span
-        >
+        <span v-if="!loading && !error && displayProperties.length === 0">Geen weergave beschikbaar.</span>
         <div v-if="!loading && !error && displayProperties.length > 0">
           <table-list class="table">
             <table>
@@ -14,7 +12,7 @@
                 <tr>
                   <th></th>
                   <th v-for="property in displayProperties" :key="property">
-                    <FeatureTableHeaderItem
+                    <SortableTableHeaderItem
                       :layer="layer"
                       :property="property"
                       :sort-key="sortKey"
@@ -43,13 +41,7 @@
                         xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                       >
-                        <g
-                          id="pin"
-                          stroke="none"
-                          stroke-width="1"
-                          fill="none"
-                          fill-rule="evenodd"
-                        >
+                        <g id="pin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                           <path
                             id="Combined-Shape"
                             d="M5,0 C7.5155,0 9.55,2.0345 9.55,4.55 C9.55,7.9625 5,13 5,13 C5,13 0.45,7.9625 0.45,4.55 C0.45,2.0345 2.4845,0 5,0 Z M5,1.3 C3.206,1.3 1.75,2.756 1.75,4.55 C1.75,6.4025 3.648,9.2365 5,10.972 C6.378,9.2235 8.25,6.422 8.25,4.55 C8.25,2.756 6.794,1.3 5,1.3 Z M5,2.925 C5.89746272,2.925 6.625,3.65253728 6.625,4.55 C6.625,5.44746272 5.89746272,6.175 5,6.175 C4.10253728,6.175 3.375,5.44746272 3.375,4.55 C3.375,3.65253728 4.10253728,2.925 5,2.925 Z"
@@ -79,13 +71,13 @@ import { getCenter } from "ol/extent";
 
 import TableList from "./TableList";
 import ExpandButton from "./ExpandButton";
-import FeatureTableHeaderItem from "./FeatureTableHeaderItem.vue";
+import SortableTableHeaderItem from "./SortableTableHeaderItem.vue";
 
 export default {
   name: "FeatureTableExpandable",
   components: {
     ExpandButton,
-    FeatureTableHeaderItem,
+    SortableTableHeaderItem,
     TableList,
   },
   props: {
@@ -121,8 +113,7 @@ export default {
     },
     sortedFeatures() {
       if (this.sortKey && this.features) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.features.sort((a, b) => {
+        return this.features.slice(0).sort((a, b) => {
           const textA = a.properties[this.sortKey];
           const textB = b.properties[this.sortKey];
           return this.sortAlphabetically(textA, textB, this.sortAscending);
@@ -159,11 +150,7 @@ export default {
       const filters = [];
 
       if (this.query && this.searchProperties.length > 0) {
-        filters.push(
-          this.searchProperties
-            .map((key) => `${key} ILIKE '%${this.query}%'`)
-            .join(" OR ")
-        );
+        filters.push(this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(" OR "));
       }
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
@@ -186,10 +173,7 @@ export default {
       }
 
       if (this.overallFilter) {
-        params.set(
-          "cql_filter",
-          `${this.overallFilter.key} = '${this.overallFilter.value}'`
-        );
+        params.set("cql_filter", `${this.overallFilter.key} = '${this.overallFilter.value}'`);
       }
 
       try {
@@ -207,9 +191,7 @@ export default {
           const fetchedProperties = Object.keys(data.features[0].properties);
 
           this.displayProperties =
-            this.layer.display_properties.length > 0
-              ? this.layer.display_properties
-              : fetchedProperties;
+            this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
         }
       } catch (e) {
         console.error(e);
@@ -223,10 +205,7 @@ export default {
       this.loading = false;
     },
     async fetchSearchProperties() {
-      if (
-        this.layer.search_properties &&
-        this.layer.search_properties.length > 0
-      ) {
+      if (this.layer.search_properties && this.layer.search_properties.length > 0) {
         this.searchProperties = this.layer.search_properties;
         return;
       }
@@ -249,9 +228,7 @@ export default {
         const featureType = data.featureTypes[0];
 
         // Only search through properties with type string
-        const stringProperties = featureType.properties.filter(
-          (p) => p.localType === "string"
-        );
+        const stringProperties = featureType.properties.filter((p) => p.localType === "string");
 
         this.searchProperties = stringProperties.map((p) => p.name);
       } catch (e) {
@@ -270,12 +247,7 @@ export default {
       this.$emit("on-fit", geometry.getExtent());
     },
     getFetchParameters() {
-      if (
-        this.layer.source &&
-        this.layer.source.authenticate &&
-        this.user &&
-        this.user.token
-      ) {
+      if (this.layer.source && this.layer.source.authenticate && this.user && this.user.token) {
         return {
           headers: { Authorization: `Bearer ${this.user.token}` },
         };

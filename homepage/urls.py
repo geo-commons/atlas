@@ -11,6 +11,7 @@ api_router.register(r'maps', viewsets.MapViewSet, basename='maps')
 api_router.register(r'sources', viewsets.SourceViewSet, basename='sources')
 api_router.register(r'layers', viewsets.LayerViewSet, basename='layers')
 api_router.register(r'drawings', viewsets.DrawingViewSet, basename='drawings')
+api_router.register(r'categories', viewsets.CategoriesViewSet, basename='categories')
 
 urlpatterns = [
     path('help', views.v3_help, name='v3_help'),

@@ -21,6 +21,7 @@ import SourceList from "./admin/pages/SourceList";
 import SourceCreateUpdate from "./admin/pages/SourceCreateUpdate";
 import UserList from "./admin/pages/UserList";
 import NotFound from "./admin/pages/NotFound";
+import detectKeyboard from "@/utils/detect-keyboard";
 
 Vue.config.productionTip = false;
 
@@ -80,7 +81,7 @@ const routes = [
   {
     path: "/layers",
     component: LayerList,
-    meta: { title: "Lagen", menu: true },
+    meta: { title: "Kaartlagen", menu: true },
   },
   {
     path: "/layers/create",
@@ -115,9 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const settings = getSettingsFromPath(data.config);
 
   const layers = data.layers.map((layer) =>
-    settings.visibleLayers && settings.visibleLayers.includes(layer.id)
-      ? { ...layer, is_visible: true }
-      : layer
+    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer
   );
 
   const initialState = {
@@ -132,6 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const store = createStore(initialState);
+
+  new detectKeyboard();
 
   new Vue({
     router,

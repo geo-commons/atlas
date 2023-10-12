@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, mixins
 
-from .models import Drawing, Map, Source, Layer
-from .serializers import DrawingSerializer, MapSerializer, SourceSerializer, LayerSerializer
+from .models import Category, Drawing, Map, Source, Layer
+from .serializers import CategorySerializer, LayerCreateUpdateSerializer, LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer
 
 
 class MapViewSet(viewsets.ModelViewSet):
@@ -28,6 +28,14 @@ class LayerViewSet(viewsets.ModelViewSet):
     search_fields = []
     filterset_fields = ['layer_source']
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return LayerListSerializer
+        if self.action in ['create', 'update', 'partial_update']:
+            return LayerCreateUpdateSerializer
+
+        return LayerSerializer
+
     def get_queryset(self):
         return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups')
 
@@ -35,4 +43,11 @@ class LayerViewSet(viewsets.ModelViewSet):
 class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Drawing.objects.all()
-    serializer_class = DrawingSerializer
+    
+class CategoriesViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    search_fields = []
+    filterset_fields = []

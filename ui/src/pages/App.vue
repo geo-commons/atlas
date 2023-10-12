@@ -400,9 +400,6 @@ export default {
 <style src="vue-multiselect/dist/vue-multiselect.min.css" />
 <style>
 @import "../assets/styles/main.css";
-.multiselect__select:before {
-  border-top-color: var(--color-icon-grey);
-}
 </style>
 <style scoped>
 .app {
