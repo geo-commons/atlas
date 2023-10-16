@@ -99,19 +99,19 @@ class LayerSerializer(serializers.ModelSerializer):
         ]
 
 class LayerCreateUpdateSerializer(serializers.ModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(source='layer_type', queryset=Category.objects.all())
-    source = serializers.PrimaryKeyRelatedField(source='source_type', queryset=Source.objects.all())
+    category_id = serializers.PrimaryKeyRelatedField(source='layer_type', queryset=Category.objects.all())
+    source_id = serializers.PrimaryKeyRelatedField(source='layer_source', queryset=Source.objects.all())
 
     class Meta:
         model = Layer
         fields = [
             'id',
-            'source',
+            'source_id',
             'title',
             'slug',
             'layer_name',
             'layer_source',
-            'category'
+            'category_id'
         ]
 
 class LayerListSerializer(serializers.ModelSerializer):
