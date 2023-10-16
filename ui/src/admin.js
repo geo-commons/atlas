@@ -84,14 +84,9 @@ const routes = [
     meta: { title: "Kaartlagen", menu: true },
   },
   {
-    path: "/layers/create",
-    component: LayerCreateUpdate,
-    meta: { title: "Bronnen", menu: true },
-  },
-  {
     path: "/layers/update/:id",
     component: LayerCreateUpdate,
-    meta: { title: "Bronnen", menu: true },
+    meta: { title: "Kaartlagen", menu: true },
   },
   {
     path: "/users",
