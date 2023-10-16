@@ -98,21 +98,15 @@ class LayerSerializer(serializers.ModelSerializer):
         ]
 
 class LayerCreateUpdateSerializer(serializers.ModelSerializer):
-    can_access = serializers.SerializerMethodField('get_can_access')
     category = serializers.PrimaryKeyRelatedField(source='layer_type', queryset=Category.objects.all())
     source = serializers.PrimaryKeyRelatedField(source='source_type', queryset=Source.objects.all())
-
-    def get_can_access(self, obj):
-        request = self.context['request']
-        return can_request_access_layer(request, obj)
-
+    # vergeten op te slaan oelewapper :(
     class Meta:
         model = Layer
         fields = [
             'id',
             'source',
             'title',
-            'can_access',
             'slug',
             'layer_name',
             'layer_source',
