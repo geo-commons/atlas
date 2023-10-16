@@ -90,6 +90,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'zoom_max',
             'category',
             'source',
+            'server_type',
             'display_properties',
             'search_properties',
             'metadata',
@@ -100,7 +101,7 @@ class LayerSerializer(serializers.ModelSerializer):
 class LayerCreateUpdateSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(source='layer_type', queryset=Category.objects.all())
     source = serializers.PrimaryKeyRelatedField(source='source_type', queryset=Source.objects.all())
-    # vergeten op te slaan oelewapper :(
+
     class Meta:
         model = Layer
         fields = [
