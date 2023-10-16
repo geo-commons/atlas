@@ -366,6 +366,15 @@ svg {
   flex-direction: column;
 }
 
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon.__grey {
+  color: var(--color-icon-grey)
+}
+
 /* override multiselect style */
 .multiselect__tag {
   background: var(--color-white);

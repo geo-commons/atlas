@@ -1,5 +1,5 @@
 const BundleTracker = require("webpack-bundle-tracker");
-
+const path = require("path");
 const DEPLOYMENT_PATH = "/atlas/static/dist/";
 
 module.exports = {
@@ -13,8 +13,20 @@ module.exports = {
     },
   },
 
+  chainWebpack: (config) => {
+    config.module.rules.delete("svg");
+  },
   configureWebpack: {
     plugins: [new BundleTracker({ path: __dirname, filename: "webpack-stats.json" })],
+    module: {
+      rules: [
+        {
+          test: /\.svg$/,
+          include: [path.resolve(__dirname, "src/assets/icons")],
+          loader: "vue-svg-loader",
+        },
+      ],
+    },
   },
 
   css: {
