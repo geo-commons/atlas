@@ -30,7 +30,6 @@ html {
   line-height: 1.5;
 }
 
-/* todo: check if this is the right place to set background-color.*/
 body {
   background-color: var(--color-backdrop);
 }
