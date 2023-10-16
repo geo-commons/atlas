@@ -24,6 +24,9 @@
   --color-hover: rgba(0, 0, 0, 0.03);
   --color-active: rgba(0, 0, 0, 0.06);
 
+  /* note: currently PT Sans is used in the main application while roboto is used in admin2 */
+  --font-family: "PT Sans", sans-serif;
+
   --font-size-tiny: 12px;
   --font-size-small: 14px;
   --font-size-normal: 16px;
