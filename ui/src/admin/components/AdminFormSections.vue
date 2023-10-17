@@ -3,11 +3,11 @@
     <div v-for="section in sections" :key="section.label">
       <hr />
       <div class="config-section-wrapper">
-        <div class="column1">
+        <div class="section-label">
           <h3 class="">{{ section.label }}</h3>
         </div>
 
-        <div class="column2">
+        <div class="section-questions">
           <div v-for="question in section.questions" :key="question.id">
             <div v-if="question.type === 'dropdown'">
               <validation-provider v-slot="{ errors }" :name="question.name" class="flex __column">
@@ -41,7 +41,7 @@
             </div>
 
             <div v-else>
-              <validation-provider v-slot="{ errors }" :name="question.name">
+              <validation-provider v-slot="{ errors }" :name="question.name" class="flex __column">
                 <label :for="question.id">{{ question.label }}</label>
                 <textarea
                   v-if="question.type === 'text' && question.multiLine"
@@ -109,9 +109,11 @@ export default {
     initialValues(newValues) {
       this.currentValues = newValues;
     },
-    currentValues(newValues) {
-      console.log(newValues);
-      this.$emit("update", newValues);
+    currentValues: {
+      handler(newValues) {
+        this.$emit("update", newValues);
+      },
+      deep: true,
     },
   },
   created() {
@@ -166,11 +168,11 @@ select {
   font-weight: var(--font-weight-normal);
 }
 
-.column1 {
-  grid-area: column1;
+.section-label {
+  grid-area: section-label;
 }
-.column2 {
-  grid-area: column2;
+.section-questions {
+  grid-area: section-questions;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -178,7 +180,7 @@ select {
 
 .config-section-wrapper {
   display: grid;
-  grid-template-areas: "column1 column2";
+  grid-template-areas: "section-label section-questions";
   grid-template-columns: 1fr 2fr;
   padding: 20px 0;
 }
@@ -186,8 +188,8 @@ select {
 @media (max-width: 576px) {
   .config-section-wrapper {
     grid-template-areas:
-      "column1"
-      "column2";
+      "section-label"
+      "section-questions";
     grid-template-columns: 100%;
   }
 }
