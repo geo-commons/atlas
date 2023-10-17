@@ -6,7 +6,7 @@
         <AdminFormSections
           :sections="sections"
           :initial-values="initialValues"
-          @update="(newValues) => (currentValues = newValues)"
+          @update="(newValues) => updateCurrentValues(newValues)"
         />
         <div class="config-btn-wrapper">
           <router-link to="/layers" class="button __tertiary">Annuleer</router-link>
@@ -133,6 +133,9 @@ export default {
       return response.map((source) => {
         return { id: source.id, label: source.title };
       });
+    },
+    updateCurrentValues(newValues) {
+      this.currentValues = newValues;
     },
     getSections() {
       return {
@@ -273,9 +276,31 @@ export default {
           label: "Metadata",
           questions: [
             {
-              label: "Titel",
-              id: "title",
-              name: "Title",
+              label: "[todo: zit nog niet in response] Naam",
+              id: "name",
+              name: "Name",
+              type: "text",
+              required: false,
+            },
+            {
+              label: "Omschrijving",
+              id: "metadata_description",
+              name: "metadataDescription",
+              type: "text",
+              required: false,
+              multiLine: true,
+            },
+            {
+              label: "Organisatie",
+              id: "metadata_organisation",
+              name: "metadataOrganisation",
+              type: "text",
+              required: false,
+            },
+            {
+              label: "Laatst bijgewerkt",
+              id: "metadata_updated",
+              name: "metadataUpdated",
               type: "text",
               required: false,
             },
