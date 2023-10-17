@@ -388,6 +388,10 @@ hr {
   color: var(--color-icon-grey)
 }
 
+.icon.__white {
+  color: var(--color-white)
+}
+
 /* override multiselect style */
 .multiselect__tag {
   background: var(--color-white);
