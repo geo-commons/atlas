@@ -1,5 +1,5 @@
 <template>
-  <div v-if="filterOptions && filterProperty" class="flex-column filter-min-width">
+  <div v-if="filterOptions && filterProperty" class="flex __column filter-min-width">
     <label :for="filterProperty" class="filter-label-padding">{{
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>

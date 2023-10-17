@@ -14,118 +14,6 @@
         </div>
       </form>
     </validation-observer>
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="LayerName">-->
-    <!--                <label for="layer-name">Laagnaam</label>-->
-    <!--                <input id="layer-name" v-model="data.layer_name" type="text" />-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="SourceType" class="flex flex-column">-->
-    <!--                <label for="source-type">Brontype</label>-->
-    <!--                <select id="source-type" v-model="data.source_type" class="config-select-wrapper">-->
-    <!--                  <option disabled value="">Selecteer een brontype</option>-->
-    <!--                  <option v-for="type in sourceTypes" :key="type">-->
-    <!--                    {{ type }}-->
-    <!--                  </option>-->
-    <!--                </select>-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="Projection">-->
-    <!--                <label for="projection">Projectie</label>-->
-    <!--                <input id="projection" v-model="data.projection" type="text" />-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="ServerType">-->
-    <!--                <label for="server-type">Servertype</label>-->
-    <!--                <input id="server-type" v-model="data.server_type" type="text" />-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="Format" class="flex flex-column">-->
-    <!--                <label for="format">Formaat</label>-->
-    <!--                <select id="format" v-model="data.format" class="config-select-wrapper">-->
-    <!--                  <option disabled value="">Selecteer een formaat</option>-->
-    <!--                  <option v-for="format in formats" :key="format">-->
-    <!--                    {{ format }}-->
-    <!--                  </option>-->
-    <!--                </select>-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-
-    <!--        <hr />-->
-    <!--        <div class="config-section-wrapper">-->
-    <!--          <div><h3 class="font-weight-normal">Weergave</h3></div>-->
-
-    <!--          <div></div>-->
-    <!--        </div>-->
-    <!--        <hr />-->
-    <!--        <div class="config-section-wrapper">-->
-    <!--          <div><h3 class="font-weight-normal">Metadata</h3></div>-->
-    <!--          <div>-->
-    <!--            &lt;!&ndash;                todo: naam metadata niet in api response?&ndash;&gt;-->
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="Naam">-->
-    <!--                <label for="name">Naam</label>-->
-    <!--                <input id="name" type="text" />-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="Description" class="flex flex-column">-->
-    <!--                <label for="description">Omschrijving</label>-->
-    <!--                <textarea id="description" v-model="data.metadata.description" type="text" />-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-
-    <!--            &lt;!&ndash;              todo: laatst bijgewerkt > waarom is dit een invoerveld? &ndash;&gt;-->
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="Updated">-->
-    <!--                <label for="updated">Laatst bijgewerkt</label>-->
-    <!--                <input id="updated" v-model="data.metadata.updated" type="text" />-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-
-    <!--            <div>-->
-    <!--              <validation-provider v-slot="{ errors }" name="Link">-->
-    <!--                <label for="link">Meer informatie</label>-->
-    <!--                <input id="link" v-model="data.metadata.link" type="text" />-->
-    <!--                <span>{{ errors[0] }}</span>-->
-    <!--              </validation-provider>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--        <hr />-->
-    <!--        <div class="config-section-wrapper">-->
-    <!--          <div><h3 class="font-weight-normal">Toegang</h3></div>-->
-
-    <!--          <div></div>-->
-    <!--        </div>-->
-
-    <!--        <div class="config-btn-wrapper">-->
-    <!--          <router-link to="/layers" class="button __tertiary">Annuleer</router-link>-->
-    <!--          <button class="button __primary" type="submit">Opslaan</button>-->
-    <!--        </div>-->
-    <!--      </form>-->
-    <!--    </validation-observer>-->
   </div>
 </template>
 
@@ -134,14 +22,12 @@ import { ValidationObserver } from "vee-validate";
 
 import Cookies from "js-cookie";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-// import { convertApiModelToFormData, convertFormDataToApiModel } from "@/utils/api-model-converter";
 
 export default {
   name: "LayerCreateUpdate",
   components: {
     AdminFormSections,
     ValidationObserver,
-    // ValidationProvider,
   },
   data() {
     return {
@@ -159,7 +45,7 @@ export default {
   },
   created() {
     this.getLayer();
-    // this.getSources();
+
     this.sourceTypes = [
       { id: "WMS_WFS", label: "WMS en WFS" },
       { id: "WMS", label: "WMS" },
@@ -168,11 +54,13 @@ export default {
       { id: "XYZ", label: "XYZ" },
       { id: "MVT", label: "MVT" },
     ];
+
     this.formats = [
       { id: "image/png", label: "image/png" },
       { id: "image/jpeg", label: "image/jpeg" },
       { id: "image/vnd.jpeg-png", label: "image/vnd.jpeg-png" },
     ];
+
     this.sections = this.getSections();
   },
   methods: {
@@ -190,7 +78,7 @@ export default {
       this.data = await result.json();
       this.data.category_id = this.data.category.id;
       this.data.source_id = this.data.source.id;
-
+      console.log(this.data);
       this.initialValues = this.data;
     },
     async saveLayer() {
@@ -309,21 +197,21 @@ export default {
               id: "projection",
               name: "Projection",
               type: "text",
-              required: true,
+              required: false,
             },
             {
               label: "Servertype",
               id: "server_type",
               name: "ServerType",
               type: "text",
-              required: true,
+              required: false,
             },
             {
               label: "Formaat",
               id: "format",
               name: "Format",
               type: "dropdown",
-              required: true,
+              required: false,
               placeholder: "bron",
               options: this.formats,
             },
@@ -333,11 +221,51 @@ export default {
           label: "Weergave",
           questions: [
             {
-              label: "Titel",
-              id: "title",
-              name: "Title",
-              type: "text",
-              required: true,
+              label: "Transparantie",
+              id: "opacity",
+              name: "Opacity",
+              type: "decimal",
+              required: false,
+              min: 0,
+              max: 1,
+              step: 0.01,
+            },
+            {
+              label: "Is basislaag",
+              id: "is_base",
+              name: "IsBase",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              label: "Is standaard zichtbaar",
+              id: "is_visible",
+              name: "IsVisible",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              label: "Is selecteerbaar",
+              id: "is_selectable",
+              name: "IsSelectable",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              label: "Zoomniveau minimum",
+              id: "zoom_min",
+              name: "ZoomMin",
+              type: "decimal",
+              required: false,
+              step: 0.01,
+            },
+            {
+              label: "Zoomniveau maximum",
+              id: "zoom_max",
+              name: "ZoomMax",
+              type: "decimal",
+              required: false,
+              step: 0.01,
             },
           ],
         },
@@ -349,33 +277,17 @@ export default {
               id: "title",
               name: "Title",
               type: "text",
-              required: true,
+              required: false,
             },
           ],
         },
         access: {
           label: "Toegang",
-          questions: [
-            {
-              label: "Titel",
-              id: "title",
-              name: "Title",
-              type: "text",
-              required: true,
-            },
-          ],
+          questions: [],
         },
         linkedData: {
           label: "Gekoppelde data",
-          questions: [
-            {
-              label: "Titel",
-              id: "title",
-              name: "Title",
-              type: "text",
-              required: true,
-            },
-          ],
+          questions: [],
         },
         templates: {
           label: "Templates",
