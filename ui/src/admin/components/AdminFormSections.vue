@@ -9,28 +9,8 @@
 
         <div class="column2">
           <div v-for="question in section.questions" :key="question.id">
-            <div v-if="question.type === 'text'">
-              <validation-provider v-slot="{ errors }" :name="question.name">
-                <label :for="question.id">{{ question.label }}</label>
-                <textarea
-                  v-if="question.multiLine"
-                  :id="question.id"
-                  v-model="currentValues[question.id]"
-                  type="text"
-                />
-                <input
-                  v-else
-                  :id="question.id"
-                  v-model="currentValues[question.id]"
-                  type="text"
-                  :required="question.required"
-                />
-                <span>{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
-
             <div v-if="question.type === 'dropdown'">
-              <validation-provider v-slot="{ errors }" :name="question.name" class="flex flex-column">
+              <validation-provider v-slot="{ errors }" :name="question.name" class="flex __column">
                 <label :for="question.id">{{ question.label }}</label>
                 <select
                   :id="question.id"
@@ -43,6 +23,58 @@
                     {{ option.label }}
                   </option>
                 </select>
+                <span>{{ errors[0] }}</span>
+              </validation-provider>
+            </div>
+
+            <div v-else-if="question.type === 'checkbox'">
+              <validation-provider v-slot="{ errors }" :name="question.name" class="flex __align-center">
+                <input
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  :checked="currentValues[question.id]"
+                  type="checkbox"
+                />
+                <label :for="question.id">{{ question.label }}</label>
+                <span>{{ errors[0] }}</span>
+              </validation-provider>
+            </div>
+
+            <div v-else>
+              <validation-provider v-slot="{ errors }" :name="question.name">
+                <label :for="question.id">{{ question.label }}</label>
+                <textarea
+                  v-if="question.type === 'text' && question.multiLine"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  type="text"
+                />
+                <input
+                  v-else-if="question.type === 'text'"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  type="text"
+                  :required="question.required"
+                />
+                <input
+                  v-else-if="question.type === 'number'"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  type="number"
+                  :min="question.min"
+                  :max="question.max"
+                  :required="question.required"
+                />
+                <input
+                  v-else-if="question.type === 'decimal'"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  type="number"
+                  :min="question.min"
+                  :max="question.max"
+                  :step="question.step"
+                  :required="question.required"
+                />
                 <span>{{ errors[0] }}</span>
               </validation-provider>
             </div>
@@ -78,6 +110,7 @@ export default {
       this.currentValues = newValues;
     },
     currentValues(newValues) {
+      console.log(newValues);
       this.$emit("update", newValues);
     },
   },

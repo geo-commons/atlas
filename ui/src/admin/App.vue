@@ -115,6 +115,7 @@ body {
 }
 
 input[type="text"],
+input[type="number"],
 input[type="url"] {
   width: 100%;
   border: 1px solid var(--color-grey-60);
