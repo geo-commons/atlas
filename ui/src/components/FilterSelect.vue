@@ -1,5 +1,5 @@
 <template>
-  <div v-if="filterOptions && filterProperty" class="flex-column filter-min-width">
+  <div v-if="filterOptions && filterProperty" class="flex-column filter-width">
     <label :for="filterProperty" class="filter-label-padding">{{
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
@@ -9,6 +9,7 @@
       :options="filterOptions"
       placeholder="Kies waarde"
       :show-labels="false"
+      :multiple="true"
       open-direction="bottom"
       @input="updateFieldFilters()"
     />
@@ -30,12 +31,12 @@ export default {
   },
   data() {
     return {
-      selectedItems: "",
+      selectedItems: [],
     };
   },
   methods: {
     updateFieldFilters() {
-      if (this.selectedItems) {
+      if (this.selectedItems.length > 0) {
         this.$emit("onFilterChange", {
           ...this.fieldFilters,
           [this.filterProperty]: this.selectedItems,
@@ -51,8 +52,9 @@ export default {
 };
 </script>
 <style scoped>
-.filter-min-width {
+.filter-width {
   min-width: 125px;
+  max-width: 225px;
 }
 
 .filter-label-padding {
@@ -60,8 +62,9 @@ export default {
 }
 
 @media (max-width: 576px) {
-  .filter-min-width {
+  .filter-width {
     width: 100%;
+    max-width: 100%;
   }
 }
 </style>

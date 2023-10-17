@@ -109,6 +109,8 @@ export default {
       fieldFilters: {},
       selectedFilterProperties: [],
       showFilters: false,
+      filterOptions: {},
+      filterFeatures: {},
     };
   },
   computed: {
@@ -156,7 +158,7 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          filters.push(`${key} = '${this.fieldFilters[key]}'`);
+          filters.push(`${key} in (${this.fieldFilters[key].map((f) => `'${f}'`).join(",")})`);
         });
       }
 
@@ -171,10 +173,6 @@ export default {
 
       if (filters.length > 0) {
         params.set("cql_filter", filters.join(" AND "));
-      }
-
-      if (this.overallFilter) {
-        params.set("cql_filter", `${this.overallFilter.key} = '${this.overallFilter.value}'`);
       }
 
       try {
@@ -327,20 +325,24 @@ export default {
       }
     },
     getFilterOptions(property) {
+      if (this.filterOptions[property]) {
+        return this.filterOptions[property];
+      }
+
       // initialize filters for relevant feature property
       let filters = [];
       let featurePropSet = new Set();
 
-      if (this.featureCollection.features && property) {
-        this.featureCollection.features.forEach((feature) => {
+      if (this.filterFeatures && property) {
+        this.filterFeatures.forEach((feature) => {
           if (feature.properties[property]) {
             featurePropSet.add(feature.properties[property]);
           }
         });
       }
       filters = [...featurePropSet];
-
-      return filters;
+      this.filterOptions[property] = filters;
+      return this.filterOptions[property];
     },
     setFieldFilters(v) {
       this.fieldFilters = v;
@@ -352,7 +354,9 @@ export default {
     toggleFilters() {
       this.showFilters = !this.showFilters;
 
-      if (!this.showFilters) {
+      if (this.showFilters) {
+        this.filterFeatures = this.featureCollection.features;
+      } else {
         this.resetFieldFilters();
       }
     },
