@@ -12,6 +12,7 @@
           :placeholder="'Kies aantal'"
           :options="nrRecordsOptions"
           :show-labels="false"
+          :allow-empty="false"
           @input="(value) => updateNrOfRecords(value)"
         />
         <label>Aantal rijen per pagina</label>

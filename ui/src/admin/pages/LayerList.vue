@@ -133,7 +133,7 @@
                   {{ layer.category?.title }}
                 </td>
                 <td>
-                  {{ getLayerStatus(layer) }}
+                  {{ layer.status }}
                 </td>
                 <td>
                   <button
@@ -267,6 +267,10 @@ export default {
       }
 
       this.layers = await result.json();
+
+      if (this.layers) {
+        this.setLayerStatus();
+      }
     },
     async saveLayer() {
       let result;
@@ -317,6 +321,11 @@ export default {
       let resultJson = await result.json();
       this.categories = resultJson.map((category) => category.title);
     },
+    setLayerStatus() {
+      this.layers.forEach((layer) => {
+        layer.status = layer.published ? "Gepubliceerd" : "Concept";
+      });
+    },
     openFormModal() {
       this.newLayerData = {
         title: "",
@@ -329,10 +338,6 @@ export default {
     closeFormModal() {
       this.showFormModal = false;
     },
-    // todo: can also be moved to api? also check if this is the desired naming convention.
-    getLayerStatus(layer) {
-      return layer.published ? "Gepubliceerd" : "Concept";
-    },
     setTableFilters(v) {
       this.selectedLayerFilters = v;
     },
@@ -340,17 +345,14 @@ export default {
       if (!this.selectedLayerFilters[this.categoryFilterProperty]) {
         return true;
       }
-
-      return layer.category?.title === this.selectedLayerFilters[this.categoryFilterProperty];
+      return this.selectedLayerFilters[this.categoryFilterProperty].includes(layer.category?.title);
     },
     checkStatus(layer) {
       if (!this.selectedLayerFilters[this.statusFilterProperty]) {
         return true;
       }
 
-      return this.selectedLayerFilters[this.statusFilterProperty] === "Gepubliceerd"
-        ? layer.published
-        : !layer.published;
+      return this.selectedLayerFilters[this.statusFilterProperty].includes(layer.status);
     },
     sortColumn(prop) {
       if (this.sortKey !== prop) {
@@ -366,7 +368,7 @@ export default {
       }
 
       if (this.sortKey === this.statusFilterProperty) {
-        return this.getLayerStatus(sortItem);
+        return sortItem.status;
       }
 
       return sortItem[this.sortKey].toLowerCase();
