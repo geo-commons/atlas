@@ -1,256 +1,218 @@
 <template>
   <div class="container">
-    <h1>Kaartlaag wijzigen</h1>
+    <h1 class="font-weight-normal">Kaartlaag wijzigen</h1>
+    <validation-observer v-slot="{ handleSubmit }">
+      <form @submit.prevent="handleSubmit(saveLayer)">
+        <AdminFormSections
+          :sections="sections"
+          :initial-values="initialValues"
+          @update="(newValues) => (currentValues = newValues)"
+        />
+        <div class="config-btn-wrapper">
+          <router-link to="/layers" class="button __tertiary">Annuleer</router-link>
+          <button class="button __primary" type="submit">Opslaan</button>
+        </div>
+      </form>
+    </validation-observer>
 
-    <div class="section">
-      <validation-observer v-slot="{ handleSubmit }">
-        <form v-if="data" @submit.prevent="handleSubmit(saveLayer)">
-          <hr />
-          <div class="config-section-wrapper">
-            <div><h3>Algemene gegevens</h3></div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="LayerName">-->
+    <!--                <label for="layer-name">Laagnaam</label>-->
+    <!--                <input id="layer-name" v-model="data.layer_name" type="text" />-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
 
-            <div>
-              <div>
-                <validation-provider v-slot="{ errors }" name="Titel">
-                  <label for="title">Titel</label>
-                  <input id="title" v-model="data.title" type="text" required />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="SourceType" class="flex flex-column">-->
+    <!--                <label for="source-type">Brontype</label>-->
+    <!--                <select id="source-type" v-model="data.source_type" class="config-select-wrapper">-->
+    <!--                  <option disabled value="">Selecteer een brontype</option>-->
+    <!--                  <option v-for="type in sourceTypes" :key="type">-->
+    <!--                    {{ type }}-->
+    <!--                  </option>-->
+    <!--                </select>-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="Slug">
-                  <label for="slug">Kort kenmerk</label>
-                  <input id="slug" v-model="data.slug" type="text" required />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="Projection">-->
+    <!--                <label for="projection">Projectie</label>-->
+    <!--                <input id="projection" v-model="data.projection" type="text" />-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="Category" class="flex flex-column">
-                  <label for="category">Categorie</label>
-                  <select id="category" v-model="data.category" class="" required>
-                    <option disabled value="">Selecteer een categorie</option>
-                    <option v-for="category in categories" :key="category.id" :value="category">
-                      {{ category.title }}
-                    </option>
-                  </select>
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div class="config-section-wrapper">
-            <div><h3>Bron</h3></div>
-            <div>
-              <div>
-                <div>{{ data.source }}</div>
-                <validation-provider v-slot="{ errors }" name="Source" class="flex flex-column">
-                  <label for="source">Bron</label>
-                  <select id="source" v-model="data.source" class="" required>
-                    <option disabled value="">Selecteer een bron</option>
-                    <option v-for="source in sources" :key="source.id" :value="source">
-                      {{ source.title }}
-                    </option>
-                  </select>
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="ServerType">-->
+    <!--                <label for="server-type">Servertype</label>-->
+    <!--                <input id="server-type" v-model="data.server_type" type="text" />-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="LayerName">
-                  <label for="layer-name">Laagnaam</label>
-                  <input id="layer-name" v-model="data.layer_name" type="text" />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="Format" class="flex flex-column">-->
+    <!--                <label for="format">Formaat</label>-->
+    <!--                <select id="format" v-model="data.format" class="config-select-wrapper">-->
+    <!--                  <option disabled value="">Selecteer een formaat</option>-->
+    <!--                  <option v-for="format in formats" :key="format">-->
+    <!--                    {{ format }}-->
+    <!--                  </option>-->
+    <!--                </select>-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="SourceType" class="flex flex-column">
-                  <label for="source-type">Brontype</label>
-                  <select id="source-type" v-model="data.source_type" class="">
-                    <option disabled value="">Selecteer een brontype</option>
-                    <option v-for="type in sourceTypes" :key="type">
-                      {{ type }}
-                    </option>
-                  </select>
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--        <hr />-->
+    <!--        <div class="config-section-wrapper">-->
+    <!--          <div><h3 class="font-weight-normal">Weergave</h3></div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="Projection">
-                  <label for="projection">Projectie</label>
-                  <input id="projection" v-model="data.projection" type="text" />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--          <div></div>-->
+    <!--        </div>-->
+    <!--        <hr />-->
+    <!--        <div class="config-section-wrapper">-->
+    <!--          <div><h3 class="font-weight-normal">Metadata</h3></div>-->
+    <!--          <div>-->
+    <!--            &lt;!&ndash;                todo: naam metadata niet in api response?&ndash;&gt;-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="ServerType">
-                  <label for="server-type">Servertype</label>
-                  <input id="server-type" v-model="data.server_type" type="text" />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="Naam">-->
+    <!--                <label for="name">Naam</label>-->
+    <!--                <input id="name" type="text" />-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="Format" class="flex flex-column">
-                  <label for="format">Formaat</label>
-                  <select id="format" v-model="data.format" class="">
-                    <option disabled value="">Selecteer een formaat</option>
-                    <option v-for="format in formats" :key="format">
-                      {{ format }}
-                    </option>
-                  </select>
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div class="config-section-wrapper">
-            <div><h3>Weergave</h3></div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="Description" class="flex flex-column">-->
+    <!--                <label for="description">Omschrijving</label>-->
+    <!--                <textarea id="description" v-model="data.metadata.description" type="text" />-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
 
-            <div></div>
-          </div>
-          <hr />
-          <div class="config-section-wrapper">
-            <div><h3>Metadata</h3></div>
-            <div>
-              <!--                todo: naam metadata niet in api response?-->
+    <!--            &lt;!&ndash;              todo: laatst bijgewerkt > waarom is dit een invoerveld? &ndash;&gt;-->
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="Updated">-->
+    <!--                <label for="updated">Laatst bijgewerkt</label>-->
+    <!--                <input id="updated" v-model="data.metadata.updated" type="text" />-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="Naam">
-                  <label for="name">Naam</label>
-                  <input id="name" type="text" />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--            <div>-->
+    <!--              <validation-provider v-slot="{ errors }" name="Link">-->
+    <!--                <label for="link">Meer informatie</label>-->
+    <!--                <input id="link" v-model="data.metadata.link" type="text" />-->
+    <!--                <span>{{ errors[0] }}</span>-->
+    <!--              </validation-provider>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--        <hr />-->
+    <!--        <div class="config-section-wrapper">-->
+    <!--          <div><h3 class="font-weight-normal">Toegang</h3></div>-->
 
-              <div>
-                <validation-provider v-slot="{ errors }" name="Description" class="flex flex-column">
-                  <label for="description">Omschrijving</label>
-                  <textarea id="description" v-model="data.metadata.description" type="text" />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
+    <!--          <div></div>-->
+    <!--        </div>-->
 
-              <!--              todo: laatst bijgewerkt > waarom is dit een invoerveld? -->
-              <div>
-                <validation-provider v-slot="{ errors }" name="Updated">
-                  <label for="updated">Laatst bijgewerkt</label>
-                  <input id="updated" v-model="data.metadata.updated" type="text" />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
-
-              <div>
-                <validation-provider v-slot="{ errors }" name="Link">
-                  <label for="link">Meer informatie</label>
-                  <input id="link" v-model="data.metadata.link" type="text" />
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div class="config-section-wrapper">
-            <div><h3>Toegang</h3></div>
-
-            <div></div>
-          </div>
-
-          <div class="config-btn-wrapper">
-            <router-link to="/layers" class="button __tertiary">Annuleer</router-link>
-            <button class="button __primary" type="submit">Opslaan</button>
-          </div>
-        </form>
-      </validation-observer>
-    </div>
+    <!--        <div class="config-btn-wrapper">-->
+    <!--          <router-link to="/layers" class="button __tertiary">Annuleer</router-link>-->
+    <!--          <button class="button __primary" type="submit">Opslaan</button>-->
+    <!--        </div>-->
+    <!--      </form>-->
+    <!--    </validation-observer>-->
   </div>
 </template>
 
 <script>
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { ValidationObserver } from "vee-validate";
 
 import Cookies from "js-cookie";
+import AdminFormSections from "@/admin/components/AdminFormSections.vue";
+// import { convertApiModelToFormData, convertFormDataToApiModel } from "@/utils/api-model-converter";
 
 export default {
   name: "LayerCreateUpdate",
   components: {
+    AdminFormSections,
     ValidationObserver,
-    ValidationProvider,
+    // ValidationProvider,
   },
   data() {
     return {
       data: null,
+      formData: null,
       layersFromCapabilities: [],
       categories: {},
       sources: {},
       sourceTypes: [],
       formats: [],
+      sections: {},
+      initialValues: {},
+      currentValues: {},
     };
   },
   created() {
     this.getLayer();
-    this.getCategories();
-    this.getSources();
-    this.sourceTypes = ["WMS en WFS", "WMS", "WFS", "WMTS", "XYZ", "MVT"];
-    this.formats = ["image/png", "image/jpeg", "image/vnd.jpeg-png"];
+    // this.getSources();
+    this.sourceTypes = [
+      { id: "WMS_WFS", label: "WMS en WFS" },
+      { id: "WMS", label: "WMS" },
+      { id: "WFS", label: "WFS" },
+      { id: "WMTS", label: "WMTS" },
+      { id: "XYZ", label: "XYZ" },
+      { id: "MVT", label: "MVT" },
+    ];
+    this.formats = [
+      { id: "image/png", label: "image/png" },
+      { id: "image/jpeg", label: "image/jpeg" },
+      { id: "image/vnd.jpeg-png", label: "image/vnd.jpeg-png" },
+    ];
+    this.sections = this.getSections();
   },
   methods: {
     async getLayer() {
-      if (this.$route.params.id) {
-        const result = await fetch(`/atlas/api/v1/layers/${this.$route.params.id}/`, {
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-        });
+      const result = await fetch(`/atlas/api/v1/layers/${this.$route.params.id}/`, {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
 
-        if (!result.ok) {
-          console.error("Could not fetch layer");
-        }
-
-        this.data = await result.json();
-        console.log(this.data);
+      if (!result.ok) {
+        console.error("Could not fetch layer");
         return;
       }
 
-      this.data = {
-        title: "",
-        url: "",
-        authenticate: false,
-      };
+      this.data = await result.json();
+      this.data.category_id = this.data.category.id;
+      this.data.source_id = this.data.source.id;
+
+      this.initialValues = this.data;
     },
     async saveLayer() {
       let result;
 
-      if (this.$route.params.id) {
-        result = await fetch(`/atlas/api/v1/layers/${this.$route.params.id}/`, {
-          method: "PUT",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": Cookies.get("csrftoken"),
-          },
-          body: JSON.stringify(this.data),
-        });
-      } else {
-        result = await fetch(`/atlas/api/v1/layers/`, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": Cookies.get("csrftoken"),
-          },
-          body: JSON.stringify(this.data),
-        });
+      result = await fetch(`/atlas/api/v1/layers/${this.$route.params.id}/`, {
+        method: "PATCH",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+        body: JSON.stringify(this.currentValues),
+      });
+
+      if (!result.ok) {
+        console.error(
+          `Error occurred while saving layer with layer id: ${this.currentValues.id} and title: ${this.currentValues.title}`
+        );
       }
 
-      if (result.ok) {
-        this.$router.push(`/layers`);
-      }
+      this.$router.push(`/layers`);
     },
     async getCategories() {
       const result = await fetch("/atlas/api/v1/categories/", {
@@ -262,7 +224,11 @@ export default {
         console.error("Could not fetch categories");
       }
 
-      this.categories = await result.json();
+      const response = await result.json();
+
+      return response.map((category) => {
+        return { id: category.id, label: category.title };
+      });
     },
     async getSources() {
       const result = await fetch("/atlas/api/v1/sources/", {
@@ -274,18 +240,154 @@ export default {
         console.error("Could not fetch sources");
       }
 
-      this.sources = await result.json();
+      const response = await result.json();
+
+      return response.map((source) => {
+        return { id: source.id, label: source.title };
+      });
+    },
+    getSections() {
+      return {
+        general: {
+          label: "Algemene gegevens",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Kort kenmerk",
+              id: "slug",
+              name: "Slug",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Categorie",
+              id: "category_id",
+              name: "Category",
+              type: "dropdown",
+              required: true,
+              placeholder: "categorie",
+              options: this.getCategories,
+            },
+          ],
+        },
+        source: {
+          label: "Bron",
+          questions: [
+            {
+              label: "Bron",
+              id: "source_id",
+              name: "Source",
+              type: "dropdown",
+              required: true,
+              placeholder: "bron",
+              options: this.getSources,
+            },
+            {
+              label: "Laagnaam",
+              id: "layer_name",
+              name: "LayerName",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Brontype",
+              id: "source_type",
+              name: "SourceType",
+              type: "dropdown",
+              required: false,
+              placeholder: "brontype",
+              options: this.sourceTypes,
+            },
+            {
+              label: "Projectie",
+              id: "projection",
+              name: "Projection",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Servertype",
+              id: "server_type",
+              name: "ServerType",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Formaat",
+              id: "format",
+              name: "Format",
+              type: "dropdown",
+              required: true,
+              placeholder: "bron",
+              options: this.formats,
+            },
+          ],
+        },
+        display: {
+          label: "Weergave",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+          ],
+        },
+        metadata: {
+          label: "Metadata",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+          ],
+        },
+        access: {
+          label: "Toegang",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+          ],
+        },
+        linkedData: {
+          label: "Gekoppelde data",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+          ],
+        },
+        templates: {
+          label: "Templates",
+          questions: [],
+        },
+      };
     },
   },
 };
 </script>
 
 <style scoped>
-/*todo: move*/
-input {
-  background: var(--color-white);
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -295,18 +397,10 @@ input {
   margin: 0 auto;
 }
 
-.config-section-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
 .config-btn-wrapper {
   display: flex;
   justify-content: flex-end;
   gap: 20px;
-}
-
-.section {
-  max-width: 600px;
+  padding: 30px 0;
 }
 </style>
