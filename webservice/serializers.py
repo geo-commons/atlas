@@ -36,7 +36,6 @@ class TemplateSerializer(serializers.ModelSerializer):
 class MetadataSerializerField(serializers.Field):
 
     def to_representation(self, obj):
-        print(obj)
         return {
             'name': obj.meta_name,
             'description': obj.meta_description,
