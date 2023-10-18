@@ -120,6 +120,7 @@
                   />
                 </th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -139,23 +140,25 @@
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round"
+                    aria-label="Wijzig laag"
+                    content="Wijzig"
+                    type="button"
+                  >
+                    <router-link class="layer-link-btn" :to="`/layers/update/${layer.id}`">
+                      <EditIcon class="icon" />
+                    </router-link>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    v-tippy="{ placement: 'bottom' }"
+                    class="iconbutton __normal __round"
                     aria-label="Verwijder laag"
                     content="Verwijder"
                     type="button"
                     @click="deleteLayer(layer)"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      width="24px"
-                      fill="#000000"
-                    >
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path
-                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                      />
-                    </svg>
+                    <TrashIcon class="icon" />
                   </button>
                 </td>
               </tr>
@@ -176,6 +179,8 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 import FilterSelect from "@/components/FilterSelect.vue";
 import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
+import TrashIcon from "../../assets/icons/trash-icon.svg";
+import EditIcon from "../../assets/icons/edit-icon.svg";
 
 export default {
   name: "LayerList",
@@ -187,6 +192,8 @@ export default {
     AddIcon,
     ValidationObserver,
     ValidationProvider,
+    TrashIcon,
+    EditIcon,
   },
   data() {
     return {
@@ -465,8 +472,14 @@ export default {
   text-decoration: none;
   color: var(--color-black);
 }
+
 .layer-title-link:hover {
   text-decoration: underline;
+}
+
+.layer-link-btn {
+  color: var(--color-black);
+  display: flex;
 }
 
 .form-model-container {
@@ -502,6 +515,9 @@ tr > td:not(:last-child) {
   padding-right: 8px;
 }
 
+td.icon-cell {
+  width: 30px;
+}
 .first-column-padding {
   padding-left: 12px;
 }
