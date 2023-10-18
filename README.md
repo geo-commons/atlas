@@ -17,9 +17,7 @@ docker-compose up
 
 Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
 
-The default settings can be used for testing purposes, but are not suitable for production usage.
-
-Adjust the `.env` file to configure the application and create a secure production setup. The file contains the following settings:
+The default settings can be used for testing purposes, but are not suitable for production usage. Atlas can be configured with the following settings:
 
 - DEBUG: [Django](https://https://www.djangoproject.com/) [debug mode](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-DEBUG). (default: False)
 - SECRET_KEY: Django [secret key](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-SECRET_KEY). Replace with a generated password in production. (default: changemetosomethingsecret)
