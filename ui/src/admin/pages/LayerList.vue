@@ -511,7 +511,7 @@ th {
   border-bottom: 1px solid var(--color-grey-60);
 }
 
-tr > td:not(:last-child) {
+tr > td:not(:nth-last-child(-n + 2)) {
   padding-right: 8px;
 }
 
