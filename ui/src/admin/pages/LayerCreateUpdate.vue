@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container __admin">
     <h1 class="font-weight-normal">Kaartlaag wijzigen</h1>
     <validation-observer v-slot="{ handleSubmit }">
       <form @submit.prevent="handleSubmit(saveLayer)">
@@ -31,7 +31,6 @@ export default {
   },
   data() {
     return {
-      data: null,
       formData: null,
       layersFromCapabilities: [],
       categories: {},
@@ -75,16 +74,16 @@ export default {
         return;
       }
 
-      this.data = await result.json();
-      this.initialValues = this.data;
-      this.initialValues.category_id = this.data.category.id;
-      this.initialValues.source_id = this.data.source.id;
+      const response = await result.json();
+      this.initialValues = response;
+      this.initialValues.category_id = response.category.id;
+      this.initialValues.source_id = response.source.id;
 
       // Internal fields used for v-model binding
-      this.initialValues.metadata_name = this.data.metadata.name;
-      this.initialValues.metadata_description = this.data.metadata.description;
-      this.initialValues.metadata_organization = this.data.metadata.organization;
-      this.initialValues.metadata_updated = this.data.metadata.updated;
+      this.initialValues.metadata_name = response.metadata.name;
+      this.initialValues.metadata_description = response.metadata.description;
+      this.initialValues.metadata_organization = response.metadata.organization;
+      this.initialValues.metadata_updated = response.metadata.updated;
     },
     async saveLayer() {
       let result;
@@ -347,15 +346,6 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
 .config-btn-wrapper {
   display: flex;
   justify-content: flex-end;

@@ -34,6 +34,25 @@ body {
   background-color: var(--color-backdrop);
 }
 
+select {
+  padding: 0 16px;
+  border: 1px solid var(--color-grey-60);
+  border-radius: var(--radius-normal);
+  //font-family: var(--font-family);
+  font-family: "Roboto", sans-serif;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+}
+
+.container.__admin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
 @media (max-width: 575px) {
   .container {
     padding: 0 20px;

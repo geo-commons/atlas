@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container __admin">
     <div class="top-menu-container">
       <div class="page-title-wrapper">
         <h1>Kaartlagen</h1>
@@ -430,15 +430,6 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
 .top-menu-container {
   padding: 20px 0;
   display: flex;
@@ -507,10 +498,6 @@ export default {
   .top-menu-container {
     gap: 16px;
   }
-}
-
-.button {
-  max-width: 300px;
 }
 
 .layer-title-link {

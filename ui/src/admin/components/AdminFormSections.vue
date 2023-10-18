@@ -159,7 +159,6 @@ input {
 textarea {
   border: 1px solid var(--color-grey-60);
   border-radius: var(--radius-normal);
-
   resize: vertical;
 }
 
@@ -169,16 +168,6 @@ textarea.width {
 
 h3 {
   margin: 0;
-}
-
-select {
-  padding: 0 16px;
-  border: 1px solid var(--color-grey-60);
-  border-radius: var(--radius-normal);
-  //font-family: var(--font-family);
-  font-family: "Roboto", sans-serif;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-normal);
 }
 
 .full-width {
