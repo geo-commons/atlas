@@ -11,7 +11,14 @@
           >Kaarten</router-link
         >
         <router-link to="/sources" class="button __tertiary __large"
-          ><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            enable-background="new 0 0 24 24"
+            height="24px"
+            viewBox="0 0 24 24"
+            width="24px"
+            fill="#000000"
+          >
             <g>
               <rect fill="none" height="24" width="24" />
               <path
@@ -20,16 +27,16 @@
             </g></svg
           >Bronnen</router-link
         >
-        <!--        <router-link to="/layers" class="button __tertiary __large"-->
-        <!--          ><svg data-v-5ec8bae2="" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">-->
-        <!--            <path data-v-5ec8bae2="" d="M0 0h24v24H0V0z" fill="none"></path>-->
-        <!--            <path-->
-        <!--              data-v-5ec8bae2=""-->
-        <!--              fill="currentColor"-->
-        <!--              d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"-->
-        <!--            ></path></svg-->
-        <!--          >Lagen</router-link-->
-        <!--        >-->
+        <router-link to="/layers" class="button __tertiary __large"
+          ><svg data-v-5ec8bae2="" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+            <path data-v-5ec8bae2="" d="M0 0h24v24H0V0z" fill="none"></path>
+            <path
+              data-v-5ec8bae2=""
+              fill="currentColor"
+              d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"
+            ></path></svg
+          >Lagen</router-link
+        >
       </div>
     </div>
   </div>
