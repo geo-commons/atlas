@@ -11,25 +11,7 @@
 
       <div class="search-filter-container">
         <div class="search-wrapper">
-          <svg
-            width="18px"
-            height="18px"
-            viewBox="0 0 18 18"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-          >
-            <g id="Admin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <g id="Kaart---Lagen" transform="translate(-45.000000, -183.000000)" fill="#000000" fill-rule="nonzero">
-                <g id="search_black_24dp" transform="translate(42.000000, 180.000000)">
-                  <path
-                    id="Shape"
-                    d="M15.5,14 L14.71,14 L14.43,13.73 C15.41,12.59 16,11.11 16,9.5 C16,5.91 13.09,3 9.5,3 C5.91,3 3,5.91 3,9.5 C3,13.09 5.91,16 9.5,16 C11.11,16 12.59,15.41 13.73,14.43 L14,14.71 L14,15.5 L19,20.49 L20.49,19 L15.5,14 Z M9.5,14 C7.01,14 5,11.99 5,9.5 C5,7.01 7.01,5 9.5,5 C11.99,5 14,7.01 14,9.5 C14,11.99 11.99,14 9.5,14 Z"
-                  ></path>
-                </g>
-              </g>
-            </g>
-          </svg>
+          <SearchIcon class="icon" />
           <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
         </div>
         <div class="filter-wrapper">
@@ -57,21 +39,12 @@
       <template #body>
         <validation-observer v-slot="{ handleSubmit }">
           <form v-if="newLayerData" class="form-model-container" @submit.prevent="handleSubmit(saveLayer)">
-            <div>
-              <validation-provider v-slot="{ errors }" name="Titel">
-                <label for="title">Titel</label>
-                <input id="title" v-model="newLayerData.title" type="text" required />
-                <span>{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
-            <div>
-              <validation-provider v-slot="{ errors }" name="Titel">
-                <label for="title">Laagnaam</label>
-                <input id="title" v-model="newLayerData.layer_name" type="text" required />
-                <span>{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
-
+            <AdminFormSections
+              :sections="sections"
+              :initial-values="newLayerData"
+              :create-view="true"
+              @update="(newValues) => updateCurrentValues(newValues)"
+            />
             <div class="flexer">
               <button class="button __tertiary" @click="closeFormModal">Annuleer</button>
               <button class="button __primary" type="submit">Opslaan</button>
@@ -174,26 +147,29 @@
 import Cookies from "js-cookie";
 import PaginationComponent from "@/components/Pagination.vue";
 import FormModal from "@/components/FormModal.vue";
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { ValidationObserver } from "vee-validate";
 import FilterSelect from "@/components/FilterSelect.vue";
 import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import TrashIcon from "../../assets/icons/trash-icon.svg";
 import EditIcon from "../../assets/icons/edit-icon.svg";
 import AddIcon from "../../assets/icons/add-icon.svg";
+import SearchIcon from "../../assets/icons/search-icon.svg";
+import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 
 export default {
   name: "LayerList",
   components: {
+    AdminFormSections,
     SortableTableHeaderItem,
     FilterSelect,
     FormModal,
     PaginationComponent,
     ValidationObserver,
-    ValidationProvider,
     TrashIcon,
     EditIcon,
     AddIcon,
+    SearchIcon,
   },
   data() {
     return {
@@ -210,6 +186,7 @@ export default {
       selectedLayerFilters: {},
       sortKey: "",
       sortAscending: true,
+      sections: {},
     };
   },
   computed: {
@@ -261,6 +238,8 @@ export default {
     this.getLayers();
     this.getCategories();
     this.status = ["Gepubliceerd", "Concept"];
+
+    this.sections = this.getSections();
   },
   methods: {
     async getLayers() {
@@ -292,8 +271,10 @@ export default {
         body: JSON.stringify(this.newLayerData),
       });
 
+      // todo: think about what to do if the result is not ok.
       if (result.ok) {
-        this.$router.push(`/layers`);
+        this.closeFormModal();
+        await this.getLayers();
       }
     },
     async deleteLayer(layer) {
@@ -325,8 +306,29 @@ export default {
         console.error("Could not fetch categories");
       }
 
-      let resultJson = await result.json();
-      this.categories = resultJson.map((category) => category.title);
+      const response = await result.json();
+
+      this.categories = response.map((category) => category.title);
+
+      return response.map((category) => {
+        return { id: category.id, label: category.title };
+      });
+    },
+    async getSources() {
+      const result = await fetch("/atlas/api/v1/sources/", {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch sources");
+      }
+
+      const response = await result.json();
+
+      return response.map((source) => {
+        return { id: source.id, label: source.title };
+      });
     },
     setLayerStatus() {
       this.layers.forEach((layer) => {
@@ -336,14 +338,18 @@ export default {
     openFormModal() {
       this.newLayerData = {
         title: "",
-        url: "",
         authenticate: false,
+        metadata: { name: "", description: "", organization: "", updated: "", link: "" },
       };
 
       this.showFormModal = true;
     },
     closeFormModal() {
       this.showFormModal = false;
+    },
+    updateCurrentValues(newValues) {
+      this.newLayerData = newValues;
+      console.log("update", this.newLayerData);
     },
     setTableFilters(v) {
       this.selectedLayerFilters = v;
@@ -379,6 +385,45 @@ export default {
       }
 
       return sortItem[this.sortKey].toLowerCase();
+    },
+    getSections() {
+      return {
+        general: {
+          label: "Algemene gegevens",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Categorie",
+              id: "category_id",
+              name: "Category",
+              type: "dropdown",
+              required: true,
+              placeholder: "categorie",
+              options: this.getCategories,
+            },
+          ],
+        },
+        source: {
+          label: "Bron",
+          questions: [
+            {
+              label: "Bron",
+              id: "source_id",
+              name: "Source",
+              type: "dropdown",
+              required: true,
+              placeholder: "bron",
+              options: this.getSources,
+            },
+          ],
+        },
+      };
     },
   },
 };

@@ -1,9 +1,9 @@
 <template>
   <div>
     <div v-for="section in sections" :key="section.label">
-      <hr />
-      <div class="config-section-wrapper">
-        <div class="section-label">
+      <hr v-if="!createView" />
+      <div :class="{ 'config-section-wrapper': !createView, 'full-width': createView }">
+        <div v-if="!createView" class="section-label">
           <h3 class="">{{ section.label }}</h3>
         </div>
 
@@ -99,6 +99,10 @@ export default {
     formData: Object,
     sections: Object,
     initialValues: Object,
+    createView: {
+      default: false,
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -175,6 +179,10 @@ select {
   font-family: "Roboto", sans-serif;
   font-size: var(--font-size-normal);
   font-weight: var(--font-weight-normal);
+}
+
+.full-width {
+  width: 100%;
 }
 
 .section-label {
