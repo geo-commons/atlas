@@ -47,7 +47,9 @@
                   v-if="question.type === 'text' && question.multiLine"
                   :id="question.id"
                   v-model="currentValues[question.id]"
+                  :rows="question.rows ? question.rows : 5"
                   type="text"
+                  class="width"
                 />
                 <input
                   v-else-if="question.type === 'text'"
@@ -56,14 +58,6 @@
                   type="text"
                   :required="question.required"
                 />
-                <!--                <input-->
-                <!--                  v-else-if="question.type === 'text'"-->
-                <!--                  :id="question.id"-->
-                <!--                  :value="getQuestionValue(question.id)"-->
-                <!--                  type="text"-->
-                <!--                  :required="question.required"-->
-                <!--                  @input="updateValue(val)"-->
-                <!--                />-->
                 <input
                   v-else-if="question.type === 'number'"
                   :id="question.id"
@@ -95,7 +89,6 @@
 
 <script>
 import { ValidationProvider } from "vee-validate";
-import fetchDot from "fetch-dot";
 
 export default {
   name: "AdminFormSections",
@@ -150,20 +143,6 @@ export default {
         });
       });
     },
-    getQuestionValue(question) {
-      if (question.isNested) {
-        return fetchDot(question.id, this.currentValues);
-      }
-
-      return this.currentValues[question.id];
-    },
-    // updateValue(question, val) {
-    //   if (question.isNested) {
-    //     fetchDot(question.id, this.currentValues) = val;
-    //   }
-    //
-    //   this.currentValues[question.id] = val;
-    // },
   },
 };
 </script>
@@ -173,8 +152,15 @@ input {
   background: var(--color-white);
 }
 
-.font-weight-normal {
-  font-weight: var(--font-weight-normal);
+textarea {
+  border: 1px solid var(--color-grey-60);
+  border-radius: var(--radius-normal);
+
+  resize: vertical;
+}
+
+textarea.width {
+  width: 100%;
 }
 
 h3 {

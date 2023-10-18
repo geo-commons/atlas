@@ -4,7 +4,7 @@
       <div class="page-title-wrapper">
         <h1>Kaartlagen</h1>
         <button class="button __primary __normal" @click="openFormModal">
-          <add-icon />
+          <AddIcon class="icon __white" />
           Nieuwe laag
         </button>
       </div>
@@ -171,7 +171,6 @@
 </template>
 
 <script>
-import AddIcon from "../../icons/AddIcon.vue";
 import Cookies from "js-cookie";
 import PaginationComponent from "@/components/Pagination.vue";
 import FormModal from "@/components/FormModal.vue";
@@ -181,6 +180,7 @@ import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import TrashIcon from "../../assets/icons/trash-icon.svg";
 import EditIcon from "../../assets/icons/edit-icon.svg";
+import AddIcon from "../../assets/icons/add-icon.svg";
 
 export default {
   name: "LayerList",
@@ -189,11 +189,11 @@ export default {
     FilterSelect,
     FormModal,
     PaginationComponent,
-    AddIcon,
     ValidationObserver,
     ValidationProvider,
     TrashIcon,
     EditIcon,
+    AddIcon,
   },
   data() {
     return {
@@ -515,9 +515,6 @@ tr > td:not(:last-child) {
   padding-right: 8px;
 }
 
-td.icon-cell {
-  width: 30px;
-}
 .first-column-padding {
   padding-left: 12px;
 }
