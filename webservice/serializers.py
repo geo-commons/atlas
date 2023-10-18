@@ -35,13 +35,13 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 class MetadataSerializerField(serializers.Field):
 
-    def to_representation(self, obj):
+    def to_representation(self, value):
         return {
-            'name': obj.meta_name,
-            'description': obj.meta_description,
-            'organization': obj.meta_org,
-            'updated': obj.meta_updated,
-            'link': obj.meta_link
+            'name': value.meta_name,
+            'description': value.meta_description,
+            'organization': value.meta_org,
+            'updated': value.meta_updated,
+            'link': value.meta_link
         }          
 
     def to_internal_value(self, data):
