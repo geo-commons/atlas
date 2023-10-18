@@ -33,6 +33,27 @@ class TemplateSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'source']
 
 
+class MetadataSerializerField(serializers.Field):
+
+    def to_representation(self, obj):
+        print(obj)
+        return {
+            'name': obj.meta_name,
+            'description': obj.meta_description,
+            'organization': obj.meta_org,
+            'updated': obj.meta_updated,
+            'link': obj.meta_link
+        }          
+
+    def to_internal_value(self, data):
+        return {
+            'meta_name': data['name'],
+            'meta_description': data['description'],
+            'meta_org': data['organization'],
+            'meta_updated': data['updated'],
+            'meta_link': data['link']
+        }
+
 class LayerSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')
     category = CategorySerializer(source='layer_type')
@@ -40,7 +61,7 @@ class LayerSerializer(serializers.ModelSerializer):
     opacity = serializers.SerializerMethodField('get_opacity')
     display_properties = serializers.SerializerMethodField('get_display_properties')
     search_properties = serializers.SerializerMethodField('get_search_properties')
-    metadata = serializers.SerializerMethodField('get_metadata')
+    metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True)
     templates = TemplateSerializer(many=True)
 
@@ -56,14 +77,6 @@ class LayerSerializer(serializers.ModelSerializer):
 
     def get_search_properties(self, obj):
         return obj.search_fields
-    
-    def get_metadata(self, obj):
-        return {
-            'description': obj.meta_description,
-            'organization': obj.meta_org,
-            'updated': obj.meta_updated,
-            'link': obj.meta_link
-        }
 
     class Meta:
         model = Layer
@@ -101,17 +114,30 @@ class LayerSerializer(serializers.ModelSerializer):
 class LayerCreateUpdateSerializer(serializers.ModelSerializer):
     category_id = serializers.PrimaryKeyRelatedField(source='layer_type', queryset=Category.objects.all())
     source_id = serializers.PrimaryKeyRelatedField(source='layer_source', queryset=Source.objects.all())
+    metadata = MetadataSerializerField(source='*')
 
     class Meta:
         model = Layer
         fields = [
             'id',
-            'source_id',
             'title',
             'slug',
-            'layer_name',
+            'category_id',
+            'source_id',
             'layer_source',
-            'category_id'
+            'layer_name',
+            'source_type',
+            'projection',
+            'server_type',
+            'format',
+            'opacity',
+            'is_base',
+            'is_visible',
+            'is_selectable',
+            'zoom_min',
+            'zoom_max',
+            'metadata',
+            'login_required'
         ]
 
 class LayerListSerializer(serializers.ModelSerializer):

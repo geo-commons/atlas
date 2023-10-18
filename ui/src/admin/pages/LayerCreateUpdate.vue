@@ -76,13 +76,24 @@ export default {
       }
 
       this.data = await result.json();
-      this.data.category_id = this.data.category.id;
-      this.data.source_id = this.data.source.id;
-      console.log(this.data);
       this.initialValues = this.data;
+      this.initialValues.category_id = this.data.category.id;
+      this.initialValues.source_id = this.data.source.id;
+
+      // Internal fields used for v-model binding
+      this.initialValues.metadata_name = this.data.metadata.name;
+      this.initialValues.metadata_description = this.data.metadata.description;
+      this.initialValues.metadata_organization = this.data.metadata.organization;
+      this.initialValues.metadata_updated = this.data.metadata.updated;
     },
     async saveLayer() {
       let result;
+
+      // Convert internal fields back to layer model.
+      this.currentValues.metadata.name = this.currentValues.metadata_name;
+      this.currentValues.metadata.description = this.currentValues.metadata_description;
+      this.currentValues.metadata.organization = this.currentValues.metadata_organization;
+      this.currentValues.metadata.updated = this.currentValues.metadata_updated;
 
       result = await fetch(`/atlas/api/v1/layers/${this.$route.params.id}/`, {
         method: "PATCH",
@@ -231,7 +242,7 @@ export default {
               required: false,
               min: 0,
               max: 1,
-              step: 0.01,
+              step: 0.1,
             },
             {
               label: "Is basislaag",
@@ -276,11 +287,12 @@ export default {
           label: "Metadata",
           questions: [
             {
-              label: "[todo: zit nog niet in response] Naam",
-              id: "name",
+              label: "Naam",
+              id: "metadata_name",
               name: "Name",
               type: "text",
               required: false,
+              isNested: true,
             },
             {
               label: "Omschrijving",
@@ -289,13 +301,15 @@ export default {
               type: "text",
               required: false,
               multiLine: true,
+              isNested: true,
             },
             {
               label: "Organisatie",
-              id: "metadata_organisation",
+              id: "metadata_organization",
               name: "metadataOrganisation",
               type: "text",
               required: false,
+              isNested: true,
             },
             {
               label: "Laatst bijgewerkt",
@@ -308,7 +322,15 @@ export default {
         },
         access: {
           label: "Toegang",
-          questions: [],
+          questions: [
+            {
+              label: "Vereis inlog voor deze dataset",
+              id: "login_required",
+              name: "LoginRequired",
+              type: "checkbox",
+              required: false,
+            },
+          ],
         },
         linkedData: {
           label: "Gekoppelde data",

@@ -56,6 +56,14 @@
                   type="text"
                   :required="question.required"
                 />
+                <!--                <input-->
+                <!--                  v-else-if="question.type === 'text'"-->
+                <!--                  :id="question.id"-->
+                <!--                  :value="getQuestionValue(question.id)"-->
+                <!--                  type="text"-->
+                <!--                  :required="question.required"-->
+                <!--                  @input="updateValue(val)"-->
+                <!--                />-->
                 <input
                   v-else-if="question.type === 'number'"
                   :id="question.id"
@@ -87,6 +95,7 @@
 
 <script>
 import { ValidationProvider } from "vee-validate";
+import fetchDot from "fetch-dot";
 
 export default {
   name: "AdminFormSections",
@@ -141,6 +150,20 @@ export default {
         });
       });
     },
+    getQuestionValue(question) {
+      if (question.isNested) {
+        return fetchDot(question.id, this.currentValues);
+      }
+
+      return this.currentValues[question.id];
+    },
+    // updateValue(question, val) {
+    //   if (question.isNested) {
+    //     fetchDot(question.id, this.currentValues) = val;
+    //   }
+    //
+    //   this.currentValues[question.id] = val;
+    // },
   },
 };
 </script>
