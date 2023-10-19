@@ -40,7 +40,11 @@ class Category(models.Model):
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
     # so inform them when changing.
     title = models.CharField('Titel', max_length=128, null=True)
-    slug = AutoSlugField('Kort kenmerk', blank=False, unique=True, populate_from='title', editable=True,
+
+    def get_slug(self):
+        return self.title if not self.slug else self.slug
+
+    slug = AutoSlugField('Kort kenmerk', default=None, blank=False, unique=True, populate_from='get_slug', editable=True,
                          help_text='Een uniek kort kenmerk voor de categorie in Atlas.')
 
     ordering = models.PositiveIntegerField('Sortering',
