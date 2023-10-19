@@ -17,7 +17,7 @@ class LayerManager(models.Manager):
     def for_request(self, request):
         if request.user.is_authenticated and request.user.is_superuser:
             return self.distinct()
-        
+
         open_datasets = Q(published=True) & Q(closed_dataset=False)
         closed_unassigned_datasets = Q(published=True) & Q(
             closed_dataset=True) & Q(atlas_groups=None)
@@ -559,11 +559,13 @@ class Viewer(models.Model):
     TYPE_STREET_SMART = 'STREET_SMART'
     TYPE_OBLIQUO = 'OBLIQUO'
     TYPE_IFRAME = 'IFRAME'
+    TYPE_BUTTON = 'BUTTON'
     VIEWER_TYPES = [
         (TYPE_GOOGLE_MAPS, 'Google Maps'),
         (TYPE_STREET_SMART, 'Street Smart'),
         (TYPE_OBLIQUO, 'Obliquo'),
         (TYPE_IFRAME, 'Iframe'),
+        (TYPE_BUTTON, 'Knop naar nieuw tabblad'),
     ]
 
     ordering = models.PositiveIntegerField(
