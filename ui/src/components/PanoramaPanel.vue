@@ -13,47 +13,19 @@
     @resize:end="resizeEnd"
   >
     <div class="buttons">
-      <select
-        v-if="config.viewers.length > 0"
-        v-model="selectedViewerId"
-        name="viewer"
-      >
-        <option
-          v-for="(viewer, i) in config.viewers"
-          :key="viewer.id"
-          :value="i"
-        >
+      <select v-if="config.viewers.length > 0" v-model="selectedViewerId" name="viewer">
+        <option v-for="(viewer, i) in config.viewers" :key="viewer.id" :value="i">
           {{ viewer.label }}
         </option>
       </select>
-      <button
-        class="iconbutton"
-        :aria-label="isFullscreen ? 'Verkleinen' : 'Vergroten'"
-        @click="toggleSize"
-      >
-        <svg
-          v-if="!isFullscreen"
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-        >
+      <button class="iconbutton" :aria-label="isFullscreen ? 'Verkleinen' : 'Vergroten'" @click="toggleSize">
+        <svg v-if="!isFullscreen" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
-          />
+          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
         </svg>
-        <svg
-          v-if="isFullscreen"
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-        >
+        <svg v-if="isFullscreen" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
-          />
+          <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" />
         </svg>
       </button>
       <button class="iconbutton" aria-label="Sluiten" @click="toggle">
@@ -66,19 +38,8 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
           <title>Path</title>
-          <g
-            id="Wireframes"
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd"
-          >
-            <g
-              id="streetview"
-              transform="translate(-985.000000, -413.000000)"
-              fill="#000000"
-              fill-rule="nonzero"
-            >
+          <g id="Wireframes" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="streetview" transform="translate(-985.000000, -413.000000)" fill="#000000" fill-rule="nonzero">
               <g id="Group-5" transform="translate(976.000000, 404.000000)">
                 <polygon
                   id="Path"
@@ -92,11 +53,7 @@
     </div>
     <div v-if="isOpen" :class="{ viewer: true, isResizing: isResizing }">
       <div v-if="selectedViewer !== null && position.marker" class="viewer">
-        <google-maps
-          v-if="selectedViewer.type == 'GOOGLE_MAPS'"
-          ref="viewer"
-          :position="position"
-        />
+        <google-maps v-if="selectedViewer.type == 'GOOGLE_MAPS'" ref="viewer" :position="position" />
         <obliquo-viewer
           v-if="selectedViewer.type == 'OBLIQUO'"
           ref="viewer"
@@ -119,9 +76,14 @@
           :position="position"
           :url="selectedViewer.url"
         />
+        <button-viewer
+          v-if="selectedViewer.type == 'BUTTON'"
+          ref="viewer"
+          :position="position"
+          :url="selectedViewer.url"
+        />
         <div v-if="!selectedViewer" class="message">
-          Er is geen panoramaweergave beschikbaar. Configureer een viewer in het
-          beheerpaneel.
+          Er is geen panoramaweergave beschikbaar. Configureer een viewer in het beheerpaneel.
         </div>
       </div>
     </div>
@@ -136,6 +98,7 @@ import GoogleMaps from "../viewers/GoogleMaps.vue";
 import ObliquoViewer from "../viewers/ObliquoViewer.vue";
 import StreetSmart from "../viewers/StreetSmart.vue";
 import IframeViewer from "../viewers/IframeViewer.vue";
+import ButtonViewer from "../viewers/ButtonViewer.vue";
 
 export default {
   name: "PanoramaPanel",
@@ -145,6 +108,7 @@ export default {
     ObliquoViewer,
     StreetSmart,
     IframeViewer,
+    ButtonViewer,
   },
   data() {
     return {
