@@ -24,6 +24,7 @@ import NotFound from "./admin/pages/NotFound";
 import detectKeyboard from "@/utils/detect-keyboard";
 import CategoryList from "@/admin/pages/CategoryList.vue";
 import CategoryCreateUpdate from "@/admin/pages/CategoryCreateUpdate.vue";
+import DragDropPoc from "@/admin/pages/DragDropPoc.vue";
 
 Vue.config.productionTip = false;
 
@@ -104,6 +105,11 @@ const routes = [
     path: "/users",
     component: UserList,
     meta: { title: "Gebruikers", menu: true },
+  },
+  {
+    path: "/drop-poc",
+    component: DragDropPoc,
+    meta: { title: "Draggin' n droppin'", menu: true },
   },
   { path: "*", component: NotFound },
 ];

@@ -18,6 +18,7 @@ export default {
 
 <!-- Include multiselect -->
 <style src="vue-multiselect/dist/vue-multiselect.min.css" />
+
 <style>
 @import "../assets/styles/main.css";
 
