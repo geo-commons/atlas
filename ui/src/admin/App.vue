@@ -30,139 +30,26 @@ html {
   line-height: 1.5;
 }
 
-/* todo: check if this is the right place to set background-color.*/
 body {
   background-color: var(--color-backdrop);
 }
 
-input,
-button {
-  margin: 0;
-  padding: 0;
-  border: none;
-  color: inherit;
-  background: transparent;
-  font: inherit;
-  letter-spacing: inherit;
-  text-align: left;
-}
-
-input::placeholder {
-  color: var(--color-text-grey);
-}
-
-button:not([disabled]) {
-  cursor: pointer;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-
-svg {
-  flex-shrink: 0;
-}
-
-.iconbutton {
-  color: black;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-radius 0.1s;
-}
-
-.iconbutton[disabled] {
-  color: var(--color-grey-60);
-}
-
-.iconbutton.isActive {
-  color: var(--color-primary);
-}
-
-.iconbutton:not([disabled]):hover {
-  background: var(--color-grey-40);
-}
-
-.iconbutton:not([disabled]):active {
-  background: var(--color-grey-50);
-}
-
-.iconbutton.__normal {
-  width: 40px;
-  height: 40px;
-}
-
-.iconbutton.__outline {
+select {
+  padding: 0 16px;
+  border: 1px solid var(--color-grey-60);
   border-radius: var(--radius-normal);
-  border: 2px solid var(--color-grey-60);
-}
-
-.button:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.button {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  padding: 0 20px;
-  border-radius: var(--radius-normal);
-  line-height: 1;
+  font-family: "Roboto", sans-serif;
   font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
-  text-decoration: none;
-  overflow: hidden;
+  font-weight: var(--font-weight-normal);
 }
 
-.button.__primary {
-  background: var(--color-primary);
-  color: white;
-}
-
-.button.__secondary {
-  background: white;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-}
-
-.button.__tertiary {
-  background: white;
-  border: 2px solid var(--color-grey-60);
-  color: black;
-}
-
-.button.__alert {
-  background: white;
-  border: 2px solid var(--color-alert);
-  color: var(--color-alert);
-}
-
-.button.__large {
-  height: 56px;
-  font-size: var(--font-size-large);
-  border-width: 2px;
-}
-
-.button svg {
-  margin-right: 6px;
-}
-
-.button:hover:before {
-  background: var(--color-hover);
-}
-
-.button:active:before {
-  background: var(--color-active);
+.container.__admin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 @media (max-width: 575px) {
@@ -246,6 +133,7 @@ svg {
 }
 
 input[type="text"],
+input[type="number"],
 input[type="url"] {
   width: 100%;
   border: 1px solid var(--color-grey-60);

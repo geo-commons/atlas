@@ -1,35 +1,17 @@
 <template>
-  <div class="container">
+  <div class="container __admin">
     <div class="top-menu-container">
       <div class="page-title-wrapper">
         <h1>Kaartlagen</h1>
         <button class="button __primary __normal" @click="openFormModal">
-          <add-icon />
+          <AddIcon class="icon __white" />
           Nieuwe laag
         </button>
       </div>
 
       <div class="search-filter-container">
         <div class="search-wrapper">
-          <svg
-            width="18px"
-            height="18px"
-            viewBox="0 0 18 18"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-          >
-            <g id="Admin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <g id="Kaart---Lagen" transform="translate(-45.000000, -183.000000)" fill="#000000" fill-rule="nonzero">
-                <g id="search_black_24dp" transform="translate(42.000000, 180.000000)">
-                  <path
-                    id="Shape"
-                    d="M15.5,14 L14.71,14 L14.43,13.73 C15.41,12.59 16,11.11 16,9.5 C16,5.91 13.09,3 9.5,3 C5.91,3 3,5.91 3,9.5 C3,13.09 5.91,16 9.5,16 C11.11,16 12.59,15.41 13.73,14.43 L14,14.71 L14,15.5 L19,20.49 L20.49,19 L15.5,14 Z M9.5,14 C7.01,14 5,11.99 5,9.5 C5,7.01 7.01,5 9.5,5 C11.99,5 14,7.01 14,9.5 C14,11.99 11.99,14 9.5,14 Z"
-                  ></path>
-                </g>
-              </g>
-            </g>
-          </svg>
+          <SearchIcon class="icon" />
           <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
         </div>
         <div class="filter-wrapper">
@@ -57,21 +39,12 @@
       <template #body>
         <validation-observer v-slot="{ handleSubmit }">
           <form v-if="newLayerData" class="form-model-container" @submit.prevent="handleSubmit(saveLayer)">
-            <div>
-              <validation-provider v-slot="{ errors }" name="Titel">
-                <label for="title">Titel</label>
-                <input id="title" v-model="newLayerData.title" type="text" required />
-                <span>{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
-            <div>
-              <validation-provider v-slot="{ errors }" name="Titel">
-                <label for="title">Laagnaam</label>
-                <input id="title" v-model="newLayerData.layer_name" type="text" required />
-                <span>{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
-
+            <AdminFormSections
+              :sections="sections"
+              :initial-values="newLayerData"
+              :create-view="true"
+              @update="(newValues) => updateCurrentValues(newValues)"
+            />
             <div class="flexer">
               <button class="button __tertiary" @click="closeFormModal">Annuleer</button>
               <button class="button __primary" type="submit">Opslaan</button>
@@ -120,6 +93,7 @@
                   />
                 </th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -139,23 +113,25 @@
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round"
+                    aria-label="Wijzig laag"
+                    content="Wijzig"
+                    type="button"
+                  >
+                    <router-link class="layer-link-btn" :to="`/layers/update/${layer.id}`">
+                      <EditIcon class="icon" />
+                    </router-link>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    v-tippy="{ placement: 'bottom' }"
+                    class="iconbutton __normal __round"
                     aria-label="Verwijder laag"
                     content="Verwijder"
                     type="button"
                     @click="deleteLayer(layer)"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      width="24px"
-                      fill="#000000"
-                    >
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path
-                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                      />
-                    </svg>
+                    <TrashIcon class="icon" />
                   </button>
                 </td>
               </tr>
@@ -168,25 +144,32 @@
 </template>
 
 <script>
-import AddIcon from "../../icons/AddIcon.vue";
 import Cookies from "js-cookie";
 import PaginationComponent from "@/components/Pagination.vue";
 import FormModal from "@/components/FormModal.vue";
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { ValidationObserver } from "vee-validate";
 import FilterSelect from "@/components/FilterSelect.vue";
 import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
+import TrashIcon from "../../assets/icons/trash-icon.svg";
+import EditIcon from "../../assets/icons/edit-icon.svg";
+import AddIcon from "../../assets/icons/add-icon.svg";
+import SearchIcon from "../../assets/icons/search-icon.svg";
+import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 
 export default {
   name: "LayerList",
   components: {
+    AdminFormSections,
     SortableTableHeaderItem,
     FilterSelect,
     FormModal,
     PaginationComponent,
-    AddIcon,
     ValidationObserver,
-    ValidationProvider,
+    TrashIcon,
+    EditIcon,
+    AddIcon,
+    SearchIcon,
   },
   data() {
     return {
@@ -203,6 +186,7 @@ export default {
       selectedLayerFilters: {},
       sortKey: "",
       sortAscending: true,
+      sections: {},
     };
   },
   computed: {
@@ -254,6 +238,8 @@ export default {
     this.getLayers();
     this.getCategories();
     this.status = ["Gepubliceerd", "Concept"];
+
+    this.sections = this.getSections();
   },
   methods: {
     async getLayers() {
@@ -285,8 +271,10 @@ export default {
         body: JSON.stringify(this.newLayerData),
       });
 
+      // todo: think about what to do if the result is not ok.
       if (result.ok) {
-        this.$router.push(`/layers`);
+        this.closeFormModal();
+        await this.getLayers();
       }
     },
     async deleteLayer(layer) {
@@ -318,8 +306,29 @@ export default {
         console.error("Could not fetch categories");
       }
 
-      let resultJson = await result.json();
-      this.categories = resultJson.map((category) => category.title);
+      const response = await result.json();
+
+      this.categories = response.map((category) => category.title);
+
+      return response.map((category) => {
+        return { id: category.id, label: category.title };
+      });
+    },
+    async getSources() {
+      const result = await fetch("/atlas/api/v1/sources/", {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch sources");
+      }
+
+      const response = await result.json();
+
+      return response.map((source) => {
+        return { id: source.id, label: source.title };
+      });
     },
     setLayerStatus() {
       this.layers.forEach((layer) => {
@@ -329,14 +338,17 @@ export default {
     openFormModal() {
       this.newLayerData = {
         title: "",
-        url: "",
         authenticate: false,
+        metadata: { name: "", description: "", organization: "", updated: "", link: "" },
       };
 
       this.showFormModal = true;
     },
     closeFormModal() {
       this.showFormModal = false;
+    },
+    updateCurrentValues(newValues) {
+      this.newLayerData = newValues;
     },
     setTableFilters(v) {
       this.selectedLayerFilters = v;
@@ -373,20 +385,50 @@ export default {
 
       return sortItem[this.sortKey].toLowerCase();
     },
+    getSections() {
+      return {
+        general: {
+          label: "Algemene gegevens",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Categorie",
+              id: "category_id",
+              name: "Category",
+              type: "dropdown",
+              required: true,
+              placeholder: "categorie",
+              options: this.getCategories,
+            },
+          ],
+        },
+        source: {
+          label: "Bron",
+          questions: [
+            {
+              label: "Bron",
+              id: "source_id",
+              name: "Source",
+              type: "dropdown",
+              required: true,
+              placeholder: "bron",
+              options: this.getSources,
+            },
+          ],
+        },
+      };
+    },
   },
 };
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
 .top-menu-container {
   padding: 20px 0;
   display: flex;
@@ -410,9 +452,6 @@ export default {
   width: clamp(300px, 35%, 400px);
   height: 48px;
   position: relative;
-  border: 1px solid var(--color-grey-60);
-  border-radius: var(--radius-normal);
-  background: var(--color-white);
 }
 
 .search-wrapper svg {
@@ -426,7 +465,9 @@ export default {
 
 .search-wrapper input {
   width: 100%;
-  height: 48px;
+  height: 100%;
+  border: 1px solid var(--color-grey-60);
+  border-radius: var(--radius-normal);
   padding: 0 0 0 48px;
 }
 
@@ -457,16 +498,18 @@ export default {
   }
 }
 
-.button {
-  max-width: 300px;
-}
-
 .layer-title-link {
   text-decoration: none;
   color: var(--color-black);
 }
+
 .layer-title-link:hover {
   text-decoration: underline;
+}
+
+.layer-link-btn {
+  color: var(--color-black);
+  display: flex;
 }
 
 .form-model-container {
@@ -498,7 +541,7 @@ th {
   border-bottom: 1px solid var(--color-grey-60);
 }
 
-tr > td:not(:last-child) {
+tr > td:not(:nth-last-child(-n + 2)) {
   padding-right: 8px;
 }
 

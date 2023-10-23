@@ -1,22 +1,20 @@
 <template>
-  <div class="flex flex-column">
-    <div class="table-header-container">
-      <span class="header-text" @click="() => sortColumn()">
-        {{ headerText }}
+  <div class="table-header-container">
+    <span class="header-text" @click="() => sortColumn()">
+      {{ headerText }}
+    </span>
+    <button
+      v-tippy="{ placement: 'bottom' }"
+      aria-label="Sorteer kolom"
+      content="Sorteer"
+      class="flex-center"
+      @click="() => sortColumn()"
+    >
+      <span class="icon-min-width flex-center">
+        <ArrowUpIcon v-if="property === sortKey && sortAscending" />
+        <ArrowDownIcon v-if="property === sortKey && !sortAscending" />
       </span>
-      <button
-        v-tippy="{ placement: 'bottom' }"
-        aria-label="Sorteer kolom"
-        content="Sorteer"
-        class="flex-center"
-        @click="() => sortColumn()"
-      >
-        <span class="icon-min-width flex-center">
-          <ArrowUpIcon v-if="property === sortKey && sortAscending" />
-          <ArrowDownIcon v-if="property === sortKey && !sortAscending" />
-        </span>
-      </button>
-    </div>
+    </button>
   </div>
 </template>
 

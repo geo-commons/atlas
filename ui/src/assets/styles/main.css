@@ -24,6 +24,9 @@
   --color-hover: rgba(0, 0, 0, 0.03);
   --color-active: rgba(0, 0, 0, 0.06);
 
+  /* note: currently PT Sans is used in the main application while roboto is used in admin2 */
+  --font-family: "PT Sans", sans-serif;
+
   --font-size-tiny: 12px;
   --font-size-small: 14px;
   --font-size-normal: 16px;
@@ -105,7 +108,7 @@ button {
   padding: 0;
   border: none;
   color: inherit;
-  background: transparent;
+  background: var(--color-white);
   font: inherit;
   letter-spacing: inherit;
   text-align: left;
@@ -113,6 +116,12 @@ button {
 
 input::placeholder {
   color: var(--color-text-grey);
+}
+
+textarea {
+  border: 1px solid var(--color-grey-60);
+  border-radius: var(--radius-normal);
+  resize: vertical;
 }
 
 button:not([disabled]) {
@@ -208,26 +217,26 @@ svg {
 
 .button.__secondary {
   background: white;
-  border: 2px solid var(--color-primary);
+  border: 1px solid var(--color-primary);
   color: var(--color-primary);
 }
 
 .button.__tertiary {
   background: white;
-  border: 2px solid var(--color-grey-60);
+  border: 1px solid var(--color-grey-60);
   color: black;
 }
 
 .button.__alert {
   background: white;
-  border: 2px solid var(--color-alert);
+  border: 1px solid var(--color-alert);
   color: var(--color-alert);
 }
 
 .button.__large {
   height: 56px;
   font-size: var(--font-size-large);
-  border-width: 2px;
+  border-width: 1px;
 }
 
 .button.__normal {
@@ -247,6 +256,10 @@ svg {
   background: var(--color-active);
 }
 
+hr {
+  border: none;
+  border-top: 1px solid var(--color-grey-60)
+}
 
 .menu {
   padding: 6px 0;
@@ -281,7 +294,7 @@ svg {
   height: 18px;
   min-width: 18px;
   border-radius: 9px;
-  border: 2px solid var(--color-primary);
+  border: 1px solid var(--color-primary);
   padding: 0 3px;
   background: white;
   color: var(--color-primary);
@@ -352,18 +365,22 @@ svg {
   overflow: auto;
 }
 
-.flex-center {
+.flex {
+  display: flex;
+}
+
+.flex.__column {
+  flex-direction: column;
+}
+
+.flex.__center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.flex {
-  display: flex;
-}
-
-.flex-column {
-  flex-direction: column;
+.flex.__align-center {
+  align-items: center;
 }
 
 .icon {
@@ -373,6 +390,10 @@ svg {
 
 .icon.__grey {
   color: var(--color-icon-grey)
+}
+
+.icon.__white {
+  color: var(--color-white)
 }
 
 /* override multiselect style */
