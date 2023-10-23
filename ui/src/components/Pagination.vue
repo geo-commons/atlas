@@ -4,7 +4,7 @@
       <slot></slot>
     </div>
 
-    <div v-if="items && pages.length > 1" class="pagination-wrapper">
+    <div v-if="items" class="pagination-wrapper">
       <div class="nr-pages-wrapper">
         <multiselect
           id="selected_columns"
@@ -18,7 +18,7 @@
         <label>Aantal rijen per pagina</label>
       </div>
 
-      <ul class="pagination">
+      <ul v-if="pages.length > 1" class="pagination">
         <li>
           <button v-show="currentPageNumber > 1" class="iconbutton pagination-btn bg-color" @click="prevPage">
             <ChevronLeftIcon />
@@ -89,7 +89,7 @@ export default {
   computed: {
     pageCount() {
       let nrOfPages = this.items.length;
-      return Math.ceil(nrOfPages / this.nrOfRecords);
+      return Math.ceil(nrOfPages / this.internalNrOfRecords);
     },
     visiblePages() {
       // When the  total number of pages is smaller than the range of pages that will be shown,
@@ -132,8 +132,8 @@ export default {
       }
     },
     updateNrOfRecords(value) {
-      this.$emit("records-change", value);
       this.resetPagination();
+      this.$emit("records-change", value);
     },
     nextPage() {
       this.currentPageNumber++;
