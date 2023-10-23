@@ -5,20 +5,32 @@
         <h1>POC: drag and drop</h1>
       </div>
     </div>
-
-    <draggable
-      v-model="categories"
-      class="list-group"
-      tag="ul"
-      v-bind="dragOptions"
-      :move="onMove"
-      @start="isDragging = true"
-      @end="isDragging = false"
-    >
-      <transition-group type="transition" :name="'flip-list'">
-        <li v-for="cat in categories" :key="cat.order">{{ cat.title }} - {{ cat.order }}</li>
-      </transition-group>
-    </draggable>
+    <table>
+      <thead>
+        <tr>
+          <td>ordening</td>
+          <td>name</td>
+          <td>id</td>
+        </tr>
+      </thead>
+      <draggable
+        v-model="categories"
+        class="list-group"
+        tag="tbody"
+        item-key="order"
+        v-bind="dragOptions"
+        :move="onMove"
+        @change="onChange"
+        @start="isDragging = true"
+        @end="isDragging = false"
+      >
+        <tr v-for="cat in categories" :key="cat.order">
+          <td>{{ cat.order }}</td>
+          <td>{{ cat.title }}</td>
+          <td>{{ cat.id }}</td>
+        </tr>
+      </draggable>
+    </table>
   </div>
 </template>
 
@@ -75,15 +87,25 @@ export default {
       }
 
       const response = await result.json();
+      console.log(response);
       this.categories = response.map((c, index) => {
-        return { title: c.title, order: index + 1 };
+        return { title: c.title, order: index + 1, id: c.id };
       });
     },
     onMove({ relatedContext, draggedContext }) {
-      console.log({ relatedContext, draggedContext });
+      // console.log({ relatedContext, draggedContext });
       const relatedElement = relatedContext.element;
       const draggedElement = draggedContext.element;
+      console.log("successful drag: ", (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed);
       return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed;
+    },
+    onChange() {
+      this.reorder();
+    },
+    reorder() {
+      this.categories = this.categories.map((category, index) => {
+        return { title: category.title, id: category.id, order: index + 1 };
+      });
     },
   },
 };
