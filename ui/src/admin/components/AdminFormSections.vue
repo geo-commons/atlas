@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'create-view-container': createView }">
     <div v-for="section in sections" :key="section.label">
       <hr v-if="!createView" />
       <div :class="{ 'config-section-wrapper': !createView }">
@@ -158,6 +158,13 @@ h3 {
 .section-label {
   grid-area: section-label;
 }
+
+.create-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .section-questions {
   grid-area: section-questions;
   display: flex;

@@ -2,9 +2,12 @@
   <div class="container">
     <div class="section">
       <div class="buttons">
-        <router-link to="/maps" class="button __tertiary __large"><MapIcon class="icon" /> Kaarten</router-link>
-        <router-link to="/sources" class="button __tertiary __large"><SourceIcon class="icon" /> Bronnen</router-link>
-        <router-link to="/layers" class="button __tertiary __large"><LayerIcon class="icon" />kaartlagen</router-link>
+        <router-link to="/maps" class="button __tertiary __large"><MapIcon class="icon" />Kaarten</router-link>
+        <router-link to="/sources" class="button __tertiary __large"><SourceIcon class="icon" />Bronnen</router-link>
+        <router-link to="/layers" class="button __tertiary __large"><LayerIcon class="icon" />Kaartlagen</router-link>
+        <router-link to="/categories" class="button __tertiary __large"
+          ><CategoryIcon class="icon" />Categorieën</router-link
+        >
       </div>
     </div>
   </div>
@@ -14,6 +17,7 @@
 import MapIcon from "../../assets/icons/map-icon.svg";
 import SourceIcon from "../../assets/icons/source-icon.svg";
 import LayerIcon from "../../assets/icons/layer-icon.svg";
+import CategoryIcon from "../../assets/icons/category-icon.svg";
 
 export default {
   name: "AdminDashboard",
@@ -21,6 +25,7 @@ export default {
     MapIcon,
     SourceIcon,
     LayerIcon,
+    CategoryIcon,
   },
 };
 </script>

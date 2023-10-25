@@ -34,26 +34,6 @@
       </div>
     </div>
 
-    <FormModal v-show="showFormModal" @close="closeFormModal">
-      <template #header><h3>Configureer nieuwe laag</h3> </template>
-      <template #body>
-        <validation-observer v-slot="{ handleSubmit }">
-          <form v-if="newLayerData" class="form-model-container" @submit.prevent="handleSubmit(saveLayer)">
-            <AdminFormSections
-              :sections="sections"
-              :initial-values="newLayerData"
-              :create-view="true"
-              @update="(newValues) => updateCurrentValues(newValues)"
-            />
-            <div class="flexer">
-              <button class="button __tertiary" @click="closeFormModal">Annuleer</button>
-              <button class="button __primary" type="submit">Opslaan</button>
-            </div>
-          </form>
-        </validation-observer>
-      </template>
-    </FormModal>
-
     <div v-if="visibleLayers.length > 0">
       <PaginationComponent
         :items="visibleLayers"
@@ -140,6 +120,26 @@
         </template>
       </PaginationComponent>
     </div>
+
+    <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+      <template #header><h3>Configureer nieuwe laag</h3> </template>
+      <template #body>
+        <validation-observer v-slot="{ handleSubmit }">
+          <form v-if="newLayerData" class="form-model-container" @submit.prevent="handleSubmit(saveLayer)">
+            <AdminFormSections
+              :sections="sections"
+              :initial-values="newLayerData"
+              :create-view="true"
+              @update="(newValues) => updateCurrentValues(newValues)"
+            />
+            <div class="flexer">
+              <button class="button __tertiary" @click="closeFormModal">Annuleer</button>
+              <button class="button __primary" type="submit">Opslaan</button>
+            </div>
+          </form>
+        </validation-observer>
+      </template>
+    </FormModal>
   </div>
 </template>
 
@@ -278,7 +278,7 @@ export default {
       }
     },
     async deleteLayer(layer) {
-      const acknowledged = confirm("Weet je zeker dat je de laag wil verwijderen?");
+      const acknowledged = confirm("Weet je zeker dat je de laag wilt verwijderen?");
       if (!acknowledged) {
         return;
       }

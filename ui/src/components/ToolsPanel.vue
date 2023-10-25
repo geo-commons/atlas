@@ -30,12 +30,7 @@
         aria-label="Opmeten"
         @click="toggleMeasure"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0z" fill="none" />
           <path
             fill="currentColor"
@@ -49,22 +44,13 @@
         v-tippy="{ placement: 'bottom' }"
         class="iconbutton"
         :class="{
-          isActive:
-            tool === 'DRAW_POINT' ||
-            tool === 'DRAW_LINE' ||
-            tool === 'DRAW_POLYGON' ||
-            tool === 'DRAW_LABEL',
+          isActive: tool === 'DRAW_POINT' || tool === 'DRAW_LINE' || tool === 'DRAW_POLYGON' || tool === 'DRAW_LABEL',
         }"
         content="Tekenen"
         aria-label="Tekenen"
         @click="toggleDraw"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 96 960 960"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 96 960 960">
           <path
             fill="currentColor"
             d="M215 939q-33.835 0-66.917-11.5Q115 916 90 890q35-12 50-35t15-62q0-43.75 30.676-74.375Q216.353 688 260.176 688 304 688 334.5 718.625T365 793q0 64-43.5 105T215 939Zm0-60q35 0 62.5-25t27.5-61q0-20-12.5-32.5T260 748q-20 0-32.5 12.5T215 793q0 39-8.5 57.5T175 873q6 1 20 3.5t20 2.5Zm230-177-90-95 376-376q14-14 31-14.5t32 14.5l29 29q15 15 14.5 32.5T823 324L445 702Zm-185 91Z"
@@ -77,20 +63,10 @@
       <transition name="fade">
         <ul class="list">
           <li>
-            <button
-              aria-label="Meet oppervlakte"
-              @click="() => setTool('MEASURE_AREA')"
-            >
-              Oppervlakte
-            </button>
+            <button aria-label="Meet oppervlakte" @click="() => setTool('MEASURE_AREA')">Oppervlakte</button>
           </li>
           <li>
-            <button
-              aria-label="Meet afstand"
-              @click="() => setTool('MEASURE_LINE')"
-            >
-              Afstand
-            </button>
+            <button aria-label="Meet afstand" @click="() => setTool('MEASURE_LINE')">Afstand</button>
           </li>
         </ul>
       </transition>
@@ -100,41 +76,20 @@
       <transition name="fade">
         <ul class="list">
           <li>
-            <button
-              aria-label="Teken punt"
-              @click="() => setTool('DRAW_POINT')"
-            >
-              Teken punt
-            </button>
+            <button aria-label="Teken punt" @click="() => setTool('DRAW_POINT')">Teken punt</button>
           </li>
           <li>
-            <button aria-label="Teken lijn" @click="() => setTool('DRAW_LINE')">
-              Teken lijn
-            </button>
+            <button aria-label="Teken lijn" @click="() => setTool('DRAW_LINE')">Teken lijn</button>
           </li>
           <li>
-            <button
-              aria-label="Teken polygoon"
-              @click="() => setTool('DRAW_POLYGON')"
-            >
-              Teken polygoon
-            </button>
+            <button aria-label="Teken polygoon" @click="() => setTool('DRAW_POLYGON')">Teken polygoon</button>
           </li>
           <li>
-            <button
-              aria-label="Teken label"
-              @click="() => setTool('DRAW_LABEL')"
-            >
-              Teken label
-            </button>
+            <button aria-label="Teken label" @click="() => setTool('DRAW_LABEL')">Teken label</button>
           </li>
           <li>
-            <button aria-label="Verwijder tekening" @click="clearDraw">
-              Verwijder tekening
-            </button>
-            <button aria-label="Sla tekening op" @click="saveDrawing">
-              Sla tekening op
-            </button>
+            <button aria-label="Verwijder tekening" @click="clearDraw">Verwijder tekening</button>
+            <button aria-label="Sla tekening op" @click="saveDrawing">Sla tekening op</button>
           </li>
         </ul>
       </transition>
@@ -206,9 +161,7 @@ export default {
       }
     },
     clearDraw() {
-      const result = confirm(
-        "Weet je zeker dat je de tekening wil verwijderen?"
-      );
+      const result = confirm("Weet je zeker dat je de tekening wilt verwijderen?");
       if (result) {
         this.$emit("clear-draw");
         this.showDrawMenu = !this.showDrawMenu;

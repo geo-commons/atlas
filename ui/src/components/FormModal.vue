@@ -1,10 +1,14 @@
 <template>
+  <!-- Note: Make sure to place the FormModal component at the end of the template,
+  otherwise the model backdrop does not always overlap the background components completely. -->
   <transition name="modal-fade">
-    <div class="modal-backdrop">
-      <div class="modal" role="dialog">
+    <div id="modal" ref="modal" class="modal-backdrop">
+      <div class="modal container __admin" role="dialog">
         <header class="modal-header">
           <slot name="header"></slot>
-          <button type="button" class="iconbutton __normal __round" aria-label="Close Modal" @click="close"><close-icon-large /></button>
+          <button type="button" class="iconbutton __normal __round" aria-label="Close Modal" @click="close">
+            <close-icon-large />
+          </button>
         </header>
 
         <main class="modal-body">
@@ -21,15 +25,62 @@ import CloseIconLarge from "@/icons/CloseIconLarge.vue";
 export default {
   name: "FormModal",
   components: { CloseIconLarge },
-  props: {},
-  data() {
-    return {};
+  props: {
+    toggleModal: {
+      type: Boolean,
+      default: false,
+    },
   },
-  computed: {},
-  mounted() {},
+  data() {
+    return {
+      tabData: [],
+      modal: null,
+    };
+  },
+  watch: {
+    toggleModal(newValue) {
+      this.modal = this.$refs.modal;
+      if (newValue) {
+        this.preventTabOutside();
+      } else {
+        this.enableTabOutside();
+      }
+    },
+  },
   methods: {
     close() {
+      this.enableTabOutside(this.modal);
       this.$emit("close");
+    },
+    // The following methods prevent the user from accessing elements in the background
+    // of the modal using the tab key. For reference:
+    // https://stackoverflow.com/questions/14572084/keep-tabbing-within-modal-pane-only
+    preventTabOutside() {
+      const selector =
+        'a[href], area[href], input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
+
+      const tabbableElements = document.querySelectorAll(selector);
+      this.tabData = Array.from(tabbableElements)
+        // filter out any elements within the modal
+        .filter((elem) => !this.modal.contains(elem))
+        // store refs to the element and its original tabindex
+        .map((elem) => {
+          // capture original tab index, if it exists
+          const tabIndex = elem.hasAttribute("tabindex") ? elem.getAttribute("tabindex") : null;
+          // temporarily set the tabindex to -1
+          elem.setAttribute("tabindex", -1);
+          return { elem, tabIndex };
+        });
+    },
+    enableTabOutside() {
+      this.tabData.forEach(({ elem, tabIndex }) => {
+        if (tabIndex === null) {
+          elem.removeAttribute("tabindex");
+        } else {
+          elem.setAttribute("tabindex", tabIndex);
+        }
+      });
+      this.tabData = [];
     },
   },
 };
