@@ -22,6 +22,8 @@ import SourceCreateUpdate from "./admin/pages/SourceCreateUpdate";
 import UserList from "./admin/pages/UserList";
 import NotFound from "./admin/pages/NotFound";
 import detectKeyboard from "@/utils/detect-keyboard";
+import CategoryList from "@/admin/pages/CategoryList.vue";
+import CategoryCreateUpdate from "@/admin/pages/CategoryCreateUpdate.vue";
 
 Vue.config.productionTip = false;
 
@@ -87,6 +89,16 @@ const routes = [
     path: "/layers/update/:id",
     component: LayerCreateUpdate,
     meta: { title: "Kaartlagen", menu: true },
+  },
+  {
+    path: "/categories",
+    component: CategoryList,
+    meta: { title: "Categorieën", menu: true },
+  },
+  {
+    path: "/categories/update/:id",
+    component: CategoryCreateUpdate,
+    meta: { title: "Categorieën", menu: true },
   },
   {
     path: "/users",

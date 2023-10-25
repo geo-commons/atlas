@@ -82,11 +82,7 @@ export default {
     visibleLayers() {
       if (this.data.layers) {
         return this.layers
-          .filter(
-            (layer) =>
-              this.data.layers.includes(layer.internal_id) ||
-              (layer.is_base && layer.is_visible)
-          )
+          .filter((layer) => this.data.layers.includes(layer.internal_id) || (layer.is_base && layer.is_visible))
           .map((layer) => {
             return {
               ...layer,
@@ -116,13 +112,10 @@ export default {
   methods: {
     async getMap() {
       if (this.$route.params.id) {
-        const result = await fetch(
-          `/atlas/api/v1/maps/${this.$route.params.id}/`,
-          {
-            credentials: "same-origin",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+        });
 
         if (!result.ok) {
           console.error("Could not fetch maps");
@@ -173,24 +166,19 @@ export default {
     async deleteMap(e) {
       e.preventDefault();
 
-      const acknowledged = confirm(
-        "Weet je zeker dat je de kaart wil verwijderen?"
-      );
+      const acknowledged = confirm("Weet je zeker dat je de kaart wilt verwijderen?");
       if (!acknowledged) {
         return;
       }
 
-      const result = await fetch(
-        `/atlas/api/v1/maps/${this.$route.params.id}/`,
-        {
-          method: "DELETE",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": Cookies.get("csrftoken"),
-          },
-        }
-      );
+      const result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+      });
 
       if (result.ok) {
         this.$router.push(`/maps`);
