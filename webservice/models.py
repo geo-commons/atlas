@@ -381,7 +381,7 @@ source: new ol.source.TileWMS({{
     class Meta:
         verbose_name = 'Kaartlaag'
         verbose_name_plural = 'Kaartlagen'
-        ordering = ['ordering', 'title']
+        ordering = ['layer_type__ordering', 'ordering', 'title']
 
 
 class LinkedData(models.Model):

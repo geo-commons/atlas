@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container __admin">
     <div class="section">
       <div class="buttons">
         <router-link to="/maps" class="button __tertiary __large"><MapIcon class="icon" />Kaarten</router-link>
@@ -8,6 +8,7 @@
         <router-link to="/categories" class="button __tertiary __large"
           ><CategoryIcon class="icon" />Categorieën</router-link
         >
+        <router-link to="/sort" class="button __tertiary __large"><SortIcon class="icon" />Sortering</router-link>
       </div>
     </div>
   </div>
@@ -18,10 +19,12 @@ import MapIcon from "../../assets/icons/map-icon.svg";
 import SourceIcon from "../../assets/icons/source-icon.svg";
 import LayerIcon from "../../assets/icons/layer-icon.svg";
 import CategoryIcon from "../../assets/icons/category-icon.svg";
+import SortIcon from "../../assets/icons/sort-icon.svg";
 
 export default {
   name: "AdminDashboard",
   components: {
+    SortIcon,
     MapIcon,
     SourceIcon,
     LayerIcon,

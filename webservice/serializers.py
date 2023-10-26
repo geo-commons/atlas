@@ -18,7 +18,7 @@ class SourceSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'title', 'slug']
+        fields = ['id', 'title', 'slug', 'ordering']
 
 class LinkedDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -136,7 +136,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'zoom_min',
             'zoom_max',
             'metadata',
-            'login_required'
+            'login_required',
+            'ordering'
         ]
 
 class LayerListSerializer(serializers.ModelSerializer):
@@ -157,7 +158,8 @@ class LayerListSerializer(serializers.ModelSerializer):
             'slug',
             'layer_name',
             'category',
-            'published'
+            'published',
+            'ordering'
         ]
 
 

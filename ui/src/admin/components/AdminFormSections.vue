@@ -57,6 +57,7 @@
                   v-model="currentValues[question.id]"
                   type="text"
                   :required="question.required"
+                  :maxlength="question.maxLength"
                 />
                 <input
                   v-else-if="question.type === 'number'"

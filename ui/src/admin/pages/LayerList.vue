@@ -525,7 +525,7 @@ export default {
 }
 
 tbody > tr:hover {
-  background-color: var(--color-grey-40);
+  background-color: var(--color-primary-hover);
 }
 
 .layer-table thead tr th {

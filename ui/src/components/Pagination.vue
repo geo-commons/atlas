@@ -174,6 +174,10 @@ export default {
   height: 30px;
 }
 
+.pagination-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
 .bg-color {
   background: var(--color-grey-60);
 }

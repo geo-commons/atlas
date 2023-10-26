@@ -164,6 +164,7 @@ export default {
               name: "Slug",
               type: "text",
               required: true,
+              maxLength: 50,
             },
             {
               label: "Categorie",
