@@ -355,7 +355,7 @@ export default {
 }
 
 tbody > tr:hover {
-  background-color: var(--color-grey-40);
+  background-color: var(--color-primary-hover);
 }
 
 .category-table thead tr th {

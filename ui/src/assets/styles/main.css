@@ -6,6 +6,8 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
+  --color-primary-hover: #EBEBFF;
+  --color-primary-active: #CBCCFF;
   --color-backdrop: #F6F6FF;
 
   --color-grey-20: #eaeaea; /* divider (list items, files) */
