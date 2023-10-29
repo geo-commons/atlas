@@ -15,6 +15,22 @@ module.exports = {
 
   chainWebpack: (config) => {
     config.module.rules.delete("svg");
+
+    // Alias vue to @vue/compat for Vue 3 compatibility build for Vue 2
+    config.resolve.alias.set("vue", "@vue/compat");
+    config.module
+      .rule("vue")
+      .use("vue-loader")
+      .tap((options) => {
+        return {
+          ...options,
+          compilerOptions: {
+            compatConfig: {
+              MODE: 2,
+            },
+          },
+        };
+      });
   },
   configureWebpack: {
     plugins: [new BundleTracker({ path: __dirname, filename: "webpack-stats.json" })],
@@ -22,8 +38,7 @@ module.exports = {
       rules: [
         {
           test: /\.svg$/,
-          include: [path.resolve(__dirname, "src/assets/icons")],
-          loader: "vue-svg-loader",
+          use: ["vue-loader", "vue-svg-loader-2"],
         },
       ],
     },

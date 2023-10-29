@@ -6,8 +6,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VueRouter from "vue-router";
 import VueTippy, { TippyComponent } from "vue-tippy";
-import { extend } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
 
 import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
@@ -43,11 +41,6 @@ Vue.use(VueTippy, {
   delay: [1000, 0],
 });
 Vue.component("VueTippy", TippyComponent);
-
-extend("required", {
-  ...required,
-  message: "Dit veld is verplicht",
-});
 
 const routes = [
   {
@@ -129,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const settings = getSettingsFromPath(data.config);
 
   const layers = data.layers.map((layer) =>
-    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer
+    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer,
   );
 
   const initialState = {

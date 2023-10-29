@@ -3,7 +3,12 @@
     <header-menu v-if="!isEmbed && config.features.portal" />
     <div class="map-container">
       <div class="renderer-container">
-        <PanoramaPanel class="panorama-panel" :position="position" :is-open="showPanoramaPanel" @toggle="togglePanoramaPanel" />
+        <PanoramaPanel
+          class="panorama-panel"
+          :position="position"
+          :is-open="showPanoramaPanel"
+          @toggle="togglePanoramaPanel"
+        />
         <OpenLayersRenderer
           v-if="readyToRenderMap"
           ref="map"
@@ -69,7 +74,12 @@
             @drawing-saved="drawingSaved"
             @clear-draw="() => (drawFeatures = [])"
           />
-          <MorePanel v-if="!isEmbed && !showPanoramaPanel" :user="user" :show-disclaimer="config.show_disclaimer" @toggle-modal="toggleModal" />
+          <MorePanel
+            v-if="!isEmbed && !showPanoramaPanel"
+            :user="user"
+            :show-disclaimer="config.show_disclaimer"
+            @toggle-modal="toggleModal"
+          />
         </div>
         <div class="bottom-left-panels">
           <LayersPanel
@@ -93,7 +103,13 @@
               showTogglePanorama: position.marker || showPanoramaPanel,
             }"
           >
-            <button v-tippy="{ placement: 'left' }" class="iconbutton" content="Panorama" aria-label="Toon panorama" @click="togglePanoramaPanel">
+            <button
+              v-tippy="{ placement: 'left' }"
+              class="iconbutton"
+              content="Panorama"
+              aria-label="Toon panorama"
+              @click="togglePanoramaPanel"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                 <path d="M0 0h24v24H0z" fill="none" />
                 <path
@@ -128,8 +144,18 @@
 
       <transition name="fade">
         <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
+      </transition>
+      <transition name="fade">
         <PrintModal v-if="modal === 'print'" @toggle-modal="toggleModal" @print-map-to-pdf="printMapToPdf" />
-        <DrawingModal v-if="modal === 'drawing'" :layers="layers" :position="position" :drawing="drawing" @toggle-modal="toggleModal" />
+      </transition>
+      <transition name="fade">
+        <DrawingModal
+          v-if="modal === 'drawing'"
+          :layers="layers"
+          :position="position"
+          :drawing="drawing"
+          @toggle-modal="toggleModal"
+        />
       </transition>
       <AlertMessage :alert="alert" />
     </div>
@@ -233,9 +259,12 @@ export default {
 
     this.fetchAccessToken();
 
-    this.fetchInterval = setInterval(() => {
-      this.fetchAccessToken();
-    }, 1000 * 60 * 5); // every 5 minutes
+    this.fetchInterval = setInterval(
+      () => {
+        this.fetchAccessToken();
+      },
+      1000 * 60 * 5,
+    ); // every 5 minutes
   },
   destroyed() {
     window.removeEventListener("resize", this.onResizeWindow);
@@ -256,11 +285,16 @@ export default {
       }
 
       try {
-        const result = await fetch(`${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`);
+        const result = await fetch(
+          `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`,
+        );
         const data = await result.json();
 
         if (!data.response.docs || data.response.docs.length === 0) {
-          this.$store.commit("setSearchQuery", `(${Math.round(position.marker[0] * 100) / 100},${Math.round(position.marker[1] * 100) / 100})`);
+          this.$store.commit(
+            "setSearchQuery",
+            `(${Math.round(position.marker[0] * 100) / 100},${Math.round(position.marker[1] * 100) / 100})`,
+          );
           return;
         }
 
@@ -330,7 +364,7 @@ export default {
         "",
         `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}/drawing=${
           this.drawing ? this.drawing : ""
-        }`
+        }`,
       );
     },
     toggleModal(modal) {
@@ -533,7 +567,9 @@ export default {
   overflow: hidden;
   box-shadow: var(--shadow-normal);
   height: var(--width-button-normal);
-  transition: height 0.1s ease, border-radius 0.1s;
+  transition:
+    height 0.1s ease,
+    border-radius 0.1s;
   overflow: hidden;
 }
 
