@@ -165,6 +165,9 @@ class Layer(models.Model):
     friendly_fields = models.JSONField(
         'Vriendelijke veldnamen', default=dict, help_text='Maak veldnamen vriendelijk', blank=True, null=True)
 
+    templated_properties = models.JSONField(
+        'Templatevelden', default=dict, help_text='Velden die samengesteld worden vanuit een template', blank=True, null=True)
+
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
         blank=True, null=True)
@@ -347,6 +350,7 @@ source: new ol.source.TileWMS({{
             'server_style': self.server_style,
             'client_style': self.client_style,
             'friendly_fields': self.friendly_fields,
+            'templated_properties': self.templated_properties,
             'url': self.url,
             'server_type': self.server_type,
             'is_base': self.is_base,

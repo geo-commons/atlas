@@ -104,7 +104,8 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
                 'zoom_max',
                 'server_style',
                 'client_style',
-                'friendly_fields'
+                'friendly_fields',
+                'templated_properties',
             )
         }),
         ('Metadata', {

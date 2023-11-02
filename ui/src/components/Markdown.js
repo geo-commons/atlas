@@ -48,20 +48,19 @@ const Markdown = Vue.extend({
         return self.renderToken(tokens, idx, options);
       };
 
-    this.md.renderer.rules.link_open = function (
-      tokens,
-      idx,
-      options,
-      env,
-      self
-    ) {
+    this.md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
       // If you are sure other plugins can't add `target` - drop check below
       var aIndex = tokens[idx].attrIndex("target");
 
-      if (aIndex < 0) {
-        tokens[idx].attrPush(["target", "_blank"]); // add new attribute
-      } else {
-        tokens[idx].attrs[aIndex][1] = "_blank"; // replace value of existing attr
+      var hrefIndex = tokens[idx].attrIndex("href");
+
+      // only open target _blank for external links
+      if (hrefIndex >= 0 && tokens[idx].attrs[hrefIndex][1].startsWith("http")) {
+        if (aIndex < 0) {
+          tokens[idx].attrPush(["target", "_blank"]); // add new attribute
+        } else {
+          tokens[idx].attrs[aIndex][1] = "_blank"; // replace value of existing attr
+        }
       }
 
       // pass token to default renderer.
