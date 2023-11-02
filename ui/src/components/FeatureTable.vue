@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="toggle-filter-container">
-      <switch-slider @toggleSwitch="toggleFilters()" />
+      <switch-slider aria-label="Activeer filters" @toggleSwitch="toggleFilters()" />
       <div>Activeer filters</div>
     </div>
     <div v-if="showFilters" class="filter-padding filter-grid">

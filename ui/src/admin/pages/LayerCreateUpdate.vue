@@ -9,7 +9,7 @@
           @update="(newValues) => updateCurrentValues(newValues)"
         />
         <div class="config-btn-wrapper">
-          <router-link to="/layers" class="button __tertiary">Annuleer</router-link>
+          <router-link to="/layers" class="button __tertiary" type="button">Annuleer</router-link>
           <button class="button __primary" type="submit">Opslaan</button>
         </div>
       </form>
@@ -105,7 +105,7 @@ export default {
 
       if (!result.ok) {
         console.error(
-          `Error occurred while saving layer with layer id: ${this.currentValues.id} and title: ${this.currentValues.title}`
+          `Error occurred while saving layer with layer id: ${this.currentValues.id} and title: ${this.currentValues.title}`,
         );
       }
 

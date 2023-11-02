@@ -20,12 +20,22 @@
 
       <ul v-if="pages.length > 1" class="pagination">
         <li>
-          <button v-show="currentPageNumber > 1" class="iconbutton pagination-btn bg-color" @click="prevPage">
+          <button
+            v-show="currentPageNumber > 1"
+            v-tippy="{ placement: 'bottom' }"
+            class="iconbutton pagination-btn bg-color"
+            type="button"
+            aria-label="Vorige"
+            content="Vorige"
+            @click="prevPage"
+          >
             <ChevronLeftIcon />
           </button>
         </li>
         <li :class="`${currentPageNumber === 1 ? 'active-page' : ''}`">
-          <button class="iconbutton pagination-btn" @click="firstPage">1</button>
+          <button class="iconbutton pagination-btn" type="button" aria-label="Naar eerste pagina" @click="firstPage">
+            1
+          </button>
         </li>
         <li v-if="hasEllipses && currentPageNumber >= displayRange" class="flex-center ellipses-wrapper">...</li>
         <li
@@ -33,7 +43,12 @@
           :key="pageNr"
           :class="`${currentPageNumber === pageNr ? 'active-page' : ''}`"
         >
-          <button class="iconbutton pagination-btn" @click="gotoPage(pageNr)">
+          <button
+            class="iconbutton pagination-btn"
+            type="button"
+            :aria-label="`Naar pagina nummer ${pageNr}`"
+            @click="gotoPage(pageNr)"
+          >
             {{ pageNr }}
           </button>
         </li>
@@ -44,12 +59,20 @@
           ...
         </li>
         <li :class="`${currentPageNumber === pageCount ? 'active-page' : ''}`">
-          <button class="iconbutton pagination-btn" @click="lastPage">
+          <button class="iconbutton pagination-btn" type="button" aria-label="Naar laatste pagina" @click="lastPage">
             {{ pageCount }}
           </button>
         </li>
         <li>
-          <button v-show="currentPageNumber < pageCount" class="iconbutton pagination-btn bg-color" @click="nextPage">
+          <button
+            v-show="currentPageNumber < pageCount"
+            v-tippy="{ placement: 'bottom' }"
+            class="iconbutton pagination-btn bg-color"
+            type="button"
+            aria-label="Volgende"
+            content="Volgende"
+            @click="nextPage"
+          >
             <ChevronRightIcon />
           </button>
         </li>
@@ -184,6 +207,7 @@ export default {
 
 .pagination-wrapper {
   display: flex;
+  min-height: 80px;
   justify-content: space-between;
   align-items: center;
   padding-top: 5px;

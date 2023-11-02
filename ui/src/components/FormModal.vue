@@ -6,7 +6,14 @@
       <div class="modal container __admin" role="dialog">
         <header class="modal-header">
           <slot name="header"></slot>
-          <button type="button" class="iconbutton __normal __round" aria-label="Close Modal" @click="close">
+          <button
+            v-tippy="{ placement: 'bottom' }"
+            type="button"
+            class="iconbutton __normal __round"
+            aria-label="Sluit"
+            content="Sluit"
+            @click="close"
+          >
             <close-icon-large />
           </button>
         </header>

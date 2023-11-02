@@ -10,7 +10,7 @@
           @update="(newValues) => updateCurrentValues(newValues)"
         />
         <div class="config-btn-wrapper">
-          <router-link to="/categories" class="button __tertiary">Annuleer</router-link>
+          <router-link to="/categories" class="button __tertiary" type="button">Annuleer</router-link>
           <button class="button __primary" type="submit">Opslaan</button>
         </div>
       </form>
@@ -72,7 +72,7 @@ export default {
 
       if (!result.ok) {
         console.error(
-          `Error occurred while saving category with category id: ${this.currentValues.id} and title: ${this.currentValues.title}`
+          `Error occurred while saving category with category id: ${this.currentValues.id} and title: ${this.currentValues.title}`,
         );
       }
 
