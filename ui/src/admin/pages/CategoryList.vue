@@ -3,10 +3,22 @@
     <div class="top-menu-container">
       <div class="page-title-wrapper">
         <h1>Categorieën</h1>
-        <button class="button __primary __normal" @click="openFormModal">
-          <AddIcon class="icon __white" />
-          Nieuwe categorie
-        </button>
+        <div class="top-menu-button-container">
+          <router-link
+            :to="{
+              name: 'sort',
+              params: { parentRoute: 'categories' },
+            }"
+            class="button __secondary __normal"
+            type="button"
+            aria-label="Ga naar sortering pagina"
+            ><SortIcon class="icon" />Sortering</router-link
+          >
+          <button class="button __primary __normal" type="button" @click="openFormModal">
+            <AddIcon class="icon __white" />
+            Nieuwe categorie
+          </button>
+        </div>
       </div>
 
       <div class="search-wrapper">
@@ -42,7 +54,12 @@
             <tbody>
               <tr v-for="category in paginatedData" :key="category.id" class="table-border">
                 <td class="first-column-padding">
-                  <router-link class="category-title-link" :to="`/categories/update/${category.id}`">
+                  <router-link
+                    class="category-title-link"
+                    type="button"
+                    :aria-label="`${category.title} configureren`"
+                    :to="`/categories/update/${category.id}`"
+                  >
                     {{ category.title }}
                   </router-link>
                 </td>
@@ -50,13 +67,12 @@
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round"
-                    aria-label="Wijzig laag"
+                    :aria-label="`${category.title} configureren`"
                     content="Wijzig"
                     type="button"
+                    @click="$router.push(`/categories/update/${category.id}`)"
                   >
-                    <router-link class="category-link-btn" :to="`/categories/update/${category.id}`">
-                      <EditIcon class="icon" />
-                    </router-link>
+                    <EditIcon class="icon" />
                   </button>
                 </td>
                 <td>
@@ -90,7 +106,7 @@
               @update="(newValues) => updateCurrentValues(newValues)"
             />
             <div class="flexer">
-              <button class="button __tertiary" @click="closeFormModal">Annuleer</button>
+              <button class="button __tertiary" type="button" @click="closeFormModal">Annuleer</button>
               <button class="button __primary" type="submit">Opslaan</button>
             </div>
           </form>
@@ -112,10 +128,12 @@ import EditIcon from "../../assets/icons/edit-icon.svg";
 import AddIcon from "../../assets/icons/add-icon.svg";
 import SearchIcon from "../../assets/icons/search-icon.svg";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
+import SortIcon from "../../assets/icons/sort-icon.svg";
 
 export default {
   name: "CategoryList",
   components: {
+    SortIcon,
     AdminFormSections,
     SortableTableHeaderItem,
     FormModal,
@@ -157,7 +175,7 @@ export default {
       }
 
       return this.sortedCategories.filter(
-        (category) => category.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+        (category) => category.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {
@@ -284,6 +302,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  padding-bottom: 24px;
+}
+
+.top-menu-button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 .search-wrapper {
@@ -322,6 +347,11 @@ export default {
   .top-menu-container {
     gap: 16px;
   }
+
+  .top-menu-button-container {
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
 .category-title-link {
@@ -331,11 +361,6 @@ export default {
 
 .category-title-link:hover {
   text-decoration: underline;
-}
-
-.category-link-btn {
-  color: var(--color-black);
-  display: flex;
 }
 
 .form-model-container {

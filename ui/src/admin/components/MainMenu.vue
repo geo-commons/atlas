@@ -5,6 +5,14 @@
         <MenuIcon class="icon __white" />
         <span v-if="$route.path === '/'" class="dashboard-title color-white">{{ $route.meta.title }}</span>
       </router-link>
+
+      <div v-if="breadcrumb">
+        <ChevronRightIcon class="icon __white" />
+        <router-link class="breadcrumb" :to="breadcrumb.url">
+          <span class="color-white">{{ breadcrumb.displayName }}</span>
+        </router-link>
+      </div>
+
       <div v-if="$route.path !== '/'">
         <ChevronRightIcon class="icon __white" />
         <span class="title color-white">{{ $route.meta.title }}</span>
@@ -28,6 +36,17 @@ export default {
     MenuIcon,
     ChevronRightIcon,
     LogoutIcon,
+  },
+  computed: {
+    breadcrumb() {
+      const parentRoute = this.$route.params?.parentRoute;
+
+      if (parentRoute) {
+        return this.$route.meta?.breadcrumb[parentRoute];
+      }
+
+      return null;
+    },
   },
 };
 </script>
@@ -59,6 +78,10 @@ export default {
 
 .dashboard-title {
   margin-left: 8px;
+}
+
+.breadcrumb {
+  text-decoration: none;
 }
 
 .logout {

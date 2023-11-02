@@ -2,13 +2,18 @@
   <div class="container __admin">
     <div class="section">
       <div class="buttons">
-        <router-link to="/maps" class="button __tertiary __large"><MapIcon class="icon" />Kaarten</router-link>
-        <router-link to="/sources" class="button __tertiary __large"><SourceIcon class="icon" />Bronnen</router-link>
-        <router-link to="/layers" class="button __tertiary __large"><LayerIcon class="icon" />Kaartlagen</router-link>
-        <router-link to="/categories" class="button __tertiary __large"
+        <router-link to="/maps" class="button __tertiary __large" type="button" aria-label="Naar kaarten"
+          ><MapIcon class="icon" />Kaarten</router-link
+        >
+        <router-link to="/sources" class="button __tertiary __large" type="button" aria-label="Naar bronnen"
+          ><SourceIcon class="icon" />Bronnen</router-link
+        >
+        <router-link to="/layers" class="button __tertiary __large" type="button" aria-label="Naar kaartlagen"
+          ><LayerIcon class="icon" />Kaartlagen</router-link
+        >
+        <router-link to="/categories" class="button __tertiary __large" type="button" aria-label="Naar categorieën"
           ><CategoryIcon class="icon" />Categorieën</router-link
         >
-        <router-link to="/sort" class="button __tertiary __large"><SortIcon class="icon" />Sortering</router-link>
       </div>
     </div>
   </div>
@@ -19,12 +24,10 @@ import MapIcon from "../../assets/icons/map-icon.svg";
 import SourceIcon from "../../assets/icons/source-icon.svg";
 import LayerIcon from "../../assets/icons/layer-icon.svg";
 import CategoryIcon from "../../assets/icons/category-icon.svg";
-import SortIcon from "../../assets/icons/sort-icon.svg";
 
 export default {
   name: "AdminDashboard",
   components: {
-    SortIcon,
     MapIcon,
     SourceIcon,
     LayerIcon,

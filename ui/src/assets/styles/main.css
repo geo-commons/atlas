@@ -246,6 +246,12 @@ svg {
   font-size: var(--font-size-large);
 }
 
+.button.__small {
+  height: 32px;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-normal);
+}
+
 .button svg {
   margin-right: 6px;
 }

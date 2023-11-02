@@ -107,9 +107,18 @@ const routes = [
     meta: { title: "Gebruikers", menu: true },
   },
   {
-    path: "/sort",
+    path: "/:parentRoute/sort",
+    name: "sort",
+    props: true,
     component: AdminSortPage,
-    meta: { title: "Sortering", menu: true },
+    meta: {
+      title: "Sortering",
+      menu: true,
+      breadcrumb: {
+        layers: { url: "/layers", displayName: "Kaartlagen" },
+        categories: { url: "/categories", displayName: "Categorieën" },
+      },
+    },
   },
   { path: "*", component: NotFound },
 ];

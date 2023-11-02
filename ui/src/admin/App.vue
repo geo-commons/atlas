@@ -152,6 +152,10 @@ input[type="checkbox"] {
   border: 1px solid var(--color-grey-60);
 }
 
+.button.__secondary:hover {
+  background: var(--color-primary-hover);
+}
+
 .multiselect__tags > input {
   border: none;
 }

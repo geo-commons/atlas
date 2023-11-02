@@ -1,73 +1,47 @@
 <template>
   <div class="container __admin">
-    <h1>Sortering</h1>
+    <div class="page-title-wrapper">
+      <h1>Sortering</h1>
+      <button class="button __secondary __normal top-menu-button" type="button" aria-label="Ga terug" @click="back">
+        <arrow-left-icon class="icon" />Terug
+      </button>
+    </div>
 
     <div class="sort-container">
-      <div class="category-table-wrapper">
-        <h3>Categorieën</h3>
-        <table class="sort-table">
-          <thead>
-            <tr class="table-border">
-              <th class="sort-column-padding">Titel</th>
-            </tr>
-          </thead>
-          <draggable
-            v-model="categories"
-            tag="tbody"
-            item-key="currentOrder"
-            group="categories"
-            v-bind="dragOptions"
-            @change="onCategoryMove"
-          >
-            <tr
-              v-for="category in categories"
-              :key="category.currentOrder"
-              class="table-border"
-              :class="{ 'active-row': checkRow(category) }"
-              @click="selectRow(category)"
-            >
-              <td class="sort-column-padding">{{ category.title }}</td>
-            </tr>
-          </draggable>
-        </table>
-      </div>
+      <SortableList
+        :current-item-list="categories"
+        :title="'Categorieën'"
+        :group="'categories'"
+        :selectable-items="true"
+        class="category-table"
+        @update="(newCategories) => updateCategories(newCategories)"
+        @item-selected="(selectedItem) => selectCategory(selectedItem)"
+      />
 
-      <div v-if="selectedCategory" class="layer-table-wrapper">
-        <h3>Kaartlagen</h3>
-        <table v-if="selectedLayers?.length > 0" class="sort-table">
-          <thead>
-            <tr class="table-border">
-              <th class="sort-column-padding">Titel</th>
-            </tr>
-          </thead>
-          <draggable
-            v-model="selectedLayers"
-            tag="tbody"
-            item-key="order"
-            group="layers"
-            v-bind="dragOptions"
-            @change="onLayerMove"
-          >
-            <tr v-for="layer in selectedLayers" :key="layer.id" class="table-border">
-              <td class="sort-column-padding">{{ layer.title }}</td>
-            </tr>
-          </draggable>
-        </table>
-        <div v-else>De geselecteerde categorie heeft geen bijbehorende kaartlagen.</div>
-      </div>
+      <SortableList
+        v-if="selectedCategory"
+        :current-item-list="selectedLayers"
+        :title="'Kaartlagen'"
+        :group="'layers'"
+        class="layer-table"
+        @update="(newLayers) => updateLayers(newLayers)"
+      >
+        <template #empty-list>De geselecteerde categorie heeft geen bijbehorende kaartlagen.</template>
+      </SortableList>
     </div>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
 import Cookies from "js-cookie";
-import { debounce } from "@/utils/debouncer";
+import ArrowLeftIcon from "../../assets/icons/arrow-left-icon.svg";
+import SortableList from "@/admin/components/SortableList.vue";
 
 export default {
   name: "AdminSortPage",
   components: {
-    draggable,
+    SortableList,
+    ArrowLeftIcon,
   },
   data() {
     return {
@@ -76,18 +50,7 @@ export default {
       layerData: {},
       selectedCategory: null,
       selectedLayers: [],
-      timeout: null,
     };
-  },
-  computed: {
-    dragOptions() {
-      return {
-        animation: 0,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost",
-      };
-    },
   },
   watch: {
     selectedCategory() {
@@ -119,7 +82,7 @@ export default {
 
       const response = await result.json();
       this.categories = response.map((c, index) => {
-        return { title: c.title, newOrder: index + 1, id: c.id, currentOrder: c.ordering };
+        return { title: c.title, newOrder: index, id: c.id, currentOrder: c.ordering };
       });
     },
     async getLayers() {
@@ -138,19 +101,29 @@ export default {
       });
     },
     async reload() {
-      // Wait for updated layers and categories to be retrieved before reloading layers and categories.
+      // Wait for updated categories to be retrieved before reloading categories.
       await this.getCategories();
-      await this.getLayers();
 
       if (!this.selectedCategory) {
         this.selectedLayers = [];
         return;
       }
 
+      // Wait for updated layers to be retrieved before reloading layers.
+      await this.getLayers();
+
       this.selectedLayers = this.layers.filter((l) => {
         return l.category?.id === this.selectedCategory.id;
       });
       this.reorderSelectedLayers();
+    },
+    updateCategories(newCategories) {
+      this.categories = newCategories;
+      this.save();
+    },
+    updateLayers(newLayers) {
+      this.selectedLayers = newLayers;
+      this.save();
     },
     save() {
       const promises = [];
@@ -216,53 +189,38 @@ export default {
 
       return result;
     },
-    onCategoryMove() {
-      this.reorderCategories();
-      this.timeout = debounce(this.save, this.timeout, 2000);
-    },
-    onLayerMove() {
-      this.reorderSelectedLayers();
-      this.timeout = debounce(this.save, this.timeout, 2000);
-    },
-    reorderCategories() {
-      this.categories = this.categories.map((category, index) => {
-        return { ...category, newOrder: index + 1 };
-      });
-    },
     reorderSelectedLayers() {
       this.selectedLayers = this.selectedLayers.map((layer, index) => {
         return {
           ...layer,
-          newOrder: index + 1,
+          newOrder: index,
         };
       });
     },
-    selectRow(category) {
-      if (this.selectedCategory?.id === category.id) {
-        this.selectedCategory = null;
-        return;
-      }
-
-      this.selectedCategory = category;
+    back() {
+      this.$router.push(`/${this.$route.params.parentRoute}`);
     },
-    checkRow(category) {
-      return this.selectedCategory?.id === category?.id;
+
+    selectCategory(category) {
+      this.selectedCategory = category;
     },
   },
 };
 </script>
 
 <style scoped>
-.ghost {
-  opacity: 0.5;
-  background: var(--color-primary);
+.page-title-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 24px;
 }
 
-.layer-table-wrapper {
+.layer-table {
   grid-area: layer-table;
 }
 
-.category-table-wrapper {
+.category-table {
   grid-area: category-table;
 }
 
@@ -275,55 +233,22 @@ export default {
 }
 
 @media (max-width: 576px) {
+  .page-title-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .top-menu-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
   .sort-container {
     grid-template-areas:
       "category-table"
       "layer-table";
     grid-template-columns: 1fr;
   }
-}
-
-.active-row {
-  background: var(--color-primary-active);
-  box-shadow: 3px 0 0 var(--color-primary) inset;
-}
-
-.sort-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--color-white);
-}
-
-tbody > tr:hover {
-  background-color: var(--color-primary-hover);
-  cursor: move;
-}
-
-.sort-table thead tr th {
-  text-align: left;
-  font-weight: var(--font-weight-normal);
-  color: var(--color-text-grey);
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.sort-table tbody tr td {
-  text-align: left;
-  font-weight: var(--font-weight-normal);
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
-tr.table-border:not(:last-child) > td,
-th {
-  border-bottom: 1px solid var(--color-grey-60);
-}
-
-tr > td:not(:nth-last-child(-n + 2)) {
-  padding-right: 8px;
-}
-
-.sort-column-padding {
-  padding: 0 12px;
 }
 </style>
