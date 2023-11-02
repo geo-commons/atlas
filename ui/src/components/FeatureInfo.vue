@@ -1,10 +1,5 @@
 <template>
-  <ExpandButton
-    v-if="features.length > 0"
-    :title="featureInfoTitle"
-    :is-open="isOpen"
-    class="feature"
-  >
+  <ExpandButton v-if="features.length > 0" :title="featureInfoTitle" :is-open="isOpen" class="feature">
     <div
       v-for="feature in features"
       :key="feature.id"
@@ -14,10 +9,7 @@
       <table-list>
         <table>
           <tbody>
-            <tr
-              v-for="property in filterProperties(feature.properties)"
-              :key="property"
-            >
+            <tr v-for="property in filterProperties(feature.properties)" :key="property">
               <td>
                 {{
                   layer.friendly_fields && layer.friendly_fields[property]
@@ -26,9 +18,21 @@
                 }}
               </td>
               <td>
-                <RichValue
-                  :data-key="property"
-                  :data-value="feature.properties[property]"
+                <RichValue :data-key="property" :data-value="feature.properties[property]" />
+              </td>
+            </tr>
+            <tr v-for="property in Object.keys(layer.templated_properties)" :key="property">
+              <td>
+                {{
+                  layer.friendly_fields && layer.friendly_fields[property]
+                    ? layer.friendly_fields[property]
+                    : property | capitalize
+                }}
+              </td>
+              <td>
+                <MarkdownTemplate
+                  :source="layer.templated_properties[property]"
+                  :data="getTemplatedPropertiesData(feature.properties)"
                 />
               </td>
             </tr>
@@ -36,11 +40,7 @@
         </table>
       </table-list>
 
-      <div
-        v-for="(linkedData, key) in layer.linked_data"
-        :key="key"
-        class="linked-data"
-      >
+      <div v-for="(linkedData, key) in layer.linked_data" :key="key" class="linked-data">
         <div v-if="features[0].properties[linkedData.source_key]">
           <b>{{ linkedData.title }}</b>
           <FeatureTableExpandable
@@ -56,12 +56,7 @@
       </div>
 
       <div v-for="(template, key) in layer.templates" :key="key">
-        <FeatureInfoTemplate
-          :layer="layer"
-          :template="template"
-          :feature="feature"
-          class="template"
-        />
+        <FeatureInfoTemplate :layer="layer" :template="template" :feature="feature" class="template" />
       </div>
     </div>
   </ExpandButton>
@@ -78,6 +73,7 @@ import View from "ol/View";
 import ExpandButton from "./ExpandButton";
 import RichValue from "./RichValue";
 import FeatureInfoTemplate from "./FeatureInfoTemplate";
+import MarkdownTemplate from "./MarkdownTemplate";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -89,6 +85,7 @@ export default {
     ExpandButton,
     RichValue,
     FeatureInfoTemplate,
+    MarkdownTemplate,
   },
   filters: {
     capitalize: function (value) {
@@ -129,10 +126,7 @@ export default {
   },
   methods: {
     fetchFeatures() {
-      if (
-        this.layer.source_type === "WMS" ||
-        this.layer.source_type === "WMS_WFS"
-      ) {
+      if (this.layer.source_type === "WMS" || this.layer.source_type === "WMS_WFS") {
         return this.fetchFeaturesFromWMS();
       }
 
@@ -155,15 +149,10 @@ export default {
         zoom: this.position.zoom,
       });
 
-      const url = wmsSource.getFeatureInfoUrl(
-        this.position.marker,
-        view.getResolution(),
-        "EPSG:28992",
-        {
-          info_format: "application/json",
-          feature_count: 20,
-        }
-      );
+      const url = wmsSource.getFeatureInfoUrl(this.position.marker, view.getResolution(), "EPSG:28992", {
+        info_format: "application/json",
+        feature_count: 20,
+      });
 
       try {
         const result = await fetch(url, this.getFetchParameters());
@@ -179,12 +168,7 @@ export default {
         zoom: this.position.zoom,
       });
 
-      const extent = getForViewAndSize(
-        this.position.marker,
-        view.getResolution(),
-        0,
-        [1, 1]
-      );
+      const extent = getForViewAndSize(this.position.marker, view.getResolution(), 0, [1, 1]);
 
       const params = new URLSearchParams([
         ["service", "WFS"],
@@ -209,26 +193,25 @@ export default {
     },
     filterProperties(fetchedProperties) {
       if (this.layer.display_properties.length > 0) {
-        return this.layer.display_properties.filter((p) =>
-          Object.keys(fetchedProperties).includes(p)
-        );
+        return this.layer.display_properties.filter((p) => Object.keys(fetchedProperties).includes(p));
       }
 
       return Object.keys(fetchedProperties);
     },
     getFetchParameters() {
-      if (
-        this.layer.source &&
-        this.layer.source.authenticate &&
-        this.user &&
-        this.user.token
-      ) {
+      if (this.layer.source && this.layer.source.authenticate && this.user && this.user.token) {
         return {
           headers: { Authorization: `Bearer ${this.user.token}` },
         };
       }
 
       return {};
+    },
+    getTemplatedPropertiesData(properties) {
+      return {
+        properties,
+        position: this.position,
+      };
     },
   },
 };
