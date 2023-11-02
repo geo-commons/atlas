@@ -10,14 +10,14 @@
         <table v-if="rows && rows.length > 0" class="table">
           <thead>
             <tr>
-              <th v-for="field in table.list_headings" :key="field">
+              <th v-for="(field, i) in table.list_headings" :key="i">
                 {{ field }}
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="rows && rows.length > 0">
             <tr v-for="(row, i) in rows" :key="i">
-              <td v-for="field in table.list_fields" :key="field">
+              <td v-for="(field, j) in table.list_fields" :key="j">
                 {{ renderString(field, row) }}
               </td>
             </tr>
@@ -77,12 +77,29 @@ export default {
         body: this.table.method !== "GET" ? JSON.stringify(searchFields) : null,
       });
 
-      if (!result.ok) {
+      try {
+        const data = await result.json();
+
+        if (!result.ok) {
+          if (result.status == 401) {
+            this.error = "U moet ingelogd zijn om deze data te bekijken.";
+          } else if (result.status == 403) {
+            this.error = "U heeft geen rechten om deze data te bekijken.";
+          } else {
+            console.log(data)
+            if (this.table.error_template && data) {
+              this.error = nunjucks.renderString(this.table.error_template, data) || "Er is een fout opgetreden tijdens het ophalen van de gegevens";
+            } else {
+              this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
+            }
+          }
+        }
+
+        this.rows = fetchDot(this.table.list_query, data);
+      } catch(e) {
         this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
       }
 
-      const data = await result.json();
-      this.rows = fetchDot(this.table.list_query, data);
       this.loading = false;
     },
     renderString(template, context) {

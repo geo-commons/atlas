@@ -3,7 +3,7 @@
     <validation-observer v-slot="{ handleSubmit }">
       <form method="POST" @submit.prevent="handleSubmit(onSearch)">
         <div class="grid">
-          <div v-for="searchField in table.search_fields" :key="searchField" class="item">
+          <div v-for="(searchField, i) in table.search_fields" :key="i" class="item">
             <validation-provider v-slot="{ errors }" name="Titel">
               <label :for="searchField.name">{{ searchField.label }}</label
               ><input

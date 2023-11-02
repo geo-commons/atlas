@@ -33,6 +33,9 @@ class Table(models.Model):
     list_query = models.CharField('Veldnaam van lijst',
                                   max_length=128, blank=True, null=True)
 
+    error_template = models.CharField(
+        'Template van foutmelding', max_length=128, blank=True, null=True)
+
     list_headings = models.TextField(
         'Kopjes in lijstweergave', blank=True, null=True)
 
@@ -73,6 +76,7 @@ class Table(models.Model):
             'list_headings': self.list_headings.split('\r\n') if self.list_headings else [],
             'list_fields': self.list_fields.split('\r\n') if self.list_fields else [],
             'search_fields': self.search_fields,
+            'error_template': self.error_template,
             'login_required': self.login_required,
             'created_at': self.created_at,
             'updated_at': self.updated_at
