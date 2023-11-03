@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, mixins
 
 from .models import Category, Drawing, Map, Source, Layer
-from .serializers import CategorySerializer, LayerCreateUpdateSerializer, LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer
+from .serializers import CategorySerializer, DrawingSerializer, LayerCreateUpdateSerializer, LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer
 
 
 class MapViewSet(viewsets.ModelViewSet):
@@ -43,7 +43,9 @@ class LayerViewSet(viewsets.ModelViewSet):
 class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Drawing.objects.all()
-    
+    serializer_class = DrawingSerializer
+
+
 class CategoriesViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Category.objects.all()
