@@ -132,6 +132,10 @@ select {
   border-bottom: 1px solid var(--color-grey-60);
 }
 
+.setting:hover {
+  background: var(--color-primary-hover);
+}
+
 input[type="text"],
 input[type="number"],
 input[type="url"] {
@@ -152,12 +156,129 @@ input[type="checkbox"] {
   border: 1px solid var(--color-grey-60);
 }
 
-.button.__secondary:hover {
+.button.__secondary:not([disabled]):hover {
   background: var(--color-primary-hover);
 }
 
 .multiselect__tags > input {
   border: none;
+}
+
+.top-menu-container {
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.page-title-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 24px;
+}
+
+.top-menu-button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.admin-search-wrapper {
+  width: clamp(300px, 35%, 400px);
+  height: 48px;
+  position: relative;
+}
+
+.admin-search-wrapper svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 16px;
+  margin: auto 0;
+  pointer-events: none;
+}
+
+.admin-search-wrapper input {
+  width: 100%;
+  height: 100%;
+  padding: 0 0 0 48px;
+  border: 1px solid var(--color-grey-60);
+  border-radius: var(--radius-normal);
+}
+
+@media (max-width: 576px) {
+  .page-title-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 0;
+  }
+
+  .admin-search-wrapper {
+    width: 100%;
+  }
+
+  .top-menu-container {
+    gap: 16px;
+  }
+
+  .top-menu-button-container {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.admin-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 40px;
+}
+
+.admin-title-link {
+  text-decoration: none;
+  color: var(--color-black);
+}
+
+.admin-title-link:hover {
+  text-decoration: underline;
+}
+
+.form-model-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-white);
+}
+
+.admin-table > tbody > tr:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.admin-table thead tr th {
+  text-align: left;
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-grey);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.admin-table > tbody > tr.table-border:not(:last-child) > td,
+th {
+  border-bottom: 1px solid var(--color-grey-60);
+}
+
+.admin-table > tbody > tr > td:not(:nth-last-child(-n + 2)) {
+  padding-right: 8px;
+}
+
+.first-column-padding {
+  padding-left: 12px;
 }
 </style>
 

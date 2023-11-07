@@ -1,58 +1,180 @@
 <template>
-  <div class="container">
-    <div class="section">
-      <router-link to="/sources/create" class="button __tertiary __large">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
-          <path d="M0 0h24v24H0V0z" fill="none" />
-          <path
-            d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-          />
-        </svg>
-        Maak bron
-      </router-link>
+  <div class="container __admin">
+    <div class="top-menu-container">
+      <div class="page-title-wrapper">
+        <h1>Bronnen</h1>
+        <button class="button __primary __normal __full-width-mobile" @click="openFormModal">
+          <AddIcon class="icon __white" />
+          Nieuwe bron
+        </button>
+      </div>
     </div>
-    <div class="section">
-      <ul>
-        <li v-for="source in sources" :key="source.id" class="source">
-          <router-link :to="`/sources/update/${source.id}`">{{ source.title }}</router-link>
-          <div class="buttons">
-            <button
-              v-tippy="{ placement: 'bottom' }"
-              class="iconbutton"
-              aria-label="Verwijder bron"
-              content="Verwijder"
-              type="button"
-              @click="deleteSource(source)"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path
-                  d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                />
-              </svg>
-            </button>
-          </div>
-        </li>
-      </ul>
+
+    <div class="admin-content-wrapper">
+      <div v-if="!loading" class="admin-search-wrapper">
+        <SearchIcon class="icon" />
+        <input id="source-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek bron" />
+      </div>
+
+      <PaginationComponent
+        :items="visibleSources"
+        :nr-of-records="nrOfRecords"
+        :loading="loading"
+        @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
+        @records-change="(value) => (nrOfRecords = value)"
+      >
+        <template #default>
+          <table class="admin-table">
+            <thead>
+              <tr class="table-border">
+                <th class="first-column-padding">
+                  <SortableTableHeaderItem
+                    :header-text="'Titel'"
+                    :property="'title'"
+                    :sort-key="sortKey"
+                    :sort-ascending="sortAscending"
+                    @sort="(column) => sortColumn(column)"
+                  />
+                </th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="source in paginatedData" :key="source.id" class="table-border">
+                <td class="first-column-padding">
+                  <router-link class="admin-title-link" :to="`/sources/update/${source.id}`">
+                    {{ source.title }}
+                  </router-link>
+                </td>
+                <td>
+                  <button
+                    v-tippy="{ placement: 'bottom' }"
+                    class="iconbutton __normal __round __alt_hover"
+                    aria-label="Wijzig bron"
+                    content="Wijzig"
+                    type="button"
+                    @click="$router.push(`/sources/update/${source.id}`)"
+                  >
+                    <EditIcon class="icon" />
+                  </button>
+                </td>
+                <td>
+                  <button
+                    v-tippy="{ placement: 'bottom' }"
+                    class="iconbutton __normal __round __alt_hover"
+                    aria-label="Verwijder bron"
+                    content="Verwijder"
+                    type="button"
+                    @click="deleteSource(source)"
+                  >
+                    <TrashIcon class="icon" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </template>
+      </PaginationComponent>
     </div>
+
+    <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+      <template #header><h3>Configureer nieuwe bron</h3></template>
+      <template #body>
+        <validation-observer v-slot="{ handleSubmit }">
+          <form v-if="newSourceData" class="form-model-container" @submit.prevent="handleSubmit(saveSource)">
+            <AdminFormSections
+              :sections="sections"
+              :initial-values="newSourceData"
+              :create-view="true"
+              @update="(newValues) => updateCurrentValues(newValues)"
+            />
+            <div class="flexer">
+              <button class="button __secondary" type="button" @click="closeFormModal">Annuleer</button>
+              <button class="button __secondary" type="submit">Opslaan</button>
+              <button class="button __primary" type="button" @click="saveSource(true)">Opslaan en openen</button>
+            </div>
+          </form>
+        </validation-observer>
+      </template>
+    </FormModal>
   </div>
 </template>
 
 <script>
 import Cookies from "js-cookie";
+import AddIcon from "@/assets/icons/add-icon.svg";
+import FormModal from "@/components/FormModal.vue";
+import AdminFormSections from "@/admin/components/AdminFormSections.vue";
+import { ValidationObserver } from "vee-validate";
+import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
+import EditIcon from "@/assets/icons/edit-icon.svg";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import { sortAlphabetically } from "@/utils/table-sort-helpers";
+import PaginationComponent from "@/components/Pagination.vue";
+import SearchIcon from "@/assets/icons/search-icon.svg";
 
 export default {
   name: "SourceList",
+  components: {
+    SearchIcon,
+    PaginationComponent,
+    TrashIcon,
+    EditIcon,
+    SortableTableHeaderItem,
+    AdminFormSections,
+    FormModal,
+    AddIcon,
+    ValidationObserver,
+  },
   data() {
     return {
       sources: [],
+      showFormModal: false,
+      newSourceData: {},
+      searchQuery: "",
+      sections: {},
+      currentPageNumber: 1,
+      nrOfRecords: 20,
+      sortAscending: true,
+      sortKey: "",
+      loading: false,
     };
+  },
+  computed: {
+    sortedSources() {
+      if (this.sortKey && this.sources) {
+        return this.sources.slice(0).sort((a, b) => {
+          const textA = a[this.sortKey].toLowerCase();
+          const textB = b[this.sortKey].toLowerCase();
+          return sortAlphabetically(textA, textB, this.sortAscending);
+        });
+      }
+
+      return this.sources;
+    },
+    visibleSources() {
+      if (!this.searchQuery) {
+        return this.sortedSources;
+      }
+
+      return this.sortedSources.filter(
+        (source) => source.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+      );
+    },
+    paginatedData() {
+      const start = (this.currentPageNumber - 1) * this.nrOfRecords;
+      const end = start + this.nrOfRecords;
+      return this.visibleSources.slice(start, end);
+    },
   },
   created() {
     this.getSources();
+    this.sections = this.getSections();
   },
   methods: {
     async getSources() {
+      this.loading = true;
       const result = await fetch("/atlas/api/v1/sources/", {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -63,6 +185,7 @@ export default {
       }
 
       this.sources = await result.json();
+      this.loading = false;
     },
     async deleteSource(source) {
       const acknowledged = confirm("Weet je zeker dat je de bron wilt verwijderen?");
@@ -83,45 +206,85 @@ export default {
         this.getSources();
       }
     },
+    async saveSource(continueEditing = false) {
+      let result;
+
+      result = await fetch(`/atlas/api/v1/sources/`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+        body: JSON.stringify(this.newSourceData),
+      });
+
+      // todo: think about what to do if the result is not ok.
+      if (result.ok) {
+        this.closeFormModal();
+
+        if (continueEditing) {
+          const response = await result.json();
+          this.$router.push(`/sources/update/${response.id}`);
+        }
+
+        await this.getSources();
+      }
+    },
+    updateCurrentValues(newValues) {
+      this.newSourceData = newValues;
+    },
+    openFormModal() {
+      this.newSourceData = {
+        title: "",
+        url: "",
+        authenticate: false,
+      };
+
+      this.showFormModal = true;
+    },
+    closeFormModal() {
+      this.showFormModal = false;
+    },
+    sortColumn(prop) {
+      if (this.sortKey !== prop) {
+        this.sortKey = prop;
+        this.sortAscending = true;
+      } else {
+        this.sortAscending = !this.sortAscending;
+      }
+    },
+    getSections() {
+      return {
+        general: {
+          label: "Algemene gegevens",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "Kort kenmerk",
+              id: "slug",
+              name: "Slug",
+              type: "text",
+              required: false,
+              maxLength: 50,
+            },
+            {
+              label: "URL",
+              id: "url",
+              name: "Url",
+              type: "url",
+              required: true,
+            },
+          ],
+        },
+      };
+    },
   },
 };
 </script>
-
-<style scoped>
-.buttons {
-  display: flex;
-}
-
-.button {
-  max-width: 300px;
-}
-
-.source {
-  display: flex;
-  align-items: center;
-  border: 2px solid var(--color-grey-60);
-  border-radius: var(--radius-normal);
-  margin-top: 16px;
-}
-
-.source a {
-  padding: 12px 0 12px 20px;
-  flex-grow: 1;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  text-decoration: none;
-}
-
-.source a:hover,
-.source a:focus {
-  text-decoration: underline;
-}
-
-.source .iconbutton {
-  margin-right: 8px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-</style>

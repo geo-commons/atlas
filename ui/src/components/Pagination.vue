@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="content">
-      <slot></slot>
+      <Spinner v-if="loading" />
+      <slot v-else-if="items.length > 0"></slot>
     </div>
 
     <div v-if="items" class="pagination-wrapper">
@@ -13,6 +14,7 @@
           :options="nrRecordsOptions"
           :show-labels="false"
           :allow-empty="false"
+          :searchable="false"
           @input="(value) => updateNrOfRecords(value)"
         />
         <label>Aantal rijen per pagina</label>
@@ -87,6 +89,7 @@
 import ChevronLeftIcon from "@/icons/ChevronLeftIcon.vue";
 import ChevronRightIcon from "@/icons/ChevronRightIcon.vue";
 import Multiselect from "vue-multiselect";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "PaginationComponent",
@@ -94,9 +97,11 @@ export default {
     Multiselect,
     ChevronLeftIcon,
     ChevronRightIcon,
+    Spinner,
   },
   props: {
     items: Array,
+    loading: Boolean,
     nrOfRecords: { default: 10, type: Number },
     displayRange: { default: 5, type: Number },
   },

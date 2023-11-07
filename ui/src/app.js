@@ -44,18 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (layer.is_base) {
       return {
         ...layer,
-        is_visible: settings.visibleBase
-          ? settings.visibleBase == layer.id
-          : layer.is_visible,
+        is_visible: settings.visibleBase ? settings.visibleBase == layer.id : layer.is_visible,
       };
     }
 
     if (!layer.is_base) {
       return {
         ...layer,
-        is_visible: settings.visibleLayers
-          ? settings.visibleLayers.includes(layer.id)
-          : layer.is_visible,
+        is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
       };
     }
   });
@@ -69,8 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tool: "",
     user: data.user,
     selectedArea: null,
-    initiallyShowLayerList:
-      settings.visibleLayers.length === 0 && !isMobile() && !data.is_embed,
+    initiallyShowLayerList: settings.visibleLayers.length === 0 && !isMobile() && !data.is_embed,
     searchQuery: "",
     alert: "",
   };
@@ -78,6 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const store = createStore(initialState);
 
   new detectKeyboard();
+
+  // todo: change to #424bff once color is changed in main application
+  Vue.prototype.$primaryColor = "#0066FF";
 
   new Vue({
     el: "#app",
@@ -110,6 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const store = createStore(initialState);
   window.vueStore = store; // assign store to window for interoperability with old jQuery frontend
+
+  // todo: change to #424bff once color is changed in main application
+  Vue.prototype.$primaryColor = "#0066FF";
 
   new Vue({
     el: "#embedCode",
