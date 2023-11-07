@@ -20,22 +20,23 @@
           </button>
         </div>
       </div>
+    </div>
 
-      <div class="search-wrapper">
+    <div class="admin-content-wrapper">
+      <div v-if="!loading" class="admin-search-wrapper">
         <SearchIcon class="icon" />
         <input id="categories-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek categorie" />
       </div>
-    </div>
 
-    <div v-if="visibleCategories.length > 0" class="padding-bottom">
       <PaginationComponent
         :items="visibleCategories"
         :nr-of-records="nrOfRecords"
+        :loading="loading"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
         @records-change="(value) => (nrOfRecords = value)"
       >
         <template #default>
-          <table class="category-table">
+          <table class="admin-table">
             <thead>
               <tr class="table-border">
                 <th class="first-column-padding">
@@ -55,7 +56,7 @@
               <tr v-for="category in paginatedData" :key="category.id" class="table-border">
                 <td class="first-column-padding">
                   <router-link
-                    class="category-title-link"
+                    class="admin-title-link"
                     type="button"
                     :aria-label="`${category.title} configureren`"
                     :to="`/categories/update/${category.id}`"
@@ -66,7 +67,7 @@
                 <td>
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round"
+                    class="iconbutton __normal __round __alt_hover"
                     :aria-label="`${category.title} configureren`"
                     content="Wijzig"
                     type="button"
@@ -78,7 +79,7 @@
                 <td>
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round"
+                    class="iconbutton __normal __round __alt_hover"
                     aria-label="Verwijder categorie"
                     content="Verwijder"
                     type="button"
@@ -95,7 +96,7 @@
     </div>
 
     <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-      <template #header><h3>Configureer nieuwe laag</h3> </template>
+      <template #header><h3>Configureer nieuwe categorie</h3></template>
       <template #body>
         <validation-observer v-slot="{ handleSubmit }">
           <form v-if="newCategoryData" class="form-model-container" @submit.prevent="handleSubmit(saveCategory)">
@@ -106,8 +107,9 @@
               @update="(newValues) => updateCurrentValues(newValues)"
             />
             <div class="flexer">
-              <button class="button __tertiary" type="button" @click="closeFormModal">Annuleer</button>
-              <button class="button __primary" type="submit">Opslaan</button>
+              <button class="button __secondary" type="button" @click="closeFormModal">Annuleer</button>
+              <button class="button __secondary" type="submit">Opslaan</button>
+              <button class="button __primary" type="button" @click="saveCategory(true)">Opslaan en openen</button>
             </div>
           </form>
         </validation-observer>
@@ -155,6 +157,7 @@ export default {
       sortKey: "",
       sortAscending: true,
       sections: {},
+      loading: false,
     };
   },
   computed: {
@@ -175,7 +178,7 @@ export default {
       }
 
       return this.sortedCategories.filter(
-        (category) => category.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
+        (category) => category.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
       );
     },
     paginatedData() {
@@ -191,6 +194,8 @@ export default {
   },
   methods: {
     async getCategories() {
+      this.loading = true;
+
       const result = await fetch("/atlas/api/v1/categories/", {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -201,8 +206,10 @@ export default {
       }
 
       this.categories = await result.json();
+
+      this.loading = false;
     },
-    async saveCategory() {
+    async saveCategory(continueEditing = false) {
       let result;
 
       result = await fetch(`/atlas/api/v1/categories/`, {
@@ -218,6 +225,12 @@ export default {
       // todo: think about what to do if the result is not ok.
       if (result.ok) {
         this.closeFormModal();
+
+        if (continueEditing) {
+          const response = await result.json();
+          this.$router.push(`/categories/update/${response.id}`);
+        }
+
         await this.getCategories();
       }
     },
@@ -240,7 +253,6 @@ export default {
         this.getCategories();
       }
     },
-
     openFormModal() {
       this.newCategoryData = {
         title: "",
@@ -289,118 +301,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.top-menu-container {
-  padding: 20px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.page-title-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-bottom: 24px;
-}
-
-.top-menu-button-container {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.search-wrapper {
-  width: clamp(300px, 35%, 400px);
-  height: 48px;
-  position: relative;
-}
-
-.search-wrapper svg {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 16px;
-  margin: auto 0;
-  pointer-events: none;
-}
-
-.search-wrapper input {
-  width: 100%;
-  height: 100%;
-  padding: 0 0 0 48px;
-  border: 1px solid var(--color-grey-60);
-  border-radius: var(--radius-normal);
-}
-
-@media (max-width: 576px) {
-  .page-title-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .search-wrapper {
-    width: 100%;
-  }
-
-  .top-menu-container {
-    gap: 16px;
-  }
-
-  .top-menu-button-container {
-    flex-direction: column;
-    width: 100%;
-  }
-}
-
-.category-title-link {
-  text-decoration: none;
-  color: var(--color-black);
-}
-
-.category-title-link:hover {
-  text-decoration: underline;
-}
-
-.form-model-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.padding-bottom {
-  padding-bottom: 40px;
-}
-
-.category-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--color-white);
-}
-
-tbody > tr:hover {
-  background-color: var(--color-primary-hover);
-}
-
-.category-table thead tr th {
-  text-align: left;
-  font-weight: var(--font-weight-normal);
-  color: var(--color-text-grey);
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-tr.table-border:not(:last-child) > td,
-th {
-  border-bottom: 1px solid var(--color-grey-60);
-}
-
-tr > td:not(:nth-last-child(-n + 2)) {
-  padding-right: 8px;
-}
-
-.first-column-padding {
-  padding-left: 12px;
-}
-</style>

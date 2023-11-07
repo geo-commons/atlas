@@ -15,9 +15,7 @@
               step="10"
               :aria-label="`Transparantie van laag ${layer.title} instellen`"
               :value="layer.opacity * 100"
-              @change="
-                (e) => changeLayerOpacity(layer.id, e.target.value / 100)
-              "
+              @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
             />
             <button
               v-tippy
@@ -27,16 +25,8 @@
               aria-label="Toon transparantie schuifregelaar"
               @click="toggleSlider"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="18"
-                viewBox="0 0 24 24"
-                width="18"
-              >
-                <path
-                  d="M24 0H0v24h24V0zm0 0H0v24h24V0zM0 24h24V0H0v24z"
-                  fill="none"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
+                <path d="M24 0H0v24h24V0zm0 0H0v24h24V0zM0 24h24V0H0v24z" fill="none" />
                 <path
                   fill="currentColor"
                   d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
@@ -53,9 +43,7 @@
               max="100"
               step="10"
               :value="layer.opacity * 100"
-              @change="
-                (e) => changeLayerOpacity(layer.id, e.target.value / 100)
-              "
+              @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
             />
           </div>
           <LayerInfo :layer="layer" :show-always="true" />
@@ -67,13 +55,7 @@
             aria-label="Sluit laag"
             @click="toggleLayer"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="18"
-              viewBox="0 0 24 24"
-              width="18"
-              opacity=".87"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" opacity=".87">
               <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
               <path
                 d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"
@@ -86,19 +68,12 @@
       <template #default>
         <div class="content">
           <img
-            v-if="
-              layer.source_type === 'WMS' || layer.source_type === 'WMS_WFS'
-            "
+            v-if="layer.source_type === 'WMS' || layer.source_type === 'WMS_WFS'"
             class="legend"
             :src="legendImageUrl"
             :alt="`Legenda voor laag ${layer.title}`"
           />
-          <span
-            v-if="
-              layer.source_type !== 'WMS' && layer.source_type !== 'WMS_WFS'
-            "
-            >Geen legenda beschikbaar</span
-          >
+          <span v-if="layer.source_type !== 'WMS' && layer.source_type !== 'WMS_WFS'">Geen legenda beschikbaar</span>
         </div>
       </template>
     </ExpandButton>
@@ -183,6 +158,7 @@ export default {
 
 .opacity-wrapper {
   display: flex;
+  align-items: center;
 }
 
 .opacity-input {
@@ -221,5 +197,9 @@ export default {
 .buttons {
   display: flex;
   align-items: center;
+}
+
+input[type="number"] {
+  border: none;
 }
 </style>

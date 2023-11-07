@@ -1,141 +1,121 @@
 <template>
-  <div class="container">
-    <div class="section">
-      <validation-observer v-slot="{ handleSubmit }">
-        <form v-if="data" @submit.prevent="handleSubmit(saveSource)">
-          <div>
-            <validation-provider v-slot="{ errors }" name="Titel">
-              <label for="title">Titel</label>
-              <input id="title" v-model="data.title" type="text" required />
-              <span>{{ errors[0] }}</span>
-            </validation-provider>
-          </div>
-
-          <div>
-            <validation-provider v-slot="{ errors }" name="URL">
-              <label for="url">URL</label>
-              <input id="url" v-model="data.url" type="url" required />
-              <span>{{ errors[0] }}</span>
-            </validation-provider>
-          </div>
-
-          <div>
-            <validation-provider
-              v-slot="{ errors }"
-              name="Verstuur authenticatieinformatie naar bron"
-            >
-              <input
-                id="authenticate"
-                v-model="data.authenticate"
-                type="checkbox"
-              />
-              <label for="authenticate"
-                >Verstuur authenticatieinformatie naar bron</label
-              >
-              <span>{{ errors[0] }}</span>
-            </validation-provider>
-          </div>
-
-          <div class="flexer">
-            <router-link to="/sources" class="button __tertiary"
-              >Annuleer</router-link
-            >
-            <button class="button __primary" type="submit">Opslaan</button>
-          </div>
-        </form>
-      </validation-observer>
-    </div>
+  <div class="container __admin">
+    <h1 class="font-weight-normal">Bron wijzigen</h1>
+    <validation-observer v-slot="{ handleSubmit }">
+      <form @submit.prevent="handleSubmit(saveSource)">
+        <AdminFormSections
+          :sections="sections"
+          :initial-values="initialValues"
+          :create-view="true"
+          @update="(newValues) => updateCurrentValues(newValues)"
+        />
+        <div class="config-btn-wrapper">
+          <router-link to="/sources" class="button __tertiary">Annuleer</router-link>
+          <button class="button __primary" type="submit">Opslaan</button>
+        </div>
+      </form>
+    </validation-observer>
   </div>
 </template>
 
 <script>
 import Cookies from "js-cookie";
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { ValidationObserver } from "vee-validate";
+import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 
 export default {
   name: "SourceCreateUpdate",
   components: {
+    AdminFormSections,
     ValidationObserver,
-    ValidationProvider,
   },
   data() {
     return {
-      data: null,
-      layersFromCapabilities: [],
+      sections: {},
+      initialValues: {},
+      currentValues: {},
     };
   },
   created() {
     this.getSource();
+    this.sections = this.getSections();
   },
   methods: {
     async getSource() {
-      if (this.$route.params.id) {
-        const result = await fetch(
-          `/atlas/api/v1/sources/${this.$route.params.id}/`,
-          {
-            credentials: "same-origin",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+      const result = await fetch(`/atlas/api/v1/sources/${this.$route.params.id}/`, {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
 
-        if (!result.ok) {
-          console.error("Could not fetch source");
-        }
-
-        this.data = await result.json();
-        return;
+      if (!result.ok) {
+        console.error("Could not fetch source");
       }
 
-      this.data = {
-        title: "",
-        url: "",
-        authenticate: false,
-      };
+      this.initialValues = await result.json();
     },
     async saveSource() {
       let result;
 
-      if (this.$route.params.id) {
-        result = await fetch(
-          `/atlas/api/v1/sources/${this.$route.params.id}/`,
-          {
-            method: "PUT",
-            credentials: "same-origin",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": Cookies.get("csrftoken"),
-            },
-            body: JSON.stringify(this.data),
-          }
+      result = await fetch(`/atlas/api/v1/sources/${this.$route.params.id}/`, {
+        method: "PATCH",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+        body: JSON.stringify(this.currentValues),
+      });
+
+      if (!result.ok) {
+        console.error(
+          `Error occurred while saving source with source id: ${this.currentValues.id} and title: ${this.currentValues.title}`
         );
-      } else {
-        result = await fetch(`/atlas/api/v1/sources/`, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": Cookies.get("csrftoken"),
-          },
-          body: JSON.stringify(this.data),
-        });
       }
 
-      if (result.ok) {
-        this.$router.push(`/sources`);
-      }
+      this.$router.push(`/sources`);
+    },
+    updateCurrentValues(newValues) {
+      this.currentValues = newValues;
+    },
+    getSections() {
+      return {
+        general: {
+          label: "Algemene gegevens",
+          questions: [
+            {
+              label: "Titel",
+              id: "title",
+              name: "Title",
+              type: "text",
+              required: true,
+            },
+            {
+              label: "URL",
+              id: "url",
+              name: "URL",
+              type: "url",
+              required: true,
+            },
+            {
+              label: "Verstuur authenticatie-informatie naar bron",
+              id: "authenticate",
+              name: "Authenticate",
+              type: "checkbox",
+              required: false,
+            },
+          ],
+        },
+      };
     },
   },
 };
 </script>
 
 <style scoped>
-.flexer {
+.config-btn-wrapper {
   display: flex;
-  margin-top: 20px;
-  justify-content: left;
-}
-
-.section {
-  max-width: 600px;
+  justify-content: flex-end;
+  gap: 20px;
+  padding: 30px 0;
 }
 </style>

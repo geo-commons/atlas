@@ -75,7 +75,11 @@ export default {
 
       const baseLayer = this.visibleLayers.filter((l) => l.is_base).map((l) => l.id);
 
-      window.history.replaceState({}, "", `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}`);
+      window.history.replaceState(
+        {},
+        "",
+        `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}`,
+      );
     },
     positionChanged(position) {
       this.$store.commit("setPosition", position);
@@ -231,10 +235,6 @@ svg {
   height: 56px;
   font-size: var(--font-size-large);
   border-width: 2px;
-}
-
-.button svg {
-  margin-right: 6px;
 }
 
 .button:hover:before {

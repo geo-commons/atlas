@@ -156,6 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   new detectKeyboard();
 
+  Vue.prototype.$primaryColor = "#424bff";
+
   new Vue({
     router,
     store,

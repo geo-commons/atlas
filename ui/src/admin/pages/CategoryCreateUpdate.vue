@@ -32,7 +32,6 @@ export default {
   },
   data() {
     return {
-      categories: {},
       sections: {},
       initialValues: {},
       currentValues: {},
@@ -72,7 +71,7 @@ export default {
 
       if (!result.ok) {
         console.error(
-          `Error occurred while saving category with category id: ${this.currentValues.id} and title: ${this.currentValues.title}`,
+          `Error occurred while saving category with category id: ${this.currentValues.id} and title: ${this.currentValues.title}`
         );
       }
 

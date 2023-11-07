@@ -60,6 +60,13 @@
                   :maxlength="question.maxLength"
                 />
                 <input
+                  v-else-if="question.type === 'url'"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  type="url"
+                  :required="question.required"
+                />
+                <input
                   v-else-if="question.type === 'number'"
                   :id="question.id"
                   v-model="currentValues[question.id]"

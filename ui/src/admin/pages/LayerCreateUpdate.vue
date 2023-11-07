@@ -31,7 +31,6 @@ export default {
   },
   data() {
     return {
-      formData: null,
       categories: {},
       sources: {},
       sourceTypes: [],
@@ -105,7 +104,7 @@ export default {
 
       if (!result.ok) {
         console.error(
-          `Error occurred while saving layer with layer id: ${this.currentValues.id} and title: ${this.currentValues.title}`,
+          `Error occurred while saving layer with layer id: ${this.currentValues.id} and title: ${this.currentValues.title}`
         );
       }
 

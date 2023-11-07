@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const store = createStore(initialState);
 
+  Vue.prototype.$primaryColor = "#424bff";
+
   new Vue({
     store,
     el: "#app",

@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <table-list class="table table-border table-margin">
+    <table-list v-if="!loading" class="table table-border table-margin">
       <table>
         <thead>
           <tr>
@@ -52,7 +52,7 @@
               <button
                 v-if="feature.geometry"
                 v-tippy="{ placement: 'right' }"
-                class="iconbutton pin-button"
+                class="iconbutton __small __round"
                 content="Bekijk op kaart"
                 aria-label="Bekijk op kaart"
                 @click="() => showFeature(feature)"
@@ -67,6 +67,7 @@
         </tbody>
       </table>
     </table-list>
+    <Spinner v-else />
   </div>
 </template>
 
@@ -81,6 +82,7 @@ import Multiselect from "vue-multiselect";
 import FilterSelect from "./FilterSelect.vue";
 import SwitchSlider from "./SwitchSlider.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "FeatureTable",
@@ -91,6 +93,7 @@ export default {
     FilterSelect,
     Multiselect,
     SwitchSlider,
+    Spinner,
   },
   props: {
     layer: Object,
@@ -111,6 +114,7 @@ export default {
       showFilters: false,
       filterOptions: {},
       filterFeatures: {},
+      loading: false,
     };
   },
   computed: {
@@ -376,18 +380,9 @@ export default {
 </script>
 
 <style scoped>
-.iconbutton {
-  width: var(--width-button-normal);
-}
-
-.pin-button {
-  width: 100%;
-  height: 26px;
-}
-
 .table-wrapper td:first-child {
   width: var(--width-button-large);
-  padding-left: 0;
+  padding-left: 4px;
 }
 
 tbody > tr:hover {
