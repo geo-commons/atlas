@@ -43,7 +43,7 @@ def v3_authorize(request):
     if not can_request_access_source(request, source):
         return JsonResponse({
             'allow': False,
-            'message': f'user does not have access to source {source_slug}'
+            'message': f'user {request.user} does not have access to source {source_slug}'
         }, status=403 if request.user.is_authenticated else 401)
 
     result = False
