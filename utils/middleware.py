@@ -1,8 +1,10 @@
+import base64
+import binascii
 import json
 import logging
 import time
 
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, logout
 from django.http import HttpResponseForbidden
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.encoding import smart_bytes
@@ -55,3 +57,40 @@ class LogoutWhenOIDCTokenIsExpiredMiddleware(MiddlewareMixin):
                 logout(request)
         except json.JSONDecodeError:
             pass
+
+
+class BasicAuthForAuthorizationEndpointMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        path = request.path
+
+        if not path.startswith(reverse('homepage:v3_authorize')):
+            return
+
+        if 'HTTP_AUTHORIZATION' not in request.META:
+            return
+
+        authorization_header = request.META['HTTP_AUTHORIZATION']
+        splitted = authorization_header.split(' ')
+        auth_type, auth_string = splitted
+
+        if 'basic' != auth_type.lower():
+            return
+
+        try:
+            b64_decoded = base64.b64decode(auth_string)
+        except (TypeError, binascii.Error):
+            return
+
+        try:
+            auth_string_decoded = b64_decoded.decode('utf-8')
+        except UnicodeDecodeError:
+            return
+
+        splitted = auth_string_decoded.split(':')
+        if len(splitted) != 2:
+            return
+
+        user = authenticate(username=splitted[0], password=splitted[1])
+
+        if user is not None:
+            request.user = user

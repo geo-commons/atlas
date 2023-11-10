@@ -115,6 +115,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'utils.middleware.check_access_admin',
+    'utils.middleware.BasicAuthForAuthorizationEndpointMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -134,7 +135,6 @@ ROOT_URLCONF = 'atlas.urls'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -183,10 +183,9 @@ LAYER_CHOICES_RETURN_VALUES = {
     'base_layer': 'isBaseLayer:true'
 }
 
-AUTHENTICATION_BACKENDS = []
-
-if AUTHENTICATION_ENABLE_CREDENTIALS:
-    AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 if AUTHENTICATION_ENABLE_OIDC:
     AUTHENTICATION_BACKENDS.append(
