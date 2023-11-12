@@ -36,6 +36,7 @@ class CustomImportExportActionModelAdmin(ImportExportActionModelAdmin):
     def get_export_formats(self):
         formats = (
             base_formats.JSON,
+            base_formats.CSV,
         )
 
         return [f for f in formats if f().can_export()]
@@ -43,6 +44,7 @@ class CustomImportExportActionModelAdmin(ImportExportActionModelAdmin):
     def get_import_formats(self):
         formats = (
             base_formats.JSON,
+            base_formats.CSV,
         )
 
         return [f for f in formats if f().can_import()]
