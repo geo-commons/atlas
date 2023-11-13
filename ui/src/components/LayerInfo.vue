@@ -109,8 +109,8 @@ export default {
 }
 
 .container {
-  min-width: 240px;
-  max-width: 300px;
+  min-width: 300px;
+  max-width: 350px;
   font-weight: normal;
   text-align: left;
 }
