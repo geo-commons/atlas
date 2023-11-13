@@ -142,13 +142,18 @@ class Layer(models.Model):
 
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on the meta_* fields
     # so inform them when changing.
-    meta_name = models.CharField('Naam', max_length=128, null=True,)
-    meta_description = models.TextField('Omschrijving', null=True,
+    meta_name = models.CharField(
+        'Naam', max_length=128, blank=True, null=True,)
+    meta_description = models.TextField('Omschrijving', blank=True, null=True,
                                         help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
-    meta_org = models.CharField('Organisatie', max_length=128, null=True,
+    meta_lineage = models.TextField('Bron', blank=True, null=True,
+                                    help_text='Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld')
+    meta_org = models.CharField('Organisatie', max_length=128, blank=True, null=True,
                                 help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+    meta_contact = models.CharField(
+        'Contactpersoon', max_length=200, blank=True, null=True)
     meta_updated = models.CharField(
-        'Laatst bijgewerkt', max_length=128, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+        'Laatst bijgewerkt', max_length=128, blank=True, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_link = models.URLField(
         'Meer informatie', max_length=200, blank=True, null=True, help_text='Link naar metadatacatalogus met meer informatie')
 
@@ -374,7 +379,9 @@ source: new ol.source.TileWMS({{
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
             'metadata': {
                 'description': self.meta_description,
+                'lineage': self.meta_lineage,
                 'organization': self.meta_org,
+                'contact': self.meta_contact,
                 'updated': self.meta_updated,
                 'link': self.meta_link
             },

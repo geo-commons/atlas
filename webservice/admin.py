@@ -111,7 +111,15 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
             )
         }),
         ('Metadata', {
-            'fields': ('meta_name', 'meta_description', 'meta_org', 'meta_updated', 'meta_link', 'owner')
+            'fields': (
+                'meta_name',
+                'meta_description',
+                'meta_lineage',
+                'meta_org',
+                'meta_contact',
+                'meta_updated',
+                'meta_link'
+            )
         }),
         ('Toegang', {
             'fields': ('closed_dataset', 'login_required', 'atlas_groups')
