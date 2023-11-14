@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from user_management.models import AtlasGroup, AtlasUser
 from .models import Category, Drawing, LinkedData, Map, Source, Layer, Template
 from .authorization import can_request_access_layer
 
@@ -167,3 +167,13 @@ class DrawingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drawing
         fields = ['id', 'features']
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AtlasUser
+        fields = ['id', 'username', 'name', 'email', 'is_staff', 'is_active', 'is_superuser', 'atlas_groups', 'external_id', 'date_joined', 'last_login']
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AtlasGroup
+        fields = ['id', 'name', 'slug', 'external_id']

@@ -1,17 +1,9 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path, include
-from rest_framework import routers
 from homepage import views, viewclasses
-from webservice import viewsets, views as webservice_views
+from webservice import views as webservice_views, urls
 
 app_name = 'homepage'
-
-api_router = routers.DefaultRouter()
-api_router.register(r'maps', viewsets.MapViewSet, basename='maps')
-api_router.register(r'sources', viewsets.SourceViewSet, basename='sources')
-api_router.register(r'layers', viewsets.LayerViewSet, basename='layers')
-api_router.register(r'drawings', viewsets.DrawingViewSet, basename='drawings')
-api_router.register(r'categories', viewsets.CategoriesViewSet, basename='categories')
 
 urlpatterns = [
     path('help', views.v3_help, name='v3_help'),
@@ -24,7 +16,7 @@ urlpatterns = [
     path('admin2/', views.v3_admin, name='v3_admin'),
     path('api/v1/token', webservice_views.v3_token, name='v3_token'),
     path('api/v1/authorize', webservice_views.v3_authorize, name='v3_authorize'),
-    path('api/v1/', include(api_router.urls)),
+    path('api/v1/', include(urls.api_router.urls)),
     path('convert/<str:output_format>',
          webservice_views.v3_convert, name='v3_convert'),
     re_path('embed', views.embed, name='embed'),

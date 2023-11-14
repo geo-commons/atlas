@@ -5,6 +5,8 @@
 
   --color-white: #ffffff;
   --color-black: #000000;
+  --color-green: #17803C;
+  --color-red: #BE185E;
 
   --color-primary-hover: #EBEBFF;
   --color-primary-active: #CBCCFF;
@@ -425,6 +427,14 @@ hr {
   color: var(--color-white)
 }
 
+.icon.__green {
+  color: var(--color-green)
+}
+
+.icon.__red {
+  color: var(--color-red)
+}
+
 /* override multiselect style */
 .multiselect__tag {
   background: var(--color-white);
@@ -452,4 +462,17 @@ hr {
 .multiselect__tag-icon:after {
   color: var(--color-primary);
   font-size: var(--font-size-large);
+}
+
+/* Copied tailwind class sr-only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

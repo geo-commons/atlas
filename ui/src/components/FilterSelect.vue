@@ -4,8 +4,22 @@
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
     <multiselect
+      v-if="!filterOnId"
       :id="filterProperty"
       v-model="selectedItems"
+      :options="filterOptions"
+      placeholder="Kies waarde"
+      :show-labels="false"
+      :multiple="true"
+      open-direction="bottom"
+      @input="updateFieldFilters()"
+    />
+    <multiselect
+      v-else
+      :id="filterProperty"
+      v-model="selectedItems"
+      :track-by="trackBy"
+      :label="label"
       :options="filterOptions"
       placeholder="Kies waarde"
       :show-labels="false"
@@ -28,6 +42,12 @@ export default {
     fieldFilters: Object,
     filterProperty: String,
     filterPropertyDisplayName: String,
+    filterOnId: {
+      type: Boolean,
+      default: false,
+    },
+    trackBy: String,
+    label: String,
   },
   data() {
     return {

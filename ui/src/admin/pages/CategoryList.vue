@@ -64,7 +64,7 @@
                     {{ category.title }}
                   </router-link>
                 </td>
-                <td>
+                <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __alt_hover"
@@ -76,7 +76,7 @@
                     <EditIcon class="icon" />
                   </button>
                 </td>
-                <td>
+                <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __alt_hover"

@@ -14,6 +14,12 @@
         <router-link to="/categories" class="button __tertiary __large" type="button" aria-label="Naar categorieën"
           ><CategoryIcon class="icon" />Categorieën</router-link
         >
+        <router-link to="/users" class="button __tertiary __large" type="button" aria-label="Naar gebruikers"
+          ><UserIcon class="icon" />Gebruikers</router-link
+        >
+        <router-link to="/groups" class="button __tertiary __large" type="button" aria-label="Naar groepen"
+          ><GroupIcon class="icon" />Groepen</router-link
+        >
       </div>
     </div>
   </div>
@@ -24,6 +30,8 @@ import MapIcon from "../../assets/icons/map-icon.svg";
 import SourceIcon from "../../assets/icons/source-icon.svg";
 import LayerIcon from "../../assets/icons/layer-icon.svg";
 import CategoryIcon from "../../assets/icons/category-icon.svg";
+import UserIcon from "../../assets/icons/user-icon.svg";
+import GroupIcon from "../../assets/icons/group-icon.svg";
 
 export default {
   name: "AdminDashboard",
@@ -32,6 +40,8 @@ export default {
     SourceIcon,
     LayerIcon,
     CategoryIcon,
+    UserIcon,
+    GroupIcon,
   },
 };
 </script>
@@ -42,5 +52,11 @@ export default {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   row-gap: 14px;
   column-gap: 14px;
+}
+
+@media (max-width: 576px) {
+  .buttons {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
