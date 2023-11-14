@@ -107,7 +107,7 @@
                 <td>
                   {{ layer.status }}
                 </td>
-                <td>
+                <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __alt_hover"
@@ -119,7 +119,7 @@
                     <EditIcon class="icon" />
                   </button>
                 </td>
-                <td>
+                <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __alt_hover"
@@ -360,7 +360,6 @@ export default {
         return { id: source.id, label: source.title };
       });
     },
-    saveContinueEdit() {},
     setLayerStatus() {
       this.layers.forEach((layer) => {
         layer.status = layer.published ? "Gepubliceerd" : "Concept";

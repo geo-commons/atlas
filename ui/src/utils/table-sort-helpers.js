@@ -13,10 +13,10 @@ export function sortAlphabetically(a, b, ascending) {
   }
 
   // nulls and empty strings sort after anything else
-  if (a === null || a === "") {
+  if (a === null || a === "" || a === undefined) {
     return 1;
   }
-  if (b === null || b === "") {
+  if (b === null || b === "" || b === undefined) {
     return -1;
   }
 

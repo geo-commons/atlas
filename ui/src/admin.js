@@ -25,6 +25,9 @@ import detectKeyboard from "@/utils/detect-keyboard";
 import CategoryList from "@/admin/pages/CategoryList.vue";
 import CategoryCreateUpdate from "@/admin/pages/CategoryCreateUpdate.vue";
 import AdminSortPage from "@/admin/pages/AdminSortPage.vue";
+import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
+import GroupList from "@/admin/pages/GroupList.vue";
+import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
 
 Vue.config.productionTip = false;
 
@@ -107,6 +110,21 @@ const routes = [
     meta: { title: "Gebruikers", menu: true },
   },
   {
+    path: "/users/update/:id",
+    component: UserCreateUpdate,
+    meta: { title: "Gebruikers", menu: true },
+  },
+  {
+    path: "/groups",
+    component: GroupList,
+    meta: { title: "Groepen", menu: true },
+  },
+  {
+    path: "/groups/update/:id",
+    component: GroupCreateUpdate,
+    meta: { title: "Groepen", menu: true },
+  },
+  {
     path: "/:parentRoute/sort",
     name: "sort",
     props: true,
@@ -150,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedArea: null,
     searchQuery: "",
     alert: "",
+    user: data.user,
   };
 
   const store = createStore(initialState);

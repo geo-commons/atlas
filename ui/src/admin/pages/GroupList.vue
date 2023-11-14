@@ -2,22 +2,25 @@
   <div class="container __admin">
     <div class="top-menu-container">
       <div class="page-title-wrapper">
-        <h1>Kaarten</h1>
-        <button class="button __primary __normal __full-width-mobile" type="button" @click="openFormModal">
-          <AddIcon class="icon __white" />
-          Nieuwe kaart
-        </button>
+        <h1>Groepen</h1>
+
+        <div class="top-menu-button-container">
+          <button class="button __primary __normal" type="button" @click="openFormModal">
+            <AddIcon class="icon __white" />
+            Nieuwe groep
+          </button>
+        </div>
       </div>
     </div>
 
-    <div v-if="visibleMaps.length > 0" class="admin-content-wrapper">
+    <div class="admin-content-wrapper">
       <div v-if="!loading" class="admin-search-wrapper">
         <SearchIcon class="icon" />
-        <input id="maps-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek kaart" />
+        <input id="groups-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek groep" />
       </div>
 
       <PaginationComponent
-        :items="visibleMaps"
+        :items="visibleGroups"
         :nr-of-records="nrOfRecords"
         :loading="loading"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
@@ -29,49 +32,49 @@
               <tr class="table-border">
                 <th class="first-column-padding">
                   <SortableTableHeaderItem
-                    :header-text="'Titel'"
-                    :property="'title'"
+                    :header-text="'Groep'"
+                    :property="'name'"
                     :sort-key="sortKey"
                     :sort-ascending="sortAscending"
                     @sort="(column) => sortColumn(column)"
                   />
                 </th>
-                <th></th>
-                <th></th>
+                <th class="btn-col"></th>
+                <th class="btn-col"></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="map in paginatedData" :key="map.id" class="table-border">
+              <tr v-for="group in paginatedData" :key="group.id" class="table-border">
                 <td class="first-column-padding">
                   <router-link
                     class="admin-title-link"
                     type="button"
-                    :aria-label="`${map.title} configureren`"
-                    :to="`/maps/update/${map.id}`"
+                    :aria-label="`${group.name} configureren`"
+                    :to="`/groups/update/${group.id}`"
                   >
-                    {{ map.title }}
+                    {{ group.name }}
                   </router-link>
                 </td>
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __alt_hover"
-                    aria-label="Bekijk kaart"
-                    content="Bekijk"
+                    :aria-label="`${group.name} configureren`"
+                    content="Wijzig"
                     type="button"
-                    @click="gotoMap(map)"
+                    @click="$router.push(`/groups/update/${group.id}`)"
                   >
-                    <ViewIcon class="icon" />
+                    <EditIcon class="icon" />
                   </button>
                 </td>
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __alt_hover"
-                    aria-label="Verwijder kaart"
+                    aria-label="Verwijder groep"
                     content="Verwijder"
                     type="button"
-                    @click="deleteMap(map)"
+                    @click="deleteGroup(group)"
                   >
                     <TrashIcon class="icon" />
                   </button>
@@ -84,20 +87,20 @@
     </div>
 
     <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-      <template #header><h3>Configureer nieuwe kaart</h3></template>
+      <template #header><h3>Configureer nieuwe groep</h3></template>
       <template #body>
         <validation-observer v-slot="{ handleSubmit }">
-          <form v-if="newMapData" class="form-model-container" @submit.prevent="handleSubmit(saveMap)">
+          <form v-if="newGroupData" class="form-model-container" @submit.prevent="handleSubmit(saveGroup)">
             <AdminFormSections
               :sections="sections"
-              :initial-values="newMapData"
+              :initial-values="newGroupData"
               :create-view="true"
               @update="(newValues) => updateCurrentValues(newValues)"
             />
             <div class="flexer">
               <button class="button __secondary" type="button" @click="closeFormModal">Annuleer</button>
               <button class="button __secondary" type="submit">Opslaan</button>
-              <button class="button __primary" type="button" @click="saveMap(true)">Opslaan en openen</button>
+              <button class="button __primary" type="button" @click="saveGroup(true)">Opslaan en openen</button>
             </div>
           </form>
         </validation-observer>
@@ -107,104 +110,103 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
 import SearchIcon from "@/assets/icons/search-icon.svg";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import EditIcon from "@/assets/icons/edit-icon.svg";
+import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
+import PaginationComponent from "@/components/Pagination.vue";
+import { sortAlphabetically } from "@/utils/table-sort-helpers";
+import Cookies from "js-cookie";
 import AddIcon from "@/assets/icons/add-icon.svg";
+import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import FormModal from "@/components/FormModal.vue";
 import { ValidationObserver } from "vee-validate";
-import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import TrashIcon from "@/assets/icons/trash-icon.svg";
-import ViewIcon from "@/assets/icons/view-icon.svg";
-import PaginationComponent from "@/components/Pagination.vue";
-import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
-import { sortAlphabetically } from "@/utils/table-sort-helpers";
 
 export default {
-  name: "MapList",
+  name: "GroupList",
   components: {
-    SortableTableHeaderItem,
-    PaginationComponent,
-    ViewIcon,
-    TrashIcon,
-    AdminFormSections,
     FormModal,
-    ValidationObserver,
+    AdminFormSections,
     AddIcon,
+    TrashIcon,
     SearchIcon,
+    EditIcon,
+    PaginationComponent,
+    SortableTableHeaderItem,
+    ValidationObserver,
   },
   data() {
     return {
-      maps: [],
+      groups: [],
+      newGroupData: null,
+      showFormModal: false,
+      searchQuery: "",
       currentPageNumber: 1,
       nrOfRecords: 20,
-      showFormModal: false,
-      newMapData: {},
-      searchQuery: "",
-      sections: {},
       sortKey: "",
       sortAscending: true,
       loading: false,
+      sections: {},
     };
   },
   computed: {
-    sortedMaps() {
-      if (this.sortKey && this.maps) {
-        return this.maps.slice(0).sort((a, b) => {
-          const textA = a[this.sortKey].toLowerCase();
-          const textB = b[this.sortKey].toLowerCase();
+    sortedGroups() {
+      if (this.sortKey && this.groups) {
+        return this.groups.slice(0).sort((a, b) => {
+          const textA = a[this.sortKey]?.toLowerCase();
+          const textB = b[this.sortKey]?.toLowerCase();
           return sortAlphabetically(textA, textB, this.sortAscending);
         });
       }
 
-      return this.maps;
+      return this.groups;
     },
-    visibleMaps() {
+    visibleGroups() {
       if (!this.searchQuery) {
-        return this.sortedMaps;
+        return this.sortedGroups;
       }
 
-      return this.sortedMaps.filter((map) => map.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1);
+      return this.sortedGroups.filter(
+        (group) => group.name.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+      );
     },
     paginatedData() {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
       const end = start + this.nrOfRecords;
-      return this.visibleMaps.slice(start, end);
+      return this.visibleGroups.slice(start, end);
     },
   },
   created() {
-    this.getMaps();
+    this.getGroups();
     this.sections = this.getSections();
   },
   methods: {
-    async getMaps() {
+    async getGroups() {
       this.loading = true;
 
-      const result = await fetch("/atlas/api/v1/maps/", {
+      const result = await fetch("/atlas/api/v1/groups/", {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
 
       if (!result.ok) {
-        console.error("Could not fetch maps");
+        console.error("Could not fetch groups");
       }
 
-      this.maps = await result.json();
+      this.groups = await result.json();
       this.loading = false;
     },
-    gotoMap(map) {
-      window.location.href = `/atlas/maps/${map.slug}`;
-    },
-    async saveMap(continueEditing = false) {
+    async saveGroup(continueEditing = false) {
       let result;
 
-      result = await fetch(`/atlas/api/v1/maps/`, {
+      result = await fetch(`/atlas/api/v1/groups/`, {
         method: "POST",
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": Cookies.get("csrftoken"),
         },
-        body: JSON.stringify(this.newMapData),
+        body: JSON.stringify(this.newGroupData),
       });
 
       // todo: think about what to do if the result is not ok.
@@ -213,19 +215,19 @@ export default {
 
         if (continueEditing) {
           const response = await result.json();
-          this.$router.push(`/maps/update/${response.id}`);
+          this.$router.push(`/groups/update/${response.id}`);
         }
 
-        this.getMaps();
+        await this.getGroups();
       }
     },
-    async deleteMap(map) {
-      const acknowledged = confirm("Weet je zeker dat je de kaart wilt verwijderen?");
+    async deleteGroup(group) {
+      const acknowledged = confirm("Weet je zeker dat je de groep wilt verwijderen?");
       if (!acknowledged) {
         return;
       }
 
-      const result = await fetch(`/atlas/api/v1/maps/${map.id}/`, {
+      const result = await fetch(`/atlas/api/v1/groups/${group.id}/`, {
         method: "DELETE",
         credentials: "same-origin",
         headers: {
@@ -235,7 +237,7 @@ export default {
       });
 
       if (result.ok) {
-        this.getMaps();
+        this.getGroups();
       }
     },
     sortColumn(prop) {
@@ -247,7 +249,7 @@ export default {
       }
     },
     openFormModal() {
-      this.newMapData = {
+      this.newGroupData = {
         title: "",
         authenticate: false,
       };
@@ -258,7 +260,7 @@ export default {
       this.showFormModal = false;
     },
     updateCurrentValues(newValues) {
-      this.newMapData = newValues;
+      this.newGroupData = newValues;
     },
     getSections() {
       return {
@@ -266,18 +268,11 @@ export default {
           label: "Algemene gegevens",
           questions: [
             {
-              label: "Titel",
-              id: "title",
-              name: "Title",
+              label: "Groep",
+              id: "name",
+              name: "Name",
               type: "text",
               required: true,
-            },
-            {
-              label: "Kort kenmerk",
-              id: "slug",
-              name: "Slug",
-              type: "text",
-              required: false,
             },
           ],
         },
@@ -286,3 +281,5 @@ export default {
   },
 };
 </script>
+
+<style scoped></style>

@@ -1,7 +1,9 @@
 from rest_framework import viewsets, permissions, mixins
 
+from user_management.models import AtlasGroup, AtlasUser
+
 from .models import Category, Drawing, Map, Source, Layer
-from .serializers import CategorySerializer, DrawingSerializer, LayerCreateUpdateSerializer, LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer
+from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer
 
 
 class MapViewSet(viewsets.ModelViewSet):
@@ -53,3 +55,14 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 
     search_fields = []
     filterset_fields = []
+
+class UsersViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAdminUser]
+    queryset = AtlasUser.objects.all()
+    serializer_class = UserSerializer
+
+
+class GroupsViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAdminUser]
+    queryset = AtlasGroup.objects.all()
+    serializer_class = GroupSerializer

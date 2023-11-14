@@ -138,6 +138,7 @@ select {
 
 input[type="text"],
 input[type="number"],
+input[type="email"],
 input[type="url"] {
   width: 100%;
   border: 1px solid var(--color-grey-60);
@@ -149,6 +150,10 @@ input[type="url"] {
 input[type="checkbox"] {
   padding: 0 16px;
   margin-right: 5px;
+}
+
+input:disabled {
+  background: var(--color-grey-40);
 }
 
 .edit-field-border {
@@ -275,6 +280,10 @@ th {
 
 .admin-table > tbody > tr > td:not(:nth-last-child(-n + 2)) {
   padding-right: 8px;
+}
+
+.admin-table > tbody > tr > td.btn-col {
+  width: 50px;
 }
 
 .first-column-padding {

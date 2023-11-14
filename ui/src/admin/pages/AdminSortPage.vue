@@ -28,6 +28,7 @@
       >
         <template #empty-list>De geselecteerde categorie heeft geen bijbehorende kaartlagen.</template>
       </SortableList>
+      <div v-else class="help-text-wrapper"><p>Selecteer een categorie om de bijbehorende lagen te sorteren.</p></div>
     </div>
   </div>
 </template>
@@ -230,6 +231,11 @@ export default {
   grid-template-columns: 1fr 1fr;
   column-gap: 100px;
   padding-bottom: 50px;
+}
+
+.help-text-wrapper {
+  display: flex;
+  align-items: center;
 }
 
 @media (max-width: 576px) {
