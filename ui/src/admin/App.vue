@@ -52,26 +52,6 @@ select {
   margin: 0 auto;
 }
 
-@media (max-width: 575px) {
-  .container {
-    padding: 0 20px;
-  }
-
-  .section {
-    padding: 32px 0;
-  }
-}
-
-@media (min-width: 576px) {
-  .container {
-    padding: 0 32px;
-  }
-
-  .section {
-    padding: 40px 0;
-  }
-}
-
 .section + .section {
   padding-top: 0;
 }

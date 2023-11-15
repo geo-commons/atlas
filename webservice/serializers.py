@@ -41,7 +41,9 @@ class MetadataSerializerField(serializers.Field):
             'description': value.meta_description,
             'organization': value.meta_org,
             'updated': value.meta_updated,
-            'link': value.meta_link
+            'link': value.meta_link,
+            'lineage': value.meta_lineage,
+            'contact': value.meta_contact
         }          
 
     def to_internal_value(self, data):
@@ -50,7 +52,8 @@ class MetadataSerializerField(serializers.Field):
             'meta_description': data['description'],
             'meta_org': data['organization'],
             'meta_updated': data['updated'],
-            'meta_link': data['link']
+            'meta_lineage': data['lineage'],
+            'meta_contact': data['contact']
         }
 
 class LayerSerializer(serializers.ModelSerializer):
