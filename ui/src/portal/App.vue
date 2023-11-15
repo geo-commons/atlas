@@ -116,24 +116,4 @@ html {
 html.keyboard-user *:focus {
   outline: 2px solid var(--color-primary);
 }
-
-@media (max-width: 575px) {
-  .container {
-    padding: 0 20px;
-  }
-
-  .section {
-    padding: 32px 0;
-  }
-}
-
-@media (min-width: 576px) {
-  .container {
-    padding: 0 32px;
-  }
-
-  .section {
-    padding: 40px 0;
-  }
-}
 </style>

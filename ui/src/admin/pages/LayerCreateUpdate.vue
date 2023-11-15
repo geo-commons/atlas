@@ -82,6 +82,8 @@ export default {
       this.initialValues.metadata_description = response.metadata.description;
       this.initialValues.metadata_organization = response.metadata.organization;
       this.initialValues.metadata_updated = response.metadata.updated;
+      this.initialValues.metadata_lineage = response.metadata.lineage;
+      this.initialValues.metadata_contact = response.metadata.contact;
     },
     async saveLayer() {
       let result;
@@ -91,6 +93,8 @@ export default {
       this.currentValues.metadata.description = this.currentValues.metadata_description;
       this.currentValues.metadata.organization = this.currentValues.metadata_organization;
       this.currentValues.metadata.updated = this.currentValues.metadata_updated;
+      this.currentValues.metadata.lineage = this.currentValues.metadata_lineage;
+      this.currentValues.metadata.contact = this.currentValues.metadata_contact;
 
       result = await fetch(`/atlas/api/v1/layers/${this.$route.params.id}/`, {
         method: "PATCH",
@@ -306,6 +310,23 @@ export default {
               id: "metadata_organization",
               name: "metadataOrganisation",
               type: "text",
+              required: false,
+              isNested: true,
+            },
+            {
+              label: "Contactpersoon",
+              id: "metadata_contact",
+              name: "metadataContact",
+              type: "text",
+              required: false,
+              isNested: true,
+            },
+            {
+              label: "Herkomst data",
+              id: "metadata_lineage",
+              name: "metadataLineage",
+              type: "text",
+              multiLine: true,
               required: false,
               isNested: true,
             },

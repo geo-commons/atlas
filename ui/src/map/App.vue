@@ -78,7 +78,7 @@ export default {
       window.history.replaceState(
         {},
         "",
-        `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}`,
+        `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}`
       );
     },
     positionChanged(position) {
@@ -242,26 +242,6 @@ svg {
 }
 .button:active:before {
   background: var(--color-active);
-}
-
-@media (max-width: 575px) {
-  .container {
-    padding: 0 20px;
-  }
-
-  .section {
-    padding: 32px 0;
-  }
-}
-
-@media (min-width: 576px) {
-  .container {
-    padding: 0 32px;
-  }
-
-  .section {
-    padding: 40px 0;
-  }
 }
 
 .section + .section {

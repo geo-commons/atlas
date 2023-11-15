@@ -19,7 +19,7 @@
             />
             <button
               v-tippy
-              class="iconbutton"
+              class="iconbutton __round"
               :class="{ isActive: showSlider }"
               content="Transparantie"
               aria-label="Toon transparantie schuifregelaar"
@@ -50,7 +50,7 @@
           <button
             v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
-            class="iconbutton"
+            class="iconbutton __round"
             content="Sluit"
             aria-label="Sluit laag"
             @click="toggleLayer"
