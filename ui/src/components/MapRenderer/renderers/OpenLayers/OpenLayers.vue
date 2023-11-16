@@ -8,13 +8,7 @@
       :marker-on-click="features.markerOnClick"
       @position-changed="onPositionChanged"
     />
-    <ol-draw-interaction
-      v-if="tool"
-      :tool="tool"
-      :layers="layers"
-      @draw-start="startUsingTool"
-      @draw-end="toolUsed"
-    />
+    <ol-draw-interaction v-if="tool" :tool="tool" :layers="layers" @draw-start="startUsingTool" @draw-end="toolUsed" />
     <ol-drag-zoom />
     <component
       :is="getComponent(layer.source_type)"
@@ -27,11 +21,7 @@
       :filters="filters"
       :is-visible="layer.is_visible === true"
       :is-selectable="layer.is_selectable === true"
-      :send-token-with-request="
-        layer.login_required && layer.source.authenticate && user && user.token
-          ? true
-          : false
-      "
+      :send-token-with-request="layer.login_required && layer.source.authenticate && user && user.token ? true : false"
       :selected-features="selectedFeatures"
       :z-index="layer.is_base ? 0 : 1"
       :min-zoom="layer.zoom_min"
@@ -89,7 +79,7 @@
 </template>
 
 <script>
-import { Icon, Circle, Style, Fill, Stroke, Text } from "ol/style";
+import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import Feature from "ol/Feature";
 import { Point } from "ol/geom";
 import { jsPDF } from "jspdf";
@@ -132,6 +122,12 @@ const SELECTED_AREA_STYLE = new Style({
 });
 
 const HIGHLIGHTED_SELECTION_STYLE = new Style({
+  image: new Icon({
+    src: getMarkerIconUrl("#0066FF", "#FFFFFF"),
+    anchor: [0.55, 42],
+    anchorXUnits: "fraction",
+    anchorYUnits: "pixels",
+  }),
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
   fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
 });
@@ -189,12 +185,13 @@ export default {
         return [];
       }
 
+      if (this.highlightedFeatures.length > 0) {
+        return [];
+      }
+
       return [
         new Feature({
-          geometry: new Point([
-            this.position.marker[0],
-            this.position.marker[1],
-          ]),
+          geometry: new Point([this.position.marker[0], this.position.marker[1]]),
         }),
       ];
     },
@@ -205,10 +202,7 @@ export default {
 
       return [
         new Feature({
-          geometry: new Point([
-            this.position.geolocation[0],
-            this.position.geolocation[1],
-          ]),
+          geometry: new Point([this.position.geolocation[0], this.position.geolocation[1]]),
         }),
       ];
     },
@@ -306,26 +300,20 @@ export default {
         mapCanvas.width = width;
         mapCanvas.height = height;
         const mapContext = mapCanvas.getContext("2d");
-        Array.prototype.forEach.call(
-          document.querySelectorAll(".ol-layer canvas"),
-          function (canvas) {
-            if (canvas.width > 0) {
-              mapContext.globalAlpha = 1;
-              const transform = canvas.style.transform;
-              // Get the transform parameters from the style's transform matrix
-              const matrix = transform
-                .match(/^matrix\(([^(]*)\)$/)[1]
-                .split(",")
-                .map(Number);
-              // Apply the transform to the export map context
-              CanvasRenderingContext2D.prototype.setTransform.apply(
-                mapContext,
-                matrix
-              );
-              mapContext.drawImage(canvas, 0, 0);
-            }
+        Array.prototype.forEach.call(document.querySelectorAll(".ol-layer canvas"), function (canvas) {
+          if (canvas.width > 0) {
+            mapContext.globalAlpha = 1;
+            const transform = canvas.style.transform;
+            // Get the transform parameters from the style's transform matrix
+            const matrix = transform
+              .match(/^matrix\(([^(]*)\)$/)[1]
+              .split(",")
+              .map(Number);
+            // Apply the transform to the export map context
+            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
+            mapContext.drawImage(canvas, 0, 0);
           }
-        );
+        });
 
         mapContext.globalAlpha = 1;
         mapContext.setTransform(1, 0, 0, 1, 0, 0);
@@ -338,11 +326,7 @@ export default {
             const img = new Image();
             img.src = imgSrc;
 
-            const pdf = new jsPDF(
-              settings.orientation,
-              undefined,
-              settings.format
-            );
+            const pdf = new jsPDF(settings.orientation, undefined, settings.format);
 
             pdf.addImage(img, "JPEG", margin, margin, dim[0], dim[1]);
 
@@ -371,14 +355,7 @@ export default {
             }
 
             if (settings.showScale) {
-              pdf.addImage(
-                scale.toDataURL(),
-                "JPEG",
-                10,
-                dim[1] - 10,
-                scale.width / 5,
-                scale.height / 5
-              );
+              pdf.addImage(scale.toDataURL(), "JPEG", 10, dim[1] - 10, scale.width / 5, scale.height / 5);
             }
 
             pdf.save(`atlas-${new Date().toISOString()}.pdf`);

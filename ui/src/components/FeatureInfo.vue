@@ -4,12 +4,16 @@
       v-for="feature in features"
       :key="feature.id"
       class="border-bottom feature-select"
-      @click="() => $emit('show-selected-feature', feature)"
+      @click="onFeatureSelected(feature)"
     >
       <table-list>
         <table>
           <tbody>
-            <tr v-for="property in filterProperties(feature.properties)" :key="property">
+            <tr
+              v-for="property in filterProperties(feature.properties)"
+              :key="property"
+              :class="{ 'active-feature': checkFeature(feature) }"
+            >
               <td>
                 {{
                   layer.friendly_fields && layer.friendly_fields[property]
@@ -104,6 +108,7 @@ export default {
   data() {
     return {
       features: [],
+      selectedFeatureId: null,
     };
   },
   computed: {
@@ -192,11 +197,13 @@ export default {
       this.$store.commit("setPosition", value);
     },
     filterProperties(fetchedProperties) {
+      // for now only return first 3 columns.
+      // make sure that the user can configure which columns to show
       if (this.layer.display_properties.length > 0) {
-        return this.layer.display_properties.filter((p) => Object.keys(fetchedProperties).includes(p));
+        return this.layer.display_properties.filter((p) => Object.keys(fetchedProperties).includes(p)).slice(0, 3);
       }
 
-      return Object.keys(fetchedProperties);
+      return Object.keys(fetchedProperties).slice(0, 3);
     },
     getFetchParameters() {
       if (this.layer.source && this.layer.source.authenticate && this.user && this.user.token) {
@@ -212,6 +219,22 @@ export default {
         properties,
         position: this.position,
       };
+    },
+    onFeatureSelected(feature) {
+      console.log("onFeatureSelected", feature);
+      this.$emit("show-selected-feature", feature);
+
+      if (this.selectedFeatureId !== feature.id) {
+        this.selectedFeatureId = feature.id;
+        console.log(this.selectedFeatureId);
+        // this.$emit("feature-selected", { showFeatureDetails: true, feature: feature, layer: this.layer });
+        return;
+      }
+
+      this.selectedFeatureId = null;
+    },
+    checkFeature(feature) {
+      return this.selectedFeatureId === feature.id;
     },
   },
 };
@@ -236,10 +259,6 @@ export default {
   display: block;
 }
 
-.table-wrapper {
-  margin: 4px 0 8px;
-}
-
 .table-wrapper + .table-wrapper {
   border-top: 1px solid var(--color-grey-50);
 }
@@ -249,12 +268,11 @@ export default {
 }
 
 .table-wrapper td:first-child {
-  width: 30%;
   color: var(--color-text-grey);
 }
 
 .table-wrapper td:last-child {
-  width: 70%;
+  word-wrap: break-word;
 }
 
 .separator-line {
@@ -270,5 +288,9 @@ export default {
 .feature-select:hover {
   background: var(--color-grey-40);
   cursor: pointer;
+}
+
+.active-feature {
+  background: var(--color-grey-20);
 }
 </style>

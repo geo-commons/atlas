@@ -17,6 +17,7 @@
           :layers="layers"
           :tool="tool"
           :selected-area="selectedArea"
+          :highlighted-features="selectedFeatures"
           :padding="mapPadding"
           :user="user"
           :features="{ scale: true, markerOnClick: true }"
@@ -35,6 +36,7 @@
         :user="user"
         @set-position="setPosition"
         @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
+        @select-feature="featureSelected"
       />
       <DataPanel
         v-if="!isEmbed && !showPanoramaPanel"
@@ -50,6 +52,7 @@
         @toggle-data-panel="toggleDataPanel"
         @toggle-full-side-panel="toggleDataPanelFullScreen"
       />
+      <!--      <FeatureInfoDetails />-->
       <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
         <div class="top-left-panels">
           <SearchPanel
@@ -179,12 +182,14 @@ import PointInfoPanel from "../components/PointInfoPanel";
 import SearchPanel from "../components/SearchPanel";
 import ZoomPanel from "../components/ZoomPanel";
 import GeoLocationButton from "../components/GeoLocationButton";
+// import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "App",
   components: {
+    // FeatureInfoDetails,
     HeaderMenu,
     AlertMessage,
     BaseLayersPanel,
@@ -214,6 +219,7 @@ export default {
       drawFeatures: [],
       modal: "",
       mapPadding: [0, 0, 0, 0],
+      selectedFeatures: [],
     };
   },
   computed: mapState({
@@ -273,6 +279,13 @@ export default {
     async setPosition(position) {
       this.$store.commit("setPosition", position);
 
+      if (
+        (!this.position.marker && !position.marker) ||
+        (this.position.marker[0] === position.marker[0] && this.position.marker[1] === position.marker[1])
+      ) {
+        this.selectedFeatures = [];
+      }
+
       if (!position.marker) {
         return;
       }
@@ -296,6 +309,10 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+    featureSelected(features) {
+      console.log(features);
+      this.selectedFeatures = features.map((feature) => new GeoJSON().readFeature(feature));
     },
     toggleLayer(values) {
       this.$store.commit("toggleLayer", values);

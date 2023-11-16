@@ -1,28 +1,26 @@
 <template>
   <SidePanel :show-panel="showPanel">
     <template #search>
-      <button
-        v-tippy="{ placement: 'right' }"
-        class="iconbutton close-button"
-        type="button"
-        content="Sluit paneel"
-        aria-label="Sluit paneel"
-        @click="closeInfoPanel"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
+      <div class="header-wrapper">
+        <div class="search-query">
+          <h1>{{ searchQuery }}</h1>
+        </div>
+
+        <button
+          v-tippy="{ placement: 'right' }"
+          class="iconbutton close-button"
+          type="button"
+          content="Sluit paneel"
+          aria-label="Sluit paneel"
+          @click="closeInfoPanel"
         >
-          <path d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-          />
-        </svg>
-      </button>
-      <div class="search-query">
-        <h1>{{ searchQuery }}</h1>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
       </div>
     </template>
 
@@ -30,10 +28,11 @@
       <FeatureInfo
         v-for="visibleLayer in visibleLayers"
         :key="visibleLayer.id"
-        :is-open="visibleLayers.length === 1"
+        :is-open="true"
         :layer="visibleLayer"
         :position="position"
         @show-selected-feature="onFeatureSelect"
+        @feature-selected="(details) => $emit('feature-selected', details)"
       />
     </template>
   </SidePanel>
@@ -42,8 +41,6 @@
 <script>
 import SidePanel from "./SidePanel";
 import FeatureInfo from "./FeatureInfo";
-import GeoJSON from "ol/format/GeoJSON";
-import { getFeatureCenterCoordinates } from "../utils/geometry-helpers";
 
 export default {
   name: "PointInfoPanel",
@@ -58,10 +55,7 @@ export default {
   },
   computed: {
     visibleLayers() {
-      return this.layers.filter(
-        (layer) =>
-          layer.is_visible && layer.show_in_detail_panel && !layer.is_base
-      );
+      return this.layers.filter((layer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base);
     },
     searchQuery: {
       get() {
@@ -78,23 +72,19 @@ export default {
       this.$emit("set-position", { ...this.position, marker: null });
     },
     onFeatureSelect(feature) {
-      const geometry = new GeoJSON().readFeature(feature).getGeometry();
-      const geometryExtend = geometry.getExtent();
-      const center = getFeatureCenterCoordinates(feature);
-
-      this.$emit("on-fit", geometryExtend);
-
-      this.$emit("set-position", {
-        ...this.position,
-        marker: center,
-        center: center,
-      });
+      this.$emit("select-feature", [feature]);
     },
   },
 };
 </script>
 
 <style scoped>
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
 h1 {
   font-size: var(--font-size-normal);
 }
