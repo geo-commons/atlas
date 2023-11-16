@@ -31,8 +31,8 @@
         :is-open="true"
         :layer="visibleLayer"
         :position="position"
+        :selected-feature-id="selectedFeatureId"
         @show-selected-feature="onFeatureSelect"
-        @feature-selected="(details) => $emit('feature-selected', details)"
       />
     </template>
   </SidePanel>
@@ -53,6 +53,11 @@ export default {
     layers: Array,
     showPanel: Boolean,
   },
+  data() {
+    return {
+      selectedFeatureId: null,
+    };
+  },
   computed: {
     visibleLayers() {
       return this.layers.filter((layer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base);
@@ -70,9 +75,11 @@ export default {
     closeInfoPanel() {
       this.searchQuery = "";
       this.$emit("set-position", { ...this.position, marker: null });
+      this.$emit("select-feature", null, null);
     },
-    onFeatureSelect(feature) {
-      this.$emit("select-feature", [feature]);
+    onFeatureSelect(feature, layer) {
+      this.selectedFeatureId = feature?.id;
+      this.$emit("select-feature", feature, layer);
     },
   },
 };

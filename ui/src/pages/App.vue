@@ -17,7 +17,7 @@
           :layers="layers"
           :tool="tool"
           :selected-area="selectedArea"
-          :highlighted-features="selectedFeatures"
+          :highlighted-features="highLightFeature"
           :padding="mapPadding"
           :user="user"
           :features="{ scale: true, markerOnClick: true }"
@@ -52,7 +52,11 @@
         @toggle-data-panel="toggleDataPanel"
         @toggle-full-side-panel="toggleDataPanelFullScreen"
       />
-      <!--      <FeatureInfoDetails />-->
+      <FeatureInfoDetails
+        v-if="selectedFeature && selectedFeatureLayer"
+        :feature="selectedFeature"
+        :layer="selectedFeatureLayer"
+      />
       <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
         <div class="top-left-panels">
           <SearchPanel
@@ -165,7 +169,7 @@
 import Cookies from "js-cookie";
 import GeoJSON from "ol/format/GeoJSON";
 import { mapState } from "vuex";
-import { isMobile } from "../utils/helpers";
+import { isMobile } from "@/utils/helpers";
 import HeaderMenu from "../components/HeaderMenu";
 import AlertMessage from "../components/AlertMessage";
 import BaseLayersPanel from "../components/BaseLayersPanel";
@@ -182,14 +186,14 @@ import PointInfoPanel from "../components/PointInfoPanel";
 import SearchPanel from "../components/SearchPanel";
 import ZoomPanel from "../components/ZoomPanel";
 import GeoLocationButton from "../components/GeoLocationButton";
-// import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
+import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "App",
   components: {
-    // FeatureInfoDetails,
+    FeatureInfoDetails,
     HeaderMenu,
     AlertMessage,
     BaseLayersPanel,
@@ -219,7 +223,9 @@ export default {
       drawFeatures: [],
       modal: "",
       mapPadding: [0, 0, 0, 0],
-      selectedFeatures: [],
+      selectedFeature: [],
+      highLightFeature: [],
+      selectedFeatureLayer: {},
     };
   },
   computed: mapState({
@@ -283,7 +289,7 @@ export default {
         (!this.position.marker && !position.marker) ||
         (this.position.marker[0] === position.marker[0] && this.position.marker[1] === position.marker[1])
       ) {
-        this.selectedFeatures = [];
+        this.resetSelectedFeature();
       }
 
       if (!position.marker) {
@@ -310,9 +316,15 @@ export default {
         console.error(e);
       }
     },
-    featureSelected(features) {
-      console.log(features);
-      this.selectedFeatures = features.map((feature) => new GeoJSON().readFeature(feature));
+    featureSelected(feature, layer) {
+      this.selectedFeature = feature;
+      this.highLightFeature = feature ? [new GeoJSON().readFeature(feature)] : [];
+      this.selectedFeatureLayer = layer;
+    },
+    resetSelectedFeature() {
+      this.selectedFeature = null;
+      this.highLightFeature = [];
+      this.selectedFeatureLayer = null;
     },
     toggleLayer(values) {
       this.$store.commit("toggleLayer", values);

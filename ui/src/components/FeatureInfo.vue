@@ -104,11 +104,11 @@ export default {
     layer: Object,
     position: Object,
     isOpen: Boolean,
+    selectedFeatureId: null,
   },
   data() {
     return {
       features: [],
-      selectedFeatureId: null,
     };
   },
   computed: {
@@ -221,17 +221,12 @@ export default {
       };
     },
     onFeatureSelected(feature) {
-      console.log("onFeatureSelected", feature);
-      this.$emit("show-selected-feature", feature);
-
-      if (this.selectedFeatureId !== feature.id) {
-        this.selectedFeatureId = feature.id;
-        console.log(this.selectedFeatureId);
-        // this.$emit("feature-selected", { showFeatureDetails: true, feature: feature, layer: this.layer });
+      if (this.selectedFeatureId === feature.id) {
+        this.$emit("show-selected-feature", null, null);
         return;
       }
 
-      this.selectedFeatureId = null;
+      this.$emit("show-selected-feature", feature, this.layer);
     },
     checkFeature(feature) {
       return this.selectedFeatureId === feature.id;
