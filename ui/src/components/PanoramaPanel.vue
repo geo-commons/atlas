@@ -13,8 +13,8 @@
     @resize:end="resizeEnd"
   >
     <div class="buttons">
-      <select v-if="config.viewers.length > 0" v-model="selectedViewerId" name="viewer">
-        <option v-for="(viewer, i) in config.viewers" :key="viewer.id" :value="i">
+      <select v-if="availableViewers.length > 0" v-model="selectedViewerId" name="viewer">
+        <option v-for="(viewer, i) in availableViewers" :key="viewer.id" :value="i">
           {{ viewer.label }}
         </option>
       </select>
@@ -52,8 +52,8 @@
       </button>
     </div>
     <div v-if="isOpen" :class="{ viewer: true, isResizing: isResizing }">
-      <div v-if="selectedViewer !== null && position.marker" class="viewer">
-        <google-maps v-if="selectedViewer.type == 'GOOGLE_MAPS'" ref="viewer" :position="position" />
+      <div v-if="selectedViewer !== null" class="viewer">
+        <google-maps v-if="position.marker && selectedViewer.type == 'GOOGLE_MAPS'" ref="viewer" :position="position" />
         <obliquo-viewer
           v-if="selectedViewer.type == 'OBLIQUO'"
           ref="viewer"
@@ -63,7 +63,7 @@
           :password="selectedViewer.password"
         />
         <street-smart
-          v-if="selectedViewer.type == 'STREET_SMART'"
+          v-if="position.marker && selectedViewer.type == 'STREET_SMART'"
           ref="viewer"
           :position="position"
           :username="selectedViewer.username"
@@ -71,13 +71,13 @@
           :api-key="selectedViewer.api_key"
         />
         <iframe-viewer
-          v-if="selectedViewer.type == 'IFRAME'"
+          v-if="position.marker && selectedViewer.type == 'IFRAME'"
           ref="viewer"
           :position="position"
           :url="selectedViewer.url"
         />
         <button-viewer
-          v-if="selectedViewer.type == 'BUTTON'"
+          v-if="position.marker && selectedViewer.type == 'BUTTON'"
           ref="viewer"
           :position="position"
           :url="selectedViewer.url"
@@ -85,6 +85,7 @@
         <div v-if="!selectedViewer" class="message">
           Er is geen panoramaweergave beschikbaar. Configureer een viewer in het beheerpaneel.
         </div>
+        <div v-if="!position.marker" class="message">Klik op een punt in de kaart om de panorama te bekijken.</div>
       </div>
     </div>
   </vue-resizable>
@@ -129,12 +130,15 @@ export default {
     window.removeEventListener("resize", this.onResizeWindow);
   },
   computed: {
+    availableViewers: function () {
+      return this.config.viewers.filter((v) => !v.is_oblique);
+    },
     selectedViewer: function () {
       if (this.selectedViewerId === null) {
         return null;
       }
 
-      return this.config.viewers[this.selectedViewerId];
+      return this.availableViewers[this.selectedViewerId];
     },
     ...mapState({
       config: (state) => state.config,
@@ -247,8 +251,11 @@ export default {
 
 .message {
   display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
   padding: 16px;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-medium);
   color: var(--color-text-grey);
 }
 </style>

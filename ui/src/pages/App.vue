@@ -100,14 +100,13 @@
             class="bottom-right-buttons"
             :class="{
               isOpen: showBaseLayersPanel,
-              showTogglePanorama: position.marker || showPanoramaPanel,
             }"
           >
             <button
               v-tippy="{ placement: 'left' }"
               class="iconbutton"
-              content="Panorama"
-              aria-label="Toon panorama"
+              content="Rondkijkfoto"
+              aria-label="Toon rondkijkfoto"
               @click="togglePanoramaPanel"
             >
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -117,6 +116,22 @@
                 />
               </svg>
             </button>
+            <a
+              v-if="obliqueViewers && obliqueViewers.length > 0"
+              v-tippy="{ placement: 'left' }"
+              :href="obliqueViewerUrl"
+              target="_blank"
+              rel="nofollow"
+              class="iconbutton"
+              content="Obliekfoto"
+              aria-label="Toon obliekfoto"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path
+                  d="M120-120v-80h720v80H120Zm74-200L80-514l62-12 70 62 192-52-162-274 78-24 274 246 200-54q32-9 58 12t26 56q0 22-13.5 39T830-492L194-320Z"
+                />
+              </svg>
+            </a>
             <button
               v-tippy="{ placement: 'left' }"
               class="iconbutton"
@@ -161,8 +176,12 @@
 <script>
 import Cookies from "js-cookie";
 import GeoJSON from "ol/format/GeoJSON";
+import nunjucks from "nunjucks";
+import { transform } from "ol/proj";
+import { register } from "ol/proj/proj4";
 import { mapState } from "vuex";
 import { isMobile } from "../utils/helpers";
+import { getDefinitions } from "../utils/projections";
 import HeaderMenu from "../components/HeaderMenu";
 import AlertMessage from "../components/AlertMessage";
 import BaseLayersPanel from "../components/BaseLayersPanel";
@@ -179,6 +198,11 @@ import PointInfoPanel from "../components/PointInfoPanel";
 import SearchPanel from "../components/SearchPanel";
 import ZoomPanel from "../components/ZoomPanel";
 import GeoLocationButton from "../components/GeoLocationButton";
+
+// Register EPSG:28992 projection
+register(getDefinitions());
+
+nunjucks.configure({ autoescaping: true });
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -216,18 +240,41 @@ export default {
       mapPadding: [0, 0, 0, 0],
     };
   },
-  computed: mapState({
-    isEmbed: (state) => state.isEmbed,
-    alert: (state) => state.alert,
-    position: (state) => state.position,
-    layers: (state) => state.layers,
-    tool: (state) => state.tool,
-    user: (state) => state.user,
-    config: (state) => state.config,
-    selectedArea: (state) => state.selectedArea,
-    initiallyShowLayerList: (state) => state.initiallyShowLayerList,
-    drawing: (state) => state.drawing,
-  }),
+  computed: {
+    ...mapState({
+      isEmbed: (state) => state.isEmbed,
+      alert: (state) => state.alert,
+      position: (state) => state.position,
+      layers: (state) => state.layers,
+      tool: (state) => state.tool,
+      user: (state) => state.user,
+      config: (state) => state.config,
+      selectedArea: (state) => state.selectedArea,
+      initiallyShowLayerList: (state) => state.initiallyShowLayerList,
+      drawing: (state) => state.drawing,
+    }),
+    obliqueViewers: function () {
+      return this.config.viewers.filter((v) => v.is_oblique);
+    },
+    obliqueViewerUrl: function () {
+      if (this.obliqueViewers.length === 0) {
+        return "";
+      }
+
+      const position = this.position.marker || this.position.center;
+
+      const latlong = transform(position, "EPSG:28992", "EPSG:4326");
+
+      const properties = {
+        lat: latlong[1],
+        lon: latlong[0],
+        x: position[0],
+        y: position[1],
+      };
+
+      return nunjucks.renderString(this.obliqueViewers[0].url, properties);
+    },
+  },
   watch: {
     position(value) {
       this.showInfoPanel = Boolean(value.marker);
@@ -539,18 +586,12 @@ export default {
   border-radius: var(--radius-normal);
   overflow: hidden;
   box-shadow: var(--shadow-normal);
-  height: var(--width-button-normal);
-  transition: height 0.1s ease, border-radius 0.1s;
   overflow: hidden;
 }
 
 .bottom-right-buttons.isOpen {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-}
-
-.bottom-right-buttons.showTogglePanorama {
-  height: calc(var(--width-button-normal) * 2 + 1px);
 }
 
 .bottom-right-buttons .iconbutton {

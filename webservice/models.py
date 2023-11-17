@@ -586,6 +586,7 @@ class Viewer(models.Model):
     password = models.CharField(null=True, blank=True, max_length=128)
     api_key = models.CharField(null=True, blank=True, max_length=128)
     url = models.CharField(null=True, blank=True, max_length=255)
+    is_oblique = models.BooleanField(default=False, blank=True)
     internal = models.BooleanField('Alleen zichtbaar voor ingelogde gebruikers en interne omgeving', default=True,
                                    help_text='Hou er rekening mee dat de gebruikernaam, het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.')
 
@@ -608,6 +609,7 @@ class Viewer(models.Model):
             'username': self.username,
             'password': self.password,
             'api_key': self.api_key,
+            'is_oblique': self.is_oblique,
             'url': self.url
         }
 
