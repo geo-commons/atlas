@@ -404,7 +404,9 @@ class LinkedData(models.Model):
     url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
-    popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,
+    headers = models.TextField(_('Tabel kopjes'), max_length=128, blank=True, null=True,
+                               help_text='Voer één veld per regel in.')
+    popup_attributes = models.CharField(_('Tabel velden'), max_length=250, blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
 
     class Meta:
@@ -421,6 +423,7 @@ class LinkedData(models.Model):
             'url': self.url,
             'source_key': self.source_key,
             'target_key': self.target_key,
+            'headers': self.headers.split('\r\n') if self.headers else [],
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else []
         }
 

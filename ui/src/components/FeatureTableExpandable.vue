@@ -9,7 +9,13 @@
           <table-list class="table">
             <table>
               <thead>
-                <tr>
+                <tr v-if="tableHeaders">
+                  <th></th>
+                  <th v-for="property in tableHeaders" :key="property">
+                    {{ property }}
+                  </th>
+                </tr>
+                <tr v-if="!tableHeaders">
                   <th></th>
                   <th v-for="property in displayProperties" :key="property">
                     <SortableTableHeaderItem
@@ -85,6 +91,7 @@ export default {
     query: String,
     selectedArea: Object,
     isOpen: Boolean,
+    tableHeaders: Array,
     isFilterable: Boolean,
     overallFilter: Object,
     position: Object,

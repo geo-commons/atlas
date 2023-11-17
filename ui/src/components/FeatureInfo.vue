@@ -45,10 +45,8 @@
           <b>{{ linkedData.title }}</b>
           <FeatureTableExpandable
             :layer="linkedData"
-            :overall-filter="{
-              key: linkedData.target_key,
-              value: features[0].properties[linkedData.source_key],
-            }"
+            :table-headers="linkedData.headers"
+            :overall-filter="{ key: linkedData.target_key, value: features[0].properties[linkedData.source_key] }"
             :position="position"
             @set-position="setPosition"
           />
