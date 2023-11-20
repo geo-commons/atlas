@@ -4,7 +4,7 @@
       <h2>{{ layer.title }}</h2>
     </div>
 
-    <div>
+    <div class="feature-details-content">
       <table>
         <tbody>
           <tr v-for="property in filterProperties(feature.properties)" :key="property">
@@ -36,6 +36,24 @@
           </tr>
         </tbody>
       </table>
+
+      <div v-for="(linkedData, key) in layer.linked_data" :key="key" class="linked-data">
+        <div v-if="feature.properties[linkedData.source_key]">
+          <FeatureTableExpandable
+            :layer="linkedData"
+            :overall-filter="{
+              key: linkedData.target_key,
+              value: feature.properties[linkedData.source_key],
+            }"
+          />
+          <!--          :position="position"-->
+          <!--          @set-position="setPosition"-->
+        </div>
+      </div>
+
+      <!--      <div v-for="(template, key) in layer.templates" :key="key">-->
+      <!--        <FeatureInfoTemplate :layer="layer" :template="template" :feature="feature" class="template" />-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -43,10 +61,12 @@
 <script>
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import RichValue from "@/components/RichValue.vue";
+import FeatureTableExpandable from "@/components/FeatureTableExpandable.vue";
+// import FeatureInfoTemplate from "@/components/FeatureInfoTemplate.vue";
 
 export default {
   name: "FeatureInfoDetails",
-  components: { RichValue, MarkdownTemplate },
+  components: { FeatureTableExpandable, RichValue, MarkdownTemplate },
   filters: {
     capitalize: function (value) {
       if (!value) return "";
@@ -97,5 +117,14 @@ export default {
   background: var(--color-white);
   box-shadow: var(--shadow-normal);
   border-radius: var(--radius-normal);
+}
+
+/* todo: hoogte tabel goed zetten */
+.feature-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  height: inherit;
 }
 </style>

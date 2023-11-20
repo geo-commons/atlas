@@ -43,25 +43,6 @@
           </tbody>
         </table>
       </table-list>
-
-      <div v-for="(linkedData, key) in layer.linked_data" :key="key" class="linked-data">
-        <div v-if="features[0].properties[linkedData.source_key]">
-          <b>{{ linkedData.title }}</b>
-          <FeatureTableExpandable
-            :layer="linkedData"
-            :overall-filter="{
-              key: linkedData.target_key,
-              value: features[0].properties[linkedData.source_key],
-            }"
-            :position="position"
-            @set-position="setPosition"
-          />
-        </div>
-      </div>
-
-      <div v-for="(template, key) in layer.templates" :key="key">
-        <FeatureInfoTemplate :layer="layer" :template="template" :feature="feature" class="template" />
-      </div>
     </div>
   </ExpandButton>
 </template>
@@ -70,13 +51,11 @@
 import nunjucks from "nunjucks";
 import { mapState } from "vuex";
 import { getForViewAndSize } from "ol/extent";
-import FeatureTableExpandable from "./FeatureTableExpandable";
 import TableList from "./TableList";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
 import ExpandButton from "./ExpandButton";
 import RichValue from "./RichValue";
-import FeatureInfoTemplate from "./FeatureInfoTemplate";
 import MarkdownTemplate from "./MarkdownTemplate";
 
 nunjucks.configure({ autoescaping: true });
@@ -85,10 +64,8 @@ export default {
   name: "FeatureInfo",
   components: {
     TableList,
-    FeatureTableExpandable,
     ExpandButton,
     RichValue,
-    FeatureInfoTemplate,
     MarkdownTemplate,
   },
   filters: {
