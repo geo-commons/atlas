@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" :style="computedStyle">
     <header-menu v-if="config.features.portal" />
     <map-renderer
       ref="map"
@@ -27,6 +27,7 @@ export default {
   data() {
     return {
       user: null,
+      computedStyle: {},
     };
   },
   computed: {
@@ -60,7 +61,20 @@ export default {
       this.pushHistoryState();
     },
   },
+  created() {
+    window.addEventListener("resize", this.onResizeWindow);
+    this.setViewportHeight();
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.onResizeWindow);
+  },
   methods: {
+    onResizeWindow() {
+      this.setViewportHeight();
+    },
+    setViewportHeight() {
+      this.computedStyle["--vh"] = window.innerHeight / 100 + "px";
+    },
     pushHistoryState() {
       const basePath = /(.*?)(@|$)/.exec(window.location.pathname);
 

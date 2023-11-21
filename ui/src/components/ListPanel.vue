@@ -1,29 +1,16 @@
 <template>
-  <PanelDisplay :title="layerDisplayName" @hidePanel="hidePanel">
-    <p v-if="!layer" class="info-text">
-      De lijstweergave is nog niet geconfigureerd.
-    </p>
+  <PanelDisplay :title="layerDisplayName" :loading="loading" @hidePanel="hidePanel">
+    <p v-if="!layer" class="info-text">De lijstweergave is nog niet geconfigureerd.</p>
 
     <ul v-if="layer">
-      <li
-        v-for="feature in filteredFeatures"
-        :key="feature.id"
-        class="list-item"
-        @click="selectFeature(feature)"
-      >
+      <li v-for="feature in filteredFeatures" :key="feature.id" class="list-item" @click="selectFeature(feature)">
         <div class="header">
           <span class="name">
-            <MarkdownTemplate
-              :source="titleTemplate"
-              :data="feature.properties"
-            />
+            <MarkdownTemplate :source="titleTemplate" :data="feature.properties" />
           </span>
         </div>
         <div class="address">
-          <MarkdownTemplate
-            :source="shortDescriptionTemplate"
-            :data="feature.properties"
-          />
+          <MarkdownTemplate :source="shortDescriptionTemplate" :data="feature.properties" />
         </div>
       </li>
     </ul>

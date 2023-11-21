@@ -1,17 +1,11 @@
 <template>
-  <PanelDisplay title="Verfijn resultaten" @hidePanel="hidePanel">
-    <p v-if="facets.length <= 0" class="info-text">
-      Er zijn nog geen filters geconfigureerd.
-    </p>
+  <PanelDisplay title="Verfijn resultaten" :loading="loading" @hidePanel="hidePanel">
+    <p v-if="facets.length <= 0" class="info-text">Er zijn nog geen filters geconfigureerd.</p>
 
     <ExpandButton
       v-for="facet in facets"
       :key="facet"
-      :title="
-        layer.friendly_fields && layer.friendly_fields[facet]
-          ? layer.friendly_fields[facet]
-          : facet
-      "
+      :title="layer.friendly_fields && layer.friendly_fields[facet] ? layer.friendly_fields[facet] : facet"
       is-open
     >
       <ul v-if="facetValues[facet]">
@@ -20,10 +14,7 @@
             :name="facet"
             :value="value"
             :checked="
-              filters &&
-              filters[layer.id] &&
-              filters[layer.id][facet] &&
-              filters[layer.id][facet].includes(value)
+              filters && filters[layer.id] && filters[layer.id][facet] && filters[layer.id][facet].includes(value)
             "
             @change="onChangeFilter"
           />
@@ -54,6 +45,7 @@ export default {
   data() {
     return {
       facetValues: {},
+      loading: false,
     };
   },
   watch: {
@@ -70,6 +62,8 @@ export default {
       if (!this.layer || !this.facets || !this.facets.length > 0) {
         return;
       }
+
+      this.loading = true;
 
       const params = new URLSearchParams([
         ["service", "WFS"],
@@ -99,10 +93,7 @@ export default {
             }
 
             const value = feature.properties[facet];
-            if (
-              !facetValues[facet].includes(value) &&
-              facetValues[facet].length < 100
-            ) {
+            if (!facetValues[facet].includes(value) && facetValues[facet].length < 100) {
               facetValues[facet].push(value);
             }
           });
@@ -116,14 +107,10 @@ export default {
       }
 
       this.facetValues = facetValues;
+      this.loading = false;
     },
     getFetchParameters() {
-      if (
-        this.layer.source &&
-        this.layer.source.authenticate &&
-        this.user &&
-        this.user.token
-      ) {
+      if (this.layer.source && this.layer.source.authenticate && this.user && this.user.token) {
         return {
           headers: { Authorization: `Bearer ${this.user.token}` },
         };
@@ -142,20 +129,14 @@ export default {
         newFilters[this.layer.id][e.target.name] = [];
       }
 
-      if (
-        e.target.checked &&
-        !newFilters[this.layer.id][e.target.name].includes(e.target.value)
-      ) {
+      if (e.target.checked && !newFilters[this.layer.id][e.target.name].includes(e.target.value)) {
         newFilters[this.layer.id][e.target.name].push(e.target.value);
       }
 
-      if (
-        !e.target.checked &&
-        newFilters[this.layer.id][e.target.name].includes(e.target.value)
-      ) {
-        newFilters[this.layer.id][e.target.name] = newFilters[this.layer.id][
-          e.target.name
-        ].filter((v) => v !== e.target.value);
+      if (!e.target.checked && newFilters[this.layer.id][e.target.name].includes(e.target.value)) {
+        newFilters[this.layer.id][e.target.name] = newFilters[this.layer.id][e.target.name].filter(
+          (v) => v !== e.target.value
+        );
       }
 
       this.$emit("update-filters", newFilters);
