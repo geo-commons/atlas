@@ -8,7 +8,7 @@
 
         <button
           v-tippy="{ placement: 'right' }"
-          class="iconbutton close-button"
+          class="iconbutton __normal __outline"
           type="button"
           content="Sluit paneel"
           aria-label="Sluit paneel"
@@ -96,12 +96,5 @@ h1 {
 .search-query {
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.close-button {
-  width: var(--width-button-large);
-  height: var(--width-button-large);
-  border-radius: var(--radius-normal);
-  border: 1px solid var(--color-grey-60);
 }
 </style>

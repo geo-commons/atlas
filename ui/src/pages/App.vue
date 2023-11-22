@@ -56,6 +56,7 @@
         v-if="selectedFeature && selectedFeatureLayer"
         :feature="selectedFeature"
         :layer="selectedFeatureLayer"
+        @close="resetSelectedFeature"
       />
       <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
         <div class="top-left-panels">
@@ -223,9 +224,9 @@ export default {
       drawFeatures: [],
       modal: "",
       mapPadding: [0, 0, 0, 0],
-      selectedFeature: [],
+      selectedFeature: null,
       highLightFeature: [],
-      selectedFeatureLayer: {},
+      selectedFeatureLayer: null,
     };
   },
   computed: mapState({

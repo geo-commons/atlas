@@ -1,7 +1,17 @@
 <template>
   <div class="feature-details-wrapper">
-    <div>
+    <div class="feature-details-header">
       <h2>{{ layer.title }}</h2>
+      <button
+        v-tippy="{ placement: 'right' }"
+        class="iconbutton __normal __outline"
+        type="button"
+        content="Sluit paneel"
+        aria-label="Sluit paneel"
+        @click="close"
+      >
+        <CloseIcon />
+      </button>
     </div>
 
     <div class="feature-details-content">
@@ -62,11 +72,12 @@
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import RichValue from "@/components/RichValue.vue";
 import FeatureTableExpandable from "@/components/FeatureTableExpandable.vue";
+import CloseIcon from "@/assets/icons/close-icon.svg";
 // import FeatureInfoTemplate from "@/components/FeatureInfoTemplate.vue";
 
 export default {
   name: "FeatureInfoDetails",
-  components: { FeatureTableExpandable, RichValue, MarkdownTemplate },
+  components: { CloseIcon, FeatureTableExpandable, RichValue, MarkdownTemplate },
   filters: {
     capitalize: function (value) {
       if (!value) return "";
@@ -87,9 +98,7 @@ export default {
   created() {},
   methods: {
     filterProperties(fetchedProperties) {
-      // for now only return first 3 columns.
-      // make sure that the user can configure which columns to show
-      if (this.layer.display_properties.length > 0) {
+      if (this.layer.display_properties?.length > 0) {
         return this.layer.display_properties.filter((p) => Object.keys(fetchedProperties).includes(p));
       }
 
@@ -100,6 +109,9 @@ export default {
         properties,
         position: this.position,
       };
+    },
+    close() {
+      this.$emit("close");
     },
   },
 };
@@ -117,6 +129,12 @@ export default {
   background: var(--color-white);
   box-shadow: var(--shadow-normal);
   border-radius: var(--radius-normal);
+}
+
+.feature-details-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 /* todo: hoogte tabel goed zetten */
