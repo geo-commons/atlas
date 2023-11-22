@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="map-container"
-    :class="{ showInfoPanel: showInfoPanel, showDataPanel }"
-  >
+  <div class="map-container" :class="{ showInfoPanel: showInfoPanel, showDataPanel }">
     <div class="renderer-container">
       <OpenLayersRenderer
         ref="map"
@@ -72,10 +69,7 @@
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
 
-    <div
-      v-show="!showDataPanel || !showDataPanelFullScreen"
-      class="ui-container"
-    >
+    <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels">
         <SearchPanel
           v-if="features.searchbar"
@@ -86,22 +80,10 @@
           @toggle-data-panel="toggleDataPanel"
         />
         <div class="toggle-buttons">
-          <div
-            v-if="features.datapanel && !features.searchbar"
-            class="datapanel-btn-wrapper"
-          >
-            <DataPanelButton
-              :is-subcomponent="false"
-              @show-data-panel="toggleDataPanel"
-            />
+          <div v-if="features.datapanel && !features.searchbar" class="datapanel-btn-wrapper">
+            <DataPanelButton :is-subcomponent="false" @show-data-panel="toggleDataPanel" />
           </div>
-          <PrimaryButton
-            v-if="features.list && !showList"
-            size="large"
-            label="Lijst"
-            drop-shadow
-            @click="toggleList"
-          >
+          <PrimaryButton v-if="features.list && !showList" size="large" label="Lijst" drop-shadow @click="toggleList">
             <ListIcon />
           </PrimaryButton>
           <PrimaryButton
@@ -117,12 +99,7 @@
       </div>
 
       <div class="top-right-panels">
-        <ToolsPanel
-          :features="features"
-          :tool="tool"
-          @set-tool="setTool"
-          @set-selected-area="setSelectedArea"
-        />
+        <ToolsPanel :features="features" :tool="tool" @set-tool="setTool" @set-selected-area="setSelectedArea" />
       </div>
       <div class="bottom-left-panels">
         <LayersPanel
@@ -138,11 +115,7 @@
       </div>
       <div class="bottom-right-panels">
         <GeoLocationButton v-if="features.gps" @set-position="setPosition" />
-        <ZoomPanel
-          v-if="features.zoom"
-          :position="position"
-          @set-position="setPosition"
-        />
+        <ZoomPanel v-if="features.zoom" :position="position" @set-position="setPosition" />
       </div>
     </div>
   </div>
@@ -150,10 +123,6 @@
 
 <script>
 import ListIcon from "@/icons/ListIcon.vue";
-
-const reverseGeocodingEndpoint =
-  "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
-
 import GeoJSON from "ol/format/GeoJSON";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
@@ -172,6 +141,8 @@ import ZoomPanel from "../ZoomPanel";
 import GeoLocationButton from "../GeoLocationButton";
 import FilterListIcon from "@/icons/FilterListIcon.vue";
 import DataPanelButton from "../DataPanelButton.vue";
+
+const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
@@ -268,9 +239,7 @@ export default {
         if (!data.response.docs || data.response.docs.length === 0) {
           this.$store.commit(
             "setSearchQuery",
-            `(${Math.round(position.marker[0] * 100) / 100},${
-              Math.round(position.marker[1] * 100) / 100
-            })`
+            `(${Math.round(position.marker[0] * 100) / 100},${Math.round(position.marker[1] * 100) / 100})`
           );
           return;
         }
@@ -284,9 +253,7 @@ export default {
     async getFeatureInfo(position) {
       this.highlightedFeatures = [];
 
-      const visibleLayers = this.layers.filter(
-        (layer) => layer.is_selectable && !layer.is_base && layer.is_visible
-      );
+      const visibleLayers = this.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible);
       visibleLayers.forEach(async (layer) => {
         const wmsSource = new TileWMS({
           url: layer.url,
@@ -302,24 +269,17 @@ export default {
           zoom: this.position.zoom,
         });
 
-        const url = wmsSource.getFeatureInfoUrl(
-          position.marker,
-          view.getResolution(),
-          "EPSG:28992",
-          {
-            info_format: "application/json",
-            feature_count: 20,
-          }
-        );
+        const url = wmsSource.getFeatureInfoUrl(position.marker, view.getResolution(), "EPSG:28992", {
+          info_format: "application/json",
+          feature_count: 20,
+        });
 
         try {
           const result = await fetch(url);
           const data = await result.json();
           this.highlightedFeatures = [
             ...this.highlightedFeatures,
-            ...data.features.map((feature) =>
-              new GeoJSON().readFeature(feature)
-            ),
+            ...data.features.map((feature) => new GeoJSON().readFeature(feature)),
           ];
         } catch (e) {
           console.error(e);
@@ -362,14 +322,10 @@ export default {
       this.selectedArea = selectedArea;
     },
     toggleLayer([layerId, isVisible]) {
-      this.layers = this.layers.map((layer) =>
-        layer.id == layerId ? { ...layer, is_visible: isVisible } : layer
-      );
+      this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, is_visible: isVisible } : layer));
     },
     setLayerOpacity([layerId, opacity]) {
-      this.layers = this.layers.map((layer) =>
-        layer.id == layerId ? { ...layer, opacity: opacity } : layer
-      );
+      this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, opacity: opacity } : layer));
     },
     getSelectedLayer(layerId) {
       if (layerId) {
@@ -409,6 +365,10 @@ export default {
 @media (max-width: 575px) {
   .ui-container {
     order: -1;
+  }
+
+  .map-container {
+    flex-direction: column;
   }
 }
 

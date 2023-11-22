@@ -491,6 +491,10 @@ export default {
   .ui-container {
     order: -1;
   }
+
+  .map-container {
+    flex-direction: column;
+  }
 }
 
 .ui-container {
