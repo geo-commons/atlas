@@ -53,15 +53,8 @@
         @toggle-data-panel="toggleDataPanel"
         @toggle-full-side-panel="toggleDataPanelFullScreen"
       />
-      <FeatureInfoDetails
-        v-if="selectedFeature && selectedFeatureLayer"
-        :feature="selectedFeature"
-        :layer="selectedFeatureLayer"
-        @close="resetSelectedFeature"
-        @toggle-full-screen="toggleFeatureInfoFullScreen"
-      />
-      <div v-show="(showDataPanel && !showDataPanelFullScreen) || !showFeatureInfoFullScreen" class="ui-container">
-        <div class="top-left-panels">
+      <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
+        <div class="top-left-panels" :class="{ showFeatureInfoFullScreen }">
           <SearchPanel
             v-if="!showPanoramaPanel"
             :position="position"
@@ -69,6 +62,14 @@
             :features="{ dataPanel: true }"
             @set-position="setPosition"
             @toggle-data-panel="toggleDataPanel"
+          />
+
+          <FeatureInfoDetails
+            v-if="selectedFeature && selectedFeatureLayer"
+            :feature="selectedFeature"
+            :layer="selectedFeatureLayer"
+            @close="resetSelectedFeature"
+            @toggle-full-screen="toggleFeatureInfoFullScreen"
           />
         </div>
 
@@ -582,7 +583,6 @@ export default {
   box-shadow: var(--shadow-normal);
   height: var(--width-button-normal);
   transition: height 0.1s ease, border-radius 0.1s;
-  overflow: hidden;
 }
 
 .bottom-right-buttons.isOpen {
@@ -602,5 +602,10 @@ export default {
 .bottom-right-buttons .iconbutton:first-child {
   box-sizing: content-box;
   border-bottom: 1px solid var(--color-grey-50);
+}
+
+.showFeatureInfoFullScreen {
+  height: 100%;
+  width: 100%;
 }
 </style>

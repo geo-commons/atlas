@@ -143,9 +143,8 @@ export default {
   position: relative;
   flex-shrink: 0;
   z-index: 2;
-  margin: var(--padding-screen);
   padding: 10px 10px;
-  height: 90%;
+  height: 100%;
   width: 400px;
   background: var(--color-white);
   box-shadow: var(--shadow-normal);
@@ -153,7 +152,10 @@ export default {
 }
 
 .feature-details-wrapper.fullScreen {
-  width: calc(100% - var(--width-detail));
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   margin: 0;
   border-radius: 0;
