@@ -291,17 +291,18 @@ export default {
     async setPosition(position) {
       this.$store.commit("setPosition", position);
 
+      console.log("voor 1e check setPosition");
       if (
         (!this.position.marker && !position.marker) ||
         (this.position.marker[0] === position.marker[0] && this.position.marker[1] === position.marker[1])
       ) {
         this.resetSelectedFeature();
       }
-
+      console.log("voor 2e check setPosition");
       if (!position.marker) {
         return;
       }
-
+      console.log("na 2e check setPosition");
       try {
         const result = await fetch(
           `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`
@@ -549,6 +550,13 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: fit-content;
+}
+
+.top-left-panels.showFeatureInfoFullScreen {
+  height: 100%;
+  max-width: 100%;
+  width: 100%;
 }
 
 @media (min-width: 576px) {
@@ -602,10 +610,5 @@ export default {
 .bottom-right-buttons .iconbutton:first-child {
   box-sizing: content-box;
   border-bottom: 1px solid var(--color-grey-50);
-}
-
-.showFeatureInfoFullScreen {
-  height: 100%;
-  width: 100%;
 }
 </style>

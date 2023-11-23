@@ -145,7 +145,6 @@ export default {
   z-index: 2;
   padding: 10px 10px;
   height: 100%;
-  width: 400px;
   background: var(--color-white);
   box-shadow: var(--shadow-normal);
   border-radius: var(--radius-normal);
