@@ -1,17 +1,30 @@
 <template>
-  <div class="feature-details-wrapper">
+  <div class="feature-details-wrapper" :class="{ fullScreen }">
     <div class="feature-details-header">
       <h2>{{ layer.title }}</h2>
-      <button
-        v-tippy="{ placement: 'right' }"
-        class="iconbutton __normal __outline"
-        type="button"
-        content="Sluit paneel"
-        aria-label="Sluit paneel"
-        @click="close"
-      >
-        <CloseIcon />
-      </button>
+      <div class="feature-details-button-wrapper">
+        <button
+          v-tippy="{ placement: 'right' }"
+          class="iconbutton __normal __outline"
+          type="button"
+          content="Vergroot paneel"
+          aria-label="Vergroot paneel"
+          @click="toggleFullScreen"
+        >
+          <MinimizeIcon v-if="fullScreen" />
+          <MaximizeIcon v-else />
+        </button>
+        <button
+          v-tippy="{ placement: 'right' }"
+          class="iconbutton __normal __outline"
+          type="button"
+          content="Sluit paneel"
+          aria-label="Sluit paneel"
+          @click="close"
+        >
+          <CloseIcon />
+        </button>
+      </div>
     </div>
 
     <div class="feature-details-content">
@@ -73,11 +86,13 @@ import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import RichValue from "@/components/RichValue.vue";
 import FeatureTableExpandable from "@/components/FeatureTableExpandable.vue";
 import CloseIcon from "@/assets/icons/close-icon.svg";
+import MaximizeIcon from "@/assets/icons/maximize-icon.svg";
+import MinimizeIcon from "@/assets/icons/minimize-icon.svg";
 // import FeatureInfoTemplate from "@/components/FeatureInfoTemplate.vue";
 
 export default {
   name: "FeatureInfoDetails",
-  components: { CloseIcon, FeatureTableExpandable, RichValue, MarkdownTemplate },
+  components: { CloseIcon, MaximizeIcon, MinimizeIcon, FeatureTableExpandable, RichValue, MarkdownTemplate },
   filters: {
     capitalize: function (value) {
       if (!value) return "";
@@ -92,7 +107,9 @@ export default {
     layer: Object,
   },
   data() {
-    return {};
+    return {
+      fullScreen: false,
+    };
   },
   computed: {},
   created() {},
@@ -113,6 +130,10 @@ export default {
     close() {
       this.$emit("close");
     },
+    toggleFullScreen() {
+      this.fullScreen = !this.fullScreen;
+      this.$emit("toggle-full-screen");
+    },
   },
 };
 </script>
@@ -131,10 +152,23 @@ export default {
   border-radius: var(--radius-normal);
 }
 
+.feature-details-wrapper.fullScreen {
+  width: calc(100% - var(--width-detail));
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+}
+
 .feature-details-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
+}
+
+.feature-details-button-wrapper {
+  display: flex;
+  gap: 12px;
 }
 
 /* todo: hoogte tabel goed zetten */

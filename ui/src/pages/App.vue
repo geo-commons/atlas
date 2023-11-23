@@ -34,6 +34,7 @@
         :position="position"
         :show-panel="!showDataPanel && showInfoPanel"
         :user="user"
+        :selected-feature="selectedFeature"
         @set-position="setPosition"
         @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
         @select-feature="featureSelected"
@@ -57,8 +58,9 @@
         :feature="selectedFeature"
         :layer="selectedFeatureLayer"
         @close="resetSelectedFeature"
+        @toggle-full-screen="toggleFeatureInfoFullScreen"
       />
-      <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
+      <div v-show="(showDataPanel && !showDataPanelFullScreen) || !showFeatureInfoFullScreen" class="ui-container">
         <div class="top-left-panels">
           <SearchPanel
             v-if="!showPanoramaPanel"
@@ -225,8 +227,10 @@ export default {
       modal: "",
       mapPadding: [0, 0, 0, 0],
       selectedFeature: null,
+      selectedFeatureId: null,
       highLightFeature: [],
       selectedFeatureLayer: null,
+      showFeatureInfoFullScreen: false,
     };
   },
   computed: mapState({
@@ -410,6 +414,9 @@ export default {
     },
     toggleDataPanelFullScreen() {
       this.showDataPanelFullScreen = !this.showDataPanelFullScreen;
+    },
+    toggleFeatureInfoFullScreen() {
+      this.showFeatureInfoFullScreen = !this.showFeatureInfoFullScreen;
     },
     async fetchAccessToken() {
       const response = await fetch("/atlas/api/v1/token", {

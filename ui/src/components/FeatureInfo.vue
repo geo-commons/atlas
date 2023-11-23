@@ -81,11 +81,12 @@ export default {
     layer: Object,
     position: Object,
     isOpen: Boolean,
-    selectedFeatureId: null,
+    selectedFeature: null,
   },
   data() {
     return {
       features: [],
+      selectedFeatureId: null,
     };
   },
   computed: {
@@ -102,6 +103,9 @@ export default {
   },
   watch: {
     position: "fetchFeatures",
+    selectedFeature(newSelectedFeature) {
+      this.selectedFeatureId = newSelectedFeature ? newSelectedFeature.id : null;
+    },
   },
   mounted() {
     this.fetchFeatures();

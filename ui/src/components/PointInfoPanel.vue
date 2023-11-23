@@ -26,7 +26,7 @@
         :is-open="true"
         :layer="visibleLayer"
         :position="position"
-        :selected-feature-id="selectedFeatureId"
+        :selected-feature="selectedFeature"
         @show-selected-feature="onFeatureSelect"
       />
     </template>
@@ -49,11 +49,10 @@ export default {
     position: Object,
     layers: Array,
     showPanel: Boolean,
+    selectedFeature: null,
   },
   data() {
-    return {
-      selectedFeatureId: null,
-    };
+    return {};
   },
   computed: {
     visibleLayers() {
@@ -75,7 +74,6 @@ export default {
       this.$emit("select-feature", null, null);
     },
     onFeatureSelect(feature, layer) {
-      this.selectedFeatureId = feature?.id;
       this.$emit("select-feature", feature, layer);
     },
   },
