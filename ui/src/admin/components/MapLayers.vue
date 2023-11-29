@@ -18,9 +18,13 @@
       <div class="header-spacer" />
     </div>
 
-    <ul v-if="selectedLayers.length > 0" class="settings">
-      <li v-for="selectedLayer in selectedLayers" :key="selectedLayer.id" class="setting">
-        {{ selectedLayer.title }}
+    <ul v-if="layers.length > 0" class="settings">
+      <li v-for="layer in layers" :key="layer.id" class="setting">
+        {{ layer.title }}
+        <textarea
+          :value="JSON.stringify(layer.client_style)"
+          @change="(e) => (layer.client_style = JSON.parse(e.target.value))"
+        />
         <button
           v-tippy="{ placement: 'bottom' }"
           class="iconbutton __normal __transparent-bg __no-hover"
@@ -71,6 +75,7 @@ export default {
   components: { ArrowLeftIcon, LayerIcon, AddLayerIcon, RemoveLayerIcon, SearchIcon },
   props: {
     initialData: Object,
+    layers: Array,
   },
   data() {
     return {

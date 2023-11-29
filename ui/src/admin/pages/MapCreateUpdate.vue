@@ -5,6 +5,7 @@
         <MapLayers
           v-if="sidebar === 'Layers'"
           :initial-data="data"
+          :layers="visibleLayers"
           @change="updateLayers"
           @show-form="() => showSidebar('Form')"
         />

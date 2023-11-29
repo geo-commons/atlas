@@ -64,8 +64,9 @@ export default {
     opacity(value) {
       this.tileLayer.set("opacity", value);
     },
-    clientStyle(value) {
-      this.applyStyle(value);
+    async clientStyle(value) {
+      const style = await this.getStyle(value && value["default"] ? value["default"] : value);
+      this.tileLayer.setStyle(style);
     },
     filters(value) {
       if (!value[this.id]) {
@@ -79,9 +80,7 @@ export default {
           return;
         }
 
-        const values = value[this.id][key]
-          .map((value) => `'${value}'`)
-          .join(",");
+        const values = value[this.id][key].map((value) => `'${value}'`).join(",");
         cqlFilters.push(`${key} IN (${values})`);
       });
 
@@ -134,17 +133,13 @@ export default {
     this.map.addLayer(this.tileLayer);
 
     const style = await this.getStyle(
-      this.clientStyle && this.clientStyle["default"]
-        ? this.clientStyle["default"]
-        : this.clientStyle
+      this.clientStyle && this.clientStyle["default"] ? this.clientStyle["default"] : this.clientStyle
     );
     this.tileLayer.setStyle(style);
 
     if (this.isSelectable) {
       const activeStyle = await this.getStyle(
-        this.clientStyle && this.clientStyle["active"]
-          ? this.clientStyle["active"]
-          : this.clientStyle
+        this.clientStyle && this.clientStyle["active"] ? this.clientStyle["active"] : this.clientStyle
       );
 
       this.select = new Select({
