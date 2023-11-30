@@ -273,6 +273,7 @@ export default {
               type: "text",
               required: false,
               maxLength: 50,
+              infoText: "Een uniek kort kenmerk voor de bron in Atlas.",
             },
             {
               label: "URL",

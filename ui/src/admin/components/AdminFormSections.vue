@@ -13,10 +13,36 @@
                         If this is no longer sufficient in the future take a look at how ol-view and ol-layer
                         are decomposed in the OpenLayers.vue component -->
             <slot v-if="question.type === 'custom'" name="custom"></slot>
-            <div v-else-if="question.type === 'dropdown'">
+            <div v-else-if="question.type === 'checkbox'">
+              <validation-provider v-slot="{ errors }" :name="question.name" class="flex __align-center">
+                <input
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  :checked="currentValues[question.id]"
+                  :disabled="question.disabled"
+                  type="checkbox"
+                />
+                <span class="label-info-text-wrapper">
+                  <label :for="question.id">{{ question.label }}</label>
+                  <AdminFormInfoText
+                    v-if="question.infoText && question.infoText !== ''"
+                    :info-text="question.infoText"
+                  />
+                </span>
+                <span>{{ errors[0] }}</span>
+              </validation-provider>
+            </div>
+            <div v-else>
               <validation-provider v-slot="{ errors }" :name="question.name" class="flex __column">
-                <label class="question-label" :for="question.id">{{ question.label }}</label>
+                <span class="label-info-text-wrapper">
+                  <label class="question-label" :for="question.id">{{ question.label }}</label>
+                  <AdminFormInfoText
+                    v-if="question.infoText && question.infoText !== ''"
+                    :info-text="question.infoText"
+                  />
+                </span>
                 <select
+                  v-if="question.type === 'dropdown'"
                   :id="question.id"
                   v-model="currentValues[question.id]"
                   class="config-select-wrapper"
@@ -28,27 +54,8 @@
                     {{ option.label }}
                   </option>
                 </select>
-                <span>{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
-            <div v-else-if="question.type === 'checkbox'">
-              <validation-provider v-slot="{ errors }" :name="question.name" class="flex __align-center">
-                <input
-                  :id="question.id"
-                  v-model="currentValues[question.id]"
-                  :checked="currentValues[question.id]"
-                  :disabled="question.disabled"
-                  type="checkbox"
-                />
-                <label :for="question.id">{{ question.label }}</label>
-                <span>{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
-            <div v-else>
-              <validation-provider v-slot="{ errors }" :name="question.name" class="flex __column">
-                <label class="question-label" :for="question.id">{{ question.label }}</label>
                 <textarea
-                  v-if="question.type === 'text' && question.multiLine"
+                  v-else-if="question.type === 'text' && question.multiLine"
                   :id="question.id"
                   v-model="currentValues[question.id]"
                   :rows="question.rows ? question.rows : 5"
@@ -120,10 +127,12 @@
 <script>
 import { ValidationProvider } from "vee-validate";
 import { formatDateValue } from "@/utils/date-formatter";
+import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 
 export default {
   name: "AdminFormSections",
   components: {
+    AdminFormInfoText,
     ValidationProvider,
   },
   props: {
@@ -231,6 +240,12 @@ label.question-label {
 .config-select-wrapper {
   height: 40px;
   width: 100%;
+}
+
+.label-info-text-wrapper {
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
 .warning-text {

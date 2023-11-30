@@ -191,12 +191,15 @@ export default {
               type: "text",
               required: true,
               disabled: this.editingCurrentUser,
+              infoText:
+                "Vereist. 150 tekens of minder. Alleen letters, cijfers en de tekens @/,/+/-/_ zijn toegestaan.",
             },
             {
               label: "Externe ID",
               id: "external_id",
               name: "externalId",
               type: "label",
+              infoText: "Het unieke kenmerk van de gebruiker in de inlogbron.",
             },
           ],
         },
@@ -229,6 +232,8 @@ export default {
               type: "checkbox",
               required: false,
               disabled: this.editingCurrentUser,
+              infoText:
+                "Bepaalt of deze gebruiker als actief dient te worden behandeld. U kunt dit uitvinken in plaats van een gebruiker te verwijderen.",
             },
             {
               label: "Beheerder",
@@ -237,6 +242,8 @@ export default {
               type: "checkbox",
               required: false,
               disabled: this.editingCurrentUser,
+              infoText:
+                "Bepaalt of de gebruiker zich op deze beheerwebsite kan aanmelden met alle bijbehorende rechten.",
             },
           ],
         },
