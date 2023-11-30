@@ -94,6 +94,7 @@ export default {
               name: "ExternalId",
               type: "text",
               required: true,
+              infoText: "Het unieke kenmerk van de groep in de inlogbron.",
             },
             {
               label: "Kort kenmerk",
@@ -101,6 +102,7 @@ export default {
               name: "Slug",
               type: "text",
               required: true,
+              infoText: "Een uniek kort kenmerk voor de groep.",
             },
           ],
         },

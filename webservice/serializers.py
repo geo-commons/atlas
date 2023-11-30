@@ -97,6 +97,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'is_visible',
             'is_selectable',
             'show_in_detail_panel',
+            'closed_dataset',
             'login_required',
             'projection',
             'extent',
@@ -110,7 +111,9 @@ class LayerSerializer(serializers.ModelSerializer):
             'search_properties',
             'metadata',
             'linked_data',
-            'templates'
+            'templates',
+            'atlas_groups',
+            'published'
         ]
 
 class LayerCreateUpdateSerializer(serializers.ModelSerializer):
@@ -140,8 +143,11 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'zoom_max',
             'metadata',
             'login_required',
-            'ordering'
-        ]
+            'closed_dataset',
+            'ordering',
+            'atlas_groups',
+            'published'
+            ]
 
 class LayerListSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')

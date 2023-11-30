@@ -99,6 +99,7 @@ export default {
               name: "Slug",
               type: "text",
               required: true,
+              infoText: "Een uniek kort kenmerk voor de categorie in Atlas.",
             },
           ],
         },

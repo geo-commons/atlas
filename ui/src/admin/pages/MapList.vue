@@ -278,6 +278,7 @@ export default {
               name: "Slug",
               type: "text",
               required: false,
+              infoText: "Een uniek kort kenmerk voor de kaart in Atlas.",
             },
           ],
         },
