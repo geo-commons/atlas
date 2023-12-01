@@ -1,3 +1,4 @@
+import ipaddress
 import logging
 from django.conf import settings
 
@@ -9,7 +10,11 @@ def is_internal(request):
         return False
 
     client_ip = get_client_ip(request)
-    return client_ip in settings.INTERNAL_IPS
+
+    if not client_ip:
+        return False
+
+    return ip_in_one_of_ranges(client_ip, settings.INTERNAL_IPS)
 
 
 def is_allowed_to_access_admin(request):
@@ -17,7 +22,11 @@ def is_allowed_to_access_admin(request):
         return True
 
     client_ip = get_client_ip(request)
-    return client_ip in settings.ADMIN_IPS
+
+    if not client_ip:
+        return False
+
+    return ip_in_one_of_ranges(client_ip, settings.ADMIN_IPS)
 
 
 def get_client_ip(request):
@@ -28,4 +37,15 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
 
-    return ip
+    try:
+        return ipaddress.ip_address(ip)
+    except ValueError:
+        return None
+
+
+def ip_in_one_of_ranges(ip, ip_ranges):
+    for ip_range in ip_ranges:
+        if ip in ipaddress.ip_network(ip_range):
+            return True
+
+    return False
