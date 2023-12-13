@@ -92,7 +92,9 @@ export default {
       window.history.replaceState(
         {},
         "",
-        `${basePath[1]}@${x},${y},${zoom}z/layers=${layers}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}`
+        `${basePath[1]}@${x},${y},${Math.round(zoom * 100) / 100}z/layers=${layers}/base=${
+          baseLayer.length > 0 ? baseLayer[0] : ""
+        }`
       );
     },
     positionChanged(position) {

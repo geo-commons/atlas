@@ -47,7 +47,6 @@ export default {
   mounted() {
     this.view = new View({
       projection: rdProjection,
-      constrainResolution: true,
       enableRotation: false,
       center: this.position.center,
       zoom: this.position.zoom,
@@ -67,8 +66,7 @@ export default {
 
       const mpu = this.view.getProjection().getMetersPerUnit();
       const inchesPerMeter = 1000 / 25.4;
-      this.scale =
-        parseFloat(resolution.toString()) * mpu * inchesPerMeter * DEFAULT_DPI;
+      this.scale = parseFloat(resolution.toString()) * mpu * inchesPerMeter * DEFAULT_DPI;
 
       this.$emit("position-changed", {
         ...this.position,
