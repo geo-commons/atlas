@@ -369,7 +369,7 @@ export default {
       this.newLayerData = {
         title: "",
         authenticate: false,
-        metadata: { name: "", description: "", organization: "", updated: "", link: "" },
+        metadata: { name: "", description: "", organization: "", updated: "", link: "", lineage: "", contact: "" },
       };
 
       this.showFormModal = true;
@@ -432,7 +432,7 @@ export default {
               id: "category_id",
               name: "Category",
               type: "dropdown",
-              required: true,
+              required: false,
               placeholder: "categorie",
               options: this.getCategories,
             },

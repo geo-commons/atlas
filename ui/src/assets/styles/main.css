@@ -441,8 +441,17 @@ hr {
   height: 24px;
 }
 
+.icon.__small {
+  width: 16px;
+  height: 16px;
+}
+
 .icon.__grey {
   color: var(--color-icon-grey)
+}
+
+.icon.__grey {
+  color: var(--color-black)
 }
 
 .icon.__white {
