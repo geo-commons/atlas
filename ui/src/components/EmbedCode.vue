@@ -1,26 +1,9 @@
 <template>
   <div class="wrapper">
     <div class="header">
-      <input
-        ref="input"
-        type="text"
-        name="embedCode"
-        class="input"
-        :value="embedCode"
-        readonly="readonly"
-      />
-      <button
-        class="iconbutton"
-        type="button"
-        :aria-label="buttonText"
-        @click="copyHTML"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-        >
+      <input ref="input" type="text" name="embedCode" class="input" :value="embedCode" readonly="readonly" />
+      <button class="iconbutton" type="button" :aria-label="buttonText" @click="copyHTML">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0V0z" fill="none" />
           <path
             d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
@@ -37,19 +20,8 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
           <title>Path</title>
-          <g
-            id="Wireframes"
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd"
-          >
-            <g
-              id="streetview"
-              transform="translate(-985.000000, -413.000000)"
-              fill="#000000"
-              fill-rule="nonzero"
-            >
+          <g id="Wireframes" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="streetview" transform="translate(-985.000000, -413.000000)" fill="#000000" fill-rule="nonzero">
               <g id="Group-5" transform="translate(976.000000, 404.000000)">
                 <polygon
                   id="Path"
@@ -89,19 +61,15 @@ export default {
   },
   computed: {
     embedUrl() {
-      const baseLayer = this.layers
-        .filter((l) => l.is_visible && l.is_base)
-        .map((l) => l.id);
+      const baseLayer = this.layers.filter((l) => l.is_visible && l.is_base).map((l) => l.id);
 
-      return `${encodeURI(
-        window.location.origin
-      )}/atlas/embed/@${encodeURIComponent(
+      return `${encodeURI(window.location.origin)}/atlas/embed/@${encodeURIComponent(
         this.position.center[0]
       )},${encodeURIComponent(this.position.center[1])},${encodeURIComponent(
-        this.position.zoom
-      )}z/layers=${this.visibleLayers
-        .map((l) => encodeURIComponent(l.id))
-        .join(",")}/base=${baseLayer.length > 0 ? baseLayer[0] : ""}`;
+        Math.round(this.position.zoom * 100) / 100
+      )}z/layers=${this.visibleLayers.map((l) => encodeURIComponent(l.id)).join(",")}/base=${
+        baseLayer.length > 0 ? baseLayer[0] : ""
+      }`;
     },
     embedCode() {
       return `<iframe src="${this.embedUrl}" width="560" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>`;

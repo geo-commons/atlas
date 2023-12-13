@@ -53,9 +53,11 @@ export default {
   methods: {
     getSelectionURL(selection) {
       const position = this.config.position;
-      return `/atlas/@${encodeURIComponent(position.center.x.toFixed(2))},${encodeURIComponent(position.center.y.toFixed(2))},${encodeURIComponent(
-        position.zoom
-      )}z/layers=${selection.layers.map((l) => encodeURIComponent(l.id)).join(",")}/base=`;
+      return `/atlas/@${encodeURIComponent(position.center.x.toFixed(2))},${encodeURIComponent(
+        position.center.y.toFixed(2)
+      )},${encodeURIComponent(Math.round(position.zoom * 100) / 100)}z/layers=${selection.layers
+        .map((l) => encodeURIComponent(l.id))
+        .join(",")}/base=`;
     },
   },
 };

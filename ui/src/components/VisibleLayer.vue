@@ -123,7 +123,6 @@ export default {
 
       const view = new View({
         projection: rdProjection,
-        constrainResolution: true,
         enableRotation: false,
         center: this.position.center,
         zoom: this.position.zoom,
