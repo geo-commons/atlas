@@ -236,25 +236,23 @@ export default {
   display: block;
 }
 
-.table-wrapper {
-  margin: 4px 0 8px;
-}
-
 .table-wrapper + .table-wrapper {
   border-top: 1px solid var(--color-grey-50);
 }
 
-.table-wrapper table {
-  table-layout: fixed;
-}
-
 .table-wrapper td:first-child {
-  width: 30%;
+  width: 40%;
   color: var(--color-text-grey);
 }
 
 .table-wrapper td:last-child {
-  width: 70%;
+  padding-left: 20px;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+  padding: 4px;
+  vertical-align: top;
 }
 
 .separator-line {
