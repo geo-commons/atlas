@@ -41,19 +41,28 @@
                     :info-text="question.infoText"
                   />
                 </span>
-                <select
-                  v-if="question.type === 'dropdown'"
-                  :id="question.id"
-                  v-model="currentValues[question.id]"
-                  class="config-select-wrapper"
-                  :required="question.required"
-                  :disabled="question.disabled"
-                >
-                  <option disabled value="">Selecteer een {{ question.placeholder }}</option>
-                  <option v-for="option in options[question.id]" :key="option.id" :value="option.id">
-                    {{ option.label }}
-                  </option>
-                </select>
+                <div v-if="question.type === 'dropdown'" class="dropdown-wrapper">
+                  <select
+                    :id="question.id"
+                    v-model="currentValues[question.id]"
+                    class="config-select-wrapper"
+                    :required="question.required"
+                    :disabled="question.disabled"
+                  >
+                    <option disabled value="-1">Selecteer een {{ question.placeholder }}</option>
+                    <option v-for="option in options[question.id]" :key="option.id" :value="option.id">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <button
+                    v-if="currentValues[question.id]"
+                    @click="reset(question)"
+                    type="button"
+                    class="iconbutton __small __round __transparent-bg"
+                  >
+                    <close-icon class="icon __small"></close-icon>
+                  </button>
+                </div>
                 <textarea
                   v-else-if="question.type === 'text' && question.multiLine"
                   :id="question.id"
@@ -128,10 +137,12 @@
 import { ValidationProvider } from "vee-validate";
 import { formatDateValue } from "@/utils/date-formatter";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
+import CloseIcon from "@/assets/icons/close-icon.svg";
 
 export default {
   name: "AdminFormSections",
   components: {
+    CloseIcon,
     AdminFormInfoText,
     ValidationProvider,
   },
@@ -149,7 +160,6 @@ export default {
       options: {},
     };
   },
-  computed: {},
   watch: {
     initialValues(newValues) {
       this.currentValues = newValues;
@@ -186,6 +196,11 @@ export default {
           console.error(`Expected options of question id: ${question.id} to be of type Array or Function.`);
         });
       });
+    },
+    reset(question) {
+      this.currentValues[question.id] = "";
+      const dropdownElement = document.getElementById(question.id);
+      dropdownElement.value = "";
     },
   },
 };
@@ -251,5 +266,11 @@ label.question-label {
 .warning-text {
   color: var(--color-alert);
   font-weight: var(--font-weight-bold);
+}
+
+.dropdown-wrapper {
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }
 </style>

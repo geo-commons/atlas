@@ -7,7 +7,7 @@
 
         <h3>{{ title }}</h3>
         <PrimaryButton class="close-btn" size="large" @click="hidePanel">
-          <close-icon />
+          <close-icon class="icon __black" />
         </PrimaryButton>
       </slot>
     </div>

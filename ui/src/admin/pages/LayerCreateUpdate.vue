@@ -142,7 +142,7 @@ export default {
 
       const response = await result.json();
       this.initialValues = response;
-      this.initialValues.category_id = response.category.id;
+      this.initialValues.category_id = response.category?.id;
       this.initialValues.source_id = response.source.id;
 
       // Internal fields used for v-model binding
@@ -267,8 +267,8 @@ export default {
               id: "category_id",
               name: "Category",
               type: "dropdown",
-              required: true,
               placeholder: "categorie",
+              required: false,
               options: this.getCategories,
             },
             {
