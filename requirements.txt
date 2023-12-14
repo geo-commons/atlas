@@ -9,7 +9,7 @@ django-reversion==5.0.4
 django-webpack-loader==2.0.0
 Django==4.1.9
 djangorestframework==3.14.0
-fiona==1.9.3
+fiona==1.9.5
 mistune==2.0.5
 mozilla-django-oidc==3.0.0
 Pillow==10.1.0

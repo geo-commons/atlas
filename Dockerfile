@@ -15,7 +15,7 @@ FROM python:3.11-slim AS api-build
 WORKDIR /app
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    build-essential
+    build-essential libgdal-dev
 
 RUN python -m venv /app/venv && /app/venv/bin/pip install --upgrade pip
 
