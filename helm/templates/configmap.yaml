@@ -26,3 +26,4 @@ data:
   OIDC_JWKS_ENDPOINT: "{{ .Values.oidcJwksEndpoint }}"
   OIDC_USERNAME_CLAIM: "{{ .Values.oidcUsernameClaim }}"
   OIDC_ACTIVATE_ON_CREATE: "{{ if .Values.oidcActivateOnCreate }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
+  OIDC_SYNC_GROUPS: "{{ if .Values.oidcSyncGroups }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
