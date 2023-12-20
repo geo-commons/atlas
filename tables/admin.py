@@ -7,6 +7,7 @@ class TableAdmin(VersionAdmin, admin.ModelAdmin):
     list_display = ('ordering', 'title', )
     list_display_links = ('title',)
     list_editable = ('ordering',)
+    prepopulated_fields = {'slug': ('title', )}
 
 
 admin.site.register(Table, TableAdmin)

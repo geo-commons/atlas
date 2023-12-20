@@ -57,6 +57,7 @@ class SourceAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title',)
     resource_classes = [SourceResource]
     filter_horizontal = ('atlas_groups', )
+    prepopulated_fields = {'slug': ('title', )}
 
 
 class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
@@ -69,6 +70,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_filter = ('layer_type', 'closed_dataset', 'login_required')
 
     filter_horizontal = ('atlas_groups', )
+    prepopulated_fields = {'slug': ('title', )}
 
     actions = [duplicate_layer]
 
@@ -134,6 +136,7 @@ class CategoryAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display_links = ('title',)
     list_editable = ('ordering',)
     search_fields = ['title']
+    prepopulated_fields = {'slug': ('title', )}
     resource_classes = [CategoryResource]
 
 
