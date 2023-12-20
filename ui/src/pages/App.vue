@@ -100,10 +100,11 @@
             class="bottom-right-buttons"
             :class="{
               isOpen: showBaseLayersPanel,
-              showTogglePanorama: position.marker || showPanoramaPanel,
+              showTogglePanorama: config.viewers.length > 0 && (position.marker || showPanoramaPanel),
             }"
           >
             <button
+              v-if="config.viewers.length > 0"
               v-tippy="{ placement: 'left' }"
               class="iconbutton"
               content="Panorama"
