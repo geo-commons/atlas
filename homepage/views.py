@@ -33,6 +33,7 @@ def embed(request):
     return render(request, 'v3/app.html', context)
 
 
+@xframe_options_exempt
 def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.for_request(request).prefetch_related(
         'layer_source', 'layer_type', 'linked_data', 'templates'
