@@ -82,7 +82,10 @@ export default {
   computed: {
     unselectedLayers() {
       return this.allLayers.filter(
-        (layer) => this.selectedLayers.filter((selectedLayer) => selectedLayer.id === layer.id).length === 0
+        (layer) =>
+          this.selectedLayers.filter((selectedLayer) => selectedLayer.id === layer.id).length === 0 &&
+          !layer.is_base &&
+          layer.category !== null
       );
     },
     visibleUnselectedLayers() {
