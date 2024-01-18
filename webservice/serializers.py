@@ -168,7 +168,8 @@ class LayerListSerializer(serializers.ModelSerializer):
             'layer_name',
             'category',
             'published',
-            'ordering'
+            'ordering',
+            'is_base'
         ]
 
 

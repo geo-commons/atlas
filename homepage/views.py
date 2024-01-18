@@ -93,10 +93,9 @@ def v3_admin(request):
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
 
-    authorized_layers = Layer.authorized.for_request(request).prefetch_related(
+    visible_layers = Layer.authorized.for_request(request).prefetch_related(
         'layer_source', 'layer_type', 'linked_data', 'templates'
     )
-    visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
 
     context = {
         'data':  {
@@ -111,10 +110,9 @@ def v3_admin(request):
 
 @xframe_options_exempt
 def v3_map(request, slug):
-    authorized_layers = Layer.authorized.for_request(request).prefetch_related(
+    visible_layers = Layer.authorized.for_request(request).prefetch_related(
         'layer_source', 'layer_type', 'linked_data', 'templates'
     )
-    visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
     visible_map = get_object_or_404(
         Map.authorized.for_request(request), slug=slug)
 
