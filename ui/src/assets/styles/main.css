@@ -513,3 +513,8 @@ hr {
   white-space: nowrap;
   border-width: 0;
 }
+
+.warning-text {
+  color: var(--color-alert);
+  font-weight: var(--font-weight-bold);
+}

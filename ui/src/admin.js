@@ -7,7 +7,6 @@ import Vuex from "vuex";
 import VueRouter from "vue-router";
 import VueTippy, { TippyComponent } from "vue-tippy";
 import { extend } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
 
 import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
@@ -28,6 +27,7 @@ import AdminSortPage from "@/admin/pages/AdminSortPage.vue";
 import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
 import GroupList from "@/admin/pages/GroupList.vue";
 import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
+import { email, max, required } from "vee-validate/dist/rules";
 
 Vue.config.productionTip = false;
 
@@ -50,6 +50,16 @@ Vue.component("VueTippy", TippyComponent);
 extend("required", {
   ...required,
   message: "Dit veld is verplicht",
+});
+
+extend("email", {
+  ...email,
+  message: "Voer een geldig e-mailadres in",
+});
+
+extend("max", {
+  ...max,
+  message: "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.",
 });
 
 const routes = [

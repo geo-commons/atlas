@@ -8,7 +8,7 @@
 
     <div class="admin-content-wrapper">
       <div class="search-filter-container">
-        <div v-if="!loading" class="admin-search-wrapper">
+        <div v-show="!loading" class="admin-search-wrapper">
           <SearchIcon class="icon" />
           <input id="users-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek gebruiker" />
         </div>

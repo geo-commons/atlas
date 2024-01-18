@@ -1,34 +1,24 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Categorie wijzigen</h1>
-    <validation-observer v-slot="{ handleSubmit }">
-      <form @submit.prevent="handleSubmit(saveCategory)">
-        <AdminFormSections
-          :sections="sections"
-          :initial-values="initialValues"
-          :create-view="true"
-          @update="(newValues) => updateCurrentValues(newValues)"
-        />
-        <div class="config-btn-wrapper">
-          <router-link to="/categories" class="button __tertiary" type="button">Annuleer</router-link>
-          <button class="button __primary" type="submit">Opslaan</button>
-        </div>
-      </form>
-    </validation-observer>
+    <AdminFormSections
+      ref="formSections"
+      :sections="sections"
+      :initial-values="initialValues"
+      :compact-layout="true"
+      :form-object="'categories'"
+      :object-specific-save="saveCategory"
+    />
   </div>
 </template>
 
 <script>
-import { ValidationObserver } from "vee-validate";
-
-import Cookies from "js-cookie";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 
 export default {
   name: "CategoryCreateUpdate",
   components: {
     AdminFormSections,
-    ValidationObserver,
   },
   data() {
     return {
@@ -56,30 +46,18 @@ export default {
 
       this.initialValues = await result.json();
     },
-    async saveCategory() {
-      let result;
+    async saveCategory(currentValues) {
+      const url = `/atlas/api/v1/categories/${this.$route.params.id}/`;
 
-      result = await fetch(`/atlas/api/v1/categories/${this.$route.params.id}/`, {
-        method: "PATCH",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify(this.currentValues),
-      });
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
-      if (!result.ok) {
-        console.error(
-          `Error occurred while saving category with category id: ${this.currentValues.id} and title: ${this.currentValues.title}`
-        );
+        if (result.ok) {
+          this.$router.push(`/categories`);
+        }
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
       }
-
-      this.$router.push(`/categories`);
-    },
-
-    updateCurrentValues(newValues) {
-      this.currentValues = newValues;
     },
     getSections() {
       return {
@@ -108,12 +86,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.config-btn-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  padding: 30px 0;
-}
-</style>

@@ -78,24 +78,18 @@
       </PaginationComponent>
     </div>
 
-    <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+    <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
       <template #header><h3>Configureer nieuwe bron</h3></template>
       <template #body>
-        <validation-observer v-slot="{ handleSubmit }">
-          <form v-if="newSourceData" class="form-model-container" @submit.prevent="handleSubmit(saveSource)">
-            <AdminFormSections
-              :sections="sections"
-              :initial-values="newSourceData"
-              :create-view="true"
-              @update="(newValues) => updateCurrentValues(newValues)"
-            />
-            <div class="flexer">
-              <button class="button __secondary" type="button" @click="closeFormModal">Annuleer</button>
-              <button class="button __secondary" type="submit">Opslaan</button>
-              <button class="button __primary" type="button" @click="saveSource(true)">Opslaan en openen</button>
-            </div>
-          </form>
-        </validation-observer>
+        <AdminFormSections
+          ref="formSections"
+          :sections="sections"
+          :initial-values="newSourceData"
+          :create-view="true"
+          :form-object="'sources'"
+          :object-specific-save="saveSource"
+          @close="closeFormModal"
+        />
       </template>
     </FormModal>
   </div>
@@ -106,7 +100,6 @@ import Cookies from "js-cookie";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import FormModal from "@/components/FormModal.vue";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import { ValidationObserver } from "vee-validate";
 import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
@@ -125,7 +118,6 @@ export default {
     AdminFormSections,
     FormModal,
     AddIcon,
-    ValidationObserver,
   },
   data() {
     return {
@@ -206,33 +198,25 @@ export default {
         this.getSources();
       }
     },
-    async saveSource(continueEditing = false) {
-      let result;
+    async saveSource(currentValues, continueEditing = false) {
+      const url = "/atlas/api/v1/sources/";
 
-      result = await fetch(`/atlas/api/v1/sources/`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify(this.newSourceData),
-      });
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
 
-      // todo: think about what to do if the result is not ok.
-      if (result.ok) {
-        this.closeFormModal();
+        if (result.ok) {
+          this.closeFormModal();
 
-        if (continueEditing) {
-          const response = await result.json();
-          this.$router.push(`/sources/update/${response.id}`);
+          if (continueEditing) {
+            const response = await result.json();
+            this.$router.push(`/sources/update/${response.id}`);
+          }
+
+          await this.getSources();
         }
-
-        await this.getSources();
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
       }
-    },
-    updateCurrentValues(newValues) {
-      this.newSourceData = newValues;
     },
     openFormModal() {
       this.newSourceData = {
