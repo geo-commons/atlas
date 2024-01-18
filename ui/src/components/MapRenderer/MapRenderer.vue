@@ -141,6 +141,7 @@ import ZoomPanel from "../ZoomPanel";
 import GeoLocationButton from "../GeoLocationButton";
 import FilterListIcon from "@/icons/FilterListIcon.vue";
 import DataPanelButton from "../DataPanelButton.vue";
+import { transform } from "ol/proj";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -236,16 +237,26 @@ export default {
         );
         const data = await result.json();
 
+        const coordinates = `(${Math.round(position.marker[0] * 100) / 100}, ${
+          Math.round(position.marker[1] * 100) / 100
+        })`;
+
+        const convertedPosition = transform([position.marker[0], position.marker[1]], "EPSG:28992", "EPSG:4326");
+        const coordEPSG4326 = `(${Math.round(convertedPosition[1] * 1000) / 1000}, ${
+          Math.round(convertedPosition[0] * 1000) / 1000
+        })`;
+
         if (!data.response.docs || data.response.docs.length === 0) {
-          this.$store.commit(
-            "setSearchQuery",
-            `(${Math.round(position.marker[0] * 100) / 100},${Math.round(position.marker[1] * 100) / 100})`
-          );
+          this.$store.commit("setSearchQuery", { coordinates: coordinates, coordEPSG4326: coordEPSG4326 });
           return;
         }
 
         const object = data.response.docs[0];
-        this.$store.commit("setSearchQuery", object.weergavenaam);
+        this.$store.commit("setSearchQuery", {
+          title: object.weergavenaam,
+          coordinates: coordinates,
+          coordEPSG4326: coordEPSG4326,
+        });
       } catch (e) {
         console.error(e);
       }
