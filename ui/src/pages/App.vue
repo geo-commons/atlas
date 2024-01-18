@@ -1,7 +1,7 @@
 <template>
   <div class="app" :class="{ showDataPanel, showInfoPanel }" :style="computedStyle">
     <header-menu v-if="!isEmbed && config.features.portal" />
-    <div class="map-container">
+    <div class="map-container" ref="mapContainer">
       <div class="renderer-container">
         <PanoramaPanel
           class="panorama-panel"
@@ -250,9 +250,6 @@ export default {
     },
   },
   created() {
-    window.addEventListener("resize", this.onResizeWindow);
-    this.setViewportHeight();
-
     if (this.drawing) {
       this.fetchDrawing();
     }
@@ -268,6 +265,10 @@ export default {
       this.fetchAccessToken();
     }, 1000 * 60 * 5); // every 5 minutes
   },
+  mounted() {
+    window.addEventListener("resize", this.onResizeWindow);
+    this.setViewportHeight();
+  },
   destroyed() {
     window.removeEventListener("resize", this.onResizeWindow);
     clearInterval(this.fetchInterval);
@@ -277,7 +278,7 @@ export default {
       this.setViewportHeight();
     },
     setViewportHeight() {
-      this.computedStyle["--vh"] = window.innerHeight / 100 + "px";
+      this.computedStyle["--vh"] = this.$refs.mapContainer.clientHeight / 100 + "px";
     },
     async setPosition(position) {
       this.$store.commit("setPosition", position);

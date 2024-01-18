@@ -1,5 +1,10 @@
 <template>
-  <div class="map-container" :class="{ showInfoPanel, showDataPanel }">
+  <div
+    class="map-container"
+    :class="{ showInfoPanel, showDataPanel }"
+    :style="computedStyle"
+    ref="mapContainer"
+  >
     <div class="renderer-container">
       <OpenLayersRenderer
         ref="map"
@@ -207,6 +212,7 @@ export default {
       filters: {},
       infoPanelExpanded: false,
       mapPadding: [0, 0, 0, 0],
+      computedStyle: {},
     };
   },
   computed: {
@@ -222,7 +228,20 @@ export default {
       this.layers = value;
     },
   },
+  mounted() {
+    window.addEventListener("resize", this.onResizeWindow);
+    this.setViewportHeight();
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.onResizeWindow);
+  },
   methods: {
+    onResizeWindow() {
+      this.setViewportHeight();
+    },
+    setViewportHeight() {
+      this.computedStyle["--vh"] = this.$refs.mapContainer.clientHeight / 100 + "px";
+    },
     async setPosition(position) {
       this.position = position;
       this.$emit("position-changed", position);
