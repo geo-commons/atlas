@@ -1,21 +1,19 @@
 <template>
-  <div class="table-header-container">
-    <span class="header-text" @click="() => sortColumn()">
+  <button
+    v-tippy="{ placement: 'bottom' }"
+    aria-label="Sorteer kolom"
+    content="Sorteer"
+    @click="() => sortColumn()"
+    class="header-background"
+  >
+    <span class="table-header-container">
       {{ headerText }}
-    </span>
-    <button
-      v-tippy="{ placement: 'bottom' }"
-      aria-label="Sorteer kolom"
-      content="Sorteer"
-      class="flex-center"
-      @click="() => sortColumn()"
-    >
-      <span class="icon-min-width flex-center">
+      <span class="icon-min-width">
         <ArrowUpIcon v-if="property === sortKey && sortAscending" />
         <ArrowDownIcon v-if="property === sortKey && !sortAscending" />
       </span>
-    </button>
-  </div>
+    </span>
+  </button>
 </template>
 
 <script>
@@ -43,16 +41,16 @@ export default {
 </script>
 
 <style scoped>
+.header-background {
+  background: inherit;
+}
+
 .table-header-container {
   display: flex;
   font-weight: var(--font-weight-normal);
   gap: 3px;
   text-transform: capitalize;
   justify-content: flex-start;
-}
-
-.header-text {
-  cursor: pointer;
 }
 
 .icon-min-width {

@@ -1,5 +1,5 @@
 <template>
-  <div class="app" :class="{ showInfoPanel: showInfoPanel, showDataPanel }" :style="computedStyle">
+  <div class="app" :class="{ showDataPanel, showInfoPanel }" :style="computedStyle">
     <header-menu v-if="!isEmbed && config.features.portal" />
     <div class="map-container">
       <div class="renderer-container">
@@ -26,7 +26,6 @@
           @tool-used="toolUsed"
         />
       </div>
-
       <PointInfoPanel
         v-if="!showPanoramaPanel"
         :layers="layers"
@@ -35,6 +34,7 @@
         :user="user"
         @set-position="setPosition"
         @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
+        @expanded-info-panel="toggleInfoPanel"
       />
       <DataPanel
         v-if="!isEmbed && !showPanoramaPanel"
@@ -51,7 +51,7 @@
         @toggle-full-side-panel="toggleDataPanelFullScreen"
       />
       <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
-        <div class="top-left-panels">
+        <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
           <SearchPanel
             v-if="!showPanoramaPanel"
             :position="position"
@@ -163,7 +163,6 @@
 import Cookies from "js-cookie";
 import GeoJSON from "ol/format/GeoJSON";
 import { mapState } from "vuex";
-import { isMobile } from "../utils/helpers";
 import HeaderMenu from "../components/HeaderMenu";
 import AlertMessage from "../components/AlertMessage";
 import BaseLayersPanel from "../components/BaseLayersPanel";
@@ -180,6 +179,7 @@ import PointInfoPanel from "../components/PointInfoPanel";
 import SearchPanel from "../components/SearchPanel";
 import ZoomPanel from "../components/ZoomPanel";
 import GeoLocationButton from "../components/GeoLocationButton";
+import { isMobile } from "@/utils/helpers";
 import { transform } from "ol/proj";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
@@ -216,6 +216,7 @@ export default {
       drawFeatures: [],
       modal: "",
       mapPadding: [0, 0, 0, 0],
+      infoPanelExpanded: false,
     };
   },
   computed: mapState({
@@ -232,7 +233,13 @@ export default {
   }),
   watch: {
     position(value) {
+      // Toggle info panel based on if there is a marker present.
       this.showInfoPanel = Boolean(value.marker);
+
+      if (this.showInfoPanel) {
+        this.setWindowInnerWidth();
+      }
+
       this.pushHistoryState();
     },
     layers() {
@@ -339,9 +346,6 @@ export default {
           break;
       }
     },
-    toggleInfoPanel() {
-      this.showInfoPanel = !this.showInfoPanel;
-    },
     togglePanoramaPanel() {
       this.showBaseLayersPanel = false;
       this.showPanoramaPanel = !this.showPanoramaPanel;
@@ -384,14 +388,40 @@ export default {
         this.$store.commit("setSelectedArea", null);
       }
 
-      if (!isMobile() && this.showDataPanel) {
-        this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
-      } else {
-        this.$set(this.mapPadding, 3, 0);
-      }
+      this.setWindowInnerWidth();
     },
     toggleDataPanelFullScreen() {
       this.showDataPanelFullScreen = !this.showDataPanelFullScreen;
+      this.setWindowInnerWidth();
+    },
+    toggleInfoPanel(expandInfoPanel) {
+      this.infoPanelExpanded = expandInfoPanel;
+      this.setWindowInnerWidth();
+    },
+    setWindowInnerWidth() {
+      // Do not adjust the inner window padding for mobile screens.
+      if (isMobile()) {
+        this.$set(this.mapPadding, 3, 0);
+        return;
+      }
+
+      if (this.showDataPanel && !this.showDataPanelFullScreen) {
+        this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+        return;
+      }
+
+      if (this.showInfoPanel) {
+        if (this.infoPanelExpanded) {
+          this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+          return;
+        }
+
+        this.$set(this.mapPadding, 3, window.innerWidth * 0.25);
+        return;
+      }
+
+      // reset padding of the inner window.
+      this.$set(this.mapPadding, 3, 0);
     },
     async fetchAccessToken() {
       const response = await fetch("/atlas/api/v1/token", {
@@ -470,13 +500,15 @@ export default {
   .container {
     flex-direction: column;
   }
+}
+
+@media (max-width: 932px) {
+  .map-container {
+    flex-direction: column;
+  }
 
   .ui-container {
     order: -1;
-  }
-
-  .map-container {
-    flex-direction: column;
   }
 }
 
@@ -525,13 +557,15 @@ export default {
   gap: 10px;
 }
 
+@media (min-width: 1024px) {
+  .top-left-panels.extra-padding {
+    padding-left: calc(2 * var(--padding-screen));
+  }
+}
+
 @media (min-width: 576px) {
   .top-right-panels {
     top: var(--padding-screen);
-  }
-
-  .showDataPanel .top-left-panels {
-    display: none;
   }
 }
 

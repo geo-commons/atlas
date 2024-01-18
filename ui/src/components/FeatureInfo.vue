@@ -1,48 +1,44 @@
 <template>
   <ExpandButton v-if="features.length > 0" :title="featureInfoTitle" :is-open="isOpen" class="feature">
-    <div
-      v-for="feature in features"
-      :key="feature.id"
-      class="border-bottom feature-select"
-      @click="() => $emit('show-selected-feature', feature)"
-    >
-      <table-list>
-        <table>
-          <tbody>
-            <tr v-for="property in filterProperties(feature.properties)" :key="property">
-              <td>
-                {{
-                  layer.friendly_fields && layer.friendly_fields[property]
-                    ? layer.friendly_fields[property]
-                    : property | capitalize
-                }}
-              </td>
-              <td>
-                <RichValue :data-key="property" :data-value="feature.properties[property]" />
-              </td>
-            </tr>
-            <tr v-for="property in Object.keys(layer.templated_properties)" :key="property">
-              <td>
-                {{
-                  layer.friendly_fields && layer.friendly_fields[property]
-                    ? layer.friendly_fields[property]
-                    : property | capitalize
-                }}
-              </td>
-              <td>
-                <MarkdownTemplate
-                  :source="layer.templated_properties[property]"
-                  :data="getTemplatedPropertiesData(feature.properties)"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </table-list>
+    <div v-for="feature in features" :key="feature.id" class="border-bottom">
+      <div class="feature-select" @click="() => $emit('show-selected-feature', feature)">
+        <table-list>
+          <table>
+            <tbody>
+              <tr v-for="property in filterProperties(feature.properties)" :key="property">
+                <td>
+                  {{
+                    layer.friendly_fields && layer.friendly_fields[property]
+                      ? layer.friendly_fields[property]
+                      : property | capitalize
+                  }}
+                </td>
+                <td>
+                  <RichValue :data-key="property" :data-value="feature.properties[property]" />
+                </td>
+              </tr>
+              <tr v-for="property in Object.keys(layer.templated_properties)" :key="property">
+                <td>
+                  {{
+                    layer.friendly_fields && layer.friendly_fields[property]
+                      ? layer.friendly_fields[property]
+                      : property | capitalize
+                  }}
+                </td>
+                <td>
+                  <MarkdownTemplate
+                    :source="layer.templated_properties[property]"
+                    :data="getTemplatedPropertiesData(feature.properties)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </table-list>
+      </div>
 
       <div v-for="(linkedData, key) in layer.linked_data" :key="key" class="linked-data">
         <div v-if="features[0].properties[linkedData.source_key]">
-          <b>{{ linkedData.title }}</b>
           <FeatureTableExpandable
             :layer="linkedData"
             :overall-filter="{
@@ -51,6 +47,7 @@
             }"
             :position="position"
             @set-position="setPosition"
+            @on-fit="(value) => onFit(value)"
           />
         </div>
       </div>
@@ -189,6 +186,7 @@ export default {
       this.features = data.features;
     },
     setPosition(value) {
+      this.$emit("set-position", value);
       this.$store.commit("setPosition", value);
     },
     filterProperties(fetchedProperties) {
@@ -212,6 +210,9 @@ export default {
         properties,
         position: this.position,
       };
+    },
+    onFit(value) {
+      this.$emit("on-fit", value);
     },
   },
 };

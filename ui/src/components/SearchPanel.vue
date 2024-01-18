@@ -150,10 +150,4 @@ export default {
   width: var(--width-detail);
   max-width: 100%;
 }
-
-@media (min-width: 576px) {
-  .showDataPanel .wrapper {
-    display: none;
-  }
-}
 </style>

@@ -1,40 +1,15 @@
 <template>
-  <aside v-if="showPanel" class="wrapper" :class="{ large, fullScreen }">
+  <aside v-if="showPanel" class="wrapper" :class="{ large, medium, fullScreen }">
     <button
-      v-if="$listeners['toggle-side-panel']"
+      v-if="(large || medium) && !fullScreen"
       v-tippy="{ placement: 'right' }"
-      content="Verberg paneel"
-      aria-label="Verberg paneel"
+      :content="large && medium ? 'Verklein paneel' : 'Vergroot paneel'"
+      :aria-label="large && medium ? 'Verklein paneel' : 'Vergroot paneel'"
       class="iconbutton resize-button"
       @click="toggleSidePanel"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
-      </svg>
-    </button>
-    <button
-      v-if="large && !fullScreen"
-      v-tippy="{ placement: 'right' }"
-      content="Vergroot paneel"
-      aria-label="Vergroot paneel"
-      class="iconbutton resize-button"
-      @click="toggleFullScreen"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
-        <path d="M0 0h24v24H0z" fill="none" />
-        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-      </svg>
+      <ChevronLeftIcon v-if="large && medium" />
+      <ChevronRightIcon v-else />
     </button>
     <button
       v-tippy="{ placement: 'bottom' }"
@@ -43,15 +18,7 @@
       class="iconbutton expand-mobile-button"
       @click="toggleFullScreen"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
-        <path d="M0 0h24v24H0z" fill="none" />
-        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-      </svg>
+      <ChevronUpIcon />
     </button>
     <button
       v-if="large && fullScreen"
@@ -59,17 +26,9 @@
       content="Verklein paneel"
       aria-label="Verklein paneel"
       class="iconbutton resize-button exit-fullscreen"
-      @click="toggleFullScreen"
+      @click="toggleSidePanel"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
-      </svg>
+      <ChevronLeftIcon />
     </button>
 
     <div class="header">
@@ -83,20 +42,44 @@
 </template>
 
 <script>
+import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
+import ChevronLeftIcon from "@/assets/icons/chevron-left-icon.svg";
+import ChevronUpIcon from "@/assets/icons/chevron-up-icon.svg";
+
 export default {
   name: "SidePanel",
+  components: { ChevronRightIcon, ChevronLeftIcon, ChevronUpIcon },
   props: {
-    large: Boolean,
+    initialSizeLarge: Boolean,
+    initialSizeMedium: Boolean,
     showPanel: Boolean,
   },
   data() {
     return {
       fullScreen: false,
+      large: false,
+      medium: false,
     };
+  },
+  created() {
+    this.large = this.initialSizeLarge;
+    this.medium = this.initialSizeMedium;
+  },
+  watch: {
+    initialSizeLarge(value) {
+      this.large = value;
+      this.fullScreen = false;
+    },
   },
   methods: {
     toggleSidePanel() {
-      this.$emit("toggle-side-panel");
+      if (!this.medium) {
+        this.toggleFullScreen();
+        return;
+      }
+
+      this.large = !this.large;
+      this.$emit("expand-side-panel", this.large);
     },
     toggleFullScreen() {
       this.fullScreen = !this.fullScreen;
@@ -118,17 +101,7 @@ export default {
   flex-direction: column;
 }
 
-@media (max-width: 575px) {
-  .wrapper {
-    height: calc(40 * var(--vh));
-  }
-
-  .wrapper.fullScreen {
-    height: 100%;
-  }
-}
-
-@media (min-width: 576px) {
+@media (min-width: 1024px) {
   .wrapper {
     height: 100%;
     max-width: var(--width-detail);
@@ -140,6 +113,17 @@ export default {
 
   .wrapper.fullScreen {
     max-width: 100%;
+  }
+}
+
+@media (max-width: 932px) {
+  .wrapper {
+    height: calc(40 * var(--vh));
+    width: 100%;
+  }
+
+  .wrapper.fullScreen {
+    height: 100%;
   }
 }
 
@@ -180,7 +164,7 @@ export default {
   pointer-events: none;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 932px) {
   .resize-button {
     display: none;
   }
@@ -212,21 +196,17 @@ export default {
 }
 
 .wrapper.fullScreen .expand-mobile-button svg {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 .wrapper.fullScreen .expand-mobile-button:before {
   content: none;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 1024px) {
   .expand-mobile-button {
     display: none;
   }
-}
-
-.expand-mobile-button svg {
-  transform: rotate(-90deg);
 }
 
 .expand-mobile-button:before {
