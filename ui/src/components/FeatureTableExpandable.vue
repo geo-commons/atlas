@@ -14,6 +14,7 @@
                   <th v-for="property in displayProperties" :key="property">
                     <SortableTableHeaderItem
                       :layer="layer"
+                      :header-text="headerText(property)"
                       :property="property"
                       :sort-key="sortKey"
                       :sort-ascending="sortAscending"
@@ -28,7 +29,7 @@
                     <button
                       v-if="feature.geometry"
                       v-tippy="{ placement: 'right' }"
-                      class="iconbutton pin-button"
+                      class="iconbutton __small __round"
                       content="Bekijk op kaart"
                       aria-label="Bekijk op kaart"
                       @click="() => showFeature(feature)"
@@ -67,11 +68,11 @@
 
 <script>
 import GeoJSON from "ol/format/GeoJSON";
-import { getCenter } from "ol/extent";
 
 import TableList from "./TableList";
 import ExpandButton from "./ExpandButton";
 import SortableTableHeaderItem from "./SortableTableHeaderItem.vue";
+import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 
 export default {
   name: "FeatureTableExpandable",
@@ -237,7 +238,7 @@ export default {
     },
     showFeature(feature) {
       const geometry = new GeoJSON().readFeature(feature).getGeometry();
-      const center = getCenter(geometry.getExtent());
+      const center = getFeatureCenterCoordinates(feature);
 
       this.$emit("set-position", {
         ...this.position,
@@ -285,6 +286,11 @@ export default {
       // if descending, highest sorts first
       return a < b ? 1 : -1;
     },
+    headerText(property) {
+      return this.layer.friendly_fields && this.layer.friendly_fields[property]
+        ? this.layer.friendly_fields[property]
+        : property;
+    },
   },
 };
 </script>
@@ -296,15 +302,6 @@ export default {
 
 .table {
   margin: 0 0 24px;
-}
-
-.iconbutton {
-  width: var(--width-button-normal);
-}
-
-.pin-button {
-  width: 100%;
-  height: 26px;
 }
 
 td:first-child {

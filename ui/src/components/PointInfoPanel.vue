@@ -1,5 +1,10 @@
 <template>
-  <SidePanel :show-panel="showPanel">
+  <SidePanel
+    initial-size-medium
+    :initial-size-large="resetSidePanel"
+    :show-panel="showPanel"
+    @expand-side-panel="toggleSidePanelSize"
+  >
     <template #search>
       <div class="info-panel-header">
         <div class="search-query">
@@ -52,6 +57,8 @@
         :layer="visibleLayer"
         :position="position"
         @show-selected-feature="onFeatureSelect"
+        @set-position="(position) => setPosition(position)"
+        @on-fit="onFit"
       />
     </template>
   </SidePanel>
@@ -91,9 +98,15 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      resetSidePanel: null,
+    };
+  },
   methods: {
     closeInfoPanel() {
       this.searchQuery = "";
+      this.resetSidePanel = false;
       this.$emit("set-position", { ...this.position, marker: null });
     },
     onFeatureSelect(feature) {
@@ -108,6 +121,16 @@ export default {
         marker: center,
         center: center,
       });
+    },
+    onFit(value) {
+      this.$emit("on-fit", value);
+    },
+    setPosition(value) {
+      this.$emit("set-position", value);
+    },
+    toggleSidePanelSize(value) {
+      this.resetSidePanel = value;
+      this.$emit("expanded-info-panel", value);
     },
   },
 };

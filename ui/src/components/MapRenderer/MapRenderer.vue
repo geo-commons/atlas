@@ -1,5 +1,5 @@
 <template>
-  <div class="map-container" :class="{ showInfoPanel: showInfoPanel, showDataPanel }">
+  <div class="map-container" :class="{ showInfoPanel, showDataPanel }">
     <div class="renderer-container">
       <OpenLayersRenderer
         ref="map"
@@ -10,8 +10,8 @@
         :selected-area="selectedArea"
         :highlighted-features="highlightedFeatures"
         :selected-features="selectedFeatures"
-        :padding="[0, 0, 0, 0]"
         :user="user"
+        :padding="mapPadding"
         :features="features"
         :filters="filters"
         @position-changed="setPosition"
@@ -47,6 +47,7 @@
       :user="user"
       @set-position="setPosition"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
+      @expanded-info-panel="toggleInfoPanel"
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
@@ -70,7 +71,7 @@
     />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
-      <div class="top-left-panels">
+      <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
         <SearchPanel
           v-if="features.searchbar"
           :position="position"
@@ -141,6 +142,7 @@ import ZoomPanel from "../ZoomPanel";
 import GeoLocationButton from "../GeoLocationButton";
 import FilterListIcon from "@/icons/FilterListIcon.vue";
 import DataPanelButton from "../DataPanelButton.vue";
+import { isMobile } from "@/utils/helpers";
 import { transform } from "ol/proj";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
@@ -203,6 +205,8 @@ export default {
       showList: false,
       showFilters: false,
       filters: {},
+      infoPanelExpanded: false,
+      mapPadding: [0, 0, 0, 0],
     };
   },
   computed: {
@@ -226,6 +230,8 @@ export default {
       if (!position.marker) {
         return;
       }
+
+      this.setWindowInnerWidth();
 
       this.reverseGeocode(position);
       this.getFeatureInfo(position);
@@ -302,9 +308,41 @@ export default {
       if (!this.showDataPanel) {
         this.selectedArea = null;
       }
+
+      this.setWindowInnerWidth();
     },
     toggleDataPanelFullScreen() {
       this.showDataPanelFullScreen = !this.showDataPanelFullScreen;
+      this.setWindowInnerWidth();
+    },
+    toggleInfoPanel(expandInfoPanel) {
+      this.infoPanelExpanded = expandInfoPanel;
+      this.setWindowInnerWidth();
+    },
+    setWindowInnerWidth() {
+      // Do not adjust the inner window padding for mobile screens.
+      if (isMobile()) {
+        this.$set(this.mapPadding, 3, 0);
+        return;
+      }
+
+      if (this.showDataPanel && !this.showDataPanelFullScreen) {
+        this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+        return;
+      }
+
+      if (this.showInfoPanel) {
+        if (this.infoPanelExpanded) {
+          this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+          return;
+        }
+
+        this.$set(this.mapPadding, 3, window.innerWidth * 0.25);
+        return;
+      }
+
+      // reset padding of the inner window.
+      this.$set(this.mapPadding, 3, 0);
     },
     toggleList() {
       this.showList = !this.showList;
@@ -377,9 +415,15 @@ export default {
   .ui-container {
     order: -1;
   }
+}
 
+@media (max-width: 932px) {
   .map-container {
     flex-direction: column;
+  }
+
+  .ui-container {
+    order: -1;
   }
 }
 
@@ -418,9 +462,15 @@ export default {
   gap: 10px;
 }
 
+@media (min-width: 1024px) {
+  .top-left-panels.extra-padding {
+    padding-left: calc(2 * var(--padding-screen));
+  }
+}
+
 @media (min-width: 576px) {
-  .showDataPanel .top-left-panels {
-    display: none;
+  .top-right-panels {
+    top: var(--padding-screen);
   }
 }
 

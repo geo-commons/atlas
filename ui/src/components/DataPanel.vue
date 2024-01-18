@@ -1,5 +1,5 @@
 <template>
-  <SidePanel large :show-panel="showDataPanel" @toggle-full-side-panel="toggleFullScreen">
+  <SidePanel initial-size-large :show-panel="showDataPanel" @toggle-full-side-panel="toggleFullScreen">
     <template #search>
       <div class="flexer" :class="{ 'full-window-padding': fullSizeWindow }">
         <div v-if="selectedLayerId != null" class="selected-layer-wrapper">
@@ -95,7 +95,7 @@ export default {
   computed: {
     visibleLayers() {
       return this.layers.filter(
-        (layer) => layer.is_visible && !layer.is_base && visibleSourceTypes.includes(layer.source_type),
+        (layer) => layer.is_visible && !layer.is_base && visibleSourceTypes.includes(layer.source_type)
       );
     },
     selectedLayer() {

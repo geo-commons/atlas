@@ -19,12 +19,7 @@
           aria-controls="layers"
           @click="() => togglePanel('layers')"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
             <path d="M0 0h24v24H0V0z" fill="none" />
             <path
               fill="currentColor"
@@ -45,12 +40,7 @@
           aria-controls="visibleLayers"
           @click="() => togglePanel('activeLayers')"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
             <path d="M0 0h24v24H0V0z" fill="none" />
             <path
               fill="currentColor"
@@ -61,10 +51,7 @@
       </div>
 
       <transition name="fade">
-        <div
-          v-if="!isEmbed && visibleLayers.length > 0"
-          class="counter visible-layer-counter"
-        >
+        <div v-if="!isEmbed && visibleLayers.length > 0" class="counter visible-layer-counter">
           {{ visibleLayers.length }}
         </div>
       </transition>
@@ -74,26 +61,14 @@
       <ul v-if="panel === 'layers'" id="layers" class="layers">
         <div class="layers-search">
           <label for="layers-search">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="18px"
-              viewBox="0 0 24 24"
-              width="18px"
-              fill="currentColor"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="currentColor">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path
                 d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
               />
             </svg>
           </label>
-          <input
-            id="layers-search"
-            v-model="searchQuery"
-            type="search"
-            name="query"
-            placeholder="Zoek laag"
-          />
+          <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
         </div>
         <li>
           <ExpandButton
@@ -104,46 +79,28 @@
             class="category-wrapper"
           >
             <template #button>
-              <div
-                v-if="
-                  category.layers.filter((layer) => layer.is_visible).length > 0
-                "
-                class="counter layer-counter"
-              >
+              <div v-if="category.layers.filter((layer) => layer.is_visible).length > 0" class="counter layer-counter">
                 {{ category.layers.filter((layer) => layer.is_visible).length }}
               </div>
             </template>
             <template #default>
               <ul :id="category.id" class="sublayers">
-                <li
-                  v-for="layer in category.layers"
-                  :key="layer.id"
-                  class="sublayer"
-                >
+                <li v-for="layer in category.layers" :key="layer.id" class="sublayer">
                   <!-- <div class="sublayer-check"> -->
                   <input
                     :id="layer.id"
                     type="checkbox"
                     :name="layer.id"
                     :checked="layer.is_visible"
-                    :disabled="
-                      layer.is_disabled ||
-                      (layer.login_required && (!user || !user.token))
-                    "
+                    :disabled="layer.is_disabled || (layer.login_required && (!user || !user.token))"
                     @change="() => onSelectLayer(layer)"
                   />
                   <label :for="layer.id">
                     {{ layer.title }}
-                    <LayerAuthentication
-                      v-if="layer.login_required && (!user || !user.token)"
-                    />
+                    <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
                   </label>
                   <!-- </div> -->
-                  <LayerFit
-                    v-if="!layer.is_disabled && layer.extent"
-                    :layer="layer"
-                    @click="() => onFit(layer)"
-                  />
+                  <LayerFit v-if="!layer.is_disabled && layer.extent" :layer="layer" @click="() => onFit(layer)" />
                   <LayerInfo :layer="layer" />
                 </li>
               </ul>
@@ -154,11 +111,7 @@
     </transition>
 
     <transition name="fade">
-      <ul
-        v-if="visibleLayers.length > 0 && panel === 'activeLayers'"
-        id="visibleLayers"
-        class="visible-layers"
-      >
+      <ul v-if="visibleLayers.length > 0 && panel === 'activeLayers'" id="visibleLayers" class="visible-layers">
         <VisibleLayer
           v-for="(layer, i) in visibleLayers"
           :key="layer.id"
@@ -200,17 +153,10 @@ export default {
     initiallyShowLayerList: Boolean,
   },
   data() {
-    const visibleLayers = this.layers.filter(
-      (layer) => layer.category && layer.is_visible
-    );
+    const visibleLayers = this.layers.filter((layer) => layer.category && layer.is_visible);
 
     return {
-      panel:
-        visibleLayers.length > 0
-          ? "activeLayers"
-          : this.initiallyShowLayerList
-          ? "layers"
-          : "",
+      panel: visibleLayers.length > 0 ? "activeLayers" : this.initiallyShowLayerList ? "layers" : "",
       searchQuery: "",
     };
   },
@@ -232,9 +178,7 @@ export default {
           }
         }
 
-        const existingCategory = categories.find(
-          (c) => c.id === layer.category.id
-        );
+        const existingCategory = categories.find((c) => c.id === layer.category.id);
 
         layer.is_disabled = false;
         if (layer.zoom_min && this.position.zoom < layer.zoom_min) {
@@ -245,11 +189,7 @@ export default {
           layer.is_disabled = true;
         }
 
-        if (
-          layer.extent &&
-          this.position.extent &&
-          !intersects(layer.extent, this.position.extent)
-        ) {
+        if (layer.extent && this.position.extent && !intersects(layer.extent, this.position.extent)) {
           layer.is_disabled = true;
         }
 
@@ -274,12 +214,12 @@ export default {
   },
   methods: {
     togglePanel(selectedPanel) {
-      if (this.panel === "layers" && selectedPanel === "layers") {
-        this.panel = "activeLayers";
+      if (this.panel === selectedPanel) {
+        this.panel = "";
         return;
       }
 
-      this.panel = selectedPanel !== this.panel ? selectedPanel : "";
+      this.panel = selectedPanel;
     },
     onSelectLayer(selectedLayer) {
       this.$emit("toggle-layer", [selectedLayer.id, !selectedLayer.is_visible]);
@@ -361,14 +301,9 @@ export default {
   position: absolute;
   bottom: var(--width-button-large);
   left: 0;
-  max-height: calc(
-    (100 * var(--vh)) -
-      ((var(--width-button-large) * 2) + (var(--padding-screen) * 3))
-  );
+  max-height: calc((100 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)));
   width: calc(var(--width-detail) - (var(--padding-screen) * 2));
-  max-width: calc(
-    100vw - (var(--padding-screen) * 3) - var(--width-button-normal)
-  );
+  max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal));
   overflow-y: auto;
   background: white;
   border-radius: var(--radius-small);
