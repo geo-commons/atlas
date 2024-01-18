@@ -45,8 +45,7 @@
 <script>
 import SearchForm from "./SearchForm";
 
-const suggestEndpoint =
-  "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
+const suggestEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
 const freeEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
 
 const visibleSourceTypes = ["WMS_WFS", "WFS"];
@@ -70,18 +69,17 @@ export default {
   computed: {
     query: {
       get() {
-        return this.$store.state.searchQuery;
+        return this.$store.state.searchQuery.title
+          ? this.$store.state.searchQuery.title
+          : this.$store.state.searchQuery.coordinates;
       },
       set(value) {
-        this.$store.commit("setSearchQuery", value);
+        this.$store.commit("setSearchQuery", { title: value });
       },
     },
     visibleLayers() {
       return this.layers.filter(
-        (layer) =>
-          layer.is_visible &&
-          !layer.is_base &&
-          visibleSourceTypes.includes(layer.source_type)
+        (layer) => layer.is_visible && !layer.is_base && visibleSourceTypes.includes(layer.source_type)
       );
     },
   },
@@ -110,19 +108,14 @@ export default {
         this.results = data.response.docs;
       } catch (e) {
         console.error(e);
-        this.$store.commit(
-          "setAlert",
-          "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw."
-        );
+        this.$store.commit("setAlert", "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
       }
     },
     async onNavigate(e, id) {
       e.preventDefault();
 
       try {
-        const result = await fetch(
-          `${freeEndpoint}?q=${encodeURIComponent("id:" + id)}`
-        );
+        const result = await fetch(`${freeEndpoint}?q=${encodeURIComponent("id:" + id)}`);
 
         const data = await result.json();
         if (!data.response.docs) {
@@ -131,13 +124,8 @@ export default {
 
         const object = data.response.docs[0];
 
-        const centeroide = /POINT\(([\d.]+) ([\d.]+)\)/.exec(
-          object.centroide_rd
-        );
-        const parsedCenteroide = [
-          parseFloat(centeroide[1]),
-          parseFloat(centeroide[2]),
-        ];
+        const centeroide = /POINT\(([\d.]+) ([\d.]+)\)/.exec(object.centroide_rd);
+        const parsedCenteroide = [parseFloat(centeroide[1]), parseFloat(centeroide[2])];
 
         this.$emit("set-position", {
           ...this.position,
@@ -150,10 +138,7 @@ export default {
         this.showSuggestions = false;
       } catch (e) {
         console.error(e);
-        this.$store.commit(
-          "setAlert",
-          "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw."
-        );
+        this.$store.commit("setAlert", "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
       }
     },
   },

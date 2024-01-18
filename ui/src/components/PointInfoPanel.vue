@@ -1,18 +1,46 @@
 <template>
   <SidePanel :show-panel="showPanel">
     <template #search>
-      <button
-        v-tippy="{ placement: 'right' }"
-        class="iconbutton close-button"
-        type="button"
-        content="Sluit paneel"
-        aria-label="Sluit paneel"
-        @click="closeInfoPanel"
-      >
-        <close-icon />
-      </button>
-      <div class="search-query">
-        <h1>{{ searchQuery }}</h1>
+      <div class="info-panel-header">
+        <div class="search-query">
+          <h1 v-if="searchQuery.title">{{ searchQuery.title }}</h1>
+          <div class="coordinate-wrapper">
+            <h1 v-if="!searchQuery.title">{{ searchQuery.coordinates }}</h1>
+            <h4 v-else>{{ searchQuery.coordinates }}</h4>
+            <vue-tippy
+              placement="bottom-right"
+              theme="popover"
+              trigger="click"
+              :distance="8"
+              :delay="[0, 0]"
+              :a11y="false"
+            >
+              <template #trigger>
+                <button class="iconbutton __round show-on-hover" aria-label="Toon meer informatie">
+                  <marker-icon class="icon __small" />
+                </button>
+              </template>
+              <div class="container">
+                <div class="heading">
+                  <h3 class="title">EPSG:4326 projectie (WSG84)</h3>
+                </div>
+                <div class="property">
+                  {{ searchQuery.coordEPSG4326 }}
+                </div>
+              </div>
+            </vue-tippy>
+          </div>
+        </div>
+        <button
+          v-tippy="{ placement: 'right' }"
+          class="iconbutton __normal __outline"
+          type="button"
+          content="Sluit paneel"
+          aria-label="Sluit paneel"
+          @click="closeInfoPanel"
+        >
+          <close-icon class="icon" />
+        </button>
       </div>
     </template>
 
@@ -33,12 +61,14 @@
 import SidePanel from "./SidePanel";
 import FeatureInfo from "./FeatureInfo";
 import GeoJSON from "ol/format/GeoJSON";
-import { getFeatureCenterCoordinates } from "../utils/geometry-helpers";
+import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import CloseIcon from "@/assets/icons/close-icon.svg";
+import MarkerIcon from "@/assets/icons/marker-icon.svg";
 
 export default {
   name: "PointInfoPanel",
   components: {
+    MarkerIcon,
     CloseIcon,
     SidePanel,
     FeatureInfo,
@@ -57,7 +87,7 @@ export default {
         return this.$store.state.searchQuery;
       },
       set(value) {
-        this.$store.commit("setSearchQuery", value);
+        this.$store.commit("setSearchQuery", { title: value, coordinates: null });
       },
     },
   },
@@ -86,17 +116,72 @@ export default {
 <style scoped>
 h1 {
   font-size: var(--font-size-normal);
+  margin-bottom: 2px;
+  margin-top: 0;
+}
+
+h4 {
+  margin: 0;
+  font-weight: var(--font-weight-normal);
 }
 
 .search-query {
-  margin-left: 10px;
-  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex-grow: 1;
 }
 
-.close-button {
-  width: var(--width-button-large);
-  height: var(--width-button-large);
-  border-radius: var(--radius-normal);
-  border: 1px solid var(--color-grey-60);
+.coordinate-wrapper {
+  display: flex;
+  font-size: var(--font-size-small);
+  align-items: center;
+  gap: 4px;
+}
+
+.info-panel-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.67em;
+}
+
+@media (min-width: 576px) {
+  .info-panel-header {
+    margin-top: 0;
+  }
+}
+
+.show-on-hover {
+  display: none;
+}
+
+.search-query:hover .show-on-hover {
+  display: flex;
+}
+
+.container {
+  font-weight: normal;
+  text-align: left;
+}
+
+.heading {
+  padding: 10px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-grey-60);
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+}
+
+.property {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  font-weight: var(--font-weight-normal);
 }
 </style>
