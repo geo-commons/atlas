@@ -1,83 +1,74 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Gebruiker wijzigen</h1>
-    <validation-observer v-slot="{ handleSubmit }">
-      <form @submit.prevent="handleSubmit(saveUser)">
-        <AdminFormSections
-          :sections="sections"
-          :initial-values="initialValues"
-          @update="(newValues) => updateCurrentValues(newValues)"
-        >
-          <template #custom>
-            <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
+    <AdminFormSections
+      ref="formSections"
+      :sections="sections"
+      :initial-values="initialValues"
+      :form-object="'users'"
+      :object-specific-save="saveUser"
+    >
+      <template #custom>
+        <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
 
-            <div class="group-list-wrapper">
-              <div class="available-groups">
-                <label class="question-label" for="list1">Beschikbare groepen</label>
-                <draggable
-                  v-model="availableGroups"
-                  tag="ul"
-                  item-key="id"
-                  group="groups"
-                  v-bind="dragOptions"
-                  role="listbox"
-                >
-                  <li
-                    v-for="item in availableGroups"
-                    :key="item.id"
-                    class="groups-list-item"
-                    tabindex="0"
-                    @keydown.enter.prevent="moveGroup(item, availableGroups, selectedGroups)"
-                  >
-                    {{ item.name }}
-                  </li>
-                </draggable>
-              </div>
-              <div class="selected-groups">
-                <label class="question-label" for="list1">Geselecteerde groepen</label>
-                <draggable
-                  v-model="selectedGroups"
-                  tag="ul"
-                  item-key="id"
-                  group="groups"
-                  v-bind="dragOptions"
-                  role="listbox"
-                >
-                  <li
-                    v-for="item in selectedGroups"
-                    :key="item.id"
-                    class="groups-list-item"
-                    tabindex="0"
-                    aria-describedby="reorder_instructions"
-                    @keydown.enter.prevent="moveGroup(item, selectedGroups, availableGroups)"
-                  >
-                    {{ item.name }}
-                  </li>
-                </draggable>
-              </div>
-            </div>
-          </template>
-        </AdminFormSections>
-
-        <div class="config-btn-wrapper">
-          <router-link to="/users" class="button __tertiary" type="button">Annuleer</router-link>
-          <button class="button __primary" type="submit">Opslaan</button>
+        <div class="group-list-wrapper">
+          <div class="available-groups">
+            <label class="question-label" for="list1">Beschikbare groepen</label>
+            <draggable
+              v-model="availableGroups"
+              tag="ul"
+              item-key="id"
+              group="groups"
+              v-bind="dragOptions"
+              role="listbox"
+            >
+              <li
+                v-for="item in availableGroups"
+                :key="item.id"
+                class="groups-list-item"
+                tabindex="0"
+                @keydown.enter.prevent="moveGroup(item, availableGroups, selectedGroups)"
+              >
+                {{ item.name }}
+              </li>
+            </draggable>
+          </div>
+          <div class="selected-groups">
+            <label class="question-label" for="list1">Geselecteerde groepen</label>
+            <draggable
+              v-model="selectedGroups"
+              tag="ul"
+              item-key="id"
+              group="groups"
+              v-bind="dragOptions"
+              role="listbox"
+            >
+              <li
+                v-for="item in selectedGroups"
+                :key="item.id"
+                class="groups-list-item"
+                tabindex="0"
+                aria-describedby="reorder_instructions"
+                @keydown.enter.prevent="moveGroup(item, selectedGroups, availableGroups)"
+              >
+                {{ item.name }}
+              </li>
+            </draggable>
+          </div>
         </div>
-      </form>
-    </validation-observer>
+      </template>
+    </AdminFormSections>
   </div>
 </template>
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import draggable from "vuedraggable";
-import { ValidationObserver } from "vee-validate";
-import Cookies from "js-cookie";
 import { mapState } from "vuex";
 
 export default {
   name: "UserCreateUpdateComponent",
-  components: { AdminFormSections, ValidationObserver, draggable },
+  components: { AdminFormSections, draggable },
   data() {
     return {
       sections: {},
@@ -144,33 +135,22 @@ export default {
 
       return result;
     },
-    async saveUser() {
-      let result;
+    async saveUser(currentValues) {
+      currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+      currentValues.is_staff = currentValues.is_admin;
+      currentValues.is_superuser = currentValues.is_admin;
 
-      this.currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
-      this.currentValues.is_staff = this.currentValues.is_admin;
-      this.currentValues.is_superuser = this.currentValues.is_admin;
+      const url = `/atlas/api/v1/users/${this.$route.params.id}/`;
 
-      result = await fetch(`/atlas/api/v1/users/${this.$route.params.id}/`, {
-        method: "PATCH",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify(this.currentValues),
-      });
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
-      if (!result.ok) {
-        console.error(
-          `Error occurred while saving user with user id: ${this.currentValues.id} and username: ${this.currentValues.username}`
-        );
+        if (result.ok) {
+          this.$router.push(`/users`);
+        }
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
       }
-
-      this.$router.push(`/users`);
-    },
-    updateCurrentValues(newValues) {
-      this.currentValues = newValues;
     },
     moveGroup(item, fromArray, toArray) {
       const arrayAriaText = toArray === this.availableGroups ? "Beschikbare groepen" : "Geselecteerde groepen";

@@ -86,24 +86,18 @@
       </PaginationComponent>
     </div>
 
-    <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+    <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
       <template #header><h3>Configureer nieuwe groep</h3></template>
       <template #body>
-        <validation-observer v-slot="{ handleSubmit }">
-          <form v-if="newGroupData" class="form-model-container" @submit.prevent="handleSubmit(saveGroup)">
-            <AdminFormSections
-              :sections="sections"
-              :initial-values="newGroupData"
-              :create-view="true"
-              @update="(newValues) => updateCurrentValues(newValues)"
-            />
-            <div class="flexer">
-              <button class="button __secondary" type="button" @click="closeFormModal">Annuleer</button>
-              <button class="button __secondary" type="submit">Opslaan</button>
-              <button class="button __primary" type="button" @click="saveGroup(true)">Opslaan en openen</button>
-            </div>
-          </form>
-        </validation-observer>
+        <AdminFormSections
+          ref="formSections"
+          :sections="sections"
+          :initial-values="newGroupData"
+          :create-view="true"
+          :form-object="'groups'"
+          :object-specific-save="saveGroup"
+          @close="closeFormModal"
+        />
       </template>
     </FormModal>
   </div>
@@ -120,7 +114,6 @@ import Cookies from "js-cookie";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import FormModal from "@/components/FormModal.vue";
-import { ValidationObserver } from "vee-validate";
 
 export default {
   name: "GroupList",
@@ -133,7 +126,6 @@ export default {
     EditIcon,
     PaginationComponent,
     SortableTableHeaderItem,
-    ValidationObserver,
   },
   data() {
     return {
@@ -196,29 +188,24 @@ export default {
       this.groups = await result.json();
       this.loading = false;
     },
-    async saveGroup(continueEditing = false) {
-      let result;
+    async saveGroup(currentValues, continueEditing = false) {
+      const url = "/atlas/api/v1/groups/";
 
-      result = await fetch(`/atlas/api/v1/groups/`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify(this.newGroupData),
-      });
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
 
-      // todo: think about what to do if the result is not ok.
-      if (result.ok) {
-        this.closeFormModal();
+        if (result.ok) {
+          this.closeFormModal();
 
-        if (continueEditing) {
-          const response = await result.json();
-          this.$router.push(`/groups/update/${response.id}`);
+          if (continueEditing) {
+            const response = await result.json();
+            this.$router.push(`/groups/update/${response.id}`);
+          }
+
+          await this.getGroups();
         }
-
-        await this.getGroups();
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
       }
     },
     async deleteGroup(group) {
@@ -258,9 +245,6 @@ export default {
     },
     closeFormModal() {
       this.showFormModal = false;
-    },
-    updateCurrentValues(newValues) {
-      this.newGroupData = newValues;
     },
     getSections() {
       return {

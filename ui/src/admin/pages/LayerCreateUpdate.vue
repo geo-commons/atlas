@@ -1,76 +1,67 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Kaartlaag wijzigen</h1>
-    <validation-observer v-slot="{ handleSubmit }">
-      <form @submit.prevent="handleSubmit(saveLayer)">
-        <AdminFormSections
-          :sections="sections"
-          :initial-values="initialValues"
-          @update="(newValues) => updateCurrentValues(newValues)"
-        >
-          <template #custom>
-            <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
+    <AdminFormSections
+      ref="formSections"
+      :sections="sections"
+      :initial-values="initialValues"
+      :form-object="'layers'"
+      :object-specific-save="saveLayer"
+    >
+      <template #custom>
+        <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
 
-            <div class="group-list-wrapper">
-              <div class="available-groups">
-                <label class="question-label" for="list1">Beschikbare groepen</label>
-                <draggable
-                  v-model="availableGroups"
-                  tag="ul"
-                  item-key="id"
-                  group="groups"
-                  v-bind="dragOptions"
-                  role="listbox"
-                >
-                  <li
-                    v-for="item in availableGroups"
-                    :key="item.id"
-                    class="groups-list-item"
-                    tabindex="0"
-                    @keydown.enter.prevent="moveGroup(item, availableGroups, selectedGroups)"
-                  >
-                    {{ item.name }}
-                  </li>
-                </draggable>
-              </div>
-              <div class="selected-groups">
-                <label class="question-label" for="list1">Geselecteerde groepen</label>
-                <draggable
-                  v-model="selectedGroups"
-                  tag="ul"
-                  item-key="id"
-                  group="groups"
-                  v-bind="dragOptions"
-                  role="listbox"
-                >
-                  <li
-                    v-for="item in selectedGroups"
-                    :key="item.id"
-                    class="groups-list-item"
-                    tabindex="0"
-                    aria-describedby="reorder_instructions"
-                    @keydown.enter.prevent="moveGroup(item, selectedGroups, availableGroups)"
-                  >
-                    {{ item.name }}
-                  </li>
-                </draggable>
-              </div>
-            </div>
-          </template>
-        </AdminFormSections>
-        <div class="config-btn-wrapper">
-          <router-link to="/layers" class="button __tertiary" type="button">Annuleer</router-link>
-          <button class="button __primary" type="submit">Opslaan</button>
+        <div class="group-list-wrapper">
+          <div class="available-groups">
+            <label class="question-label" for="list1">Beschikbare groepen</label>
+            <draggable
+              v-model="availableGroups"
+              tag="ul"
+              item-key="id"
+              group="groups"
+              v-bind="dragOptions"
+              role="listbox"
+            >
+              <li
+                v-for="item in availableGroups"
+                :key="item.id"
+                class="groups-list-item"
+                tabindex="0"
+                @keydown.enter.prevent="moveGroup(item, availableGroups, selectedGroups)"
+              >
+                {{ item.name }}
+              </li>
+            </draggable>
+          </div>
+          <div class="selected-groups">
+            <label class="question-label" for="list1">Geselecteerde groepen</label>
+            <draggable
+              v-model="selectedGroups"
+              tag="ul"
+              item-key="id"
+              group="groups"
+              v-bind="dragOptions"
+              role="listbox"
+            >
+              <li
+                v-for="item in selectedGroups"
+                :key="item.id"
+                class="groups-list-item"
+                tabindex="0"
+                aria-describedby="reorder_instructions"
+                @keydown.enter.prevent="moveGroup(item, selectedGroups, availableGroups)"
+              >
+                {{ item.name }}
+              </li>
+            </draggable>
+          </div>
         </div>
-      </form>
-    </validation-observer>
+      </template>
+    </AdminFormSections>
   </div>
 </template>
 
 <script>
-import { ValidationObserver } from "vee-validate";
-
-import Cookies from "js-cookie";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import draggable from "vuedraggable";
 
@@ -79,7 +70,6 @@ export default {
   components: {
     draggable,
     AdminFormSections,
-    ValidationObserver,
   },
   data() {
     return {
@@ -155,35 +145,27 @@ export default {
 
       return result;
     },
-    async saveLayer() {
-      let result;
-
+    async saveLayer(currentValues) {
       // Convert internal fields back to layer model.
-      this.currentValues.metadata.name = this.currentValues.metadata_name;
-      this.currentValues.metadata.description = this.currentValues.metadata_description;
-      this.currentValues.metadata.organization = this.currentValues.metadata_organization;
-      this.currentValues.metadata.updated = this.currentValues.metadata_updated;
-      this.currentValues.metadata.lineage = this.currentValues.metadata_lineage;
-      this.currentValues.metadata.contact = this.currentValues.metadata_contact;
-      this.currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+      currentValues.metadata.name = currentValues.metadata_name;
+      currentValues.metadata.description = currentValues.metadata_description;
+      currentValues.metadata.organization = currentValues.metadata_organization;
+      currentValues.metadata.updated = currentValues.metadata_updated;
+      currentValues.metadata.lineage = currentValues.metadata_lineage;
+      currentValues.metadata.contact = currentValues.metadata_contact;
+      currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
 
-      result = await fetch(`/atlas/api/v1/layers/${this.$route.params.id}/`, {
-        method: "PATCH",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify(this.currentValues),
-      });
+      const url = `/atlas/api/v1/layers/${this.$route.params.id}/`;
 
-      if (!result.ok) {
-        console.error(
-          `Error occurred while saving layer with layer id: ${this.currentValues.id} and title: ${this.currentValues.title}`
-        );
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
+
+        if (result.ok) {
+          this.$router.push(`/layers`);
+        }
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
       }
-
-      this.$router.push(`/layers`);
     },
     async getCategories() {
       const result = await fetch("/atlas/api/v1/categories/", {
@@ -230,9 +212,6 @@ export default {
       this.groups = await result.json();
 
       return result;
-    },
-    updateCurrentValues(newValues) {
-      this.currentValues = newValues;
     },
     moveGroup(item, fromArray, toArray) {
       const arrayAriaText = toArray === this.availableGroups ? "Beschikbare groepen" : "Geselecteerde groepen";
@@ -342,11 +321,9 @@ export default {
             {
               label: "Transparantie",
               id: "opacity",
-              name: "Opacity",
+              name: "Transparantie",
               type: "decimal",
-              required: false,
-              minValue: 0,
-              maxValue: 1,
+              required: true,
               step: 0.1,
             },
             {
@@ -476,13 +453,6 @@ export default {
 </script>
 
 <style scoped>
-.config-btn-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  padding: 30px 0;
-}
-
 .available-groups {
   grid-area: available-groups;
 }

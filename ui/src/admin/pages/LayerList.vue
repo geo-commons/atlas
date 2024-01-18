@@ -23,7 +23,7 @@
     </div>
 
     <div class="admin-content-wrapper">
-      <div v-if="!loading" class="search-filter-container">
+      <div v-show="!loading" class="search-filter-container">
         <div class="admin-search-wrapper">
           <SearchIcon class="icon" />
           <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
@@ -138,24 +138,18 @@
       </PaginationComponent>
     </div>
 
-    <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+    <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
       <template #header><h3>Configureer nieuwe laag</h3> </template>
       <template #body>
-        <validation-observer v-slot="{ handleSubmit }">
-          <form v-if="newLayerData" class="form-model-container" @submit.prevent="handleSubmit(saveLayer)">
-            <AdminFormSections
-              :sections="sections"
-              :initial-values="newLayerData"
-              :create-view="true"
-              @update="(newValues) => updateCurrentValues(newValues)"
-            />
-            <div class="flexer">
-              <button class="button __secondary" type="button" @click="closeFormModal">Annuleer</button>
-              <button class="button __secondary" type="submit">Opslaan</button>
-              <button class="button __primary" type="button" @click="saveLayer(true)">Opslaan en openen</button>
-            </div>
-          </form>
-        </validation-observer>
+        <AdminFormSections
+          ref="formSections"
+          :sections="sections"
+          :initial-values="newLayerData"
+          :create-view="true"
+          :form-object="'layers'"
+          :object-specific-save="saveLayer"
+          @close="closeFormModal"
+        />
       </template>
     </FormModal>
   </div>
@@ -165,7 +159,6 @@
 import Cookies from "js-cookie";
 import PaginationComponent from "@/components/Pagination.vue";
 import FormModal from "@/components/FormModal.vue";
-import { ValidationObserver } from "vee-validate";
 import FilterSelect from "@/components/FilterSelect.vue";
 import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
@@ -185,7 +178,6 @@ export default {
     FilterSelect,
     FormModal,
     PaginationComponent,
-    ValidationObserver,
     TrashIcon,
     EditIcon,
     AddIcon,
@@ -282,29 +274,24 @@ export default {
         this.setLayerStatus();
       }
     },
-    async saveLayer(continueEditing = false) {
-      let result;
+    async saveLayer(currentValues, continueEditing = false) {
+      const url = "/atlas/api/v1/layers/";
 
-      result = await fetch(`/atlas/api/v1/layers/`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify(this.newLayerData),
-      });
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
 
-      // todo: think about what to do if the result is not ok.
-      if (result.ok) {
-        this.closeFormModal();
+        if (result.ok) {
+          this.closeFormModal();
 
-        if (continueEditing) {
-          const response = await result.json();
-          this.$router.push(`/layers/update/${response.id}`);
+          if (continueEditing) {
+            const response = await result.json();
+            this.$router.push(`/layers/update/${response.id}`);
+          }
+
+          await this.getLayers();
         }
-
-        await this.getLayers();
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
       }
     },
     async deleteLayer(layer) {
@@ -324,6 +311,7 @@ export default {
 
       if (result.ok) {
         this.getLayers();
+        console.log(this.selectedLayerFilters);
       }
     },
     async getCategories() {
@@ -376,9 +364,6 @@ export default {
     },
     closeFormModal() {
       this.showFormModal = false;
-    },
-    updateCurrentValues(newValues) {
-      this.newLayerData = newValues;
     },
     setTableFilters(v) {
       this.selectedLayerFilters = v;

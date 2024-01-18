@@ -83,24 +83,18 @@
       </PaginationComponent>
     </div>
 
-    <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+    <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
       <template #header><h3>Configureer nieuwe kaart</h3></template>
       <template #body>
-        <validation-observer v-slot="{ handleSubmit }">
-          <form v-if="newMapData" class="form-model-container" @submit.prevent="handleSubmit(saveMap)">
-            <AdminFormSections
-              :sections="sections"
-              :initial-values="newMapData"
-              :create-view="true"
-              @update="(newValues) => updateCurrentValues(newValues)"
-            />
-            <div class="flexer">
-              <button class="button __secondary" type="button" @click="closeFormModal">Annuleer</button>
-              <button class="button __secondary" type="submit">Opslaan</button>
-              <button class="button __primary" type="button" @click="saveMap(true)">Opslaan en openen</button>
-            </div>
-          </form>
-        </validation-observer>
+        <AdminFormSections
+          ref="formSections"
+          :sections="sections"
+          :initial-values="newMapData"
+          :create-view="true"
+          :form-object="'maps'"
+          :object-specific-save="saveMap"
+          @close="closeFormModal"
+        />
       </template>
     </FormModal>
   </div>
@@ -111,7 +105,6 @@ import Cookies from "js-cookie";
 import SearchIcon from "@/assets/icons/search-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import FormModal from "@/components/FormModal.vue";
-import { ValidationObserver } from "vee-validate";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import ViewIcon from "@/assets/icons/view-icon.svg";
@@ -128,7 +121,6 @@ export default {
     TrashIcon,
     AdminFormSections,
     FormModal,
-    ValidationObserver,
     AddIcon,
     SearchIcon,
   },
@@ -194,29 +186,24 @@ export default {
     gotoMap(map) {
       window.location.href = `/atlas/maps/${map.slug}`;
     },
-    async saveMap(continueEditing = false) {
-      let result;
+    async saveMap(currentValues, continueEditing = false) {
+      const url = "/atlas/api/v1/maps/";
 
-      result = await fetch(`/atlas/api/v1/maps/`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify(this.newMapData),
-      });
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
 
-      // todo: think about what to do if the result is not ok.
-      if (result.ok) {
-        this.closeFormModal();
+        if (result.ok) {
+          this.closeFormModal();
 
-        if (continueEditing) {
-          const response = await result.json();
-          this.$router.push(`/maps/update/${response.id}`);
+          if (continueEditing) {
+            const response = await result.json();
+            this.$router.push(`/maps/update/${response.id}`);
+          }
+
+          await this.getMaps();
         }
-
-        this.getMaps();
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
       }
     },
     async deleteMap(map) {

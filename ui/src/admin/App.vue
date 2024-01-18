@@ -229,12 +229,6 @@ input:disabled {
   text-decoration: underline;
 }
 
-.form-model-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -251,6 +245,10 @@ input:disabled {
   color: var(--color-text-grey);
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.admin-table thead tr th:not(:last-child) {
+  padding-right: 8px;
 }
 
 .admin-table > tbody > tr.table-border:not(:last-child) > td,
