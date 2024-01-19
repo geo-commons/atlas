@@ -20,7 +20,7 @@ services:
     ports:
       - 8000:8000
   postgres:
-    image: postgres:15.3
+    image: postgres:15.5
     environment:
       - POSTGRES_USER=atlas
       - POSTGRES_PASSWORD=atlas

@@ -1,5 +1,5 @@
 # UI
-FROM node:19.7.0-alpine AS ui-build
+FROM node:19.9.0-alpine AS ui-build
 WORKDIR /app/ui
 
 COPY ui/package.json \
@@ -11,7 +11,7 @@ COPY ui /app/ui
 RUN npm run build
 
 # API
-FROM python:3.11-slim AS api-build
+FROM python:3.12-slim AS api-build
 WORKDIR /app
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -23,7 +23,7 @@ COPY requirements.txt /app
 RUN /app/venv/bin/pip3 install -r requirements.txt
 
 # Final container
-FROM python:3.11-slim
+FROM python:3.12-slim
 WORKDIR /app
 
 ARG ATLAS_VERSION=unknown
