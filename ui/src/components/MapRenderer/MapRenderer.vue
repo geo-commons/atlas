@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="map-container"
-    :class="{ showInfoPanel, showDataPanel }"
-    :style="computedStyle"
-    ref="mapContainer"
-  >
+  <div class="map-container" :class="{ showInfoPanel, showDataPanel }" :style="computedStyle" ref="mapContainer">
     <div class="renderer-container">
       <OpenLayersRenderer
         ref="map"
@@ -430,12 +425,6 @@ export default {
   flex-flow: column;
 }
 
-@media (max-width: 575px) {
-  .ui-container {
-    order: -1;
-  }
-}
-
 @media (max-width: 932px) {
   .map-container {
     flex-direction: column;
@@ -463,19 +452,26 @@ export default {
   height: 0; /* fixes incorrect display of .ol-viewport on Safari 13.1 */
 }
 
+.bottom-left-panels {
+  z-index: 1;
+  position: absolute;
+  bottom: var(--padding-screen);
+  left: var(--padding-screen);
+}
+
 .top-right-panels {
   position: absolute;
   top: calc((var(--padding-screen) * 2) + var(--width-button-large));
   right: var(--padding-screen);
   display: flex;
+  gap: 12px;
 }
 
 .top-left-panels {
   position: absolute;
-  left: 0;
-  right: 0;
-  padding: var(--padding-screen);
-  padding-bottom: 0;
+  left: var(--padding-screen);
+  top: var(--padding-screen);
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -483,7 +479,7 @@ export default {
 
 @media (min-width: 1024px) {
   .top-left-panels.extra-padding {
-    padding-left: calc(2 * var(--padding-screen));
+    left: calc(var(--padding-screen) * 2);
   }
 }
 
@@ -493,11 +489,13 @@ export default {
   }
 }
 
-.bottom-left-panels {
-  z-index: 1;
-  position: absolute;
-  bottom: var(--padding-screen);
-  left: var(--padding-screen);
+@media (max-width: 576px) {
+  .top-left-panels {
+    left: 0;
+    top: 0;
+    padding: var(--padding-screen);
+    width: 100%;
+  }
 }
 
 .bottom-right-panels {
@@ -514,7 +512,17 @@ export default {
 }
 
 .toggle-buttons {
+  position: absolute;
+  top: calc(8px + var(--width-button-large));
+  left: 0;
   display: flex;
+}
+
+@media (max-width: 576px) {
+  .toggle-buttons {
+    top: calc(var(--padding-screen) * 2 + var(--width-button-large));
+    left: var(--padding-screen);
+  }
 }
 
 .toggle-buttons > *:not(:last-child) {

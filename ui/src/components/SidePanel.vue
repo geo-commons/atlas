@@ -168,6 +168,10 @@ export default {
   .resize-button {
     display: none;
   }
+
+  .fullScreen .header {
+    padding-top: 36px;
+  }
 }
 
 .expand-mobile-button {
