@@ -193,7 +193,6 @@ export default {
 <style scoped>
 .wrapper {
   position: relative;
-  margin-right: 12px;
 }
 
 .buttons {

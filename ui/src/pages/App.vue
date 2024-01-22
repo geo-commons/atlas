@@ -545,14 +545,14 @@ export default {
   top: calc((var(--padding-screen) * 2) + var(--width-button-large));
   right: var(--padding-screen);
   display: flex;
+  gap: 12px;
 }
 
 .top-left-panels {
   position: absolute;
-  left: 0;
-  right: 0;
-  padding: var(--padding-screen);
-  padding-bottom: 0;
+  left: var(--padding-screen);
+  top: var(--padding-screen);
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -560,13 +560,22 @@ export default {
 
 @media (min-width: 1024px) {
   .top-left-panels.extra-padding {
-    padding-left: calc(2 * var(--padding-screen));
+    left: calc(var(--padding-screen) * 2);
   }
 }
 
 @media (min-width: 576px) {
   .top-right-panels {
     top: var(--padding-screen);
+  }
+}
+
+@media (max-width: 576px) {
+  .top-left-panels {
+    left: 0;
+    top: 0;
+    padding: var(--padding-screen);
+    width: 100%;
   }
 }
 
@@ -592,7 +601,6 @@ export default {
   box-shadow: var(--shadow-normal);
   height: var(--width-button-normal);
   transition: height 0.1s ease, border-radius 0.1s;
-  overflow: hidden;
 }
 
 .bottom-right-buttons.isOpen {
