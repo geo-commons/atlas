@@ -1,7 +1,12 @@
 <template>
   <vue-tippy placement="left-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
     <template #trigger>
-      <button :class="{ iconbutton: true, showAlways: showAlways }" aria-label="Toon meer informatie">
+      <button
+        v-tippy
+        content="Meer informatie"
+        :class="{ iconbutton: true, showAlways: showAlways }"
+        aria-label="Toon meer informatie"
+      >
         <InformationCircleIcon />
       </button>
     </template>
