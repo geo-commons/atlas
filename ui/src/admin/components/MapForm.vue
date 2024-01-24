@@ -44,6 +44,11 @@
       </div>
 
       <div class="setting __hover">
+        <input id="features.baselayer" v-model="data.features.baselayer" type="checkbox" name="features.baselayer" />
+        <label for="features.baselayer">Basislagen</label>
+      </div>
+
+      <div class="setting __hover">
         <input id="features.gps" v-model="data.features.gps" type="checkbox" name="features.gps" />
         <label for="features.gps">GPS knop</label>
       </div>

@@ -115,6 +115,22 @@
         />
       </div>
       <div class="bottom-right-panels">
+        <div v-if="features.baselayer" class="bottom-right-buttons">
+          <button
+            v-tippy="{ placement: 'left' }"
+            class="iconbutton"
+            content="Basislagen"
+            aria-label="Toon basislagen"
+            :aria-expanded="showBaseLayersPanel.toString()"
+            aria-controls="baseLayers"
+            @click="toggleBaseLayersPanel"
+          >
+            <MapIcon />
+          </button>
+          <transition name="fade">
+            <BaseLayersPanel v-if="showBaseLayersPanel" :layers="layers" @toggle-layer="toggleLayer" />
+          </transition>
+        </div>
         <GeoLocationButton v-if="features.gps" @set-position="setPosition" />
         <ZoomPanel v-if="features.zoom" :position="position" @set-position="setPosition" />
       </div>
@@ -144,12 +160,15 @@ import FilterListIcon from "@/icons/FilterListIcon.vue";
 import DataPanelButton from "../DataPanelButton.vue";
 import { isMobile } from "@/utils/helpers";
 import { transform } from "ol/proj";
+import BaseLayersPanel from "@/components/BaseLayersPanel.vue";
+import MapIcon from "../../assets/icons/map-icon.svg";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
   components: {
+    BaseLayersPanel,
     FilterListIcon,
     ListIcon,
     PrimaryButton,
@@ -165,6 +184,7 @@ export default {
     ZoomPanel,
     GeoLocationButton,
     DataPanelButton,
+    MapIcon,
   },
   props: {
     initialLayers: Array,
@@ -201,6 +221,7 @@ export default {
       selectedArea: null,
       showDataPanel: false,
       showDataPanelFullScreen: false,
+      showBaseLayersPanel: false,
       showPanoramaPanel: false,
       showList: false,
       showFilters: false,
@@ -399,6 +420,10 @@ export default {
 
       return null;
     },
+    toggleBaseLayersPanel() {
+      this.showPanoramaPanel = false;
+      this.showBaseLayersPanel = !this.showBaseLayersPanel;
+    },
   },
 };
 </script>
@@ -538,5 +563,28 @@ export default {
   box-shadow: var(--shadow-normal);
   transition: width 0.1s ease, border-radius 0.1s;
   height: var(--width-button-large);
+}
+
+.bottom-right-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: white;
+  border-radius: var(--radius-normal);
+  overflow: hidden;
+  box-shadow: var(--shadow-normal);
+  height: var(--width-button-normal);
+  transition: height 0.1s ease, border-radius 0.1s;
+  overflow: hidden;
+}
+
+.bottom-right-buttons .iconbutton {
+  width: var(--width-button-normal);
+  height: var(--width-button-normal);
+}
+
+.bottom-right-buttons .iconbutton:first-child {
+  box-sizing: content-box;
+  border-bottom: 1px solid var(--color-grey-50);
 }
 </style>
