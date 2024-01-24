@@ -177,8 +177,8 @@ class Layer(models.Model):
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
         blank=True, null=True)
 
-    _popup_attributes = models.CharField(
-        'Voer één veld per regel in. Bij geen invoer worden alle velden getoond', max_length=500, blank=True, null=True)
+    _popup_attributes = models.TextField(
+        'Voer één veld per regel in. Bij geen invoer worden alle velden getoond', blank=True, null=True)
 
     _search_fields = models.CharField(
         'Zoek in deze velden', max_length=500, blank=True, null=True)
@@ -404,7 +404,7 @@ class LinkedData(models.Model):
     url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
-    popup_attributes = models.CharField(_('Toon deze velden'), max_length=250, blank=True, null=True,
+    popup_attributes = models.TextField(_('Toon deze velden'), blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
 
     class Meta:
