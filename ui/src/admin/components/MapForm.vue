@@ -76,6 +76,15 @@
       <div class="setting __hover">
         <input id="features.layerlist" v-model="data.features.layerlist" type="checkbox" name="features.layerlist" />
         <label for="features.layerlist">Lagenlijst</label>
+
+        <button
+          v-if="data.features.layerlist"
+          type="button"
+          class="button __transparent-bg __no-hover __chevron"
+          @click="() => $emit('show-layerlist')"
+        >
+          <ChevronRightIcon class="icon setting-chevron" />
+        </button>
       </div>
 
       <div class="setting __hover">
