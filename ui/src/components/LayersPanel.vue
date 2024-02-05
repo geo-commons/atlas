@@ -59,7 +59,7 @@
 
     <transition name="fade">
       <ul v-if="panel === 'layers'" id="layers" class="layers">
-        <div class="layers-search">
+        <div v-if="!showSearchBar" class="layers-search">
           <label for="layers-search">
             <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="currentColor">
               <path d="M0 0h24v24H0V0z" fill="none" />
@@ -70,7 +70,7 @@
           </label>
           <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
         </div>
-        <li>
+        <li v-if="!showSimpleLayerList">
           <ExpandButton
             v-for="category in categories"
             :key="category.id"
@@ -106,6 +106,29 @@
               </ul>
             </template>
           </ExpandButton>
+        </li>
+        <li v-if="showSimpleLayerList" :class="{ 'simple-layer-wrapper': panel === 'layers' }">
+          <p>Beschikbare lagen</p>
+          <div v-for="category in categories" :key="category.id">
+            <ul :id="category.id" class="sublayers simple-sublayer">
+              <li v-for="layer in category.layers" :key="layer.id" class="sublayer">
+                <input
+                  :id="layer.id"
+                  type="checkbox"
+                  :name="layer.id"
+                  :checked="layer.is_visible"
+                  :disabled="layer.is_disabled || (layer.login_required && (!user || !user.token))"
+                  @change="() => onSelectLayer(layer)"
+                />
+                <label :for="layer.id">
+                  {{ layer.title }}
+                  <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
+                </label>
+                <LayerFit v-if="!layer.is_disabled && layer.extent" :layer="layer" @click="() => onFit(layer)" />
+                <LayerInfo :layer="layer" />
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
     </transition>
@@ -149,6 +172,8 @@ export default {
     layers: Array,
     position: Object,
     user: Object,
+    showSearchBar: Boolean,
+    showSimpleLayerList: Boolean,
     isEmbed: Boolean,
     initiallyShowLayerList: Boolean,
   },
@@ -333,8 +358,23 @@ export default {
   height: 100%;
 }
 
+.sublayers.simple-sublayer {
+  padding: 0px 0px 0px 8px;
+}
+
 .category-wrapper:not(:last-child) {
   border-bottom: 1px solid var(--color-grey-50);
+}
+
+.simple-layer-wrapper {
+  padding: 8px 8px 8px 0px;
+}
+
+.simple-layer-wrapper p {
+  margin-bottom: 4px;
+  margin-top: 0;
+  padding-left: 8px;
+  font-weight: 500;
 }
 
 .sublayers {

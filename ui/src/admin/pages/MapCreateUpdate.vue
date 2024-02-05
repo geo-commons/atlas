@@ -8,6 +8,12 @@
           @change="updateLayers"
           @show-form="() => showSidebar('Form')"
         />
+        <LayerListPanel
+          v-if="sidebar === 'LayerList'"
+          :initial-data="data"
+          @change="updateLayers"
+          @show-form="() => showSidebar('Form')"
+        ></LayerListPanel>
         <ListPanelAdmin
           v-if="sidebar === 'List'"
           :initial-data="data"
@@ -31,6 +37,7 @@
           @show-layers="() => showSidebar('Layers')"
           @show-list="() => showSidebar('List')"
           @show-filters="() => showSidebar('Filters')"
+          @show-layerlist="() => showSidebar('LayerList')"
         />
       </div>
     </div>
@@ -54,6 +61,7 @@ import MapForm from "../components/MapForm";
 import MapLayers from "../components/MapLayers";
 import ListPanelAdmin from "../components/ListPanelAdmin";
 import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
+import LayerListPanel from "../components/LayerListPanel.vue";
 
 export default {
   name: "MapCreateUpdate",
@@ -63,6 +71,7 @@ export default {
     MapLayers,
     ListPanelAdmin,
     FiltersPanelAdmin,
+    LayerListPanel,
   },
   data() {
     return {
