@@ -17,6 +17,7 @@
           aria-autocomplete="list"
           role="combobox"
           aria-owns="search-results"
+          class="search-address"
           :aria-expanded="showSuggestions && results.length"
           @keyup="onSearch"
         />
@@ -149,5 +150,10 @@ export default {
 .wrapper {
   width: var(--width-detail);
   max-width: 100%;
+}
+
+.search-address {
+  width: 100%;
+  padding-left: 16px;
 }
 </style>

@@ -49,7 +49,14 @@
       </div>
       <SearchForm :show-border="true" :has-visible-layers="true" class="data-search" @on-submit="onSearch">
         <template #default>
-          <input ref="queryInput" type="search" name="search" placeholder="Zoek data" autocomplete="off" />
+          <input
+            ref="queryInput"
+            type="search"
+            name="search"
+            placeholder="Zoek data"
+            autocomplete="off"
+            class="search-address"
+          />
         </template>
       </SearchForm>
     </div>
@@ -126,6 +133,11 @@ export default {
   justify-content: space-between;
   gap: 25px;
   padding-bottom: 18px;
+}
+
+.search-address {
+  width: 100%;
+  padding-left: 16px;
 }
 
 @media (min-width: 576px) {
