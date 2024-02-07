@@ -1,31 +1,33 @@
 <template>
-  <div>
-    <div class="toggle-filter-container">
-      <switch-slider aria-label="Activeer filters" @toggleSwitch="toggleFilters()" />
-      <div>Activeer filters</div>
-    </div>
-    <div v-if="showFilters" class="filter-padding filter-grid">
-      <div>
-        <label for="selected_columns" class="filter-label-padding">Kolom(men) om op te filteren</label>
-        <multiselect
-          id="selected_columns"
-          v-model="selectedFilterProperties"
-          :options="displayProperties"
-          :multiple="true"
-          :show-labels="false"
-          :placeholder="'Kies kolom(men)'"
-          open-direction="bottom"
-          @remove="(filter) => removeFilter(filter)"
-        />
+  <div class="filter-table-container">
+    <div class="filter-container">
+      <div class="toggle-filter-container">
+        <switch-slider aria-label="Activeer filters" @toggleSwitch="toggleFilters()" />
+        <div>Activeer filters</div>
       </div>
-      <div v-if="selectedFilterProperties" class="selected-filter-container">
-        <div v-for="property in selectedFilterProperties" :key="property">
-          <FilterSelect
-            :filter-options="getFilterOptions(property)"
-            :field-filters="fieldFilters"
-            :filter-property="property"
-            @onFilterChange="(v) => setFieldFilters(v)"
+      <div v-if="showFilters" class="filter-padding filter-grid">
+        <div>
+          <label for="selected_columns" class="filter-label-padding">Kolom(men) om op te filteren</label>
+          <multiselect
+            id="selected_columns"
+            v-model="selectedFilterProperties"
+            :options="filterProperties"
+            :multiple="true"
+            :show-labels="false"
+            :placeholder="'Kies kolom(men)'"
+            open-direction="bottom"
+            @remove="(filter) => removeFilter(filter)"
           />
+        </div>
+        <div v-if="selectedFilterProperties" class="selected-filter-container">
+          <div v-for="property in selectedFilterProperties" :key="property">
+            <FilterSelect
+              :filter-options="getFilterOptions(property)"
+              :field-filters="fieldFilters"
+              :filter-property="property"
+              @onFilterChange="(v) => setFieldFilters(v)"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -112,6 +114,7 @@ export default {
       fieldFilters: {},
       selectedFilterProperties: [],
       showFilters: false,
+      filterProperties: [],
       filterOptions: {},
       filterFeatures: {},
       loading: false,
@@ -162,7 +165,7 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          filters.push(`${key} in (${this.fieldFilters[key].map((f) => `'${f}'`).join(",")})`);
+          filters.push(`${key} in (${this.fieldFilters[key].map((f) => `'${f.replace(/'/g, "''")}'`).join(",")})`);
         });
       }
 
@@ -195,6 +198,21 @@ export default {
 
           this.displayProperties =
             this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
+
+          // Remove empty columns from the filter options.
+          let emptyColumn = this.displayProperties.slice(0);
+
+          data.features.forEach((feature) => {
+            emptyColumn.forEach((prop) => {
+              if (feature.properties[prop] && feature.properties[prop] !== "") {
+                // Remove a column from the empty column array as soon as a corresponding cell is found that
+                // contains a value.
+                emptyColumn.splice(emptyColumn.indexOf(prop), 1);
+              }
+            });
+          });
+
+          this.filterProperties = this.displayProperties.filter((prop) => !emptyColumn.includes(prop));
         }
       } catch (e) {
         console.error(e);
@@ -380,6 +398,16 @@ export default {
 </script>
 
 <style scoped>
+.filter-table-container {
+  display: flex;
+  flex-flow: column;
+  max-height: calc(100 * var(--vh) - 10rem);
+}
+
+.filter-container {
+  flex: 0 1 auto;
+}
+
 .table-wrapper td:first-child {
   width: var(--width-button-large);
   padding-left: 4px;
