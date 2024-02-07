@@ -2,7 +2,7 @@
   <div v-if="layer" class="detail-panel-wrapper">
     <div class="header">
       <div>
-        <vue-tippy
+        <tippy
           :arrow="false"
           placement="bottom-start"
           theme="popover"
@@ -11,70 +11,45 @@
           :delay="[0, 0]"
           :a11y="true"
         >
-          <template #trigger>
-            <button
-              v-tippy="{ placement: 'right' }"
-              class="iconbutton __normal __outline"
-              content="Download"
-              aria-label="Download"
-            >
-              <download-icon />
-            </button>
-          </template>
-          <div class="container">
-            <div class="menu">
-              <ul class="list">
-                <li>
-                  <button @click="$refs.featureTable.downloadCSV()">
-                    Download CSV
-                  </button>
-                </li>
-                <li>
-                  <button
-                    @click="$refs.featureTable.download('ESRI Shapefile')"
-                  >
-                    Download ESRI Shape
-                  </button>
-                </li>
-                <li>
-                  <button @click="$refs.featureTable.download('GeoJSON')">
-                    Download GeoJSON
-                  </button>
-                </li>
-                <li>
-                  <button @click="$refs.featureTable.download('GPKG')">
-                    Download GeoPackage
-                  </button>
-                </li>
-                <li>
-                  <button @click="$refs.featureTable.download('GML')">
-                    Download GML
-                  </button>
-                </li>
-                <li>
-                  <button @click="$refs.featureTable.download('SQLite')">
-                    Download SQLite
-                  </button>
-                </li>
-              </ul>
+          <button
+            v-tippy="{ placement: 'right' }"
+            class="iconbutton __normal __outline"
+            content="Download"
+            aria-label="Download"
+          >
+            <download-icon />
+          </button>
+          <template #content>
+            <div class="container">
+              <div class="menu">
+                <ul class="list">
+                  <li>
+                    <button @click="$refs.featureTable.downloadCSV()">Download CSV</button>
+                  </li>
+                  <li>
+                    <button @click="$refs.featureTable.download('ESRI Shapefile')">Download ESRI Shape</button>
+                  </li>
+                  <li>
+                    <button @click="$refs.featureTable.download('GeoJSON')">Download GeoJSON</button>
+                  </li>
+                  <li>
+                    <button @click="$refs.featureTable.download('GPKG')">Download GeoPackage</button>
+                  </li>
+                  <li>
+                    <button @click="$refs.featureTable.download('GML')">Download GML</button>
+                  </li>
+                  <li>
+                    <button @click="$refs.featureTable.download('SQLite')">Download SQLite</button>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </vue-tippy>
+          </template>
+        </tippy>
       </div>
-      <SearchForm
-        :show-border="true"
-        :has-visible-layers="true"
-        class="data-search"
-        @on-submit="onSearch"
-      >
+      <SearchForm :show-border="true" :has-visible-layers="true" class="data-search" @on-submit="onSearch">
         <template #default>
-          <input
-            ref="queryInput"
-            type="search"
-            name="search"
-            placeholder="Zoek data"
-            autocomplete="off"
-          />
+          <input ref="queryInput" type="search" name="search" placeholder="Zoek data" autocomplete="off" />
         </template>
       </SearchForm>
     </div>
@@ -94,10 +69,11 @@
 import DownloadIcon from "../icons/DownloadIcon.vue";
 import FeatureTable from "./FeatureTable.vue";
 import SearchForm from "./SearchForm.vue";
+import { Tippy } from "vue-tippy";
 
 export default {
   name: "DataPanelDetailView",
-  components: { FeatureTable, SearchForm, DownloadIcon },
+  components: { Tippy, FeatureTable, SearchForm, DownloadIcon },
   props: {
     layer: Object,
     selectedArea: Object,

@@ -1,4 +1,4 @@
-import "tippy.js/themes/light-border.css";
+import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
@@ -28,7 +28,6 @@ Vue.use(VueTippy, {
   boundary: "viewport",
   delay: [1000, 0],
 });
-Vue.component("VueTippy", VueTippy);
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {

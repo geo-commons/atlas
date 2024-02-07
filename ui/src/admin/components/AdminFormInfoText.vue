@@ -1,20 +1,21 @@
 <template>
-  <vue-tippy placement="right-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
-    <template #trigger>
-      <button class="iconbutton __transparent-bg" aria-label="Toon meer informatie" type="button">
-        <InformationCircleIcon />
-      </button>
+  <tippy placement="right-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
+    <button class="iconbutton __transparent-bg" aria-label="Toon meer informatie" type="button">
+      <InformationCircleIcon />
+    </button>
+    <template #content>
+      <div class="info-text">{{ infoText }}</div>
     </template>
-    <div class="info-text">{{ infoText }}</div>
-  </vue-tippy>
+  </tippy>
 </template>
 
 <script>
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
+import { Tippy } from "vue-tippy";
 
 export default {
   name: "AdminFormInfoText",
-  components: { InformationCircleIcon },
+  components: { Tippy, InformationCircleIcon },
   props: {
     infoText: String,
   },
