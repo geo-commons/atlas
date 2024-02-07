@@ -1,7 +1,7 @@
 <template>
   <div class="app" :class="{ showDataPanel, showInfoPanel }" :style="computedStyle">
     <header-menu v-if="!isEmbed && config.features.portal" />
-    <div class="map-container" ref="mapContainer">
+    <div ref="mapContainer" class="map-container">
       <div class="renderer-container">
         <PanoramaPanel
           class="panorama-panel"
@@ -17,6 +17,7 @@
           :layers="layers"
           :tool="tool"
           :selected-area="selectedArea"
+          :filters="filters"
           :padding="mapPadding"
           :user="user"
           :features="{ scale: true, markerOnClick: true }"
@@ -44,11 +45,13 @@
         :selected-area="selectedArea"
         :show-data-panel="showDataPanel"
         :user="user"
+        :filters="filters"
         :full-size-window="showDataPanelFullScreen"
         @set-position="setPosition"
         @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 18 })"
         @toggle-data-panel="toggleDataPanel"
         @toggle-full-side-panel="toggleDataPanelFullScreen"
+        @update-filters="(value) => (filters = value)"
       />
       <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
         <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
@@ -213,6 +216,7 @@ export default {
       computedStyle: { "--color-primary": "#0066FF" },
       drawFeatures: [],
       modal: "",
+      filters: {},
       mapPadding: [0, 0, 0, 0],
       infoPanelExpanded: false,
     };
