@@ -5,7 +5,7 @@ import "whatwg-fetch";
 import Vue from "vue";
 import Vuex from "vuex";
 import VueRouter from "vue-router";
-import VueTippy, { TippyComponent } from "vue-tippy";
+import VueTippy from "vue-tippy";
 
 import { createStore } from "./store";
 import App from "./portal/App";
@@ -28,7 +28,7 @@ Vue.use(VueTippy, {
   boundary: "viewport",
   delay: [1000, 0],
 });
-Vue.component("VueTippy", TippyComponent);
+Vue.component("VueTippy", VueTippy);
 
 const routes = [
   { path: "/", component: IndexView },

@@ -1,7 +1,7 @@
 <template>
   <div class="app" :class="{ showDataPanel, showInfoPanel }" :style="computedStyle">
     <header-menu v-if="!isEmbed && config.features.portal" />
-    <div class="map-container" ref="mapContainer">
+    <div ref="mapContainer" class="map-container">
       <div class="renderer-container">
         <PanoramaPanel
           class="panorama-panel"
@@ -140,7 +140,11 @@
 
       <transition name="fade">
         <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
+      </transition>
+      <transition name="fade">
         <PrintModal v-if="modal === 'print'" @toggle-modal="toggleModal" @print-map-to-pdf="printMapToPdf" />
+      </transition>
+      <transition name="fade">
         <DrawingModal
           v-if="modal === 'drawing'"
           :layers="layers"
@@ -177,7 +181,6 @@ import GeoLocationButton from "../components/GeoLocationButton";
 import { isMobile } from "@/utils/helpers";
 import { transform } from "ol/proj";
 import MapIcon from "../assets/icons/map-icon.svg";
-
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 

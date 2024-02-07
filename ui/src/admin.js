@@ -5,8 +5,8 @@ import "whatwg-fetch";
 import Vue from "vue";
 import Vuex from "vuex";
 import VueRouter from "vue-router";
-import VueTippy, { TippyComponent } from "vue-tippy";
-import { extend } from "vee-validate";
+import VueTippy from "vue-tippy";
+// import { extend } from "vee-validate";
 
 import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
@@ -27,7 +27,7 @@ import AdminSortPage from "@/admin/pages/AdminSortPage.vue";
 import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
 import GroupList from "@/admin/pages/GroupList.vue";
 import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
-import { email, max, required } from "vee-validate/dist/rules";
+// import { email, max, required } from "vee-validate/dist/rules";
 
 Vue.config.productionTip = false;
 
@@ -45,22 +45,22 @@ Vue.use(VueTippy, {
   boundary: "viewport",
   delay: [1000, 0],
 });
-Vue.component("VueTippy", TippyComponent);
+Vue.component("VueTippy", VueTippy);
 
-extend("required", {
-  ...required,
-  message: "Dit veld is verplicht",
-});
-
-extend("email", {
-  ...email,
-  message: "Voer een geldig e-mailadres in",
-});
-
-extend("max", {
-  ...max,
-  message: "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.",
-});
+// extend("required", {
+//   ...required,
+//   message: "Dit veld is verplicht",
+// });
+//
+// extend("email", {
+//   ...email,
+//   message: "Voer een geldig e-mailadres in",
+// });
+//
+// extend("max", {
+//   ...max,
+//   message: "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.",
+// });
 
 const routes = [
   {
