@@ -42,9 +42,11 @@
         :selected-area="selectedArea"
         :query="query"
         :user="user"
+        :filters="filter"
         @set-position="(position) => setPosition(position)"
         @on-fit="(position) => onFit(position)"
         @show-layers="() => resetSelectedLayer()"
+        @update-filters="(value) => updateFilters(value)"
       />
       <div v-if="selectedLayerId == null">
         <SelectButton
@@ -84,12 +86,14 @@ export default {
     showDataPanel: Boolean,
     selectedArea: Object,
     user: Object,
+    filters: Object,
     fullSizeWindow: Boolean,
   },
   data() {
     return {
       selectedLayerId: null,
       query: "",
+      filter: this.filters,
     };
   },
   computed: {
@@ -122,7 +126,12 @@ export default {
   },
   methods: {
     toggleDataPanel() {
+      const emptyFilter = {};
+
       this.$emit("toggle-data-panel");
+
+      // Reset filters and search values on toggle DataPanel
+      this.$emit("update-filters", emptyFilter);
     },
     setPosition(value) {
       this.$emit("set-position", value);
@@ -138,6 +147,10 @@ export default {
     },
     resetSelectedLayer() {
       this.selectedLayerId = null;
+      this.$emit("update-filters", {});
+    },
+    updateFilters(value) {
+      this.$emit("update-filters", value);
     },
   },
 };

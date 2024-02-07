@@ -25,56 +25,31 @@
             <div class="menu">
               <ul class="list">
                 <li>
-                  <button @click="$refs.featureTable.downloadCSV()">
-                    Download CSV
-                  </button>
+                  <button @click="$refs.featureTable.downloadCSV()">Download CSV</button>
                 </li>
                 <li>
-                  <button
-                    @click="$refs.featureTable.download('ESRI Shapefile')"
-                  >
-                    Download ESRI Shape
-                  </button>
+                  <button @click="$refs.featureTable.download('ESRI Shapefile')">Download ESRI Shape</button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('GeoJSON')">
-                    Download GeoJSON
-                  </button>
+                  <button @click="$refs.featureTable.download('GeoJSON')">Download GeoJSON</button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('GPKG')">
-                    Download GeoPackage
-                  </button>
+                  <button @click="$refs.featureTable.download('GPKG')">Download GeoPackage</button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('GML')">
-                    Download GML
-                  </button>
+                  <button @click="$refs.featureTable.download('GML')">Download GML</button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('SQLite')">
-                    Download SQLite
-                  </button>
+                  <button @click="$refs.featureTable.download('SQLite')">Download SQLite</button>
                 </li>
               </ul>
             </div>
           </div>
         </vue-tippy>
       </div>
-      <SearchForm
-        :show-border="true"
-        :has-visible-layers="true"
-        class="data-search"
-        @on-submit="onSearch"
-      >
+      <SearchForm :show-border="true" :has-visible-layers="true" class="data-search" @on-submit="onSearch">
         <template #default>
-          <input
-            ref="queryInput"
-            type="search"
-            name="search"
-            placeholder="Zoek data"
-            autocomplete="off"
-          />
+          <input ref="queryInput" type="search" name="search" placeholder="Zoek data" autocomplete="off" />
         </template>
       </SearchForm>
     </div>
@@ -84,8 +59,10 @@
       :position="position"
       :query="query"
       :selected-area="selectedArea"
+      :filters="filter"
       @set-position="(value) => onSetPosition(value)"
       @on-fit="(value) => onFit(value)"
+      @update-filters="(value) => updateFilters(value)"
     />
   </div>
 </template>
@@ -105,6 +82,7 @@ export default {
     overallFilter: Object,
     position: Object,
     user: Object,
+    filters: Object,
   },
   data() {
     return {
@@ -116,6 +94,7 @@ export default {
       error: false,
       numberMatched: 0,
       query: "",
+      filter: this.filters,
       sortKey: "",
       sortAscending: true,
     };
@@ -131,6 +110,9 @@ export default {
     },
     onSearch() {
       this.query = this.$refs.queryInput.value;
+    },
+    updateFilters(value) {
+      this.$emit("update-filters", value);
     },
   },
 };

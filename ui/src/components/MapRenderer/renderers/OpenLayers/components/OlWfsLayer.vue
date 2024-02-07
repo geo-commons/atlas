@@ -68,6 +68,21 @@ export default {
       this.applyStyle(value);
     },
     filters(value) {
+      // Don't filter if there are no filters specified for specific layer
+      if (!Object.keys(value).includes(this.id)) {
+        return;
+      }
+
+      // If filters object is empty, refresh source
+      if (!Object.keys(value).length > 0) {
+        this.source.updateParams({
+          ...this.source.getParams(),
+          CQL_FILTER: null,
+        });
+
+        this.source.refresh();
+      }
+
       if (!value[this.id]) {
         return;
       }
@@ -75,13 +90,16 @@ export default {
       const cqlFilters = [];
 
       Object.keys(value[this.id]).forEach((key) => {
+        if (key === "search" && value[this.id]["search"] !== "") {
+          cqlFilters.push(value[this.id][key]);
+          return;
+        }
+
         if (value[this.id][key].length == 0) {
           return;
         }
 
-        const values = value[this.id][key]
-          .map((value) => `'${value}'`)
-          .join(",");
+        const values = value[this.id][key].map((value) => `'${value}'`).join(",");
         cqlFilters.push(`${key} IN (${values})`);
       });
 
@@ -134,17 +152,13 @@ export default {
     this.map.addLayer(this.tileLayer);
 
     const style = await this.getStyle(
-      this.clientStyle && this.clientStyle["default"]
-        ? this.clientStyle["default"]
-        : this.clientStyle
+      this.clientStyle && this.clientStyle["default"] ? this.clientStyle["default"] : this.clientStyle
     );
     this.tileLayer.setStyle(style);
 
     if (this.isSelectable) {
       const activeStyle = await this.getStyle(
-        this.clientStyle && this.clientStyle["active"]
-          ? this.clientStyle["active"]
-          : this.clientStyle
+        this.clientStyle && this.clientStyle["active"] ? this.clientStyle["active"] : this.clientStyle
       );
 
       this.select = new Select({

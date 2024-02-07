@@ -25,7 +25,7 @@
               :filter-options="getFilterOptions(property)"
               :field-filters="fieldFilters"
               :filter-property="property"
-              @onFilterChange="(v) => setFieldFilters(v)"
+              @onFilterChange="(v) => setFieldFilters(v, property)"
             />
           </div>
         </div>
@@ -114,6 +114,7 @@ export default {
       fieldFilters: {},
       selectedFilterProperties: [],
       showFilters: false,
+      filters: {},
       filterProperties: [],
       filterOptions: {},
       filterFeatures: {},
@@ -134,7 +135,24 @@ export default {
     },
   },
   watch: {
-    query: "fetchFeatures",
+    query() {
+      this.fetchFeatures();
+
+      // If query gets deleted or removed, set searchValue to an empty string
+      if (!this.query) {
+        this.$emit(
+          "update-filters",
+          {
+            ...this.filters,
+            [this.layer.id]: {
+              ...this.fieldFilters,
+              search: "",
+            },
+          },
+          this.layer.id
+        );
+      }
+    },
     selectedArea: "fetchFeatures",
     filter: "fetchFeatures",
     fieldFilters: "fetchFeatures",
@@ -160,7 +178,21 @@ export default {
       const filters = [];
 
       if (this.query && this.searchProperties.length > 0) {
-        filters.push(this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(" OR "));
+        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(" OR ")})`;
+
+        filters.push(searchQuery);
+
+        this.$emit(
+          "update-filters",
+          {
+            ...this.filters,
+            [this.layer.id]: {
+              ...this.fieldFilters,
+              search: searchQuery,
+            },
+          },
+          this.layer.id
+        );
       }
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
@@ -367,11 +399,20 @@ export default {
       return this.filterOptions[property];
     },
     setFieldFilters(v) {
+      let newFilters = { ...this.filters };
+
+      newFilters[this.layer.id] = {
+        ...v,
+        search: this.filters[this.layer.id]?.["search"] ? this.filters[this.layer.id]["search"] : "",
+      };
+
       this.fieldFilters = v;
+      this.$emit("update-filters", newFilters);
     },
     resetFieldFilters() {
       this.fieldFilters = {};
       this.selectedFilterProperties = [];
+      this.$emit("update-filters", {});
     },
     toggleFilters() {
       this.showFilters = !this.showFilters;
