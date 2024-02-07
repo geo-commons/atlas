@@ -6,7 +6,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VueRouter from "vue-router";
 import VueTippy from "vue-tippy";
-// import { extend } from "vee-validate";
 
 import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
@@ -27,7 +26,8 @@ import AdminSortPage from "@/admin/pages/AdminSortPage.vue";
 import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
 import GroupList from "@/admin/pages/GroupList.vue";
 import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
-// import { email, max, required } from "vee-validate/dist/rules";
+import { defineRule } from "vee-validate";
+import { email, max, required } from "@vee-validate/rules";
 
 Vue.config.productionTip = false;
 
@@ -46,20 +46,26 @@ Vue.use(VueTippy, {
   delay: [1000, 0],
 });
 
-// extend("required", {
-//   ...required,
-//   message: "Dit veld is verplicht",
-// });
-//
-// extend("email", {
-//   ...email,
-//   message: "Voer een geldig e-mailadres in",
-// });
-//
-// extend("max", {
-//   ...max,
-//   message: "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.",
-// });
+defineRule("required", (value) => {
+  if (!required(value)) {
+    return "Dit veld is verplicht";
+  }
+  return true;
+});
+
+defineRule("email", (value) => {
+  if (!email(value)) {
+    return "Voer een geldig e-mailadres in";
+  }
+  return true;
+});
+
+defineRule("max", (value, { length }) => {
+  if (!max(value, { length })) {
+    return "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.";
+  }
+  return true;
+});
 
 const routes = [
   {
