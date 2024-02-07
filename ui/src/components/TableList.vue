@@ -1,5 +1,5 @@
 <template>
-  <div class="table-wrapper">
+  <div class="table-wrapper" >
     <slot></slot>
   </div>
 </template>
@@ -12,8 +12,9 @@ export default {
 
 <style scoped>
 .table-wrapper {
-  overflow: auto;
   word-wrap: break-word;
+  overflow: auto;
+  flex: 1 1 auto;
 }
 
 .table-wrapper table {
@@ -27,6 +28,9 @@ export default {
 }
 
 .table-wrapper thead tr th {
+  background: var(--color-grey-50);
+  position: sticky;
+  top: 0;
   font-weight: var(--font-weight-normal);
   text-align: left;
   padding: 12px 4px;
