@@ -1,4 +1,4 @@
-import "tippy.js/themes/light-border.css";
+import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
