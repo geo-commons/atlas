@@ -179,7 +179,7 @@ export default {
   },
   methods: {
     async getStyle(inputStyle) {
-      if (!inputStyle) {
+      if (!inputStyle || Object.keys(inputStyle).length === 0) {
         return DEFAULT_STYLE;
       }
 
@@ -187,7 +187,7 @@ export default {
         const olStyle = await olParser.writeStyle(inputStyle);
         return olStyle.output;
       } catch (e) {
-        console.error("Unable to parse style", e);
+        console.error("Unable to parse style", this.name, e);
       }
 
       return DEFAULT_STYLE;

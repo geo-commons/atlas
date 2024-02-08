@@ -7,12 +7,15 @@
       v-if="!filterOnId"
       :id="filterProperty"
       v-model="selectedItems"
-      :options="filterOptions"
+      :options="currentFilterOptions"
       placeholder="Kies waarde"
+      tag-placeholder="Enter voor nieuwe waarde"
       :show-labels="false"
       :multiple="true"
+      :taggable="true"
       open-direction="bottom"
       @input="updateFieldFilters()"
+      @tag="addFacetValue"
     />
     <multiselect
       v-else
@@ -20,12 +23,15 @@
       v-model="selectedItems"
       :track-by="trackBy"
       :label="label"
-      :options="filterOptions"
+      :options="currentFilterOptions"
       placeholder="Kies waarde"
+      tag-placeholder="Enter voor nieuwe waarde"
       :show-labels="false"
       :multiple="true"
+      :taggable="true"
       open-direction="bottom"
       @input="updateFieldFilters()"
+      @tag="addFacetValue"
     />
   </div>
 </template>
@@ -35,7 +41,6 @@ import Multiselect from "vue-multiselect";
 
 export default {
   name: "FilterSelect",
-
   components: { Multiselect },
   props: {
     filterOptions: Array,
@@ -52,6 +57,7 @@ export default {
   data() {
     return {
       selectedItems: [],
+      currentFilterOptions: this.filterOptions,
     };
   },
   methods: {
@@ -67,6 +73,11 @@ export default {
       const newFieldFilter = { ...this.fieldFilters };
       delete newFieldFilter[this.filterProperty];
       this.$emit("onFilterChange", newFieldFilter);
+    },
+    addFacetValue(newTag) {
+      this.currentFilterOptions.push(newTag);
+      this.selectedItems.push(newTag);
+      this.updateFieldFilters();
     },
   },
 };

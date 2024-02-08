@@ -1,13 +1,20 @@
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
 
+from utils.tools import is_internal
+
 
 class TableManager(models.Manager):
     def for_request(self, request):
-        if request.user.is_anonymous:
-            return self.filter(login_required=False)
+        query = self.all()
 
-        return self.all()
+        if not is_internal(request):
+            query = query.filter(only_internal=False)
+
+        if request.user.is_anonymous:
+            query = query.filter(login_required=False)
+
+        return query
 
 
 class Table(models.Model):
@@ -47,6 +54,8 @@ class Table(models.Model):
 
     login_required = models.BooleanField(
         'Vereis inlog voor deze tabel', default=False, help_text='De tabel is alleen zichtbaar voor ingelogde gebruikers.')
+    only_internal = models.BooleanField(
+        'Alleen intern zichtbaar', default=True, help_text='Alleen zichtbaar binnen interne omgeving.')
 
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)

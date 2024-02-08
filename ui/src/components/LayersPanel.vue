@@ -86,7 +86,6 @@
             <template #default>
               <ul :id="category.id" class="sublayers">
                 <li v-for="layer in category.layers" :key="layer.id" class="sublayer">
-                  <!-- <div class="sublayer-check"> -->
                   <input
                     :id="layer.id"
                     type="checkbox"
@@ -97,9 +96,28 @@
                   />
                   <label :for="layer.id">
                     {{ layer.title }}
-                    <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
                   </label>
-                  <!-- </div> -->
+                  <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
+                  <button
+                    v-if="layer.zoom_min && position.zoom < layer.zoom_min"
+                    v-tippy="{ placement: 'right' }"
+                    class="zoom-button"
+                    content="Zoom in om deze laag te bekijken"
+                    aria-label="Zoom in om deze laag te bekijken"
+                    @click="(e) => zoomToAndShow(e, layer.zoom_min, layer)"
+                  >
+                    <ZoomInIcon />
+                  </button>
+                  <button
+                    v-if="layer.zoom_max && position.zoom > layer.zoom_max"
+                    v-tippy="{ placement: 'right' }"
+                    class="zoom-button"
+                    content="Zoom uit om deze laag te bekijken"
+                    aria-label="Zoom uit om deze laag te bekijken"
+                    @click="(e) => zoomToAndShow(e, layer.zoom_max, layer)"
+                  >
+                    <ZoomOutIcon />
+                  </button>
                   <LayerFit v-if="!layer.is_disabled && layer.extent" :layer="layer" @click="() => onFit(layer)" />
                   <LayerInfo :layer="layer" />
                 </li>
@@ -158,6 +176,8 @@ import VisibleLayer from "./VisibleLayer";
 import LayerAuthentication from "./LayerAuthentication";
 import LayerFit from "./LayerFit";
 import LayerInfo from "./LayerInfo";
+import ZoomInIcon from "../assets/icons/zoom-in-icon.svg";
+import ZoomOutIcon from "../assets/icons/zoom-out-icon.svg";
 
 export default {
   name: "LayersPanel",
@@ -167,6 +187,8 @@ export default {
     LayerAuthentication,
     LayerFit,
     LayerInfo,
+    ZoomInIcon,
+    ZoomOutIcon,
   },
   props: {
     layers: Array,
@@ -254,6 +276,18 @@ export default {
     },
     onFit(selectedLayer) {
       this.$emit("on-fit", selectedLayer.extent);
+    },
+    zoomToAndShow(e, zoom, selectedLayer) {
+      e.stopPropagation();
+
+      this.$emit("set-position", {
+        ...this.position,
+        zoom,
+      });
+
+      if (!selectedLayer.is_visible) {
+        this.$emit("toggle-layer", [selectedLayer.id, true]);
+      }
     },
   },
 };
@@ -407,5 +441,9 @@ export default {
 
 .sublayer > input:disabled + label {
   text-decoration: line-through;
+}
+
+.zoom-button {
+  margin-left: 5px;
 }
 </style>

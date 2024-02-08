@@ -12,8 +12,17 @@ export default {
     apiKey: String,
   },
   watch: {
-    position(value) {
+    position(value, prevValue) {
       if (!value.marker) {
+        return;
+      }
+
+      if (
+        value.marker &&
+        prevValue.marker &&
+        value.marker[0] == prevValue.marker[0] &&
+        value.marker[1] == prevValue.marker[1]
+      ) {
         return;
       }
 
@@ -56,10 +65,7 @@ export default {
         },
       };
 
-      window.StreetSmartApi.open(
-        `${position[0]}, ${position[1]}`,
-        options
-      ).then((results) => {
+      window.StreetSmartApi.open(`${position[0]}, ${position[1]}`, options).then((results) => {
         if (!results || results.length === 0) {
           return;
         }

@@ -1,15 +1,21 @@
 <template>
-  <ExpandButton :title="computedTitle" :is-open="isOpen" class="feature">
+  <ExpandButton :title="computedTitle" :is-open="isOpen" class="feature" @show-content="onShowContentChange">
     <template #default>
       <div>
-        <span v-if="error">Er is een fout opgetreden tijdens het laden.</span>
+        <span v-if="error">{{ error }}</span>
         <span v-if="loading">Bezig met laden...</span>
         <span v-if="!loading && !error && displayProperties.length === 0">Geen weergave beschikbaar.</span>
         <div v-if="!loading && !error && displayProperties.length > 0">
           <table-list class="table">
             <table>
               <thead>
-                <tr>
+                <tr v-if="tableHeaders">
+                  <th></th>
+                  <th v-for="property in tableHeaders" :key="property">
+                    {{ property }}
+                  </th>
+                </tr>
+                <tr v-if="!tableHeaders">
                   <th></th>
                   <th v-for="property in displayProperties" :key="property">
                     <SortableTableHeaderItem
@@ -86,6 +92,7 @@ export default {
     query: String,
     selectedArea: Object,
     isOpen: Boolean,
+    tableHeaders: Array,
     isFilterable: Boolean,
     overallFilter: Object,
     position: Object,
@@ -98,10 +105,11 @@ export default {
       searchProperties: [],
       fieldFilters: {},
       loading: false,
-      error: false,
-      numberMatched: 0,
+      error: "",
+      numberMatched: null,
       sortKey: "",
       sortAscending: true,
+      loadContent: this.isOpen,
     };
   },
   computed: {
@@ -125,19 +133,35 @@ export default {
     },
   },
   watch: {
-    query: "fetchFeatures",
-    selectedArea: "fetchFeatures",
-    filter: "fetchFeatures",
-    fieldFilters: "fetchFeatures",
+    query: "loadFeaturesAndMetadata",
+    selectedArea: "loadFeaturesAndMetadata",
+    filter: "loadFeaturesAndMetadata",
+    fieldFilters: "loadFeaturesAndMetadata",
+    isOpen: "loadFeaturesAndMetadata",
   },
   mounted() {
-    this.fetchFeatures();
-    this.fetchSearchProperties();
+    this.loadFeaturesAndMetadata();
   },
   methods: {
+    onShowContentChange(value) {
+      if (!value) {
+        return;
+      }
+
+      this.loadContent = true;
+      this.loadFeaturesAndMetadata();
+    },
+    loadFeaturesAndMetadata() {
+      if (!this.loadContent) {
+        return;
+      }
+
+      this.fetchFeatures();
+      this.fetchSearchProperties();
+    },
     async fetchFeatures() {
       this.loading = true;
-      this.error = false;
+      this.error = "";
 
       const params = new URLSearchParams([
         ["service", "WFS"],
@@ -182,6 +206,20 @@ export default {
         url.search = params.toString();
 
         const result = await fetch(url.toString(), this.getFetchParameters());
+
+        if (!result.ok) {
+          if (result.status == 401) {
+            this.error = "U moet ingelogd zijn om deze data te bekijken.";
+          } else if (result.status == 403) {
+            this.error = "U heeft geen rechten om deze data te bekijken.";
+          } else {
+            this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
+          }
+
+          this.loading = false;
+          return;
+        }
+
         const data = await result.json();
 
         this.features = data.features;
@@ -196,7 +234,7 @@ export default {
         }
       } catch (e) {
         console.error(e);
-        this.error = true;
+        this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
         this.features = [];
         this.displayProperties = [];
         this.searchProperties = [];

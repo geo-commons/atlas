@@ -133,7 +133,7 @@ export default {
       );
     },
     async applyStyle(inputStyle) {
-      if (!inputStyle) {
+      if (!inputStyle || Object.keys(inputStyle).length === 0) {
         return this.tileLayer.setStyle(DEFAULT_STYLE);
       }
 
@@ -141,7 +141,7 @@ export default {
         const olStyle = await olParser.writeStyle(inputStyle);
         this.tileLayer.setStyle(olStyle.output);
       } catch (e) {
-        console.error("Unable to parse style", e);
+        console.error("Unable to parse style", this.name, e);
       }
     },
   },
