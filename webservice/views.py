@@ -6,11 +6,13 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import HttpResponse
 from django.views.decorators.http import require_http_methods
+import json
+from json import JSONDecodeError
 import fiona
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Source
-from .authorization import can_request_access_source, authorize_ows_request, authorize_wmts_request
+from authz.lib import can_access_source, authorize_ows_request, authorize_wmts_request, authorize_rest_request
 
 
 def v3_token(request):
@@ -25,52 +27,51 @@ def v3_token(request):
 
 
 def v3_authorize(request):
-    source_slug = request.headers.get('X-Source-Slug')
+    try:
+        data = json.loads(request.body)
+    except JSONDecodeError:
+        return JsonResponse({
+            'result': False,
+            'status': 400,
+            'message': 'unable to decode json request body'
+        }, status=400)
+
+    source_slug = data.get('source')
     if not source_slug:
         return JsonResponse({
-            'allow': False,
-            'message': 'The header X-Source-Slug is not defined'
+            'result': False,
+            'status': 400,
+            'message': 'source is not defined'
         }, status=400)
 
     try:
         source = Source.objects.get(slug=source_slug)
     except Source.DoesNotExist:
         return JsonResponse({
-            'allow': False,
+            'result': False,
+            'status': 400,
             'message': f'could not find source with slug {source_slug}'
         }, status=400)
 
-    if not can_request_access_source(request, source):
+    if not can_access_source(request, source):
         return JsonResponse({
-            'allow': False,
+            'result': False,
+            'status': 403 if request.user.is_authenticated else 401,
             'message': f'user {request.user} does not have access to source {source_slug}'
         }, status=403 if request.user.is_authenticated else 401)
 
-    result = False
     if source.source_type == Source.SOURCE_OWS:
-        result = authorize_ows_request(request, source)
-    elif source.source_type == Source.SOURCE_WMTS:
-        result = authorize_wmts_request(request, source)
-    elif source.source_type == Source.SOURCE_REST:
-        result = True  # REST authentication is performed on source level
-
-    if result:
-        return JsonResponse({
-            'allow': True,
-            'user': {
-                'id': request.user.id,
-                'username': request.user.username,
-                'name': request.user.name,
-                'groups': [
-                    g.slug for g in request.user.atlas_groups.filter(slug__isnull=False)
-                ]
-            } if request.user.is_authenticated else None
-        })
+        return authorize_ows_request(source, request, data)
+    if source.source_type == Source.SOURCE_WMTS:
+        return authorize_wmts_request(source, request, data)
+    if source.source_type == Source.SOURCE_REST:
+        return authorize_rest_request(source, request, data)
 
     return JsonResponse({
-        'allow': False,
-        'message': f'user does not have access to layer of source {source_slug}'
-    }, status=403 if request.user.is_authenticated else 401)
+        'result': False,
+        'status': 500,
+        'message': 'there is no authorizer for this source type provided'
+    })
 
 
 @require_http_methods(['POST'])

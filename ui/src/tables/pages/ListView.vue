@@ -74,7 +74,8 @@ export default {
 
       const result = await fetch(url.toString(), {
         method: this.table.method,
-        body: this.table.method !== "GET" ? JSON.stringify(searchFields) : null,
+        body: this.table.method === "POST" ? JSON.stringify(searchFields) : null,
+        headers: this.table.method === "POST" ? { "Content-Type": "application/json" } : {},
       });
 
       try {
@@ -86,9 +87,10 @@ export default {
           } else if (result.status == 403) {
             this.error = "U heeft geen rechten om deze data te bekijken.";
           } else {
-            console.log(data)
             if (this.table.error_template && data) {
-              this.error = nunjucks.renderString(this.table.error_template, data) || "Er is een fout opgetreden tijdens het ophalen van de gegevens";
+              this.error =
+                nunjucks.renderString(this.table.error_template, data) ||
+                "Er is een fout opgetreden tijdens het ophalen van de gegevens";
             } else {
               this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
             }
@@ -96,7 +98,7 @@ export default {
         }
 
         this.rows = fetchDot(this.table.list_query, data);
-      } catch(e) {
+      } catch (e) {
         this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
       }
 

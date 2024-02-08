@@ -67,12 +67,22 @@ export default {
   methods: {
     async fetchData() {
       const url = new URL(
-        this.template.source.url +
-          nunjucks.renderString(this.template.endpoint, this.feature.properties)
+        this.template.source.url + nunjucks.renderString(this.template.endpoint, this.feature.properties)
       );
 
+      let params = {};
+      if (this.template.method === "POST") {
+        params = Object.fromEntries(url.searchParams.entries());
+        url.search = "";
+      }
+
       try {
-        const result = await fetch(url.toString(), this.getFetchParameters());
+        const result = await fetch(url.toString(), {
+          ...this.getFetchParameters(),
+          method: this.template.method,
+          body: this.template.method === "POST" ? JSON.stringify(params) : null,
+          headers: this.template.method === "POST" ? { "Content-Type": "application/json" } : {},
+        });
 
         if (!result.ok) {
           if (result.status == 401) {
@@ -80,11 +90,9 @@ export default {
           } else if (result.status == 403) {
             this.error = "U heeft geen rechten om deze data te bekijken.";
           } else if (result.status == 502 || result.status == 504) {
-            this.error =
-              "De databron kan niet bereikt worden. Probeer het later opnieuw.";
+            this.error = "De databron kan niet bereikt worden. Probeer het later opnieuw.";
           } else {
-            this.error =
-              "Onbekende fout opgetreden. Probeer het later opnieuw.";
+            this.error = "Onbekende fout opgetreden. Probeer het later opnieuw.";
           }
 
           return;
@@ -100,8 +108,7 @@ export default {
       } catch (error) {
         console.error("Catched error", error);
 
-        this.error =
-          "Kan de data niet ophalen door een verbindingsprobleem. Probeer het later opnieuw.";
+        this.error = "Kan de data niet ophalen door een verbindingsprobleem. Probeer het later opnieuw.";
       }
     },
     getFetchParameters() {

@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'webservice',
     'portal',
     'user_management',
+    'authz',
     'webpack_loader',
     'atlas.apps.CustomConstance',
     'constance.backends.database',
@@ -236,6 +237,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/atlas/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Save files using system's standard umask. This is required for network mounts like
+# Azure Files as they do not implement a full-fledged permission system.
+# See https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FILE_UPLOAD_PERMISSIONS
+FILE_UPLOAD_PERMISSIONS = None
+
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATS_FILE = os.path.join(BASE_DIR, 'ui', 'webpack-stats.json')
@@ -275,8 +281,13 @@ LOGGING = {
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'image_field': ['atlas.fields.SVGAndImageFormField', {}]
+}
+
 CONSTANCE_CONFIG = {
     'ORGANIZATION_NAME': ('Gemeente Purmerend', 'De naam van de organisatie'),
+    'ORGANIZATION_LOGO': ('', 'Logo van de organisatie', 'image_field'),
     'DISCLAIMER': ('', 'Inhoud van de disclaimer die getoond wordt'),
     'POSITION_ZOOM': (13, 'Het zoomniveau van de opstartpositie'),
     'POSITION_CENTER_X': (126910, 'Het centrum X-coordinaat van de opstartpositie'),
@@ -285,6 +296,7 @@ CONSTANCE_CONFIG = {
     'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico')),
     'MATOMO_URL': ('', ('Configureer de URL van Matomo om statistieken bij te houden')),
     'MATOMO_SITE_ID': ('', ('Configureer het site ID van Matomo om statistieken bij te houden')),
+    'MAP_AREA': ('', ('Configureer een gebied dat standaard uitgelicht wordt op de kaart')),
     'FEATURE_PORTAL': (False, ('Portaalfunctionaliteit')),
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
     'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
@@ -293,6 +305,7 @@ CONSTANCE_CONFIG = {
 CONSTANCE_CONFIG_FIELDSETS = {
     '1. Organisatie': (
         'ORGANIZATION_NAME',
+        'ORGANIZATION_LOGO',
         'FAVICON_URL',
         'DISCLAIMER'
     ),
@@ -300,7 +313,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'POSITION_CENTER_X',
         'POSITION_CENTER_Y',
         'POSITION_ZOOM',
-        'SUGGEST_MUNICIPALITIES'
+        'SUGGEST_MUNICIPALITIES',
+        'MAP_AREA'
     ),
     '3. Matomo': (
         'MATOMO_URL',

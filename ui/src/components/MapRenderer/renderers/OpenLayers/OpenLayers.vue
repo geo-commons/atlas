@@ -8,13 +8,7 @@
       :marker-on-click="features.markerOnClick"
       @position-changed="onPositionChanged"
     />
-    <ol-draw-interaction
-      v-if="tool"
-      :tool="tool"
-      :layers="layers"
-      @draw-start="startUsingTool"
-      @draw-end="toolUsed"
-    />
+    <ol-draw-interaction v-if="tool" :tool="tool" :layers="layers" @draw-start="startUsingTool" @draw-end="toolUsed" />
     <ol-drag-zoom />
     <component
       :is="getComponent(layer.source_type)"
@@ -27,11 +21,7 @@
       :filters="filters"
       :is-visible="layer.is_visible === true"
       :is-selectable="layer.is_selectable === true"
-      :send-token-with-request="
-        layer.login_required && layer.source.authenticate && user && user.token
-          ? true
-          : false
-      "
+      :send-token-with-request="layer.login_required && layer.source.authenticate && user && user.token ? true : false"
       :selected-features="selectedFeatures"
       :z-index="layer.is_base ? 0 : 1"
       :min-zoom="layer.zoom_min"
@@ -42,6 +32,15 @@
       @features-selected="featuresSelected"
     >
     </component>
+    <ol-vector-layer
+      v-if="mapArea"
+      name="mapArea"
+      :is-visible="true"
+      :selectable="false"
+      :vector-style="MAP_AREA_STYLE"
+      :features="mapArea"
+      :z-index="3"
+    />
     <ol-vector-layer
       name="marker"
       :is-visible="true"
@@ -126,6 +125,10 @@ const GEOLOCATION_STYLE = new Style({
   }),
 });
 
+const MAP_AREA_STYLE = new Style({
+  stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 2 }),
+});
+
 const SELECTED_AREA_STYLE = new Style({
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)" }),
   fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
@@ -174,6 +177,7 @@ export default {
     position: Object,
     layers: Array,
     tool: String,
+    mapArea: Array,
     selectedArea: Object,
     user: Object,
     features: Object,
@@ -191,10 +195,7 @@ export default {
 
       return [
         new Feature({
-          geometry: new Point([
-            this.position.marker[0],
-            this.position.marker[1],
-          ]),
+          geometry: new Point([this.position.marker[0], this.position.marker[1]]),
         }),
       ];
     },
@@ -205,10 +206,7 @@ export default {
 
       return [
         new Feature({
-          geometry: new Point([
-            this.position.geolocation[0],
-            this.position.geolocation[1],
-          ]),
+          geometry: new Point([this.position.geolocation[0], this.position.geolocation[1]]),
         }),
       ];
     },
@@ -233,6 +231,7 @@ export default {
     },
   },
   created() {
+    this.MAP_AREA_STYLE = MAP_AREA_STYLE;
     this.MARKER_STYLE = MARKER_STYLE;
     this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
     this.SELECTED_AREA_STYLE = SELECTED_AREA_STYLE;
@@ -306,26 +305,20 @@ export default {
         mapCanvas.width = width;
         mapCanvas.height = height;
         const mapContext = mapCanvas.getContext("2d");
-        Array.prototype.forEach.call(
-          document.querySelectorAll(".ol-layer canvas"),
-          function (canvas) {
-            if (canvas.width > 0) {
-              mapContext.globalAlpha = 1;
-              const transform = canvas.style.transform;
-              // Get the transform parameters from the style's transform matrix
-              const matrix = transform
-                .match(/^matrix\(([^(]*)\)$/)[1]
-                .split(",")
-                .map(Number);
-              // Apply the transform to the export map context
-              CanvasRenderingContext2D.prototype.setTransform.apply(
-                mapContext,
-                matrix
-              );
-              mapContext.drawImage(canvas, 0, 0);
-            }
+        Array.prototype.forEach.call(document.querySelectorAll(".ol-layer canvas"), function (canvas) {
+          if (canvas.width > 0) {
+            mapContext.globalAlpha = 1;
+            const transform = canvas.style.transform;
+            // Get the transform parameters from the style's transform matrix
+            const matrix = transform
+              .match(/^matrix\(([^(]*)\)$/)[1]
+              .split(",")
+              .map(Number);
+            // Apply the transform to the export map context
+            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
+            mapContext.drawImage(canvas, 0, 0);
           }
-        );
+        });
 
         mapContext.globalAlpha = 1;
         mapContext.setTransform(1, 0, 0, 1, 0, 0);
@@ -338,11 +331,7 @@ export default {
             const img = new Image();
             img.src = imgSrc;
 
-            const pdf = new jsPDF(
-              settings.orientation,
-              undefined,
-              settings.format
-            );
+            const pdf = new jsPDF(settings.orientation, undefined, settings.format);
 
             pdf.addImage(img, "JPEG", margin, margin, dim[0], dim[1]);
 
@@ -371,14 +360,7 @@ export default {
             }
 
             if (settings.showScale) {
-              pdf.addImage(
-                scale.toDataURL(),
-                "JPEG",
-                10,
-                dim[1] - 10,
-                scale.width / 5,
-                scale.height / 5
-              );
+              pdf.addImage(scale.toDataURL(), "JPEG", 10, dim[1] - 10, scale.width / 5, scale.height / 5);
             }
 
             pdf.save(`atlas-${new Date().toISOString()}.pdf`);

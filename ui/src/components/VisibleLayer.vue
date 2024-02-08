@@ -107,6 +107,10 @@ export default {
   },
   computed: {
     legendImageUrl() {
+      if (this.layer.legend_url) {
+        return this.layer.legend_url;
+      }
+
       const wmsSource = new TileWMS({
         url: this.layer.url,
         servertype: this.layer.server_type,

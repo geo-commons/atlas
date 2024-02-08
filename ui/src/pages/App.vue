@@ -18,7 +18,9 @@
           :tool="tool"
           :selected-area="selectedArea"
           :filters="filters"
+          :highlighted-features="highlightedFeatures"
           :padding="mapPadding"
+          :map-area="mapArea"
           :user="user"
           :features="{ scale: true, markerOnClick: true }"
           :draw-features="drawFeatures"
@@ -34,7 +36,7 @@
         :show-panel="!showDataPanel && showInfoPanel"
         :user="user"
         @set-position="setPosition"
-        @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
+        @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19 })"
         @expanded-info-panel="toggleInfoPanel"
       />
       <DataPanel
@@ -48,7 +50,7 @@
         :filters="filters"
         :full-size-window="showDataPanelFullScreen"
         @set-position="setPosition"
-        @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 18 })"
+        @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19 })"
         @toggle-data-panel="toggleDataPanel"
         @toggle-full-side-panel="toggleDataPanelFullScreen"
         @update-filters="(value) => (filters = value)"
@@ -95,27 +97,17 @@
             @toggle-layer="toggleLayer"
             @set-layer-opacity="setLayerOpacity"
             @on-fit="(layer) => $refs.map.fit(layer)"
+            @set-position="setPosition"
           />
         </div>
         <div class="bottom-right-panels">
           <div
-            v-if="!isEmbed && !showPanoramaPanel"
+            v-if="!isEmbed"
             class="bottom-right-buttons"
             :class="{
               isOpen: showBaseLayersPanel,
-              showTogglePanorama: config.viewers.length > 0 && (position.marker || showPanoramaPanel),
             }"
           >
-            <button
-              v-if="config.viewers.length > 0"
-              v-tippy="{ placement: 'left' }"
-              class="iconbutton"
-              content="Panorama"
-              aria-label="Toon panorama"
-              @click="togglePanoramaPanel"
-            >
-              <MapIcon />
-            </button>
             <button
               v-tippy="{ placement: 'left' }"
               class="iconbutton"
@@ -125,16 +117,36 @@
               aria-controls="baseLayers"
               @click="toggleBaseLayersPanel"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path
-                  d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM10 5.47l4 1.4v11.66l-4-1.4V5.47zm-5 .99l3-1.01v11.7l-3 1.16V6.46zm14 11.08l-3 1.01V6.86l3-1.16v11.84z"
-                />
-              </svg>
+              <MapIcon />
             </button>
             <transition name="fade">
               <BaseLayersPanel v-if="showBaseLayersPanel" :layers="layers" @toggle-layer="toggleLayer" />
             </transition>
+          </div>
+          <div v-if="!isEmbed" class="bottom-right-buttons">
+            <div class="wrapper">
+              <button
+                v-tippy="{ placement: 'left' }"
+                class="iconbutton"
+                content="Rondkijkfoto"
+                aria-label="Toon rondkijkfoto"
+                @click="togglePanoramaPanel"
+              >
+                <PanoramaIcon />
+              </button>
+              <a
+                v-if="obliqueViewers && obliqueViewers.length > 0"
+                v-tippy="{ placement: 'left' }"
+                :href="obliqueViewerUrl"
+                target="_blank"
+                rel="nofollow"
+                class="iconbutton"
+                content="Obliekfoto"
+                aria-label="Toon obliekfoto"
+              >
+                <ObliqueIcon />
+              </a>
+            </div>
           </div>
           <GeoLocationButton @set-position="setPosition" />
           <ZoomPanel :position="position" @set-position="setPosition" />
@@ -160,7 +172,12 @@
 <script>
 import Cookies from "js-cookie";
 import GeoJSON from "ol/format/GeoJSON";
+import nunjucks from "nunjucks";
+import { register } from "ol/proj/proj4";
+import TileWMS from "ol/source/TileWMS";
+import View from "ol/View";
 import { mapState } from "vuex";
+import { getDefinitions } from "../utils/projections";
 import HeaderMenu from "../components/HeaderMenu";
 import AlertMessage from "../components/AlertMessage";
 import BaseLayersPanel from "../components/BaseLayersPanel";
@@ -180,7 +197,13 @@ import GeoLocationButton from "../components/GeoLocationButton";
 import { isMobile } from "@/utils/helpers";
 import { transform } from "ol/proj";
 import MapIcon from "../assets/icons/map-icon.svg";
+import PanoramaIcon from "../assets/icons/panorama-icon.svg";
+import ObliqueIcon from "../assets/icons/oblique-icon.svg";
 
+// Register EPSG:28992 projection
+register(getDefinitions());
+
+nunjucks.configure({ autoescaping: true });
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -204,6 +227,8 @@ export default {
     ZoomPanel,
     GeoLocationButton,
     MapIcon,
+    PanoramaIcon,
+    ObliqueIcon,
   },
   data() {
     return {
@@ -215,24 +240,56 @@ export default {
       showDataPanelFullScreen: false,
       computedStyle: { "--color-primary": "#0066FF" },
       drawFeatures: [],
+      highlightedFeatures: [],
       modal: "",
       filters: {},
       mapPadding: [0, 0, 0, 0],
       infoPanelExpanded: false,
     };
   },
-  computed: mapState({
-    isEmbed: (state) => state.isEmbed,
-    alert: (state) => state.alert,
-    position: (state) => state.position,
-    layers: (state) => state.layers,
-    tool: (state) => state.tool,
-    user: (state) => state.user,
-    config: (state) => state.config,
-    selectedArea: (state) => state.selectedArea,
-    initiallyShowLayerList: (state) => state.initiallyShowLayerList,
-    drawing: (state) => state.drawing,
-  }),
+  computed: {
+    ...mapState({
+      isEmbed: (state) => state.isEmbed,
+      alert: (state) => state.alert,
+      position: (state) => state.position,
+      layers: (state) => state.layers,
+      tool: (state) => state.tool,
+      user: (state) => state.user,
+      config: (state) => state.config,
+      selectedArea: (state) => state.selectedArea,
+      initiallyShowLayerList: (state) => state.initiallyShowLayerList,
+      drawing: (state) => state.drawing,
+    }),
+    obliqueViewers: function () {
+      return this.config.viewers.filter((v) => v.is_oblique);
+    },
+    obliqueViewerUrl: function () {
+      if (this.obliqueViewers.length === 0) {
+        return "";
+      }
+
+      const position = this.position.marker || this.position.center;
+
+      const latlong = transform(position, "EPSG:28992", "EPSG:4326");
+
+      const properties = {
+        lat: latlong[1],
+        lon: latlong[0],
+        x: position[0],
+        y: position[1],
+      };
+
+      return nunjucks.renderString(this.obliqueViewers[0].url, properties);
+    },
+    mapArea() {
+      if (!this.config.map_area) {
+        return;
+      }
+
+      const geojsonFormat = new GeoJSON();
+      return geojsonFormat.readFeatures(this.config.map_area);
+    },
+  },
   watch: {
     position(value) {
       // Toggle info panel based on if there is a marker present.
@@ -286,9 +343,14 @@ export default {
       this.$store.commit("setPosition", position);
 
       if (!position.marker) {
+        this.highlightedFeatures = [];
         return;
       }
 
+      this.reverseGeocode(position);
+      this.getFeatureInfo(position);
+    },
+    async reverseGeocode(position) {
       try {
         const result = await fetch(
           `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`
@@ -318,6 +380,42 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+    async getFeatureInfo(position) {
+      this.highlightedFeatures = [];
+
+      const visibleLayers = this.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible);
+      visibleLayers.forEach(async (layer) => {
+        const wmsSource = new TileWMS({
+          url: layer.url,
+          servertype: layer.server_type,
+          params: {
+            LAYERS: layer.name,
+            TILED: true,
+          },
+        });
+
+        const view = new View({
+          center: this.position.center,
+          zoom: this.position.zoom,
+        });
+
+        const url = wmsSource.getFeatureInfoUrl(position.marker, view.getResolution(), "EPSG:28992", {
+          info_format: "application/json",
+          feature_count: 20,
+        });
+
+        try {
+          const result = await fetch(url);
+          const data = await result.json();
+          this.highlightedFeatures = [
+            ...this.highlightedFeatures,
+            ...data.features.map((feature) => new GeoJSON().readFeature(feature)),
+          ];
+        } catch (e) {
+          console.error(e);
+        }
+      });
     },
     toggleLayer(values) {
       this.$store.commit("toggleLayer", values);
@@ -354,7 +452,6 @@ export default {
       this.showPanoramaPanel = !this.showPanoramaPanel;
     },
     toggleBaseLayersPanel() {
-      this.showPanoramaPanel = false;
       this.showBaseLayersPanel = !this.showBaseLayersPanel;
     },
     pushHistoryState() {
@@ -601,17 +698,12 @@ export default {
   border-radius: var(--radius-normal);
   overflow: hidden;
   box-shadow: var(--shadow-normal);
-  height: var(--width-button-normal);
   transition: height 0.1s ease, border-radius 0.1s;
 }
 
 .bottom-right-buttons.isOpen {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-}
-
-.bottom-right-buttons.showTogglePanorama {
-  height: calc(var(--width-button-normal) * 2 + 1px);
 }
 
 .bottom-right-buttons .iconbutton {
