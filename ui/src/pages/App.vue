@@ -123,9 +123,13 @@
               <BaseLayersPanel v-if="showBaseLayersPanel" :layers="layers" @toggle-layer="toggleLayer" />
             </transition>
           </div>
-          <div v-if="!isEmbed" class="bottom-right-buttons">
+          <div
+            v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)"
+            class="bottom-right-buttons"
+          >
             <div class="wrapper">
               <button
+                v-if="panoramaViewers.length > 0"
                 v-tippy="{ placement: 'left' }"
                 class="iconbutton"
                 content="Rondkijkfoto"
@@ -135,7 +139,7 @@
                 <PanoramaIcon />
               </button>
               <a
-                v-if="obliqueViewers && obliqueViewers.length > 0"
+                v-if="obliqueViewers.length > 0"
                 v-tippy="{ placement: 'left' }"
                 :href="obliqueViewerUrl"
                 target="_blank"
@@ -260,11 +264,18 @@ export default {
       initiallyShowLayerList: (state) => state.initiallyShowLayerList,
       drawing: (state) => state.drawing,
     }),
+    panoramaViewers: function () {
+      return this.config.viewers.filter((v) => !v.is_oblique);
+    },
     obliqueViewers: function () {
       return this.config.viewers.filter((v) => v.is_oblique);
     },
     obliqueViewerUrl: function () {
       if (this.obliqueViewers.length === 0) {
+        return "";
+      }
+
+      if (!this.obliqueViewers[0].url) {
         return "";
       }
 
