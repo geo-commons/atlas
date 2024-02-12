@@ -209,6 +209,8 @@ class Layer(models.Model):
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
+    use_html_info_format = models.BooleanField(
+        'Haal detailinformatie als HTML op bij de bron', default=False)
     show_in_detail_panel = models.BooleanField(
         'Toon laag in detail- en dataweergave', default=True)
 
@@ -364,6 +366,7 @@ source: new ol.source.TileWMS({{
             'is_base': self.is_base,
             'is_visible': self.is_visible,
             'is_selectable': self.is_selectable,
+            'use_html_info_format': self.use_html_info_format,
             'show_in_detail_panel': self.show_in_detail_panel,
             'login_required': self.login_required,
             'projection': self.projection,
