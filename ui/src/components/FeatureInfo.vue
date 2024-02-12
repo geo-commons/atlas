@@ -1,5 +1,6 @@
 <template>
-  <ExpandButton v-if="features.length > 0" :title="featureInfoTitle" :is-open="isOpen" class="feature">
+  <ExpandButton v-if="features.length > 0 || html" :title="featureInfoTitle" :is-open="isOpen" class="feature">
+    <div v-if="html" class="html" v-html="html" />
     <div v-for="feature in features" :key="feature.id" class="border-bottom">
       <div class="feature-select" @click="() => $emit('show-selected-feature', feature)">
         <table-list>
@@ -99,6 +100,7 @@ export default {
   data() {
     return {
       features: [],
+      html: "",
     };
   },
   computed: {
@@ -145,14 +147,23 @@ export default {
       });
 
       const url = wmsSource.getFeatureInfoUrl(this.position.marker, view.getResolution(), "EPSG:28992", {
-        info_format: "application/json",
+        info_format: this.layer.use_html_info_format ? "text/html" : "application/json",
         feature_count: 20,
       });
 
       try {
         const result = await fetch(url, this.getFetchParameters());
-        const data = await result.json();
-        this.features = data.features;
+
+        if (this.layer.use_html_info_format) {
+          const data = await result.text();
+          this.html = data;
+          this.features = [];
+        }
+
+        if (!this.layer.use_html_info_format) {
+          const data = await result.json();
+          this.features = data.features;
+        }
       } catch (e) {
         console.error(e);
       }
@@ -258,6 +269,11 @@ export default {
   border: 0;
   border-top: 1px solid var(--color-grey-50);
   margin: 0 20px;
+}
+
+.html {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .border-bottom:not(:last-child) {
