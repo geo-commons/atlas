@@ -181,19 +181,6 @@ export default {
   background-color: var(--color-primary-hover);
 }
 
-/* Consider moving if chevron transform is used in other places. */
-.button.__chevron {
-  padding-right: 0;
-}
-
-.button.__chevron svg.setting-chevron {
-  transition: transform 100ms ease-in-out;
-}
-
-.button.__chevron:hover svg.setting-chevron {
-  transform: translateX(5px);
-}
-
 .flexer {
   position: absolute;
   bottom: var(--padding-screen);

@@ -1,13 +1,62 @@
 from rest_framework import serializers
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, Source, Layer, Template
+from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template
 from authz.lib import can_request_access_layer
 
 
+class MapLayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MapLayer
+        fields = ['layer', 'settings']
+
+
 class MapSerializer(serializers.ModelSerializer):
+    layers = MapLayerSerializer(many=True, source='map_layers')
+
     class Meta:
         model = Map
         fields = ['id', 'title', 'slug', 'features', 'settings', 'layers']
+
+    def create(self, validated_data):
+        try:
+            map_layers = validated_data.pop('map_layers')
+        except KeyError:
+            map_layers = None
+
+        created_map = Map.objects.create(**validated_data)
+
+        if map_layers is not None:
+            for map_layer in map_layers:
+                created_map.map_layers.create(
+                    layer=map_layer.get('layer'),
+                    settings=map_layer.get('settings')
+                )
+
+        return created_map
+
+    def update(self, instance, validated_data):
+        try:
+            map_layers = validated_data.pop('map_layers')
+        except KeyError:
+            map_layers = None
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        if map_layers is not None:
+            map_layers_to_create = []
+            for map_layer in map_layers:
+                map_layers_to_create.append(MapLayer(
+                    layer=map_layer.get('layer'),
+                    settings=map_layer.get('settings')
+                ))
+
+            instance.map_layers.all().delete()
+            instance.map_layers.set(map_layers_to_create, bulk=False)
+
+        return instance
 
 
 class SourceSerializer(serializers.ModelSerializer):

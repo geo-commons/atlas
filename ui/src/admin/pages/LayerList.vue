@@ -311,7 +311,6 @@ export default {
 
       if (result.ok) {
         this.getLayers();
-        console.log(this.selectedLayerFilters);
       }
     },
     async getCategories() {
