@@ -66,8 +66,10 @@
       :position="position"
       :query="query"
       :selected-area="selectedArea"
+      :filters="filter"
       @set-position="(value) => onSetPosition(value)"
       @on-fit="(value) => onFit(value)"
+      @update-filters="(value) => updateFilters(value)"
     />
   </div>
 </template>
@@ -88,6 +90,7 @@ export default {
     overallFilter: Object,
     position: Object,
     user: Object,
+    filters: Object,
   },
   data() {
     return {
@@ -99,6 +102,7 @@ export default {
       error: false,
       numberMatched: 0,
       query: "",
+      filter: this.filters,
       sortKey: "",
       sortAscending: true,
     };
@@ -114,6 +118,9 @@ export default {
     },
     onSearch() {
       this.query = this.$refs.queryInput.value;
+    },
+    updateFilters(value) {
+      this.$emit("update-filters", value);
     },
   },
 };

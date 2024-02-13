@@ -22,7 +22,7 @@ class LoginView(RedirectURLMixin, FormView):
     authentication_form = None
     redirect_field_name = REDIRECT_FIELD_NAME
     template_name = 'registration/login.html'
-    redirect_authenticated_user = False
+    redirect_authenticated_user = True
     extra_context = None
 
     @method_decorator(sensitive_post_parameters())

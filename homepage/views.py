@@ -3,6 +3,7 @@ import logging
 from constance.admin import get_values
 from django.http import HttpResponseNotFound
 from django.db.models import Q
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
@@ -33,6 +34,7 @@ def embed(request):
     return render(request, 'v3/app.html', context)
 
 
+@xframe_options_exempt
 def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.for_request(request).prefetch_related(
         'layer_source', 'layer_type', 'linked_data', 'templates'
@@ -173,6 +175,7 @@ def _get_config(request):
 
     return {
         'organization_name': config.get('ORGANIZATION_NAME'),
+        'organization_logo': settings.MEDIA_URL + config.get('ORGANIZATION_LOGO') if config.get('ORGANIZATION_LOGO') else None,
         'position': {
             'zoom': config.get('POSITION_ZOOM'),
             'center': {
@@ -180,6 +183,7 @@ def _get_config(request):
                 'y': config.get('POSITION_CENTER_Y')
             }
         },
+        'map_area': config.get('MAP_AREA'),
         'suggest_municipalities': config.get('SUGGEST_MUNICIPALITIES'),
         'show_disclaimer': config.get('DISCLAIMER') != '',
         'features': {

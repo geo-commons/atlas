@@ -203,9 +203,14 @@ class Layer(models.Model):
                                    help_text='"WMS en WFS" en WFS is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.'
                                    )
 
+    legend_url = models.URLField(
+        'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True)
+
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
+    use_html_info_format = models.BooleanField(
+        'Haal detailinformatie als HTML op bij de bron', default=False)
     show_in_detail_panel = models.BooleanField(
         'Toon laag in detail- en dataweergave', default=True)
 
@@ -361,6 +366,7 @@ source: new ol.source.TileWMS({{
             'is_base': self.is_base,
             'is_visible': self.is_visible,
             'is_selectable': self.is_selectable,
+            'use_html_info_format': self.use_html_info_format,
             'show_in_detail_panel': self.show_in_detail_panel,
             'login_required': self.login_required,
             'projection': self.projection,
@@ -386,8 +392,26 @@ source: new ol.source.TileWMS({{
                 'link': self.meta_link
             },
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
-            'templates': [item.to_dict() for item in self.templates.all()]
+            'templates': [item.to_dict() for item in self.templates.all()],
+            'legend_url': self.legend_url
         }
+
+    def is_accessible_by(self, user, request):
+        if not is_internal(request):
+            if self.closed_dataset:
+                return False
+
+        if not user.is_authenticated:
+            if not self.login_required and not self.atlas_groups.exists():
+                return True
+
+            return False
+
+        if not self.atlas_groups.exists():
+            return True
+
+        user_groups = list(user.atlas_groups.all())
+        return any(group for group in self.atlas_groups.all() if group in user_groups)
 
     class Meta:
         verbose_name = 'Kaartlaag'
@@ -404,7 +428,9 @@ class LinkedData(models.Model):
     url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
-    popup_attributes = models.TextField(_('Toon deze velden'), blank=True, null=True,
+    headers = models.TextField(_('Tabel kopjes'), max_length=128, blank=True, null=True,
+                               help_text='Voer één veld per regel in.')
+    popup_attributes = models.TextField(_('Tabel velden'), max_length=250, blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
 
     class Meta:
@@ -421,16 +447,27 @@ class LinkedData(models.Model):
             'url': self.url,
             'source_key': self.source_key,
             'target_key': self.target_key,
+            'headers': self.headers.split('\r\n') if self.headers else [],
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else []
         }
 
 
 class Template(models.Model):
+    METHOD_GET = 'GET'
+    METHOD_POST = 'POST'
+
+    METHOD_TYPES = [
+        (METHOD_GET, 'GET'),
+        (METHOD_POST, 'POST'),
+    ]
+
     layer = models.ForeignKey(
         Layer, on_delete=models.CASCADE, related_name='templates')
 
     source = models.ForeignKey('Source', on_delete=models.CASCADE)
     endpoint = models.CharField(_('Endpoint'), max_length=500)
+    method = models.CharField(
+        'Methode', choices=METHOD_TYPES, max_length=20, default=METHOD_GET)
     title = models.CharField('Titel', max_length=128)
     list = models.CharField(_('Tabel Veld met lijst'),
                             max_length=128, blank=True, null=True)
@@ -458,6 +495,7 @@ class Template(models.Model):
                 'url': self.source.url
             },
             'endpoint': self.endpoint,
+            'method': self.method,
             'title': self.title,
             'list': self.list,
             'headers': self.headers.split('\r\n') if self.headers else [],
@@ -586,6 +624,7 @@ class Viewer(models.Model):
     password = models.CharField(null=True, blank=True, max_length=128)
     api_key = models.CharField(null=True, blank=True, max_length=128)
     url = models.CharField(null=True, blank=True, max_length=255)
+    is_oblique = models.BooleanField(default=False, blank=True)
     internal = models.BooleanField('Alleen zichtbaar voor ingelogde gebruikers en interne omgeving', default=True,
                                    help_text='Hou er rekening mee dat de gebruikernaam, het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.')
 
@@ -608,6 +647,7 @@ class Viewer(models.Model):
             'username': self.username,
             'password': self.password,
             'api_key': self.api_key,
+            'is_oblique': self.is_oblique,
             'url': self.url
         }
 

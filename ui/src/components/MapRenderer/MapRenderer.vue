@@ -1,5 +1,5 @@
 <template>
-  <div class="map-container" :class="{ showInfoPanel, showDataPanel }" :style="computedStyle" ref="mapContainer">
+  <div ref="mapContainer" class="map-container" :class="{ showInfoPanel, showDataPanel }" :style="computedStyle">
     <div class="renderer-container">
       <OpenLayersRenderer
         ref="map"
@@ -27,7 +27,7 @@
       :short-description-template="settings.short_description"
       :filters="filters"
       @hidePanel="toggleList"
-      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
+      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19 })"
     />
     <FilterPanel
       v-if="showFilters"
@@ -46,7 +46,7 @@
       :show-panel="!showDataPanel && showInfoPanel"
       :user="user"
       @set-position="setPosition"
-      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 18 })"
+      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19 })"
       @expanded-info-panel="toggleInfoPanel"
     />
     <DetailPanel
@@ -63,11 +63,13 @@
       :selected-area="selectedArea"
       :show-data-panel="showDataPanel"
       :user="user"
+      :filters="filters"
       :full-size-window="showDataPanelFullScreen"
       @set-position="setPosition"
-      @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 18 })"
+      @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19 })"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
+      @update-filters="(value) => (filters = value)"
     />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
@@ -114,6 +116,7 @@
           @toggle-layer="toggleLayer"
           @set-layer-opacity="setLayerOpacity"
           @on-fit="(layer) => $refs.map.fit(layer)"
+          @set-position="setPosition"
         />
       </div>
       <div class="bottom-right-panels">

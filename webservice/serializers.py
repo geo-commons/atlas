@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from user_management.models import AtlasGroup, AtlasUser
 from .models import Category, Drawing, LinkedData, Map, Source, Layer, Template
-from .authorization import can_request_access_layer
+from authz.lib import can_request_access_layer
 
 
 class MapSerializer(serializers.ModelSerializer):
@@ -15,15 +15,18 @@ class SourceSerializer(serializers.ModelSerializer):
         model = Source
         fields = ['id', 'title', 'slug', 'url', 'authenticate']
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'title', 'slug', 'ordering']
 
+
 class LinkedDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedData
         fields = ['id', 'title', 'layer_name']
+
 
 class TemplateSerializer(serializers.ModelSerializer):
     source = SourceSerializer()
@@ -44,7 +47,7 @@ class MetadataSerializerField(serializers.Field):
             'link': value.meta_link,
             'lineage': value.meta_lineage,
             'contact': value.meta_contact
-        }          
+        }
 
     def to_internal_value(self, data):
         return {
@@ -56,13 +59,16 @@ class MetadataSerializerField(serializers.Field):
             'meta_contact': data['contact']
         }
 
+
 class LayerSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')
     category = CategorySerializer(source='layer_type')
     source = SourceSerializer(source='layer_source')
     opacity = serializers.SerializerMethodField('get_opacity')
-    display_properties = serializers.SerializerMethodField('get_display_properties')
-    search_properties = serializers.SerializerMethodField('get_search_properties')
+    display_properties = serializers.SerializerMethodField(
+        'get_display_properties')
+    search_properties = serializers.SerializerMethodField(
+        'get_search_properties')
     metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True)
     templates = TemplateSerializer(many=True)
@@ -116,9 +122,12 @@ class LayerSerializer(serializers.ModelSerializer):
             'published'
         ]
 
+
 class LayerCreateUpdateSerializer(serializers.ModelSerializer):
-    category_id = serializers.PrimaryKeyRelatedField(source='layer_type', queryset=Category.objects.all(), allow_null=True)
-    source_id = serializers.PrimaryKeyRelatedField(source='layer_source', queryset=Source.objects.all())
+    category_id = serializers.PrimaryKeyRelatedField(
+        source='layer_type', queryset=Category.objects.all(), allow_null=True)
+    source_id = serializers.PrimaryKeyRelatedField(
+        source='layer_source', queryset=Source.objects.all())
     metadata = MetadataSerializerField(source='*')
 
     class Meta:
@@ -147,7 +156,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'ordering',
             'atlas_groups',
             'published'
-            ]
+        ]
+
 
 class LayerListSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')
@@ -178,10 +188,13 @@ class DrawingSerializer(serializers.ModelSerializer):
         model = Drawing
         fields = ['id', 'features']
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = AtlasUser
-        fields = ['id', 'username', 'name', 'email', 'is_staff', 'is_active', 'is_superuser', 'atlas_groups', 'external_id', 'date_joined', 'last_login']
+        fields = ['id', 'username', 'name', 'email', 'is_staff', 'is_active',
+                  'is_superuser', 'atlas_groups', 'external_id', 'date_joined', 'last_login']
+
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:

@@ -96,6 +96,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
                 'is_base',
                 'is_visible',
                 'is_selectable',
+                'use_html_info_format',
                 'show_in_detail_panel',
                 'not_in_atlas',
                 '_popup_attributes',
@@ -110,6 +111,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
                 'client_style',
                 'friendly_fields',
                 'templated_properties',
+                'legend_url'
             )
         }),
         ('Metadata', {

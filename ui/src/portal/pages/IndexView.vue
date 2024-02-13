@@ -66,9 +66,21 @@ export default {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   row-gap: 14px;
   column-gap: 14px;
+}
+
+@media (min-width: 576px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .grid a {
