@@ -90,14 +90,26 @@ export default {
     }),
     visibleLayers() {
       if (this.data.layers) {
-        return this.layers
-          .filter((layer) => this.data.layers.includes(layer.internal_id) || (layer.is_base && layer.is_visible))
+        // Get base layers.
+        let configuredLayers = this.layers
+          .filter((layer) => layer.is_base && layer.is_visible)
           .map((layer) => {
             return {
               ...layer,
               is_visible: !layer.is_base ? true : layer.is_visible,
             };
           });
+
+        // Get selected layers on map level including configured settings.
+        this.data.layers.forEach((selectedLayer) => {
+          const layer = this.layers.find((l) => l.internal_id === selectedLayer.layer);
+          configuredLayers.push({
+            ...layer,
+            is_visible: selectedLayer.settings.is_visible,
+          });
+        });
+
+        return configuredLayers;
       }
 
       return this.layers;
@@ -196,8 +208,8 @@ export default {
     showSidebar(sidebar) {
       this.sidebar = sidebar;
     },
-    updateLayers(layerIds) {
-      this.data.layers = layerIds;
+    updateLayers(layers) {
+      this.data.layers = layers;
     },
     resetSelectedFilter() {
       this.data.settings.filterLayerId = null;

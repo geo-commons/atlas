@@ -303,6 +303,18 @@ svg {
   background: transparent;
 }
 
+.button.__chevron {
+  padding-right: 0;
+}
+
+.button.__chevron svg.setting-chevron {
+  transition: transform 100ms ease-in-out;
+}
+
+.button.__chevron:hover svg.setting-chevron {
+  transform: translateX(5px);
+}
+
 @media (max-width: 576px) {
   .button.__full-width-mobile {
     width: 100%;

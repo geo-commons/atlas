@@ -548,6 +548,20 @@ class Selection(models.Model):
         }
 
 
+class MapLayer(models.Model):
+    layer = models.ForeignKey(
+        'Layer', on_delete=models.CASCADE, related_name='maps_layer')
+    map = models.ForeignKey(
+        'Map', on_delete=models.CASCADE, related_name='map_layers')
+    settings = models.JSONField()
+
+    def to_dict(self):
+        return {
+            'layer': self.layer.id,
+            'settings': self.settings
+        }
+
+
 class Map(models.Model):
     objects = models.Manager()
     authorized = MapManager()
@@ -556,7 +570,11 @@ class Map(models.Model):
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas.')
 
-    layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
+    old_layers = models.ManyToManyField(
+        Layer, verbose_name='Lagen', blank=True, related_name='old_layers')
+    layers = models.ManyToManyField(
+        Layer, verbose_name='Lagen', blank=True, through='MapLayer')
+
     features = models.JSONField(
         default=dict, blank=True, verbose_name='Functies')
     settings = models.JSONField(
@@ -580,7 +598,7 @@ class Map(models.Model):
         return {
             'title': self.title,
             'slug': self.slug,
-            'layers': [layer.id for layer in self.layers.all()],
+            'layers': [layer.to_dict() for layer in self.map_layers.all()],
             'features': self.features,
             'settings': self.settings
         }
