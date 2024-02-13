@@ -103,7 +103,7 @@ export default {
 </script>
 
 <!-- Include multiselect -->
-<style src="vue-multiselect/dist/vue-multiselect.min.css" />
+<style src="vue-multiselect/dist/vue-multiselect.css" />
 <style>
 @import "../assets/styles/main.css";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");

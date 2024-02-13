@@ -581,7 +581,7 @@ export default {
 </script>
 
 <!-- Include multiselect -->
-<style src="vue-multiselect/dist/vue-multiselect.min.css" />
+<style src="vue-multiselect/dist/vue-multiselect.css" />
 <style>
 @import "../assets/styles/main.css";
 </style>
