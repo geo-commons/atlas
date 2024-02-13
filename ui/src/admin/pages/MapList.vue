@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div v-if="visibleMaps.length > 0" class="admin-content-wrapper">
+    <div class="admin-content-wrapper">
       <div v-if="!loading" class="admin-search-wrapper">
         <SearchIcon class="icon" />
         <input id="maps-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek kaart" />
@@ -237,6 +237,7 @@ export default {
       this.newMapData = {
         title: "",
         authenticate: false,
+        layers: [],
       };
 
       this.showFormModal = true;

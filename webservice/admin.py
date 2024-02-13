@@ -154,9 +154,9 @@ class SelectionAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
 
 class MapAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title', )
-    fields = ('title', 'slug', 'layers', 'features', 'settings')
+    fields = ('title', 'slug', 'features', 'settings')
     prepopulated_fields = {'slug': ('title', )}
-    filter_horizontal = ('layers', )
+    filter_horizontal = ()
 
     search_fields = ['title']
     resource_classes = [MapResource]

@@ -38,14 +38,26 @@ export default {
     }),
     visibleLayers() {
       if (this.map.layers) {
-        return this.layers
-          .filter((layer) => this.map.layers.includes(layer.internal_id) || (layer.is_base && layer.is_visible))
+        // Get base layers.
+        let configuredLayers = this.layers
+          .filter((layer) => layer.is_base && layer.is_visible)
           .map((layer) => {
             return {
               ...layer,
               is_visible: !layer.is_base ? true : layer.is_visible,
             };
           });
+
+        // Get selected layers on map level including configured settings.
+        this.map.layers.forEach((selectedLayer) => {
+          const layer = this.layers.find((l) => l.internal_id === selectedLayer.layer);
+          configuredLayers.push({
+            ...layer,
+            is_visible: selectedLayer.settings.is_visible,
+          });
+        });
+
+        return configuredLayers;
       }
 
       return this.layers;
@@ -251,6 +263,7 @@ svg {
   border-color: var(--color-grey-60);
   border-radius: var(--radius-normal);
 }
+
 .multiselect__tag-icon:after {
   color: var(--color-primary);
   font-size: var(--font-size-large);
