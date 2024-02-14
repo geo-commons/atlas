@@ -1,10 +1,10 @@
-import "tippy.js/themes/light-border.css";
+import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
 import Vue from "vue";
 import Vuex from "vuex";
-import VueTippy, { TippyComponent } from "vue-tippy";
+import VueTippy from "vue-tippy";
 
 import App from "./pages/App";
 import LegacyEmbedModal from "./pages/LegacyEmbedModal";
@@ -28,7 +28,6 @@ Vue.use(VueTippy, {
   boundary: "viewport",
   delay: [1000, 0],
 });
-Vue.component("VueTippy", TippyComponent);
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {

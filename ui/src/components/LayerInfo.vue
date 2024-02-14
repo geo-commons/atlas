@@ -1,62 +1,64 @@
 <template>
-  <vue-tippy placement="left-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
-    <template #trigger>
-      <button
-        v-tippy
-        content="Meer informatie"
-        :class="{ iconbutton: true, showAlways: showAlways }"
-        aria-label="Toon meer informatie"
-      >
-        <InformationCircleIcon />
-      </button>
+  <tippy placement="left-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
+    <button
+      v-tippy
+      content="Meer informatie"
+      :class="{ iconbutton: true, showAlways: showAlways }"
+      aria-label="Toon meer informatie"
+    >
+      <InformationCircleIcon />
+    </button>
+    <template #content>
+      <div class="container">
+        <div class="heading">
+          <h3 class="title">{{ layer.title }}</h3>
+          <div class="description">
+            <markdown :source="layer.metadata.description" />
+          </div>
+          <div v-if="layer.metadata.link" class="link">
+            <a :href="layer.metadata.link" target="_blank">Meer informatie</a>
+          </div>
+        </div>
+        <div v-if="layer.metadata" class="properties">
+          <div v-if="layer.metadata.organization" class="property">
+            <div class="key">Organisatie</div>
+            <div class="value">
+              <markdown :source="layer.metadata.organization" />
+            </div>
+          </div>
+          <div v-if="layer.metadata.contact" class="property">
+            <div class="key">Contactpersoon</div>
+            <div class="value">
+              <markdown :source="layer.metadata.contact" />
+            </div>
+          </div>
+          <div v-if="layer.metadata.lineage" class="property">
+            <div class="key">Herkomst dataset</div>
+            <div class="value">
+              <markdown :source="layer.metadata.lineage" />
+            </div>
+          </div>
+          <div v-if="layer.metadata.updated" class="property">
+            <div class="key">Bijgewerkt</div>
+            <div class="value">
+              <markdown :source="layer.metadata.updated" />
+            </div>
+          </div>
+        </div>
+      </div>
     </template>
-    <div class="container">
-      <div class="heading">
-        <h3 class="title">{{ layer.title }}</h3>
-        <div class="description">
-          <markdown :source="layer.metadata.description" />
-        </div>
-        <div v-if="layer.metadata.link" class="link">
-          <a :href="layer.metadata.link" target="_blank">Meer informatie</a>
-        </div>
-      </div>
-      <div v-if="layer.metadata" class="properties">
-        <div v-if="layer.metadata.organization" class="property">
-          <div class="key">Organisatie</div>
-          <div class="value">
-            <markdown :source="layer.metadata.organization" />
-          </div>
-        </div>
-        <div v-if="layer.metadata.contact" class="property">
-          <div class="key">Contactpersoon</div>
-          <div class="value">
-            <markdown :source="layer.metadata.contact" />
-          </div>
-        </div>
-        <div v-if="layer.metadata.lineage" class="property">
-          <div class="key">Herkomst dataset</div>
-          <div class="value">
-            <markdown :source="layer.metadata.lineage" />
-          </div>
-        </div>
-        <div v-if="layer.metadata.updated" class="property">
-          <div class="key">Bijgewerkt</div>
-          <div class="value">
-            <markdown :source="layer.metadata.updated" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </vue-tippy>
+  </tippy>
 </template>
 
 <script>
 import Markdown from "./Markdown";
 import InformationCircleIcon from "../assets/icons/information-circle-icon.svg";
+import { Tippy } from "vue-tippy";
 
 export default {
   name: "LayerInfo",
   components: {
+    Tippy,
     Markdown,
     InformationCircleIcon,
   },

@@ -2,7 +2,7 @@
   <div v-if="layer" class="detail-panel-wrapper">
     <div class="header">
       <div>
-        <vue-tippy
+        <tippy
           :arrow="false"
           placement="bottom-start"
           theme="popover"
@@ -11,17 +11,15 @@
           :delay="[0, 0]"
           :a11y="true"
         >
-          <template #trigger>
-            <button
-              v-tippy="{ placement: 'right' }"
-              class="iconbutton __normal __outline"
-              content="Download"
-              aria-label="Download"
-            >
-              <download-icon />
-            </button>
-          </template>
-          <div class="container">
+          <button
+            v-tippy="{ placement: 'right' }"
+            class="iconbutton __normal __outline"
+            content="Download"
+            aria-label="Download"
+          >
+            <download-icon />
+          </button>
+          <template #content>
             <div class="menu">
               <ul class="list">
                 <li>
@@ -44,12 +42,25 @@
                 </li>
               </ul>
             </div>
-          </div>
-        </vue-tippy>
+          </template>
+        </tippy>
       </div>
-      <SearchForm :show-border="true" :has-visible-layers="true" class="data-search" @on-submit="onSearch">
+      <SearchForm
+        :show-border="true"
+        :has-visible-layers="true"
+        :disable-data-panel-button="true"
+        class="data-search"
+        @on-submit="onSearch"
+      >
         <template #default>
-          <input ref="queryInput" type="search" name="search" placeholder="Zoek data" autocomplete="off" />
+          <input
+            ref="queryInput"
+            type="search"
+            name="search"
+            placeholder="Zoek data"
+            autocomplete="off"
+            class="search-address"
+          />
         </template>
       </SearchForm>
     </div>
@@ -71,10 +82,11 @@
 import DownloadIcon from "../icons/DownloadIcon.vue";
 import FeatureTable from "./FeatureTable.vue";
 import SearchForm from "./SearchForm.vue";
+import { Tippy } from "vue-tippy";
 
 export default {
   name: "DataPanelDetailView",
-  components: { FeatureTable, SearchForm, DownloadIcon },
+  components: { Tippy, FeatureTable, SearchForm, DownloadIcon },
   props: {
     layer: Object,
     selectedArea: Object,
@@ -132,6 +144,11 @@ export default {
   justify-content: space-between;
   gap: 25px;
   padding-bottom: 18px;
+}
+
+.search-address {
+  width: 100%;
+  padding-left: 16px;
 }
 
 @media (min-width: 576px) {

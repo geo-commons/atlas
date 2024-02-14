@@ -146,6 +146,7 @@ export default {
       return result;
     },
     async saveLayer(currentValues) {
+      currentValues.metadata = {};
       // Convert internal fields back to layer model.
       currentValues.metadata.name = currentValues.metadata_name;
       currentValues.metadata.description = currentValues.metadata_description;

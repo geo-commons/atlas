@@ -61,7 +61,7 @@
             v-if="!showPanoramaPanel"
             :position="position"
             :layers="layers"
-            :features="{ dataPanel: true }"
+            :features="{ datapanel: true }"
             @set-position="setPosition"
             @toggle-data-panel="toggleDataPanel"
           />
@@ -159,7 +159,11 @@
 
       <transition name="fade">
         <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
+      </transition>
+      <transition name="fade">
         <PrintModal v-if="modal === 'print'" @toggle-modal="toggleModal" @print-map-to-pdf="printMapToPdf" />
+      </transition>
+      <transition name="fade">
         <DrawingModal
           v-if="modal === 'drawing'"
           :layers="layers"
@@ -577,7 +581,7 @@ export default {
 </script>
 
 <!-- Include multiselect -->
-<style src="vue-multiselect/dist/vue-multiselect.min.css" />
+<style src="vue-multiselect/dist/vue-multiselect.css" />
 <style>
 @import "../assets/styles/main.css";
 </style>

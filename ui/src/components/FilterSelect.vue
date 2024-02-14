@@ -14,7 +14,7 @@
       :multiple="true"
       :taggable="true"
       open-direction="bottom"
-      @input="updateFieldFilters()"
+      @update:modelValue="updateFieldFilters()"
       @tag="addFacetValue"
     />
     <multiselect
@@ -30,7 +30,7 @@
       :multiple="true"
       :taggable="true"
       open-direction="bottom"
-      @input="updateFieldFilters()"
+      @update:modelValue="updateFieldFilters()"
       @tag="addFacetValue"
     />
   </div>

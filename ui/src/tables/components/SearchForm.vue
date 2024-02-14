@@ -1,35 +1,34 @@
 <template>
   <div class="search-form">
-    <validation-observer v-slot="{ handleSubmit }">
-      <form method="POST" @submit.prevent="handleSubmit(onSearch)">
-        <div class="grid">
-          <div v-for="(searchField, i) in table.search_fields" :key="i" class="item">
-            <validation-provider v-slot="{ errors }" name="Titel">
-              <label :for="searchField.name">{{ searchField.label }}</label
-              ><input
-                :id="searchField.name"
-                v-model="searchFields[searchField.name]"
-                :type="searchField.type ? searchField.type : 'text'"
-                :name="searchField.name"
-              />
-              <span>{{ errors[0] }}</span>
-            </validation-provider>
-          </div>
+    <vee-form @submit="onSearch">
+      <div class="grid">
+        <div v-for="(searchField, i) in table.search_fields" :key="i" class="item">
+          <label :for="searchField.name">
+            {{ searchField.label }}
+          </label>
+          <vee-field
+            :id="searchField.name"
+            v-model="searchFields[searchField.name]"
+            :type="searchField.type ? searchField.type : 'text'"
+            :name="searchField.name"
+          />
+          <span><vee-error-message :name="searchField.name" /></span>
         </div>
-        <button type="submit" class="button __primary">Zoek</button>
-      </form>
-    </validation-observer>
+      </div>
+      <button type="submit" class="button __primary">Zoek</button>
+    </vee-form>
   </div>
 </template>
 
 <script>
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { Form as VeeForm, Field as VeeField, ErrorMessage as VeeErrorMessage } from "vee-validate";
 
 export default {
   name: "SearchForm",
   components: {
-    ValidationObserver,
-    ValidationProvider,
+    VeeForm,
+    VeeField,
+    VeeErrorMessage,
   },
   props: {
     table: Object,
