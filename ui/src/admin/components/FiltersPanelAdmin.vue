@@ -18,21 +18,9 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
           <title>arrow_back_black_24dp</title>
-          <g
-            id="Admin"
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd"
-          >
-            <g
-              id="Kaart---Zoekbalk"
-              transform="translate(-24.000000, -24.000000)"
-            >
-              <g
-                id="arrow_back_black_24dp"
-                transform="translate(16.000000, 16.000000)"
-              >
+          <g id="Admin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Kaart---Zoekbalk" transform="translate(-24.000000, -24.000000)">
+              <g id="arrow_back_black_24dp" transform="translate(16.000000, 16.000000)">
                 <g transform="translate(8.000000, 8.000000)">
                   <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
                   <polygon
@@ -52,11 +40,7 @@
     </div>
 
     <div class="select-wrapper">
-      <select
-        v-model="selectedLayerTitle"
-        class="layer-select edit-field-border"
-        @change="onLayerChange"
-      >
+      <select v-model="selectedLayerTitle" class="layer-select edit-field-border" @change="onLayerChange">
         <option disabled value="">Selecteer een laag</option>
         <option v-for="l in availableLayers" :key="l.id" :value="l.id">
           {{ l.title }}
@@ -65,9 +49,7 @@
     </div>
 
     <div class="filters">
-      <p v-if="!selectedLayerTitle">
-        Kies eerst een laag voordat je de filters instelt.
-      </p>
+      <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de filters instelt.</p>
 
       <div v-if="selectedLayerTitle">
         <div v-for="facet in availableFacets" :key="facet" class="facet">
@@ -76,9 +58,7 @@
             type="checkbox"
             :name="`facet-${facet}`"
             :value="facet"
-            :checked="
-              data.settings.facets && data.settings.facets.includes(facet)
-            "
+            :checked="data.settings.facets && data.settings.facets.includes(facet)"
             @change="onChangeFacet"
           />
           <label :for="`facet-${facet}`">{{ facet }}</label>
@@ -157,20 +137,13 @@ export default {
         const data = await result.json();
         const featureType = data.featureTypes[0];
 
-        this.availableFacets = featureType.properties
-          .filter((ft) => ft.type == "xsd:string")
-          .map((ft) => ft.name);
+        this.availableFacets = featureType.properties.filter((ft) => ft.type == "xsd:string").map((ft) => ft.name);
       } catch (e) {
         console.error(e);
       }
     },
     getFetchParameters() {
-      if (
-        this.selectedLayer.source &&
-        this.selectedLayer.source.authenticate &&
-        this.user &&
-        this.user.token
-      ) {
+      if (this.selectedLayer.source && this.selectedLayer.source.authenticate && this.user && this.user.token) {
         return {
           headers: { Authorization: `Bearer ${this.user.token}` },
         };

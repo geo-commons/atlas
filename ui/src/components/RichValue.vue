@@ -4,30 +4,13 @@
     <span v-if="valueType === 'UNKNOWN'">{{ dataValue }}</span>
     <span v-if="valueType === 'DATE'">{{ friendlyDate(dataValue) }}</span>
     <markdown v-if="valueType === 'STRING'" :source="dataValue" />
-    <a
-      v-if="valueType === 'URL'"
-      :href="dataValue"
-      target="_blank"
-      rel="noopener"
-      >{{
-        dataValue.length >= 75
-          ? `${dataValue.substring(0, 36)}...${dataValue.substring(
-              dataValue.length - 36
-            )}`
-          : dataValue
-      }}</a
-    >
-    <a
-      v-if="valueType === 'IMAGE'"
-      :href="dataValue"
-      target="_blank"
-      rel="noopener"
-    >
-      <img
-        :src="dataValue"
-        :alt="`Afbeelding ${dataKey}`"
-        :style="{ maxWidth: '100%' }"
-      />
+    <a v-if="valueType === 'URL'" :href="dataValue" target="_blank" rel="noopener">{{
+      dataValue.length >= 75
+        ? `${dataValue.substring(0, 36)}...${dataValue.substring(dataValue.length - 36)}`
+        : dataValue
+    }}</a>
+    <a v-if="valueType === 'IMAGE'" :href="dataValue" target="_blank" rel="noopener">
+      <img :src="dataValue" :alt="`Afbeelding ${dataKey}`" :style="{ maxWidth: '100%' }" />
     </a>
   </div>
 </template>

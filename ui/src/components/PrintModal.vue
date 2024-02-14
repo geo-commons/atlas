@@ -5,13 +5,7 @@
       <form method="POST" @submit="onSubmit">
         <div class="input-container">
           <label class="label" for="title">Titel</label>
-          <input
-            id="title"
-            v-model="title"
-            class="input"
-            name="title"
-            placeholder="Kies optioneel een titel"
-          />
+          <input id="title" v-model="title" class="input" name="title" placeholder="Kies optioneel een titel" />
         </div>
         <div class="input-container">
           <label class="label" for="remarks">Opmerkingen</label>
@@ -36,12 +30,7 @@
 
         <div class="input-container">
           <label class="label" for="orientation">Orientatie</label>
-          <select
-            id="orientation"
-            v-model="orientation"
-            class="select"
-            name="orientation"
-          >
+          <select id="orientation" v-model="orientation" class="select" name="orientation">
             <option value="landscape">Liggend</option>
             <option value="portrait">Staand</option>
           </select>
@@ -49,12 +38,7 @@
 
         <div class="input-container">
           <label class="label" for="showLegend">Toon legenda</label>
-          <select
-            id="showLegend"
-            v-model="showLegend"
-            class="select"
-            name="showLegend"
-          >
+          <select id="showLegend" v-model="showLegend" class="select" name="showLegend">
             <option :value="true">Ja</option>
             <option :value="false">Nee</option>
           </select>
@@ -62,12 +46,7 @@
 
         <div class="input-container">
           <label class="label" for="showLegend">Toon datum/tijd</label>
-          <select
-            id="showDateTime"
-            v-model="showDateTime"
-            class="select"
-            name="showDateTime"
-          >
+          <select id="showDateTime" v-model="showDateTime" class="select" name="showDateTime">
             <option :value="true">Ja</option>
             <option :value="false">Nee</option>
           </select>
@@ -75,12 +54,7 @@
 
         <div class="input-container">
           <label class="label" for="showLegend">Toon schaal</label>
-          <select
-            id="showScale"
-            v-model="showScale"
-            class="select"
-            name="showScale"
-          >
+          <select id="showScale" v-model="showScale" class="select" name="showScale">
             <option :value="true">Ja</option>
             <option :value="false">Nee</option>
           </select>

@@ -61,15 +61,15 @@ export default {
       medium: false,
     };
   },
-  created() {
-    this.large = this.initialSizeLarge;
-    this.medium = this.initialSizeMedium;
-  },
   watch: {
     initialSizeLarge(value) {
       this.large = value;
       this.fullScreen = false;
     },
+  },
+  created() {
+    this.large = this.initialSizeLarge;
+    this.medium = this.initialSizeMedium;
   },
   methods: {
     toggleSidePanel() {

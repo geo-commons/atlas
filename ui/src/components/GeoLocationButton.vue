@@ -81,10 +81,7 @@ export default {
         this.isLoading = true;
         navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
       } else {
-        this.$store.commit(
-          "setAlert",
-          "Geolocatie wordt niet ondersteund door de browser."
-        );
+        this.$store.commit("setAlert", "Geolocatie wordt niet ondersteund door de browser.");
       }
     },
   },

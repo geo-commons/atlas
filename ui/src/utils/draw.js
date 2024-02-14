@@ -83,14 +83,10 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
         let measureResult;
         if (measure === "MEASURE_LINE") {
           measureResult = getLength(sketch.getGeometry());
-          measureTooltipElement.innerHTML = `${
-            Math.round(measureResult * 100) / 100
-          } m`;
+          measureTooltipElement.innerHTML = `${Math.round(measureResult * 100) / 100} m`;
         } else if (measure === "MEASURE_AREA") {
           measureResult = getArea(sketch.getGeometry());
-          measureTooltipElement.innerHTML = `${
-            Math.round(measureResult * 100) / 100
-          } m2`;
+          measureTooltipElement.innerHTML = `${Math.round(measureResult * 100) / 100} m2`;
         }
 
         measureTooltip.setPosition(tooltipCoord);
