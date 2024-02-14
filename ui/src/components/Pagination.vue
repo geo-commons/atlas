@@ -15,7 +15,7 @@
           :show-labels="false"
           :allow-empty="false"
           :searchable="false"
-          @input="(value) => updateNrOfRecords(value)"
+          @update:modelValue="(value) => updateNrOfRecords(value)"
         />
         <label>Aantal rijen per pagina</label>
       </div>

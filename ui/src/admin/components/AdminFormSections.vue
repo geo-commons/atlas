@@ -1,157 +1,147 @@
 <template>
-  <validation-observer v-slot="{ handleSubmit, validateWithInfo }" ref="form">
-    <form @submit.prevent="handleSubmit(save)">
-      <div :class="{ 'create-view-container': createView || compactLayout }">
-        <p v-if="unexpectedError" class="warning-text">{{ unexpectedError }}</p>
-        <div v-for="section in sections" :key="section.label">
-          <hr v-if="!createView && !compactLayout" />
-          <div :class="{ 'config-section-wrapper': !createView && !compactLayout }">
-            <div v-if="!createView && !compactLayout" class="section-label">
-              <h3 class="">{{ section.label }}</h3>
-            </div>
+  <vee-form ref="formRef" :initial-values="currentValues" @submit="save">
+    <div :class="{ 'create-view-container': createView || compactLayout }">
+      <p v-if="unexpectedError" class="warning-text">{{ unexpectedError }}</p>
+      <div v-for="section in sections" :key="section.label">
+        <hr v-if="!createView && !compactLayout" />
+        <div :class="{ 'config-section-wrapper': !createView && !compactLayout }">
+          <div v-if="!createView && !compactLayout" class="section-label">
+            <h3 class="">{{ section.label }}</h3>
+          </div>
 
-            <div class="section-questions">
-              <div v-for="question in section.questions" :key="question.id">
-                <!-- note: currently we can only add one custom field per AdminFormSection component.
+          <div class="section-questions">
+            <div v-for="question in section.questions" :key="question.id">
+              <!--              {{ console.log(question) }}-->
+              <!-- note: currently we can only add one custom field per AdminFormSection component.
                             If this is no longer sufficient in the future take a look at how ol-view and ol-layer
                             are decomposed in the OpenLayers.vue component -->
-                <slot v-if="question.type === 'custom'" name="custom"></slot>
-                <div v-else-if="question.type === 'checkbox'">
-                  <validation-provider
-                    :vid="question.id"
-                    mode="lazy"
+              <slot v-if="question.type === 'custom'" name="custom"></slot>
+              <div v-else-if="question.type === 'checkbox'" class="checkbox-wrapper">
+                <vee-field
+                  :name="question.id"
+                  :checked="currentValues[question.id]"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                  :checked-value="true"
+                  type="checkbox"
+                />
+                <span class="label-info-text-wrapper">
+                  <label :for="question.id">{{ question.label }}</label>
+                  <AdminFormInfoText
+                    v-if="question.infoText && question.infoText !== ''"
+                    :info-text="question.infoText"
+                  />
+                </span>
+                <span class="warning-text"><vee-error-message :name="question.id" /></span>
+              </div>
+              <div v-else>
+                <span class="label-info-text-wrapper">
+                  <label class="question-label" :for="question.id">{{ question.label }}</label>
+                  <AdminFormInfoText
+                    v-if="question.infoText && question.infoText !== ''"
+                    :info-text="question.infoText"
+                  />
+                </span>
+                <div v-if="question.type === 'dropdown'" class="dropdown-wrapper">
+                  <vee-field
+                    :id="question.id"
+                    :name="question.id"
                     :rules="getRules(question)"
-                    v-slot="{ errors }"
-                    :name="question.name"
-                    class="flex __align-center"
+                    as="select"
+                    class="config-select-wrapper"
+                    :disabled="question.disabled"
                   >
-                    <input
-                      :id="question.id"
-                      v-model="currentValues[question.id]"
-                      :checked="currentValues[question.id]"
-                      :disabled="question.disabled"
-                      type="checkbox"
-                    />
-                    <span class="label-info-text-wrapper">
-                      <label :for="question.id">{{ question.label }}</label>
-                      <AdminFormInfoText
-                        v-if="question.infoText && question.infoText !== ''"
-                        :info-text="question.infoText"
-                      />
-                    </span>
-                    <span class="warning-text">{{ errors[0] }}</span>
-                  </validation-provider>
-                </div>
-                <div v-else>
-                  <validation-provider
-                    :vid="question.id"
-                    :ref="question.id"
-                    mode="lazy"
-                    :rules="getRules(question)"
-                    v-slot="{ errors }"
-                    :name="question.name"
-                    class="flex __column"
+                    <option disabled value="-1">Selecteer een {{ question.placeholder }}</option>
+                    <option v-for="option in options[question.id]" :key="option.id" :value="option.id">
+                      {{ option.label }}
+                    </option>
+                  </vee-field>
+                  <button
+                    v-if="currentValues[question.id]"
+                    type="button"
+                    class="iconbutton __small __round __transparent-bg"
+                    @click="reset(question)"
                   >
-                    <span class="label-info-text-wrapper">
-                      <label class="question-label" :for="question.id">{{ question.label }}</label>
-                      <AdminFormInfoText
-                        v-if="question.infoText && question.infoText !== ''"
-                        :info-text="question.infoText"
-                      />
-                    </span>
-                    <div v-if="question.type === 'dropdown'" class="dropdown-wrapper">
-                      <select
-                        :id="question.id"
-                        v-model="currentValues[question.id]"
-                        class="config-select-wrapper"
-                        :disabled="question.disabled"
-                      >
-                        <option disabled value="-1">Selecteer een {{ question.placeholder }}</option>
-                        <option v-for="option in options[question.id]" :key="option.id" :value="option.id">
-                          {{ option.label }}
-                        </option>
-                      </select>
-                      <button
-                        v-if="currentValues[question.id]"
-                        @click="reset(question)"
-                        type="button"
-                        class="iconbutton __small __round __transparent-bg"
-                      >
-                        <close-icon class="icon __small"></close-icon>
-                      </button>
-                    </div>
-                    <input
-                      v-else-if="question.type === 'url'"
-                      :id="question.id"
-                      v-model="currentValues[question.id]"
-                      :disabled="question.disabled"
-                      type="text"
-                    />
-                    <input
-                      v-else-if="question.type === 'number'"
-                      :id="question.id"
-                      v-model="currentValues[question.id]"
-                      type="number"
-                      :disabled="question.disabled"
-                    />
-                    <input
-                      v-else-if="question.type === 'decimal'"
-                      :id="question.id"
-                      v-model="currentValues[question.id]"
-                      type="number"
-                      :disabled="question.disabled"
-                      :step="question.step"
-                    />
-                    <label v-else-if="question.type === 'label'">{{
-                      currentValues[question.id] ? currentValues[question.id] : "-"
-                    }}</label>
-                    <label v-else-if="question.type === 'display_date'">{{
-                      formatDateValue(currentValues[question.id])
-                    }}</label>
-                    <textarea
-                      v-else-if="question.type === 'text' && question.multiLine"
-                      :id="question.id"
-                      v-model="currentValues[question.id]"
-                      :rows="question.rows ? question.rows : 5"
-                      :disabled="question.disabled"
-                      class="width"
-                    />
-                    <input
-                      v-else
-                      :id="question.id"
-                      v-model="currentValues[question.id]"
-                      :disabled="question.disabled"
-                      :name="question.id"
-                      type="text"
-                    />
-                    <span class="warning-text">{{ errors[0] }}</span>
-                  </validation-provider>
+                    <close-icon class="icon __small"></close-icon>
+                  </button>
                 </div>
+                <vee-field
+                  v-else-if="question.type === 'url'"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  :name="question.id"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                  type="text"
+                />
+                <vee-field
+                  v-else-if="question.type === 'number'"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  :name="question.id"
+                  type="number"
+                  :rules="getRules(question)"
+                  :disabled="question.disabled"
+                />
+                <vee-field
+                  v-else-if="question.type === 'decimal'"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  :name="question.id"
+                  type="number"
+                  :rules="getRules(question)"
+                  :disabled="question.disabled"
+                  :step="question.step"
+                />
+                <label v-else-if="question.type === 'label'">{{
+                  currentValues[question.id] ? currentValues[question.id] : "-"
+                }}</label>
+                <label v-else-if="question.type === 'display_date'">{{
+                  formatDateValue(currentValues[question.id])
+                }}</label>
+                <vee-field
+                  v-else-if="question.type === 'text' && question.multiLine"
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  :name="question.id"
+                  as="textarea"
+                  :rules="getRules(question)"
+                  :rows="question.rows ? question.rows : 5"
+                  :disabled="question.disabled"
+                  class="width"
+                />
+                <vee-field
+                  v-else
+                  :id="question.id"
+                  v-model="currentValues[question.id]"
+                  :name="question.id"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                  type="text"
+                />
+                <span class="warning-text">
+                  <vee-error-message :name="question.id" />
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="config-btn-wrapper">
-        <button class="button" :class="createView ? '__secondary' : '__tertiary'" type="button" @click="cancel()">
-          Annuleer
-        </button>
-        <button
-          class="button"
-          :class="createView ? '__secondary' : '__primary'"
-          type="submit"
-          @click="validateFields(validateWithInfo)"
-        >
-          Opslaan
-        </button>
-        <button v-if="createView" class="button __primary" type="button" @click="save(true)">Opslaan en openen</button>
-      </div>
-    </form>
-  </validation-observer>
+    </div>
+    <div class="config-btn-wrapper">
+      <button class="button" :class="createView ? '__secondary' : '__tertiary'" type="button" @click="cancel()">
+        Annuleer
+      </button>
+      <button class="button" :class="createView ? '__secondary' : '__primary'" type="submit">Opslaan</button>
+      <button v-if="createView" class="button __primary" type="submit" @click="continueEditing = true">
+        Opslaan en openen
+      </button>
+    </div>
+  </vee-form>
 </template>
 
 <script>
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { Form as VeeForm, Field as VeeField, ErrorMessage as VeeErrorMessage } from "vee-validate";
 import { formatDateValue } from "@/utils/date-formatter";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import CloseIcon from "@/assets/icons/close-icon.svg";
@@ -162,8 +152,9 @@ export default {
   components: {
     CloseIcon,
     AdminFormInfoText,
-    ValidationProvider,
-    ValidationObserver,
+    VeeForm,
+    VeeField,
+    VeeErrorMessage,
   },
   props: {
     sections: Object,
@@ -184,6 +175,7 @@ export default {
       currentValues: this.initialValues,
       options: {},
       unexpectedError: null,
+      continueEditing: false,
     };
   },
   watch: {
@@ -260,11 +252,11 @@ export default {
         this.scrollToElementById(errorRefId);
       }
     },
-    save(continueEditing = false) {
+    save(values) {
       if (this.createView) {
-        this.objectSpecificSave(this.currentValues, continueEditing);
+        this.objectSpecificSave(values, this.continueEditing);
       } else {
-        this.objectSpecificSave(this.currentValues);
+        this.objectSpecificSave(values);
       }
     },
     async sendSaveRequest(apiUrl, method, currentValues) {
@@ -281,7 +273,7 @@ export default {
 
         if (!result.ok) {
           const errors = await result.json();
-          this.$refs.form.setErrors(errors);
+          this.$refs.formRef.setErrors(errors);
 
           // Scroll and focus first element that does not meet validation criteria.
           const firstErrorKey = Object.keys(errors)[0];
@@ -365,6 +357,11 @@ label.question-label {
   align-items: center;
 }
 
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
 .dropdown-wrapper {
   display: flex;
   gap: 4px;
@@ -376,5 +373,9 @@ label.question-label {
   justify-content: flex-end;
   gap: 20px;
   padding: 30px 0;
+}
+
+.width {
+  min-width: 100%;
 }
 </style>

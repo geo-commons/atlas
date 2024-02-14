@@ -1,12 +1,11 @@
-import "tippy.js/themes/light-border.css";
+import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
 import Vue from "vue";
 import Vuex from "vuex";
 import VueRouter from "vue-router";
-import VueTippy, { TippyComponent } from "vue-tippy";
-import { extend } from "vee-validate";
+import VueTippy from "vue-tippy";
 
 import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
@@ -27,7 +26,8 @@ import AdminSortPage from "@/admin/pages/AdminSortPage.vue";
 import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
 import GroupList from "@/admin/pages/GroupList.vue";
 import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
-import { email, max, required } from "vee-validate/dist/rules";
+import { defineRule } from "vee-validate";
+import { email, required } from "@vee-validate/rules";
 
 Vue.config.productionTip = false;
 
@@ -45,21 +45,26 @@ Vue.use(VueTippy, {
   boundary: "viewport",
   delay: [1000, 0],
 });
-Vue.component("VueTippy", TippyComponent);
 
-extend("required", {
-  ...required,
-  message: "Dit veld is verplicht",
+defineRule("required", (value) => {
+  if (!required(value)) {
+    return "Dit veld is verplicht";
+  }
+  return true;
 });
 
-extend("email", {
-  ...email,
-  message: "Voer een geldig e-mailadres in",
+defineRule("email", (value) => {
+  if (!email(value)) {
+    return "Voer een geldig e-mailadres in";
+  }
+  return true;
 });
 
-extend("max", {
-  ...max,
-  message: "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.",
+defineRule("max", (value, [max]) => {
+  if (value.length > max) {
+    return "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.";
+  }
+  return true;
 });
 
 const routes = [

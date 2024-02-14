@@ -15,6 +15,20 @@ module.exports = {
 
   chainWebpack: (config) => {
     config.module.rules.delete("svg");
+    config.resolve.alias.set("vue", "@vue/compat");
+    config.module
+      .rule("vue")
+      .use("vue-loader")
+      .tap((options) => {
+        return {
+          ...options,
+          compilerOptions: {
+            compatConfig: {
+              MODE: 2,
+            },
+          },
+        };
+      });
   },
   configureWebpack: {
     plugins: [new BundleTracker({ path: __dirname, filename: "webpack-stats.json" })],

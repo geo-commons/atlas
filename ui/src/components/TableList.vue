@@ -1,5 +1,5 @@
 <template>
-  <div class="table-wrapper" >
+  <div class="table-wrapper">
     <slot></slot>
   </div>
 </template>
@@ -17,17 +17,17 @@ export default {
   flex: 1 1 auto;
 }
 
-.table-wrapper table {
+:slotted(.table-wrapper table) {
   width: 100%;
   font-size: var(--font-size-normal);
   border-collapse: collapse;
 }
 
-.table-wrapper thead tr {
+:slotted(.table-wrapper thead tr) {
   background: var(--color-grey-50);
 }
 
-.table-wrapper thead tr th {
+:slotted(.table-wrapper thead tr th) {
   background: var(--color-grey-50);
   position: sticky;
   top: 0;
@@ -36,19 +36,19 @@ export default {
   padding: 12px 4px;
 }
 
-.table-wrapper th,
-.table-wrapper td {
+:slotted(.table-wrapper th),
+:slotted(.table-wrapper td) {
   padding: 8px 4px;
   vertical-align: top;
 }
 
-.table-wrapper th:first-child,
-.table-wrapper td:first-child {
+:slotted(.table-wrapper th:first-child),
+:slotted(.table-wrapper td:first-child) {
   padding-left: 20px;
 }
 
-.table-wrapper th:last-child,
-.table-wrapper td:last-child {
+:slotted(.table-wrapper th:last-child),
+:slotted(.table-wrapper td:last-child) {
   padding-right: 20px;
 }
 </style>

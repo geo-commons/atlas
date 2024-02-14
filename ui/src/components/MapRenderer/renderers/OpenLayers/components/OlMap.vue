@@ -1,19 +1,9 @@
 <template>
   <div ref="map" class="map">
     <slot></slot>
-    <div
-      class="scale"
-      :style="{ display: features.scale ? 'block' : 'none' }"
-      @click="toggleScaleType"
-    >
-      <div
-        ref="scale-line-container"
-        :style="{ display: scaleType === 'LINE' ? 'block' : 'none' }"
-      />
-      <div
-        class="scale-text"
-        :style="{ display: scaleType === 'TEXT' ? 'block' : 'none' }"
-      >
+    <div class="scale" :style="{ display: features.scale ? 'block' : 'none' }" @click="toggleScaleType">
+      <div ref="scale-line-container" :style="{ display: scaleType === 'LINE' ? 'block' : 'none' }" />
+      <div class="scale-text" :style="{ display: scaleType === 'TEXT' ? 'block' : 'none' }">
         1 : {{ Math.round(scale).toLocaleString() }}
       </div>
     </div>
@@ -21,6 +11,7 @@
 </template>
 
 <script>
+import { toRaw } from "vue";
 import Map from "ol/Map";
 import ScaleLine from "ol/control/ScaleLine";
 import { register } from "ol/proj/proj4";
@@ -33,7 +24,7 @@ export default {
   name: "OlMap",
   provide() {
     return {
-      map: this.map,
+      map: toRaw(this.map),
     };
   },
   props: {
@@ -71,16 +62,11 @@ export default {
     this.map.on("moveend", () => {
       const view = this.map.getView();
 
-      const resolution = getPointResolution(
-        view.getProjection(),
-        view.getResolution(),
-        view.getCenter()
-      );
+      const resolution = getPointResolution(view.getProjection(), view.getResolution(), view.getCenter());
 
       const mpu = view.getProjection().getMetersPerUnit();
       const inchesPerMeter = 1000 / 25.4;
-      this.scale =
-        parseFloat(resolution.toString()) * mpu * inchesPerMeter * DEFAULT_DPI;
+      this.scale = parseFloat(resolution.toString()) * mpu * inchesPerMeter * DEFAULT_DPI;
 
       this.$emit("set-position", {
         ...this.position,

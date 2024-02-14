@@ -12,28 +12,21 @@
           <div class="coordinate-wrapper">
             <h1 v-if="!searchQuery.title">{{ searchQuery.coordinates }}</h1>
             <h4 v-else>{{ searchQuery.coordinates }}</h4>
-            <vue-tippy
-              placement="bottom-right"
-              theme="popover"
-              trigger="click"
-              :distance="8"
-              :delay="[0, 0]"
-              :a11y="false"
-            >
-              <template #trigger>
-                <button class="iconbutton __round show-on-hover" aria-label="Toon meer informatie">
-                  <marker-icon class="icon __small" />
-                </button>
+            <tippy placement="bottom-start" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
+              <button class="iconbutton __round show-on-hover" aria-label="Toon meer informatie">
+                <marker-icon class="icon __small" />
+              </button>
+              <template #content>
+                <div class="container">
+                  <div class="heading">
+                    <h3 class="title">EPSG:4326 projectie (WSG84)</h3>
+                  </div>
+                  <div class="property">
+                    {{ searchQuery.coordEPSG4326 }}
+                  </div>
+                </div>
               </template>
-              <div class="container">
-                <div class="heading">
-                  <h3 class="title">EPSG:4326 projectie (WSG84)</h3>
-                </div>
-                <div class="property">
-                  {{ searchQuery.coordEPSG4326 }}
-                </div>
-              </div>
-            </vue-tippy>
+            </tippy>
           </div>
         </div>
         <button
@@ -71,10 +64,12 @@ import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import CloseIcon from "@/assets/icons/close-icon.svg";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
+import { Tippy } from "vue-tippy";
 
 export default {
   name: "PointInfoPanel",
   components: {
+    Tippy,
     MarkerIcon,
     CloseIcon,
     SidePanel,
@@ -84,6 +79,11 @@ export default {
     position: Object,
     layers: Array,
     showPanel: Boolean,
+  },
+  data() {
+    return {
+      resetSidePanel: null,
+    };
   },
   computed: {
     visibleLayers() {
@@ -97,11 +97,6 @@ export default {
         this.$store.commit("setSearchQuery", { title: value, coordinates: null });
       },
     },
-  },
-  data() {
-    return {
-      resetSidePanel: null,
-    };
   },
   methods: {
     closeInfoPanel() {
@@ -201,7 +196,7 @@ h4 {
 }
 
 .property {
-  padding: 8px 0;
+  padding: 10px 16px;
   display: flex;
   flex-direction: column;
   font-weight: var(--font-weight-normal);

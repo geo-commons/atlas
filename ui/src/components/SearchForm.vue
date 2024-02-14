@@ -1,15 +1,7 @@
 <template>
   <div class="search-wrapper" :class="{ showBorder }">
     <form class="search" autocomplete="off" method="GET" @submit="onSubmit">
-      <DataPanelButton
-        v-if="
-          $listeners['show-data-panel'] &&
-          !isEmbed &&
-          hasVisibleLayers &&
-          hasDatapanel
-        "
-        @show-data-panel="showDataPanel()"
-      />
+      <DataPanelButton v-if="showDataPanelButton" @show-data-panel="showDataPanel()" />
 
       <slot></slot>
 
@@ -21,12 +13,7 @@
           content="Zoek"
           aria-label="Zoek"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
             <path d="M0 0h24v24H0V0z" fill="none" />
             <path
               fill="currentColor"
@@ -53,18 +40,18 @@ export default {
     showBorder: Boolean,
     hasVisibleLayers: Boolean,
     features: Object,
+    disableDataPanelButton: Boolean,
   },
   computed: {
     ...mapState({
       isEmbed: (state) => state.isEmbed,
     }),
-    hasDatapanel() {
-      // Check if the feature config datapanel exists and is of type bolean otherwise default to true.
-      if (typeof this.features["datapanel"] == "boolean") {
-        return this.features.datapanel;
+    showDataPanelButton() {
+      if (this.disableDataPanelButton) {
+        return false;
       }
 
-      return true;
+      return !this.isEmbed && this.features.datapanel && this.hasVisibleLayers;
     },
   },
   methods: {

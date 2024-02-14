@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <div class="section">
-      <SearchForm v-if="table.search_fields.length > 0" :table="table" @submit="onSearch" />
+      <SearchForm
+        v-if="table.search_fields.length > 0"
+        :table="table"
+        :disable-data-panel-button="true"
+        @submit="onSearch"
+      />
     </div>
     <div class="section">
       <span v-if="!table">Kan deze tabel niet vinden</span>
