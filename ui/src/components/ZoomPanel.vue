@@ -1,12 +1,6 @@
 <template>
   <div class="wrapper">
-    <button
-      v-tippy="{ placement: 'left' }"
-      class="iconbutton"
-      content="Zoom in"
-      aria-label="Zoom in"
-      @click="zoomIn"
-    >
+    <button v-tippy="{ placement: 'left' }" class="iconbutton" content="Zoom in" aria-label="Zoom in" @click="zoomIn">
       <svg
         width="10px"
         height="10px"
@@ -15,18 +9,8 @@
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
       >
-        <g
-          id="Symbols"
-          stroke="none"
-          stroke-width="1"
-          fill="none"
-          fill-rule="evenodd"
-        >
-          <polygon
-            id="Path"
-            fill="#000000"
-            points="4 10 6 10 6 6 10 6 10 4 6 4 6 0 4 0 4 4 0 4 0 6 4 6"
-          ></polygon>
+        <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <polygon id="Path" fill="#000000" points="4 10 6 10 6 6 10 6 10 4 6 4 6 0 4 0 4 4 0 4 0 6 4 6"></polygon>
         </g>
       </svg>
     </button>
@@ -45,18 +29,8 @@
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
       >
-        <g
-          id="Symbols"
-          stroke="none"
-          stroke-width="1"
-          fill="none"
-          fill-rule="evenodd"
-        >
-          <polygon
-            id="Path"
-            fill="#000000"
-            points="10 2 10 0 0 0 0 2"
-          ></polygon>
+        <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <polygon id="Path" fill="#000000" points="10 2 10 0 0 0 0 2"></polygon>
         </g>
       </svg>
     </button>

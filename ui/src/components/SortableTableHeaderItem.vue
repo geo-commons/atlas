@@ -3,8 +3,8 @@
     v-tippy="{ placement: 'bottom' }"
     aria-label="Sorteer kolom"
     content="Sorteer"
-    @click="() => sortColumn()"
     class="header-background"
+    @click="() => sortColumn()"
   >
     <span class="table-header-container">
       {{ headerText }}

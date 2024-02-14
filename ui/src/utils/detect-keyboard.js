@@ -38,9 +38,7 @@ export default class DetectKeyboardUser {
   }
 
   destroy() {
-    document.documentElement.classList.remove(
-      this.settings.classes[this.settings.type]
-    );
+    document.documentElement.classList.remove(this.settings.classes[this.settings.type]);
   }
 
   refresh() {

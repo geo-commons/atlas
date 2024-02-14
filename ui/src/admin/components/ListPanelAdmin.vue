@@ -18,21 +18,9 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
           <title>arrow_back_black_24dp</title>
-          <g
-            id="Admin"
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd"
-          >
-            <g
-              id="Kaart---Zoekbalk"
-              transform="translate(-24.000000, -24.000000)"
-            >
-              <g
-                id="arrow_back_black_24dp"
-                transform="translate(16.000000, 16.000000)"
-              >
+          <g id="Admin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Kaart---Zoekbalk" transform="translate(-24.000000, -24.000000)">
+              <g id="arrow_back_black_24dp" transform="translate(16.000000, 16.000000)">
                 <g transform="translate(8.000000, 8.000000)">
                   <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
                   <polygon
@@ -57,19 +45,8 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
           <title>Artboard</title>
-          <g
-            id="Artboard"
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd"
-          >
-            <g
-              id="lagen"
-              transform="translate(3.000000, 2.000000)"
-              fill="#000000"
-              fill-rule="nonzero"
-            >
+          <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="lagen" transform="translate(3.000000, 2.000000)" fill="#000000" fill-rule="nonzero">
               <path
                 id="Shape"
                 d="M8.99,17.7805 L1.62,11.62075 L0,12.97525 L9,20.50025 L18,12.97525 L16.37,11.61 L8.99,17.7805 Z M9,15.05 L16.36,8.89025 L18,7.525 L9,0 L0,7.525 L1.63,8.89025 L9,15.05 Z M9,2.71975 L14.74,7.525 L9,12.33025 L3.26,7.525 L9,2.71975 Z"
@@ -83,11 +60,7 @@
     </div>
 
     <div class="select-wrapper">
-      <select
-        v-model="selectedLayerTitle"
-        class="layer-select edit-field-border"
-        @change="onListLayerChange"
-      >
+      <select v-model="selectedLayerTitle" class="layer-select edit-field-border" @change="onListLayerChange">
         <option disabled value="">Selecteer een laag</option>
         <option v-for="l in availableLayers" :key="l.id" :value="l.id">
           {{ l.title }}
@@ -95,9 +68,7 @@
       </select>
     </div>
 
-    <p v-if="!selectedLayerTitle">
-      Kies eerst een laag voordat je de lijstweergave instelt.
-    </p>
+    <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de lijstweergave instelt.</p>
 
     <div v-if="selectedLayerTitle" class="list-config-wrapper">
       <div>
@@ -124,8 +95,7 @@
     </div>
 
     <p class="help-text">
-      Voor het instellen van variabele naam (e.g. kolom naam van een laag) dient
-      dat als volgt te gebeuren:
+      Voor het instellen van variabele naam (e.g. kolom naam van een laag) dient dat als volgt te gebeuren:
       <br />
       <br />
       <i>{{ columnExample }}</i>

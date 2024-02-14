@@ -2,11 +2,7 @@
   <div class="overlay">
     <button class="background" @click="closeModal" />
     <div class="modal">
-      <EmbedCode
-        :position="position"
-        :layers="layers"
-        @close-modal="closeModal"
-      />
+      <EmbedCode :position="position" :layers="layers" @close-modal="closeModal" />
     </div>
   </div>
 </template>

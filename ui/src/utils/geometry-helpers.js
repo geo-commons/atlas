@@ -16,7 +16,5 @@ export function getFeatureCenterCoordinates(feature) {
 
   // Check if the center is within the geometry of the selected feature.
   // Otherwise we choose the closest point to the center within the geometry.
-  return geometry.containsXY(center[0], center[1])
-    ? center
-    : geometry.getClosestPoint(center);
+  return geometry.containsXY(center[0], center[1]) ? center : geometry.getClosestPoint(center);
 }

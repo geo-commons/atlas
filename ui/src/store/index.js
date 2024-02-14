@@ -28,9 +28,7 @@ export const createStore = (initialState) => {
         );
       },
       setLayerOpacity(state, [layerId, opacity]) {
-        state.layers = state.layers.map((layer) =>
-          layer.id === layerId ? { ...layer, opacity: opacity } : layer
-        );
+        state.layers = state.layers.map((layer) => (layer.id === layerId ? { ...layer, opacity: opacity } : layer));
       },
       setTool(state, tool) {
         state.tool = tool;

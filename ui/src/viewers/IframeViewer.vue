@@ -21,11 +21,7 @@ export default {
   },
   computed: {
     src() {
-      const latlong = transform(
-        this.position.marker,
-        "EPSG:28992",
-        "EPSG:4326"
-      );
+      const latlong = transform(this.position.marker, "EPSG:28992", "EPSG:4326");
 
       const properties = {
         lat: latlong[1],

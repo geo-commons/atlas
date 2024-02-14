@@ -1,6 +1,13 @@
 <template>
   <div class="wrapper">
-    <button v-tippy="{ placement: 'bottom' }" class="iconbutton" :class="{ isOpen }" content="Opties" aria-label="Toon meer opties" @click="toggle">
+    <button
+      v-tippy="{ placement: 'bottom' }"
+      class="iconbutton"
+      :class="{ isOpen }"
+      content="Opties"
+      aria-label="Toon meer opties"
+      @click="toggle"
+    >
       <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
         <path d="M0 0h24v24H0V0z" fill="none" />
         <path

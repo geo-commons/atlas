@@ -1,12 +1,6 @@
 <template>
   <label class="checkbox">
-    <input
-      type="checkbox"
-      :name="name"
-      :value="value"
-      :checked="checked"
-      @change="$emit('change', $event)"
-    />
+    <input type="checkbox" :name="name" :value="value" :checked="checked" @change="$emit('change', $event)" />
     {{ value }}
   </label>
 </template>

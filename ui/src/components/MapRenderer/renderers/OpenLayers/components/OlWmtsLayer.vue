@@ -68,9 +68,7 @@ export default {
   },
   methods: {
     async setSource() {
-      const response = await fetch(
-        `${this.url}?REQUEST=GetCapabilities&service=wmts`
-      );
+      const response = await fetch(`${this.url}?REQUEST=GetCapabilities&service=wmts`);
       const body = await response.text();
       const caps = new WMTSCapabilities().read(body);
       const wmtsSource = new WMTSSource(

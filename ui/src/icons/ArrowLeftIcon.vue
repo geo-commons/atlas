@@ -8,18 +8,9 @@
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >
     <title>arrow_back_black_24dp</title>
-    <g
-      id="Admin"
-      stroke="none"
-      stroke-width="1"
-      fill="none"
-      fill-rule="evenodd"
-    >
+    <g id="Admin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g id="Kaart---Zoekbalk" transform="translate(-24.000000, -24.000000)">
-        <g
-          id="arrow_back_black_24dp"
-          transform="translate(16.000000, 16.000000)"
-        >
+        <g id="arrow_back_black_24dp" transform="translate(16.000000, 16.000000)">
           <g transform="translate(8.000000, 8.000000)">
             <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
             <polygon
