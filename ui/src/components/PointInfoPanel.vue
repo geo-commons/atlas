@@ -19,7 +19,7 @@
               <template #content>
                 <div class="container">
                   <div class="heading">
-                    <h3 class="title">EPSG:4326 projectie (WSG84)</h3>
+                    <h3 class="title">EPSG:4326 projectie (WGS 84)</h3>
                   </div>
                   <div class="property">
                     {{ searchQuery.coordEPSG4326 }}
