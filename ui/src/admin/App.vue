@@ -267,6 +267,35 @@ th {
 .first-column-padding {
   padding-left: 12px;
 }
+
+.multiselect__tag {
+  background: var(--color-white);
+  border: solid 1px var(--color-primary);
+  color: var(--color-primary);
+}
+
+.multiselect__tag-icon:focus,
+.multiselect__tag-icon:hover {
+  background: var(--color-primary);
+}
+
+.multiselect__option--highlight {
+  background: var(--color-primary);
+}
+
+.multiselect__placeholder {
+  color: var(--color-text-grey);
+}
+
+.multiselect__tags {
+  border-color: var(--color-grey-60);
+  border-radius: var(--radius-normal);
+}
+
+.multiselect__tag-icon:after {
+  color: var(--color-primary);
+  font-size: var(--font-size-large);
+}
 </style>
 
 <style scoped>

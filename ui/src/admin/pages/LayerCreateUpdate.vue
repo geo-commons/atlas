@@ -7,6 +7,7 @@
       :initial-values="initialValues"
       :form-object="'layers'"
       :object-specific-save="saveLayer"
+      @update-source="(source) => (selectedSource = source)"
     >
       <template #custom>
         <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
@@ -83,6 +84,7 @@ export default {
       currentValues: {},
       availableGroups: [],
       selectedGroups: [],
+      selectedSource: {},
       assistiveText: "Verplaats een group met behulp van de enter toets",
     };
   },
@@ -143,6 +145,14 @@ export default {
       this.initialValues.metadata_lineage = response.metadata.lineage;
       this.initialValues.metadata_contact = response.metadata.contact;
 
+      // Set selectedSource
+      this.selectedSource = {
+        id: response.source.id,
+        label: response.source.title,
+        url: response.source.url,
+        type: response.source.source_type,
+      };
+
       return result;
     },
     async saveLayer(currentValues) {
@@ -197,7 +207,7 @@ export default {
       const response = await result.json();
 
       return response.map((source) => {
-        return { id: source.id, label: source.title };
+        return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
     },
     async getGroups() {
@@ -276,8 +286,10 @@ export default {
               label: "Laagnaam",
               id: "layer_name",
               name: "LayerName",
-              type: "text",
+              type: "layer-select",
               required: true,
+              placeholder: "laag",
+              sourceField: "source_id",
               infoText: "De naam van de laag op de geoserver.",
             },
             {

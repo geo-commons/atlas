@@ -1,5 +1,5 @@
 <template>
-  <vee-form ref="formRef" :initial-values="currentValues" @submit="save">
+  <vee-form v-slot="{ values }" ref="formRef" :initial-values="currentValues" @submit="save">
     <div :class="{ 'create-view-container': createView || compactLayout }">
       <p v-if="unexpectedError" class="warning-text">{{ unexpectedError }}</p>
       <div v-for="section in sections" :key="section.label">
@@ -11,20 +11,27 @@
 
           <div class="section-questions">
             <div v-for="question in section.questions" :key="question.id">
-              <!--              {{ console.log(question) }}-->
               <!-- note: currently we can only add one custom field per AdminFormSection component.
                             If this is no longer sufficient in the future take a look at how ol-view and ol-layer
                             are decomposed in the OpenLayers.vue component -->
               <slot v-if="question.type === 'custom'" name="custom"></slot>
               <div v-else-if="question.type === 'checkbox'" class="checkbox-wrapper">
                 <vee-field
+                  v-slot="{ field }"
                   :name="question.id"
-                  :checked="currentValues[question.id]"
-                  :disabled="question.disabled"
-                  :rules="getRules(question)"
-                  :checked-value="true"
                   type="checkbox"
-                />
+                  :value="true"
+                  :unchecked-value="false"
+                  :rules="getRules(question)"
+                >
+                  <input
+                    type="checkbox"
+                    :name="question.id"
+                    v-bind="field"
+                    :value="true"
+                    :disabled="question.disabled"
+                  />
+                </vee-field>
                 <span class="label-info-text-wrapper">
                   <label :for="question.id">{{ question.label }}</label>
                   <AdminFormInfoText
@@ -110,6 +117,14 @@
                   :disabled="question.disabled"
                   class="width"
                 />
+                <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id">
+                  <layer-field
+                    v-model="currentValues[question.id]"
+                    :field="field"
+                    :current-source-id="values[question.sourceField]"
+                    :sources="options[question.sourceField] || []"
+                  />
+                </vee-field>
                 <vee-field
                   v-else
                   :id="question.id"
@@ -146,10 +161,12 @@ import { formatDateValue } from "@/utils/date-formatter";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import CloseIcon from "@/assets/icons/close-icon.svg";
 import Cookies from "js-cookie";
+import LayerField from "@/admin/components/LayerField.vue";
 
 export default {
   name: "AdminFormSections",
   components: {
+    LayerField,
     CloseIcon,
     AdminFormInfoText,
     VeeForm,
@@ -234,22 +251,6 @@ export default {
         this.$emit("close");
       } else {
         this.$router.push(`/${this.formObject}`);
-      }
-    },
-    async validateFields(validateWithInfo) {
-      // Check if any of the fields contain a validation error.
-      const info = await validateWithInfo();
-
-      if (!info.isValid) {
-        // Get the id of the first corresponding element which has an error.
-        let errorRefId = null;
-        for (const [id, errors] of Object.entries(info.errors)) {
-          if (errors.length > 0) {
-            errorRefId = id;
-            break;
-          }
-        }
-        this.scrollToElementById(errorRefId);
       }
     },
     save(values) {
