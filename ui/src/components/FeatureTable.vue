@@ -32,6 +32,10 @@
       </div>
     </div>
 
+    <p v-if="numberMatched !== null" class="total-results">
+      {{ numberMatched }} {{ numberMatched === 1 ? "resultaat" : "resultaten" }}
+    </p>
+
     <table-list v-if="!loading" class="table table-border table-margin">
       <table>
         <thead>
@@ -119,6 +123,7 @@ export default {
       filterOptions: {},
       filterFeatures: {},
       loading: false,
+      numberMatched: null,
     };
   },
   computed: {
@@ -222,6 +227,7 @@ export default {
         const data = await result.json();
 
         this.featureCollection = data;
+
         this.numberMatched = data.numberMatched;
 
         if (this.displayProperties.length === 0 && data.features.length > 0) {
@@ -509,5 +515,9 @@ tbody > tr:hover {
   justify-content: flex-start;
   align-items: center;
   gap: 6px;
+}
+
+.total-results {
+  margin-bottom: 0;
 }
 </style>
