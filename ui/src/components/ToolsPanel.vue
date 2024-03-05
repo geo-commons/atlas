@@ -124,29 +124,47 @@ export default {
     return {
       showMeasureMenu: false,
       showDrawMenu: false,
+      selectAreaToggled: false,
     };
   },
   methods: {
+    /*
+     * Note: the interaction between toggling select area and the dropdown menus of draw and measure seems to have weird side effects.
+     *       It seems to be working with $nextTick() as it is implemented right now but, it might be nice to refactor this after we implement
+     *       select area to also support selecting by radius. After we have implemented that all options work very similar therefor,
+     *       we should be able to simplify things a little.
+     * */
     toggleMeasure() {
-      if (this.tool === "MEASURE_AREA" || this.tool === "MEASURE_LINE") {
-        this.$emit("set-tool", "");
-      } else {
-        this.showMeasureMenu = !this.showMeasureMenu;
+      if (this.tool) {
+        this.resetAreaSelect();
       }
+
+      this.showMeasureMenu = !this.showMeasureMenu;
     },
     toggleSelectArea() {
-      if (this.tool !== "SELECT_AREA") {
-        this.$emit("set-tool", "SELECT_AREA");
-      } else {
-        // toggle off when the user is currently selecting an area
-        this.$emit("set-tool", "");
-        this.$emit("set-selected-area", null);
+      this.selectAreaToggled = !this.selectAreaToggled;
+
+      if (this.tool) {
+        this.resetAreaSelect();
       }
+
+      this.$nextTick(() => {
+        if (this.selectAreaToggled) {
+          this.$emit("set-tool", "SELECT_AREA");
+        }
+      });
     },
     setTool(chosenTool) {
-      this.$emit("set-tool", this.tool !== chosenTool ? chosenTool : "");
-      this.showMeasureMenu = false;
-      this.showDrawMenu = false;
+      if (this.tool) {
+        this.resetAreaSelect();
+      }
+
+      this.$nextTick(() => {
+        this.selectAreaToggled = false;
+        this.$emit("set-tool", chosenTool);
+        this.showMeasureMenu = false;
+        this.showDrawMenu = false;
+      });
     },
     toggleDraw() {
       if (
@@ -185,6 +203,10 @@ export default {
         this.$emit("drawing-saved", resultData.id);
         this.showDrawMenu = !this.showDrawMenu;
       }
+    },
+    resetAreaSelect() {
+      this.$emit("set-selected-area", null);
+      this.$emit("set-tool", "");
     },
   },
 };

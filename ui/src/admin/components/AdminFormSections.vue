@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import { Form as VeeForm, Field as VeeField, ErrorMessage as VeeErrorMessage } from "vee-validate";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { formatDateValue } from "@/utils/date-formatter";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import CloseIcon from "@/assets/icons/close-icon.svg";
