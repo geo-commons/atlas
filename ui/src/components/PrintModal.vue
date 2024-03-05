@@ -148,7 +148,6 @@ export default {
 .modal {
   position: relative;
   padding: var(--padding-screen);
-  margin-bottom: 41px;
   background-color: white;
   border-radius: var(--radius-normal);
   box-shadow: var(--shadow-normal);

@@ -1,6 +1,12 @@
 <template>
   <div ref="mapContainer" class="map-container" :class="{ showInfoPanel, showDataPanel }" :style="computedStyle">
     <div class="renderer-container">
+      <PanoramaPanel
+        class="panorama-panel"
+        :position="position"
+        :is-open="showPanoramaPanel"
+        @toggle="togglePanoramaPanel"
+      />
       <OpenLayersRenderer
         ref="map"
         class="renderer"
@@ -14,6 +20,8 @@
         :padding="mapPadding"
         :features="features"
         :filters="filters"
+        :draw-features="drawFeatures"
+        :drawing="drawing"
         @position-changed="setPosition"
         @tool-used="toolUsed"
         @features-selected="featuresSelected"
@@ -102,7 +110,24 @@
       </div>
 
       <div class="top-right-panels">
-        <ToolsPanel :features="features" :tool="tool" @set-tool="setTool" @set-selected-area="setSelectedArea" />
+        <ToolsPanel
+          v-if="!isEmbed && !showPanoramaPanel"
+          :features="features"
+          :config="config"
+          :draw-features="drawFeatures"
+          :tool="tool"
+          :user="user"
+          @set-tool="setTool"
+          @set-selected-area="setSelectedArea"
+          @drawing-saved="drawingSaved"
+          @clear-draw="() => (drawFeatures = [])"
+        />
+        <MorePanel
+          v-if="features.morepanel && !isEmbed && !showPanoramaPanel"
+          :user="user"
+          :show-disclaimer="config.show_disclaimer"
+          @toggle-modal="toggleModal"
+        />
       </div>
       <div class="bottom-left-panels">
         <LayersPanel
@@ -136,10 +161,51 @@
             <BaseLayersPanel v-if="showBaseLayersPanel" :layers="layers" @toggle-layer="toggleLayer" />
           </transition>
         </div>
+        <div v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)" class="bottom-right-buttons">
+          <div class="wrapper">
+            <button
+              v-if="panoramaViewers.length > 0"
+              v-tippy="{ placement: 'left' }"
+              class="iconbutton"
+              content="Rondkijkfoto"
+              aria-label="Toon rondkijkfoto"
+              @click="togglePanoramaPanel"
+            >
+              <PanoramaIcon />
+            </button>
+            <a
+              v-if="obliqueViewers.length > 0"
+              v-tippy="{ placement: 'left' }"
+              :href="obliqueViewerUrl"
+              target="_blank"
+              rel="nofollow"
+              class="iconbutton"
+              content="Obliekfoto"
+              aria-label="Toon obliekfoto"
+            >
+              <ObliqueIcon />
+            </a>
+          </div>
+        </div>
         <GeoLocationButton v-if="features.gps" @set-position="setPosition" />
         <ZoomPanel v-if="features.zoom" :position="position" @set-position="setPosition" />
       </div>
     </div>
+
+    <transition name="fade">
+      <div>
+        <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
+        <PrintModal v-if="modal === 'print'" @toggle-modal="toggleModal" @print-map-to-pdf="printMapToPdf" />
+        <DrawingModal
+          v-if="modal === 'drawing'"
+          :layers="layers"
+          :position="position"
+          :drawing="drawing"
+          @toggle-modal="toggleModal"
+        />
+      </div>
+    </transition>
+    <AlertMessage :alert="alert" />
   </div>
 </template>
 
@@ -167,12 +233,27 @@ import { isMobile } from "@/utils/helpers";
 import { transform } from "ol/proj";
 import BaseLayersPanel from "@/components/BaseLayersPanel.vue";
 import MapIcon from "../../assets/icons/map-icon.svg";
+import PanoramaIcon from "../../assets/icons/panorama-icon.svg";
+import ObliqueIcon from "../../assets/icons/oblique-icon.svg";
+import MorePanel from "@/components/MorePanel.vue";
+import PanoramaPanel from "@/components/PanoramaPanel.vue";
+import nunjucks from "nunjucks";
+import PrintModal from "@/components/PrintModal.vue";
+import DrawingModal from "@/components/DrawingModal.vue";
+import AlertMessage from "@/components/AlertMessage.vue";
+import EmbedModal from "@/components/EmbedModal.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
   components: {
+    EmbedModal,
+    AlertMessage,
+    DrawingModal,
+    PrintModal,
+    PanoramaPanel,
+    MorePanel,
     BaseLayersPanel,
     FilterListIcon,
     ListIcon,
@@ -190,6 +271,8 @@ export default {
     GeoLocationButton,
     DataPanelButton,
     MapIcon,
+    PanoramaIcon,
+    ObliqueIcon,
   },
   props: {
     initialLayers: Array,
@@ -215,11 +298,24 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    config: {
+      type: Object,
+      default: () => {
+        return {
+          viewers: [],
+          features: {},
+        };
+      },
+    },
+    alert: String,
+    initialDrawFeatures: Array,
+    drawing: Object,
   },
   data() {
     return {
       layers: this.initialLayers,
       position: this.initialPosition,
+      drawFeatures: [],
       highlightedFeatures: [],
       selectedFeatures: [],
       tool: "",
@@ -234,11 +330,18 @@ export default {
       infoPanelExpanded: false,
       mapPadding: [0, 0, 0, 0],
       computedStyle: {},
+      modal: "",
     };
   },
   computed: {
     showInfoPanel() {
       return this.position.marker ? true : false;
+    },
+    panoramaViewers() {
+      return this.config.viewers.filter((v) => !v.is_oblique);
+    },
+    obliqueViewers() {
+      return this.config.viewers.filter((v) => v.is_oblique);
     },
   },
   watch: {
@@ -247,6 +350,9 @@ export default {
     },
     initialLayers(value) {
       this.layers = value;
+    },
+    initialDrawFeatures(value) {
+      this.drawFeatures = value;
     },
   },
   mounted() {
@@ -268,6 +374,7 @@ export default {
       this.$emit("position-changed", position);
 
       if (!position.marker) {
+        this.highlightedFeatures = [];
         return;
       }
 
@@ -343,6 +450,42 @@ export default {
         }
       });
     },
+    obliqueViewerUrl: function () {
+      if (this.obliqueViewers.length === 0) {
+        return "";
+      }
+
+      if (!this.obliqueViewers[0].url) {
+        return "";
+      }
+
+      const position = this.position.marker || this.position.center;
+
+      const latlong = transform(position, "EPSG:28992", "EPSG:4326");
+
+      const properties = {
+        lat: latlong[1],
+        lon: latlong[0],
+        x: position[0],
+        y: position[1],
+      };
+
+      return nunjucks.renderString(this.obliqueViewers[0].url, properties);
+    },
+    printMapToPdf(settings) {
+      this.$refs.map.printToPdf(settings);
+    },
+    drawingSaved(id) {
+      this.$store.commit("setDrawing", id);
+      this.modal = "drawing";
+    },
+    toggleModal(modal) {
+      this.modal = modal;
+    },
+    togglePanoramaPanel() {
+      this.showBaseLayersPanel = false;
+      this.showPanoramaPanel = !this.showPanoramaPanel;
+    },
     toggleDataPanel() {
       this.showDataPanel = !this.showDataPanel;
       if (!this.showDataPanel) {
@@ -399,8 +542,19 @@ export default {
       }
 
       switch (result.tool) {
+        case "MEASURE_AREA":
+        case "MEASURE_LINE":
+          this.$store.commit("setSelectedArea", result.sketch.getGeometry());
+          break;
         case "SELECT_AREA":
           this.showDataPanel = true;
+          this.$store.commit("setSelectedArea", result.sketch.getGeometry());
+          break;
+        case "DRAW_POINT":
+        case "DRAW_LINE":
+        case "DRAW_POLYGON":
+        case "DRAW_LABEL":
+          this.drawFeatures.push(result.sketch);
           break;
       }
     },
@@ -477,10 +631,12 @@ export default {
   pointer-events: auto;
 }
 
+/*
 .map {
   flex: 1 1 auto;
-  height: 0; /* fixes incorrect display of .ol-viewport on Safari 13.1 */
+  height: 0;  fixes incorrect display of .ol-viewport on Safari 13.1
 }
+*/
 
 .bottom-left-panels {
   z-index: 1;
