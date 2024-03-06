@@ -54,7 +54,7 @@ export default {
     position: Object,
     layers: Array,
   },
-  data: () => {
+  data() {
     return {
       buttonText: "HTML kopiëren",
     };

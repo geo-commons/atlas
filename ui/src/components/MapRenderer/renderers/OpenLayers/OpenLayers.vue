@@ -226,8 +226,11 @@ export default {
 
       this.$refs.selectedArea.clear();
     },
-    drawFeatures(features) {
-      this.$emit("features-drawn", features);
+    drawFeatures: {
+      handler(features) {
+        this.$emit("features-drawn", features);
+      },
+      deep: true,
     },
   },
   created() {

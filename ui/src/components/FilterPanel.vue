@@ -49,7 +49,12 @@ export default {
     };
   },
   watch: {
-    facets: "fetchFacetValues",
+    facets: {
+      handler() {
+        this.fetchFacetValues();
+      },
+    },
+    deep: true,
   },
   mounted() {
     this.fetchFacetValues();

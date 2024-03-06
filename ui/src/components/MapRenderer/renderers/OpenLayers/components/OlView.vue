@@ -39,9 +39,12 @@ export default {
         });
       }
     },
-    padding(value) {
-      const view = this.map.getView();
-      view.setProperties({ padding: value });
+    padding: {
+      handler(value) {
+        const view = this.map.getView();
+        view.setProperties({ padding: value });
+      },
+      deep: true,
     },
   },
   mounted() {

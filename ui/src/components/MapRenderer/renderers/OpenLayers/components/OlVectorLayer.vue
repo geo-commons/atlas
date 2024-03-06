@@ -19,9 +19,12 @@ export default {
     zIndex: Number,
   },
   watch: {
-    features(features) {
-      this.vectorSource.clear();
-      this.vectorSource.addFeatures(features);
+    features: {
+      handler(features) {
+        this.vectorSource.clear();
+        this.vectorSource.addFeatures(features);
+      },
+      deep: true,
     },
   },
   created() {
@@ -42,7 +45,7 @@ export default {
     this.vectorSource.addFeatures(this.features);
     this.map.addLayer(this.vectorLayer);
   },
-  destroyed() {
+  unmounted() {
     this.map.removeLayer(this.vectorLayer);
   },
   methods: {

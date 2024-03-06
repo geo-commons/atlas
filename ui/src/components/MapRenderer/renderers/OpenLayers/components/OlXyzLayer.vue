@@ -55,7 +55,7 @@ export default {
 
     this.map.addLayer(this.tileLayer);
   },
-  destroyed() {
+  unmounted() {
     this.map.removeLayer(this.tileLayer);
   },
 };

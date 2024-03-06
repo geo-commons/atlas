@@ -68,8 +68,11 @@ export default {
       this.showInfoPanel = Boolean(value.marker);
       this.pushHistoryState();
     },
-    layers() {
-      this.pushHistoryState();
+    layers: {
+      handler() {
+        this.pushHistoryState();
+      },
+      deep: true,
     },
   },
   methods: {

@@ -93,7 +93,7 @@ export default {
     this.setSource(this.url, this.name);
     this.applyStyle(this.clientStyle);
   },
-  destroyed() {
+  unmounted() {
     this.map.removeLayer(this.tileLayer);
   },
   methods: {

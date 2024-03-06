@@ -24,7 +24,7 @@ export default {
     this.draw = constructDraw(this.tool, this.map, onDrawStart, onDrawEnd);
     this.map.addInteraction(this.draw);
   },
-  destroyed() {
+  unmounted() {
     this.map.removeOverlay(this.draw.measureTooltip);
     this.map.removeInteraction(this.draw);
   },

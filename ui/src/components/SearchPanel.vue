@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <SearchForm
-      :show-suggestions="showSuggestions"
+      :show-suggestions="showSuggestions ? true : null"
       :has-visible-layers="visibleLayers.length > 0"
       :features="features"
       @show-data-panel="toggleDataPanel"
@@ -18,7 +18,7 @@
           role="combobox"
           aria-owns="search-results"
           class="search-address"
-          :aria-expanded="showSuggestions && results.length"
+          :aria-expanded="showSuggestions && results.length ? true : null"
           @keyup="onSearch"
         />
       </template>

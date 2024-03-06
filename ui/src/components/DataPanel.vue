@@ -113,15 +113,18 @@ export default {
     },
   },
   watch: {
-    visibleLayers() {
-      // Check if selected layer is still available in the visible layers.
-      if (
-        this.selectedLayerId &&
-        this.visibleLayers?.length > 0 &&
-        !this.visibleLayers.some((layer) => layer.id === this.selectedLayerId)
-      ) {
-        this.resetSelectedLayer();
-      }
+    visibleLayers: {
+      handler() {
+        // Check if selected layer is still available in the visible layers.
+        if (
+          this.selectedLayerId &&
+          this.visibleLayers?.length > 0 &&
+          !this.visibleLayers.some((layer) => layer.id === this.selectedLayerId)
+        ) {
+          this.resetSelectedLayer();
+        }
+      },
+      deep: true,
     },
   },
   methods: {
