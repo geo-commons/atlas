@@ -1,7 +1,7 @@
-import Vue from "vue";
+import { defineComponent } from "vue";
 import MarkdownIt from "markdown-it";
 
-const Markdown = Vue.extend({
+const Markdown = defineComponent({
   name: "VueMarkdown",
   props: {
     source: {

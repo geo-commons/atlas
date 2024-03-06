@@ -1,5 +1,5 @@
 <template>
-  <tippy placement="right-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
+  <tippy placement="right-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="null">
     <button class="iconbutton __transparent-bg" aria-label="Toon meer informatie" type="button">
       <InformationCircleIcon />
     </button>

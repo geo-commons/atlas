@@ -147,7 +147,12 @@ export default {
     },
   },
   watch: {
-    items: "resetPagination",
+    items: {
+      handler() {
+        this.resetPagination();
+      },
+      deep: true,
+    },
   },
   mounted() {
     this.getPageNrArray();

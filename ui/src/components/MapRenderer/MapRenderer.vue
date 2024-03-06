@@ -348,8 +348,11 @@ export default {
     initialPosition(value) {
       this.position = value;
     },
-    initialLayers(value) {
-      this.layers = value;
+    initialLayers: {
+      handler(value) {
+        this.layers = value;
+      },
+      deep: true,
     },
     initialDrawFeatures(value) {
       this.drawFeatures = value;
@@ -359,7 +362,7 @@ export default {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
   },
-  destroyed() {
+  unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
   },
   methods: {

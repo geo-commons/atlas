@@ -12,7 +12,7 @@
           <div class="coordinate-wrapper">
             <h1 v-if="!searchQuery.title">{{ searchQuery.coordinates }}</h1>
             <h4 v-else>{{ searchQuery.coordinates }}</h4>
-            <tippy placement="bottom-start" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="false">
+            <tippy placement="bottom-start" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="null">
               <button class="iconbutton __round show-on-hover" aria-label="Toon meer informatie">
                 <marker-icon class="icon __small" />
               </button>

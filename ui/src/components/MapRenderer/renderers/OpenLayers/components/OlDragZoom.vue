@@ -15,7 +15,7 @@ export default {
     this.dragZoom = new DragZoom();
     this.map.addInteraction(this.dragZoom);
   },
-  destroyed() {
+  unmounted() {
     this.map.removeInteraction(this.dragZoom);
   },
 };

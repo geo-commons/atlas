@@ -126,7 +126,7 @@ export default {
     this.setViewportWidth();
     this.setViewportHeight();
   },
-  destroyed() {
+  unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
   },
   computed: {

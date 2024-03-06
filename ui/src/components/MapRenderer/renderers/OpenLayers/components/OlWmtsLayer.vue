@@ -63,7 +63,7 @@ export default {
       this.setSource();
     }
   },
-  destroyed() {
+  unmounted() {
     this.map.removeLayer(this.tileLayer);
   },
   methods: {

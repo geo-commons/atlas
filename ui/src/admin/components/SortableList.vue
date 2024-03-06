@@ -107,16 +107,19 @@ export default {
     },
   },
   watch: {
-    currentItemList(newValues) {
-      this.items = newValues;
-      if (this.isGrabbed) {
-        this.$nextTick(() => {
-          // Makes sure the focus item is still in focus after this component receives
-          // an update to the items array.
-          const items = [...document.getElementsByClassName(this.itemGroupClass)];
-          items[this.grabbedItemIndex].focus();
-        });
-      }
+    currentItemList: {
+      handler(newValues) {
+        this.items = newValues;
+        if (this.isGrabbed) {
+          this.$nextTick(() => {
+            // Makes sure the focus item is still in focus after this component receives
+            // an update to the items array.
+            const items = [...document.getElementsByClassName(this.itemGroupClass)];
+            items[this.grabbedItemIndex].focus();
+          });
+        }
+      },
+      deep: true,
     },
   },
   created() {

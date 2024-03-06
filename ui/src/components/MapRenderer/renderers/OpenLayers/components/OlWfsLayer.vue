@@ -110,10 +110,13 @@ export default {
 
       this.source.refresh();
     },
-    selectedFeatures(features) {
-      if (this.select && features && features.length === 0) {
-        this.select.getFeatures().clear();
-      }
+    selectedFeatures: {
+      handler(features) {
+        if (this.select && features && features.length === 0) {
+          this.select.getFeatures().clear();
+        }
+      },
+      deep: true,
     },
   },
   async created() {
@@ -170,7 +173,7 @@ export default {
       this.map.addInteraction(this.select);
     }
   },
-  destroyed() {
+  unmounted() {
     if (this.select) {
       this.map.removeInteraction(this.select);
     }
