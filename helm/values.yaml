@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: registry.gitlab.com/purmerend/atlas
-  tag: latest
+  tag: ""
   pullPolicy: IfNotPresent
 
 podAnnotations: {}
