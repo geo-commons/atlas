@@ -22,15 +22,16 @@
               v-bind="dragOptions"
               role="listbox"
             >
-              <li
-                v-for="item in availableGroups"
-                :key="item.id"
-                class="groups-list-item"
-                tabindex="0"
-                @keydown.enter.prevent="moveGroup(item, availableGroups, selectedGroups)"
-              >
-                {{ item.name }}
-              </li>
+              <template #item="{ element }">
+                <li
+                  :key="element.id"
+                  class="groups-list-item"
+                  tabindex="0"
+                  @keydown.enter.prevent="moveGroup(element, availableGroups, selectedGroups)"
+                >
+                  {{ element.name }}
+                </li>
+              </template>
             </draggable>
           </div>
           <div class="selected-groups">
@@ -43,16 +44,17 @@
               v-bind="dragOptions"
               role="listbox"
             >
-              <li
-                v-for="item in selectedGroups"
-                :key="item.id"
-                class="groups-list-item"
-                tabindex="0"
-                aria-describedby="reorder_instructions"
-                @keydown.enter.prevent="moveGroup(item, selectedGroups, availableGroups)"
-              >
-                {{ item.name }}
-              </li>
+              <template #item="{ element }">
+                <li
+                  :key="element.id"
+                  class="groups-list-item"
+                  tabindex="0"
+                  aria-describedby="reorder_instructions"
+                  @keydown.enter.prevent="moveGroup(element, selectedGroups, availableGroups)"
+                >
+                  {{ element.name }}
+                </li>
+              </template>
             </draggable>
           </div>
         </div>
@@ -63,8 +65,9 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import draggable from "vuedraggable";
 import { mapState } from "vuex";
+import draggable from "vuedraggable";
+draggable.compatConfig = { MODE: 3 };
 
 export default {
   name: "UserCreateUpdateComponent",

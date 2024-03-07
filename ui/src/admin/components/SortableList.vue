@@ -32,30 +32,30 @@
       <draggable
         v-model="items"
         tag="tbody"
-        item-key="currentOrder"
+        item-key="id"
         :group="group"
         v-bind="dragOptions"
         role="listbox"
         @change="onItemMove"
         @start="dragStart"
       >
-        <tr
-          v-for="item in items"
-          :key="item.currentOrder"
-          class="table-border"
-          :class="{ 'active-row': checkRow(item), [itemGroupClass]: true }"
-          role="option"
-          draggable="true"
-          tabindex="0"
-          aria-describedby="reorder_instructions"
-          @click="selectRow(item)"
-          @keydown.space.prevent="toggleGrabbed(item)"
-          @keydown.down.prevent="moveItem(true)"
-          @keydown.up.prevent="moveItem(false)"
-          @keydown.enter.prevent="selectRow(item)"
-        >
-          <td class="sort-column-padding">{{ item.title }}</td>
-        </tr>
+        <template #item="{ element }">
+          <tr
+            class="table-border"
+            :class="{ 'active-row': false, [itemGroupClass]: true }"
+            role="option"
+            draggable="true"
+            tabindex="0"
+            aria-describedby="reorder_instructions"
+            @click="selectRow(element)"
+            @keydown.space.prevent="toggleGrabbed(element)"
+            @keydown.down.prevent="moveItem(true)"
+            @keydown.up.prevent="moveItem(false)"
+            @keydown.enter.prevent="selectRow(element)"
+          >
+            <td class="sort-column-padding">{{ element.title }}</td>
+          </tr>
+        </template>
       </draggable>
     </table>
     <div v-else>
@@ -66,6 +66,8 @@
 
 <script>
 import draggable from "vuedraggable";
+draggable.compatConfig = { MODE: 3 };
+
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import { debounce } from "@/utils/debouncer";
 
