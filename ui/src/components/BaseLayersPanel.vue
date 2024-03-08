@@ -7,7 +7,7 @@
           type="radio"
           name="baseLayer"
           :checked="layer.is_visible"
-          @change="() => onSelect(layer)"
+          @click="() => onSelect(layer)"
         />
         <label :for="layer.id">{{ layer.title }}</label>
         <LayerInfo :layer="layer" />
@@ -18,7 +18,7 @@
           type="radio"
           name="baseLayer"
           :checked="allBaseLayersUnvisible"
-          @change="() => onSelect(null)"
+          @click="() => onSelect(null)"
         />
         <label for="baseLayer_null">Geen</label>
       </li>

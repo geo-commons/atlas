@@ -16,7 +16,7 @@
             :checked="
               filters && filters[layer.id] && filters[layer.id][facet] && filters[layer.id][facet].includes(value)
             "
-            @change="onChangeFilter"
+            @click="onChangeFilter"
           />
         </li>
       </ul>

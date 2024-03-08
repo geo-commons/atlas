@@ -59,7 +59,7 @@
             :name="`facet-${facet}`"
             :value="facet"
             :checked="data.settings.facets && data.settings.facets.includes(facet)"
-            @change="onChangeFacet"
+            @click="onChangeFacet"
           />
           <label :for="`facet-${facet}`">{{ facet }}</label>
         </div>

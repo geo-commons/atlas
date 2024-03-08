@@ -92,7 +92,7 @@
                     :name="layer.id"
                     :checked="layer.is_visible"
                     :disabled="layer.is_disabled || (layer.login_required && (!user || !user.token))"
-                    @change="() => onSelectLayer(layer)"
+                    @click="() => onSelectLayer(layer)"
                   />
                   <label :for="layer.id">
                     {{ layer.title }}
@@ -136,7 +136,7 @@
                   :name="layer.id"
                   :checked="layer.is_visible"
                   :disabled="layer.is_disabled || (layer.login_required && (!user || !user.token))"
-                  @change="() => onSelectLayer(layer)"
+                  @click="() => onSelectLayer(layer)"
                 />
                 <label :for="layer.id">
                   {{ layer.title }}
