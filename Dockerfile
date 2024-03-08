@@ -1,5 +1,5 @@
 # UI
-FROM node:19.9.0-alpine AS ui-build
+FROM node:20.11.1-alpine AS ui-build
 WORKDIR /app/ui
 
 COPY ui/package.json \
@@ -31,6 +31,7 @@ ARG ATLAS_VERSION=unknown
 RUN apt-get update && apt-get install --no-install-recommends -y \
     mime-support \
     libxml2 \
+    libgdal32 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /app
