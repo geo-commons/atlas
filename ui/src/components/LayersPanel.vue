@@ -170,6 +170,7 @@
 </template>
 
 <script>
+import { toRaw } from "vue";
 import { intersects } from "ol/extent";
 import ExpandButton from "./ExpandButton";
 import VisibleLayer from "./VisibleLayer";
@@ -211,7 +212,10 @@ export default {
     categories() {
       let categories = [];
 
-      this.layers.forEach((layer) => {
+      this.layers.forEach((mutableLayer) => {
+        // Create a non-reactive copy of the layer to avoid mutating props
+        const layer = toRaw(mutableLayer);
+
         if (!layer.category) {
           return;
         }
