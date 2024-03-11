@@ -1,5 +1,13 @@
 <template>
-  <tippy placement="left-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="null">
+  <tippy
+    placement="left-end"
+    theme="popover"
+    trigger="click"
+    :distance="8"
+    :delay="[0, 0]"
+    :a11y="null"
+    :interactive="true"
+  >
     <button
       v-tippy
       content="Meer informatie"
