@@ -5,8 +5,7 @@
       v-if="readyToRenderMap"
       :initial-position="position"
       :initial-layers="visibleLayers"
-      :initial-draw-features="drawFeatures"
-      :drawing="drawing"
+      :initial-draw-features="fetchedDrawFeatures"
       :user="user"
       :features="features"
       :config="config"
@@ -43,7 +42,7 @@ export default {
       readyToRenderMap: false,
       showInfoPanel: Boolean(this.position && this.position.marker),
       computedStyle: { "--color-primary": "#0066FF" },
-      drawFeatures: [],
+      fetchedDrawFeatures: [],
       highlightedFeatures: [],
       features: {},
     };
@@ -180,7 +179,7 @@ export default {
       const data = await response.json();
 
       const geojsonFormat = new GeoJSON();
-      this.drawFeatures = data.features.map((feature) => geojsonFormat.readFeature(feature));
+      this.fetchedDrawFeatures = data.features.map((feature) => geojsonFormat.readFeature(feature));
     },
   },
 };
