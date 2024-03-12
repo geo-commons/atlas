@@ -345,8 +345,11 @@ export default {
     },
   },
   watch: {
-    initialPosition(value) {
-      this.position = value;
+    initialPosition: {
+      handler(value) {
+        this.position = value;
+      },
+      deep: true,
     },
     initialLayers: {
       handler(value) {
@@ -354,8 +357,11 @@ export default {
       },
       deep: true,
     },
-    initialDrawFeatures(value) {
-      this.drawFeatures = value;
+    initialDrawFeatures: {
+      handler(value) {
+        this.drawFeatures = value;
+      },
+      deep: true,
     },
   },
   mounted() {
@@ -569,9 +575,11 @@ export default {
     },
     toggleLayer([layerId, isVisible]) {
       this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, is_visible: isVisible } : layer));
+      this.$emit("layers-changed", this.layers);
     },
     setLayerOpacity([layerId, opacity]) {
       this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, opacity: opacity } : layer));
+      this.$emit("layers-changed", this.layers);
     },
     getSelectedLayer(layerId) {
       if (layerId) {

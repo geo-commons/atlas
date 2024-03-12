@@ -13,6 +13,7 @@
       :is-embed="isEmbed"
       :alert="alert"
       @position-changed="positionChanged"
+      @layers-changed="layersChanged"
     />
   </div>
 </template>
@@ -78,16 +79,25 @@ export default {
     },
   },
   watch: {
-    position(value) {
-      // Toggle info panel based on if there is a marker present.
-      this.showInfoPanel = Boolean(value.marker);
-      this.pushHistoryState();
+    position: {
+      handler(value) {
+        // Toggle info panel based on if there is a marker present.
+        this.showInfoPanel = Boolean(value.marker);
+        this.pushHistoryState();
+      },
+      deep: true,
     },
-    layers() {
-      this.pushHistoryState();
+    layers: {
+      handler() {
+        this.pushHistoryState();
+      },
+      deep: true,
     },
-    drawing() {
-      this.pushHistoryState();
+    drawing: {
+      handler() {
+        this.pushHistoryState();
+      },
+      deep: true,
     },
   },
   created() {
@@ -125,6 +135,9 @@ export default {
   methods: {
     positionChanged(position) {
       this.$store.commit("setPosition", position);
+    },
+    layersChanged(layers) {
+      this.$store.commit("setLayers", layers);
     },
     pushHistoryState() {
       const basePath = /(.*?)(@|$)/.exec(window.location.pathname);

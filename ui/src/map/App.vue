@@ -64,9 +64,13 @@ export default {
     },
   },
   watch: {
-    position(value) {
-      this.showInfoPanel = Boolean(value.marker);
-      this.pushHistoryState();
+    position: {
+      handler(value) {
+        // Toggle info panel based on if there is a marker present.
+        this.showInfoPanel = Boolean(value.marker);
+        this.pushHistoryState();
+      },
+      deep: true,
     },
     layers: {
       handler() {
@@ -76,6 +80,12 @@ export default {
     },
   },
   methods: {
+    positionChanged(position) {
+      this.$store.commit("setPosition", position);
+    },
+    layersChanged(layers) {
+      this.$store.commit("setLayers", layers);
+    },
     pushHistoryState() {
       const basePath = /(.*?)(@|$)/.exec(window.location.pathname);
 
@@ -97,9 +107,6 @@ export default {
           baseLayer.length > 0 ? baseLayer[0] : ""
         }`
       );
-    },
-    positionChanged(position) {
-      this.$store.commit("setPosition", position);
     },
   },
 };
