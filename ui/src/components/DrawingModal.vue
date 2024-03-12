@@ -26,7 +26,6 @@ export default {
   name: "DrawingModal",
   components: {},
   props: {
-    drawing: String,
     layers: Array,
     position: Object,
   },

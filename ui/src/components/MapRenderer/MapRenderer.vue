@@ -21,7 +21,6 @@
         :features="features"
         :filters="filters"
         :draw-features="drawFeatures"
-        :drawing="drawing"
         @position-changed="setPosition"
         @tool-used="toolUsed"
         @features-selected="featuresSelected"
@@ -196,13 +195,7 @@
       <div>
         <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
         <PrintModal v-if="modal === 'print'" @toggle-modal="toggleModal" @print-map-to-pdf="printMapToPdf" />
-        <DrawingModal
-          v-if="modal === 'drawing'"
-          :layers="layers"
-          :position="position"
-          :drawing="drawing"
-          @toggle-modal="toggleModal"
-        />
+        <DrawingModal v-if="modal === 'drawing'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
       </div>
     </transition>
     <AlertMessage :alert="alert" />
@@ -277,6 +270,7 @@ export default {
   props: {
     initialLayers: Array,
     initialPosition: Object,
+    initialDrawFeatures: Array,
     user: Object,
     features: {
       type: Object,
@@ -308,8 +302,6 @@ export default {
       },
     },
     alert: String,
-    initialDrawFeatures: Array,
-    drawing: Object,
   },
   data() {
     return {

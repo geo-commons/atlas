@@ -226,12 +226,6 @@ export default {
 
       this.$refs.selectedArea.clear();
     },
-    drawFeatures: {
-      handler(features) {
-        this.$emit("features-drawn", features);
-      },
-      deep: true,
-    },
   },
   created() {
     this.MAP_AREA_STYLE = MAP_AREA_STYLE;

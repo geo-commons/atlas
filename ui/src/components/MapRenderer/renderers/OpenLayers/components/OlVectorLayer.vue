@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { toRaw } from "vue";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 
@@ -22,7 +23,7 @@ export default {
     features: {
       handler(features) {
         this.vectorSource.clear();
-        this.vectorSource.addFeatures(features);
+        this.vectorSource.addFeatures(toRaw(features));
       },
       deep: true,
     },
