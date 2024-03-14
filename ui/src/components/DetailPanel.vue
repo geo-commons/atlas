@@ -168,7 +168,7 @@ a {
   color: var(--color-primary);
 }
 
-.description >>> ul {
+.description :deep(ul) {
   margin: 20px;
   list-style-type: disc;
 }

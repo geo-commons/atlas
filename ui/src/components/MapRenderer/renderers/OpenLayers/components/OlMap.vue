@@ -140,13 +140,13 @@ export default {
   z-index: 1;
 }
 
-.scale >>> .scale-text {
+.scale :deep(.scale-text) {
   height: 20px;
   line-height: 20px;
   padding: 0 4px;
 }
 
-.scale >>> .scale-line-inner {
+.scale :deep(.scale-line-inner) {
   height: 20px;
   line-height: 20px;
   border: 2px solid black;

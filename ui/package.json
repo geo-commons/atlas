@@ -34,7 +34,6 @@
     "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "@achrinza/node-ipc": "10.1.10",
     "@babel/eslint-parser": "7.23.3",
     "@vue/cli-plugin-babel": "5.0.8",
     "@vue/cli-plugin-eslint": "5.0.8",
