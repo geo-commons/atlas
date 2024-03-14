@@ -380,7 +380,7 @@ export default {
 </script>
 
 <style scoped>
-.map >>> .ol-tooltip {
+.map :deep(.ol-tooltip) {
   position: relative;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 4px;
@@ -393,19 +393,19 @@ export default {
   user-select: none;
 }
 
-.map >>> .ol-tooltip-measure {
+.map :deep(.ol-tooltip-measure) {
   opacity: 1;
   font-weight: bold;
 }
 
-.map >>> .ol-tooltip-static {
+.map :deep(.ol-tooltip-static) {
   background-color: #000000;
   color: white;
   border: 1px solid white;
 }
 
-.map >>> .ol-tooltip-measure:before,
-.map >>> .ol-tooltip-static:before {
+.map :deep(.ol-tooltip-measure:before),
+.map :deep(.ol-tooltip-static:before) {
   border-top: 6px solid rgba(0, 0, 0, 0.5);
   border-right: 6px solid transparent;
   border-left: 6px solid transparent;
@@ -416,11 +416,11 @@ export default {
   left: 50%;
 }
 
-.map >>> .ol-tooltip-static:before {
+.map :deep(.ol-tooltip-static:before) {
   border-top-color: #000000;
 }
 
-.map >>> .ol-box {
+.map :deep(.ol-box) {
   box-sizing: border-box;
   border-radius: 2px;
   border: 1.5px solid #b3c5db;
