@@ -23,7 +23,7 @@ export default {
     features: {
       handler(features) {
         this.vectorSource.clear();
-        this.vectorSource.addFeatures(toRaw(features));
+        this.vectorSource.addFeatures(features.map((feature) => toRaw(feature)));
       },
       deep: true,
     },
@@ -34,7 +34,7 @@ export default {
     this.vectorLayer = new VectorLayer({
       name: this.name,
       source: this.vectorSource,
-      style: this.vectorStyle,
+      style: toRaw(this.vectorStyle),
       visible: this.isVisible,
       opacity: this.opacity,
       zIndex: this.zIndex,
@@ -43,7 +43,7 @@ export default {
       },
     });
 
-    this.vectorSource.addFeatures(this.features);
+    this.vectorSource.addFeatures(this.features.map((feature) => toRaw(feature)));
     this.map.addLayer(this.vectorLayer);
   },
   unmounted() {
