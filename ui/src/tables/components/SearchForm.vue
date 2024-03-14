@@ -8,7 +8,6 @@
           </label>
           <vee-field
             :id="searchField.name"
-            v-model="searchFields[searchField.name]"
             :type="searchField.type ? searchField.type : 'text'"
             :name="searchField.name"
           />
@@ -33,14 +32,9 @@ export default {
   props: {
     table: Object,
   },
-  data() {
-    return {
-      searchFields: {},
-    };
-  },
   methods: {
-    onSearch() {
-      this.$emit("submit", this.searchFields);
+    onSearch(values) {
+      this.$emit("submit", values);
     },
   },
 };
