@@ -15,7 +15,6 @@ urlpatterns = [
         template_name='v3/logout.html'), name='v3_logout'),
     path('admin2/', views.v3_admin, name='v3_admin'),
     path('api/v1/token', webservice_views.v3_token, name='v3_token'),
-    path('api/v1/authorize', webservice_views.v3_authorize, name='v3_authorize'),
     path('api/v1/', include(urls.api_router.urls)),
     path('convert/<str:output_format>',
          webservice_views.v3_convert, name='v3_convert'),
