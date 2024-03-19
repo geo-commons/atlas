@@ -16,6 +16,7 @@
         :selected-area="selectedArea"
         :highlighted-features="highlightedFeatures"
         :selected-features="selectedFeatures"
+        :map-area="mapArea"
         :user="user"
         :padding="mapPadding"
         :features="features"
@@ -334,6 +335,14 @@ export default {
     },
     obliqueViewers() {
       return this.config.viewers.filter((v) => v.is_oblique);
+    },
+    mapArea() {
+      if (!this.config.map_area) {
+        return;
+      }
+
+      const geojsonFormat = new GeoJSON();
+      return geojsonFormat.readFeatures(this.config.map_area);
     },
   },
   watch: {
