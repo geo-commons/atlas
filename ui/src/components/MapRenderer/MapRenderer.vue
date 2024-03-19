@@ -336,6 +336,28 @@ export default {
     obliqueViewers() {
       return this.config.viewers.filter((v) => v.is_oblique);
     },
+    obliqueViewerUrl() {
+      if (this.obliqueViewers.length === 0) {
+        return "";
+      }
+
+      if (!this.obliqueViewers[0].url) {
+        return "";
+      }
+
+      const position = this.position.marker || this.position.center;
+
+      const latlong = transform(position, "EPSG:28992", "EPSG:4326");
+
+      const properties = {
+        lat: latlong[1],
+        lon: latlong[0],
+        x: position[0],
+        y: position[1],
+      };
+
+      return nunjucks.renderString(this.obliqueViewers[0].url, properties);
+    },
     mapArea() {
       if (!this.config.map_area) {
         return;
@@ -396,7 +418,7 @@ export default {
     async reverseGeocode(position) {
       try {
         const result = await fetch(
-          `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`
+          `${reverseGeocodingEndpoint}?X=${position.marker[0]}&Y=${position.marker[1]}&rows=1&distance=20`,
         );
         const data = await result.json();
 
@@ -459,28 +481,6 @@ export default {
           console.error(e);
         }
       });
-    },
-    obliqueViewerUrl: function () {
-      if (this.obliqueViewers.length === 0) {
-        return "";
-      }
-
-      if (!this.obliqueViewers[0].url) {
-        return "";
-      }
-
-      const position = this.position.marker || this.position.center;
-
-      const latlong = transform(position, "EPSG:28992", "EPSG:4326");
-
-      const properties = {
-        lat: latlong[1],
-        lon: latlong[0],
-        x: position[0],
-        y: position[1],
-      };
-
-      return nunjucks.renderString(this.obliqueViewers[0].url, properties);
     },
     printMapToPdf(settings) {
       this.$refs.map.printToPdf(settings);
@@ -643,13 +643,6 @@ export default {
   pointer-events: auto;
 }
 
-/*
-.map {
-  flex: 1 1 auto;
-  height: 0;  fixes incorrect display of .ol-viewport on Safari 13.1
-}
-*/
-
 .bottom-left-panels {
   z-index: 1;
   position: absolute;
@@ -734,7 +727,9 @@ export default {
   overflow: hidden;
   border-radius: var(--radius-normal);
   box-shadow: var(--shadow-normal);
-  transition: width 0.1s ease, border-radius 0.1s;
+  transition:
+    width 0.1s ease,
+    border-radius 0.1s;
   height: var(--width-button-large);
 }
 
@@ -744,11 +739,10 @@ export default {
   justify-content: flex-end;
   background: white;
   border-radius: var(--radius-normal);
-  overflow: hidden;
   box-shadow: var(--shadow-normal);
-  height: var(--width-button-normal);
-  transition: height 0.1s ease, border-radius 0.1s;
-  overflow: hidden;
+  transition:
+    height 0.1s ease,
+    border-radius 0.1s;
 }
 
 .bottom-right-buttons .iconbutton {
