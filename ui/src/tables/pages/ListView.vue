@@ -47,7 +47,6 @@ export default {
   },
   data() {
     return {
-      searchFields: {},
       error: null,
       rows: null,
       loading: false,
@@ -65,7 +64,6 @@ export default {
   },
   methods: {
     async onSearch(searchFields) {
-      this.searchFields = searchFields;
       this.rows = [];
       this.error = null;
       this.loading = true;
@@ -73,7 +71,14 @@ export default {
       const url = new URL(this.table.source.url + this.table.endpoint);
 
       if (this.table.method == "GET") {
-        const params = new URLSearchParams(searchFields);
+        const searchFieldsWithoutUndefinedValues = Object.entries(searchFields)
+          .filter(([, value]) => value !== undefined)
+          .reduce((obj, [key, value]) => {
+            obj[key] = value;
+            return obj;
+          }, {});
+
+        const params = new URLSearchParams(searchFieldsWithoutUndefinedValues);
         url.search = params.toString();
       }
 
