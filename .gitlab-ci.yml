@@ -126,3 +126,19 @@ Deploy acceptance:
     url: https://atlas-acc.$REVIEW_BASE_DOMAIN/atlas/
   only:
     - master@purmerend/atlas
+
+Upload helm chart:
+  stage: Deploy
+  image:
+    name: alpine/helm:latest
+    entrypoint: [""]
+
+  script:
+    - cd helm
+    - helm repo add helm https://charts.helm.sh/stable
+    - helm dependency build
+    - helm package .
+    - FILENAME=$(echo atlas-*.tgz)
+    - curl --request POST --user gitlab-ci-token:$CI_JOB_TOKEN --form "chart=@${FILENAME}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/api/stable/charts"
+  when: manual
+
