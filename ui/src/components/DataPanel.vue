@@ -99,7 +99,11 @@ export default {
   computed: {
     visibleLayers() {
       return this.layers.filter(
-        (layer) => layer.is_visible && !layer.is_base && visibleSourceTypes.includes(layer.source_type)
+        (layer) =>
+          layer.is_visible &&
+          !layer.is_base &&
+          layer.show_in_detail_panel &&
+          visibleSourceTypes.includes(layer.source_type),
       );
     },
     selectedLayer() {
