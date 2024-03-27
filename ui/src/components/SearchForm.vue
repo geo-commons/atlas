@@ -1,7 +1,11 @@
 <template>
   <div class="search-wrapper" :class="{ showBorder }">
     <form class="search" autocomplete="off" method="GET" @submit="onSubmit">
-      <DataPanelButton v-if="showDataPanelButton" @show-data-panel="showDataPanel()" />
+      <DataPanelButton
+        v-if="showDataPanelButton"
+        :show-data-panel="showDataPanel"
+        @show-data-panel="toggleDataPanel()"
+      />
 
       <slot></slot>
 
@@ -41,6 +45,7 @@ export default {
     hasVisibleLayers: Boolean,
     features: Object,
     disableDataPanelButton: Boolean,
+    showDataPanel: Boolean,
   },
   computed: {
     ...mapState({
@@ -59,7 +64,7 @@ export default {
       e.preventDefault();
       this.$emit("on-submit");
     },
-    showDataPanel() {
+    toggleDataPanel() {
       this.$emit("show-data-panel");
     },
     onClose() {

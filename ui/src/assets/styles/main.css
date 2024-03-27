@@ -204,8 +204,21 @@ svg {
   color: var(--color-primary);
 }
 
+.iconbutton.__inverse.isActive {
+  background: var(--color-primary);
+}
+
 .iconbutton:not([disabled]):hover {
   background: var(--color-grey-40);
+}
+
+/* If we set the hover state on the svg itself the svg does not change color if the button is hovered. */
+.iconbutton.__inverse.isActive:not([disabled]):hover > svg {
+  color: var(--color-primary);
+}
+
+.iconbutton.__inverse.isActive > svg {
+  color: var(--color-white);
 }
 
 .iconbutton.__alt_hover:not([disabled]):hover {
@@ -456,6 +469,11 @@ hr {
 .icon.__small {
   width: 16px;
   height: 16px;
+}
+
+.icon.__medium {
+  width: 18px;
+  height: 18px;
 }
 
 .icon.__grey {
