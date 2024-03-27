@@ -2,10 +2,11 @@
   <button
     v-tippy="{ placement: 'bottom' }"
     class="iconbutton toggle-button"
+    :class="{ isActive: showDataPanel }"
     type="button"
-    content="Toon data"
-    aria-label="Toon data"
-    @click="showDataPanel"
+    :content="showDataPanel ? 'Verberg data' : 'Toon data'"
+    :aria-label="showDataPanel ? 'Verberg data' : 'Toon data'"
+    @click="toggleDataPanel"
   >
     <FormIcon />
   </button>
@@ -19,8 +20,11 @@ export default {
   components: {
     FormIcon,
   },
+  props: {
+    showDataPanel: Boolean,
+  },
   methods: {
-    showDataPanel() {
+    toggleDataPanel() {
       this.$emit("show-data-panel");
     },
   },

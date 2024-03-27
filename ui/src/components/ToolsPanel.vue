@@ -4,25 +4,19 @@
       <button
         v-if="features.selectarea"
         v-tippy="{ placement: 'bottom' }"
-        class="iconbutton"
+        class="iconbutton __inverse"
         :class="{ isActive: tool === 'SELECT_AREA' }"
         content="Selecteer gebied"
         aria-label="Selecteer gebied"
         @click="toggleSelectArea"
       >
-        <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M14 2h-2V0h2v2zm-2 16h2v-2.59L16.59 18 18 16.59 15.41 14H18v-2h-6v6zm4-12h2V4h-2v2zm0 4h2V8h-2v2zm-8 8h2v-2H8v2zM4 2h2V0H4v2zM0 14h2v-2H0v2zm2 4v-2H0c0 1.1.9 2 2 2zM16 0v2h2c0-1.1-.9-2-2-2zM8 2h2V0H8v2zM0 6h2V4H0v2zm4 12h2v-2H4v2zm-4-8h2V8H0v2zm0-8h2V0C.9 0 0 .9 0 2z"
-            fill="currentColor"
-            fill-rule="nonzero"
-          />
-        </svg>
+        <AreaSelectIcon class="icon __medium" />
       </button>
 
       <button
         v-if="features.measure"
         v-tippy="{ placement: 'bottom' }"
-        class="iconbutton"
+        class="iconbutton __inverse"
         :class="{
           isActive: tool === 'MEASURE_AREA' || tool === 'MEASURE_LINE',
         }"
@@ -30,19 +24,13 @@
         aria-label="Opmeten"
         @click="toggleMeasure"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-          <path d="M0 0h24v24H0z" fill="none" />
-          <path
-            fill="currentColor"
-            d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h2v8z"
-          />
-        </svg>
+        <RulerIcon class="icon" />
       </button>
 
       <button
         v-if="config && config.features.draw && features.draw && user"
         v-tippy="{ placement: 'bottom' }"
-        class="iconbutton"
+        class="iconbutton __inverse"
         :class="{
           isActive: tool === 'DRAW_POINT' || tool === 'DRAW_LINE' || tool === 'DRAW_POLYGON' || tool === 'DRAW_LABEL',
         }"
@@ -50,12 +38,7 @@
         aria-label="Tekenen"
         @click="toggleDraw"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 96 960 960">
-          <path
-            fill="currentColor"
-            d="M215 939q-33.835 0-66.917-11.5Q115 916 90 890q35-12 50-35t15-62q0-43.75 30.676-74.375Q216.353 688 260.176 688 304 688 334.5 718.625T365 793q0 64-43.5 105T215 939Zm0-60q35 0 62.5-25t27.5-61q0-20-12.5-32.5T260 748q-20 0-32.5 12.5T215 793q0 39-8.5 57.5T175 873q6 1 20 3.5t20 2.5Zm230-177-90-95 376-376q14-14 31-14.5t32 14.5l29 29q15 15 14.5 32.5T823 324L445 702Zm-185 91Z"
-          />
-        </svg>
+        <BrushIcon class="icon" />
       </button>
     </div>
 
@@ -100,9 +83,17 @@
 <script>
 import Cookies from "js-cookie";
 import GeoJSON from "ol/format/GeoJSON";
+import RulerIcon from "../assets/icons/ruler-icon.svg";
+import AreaSelectIcon from "../assets/icons/area-select-icon.svg";
+import BrushIcon from "../assets/icons/brush-icon.svg";
 
 export default {
   name: "ToolsPanel",
+  components: {
+    RulerIcon,
+    AreaSelectIcon,
+    BrushIcon,
+  },
   props: {
     tool: String,
     user: Object,
@@ -137,6 +128,7 @@ export default {
     toggleMeasure() {
       if (this.tool) {
         this.resetAreaSelect();
+        return;
       }
 
       this.showMeasureMenu = !this.showMeasureMenu;

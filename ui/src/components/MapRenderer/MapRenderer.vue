@@ -87,12 +87,17 @@
           :position="position"
           :layers="layers"
           :features="features"
+          :show-data-panel="showDataPanel"
           @set-position="setPosition"
           @toggle-data-panel="toggleDataPanel"
         />
         <div class="toggle-buttons">
           <div v-if="features.datapanel && !features.searchbar" class="datapanel-btn-wrapper">
-            <DataPanelButton :is-subcomponent="false" @show-data-panel="toggleDataPanel" />
+            <DataPanelButton
+              :is-subcomponent="false"
+              :show-data-panel="showDataPanel"
+              @show-data-panel="toggleDataPanel"
+            />
           </div>
           <PrimaryButton v-if="features.list && !showList" size="large" label="Lijst" drop-shadow @click="toggleList">
             <ListIcon />
@@ -146,32 +151,36 @@
       </div>
       <div class="bottom-right-panels">
         <div v-if="features.baselayer" class="bottom-right-buttons">
-          <button
-            v-tippy="{ placement: 'left' }"
-            class="iconbutton"
-            content="Basislagen"
-            aria-label="Toon basislagen"
-            :aria-expanded="showBaseLayersPanel.toString()"
-            aria-controls="baseLayers"
-            @click="toggleBaseLayersPanel"
-          >
-            <MapIcon />
-          </button>
+          <div class="ui-button-wrapper">
+            <button
+              v-tippy="{ placement: 'left' }"
+              class="iconbutton"
+              :class="{ isActive: showBaseLayersPanel }"
+              content="Basislagen"
+              aria-label="Toon basislagen"
+              :aria-expanded="showBaseLayersPanel.toString()"
+              aria-controls="baseLayers"
+              @click="toggleBaseLayersPanel"
+            >
+              <MapIcon />
+            </button>
+          </div>
           <transition name="fade">
             <BaseLayersPanel v-if="showBaseLayersPanel" :layers="layers" @toggle-layer="toggleLayer" />
           </transition>
         </div>
         <div v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)" class="bottom-right-buttons">
-          <div class="wrapper">
+          <div class="ui-button-wrapper">
             <button
               v-if="panoramaViewers.length > 0"
               v-tippy="{ placement: 'left' }"
-              class="iconbutton"
+              class="iconbutton __inverse"
+              :class="{ isActive: showPanoramaPanel }"
               content="Rondkijkfoto"
               aria-label="Toon rondkijkfoto"
               @click="togglePanoramaPanel"
             >
-              <PanoramaIcon />
+              <PanoramaIcon class="icon" />
             </button>
             <a
               v-if="obliqueViewers.length > 0"
@@ -668,6 +677,15 @@ export default {
   gap: 10px;
 }
 
+.ui-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: var(--radius-normal);
+  overflow: hidden;
+  box-shadow: var(--shadow-normal);
+}
+
 @media (min-width: 1024px) {
   .top-left-panels.extra-padding {
     left: calc(var(--padding-screen) * 2);
@@ -750,7 +768,7 @@ export default {
   height: var(--width-button-normal);
 }
 
-.bottom-right-buttons .iconbutton:first-child {
+.bottom-right-buttons .iconbutton:first-child & .iconbutton:not(:only-child) {
   box-sizing: content-box;
   border-bottom: 1px solid var(--color-grey-50);
 }

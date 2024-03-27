@@ -4,6 +4,7 @@
       :show-suggestions="showSuggestions ? true : null"
       :has-visible-layers="visibleLayers.length > 0"
       :features="features"
+      :show-data-panel="showDataPanel"
       @show-data-panel="toggleDataPanel"
       @on-submit="onSearch"
     >
@@ -60,6 +61,7 @@ export default {
     position: Object,
     layers: Array,
     features: Object,
+    showDataPanel: Boolean,
   },
   data() {
     return {
@@ -80,7 +82,7 @@ export default {
     },
     visibleLayers() {
       return this.layers.filter(
-        (layer) => layer.is_visible && !layer.is_base && visibleSourceTypes.includes(layer.source_type)
+        (layer) => layer.is_visible && !layer.is_base && visibleSourceTypes.includes(layer.source_type),
       );
     },
   },
@@ -100,8 +102,8 @@ export default {
       try {
         const result = await fetch(
           `${suggestEndpoint}?fq=gemeentenaam:(${encodeURIComponent(
-            this.$store.state.config.suggest_municipalities
-          )})&q=${encodeURIComponent(this.query)}`
+            this.$store.state.config.suggest_municipalities,
+          )})&q=${encodeURIComponent(this.query)}`,
         );
         const data = await result.json();
 
