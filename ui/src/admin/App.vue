@@ -65,39 +65,6 @@ select {
   margin-right: 12px;
 }
 
-.sidebar {
-  flex-shrink: 0;
-  position: relative;
-  width: var(--width-detail);
-  z-index: 1;
-  box-shadow: var(--shadow-normal);
-}
-
-.sidebar h1 {
-  height: 40px;
-  margin: 0;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sidebar h1 svg {
-  margin-right: 6px;
-}
-
-.sidebar h2 {
-  margin: 24px 0 8px;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
-}
-
-.settings {
-  margin: 0 calc(var(--padding-screen) * -1);
-}
-
 .setting {
   width: 100%;
   height: 41px;

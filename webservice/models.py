@@ -257,23 +257,11 @@ class Layer(models.Model):
 
     @property
     def popup_attributes(self):
-        attributes = self._popup_attributes
-        if not attributes:
-            return ""
-        result = []
-        for attr in attributes.split():
-            result.append(f"'{attr}'")
-        return f"popupAttributes: [{', '.join(result)}]"
+        return self._popup_attributes.split('\r\n') if self._popup_attributes else []
 
     @property
     def search_fields(self):
-        search_fields = self._search_fields
-        if not search_fields:
-            return ""
-        result = []
-        for attr in search_fields.split():
-            result.append(f"'{attr}'")
-        return f"search_fields: [{', '.join(result)}]"
+        return self._search_fields.split('\r\n') if self._search_fields else []
 
     @property
     def slddiv(self):

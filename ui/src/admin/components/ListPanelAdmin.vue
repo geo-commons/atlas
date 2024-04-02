@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-    <div class="header">
+  <AdminSidePanel>
+    <template #header>
       <button
         v-tippy="{ placement: 'bottom' }"
         class="iconbutton __normal __outline"
@@ -56,63 +56,68 @@
         </svg>
         Lijstweergave
       </h1>
-      <div class="header-spacer" />
-    </div>
+    </template>
+    <template #default>
+      <div class="margin-content">
+        <div class="select-wrapper">
+          <select v-model="selectedLayerTitle" class="layer-select edit-field-border" @change="onListLayerChange">
+            <option disabled value="">Selecteer een laag</option>
+            <option v-for="l in availableLayers" :key="l.id" :value="l.id">
+              {{ l.title }}
+            </option>
+          </select>
+        </div>
 
-    <div class="select-wrapper">
-      <select v-model="selectedLayerTitle" class="layer-select edit-field-border" @change="onListLayerChange">
-        <option disabled value="">Selecteer een laag</option>
-        <option v-for="l in availableLayers" :key="l.id" :value="l.id">
-          {{ l.title }}
-        </option>
-      </select>
-    </div>
+        <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de lijstweergave instelt.</p>
 
-    <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de lijstweergave instelt.</p>
+        <div v-if="selectedLayerTitle" class="list-config-wrapper">
+          <div>
+            <label>Template naam:</label>
+            <input
+              v-model="data.settings.title"
+              type="text"
+              name="title"
+              class="title-input edit-field-border"
+              placeholder="Template titel"
+            />
+          </div>
 
-    <div v-if="selectedLayerTitle" class="list-config-wrapper">
-      <div>
-        <label>Template naam:</label>
-        <input
-          v-model="data.settings.title"
-          type="text"
-          name="title"
-          class="title-input edit-field-border"
-          placeholder="Template titel"
-        />
+          <div>
+            <label>Korte beschrijving:</label>
+            <textarea
+              v-model="data.settings.short_description"
+              type="text"
+              name="title"
+              class="short-description-input edit-field-border"
+              placeholder="Template korte beschrijving"
+            />
+          </div>
+        </div>
+
+        <p class="help-text">
+          Voor het instellen van variabele naam (e.g. kolom naam van een laag) dient dat als volgt te gebeuren:
+          <br />
+          <br />
+          <i>{{ columnExample }}</i>
+          <br />
+          <br />
+          Waarbij "kolom_naam" de naam van de gewenste kolom is.
+        </p>
       </div>
-
-      <div>
-        <label>Korte beschrijving:</label>
-        <textarea
-          v-model="data.settings.short_description"
-          type="text"
-          name="title"
-          class="short-description-input edit-field-border"
-          placeholder="Template korte beschrijving"
-        />
-      </div>
-    </div>
-
-    <p class="help-text">
-      Voor het instellen van variabele naam (e.g. kolom naam van een laag) dient dat als volgt te gebeuren:
-      <br />
-      <br />
-      <i>{{ columnExample }}</i>
-      <br />
-      <br />
-      Waarbij "kolom_naam" de naam van de gewenste kolom is.
-    </p>
-  </div>
+    </template>
+  </AdminSidePanel>
 </template>
 
 <!-- Todo: check if shared code can be moved to base/abstract class together with ListPanelAdmin. -->
 <script>
+import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
+
 export default {
   name: "ListPanelAdmin",
+  components: { AdminSidePanel },
   props: {
     initialData: Object,
-    layers: [],
+    layers: Array,
   },
   data() {
     return {
@@ -156,42 +161,8 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.header-spacer {
-  width: 40px;
-}
-
-.settings + .settings {
-  margin-top: 40px;
-}
-
-.setting .iconbutton {
-  margin-left: auto;
-}
-
-.search-wrapper svg {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 16px;
-  margin: auto 0;
-  pointer-events: none;
-}
-
-.search-wrapper input {
-  width: 100%;
-  height: 48px;
-  padding: 0 0 0 48px;
+.margin-content {
+  padding-top: 20px;
 }
 
 .short-description-input {

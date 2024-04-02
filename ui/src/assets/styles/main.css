@@ -466,6 +466,11 @@ hr {
   height: 24px;
 }
 
+.icon.__medium {
+  width: 20px;
+  height: 20px;
+}
+
 .icon.__small {
   width: 16px;
   height: 16px;

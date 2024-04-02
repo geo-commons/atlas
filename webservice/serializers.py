@@ -72,17 +72,36 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class LinkedDataSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='layer_name')
+    display_properties = serializers.SerializerMethodField('get_display_properties')
+    headers = serializers.SerializerMethodField('get_headers')
+
+    def get_display_properties(self, obj):
+        return obj.popup_attributes.split('\r\n') if obj.popup_attributes else []
+
+    def get_headers(self, obj):
+        return obj.headers.split('\r\n') if obj.headers else []
+
     class Meta:
         model = LinkedData
-        fields = ['id', 'title', 'layer_name']
+        fields = ['id', 'title', 'name', 'url', 'source_key', 'target_key', 'headers', 'display_properties']
+
 
 
 class TemplateSerializer(serializers.ModelSerializer):
     source = SourceSerializer()
+    fields = serializers.SerializerMethodField('get_template_fields')
+    headers = serializers.SerializerMethodField('get_headers')
 
+    def get_template_fields(self, obj):
+        return obj.fields.split('\r\n') if obj.fields else []
+
+    def get_headers(self, obj):
+        return obj.headers.split('\r\n') if obj.headers else []
+    
     class Meta:
         model = Template
-        fields = ['id', 'title', 'source']
+        fields = ['id', 'title', 'source', 'endpoint', 'method', 'list', 'headers', 'fields', 'template', 'ordering']
 
 
 class MetadataSerializerField(serializers.Field):
@@ -168,7 +187,8 @@ class LayerSerializer(serializers.ModelSerializer):
             'linked_data',
             'templates',
             'atlas_groups',
-            'published'
+            'published',
+            'templated_properties'
         ]
 
 
@@ -228,7 +248,7 @@ class LayerListSerializer(serializers.ModelSerializer):
             'category',
             'published',
             'ordering',
-            'is_base'
+            'is_base',
         ]
 
 

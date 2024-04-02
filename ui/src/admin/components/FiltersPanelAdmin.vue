@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-    <div class="header">
+  <AdminSidePanel>
+    <template #header>
       <button
         v-tippy="{ placement: 'bottom' }"
         class="iconbutton __normal __outline"
@@ -36,45 +36,50 @@
         </svg>
       </button>
       <h1>Filters</h1>
-      <div class="header-spacer" />
-    </div>
+    </template>
+    <template #default>
+      <div class="margin-content">
+        <div class="select-wrapper">
+          <select v-model="selectedLayerTitle" class="layer-select edit-field-border" @change="onLayerChange">
+            <option disabled value="">Selecteer een laag</option>
+            <option v-for="l in availableLayers" :key="l.id" :value="l.id">
+              {{ l.title }}
+            </option>
+          </select>
+        </div>
 
-    <div class="select-wrapper">
-      <select v-model="selectedLayerTitle" class="layer-select edit-field-border" @change="onLayerChange">
-        <option disabled value="">Selecteer een laag</option>
-        <option v-for="l in availableLayers" :key="l.id" :value="l.id">
-          {{ l.title }}
-        </option>
-      </select>
-    </div>
+        <div class="filters">
+          <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de filters instelt.</p>
 
-    <div class="filters">
-      <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de filters instelt.</p>
-
-      <div v-if="selectedLayerTitle">
-        <div v-for="facet in availableFacets" :key="facet" class="facet">
-          <input
-            :id="`facet-${facet}`"
-            type="checkbox"
-            :name="`facet-${facet}`"
-            :value="facet"
-            :checked="data.settings.facets && data.settings.facets.includes(facet)"
-            @click="onChangeFacet"
-          />
-          <label :for="`facet-${facet}`">{{ facet }}</label>
+          <div v-if="selectedLayerTitle">
+            <div v-for="facet in availableFacets" :key="facet" class="facet">
+              <input
+                :id="`facet-${facet}`"
+                type="checkbox"
+                :name="`facet-${facet}`"
+                :value="facet"
+                :checked="data.settings.facets && data.settings.facets.includes(facet)"
+                @click="onChangeFacet"
+              />
+              <label :for="`facet-${facet}`">{{ facet }}</label>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </AdminSidePanel>
 </template>
 
 <!-- Todo: check if shared code can be moved to base/abstract class together with ListPanelAdmin. -->
 <script>
+import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
+
 export default {
   name: "FiltersAdmin",
+  components: { AdminSidePanel },
   props: {
     initialData: Object,
-    layers: [],
+    layers: Array,
     user: Object,
   },
   data() {
@@ -166,23 +171,16 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.header-spacer {
-  width: 40px;
+.margin-content {
+  padding-top: 20px;
 }
 
 .select-wrapper {
   width: 100%;
+}
+
+.filters {
+  margin-top: 12px;
 }
 
 .facet {

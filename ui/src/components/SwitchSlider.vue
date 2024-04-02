@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input type="checkbox" @change="() => $emit('toggleSwitch')" />
+    <input :checked="checked" type="checkbox" @change="() => $emit('toggleSwitch')" />
     <span class="slider round"></span>
   </label>
 </template>
@@ -8,15 +8,20 @@
 <script>
 export default {
   name: "SwitchSliderComponent",
-  props: {},
+  props: {
+    initialCheckedStatus: {
+      default: false,
+      type: Boolean,
+    },
+  },
   data() {
     return {
       checked: true,
     };
   },
-  computed: {},
-  mounted() {},
-  methods: {},
+  created() {
+    this.checked = this.initialCheckedStatus;
+  },
 };
 </script>
 
