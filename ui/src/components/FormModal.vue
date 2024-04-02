@@ -44,20 +44,23 @@ export default {
       modal: null,
     };
   },
-  watch: {
-    toggleModal(newValue) {
+  mounted() {
+    this.setTabMode(this.toggleModal);
+  },
+  destroyed() {
+    this.enableTabOutside(this.modal);
+  },
+  methods: {
+    close() {
+      this.$emit("close");
+    },
+    setTabMode(showModal) {
       this.modal = this.$refs.modal;
-      if (newValue) {
+      if (showModal) {
         this.preventTabOutside();
       } else {
         this.enableTabOutside();
       }
-    },
-  },
-  methods: {
-    close() {
-      this.enableTabOutside(this.modal);
-      this.$emit("close");
     },
     // The following methods prevent the user from accessing elements in the background
     // of the modal using the tab key. For reference:
@@ -95,6 +98,7 @@ export default {
 
 <style scoped>
 .modal-backdrop {
+  z-index: 10;
   position: fixed;
   top: 0;
   bottom: 0;

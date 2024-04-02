@@ -312,6 +312,12 @@ export default {
       },
     },
     alert: String,
+    adminMap: {
+      type: Boolean,
+      default: () => {
+        return false;
+      },
+    },
   },
   data() {
     return {
@@ -333,6 +339,7 @@ export default {
       mapPadding: [0, 0, 0, 0],
       computedStyle: {},
       modal: "",
+      userLayerSettings: {},
     };
   },
   computed: {
@@ -386,12 +393,37 @@ export default {
     initialLayers: {
       handler(value) {
         this.layers = value;
+
+        if (this.adminMap) {
+          // Update the objects in user layer settings according to available layers.
+          const newLayerIds = new Set(this.layers.map((layer) => layer.id));
+
+          // Remove userLayerSettings entries that are not in the new layers
+          Object.keys(this.userLayerSettings).forEach((layerId) => {
+            if (!newLayerIds.has(layerId)) {
+              delete this.userLayerSettings[layerId];
+            }
+          });
+
+          // Add missing userLayerSettings entries for new layers
+          this.layers.forEach((layer) => {
+            if (!(layer.id in this.userLayerSettings)) {
+              this.$set(this.userLayerSettings, layer.id, {});
+            }
+          });
+        }
       },
       deep: true,
     },
     initialDrawFeatures: {
       handler(value) {
         this.drawFeatures = value;
+      },
+      deep: true,
+    },
+    userLayerSettings: {
+      handler(value) {
+        this.$emit("update-user-settings", value);
       },
       deep: true,
     },
@@ -585,10 +617,12 @@ export default {
     },
     toggleLayer([layerId, isVisible]) {
       this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, is_visible: isVisible } : layer));
+      this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], is_visible: isVisible };
       this.$emit("layers-changed", this.layers);
     },
     setLayerOpacity([layerId, opacity]) {
       this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, opacity: opacity } : layer));
+      this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], opacity: opacity };
       this.$emit("layers-changed", this.layers);
     },
     getSelectedLayer(layerId) {
@@ -628,6 +662,7 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column;
+  background: var(--color-white);
 }
 
 @media (max-width: 932px) {

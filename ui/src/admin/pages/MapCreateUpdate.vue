@@ -1,53 +1,58 @@
 <template>
   <div v-if="data" class="map-update">
-    <div class="sidebar">
-      <div class="sidebar-content">
-        <MapLayers
-          v-if="sidebar === 'Layers'"
-          :initial-data="data"
-          @change="updateLayers"
-          @show-form="() => showSidebar('Form')"
-        />
-        <LayerListPanel
-          v-if="sidebar === 'LayerList'"
-          :initial-data="data"
-          @change="updateLayers"
-          @show-form="() => showSidebar('Form')"
-        ></LayerListPanel>
-        <ListPanelAdmin
-          v-if="sidebar === 'List'"
-          :initial-data="data"
-          :layers="visibleLayers"
-          @change="updateLayers"
-          @show-form="() => showSidebar('Form')"
-        />
-        <FiltersPanelAdmin
-          v-if="sidebar === 'Filters'"
-          :initial-data="data"
-          :layers="visibleLayers"
-          :user="user"
-          @change="updateLayers"
-          @show-form="() => showSidebar('Form')"
-        />
-        <MapForm
-          v-if="sidebar === 'Form'"
-          :initial-data="data"
-          @delete="deleteMap"
-          @submit="saveMap"
-          @show-layers="() => showSidebar('Layers')"
-          @show-list="() => showSidebar('List')"
-          @show-filters="() => showSidebar('Filters')"
-          @show-layerlist="() => showSidebar('LayerList')"
-        />
-      </div>
-    </div>
+    <MapLayers
+      v-if="sidebar === 'Layers'"
+      :initial-data="data"
+      @change="updateLayers"
+      @show-form="() => showSidebar('Form')"
+      @show-layer="showLayerSettings"
+    />
+    <MapLayer
+      v-if="sidebar === 'Layer'"
+      :initial-data="selectedLayerData"
+      @change="updateLayers"
+      @show-layers="() => showSidebar('Layers')"
+    />
+    <LayerListPanel
+      v-if="sidebar === 'LayerList'"
+      :initial-data="data"
+      @change="updateLayers"
+      @show-form="() => showSidebar('Form')"
+    />
+    <ListPanelAdmin
+      v-if="sidebar === 'List'"
+      :initial-data="data"
+      :layers="visibleLayers"
+      @change="updateLayers"
+      @show-form="() => showSidebar('Form')"
+    />
+    <FiltersPanelAdmin
+      v-if="sidebar === 'Filters'"
+      :initial-data="data"
+      :layers="visibleLayers"
+      :user="user"
+      @change="updateLayers"
+      @show-form="() => showSidebar('Form')"
+    />
+    <MapForm
+      v-if="sidebar === 'Form'"
+      :initial-data="data"
+      @delete="deleteMap"
+      @submit="saveMap"
+      @show-layers="() => showSidebar('Layers')"
+      @show-list="() => showSidebar('List')"
+      @show-filters="() => showSidebar('Filters')"
+    />
     <MapRenderer
       ref="map"
+      class="editor-map"
       :features="data.features"
       :initial-layers="visibleLayers"
       :initial-position="position"
       :settings="data.settings"
       :user="user"
+      :admin-map="true"
+      @update-user-settings="updateUserSettings"
     />
   </div>
 </template>
@@ -61,11 +66,13 @@ import MapForm from "../components/MapForm";
 import MapLayers from "../components/MapLayers";
 import ListPanelAdmin from "../components/ListPanelAdmin";
 import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
+import MapLayer from "@/admin/components/MapLayer.vue";
 import LayerListPanel from "../components/LayerListPanel.vue";
 
 export default {
   name: "MapCreateUpdate",
   components: {
+    MapLayer,
     MapRenderer,
     MapForm,
     MapLayers,
@@ -80,6 +87,8 @@ export default {
       selectedArea: null,
       user: null,
       sidebar: "Form",
+      selectedLayerData: null,
+      userLayerSettings: null,
     };
   },
   computed: {
@@ -90,8 +99,10 @@ export default {
     }),
     visibleLayers() {
       if (this.data.layers) {
+        let configuredLayers;
+
         // Get base layers.
-        let configuredLayers = this.layers
+        configuredLayers = this.layers
           .filter((layer) => layer.is_base && layer.is_visible)
           .map((layer) => {
             return {
@@ -100,13 +111,40 @@ export default {
             };
           });
 
-        // Get selected layers on map level including configured settings.
+        // Get configured layers.
         this.data.layers.forEach((selectedLayer) => {
           const layer = this.layers.find((l) => l.internal_id === selectedLayer.layer);
-          configuredLayers.push({
-            ...layer,
-            is_visible: selectedLayer.settings.is_visible,
-          });
+
+          if (!selectedLayer.settings.customSettings) {
+            configuredLayers.push({ ...layer });
+          } else {
+            let isVisibleUserSetting;
+            let opacityUserSetting;
+
+            // Make sure user settings from the map take precedence over admin config settings.
+            if (this.userLayerSettings !== null && layer.id in this.userLayerSettings) {
+              const userSettings = this.userLayerSettings[layer.id];
+              isVisibleUserSetting = userSettings.is_visible;
+              opacityUserSetting = userSettings.opacity;
+            }
+
+            configuredLayers.push({
+              ...layer,
+              is_visible:
+                typeof isVisibleUserSetting === "boolean" ? isVisibleUserSetting : selectedLayer.settings.is_visible,
+              opacity: opacityUserSetting ? opacityUserSetting : selectedLayer.settings.opacity,
+              zoom_min: selectedLayer.settings.zoom_min,
+              zoom_max: selectedLayer.settings.zoom_max,
+              display_properties: selectedLayer.settings.display_properties,
+              search_fields: selectedLayer.settings.search_fields,
+              server_style: selectedLayer.settings.server_style,
+              client_style: selectedLayer.settings.client_style,
+              friendly_fields: selectedLayer.settings.friendly_fields,
+              templated_properties: selectedLayer.settings.templated_properties,
+              linked_data: selectedLayer.settings.linked_data,
+              templates: selectedLayer.settings.templates,
+            });
+          }
         });
 
         return configuredLayers;
@@ -208,6 +246,10 @@ export default {
     showSidebar(sidebar) {
       this.sidebar = sidebar;
     },
+    showLayerSettings(selectedLayerId) {
+      this.selectedLayerData = this.data.layers.find((layer) => layer.layer === selectedLayerId);
+      this.showSidebar("Layer");
+    },
     updateLayers(layers) {
       this.data.layers = layers;
     },
@@ -218,8 +260,8 @@ export default {
     resetSelectedList() {
       this.data.settings.listLayerId = null;
     },
-    updateConfig(config) {
-      this.data.config = config;
+    updateUserSettings(value) {
+      this.userLayerSettings = value;
     },
   },
 };
@@ -232,13 +274,7 @@ export default {
   flex-direction: row;
 }
 
-.sidebar-content {
-  max-height: 100%;
-  overflow-y: auto;
-  padding: 16px var(--padding-screen) 80px;
-}
-
-.button.__alert {
-  margin: 32px auto 0;
+.editor-map {
+  z-index: 0;
 }
 </style>

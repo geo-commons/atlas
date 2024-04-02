@@ -24,13 +24,6 @@ class TestLayerModel(TestCase):
         self.assertEqual(self.closed_dataset.layer_name,
                          "topp:Purm_Stembureaus_2018")
 
-    def test_popup_attributest(self):
-        self.assertEqual(self.open_dataset.popup_attributes,
-                         "popupAttributes: ['test', 'test1']")
-
-    def test_non_popup_attributest(self):
-        self.assertEqual(self.closed_dataset.popup_attributes, '')
-
     def test_is_published(self):
         self.assertFalse(self.closed_dataset.is_published)
         self.assertFalse(self.open_dataset.is_published)

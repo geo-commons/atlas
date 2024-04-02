@@ -1,29 +1,529 @@
 <template>
-  <div>
-    <h3>Kaartlaag instellingen bewerken</h3>
+  <AdminSidePanel :loading="loading">
+    <template #header>
+      <button
+        v-tippy="{ placement: 'bottom' }"
+        class="iconbutton __normal __outline"
+        type="button"
+        aria-label="Ga terug"
+        content="Terug"
+        @click="back()"
+      >
+        <ArrowLeftIcon class="icon" />
+      </button>
+      <h1 class="layers-header">
+        <LayerIcon class="icon" />
+        Lagen
+        <span class="layer-wrapper">
+          <ChevronRightIcon class="no-margin" />
+          {{ mapLayerConfig?.settings.title }}
+        </span>
+      </h1>
+    </template>
+    <template #default>
+      <div class="margin-content">
+        <h3>Kaartlaag instellingen bewerken</h3>
+        <div class="layer-setting-toggle">
+          <switch-slider
+            aria-label="Activeer filters"
+            :initial-checked-status="mapLayerConfig.settings.customSettings"
+            @toggleSwitch="toggleSettings"
+          />
+          <div>Kaart specifieke laag instellingen</div>
+          <AdminFormInfoText :info-text="toggleSettingsInfo" />
+        </div>
+        <div v-if="mapLayerConfig.settings.customSettings">
+          <div class="layer-settings">
+            <div>
+              <input id="is_visible" v-model="mapLayerConfig.settings.is_visible" type="checkbox" name="is_visible" />
+              <label for="is_visible">Toon laag</label>
+            </div>
+            <div>
+              <div class="opacity-wrapper">
+                <label for="opacity">Transparantie</label>
+                <vee-field
+                  id="opacity"
+                  name="opacity"
+                  class="opacity-slider"
+                  type="range"
+                  :value="mapLayerConfig.settings.opacity * 100"
+                >
+                  <input
+                    id="opacity"
+                    class="opacity-slider"
+                    type="range"
+                    name="opacity"
+                    min="0"
+                    max="100"
+                    step="10"
+                    aria-label="Transparantie instellen"
+                    :value="mapLayerConfig.settings.opacity * 100"
+                    @change="(e) => changeLayerOpacity(e.target.value / 100)"
+                  />
+                </vee-field>
+                <vee-field
+                  id="opacity"
+                  name="opacity"
+                  class="opacity-input"
+                  :value="mapLayerConfig.settings.opacity * 100"
+                  type="number"
+                  aria-label="Transparantie instellen"
+                >
+                  <input
+                    id="opacity"
+                    class="opacity-input"
+                    type="number"
+                    name="opacity"
+                    aria-label="Transparantie instellen"
+                    min="0"
+                    max="100"
+                    step="10"
+                    :value="mapLayerConfig.settings.opacity * 100"
+                    @change="(e) => changeLayerOpacity(e.target.value / 100)"
+                  />
+                </vee-field>
+              </div>
+            </div>
+            <div class="layer-setting">
+              <label class="question-label" for="zoom_max">Zoomniveau minimum</label>
+              <input id="zoom_min" v-model.number="mapLayerConfig.settings.zoom_min" name="zoom_min" type="number" />
+            </div>
+            <div class="layer-setting">
+              <label class="question-label" for="zoom_min">Zoomniveau maximum</label>
+              <input id="zoom_max" v-model.number="mapLayerConfig.settings.zoom_max" name="zoom_max" type="number" />
+            </div>
+            <div class="layer-setting">
+              <label class="question-label" for="display_properties">Toon deze velden</label>
+              <textarea
+                id="display_properties"
+                name="display_properties"
+                rows="6"
+                :value="displayProperties"
+                @change="(e) => updateMultiLineField(mapLayerConfig.settings, 'display_properties', e.target.value)"
+              />
+            </div>
+            <div class="layer-setting">
+              <label class="question-label" for="search_properties">Doorzoek deze velden</label>
+              <textarea
+                id="search_properties"
+                name="search_properties"
+                rows="6"
+                :value="searchProperties"
+                @change="(e) => updateMultiLineField(mapLayerConfig.settings, 'search_properties', e.target.value)"
+              />
+            </div>
+            <div v-if="checkLayerType(['WMS', 'WMTS'])" class="layer-setting">
+              <label class="question-label" for="server_style">Stijlnaam voor WMS / WMTS laag</label>
+              <input
+                id="server_style"
+                v-model.trim="mapLayerConfig.settings.server_style"
+                name="server_style"
+                type="text"
+              />
+              <span class="info-text">Stijlnaam zoals beschikbaar op de server</span>
+            </div>
+            <div v-if="checkLayerType(['WFS', 'WMS_WFS', 'MVT'])" class="layer-setting">
+              <label class="question-label" for="client_style">Stijl voor WFS / MVT laag</label>
+              <textarea
+                id="client_style"
+                :value="clientStyle"
+                name="client_style"
+                rows="6"
+                @change="(e) => updateJsonField('client_style', e.target.value)"
+              />
+            </div>
+            <div class="layer-setting">
+              <label class="question-label" for="friendly_fields">Vriendelijke veldnamen</label>
+              <textarea
+                id="friendly_fields"
+                :value="friendlyFields"
+                name="friendly_fields"
+                rows="6"
+                @change="(e) => updateJsonField('friendly_fields', e.target.value)"
+              />
+            </div>
+            <div class="layer-setting">
+              <label class="question-label" for="templated_properties">Templatevelden</label>
+              <textarea
+                id="templated_properties"
+                :value="templatedProperties"
+                name="templated_properties"
+                rows="6"
+                @change="(e) => updateJsonField('templated_properties', e.target.value)"
+              />
+            </div>
 
-    <div class="">
-      <input id="is_visible" v-model="layer.settings.is_visible" type="checkbox" name="is_visible" />
-      <label for="is_visible">Toon laag</label>
-    </div>
-  </div>
+            <div class="layer-setting">
+              <div class="admin-label-button">
+                <label for="linked_data">Gerelateerde data</label>
+                <button class="button __small __secondary" @click="toggleModal('linkedData')">
+                  <AddIcon />Voeg toe
+                </button>
+              </div>
+
+              <ul class="admin-list">
+                <li v-for="linkedData in mapLayerConfig.settings.linked_data" :key="linkedData.id">
+                  {{ linkedData.title }}
+                  <div class="admin-list-buttons">
+                    <button
+                      class="iconbutton __normal __round __alt_hover"
+                      @click="toggleModal('linkedData', linkedData)"
+                    >
+                      <EditIcon class="icon __medium"></EditIcon>
+                    </button>
+                    <button class="iconbutton __normal __round __alt_hover" @click="removeLinkedData(linkedData)">
+                      <TrashIcon class="icon __medium"></TrashIcon>
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="layer-setting">
+              <div class="admin-label-button">
+                <label for="linked_data">Templates</label>
+                <button class="button __small __secondary" @click="toggleModal('templates')">
+                  <AddIcon />Voeg toe
+                </button>
+              </div>
+
+              <ul class="admin-list">
+                <li v-for="template in mapLayerConfig.settings.templates" :key="template.id">
+                  {{ template.title }}
+                  <div class="admin-list-buttons">
+                    <button class="iconbutton __normal __round __alt_hover" @click="toggleModal('templates', template)">
+                      <EditIcon class="icon __medium"></EditIcon>
+                    </button>
+                    <button class="iconbutton __normal __round __alt_hover" @click="removeTemplate(template)">
+                      <TrashIcon class="icon __medium"></TrashIcon>
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+            <template #header>
+              <h3 v-if="formModalType === 'linkedData'">Gerelateerde data</h3>
+              <h3 v-else-if="formModalType === 'templates'">Templates</h3>
+            </template>
+            <template #body>
+              <LinkedDataForm
+                v-if="formModalType === 'linkedData'"
+                :initial-linked-data="selectedLinkedData"
+                @close="closeFormModal"
+                @save="saveLinkedData"
+              />
+              <TemplateForm
+                v-else-if="formModalType === 'templates'"
+                :initial-template="selectedTemplate"
+                @close="closeFormModal"
+                @save="saveTemplate"
+              />
+            </template>
+          </FormModal>
+        </div>
+      </div>
+    </template>
+  </AdminSidePanel>
 </template>
 
 <script>
+import FormModal from "@/components/FormModal.vue";
+import AddIcon from "@/assets/icons/add-icon.svg";
+import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
+import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
+import EditIcon from "@/assets/icons/edit-icon.svg";
+import LayerIcon from "@/assets/icons/layer-icon.svg";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
+import LinkedDataForm from "@/admin/components/LinkedDataForm.vue";
+import TemplateForm from "@/admin/components/TemplateForm.vue";
+import { Field as VeeField } from "vee-validate";
+import { updateMultiLineField } from "@/utils/admin-form-helpers";
+import SwitchSlider from "@/components/SwitchSlider.vue";
+import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
+
 export default {
   name: "MapLayer",
+  components: {
+    AdminFormInfoText,
+    SwitchSlider,
+    TemplateForm,
+    LinkedDataForm,
+    AddIcon,
+    FormModal,
+    ArrowLeftIcon,
+    ChevronRightIcon,
+    EditIcon,
+    LayerIcon,
+    TrashIcon,
+    AdminSidePanel,
+    VeeField,
+  },
   props: {
-    initialLayerData: Object,
+    initialData: Object,
   },
   data() {
     return {
-      layer: null,
+      mapLayerConfig: null,
+      showFormModal: false,
+      formModalType: null,
+      selectedLinkedData: null,
+      selectedTemplate: null,
+      loading: false,
+      toggleSettingsInfo:
+        "Als deze schakelaar uit staat worden de kaartlaag instellingen van de hoofdkaart overgenomen.",
     };
   },
+  computed: {
+    displayProperties() {
+      return this.mapLayerConfig?.settings.display_properties.join("\n");
+    },
+    searchProperties() {
+      return this.mapLayerConfig?.settings.search_properties.join("\n");
+    },
+    clientStyle() {
+      return JSON.stringify(this.mapLayerConfig?.settings.client_style);
+    },
+    friendlyFields() {
+      return JSON.stringify(this.mapLayerConfig?.settings.friendly_fields);
+    },
+    templatedProperties() {
+      return JSON.stringify(this.mapLayerConfig?.settings.templated_properties);
+    },
+  },
   created() {
-    this.layer = this.initialLayerData;
+    this.mapLayerConfig = this.initialData;
+  },
+  methods: {
+    updateMultiLineField,
+    async getLayer(layerId) {
+      const result = await fetch(`/atlas/api/v1/layers/${layerId}/`, {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch layer");
+        return;
+      }
+
+      return result.json();
+    },
+    async toggleSettings() {
+      if (!this.mapLayerConfig.settings.customSettings) {
+        // Get layer settings.
+        const layerData = await this.getLayer(this.mapLayerConfig.layer);
+        this.mapLayerConfig.settings = {
+          customSettings: true,
+          ...layerData,
+        };
+      } else {
+        // Reset layer settings.
+        this.mapLayerConfig.settings = {
+          customSettings: false,
+          title: this.mapLayerConfig.settings.title,
+        };
+      }
+    },
+    changeLayerOpacity(newValue) {
+      this.mapLayerConfig.settings.opacity = newValue;
+    },
+    updateJsonField(field, newValue) {
+      // Set the corresponding field to an empty object when the user
+      // clears out the field.
+      if (!newValue || newValue.trim() === "") {
+        this.mapLayerConfig.settings[field] = {};
+        return;
+      }
+
+      try {
+        this.mapLayerConfig.settings[field] = JSON.parse(newValue);
+      } catch {
+        // todo: maak nettere foutmelding
+        console.error("geen geldige json");
+      }
+    },
+    checkLayerType(types) {
+      return types.includes(this.mapLayerConfig.settings.source_type);
+    },
+    toggleModal(modalType, editObject = null) {
+      this.formModalType = modalType;
+
+      if (modalType === "linkedData") {
+        if (editObject) {
+          this.selectedLinkedData = editObject;
+        } else {
+          this.selectedLinkedData = {
+            title: "",
+            url: "",
+            name: "",
+            source_key: "",
+            target_key: "",
+            display_properties: [],
+            headers: [],
+          };
+        }
+      } else if (modalType === "templates") {
+        if (editObject) {
+          this.selectedTemplate = editObject;
+        } else {
+          this.selectedTemplate = {
+            title: "",
+            source: "",
+            endpoint: "",
+            method: "",
+            list: "",
+            headers: [],
+            fields: [],
+            template: "",
+            source_key: "",
+            target_key: "",
+          };
+        }
+      }
+
+      this.showFormModal = true;
+    },
+    saveLinkedData(newValues) {
+      if (!newValues.id) {
+        // If newValues has no id it needs to be added to the linked_data array.
+        this.mapLayerConfig.settings.linked_data.push(newValues);
+      } else {
+        // Otherwise update existing values.
+        const existingValues = this.mapLayerConfig.settings.linked_data.find((data) => data.id === newValues.id);
+        const index = this.mapLayerConfig.settings.linked_data.indexOf(existingValues);
+        this.mapLayerConfig.settings.linked_data[index] = newValues;
+      }
+      this.closeFormModal();
+    },
+    saveTemplate(newValues) {
+      // Check if existing object
+      if (!newValues.id) {
+        this.mapLayerConfig.settings.templates.push(newValues);
+      } else {
+        // Otherwise update existing values.
+        const existingValues = this.mapLayerConfig.settings.templates.find((data) => data.id === newValues.id);
+        const index = this.mapLayerConfig.settings.templates.indexOf(existingValues);
+        this.mapLayerConfig.settings.templates[index] = newValues;
+      }
+      this.closeFormModal();
+    },
+    removeLinkedData(linkedData) {
+      const acknowledged = confirm("Weet je zeker dat je het geselecteerde data object wilt verwijderen?");
+
+      if (acknowledged) {
+        const index = this.mapLayerConfig.settings.linked_data.indexOf(linkedData);
+        this.mapLayerConfig.settings.linked_data.splice(index, 1);
+      }
+    },
+    removeTemplate(template) {
+      const acknowledged = confirm("Weet je zeker dat je het geselecteerde data object wilt verwijderen?");
+
+      if (acknowledged) {
+        const index = this.mapLayerConfig.settings.templates.indexOf(template);
+        this.mapLayerConfig.settings.templates.splice(index, 1);
+      }
+    },
+    closeFormModal() {
+      this.showFormModal = false;
+      this.formModalType = null;
+      this.selectedLinkedData = null;
+    },
+    back() {
+      this.$emit("show-layers");
+    },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.layer-wrapper {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.layer-setting-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 24px 0;
+}
+
+.layer-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.layer-setting {
+  display: flex;
+  flex-direction: column;
+}
+
+.opacity-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.opacity-input {
+  width: 22px;
+  flex-shrink: 0;
+  padding: 0;
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  border: none;
+  background: transparent;
+}
+
+.opacity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.opacity-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.opacity-slider {
+  flex-shrink: 0;
+  width: 80px;
+  margin: 0;
+}
+
+.info-text {
+  font-size: var(--font-size-small);
+}
+
+.admin-label-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-list > li {
+  display: flex;
+  align-items: center;
+  background: var(--color-white);
+  padding: 4px 12px;
+}
+
+.admin-list > li:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.admin-list > li:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-60);
+}
+
+.admin-list-buttons {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+</style>

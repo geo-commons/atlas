@@ -154,7 +154,7 @@ export default {
               search: "",
             },
           },
-          this.layer.id
+          this.layer.id,
         );
       }
     },
@@ -196,13 +196,13 @@ export default {
               search: searchQuery,
             },
           },
-          this.layer.id
+          this.layer.id,
         );
       }
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          filters.push(`${key} in (${this.fieldFilters[key].map((f) => `'${f.replace(/'/g, "''")}'`).join(",")})`);
+          filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
         });
       }
 
@@ -211,7 +211,7 @@ export default {
           `INTERSECTS(geom,POLYGON((${this.selectedArea
             .getCoordinates()[0]
             .map((c) => `${c[0]} ${c[1]}`)
-            .join(",")})))`
+            .join(",")})))`,
         );
       }
 
@@ -309,7 +309,7 @@ export default {
             .map((property) =>
               feature.properties[property] !== null
                 ? `"${String(feature.properties[property]).replace(/"/g, '""')}"`
-                : ""
+                : "",
             )
             .join(separator) + "\n";
       });
@@ -355,6 +355,13 @@ export default {
       document.body.appendChild(a);
       a.click();
       a.remove();
+    },
+    replaceQuotes(value) {
+      if (typeof value === "string") {
+        return `'${value.replace(/'/g, "''")}'`;
+      } else {
+        return value;
+      }
     },
     showFeature(feature) {
       const geometry = new GeoJSON().readFeature(feature).getGeometry();

@@ -51,10 +51,26 @@ export default {
         // Get selected layers on map level including configured settings.
         this.map.layers.forEach((selectedLayer) => {
           const layer = this.layers.find((l) => l.internal_id === selectedLayer.layer);
-          configuredLayers.push({
-            ...layer,
-            is_visible: selectedLayer.settings.is_visible,
-          });
+
+          if (!selectedLayer.settings.customSettings) {
+            configuredLayers.push({ ...layer });
+          } else {
+            configuredLayers.push({
+              ...layer,
+              is_visible: selectedLayer.settings.is_visible,
+              opacity: selectedLayer.settings.opacity,
+              zoom_min: selectedLayer.settings.zoom_min,
+              zoom_max: selectedLayer.settings.zoom_max,
+              display_properties: selectedLayer.settings.display_properties,
+              search_fields: selectedLayer.settings.search_fields,
+              server_style: selectedLayer.settings.server_style,
+              client_style: selectedLayer.settings.client_style,
+              friendly_fields: selectedLayer.settings.friendly_fields,
+              templated_properties: selectedLayer.settings.templated_properties,
+              linked_data: selectedLayer.settings.linked_data,
+              templates: selectedLayer.settings.templates,
+            });
+          }
         });
 
         return configuredLayers;
@@ -105,7 +121,7 @@ export default {
         "",
         `${basePath[1]}@${x},${y},${Math.round(zoom * 100) / 100}z/layers=${layers}/base=${
           baseLayer.length > 0 ? baseLayer[0] : ""
-        }`
+        }`,
       );
     },
   },
