@@ -1,5 +1,10 @@
 <template>
-  <div ref="mapContainer" class="map-container" :class="{ showInfoPanel, showDataPanel }" :style="computedStyle">
+  <div
+    ref="mapContainer"
+    class="map-container"
+    :class="{ showInfoPanel, showDataPanel, portalHeader: config.features.portal }"
+    :style="computedStyle"
+  >
     <div class="renderer-container">
       <PanoramaPanel
         class="panorama-panel"
@@ -652,6 +657,11 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
+}
+
+/* When portal header is active its height must be subtracted of total height. */
+.map-container.portalHeader {
+  height: calc(100vh - 55px);
 }
 
 .renderer-container {

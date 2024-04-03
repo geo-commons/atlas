@@ -58,6 +58,7 @@
 
 <script>
 import { mapState } from "vuex";
+
 export default {
   name: "HeaderMenu",
   computed: {
@@ -93,6 +94,8 @@ a {
   }
 }
 
+/* Currently the logo is responsible for the height of the header
+  with a total height of 55px. */
 .logo {
   height: 35px;
   margin-top: 10px;

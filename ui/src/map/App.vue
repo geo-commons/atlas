@@ -8,6 +8,7 @@
       :user="user"
       :features="map.features"
       :settings="map.settings"
+      :config="config"
       @position-changed="positionChanged"
     />
   </div>
