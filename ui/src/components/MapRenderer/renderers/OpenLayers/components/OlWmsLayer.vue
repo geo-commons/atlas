@@ -59,19 +59,19 @@ export default {
       this.tileLayer.set("opacity", value);
     },
     filters(value) {
-      // Don't filter if there are no filters specified for specific layer
-      if (!Object.keys(value).includes(this.id)) {
-        return;
-      }
-
       // If filters object is empty, refresh source
-      if (!Object.keys(value).length > 0) {
+      if (!Object.keys(value).length) {
         this.source.updateParams({
           ...this.source.getParams(),
           CQL_FILTER: null,
         });
 
         this.source.refresh();
+      }
+
+      // Don't filter if there are no filters specified for specific layer
+      if (!Object.keys(value).includes(this.id)) {
+        return;
       }
 
       if (!value[this.id]) {

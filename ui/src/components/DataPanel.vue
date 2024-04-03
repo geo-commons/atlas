@@ -32,11 +32,11 @@
     </template>
 
     <template #default>
-      <div v-if="visibleLayers.length == 0" class="flex-center">
+      <div v-if="visibleLayers.length === 0" class="no-layer-wrapper">
         <p>Selecteer eerst een laag om verder te gaan</p>
       </div>
       <DataPanelDetailView
-        v-if="selectedLayerId != null"
+        v-if="selectedLayer"
         :layer="selectedLayer"
         :position="position"
         :selected-area="selectedArea"
@@ -48,7 +48,7 @@
         @show-layers="() => resetSelectedLayer()"
         @update-filters="(value) => updateFilters(value)"
       />
-      <div v-if="selectedLayerId == null">
+      <div v-else>
         <SelectButton
           v-for="layer in visibleLayers"
           :id="layer.id"
@@ -117,14 +117,10 @@ export default {
     },
   },
   watch: {
-    visibleLayers: {
+    layers: {
       handler() {
         // Check if selected layer is still available in the visible layers.
-        if (
-          this.selectedLayerId &&
-          this.visibleLayers?.length > 0 &&
-          !this.visibleLayers.some((layer) => layer.id === this.selectedLayerId)
-        ) {
+        if (this.selectedLayerId && !this.visibleLayers.some((layer) => layer.id === this.selectedLayerId)) {
           this.resetSelectedLayer();
         }
       },
@@ -133,12 +129,9 @@ export default {
   },
   methods: {
     toggleDataPanel() {
-      const emptyFilter = {};
-
       this.$emit("toggle-data-panel");
-
       // Reset filters and search values on toggle DataPanel
-      this.$emit("update-filters", emptyFilter);
+      this.updateFilters({});
     },
     setPosition(value) {
       this.$emit("set-position", value);
@@ -175,6 +168,10 @@ export default {
   display: flex;
   justify-content: flex-end;
   flex-grow: 1;
+}
+
+.no-layer-wrapper {
+  padding: 0 var(--padding-screen);
 }
 
 .no-margin {

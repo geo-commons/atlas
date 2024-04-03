@@ -545,7 +545,9 @@ export default {
     toggleDataPanel() {
       this.showDataPanel = !this.showDataPanel;
       if (!this.showDataPanel) {
+        // Reset selected area and make sure tool is no longer set to measure.
         this.selectedArea = null;
+        this.setTool("");
       }
 
       this.setWindowInnerWidth();
