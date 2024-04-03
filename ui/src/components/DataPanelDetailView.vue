@@ -10,6 +10,7 @@
           :distance="8"
           :delay="[0, 0]"
           :a11y="true"
+          :interactive="true"
         >
           <button
             v-tippy="{ placement: 'right' }"
