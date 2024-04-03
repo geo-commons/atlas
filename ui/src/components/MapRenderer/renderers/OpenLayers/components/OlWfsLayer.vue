@@ -8,7 +8,7 @@ import VectorLayer from "ol/layer/Vector";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorSource from "ol/source/Vector";
-import { Style, Fill, Stroke, Circle } from "ol/style";
+import { Circle, Fill, Stroke, Style } from "ol/style";
 import OpenLayersParser from "geostyler-openlayers-parser";
 
 const olParser = new OpenLayersParser();
@@ -68,19 +68,19 @@ export default {
       this.applyStyle(value);
     },
     filters(value) {
-      // Don't filter if there are no filters specified for specific layer
-      if (!Object.keys(value).includes(this.id)) {
-        return;
-      }
-
       // If filters object is empty, refresh source
-      if (!Object.keys(value).length > 0) {
+      if (!Object.keys(value).length) {
         this.source.updateParams({
           ...this.source.getParams(),
           CQL_FILTER: null,
         });
 
         this.source.refresh();
+      }
+
+      // Don't filter if there are no filters specified for specific layer
+      if (!Object.keys(value).includes(this.id)) {
+        return;
       }
 
       if (!value[this.id]) {
@@ -155,13 +155,13 @@ export default {
     this.map.addLayer(this.tileLayer);
 
     const style = await this.getStyle(
-      this.clientStyle && this.clientStyle["default"] ? this.clientStyle["default"] : this.clientStyle
+      this.clientStyle && this.clientStyle["default"] ? this.clientStyle["default"] : this.clientStyle,
     );
     this.tileLayer.setStyle(style);
 
     if (this.isSelectable) {
       const activeStyle = await this.getStyle(
-        this.clientStyle && this.clientStyle["active"] ? this.clientStyle["active"] : this.clientStyle
+        this.clientStyle && this.clientStyle["active"] ? this.clientStyle["active"] : this.clientStyle,
       );
 
       this.select = new Select({

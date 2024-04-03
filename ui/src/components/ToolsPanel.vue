@@ -118,6 +118,14 @@ export default {
       selectAreaToggled: false,
     };
   },
+  watch: {
+    tool(value) {
+      if (!value) {
+        // Set selected area toggled to false when tool has no value.
+        this.selectAreaToggled = false;
+      }
+    },
+  },
   methods: {
     /*
      * Note: the interaction between toggling select area and the dropdown menus of draw and measure seems to have weird side effects.
