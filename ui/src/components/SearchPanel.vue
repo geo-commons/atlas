@@ -27,15 +27,10 @@
       <template #suggestions>
         <div v-if="showSuggestions && results.length" class="results">
           <ul id="search-results" class="list" role="listbox">
-            <li
-              v-for="result in results"
-              :key="result.id"
-              role="option"
-              tabindex="-1"
-              aria-selected="false"
-              @click="(e) => onNavigate(e, result.id)"
-            >
-              <a href="#">{{ result.weergavenaam }}</a>
+            <li v-for="result in results" :key="result.id" role="option" tabindex="-1" aria-selected="false">
+              <button @click="(e) => onNavigate(e, result)">
+                {{ result.weergavenaam }}
+              </button>
             </li>
           </ul>
         </div>
@@ -46,6 +41,7 @@
 
 <script>
 import SearchForm from "./SearchForm";
+import { EPSG28992Bounds } from "@/utils/projections";
 
 const suggestEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
 const freeEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
@@ -109,16 +105,36 @@ export default {
 
         this.showSuggestions = true;
         this.results = data.response.docs;
+
+        // Check if user is searching for coordinates
+        this.parseCoordinateQuery();
       } catch (e) {
         console.error(e);
         this.$store.commit("setAlert", "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
       }
     },
-    async onNavigate(e, id) {
+    async onNavigate(e, suggestion) {
+      if (suggestion.type === "warning") {
+        return;
+      }
+
       e.preventDefault();
 
+      if (suggestion.type === "coordinates") {
+        this.$emit("set-position", {
+          ...this.position,
+          marker: suggestion.coordinates,
+          center: suggestion.coordinates,
+          zoom: 19,
+        });
+        this.query = suggestion.weergavenaam;
+        this.showSuggestions = false;
+
+        return;
+      }
+
       try {
-        const result = await fetch(`${freeEndpoint}?q=${encodeURIComponent("id:" + id)}`);
+        const result = await fetch(`${freeEndpoint}?q=${encodeURIComponent("id:" + suggestion.id)}`);
 
         const data = await result.json();
         if (!data.response.docs) {
@@ -143,6 +159,46 @@ export default {
         console.error(e);
         this.$store.commit("setAlert", "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
       }
+    },
+    parseCoordinateQuery() {
+      // Remove whitespace and parentheses and split the query on "," and ";".
+      const coordinates = this.query.replace(/[() ]/g, "").split(/[\s,;]+/);
+      // Next map the strings to integers.
+      const intCoordinates = coordinates.map((c) => +c);
+
+      // Check if there are 2 coordinates found.
+      if (intCoordinates.length === 2) {
+        if (!this.checkCoordinateRange(intCoordinates)) {
+          const coordinateResult = {
+            type: "warning",
+            weergavenaam: "De ingevoerde coördinaten liggen buiten het beschikbare bereik.",
+          };
+          this.results.push(coordinateResult);
+          return;
+        }
+
+        const coordinateResult = {
+          type: "coordinates",
+          coordinates: intCoordinates,
+          weergavenaam: `(${intCoordinates.join(", ")})`,
+        };
+        this.results.push(coordinateResult);
+      }
+    },
+    checkCoordinateRange(coordinates) {
+      const xCoordinate = coordinates[0];
+      const yCoordinate = coordinates[1];
+      // For now this is the condition to check whether the given coordinates are in the available zone
+      // i.e. EPSG:28992. For reference see: https://epsg.io/28992
+      if (
+        EPSG28992Bounds.minX <= xCoordinate &&
+        EPSG28992Bounds.maxX >= xCoordinate &&
+        EPSG28992Bounds.minY <= yCoordinate &&
+        EPSG28992Bounds.maxY >= yCoordinate
+      ) {
+        return true;
+      }
+      return false;
     },
   },
 };
