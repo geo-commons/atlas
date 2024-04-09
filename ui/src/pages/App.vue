@@ -42,7 +42,6 @@ export default {
     return {
       readyToRenderMap: false,
       showInfoPanel: Boolean(this.position && this.position.marker),
-      computedStyle: { "--color-primary": "#0066FF" },
       fetchedDrawFeatures: [],
       highlightedFeatures: [],
       features: {},
@@ -127,9 +126,12 @@ export default {
 
     this.fetchAccessToken();
 
-    this.fetchInterval = setInterval(() => {
-      this.fetchAccessToken();
-    }, 1000 * 60 * 5); // every 5 minutes
+    this.fetchInterval = setInterval(
+      () => {
+        this.fetchAccessToken();
+      },
+      1000 * 60 * 5,
+    ); // every 5 minutes
   },
   methods: {
     positionChanged(position) {
@@ -157,7 +159,7 @@ export default {
         "",
         `${basePath[1]}@${x},${y},${Math.round(zoom * 100) / 100}z/layers=${layers}/base=${
           baseLayer.length > 0 ? baseLayer[0] : ""
-        }/drawing=${this.drawing ? this.drawing : ""}`
+        }/drawing=${this.drawing ? this.drawing : ""}`,
       );
     },
     async fetchAccessToken() {

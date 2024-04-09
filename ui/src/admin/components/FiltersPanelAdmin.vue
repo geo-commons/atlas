@@ -40,7 +40,7 @@
     <template #default>
       <div class="margin-content">
         <div class="select-wrapper">
-          <select v-model="selectedLayerTitle" class="layer-select edit-field-border" @change="onLayerChange">
+          <select v-model="selectedLayerTitle" class="__admin layer-select edit-field-border" @change="onLayerChange">
             <option disabled value="">Selecteer een laag</option>
             <option v-for="l in availableLayers" :key="l.id" :value="l.id">
               {{ l.title }}

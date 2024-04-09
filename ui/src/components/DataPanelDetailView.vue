@@ -17,7 +17,7 @@
             content="Download"
             aria-label="Download"
           >
-            <download-icon />
+            <DownloadIcon />
           </button>
           <template #content>
             <div class="menu">
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import DownloadIcon from "../icons/DownloadIcon.vue";
+import DownloadIcon from "../assets/icons/download-icon.svg";
 import FeatureTable from "./FeatureTable.vue";
 import SearchForm from "./SearchForm.vue";
 import { Tippy } from "vue-tippy";

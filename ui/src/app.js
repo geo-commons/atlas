@@ -73,9 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   new detectKeyboard();
 
-  // todo: change to #424bff once color is changed in main application
-  Vue.prototype.$primaryColor = "#0066FF";
-
   new Vue({
     el: "#app",
     store,
@@ -107,9 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const store = createStore(initialState);
   window.vueStore = store; // assign store to window for interoperability with old jQuery frontend
-
-  // todo: change to #424bff once color is changed in main application
-  Vue.prototype.$primaryColor = "#0066FF";
 
   new Vue({
     el: "#embedCode",

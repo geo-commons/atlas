@@ -3,7 +3,7 @@
     <div class="top-menu-container">
       <div class="page-title-wrapper">
         <h1>Bronnen</h1>
-        <button class="button __primary __normal __full-width-mobile" @click="openFormModal">
+        <button class="button __primary_admin __normal __full-width-mobile" @click="openFormModal">
           <AddIcon class="icon __white" />
           Nieuwe bron
         </button>
@@ -20,6 +20,7 @@
         :items="visibleSources"
         :nr-of-records="nrOfRecords"
         :loading="loading"
+        :style-type="'admin'"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
         @records-change="(value) => (nrOfRecords = value)"
       >
@@ -50,7 +51,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Wijzig bron"
                     content="Wijzig"
                     type="button"
@@ -62,7 +63,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Verwijder bron"
                     content="Verwijder"
                     type="button"
@@ -151,7 +152,7 @@ export default {
       }
 
       return this.sortedSources.filter(
-        (source) => source.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+        (source) => source.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {

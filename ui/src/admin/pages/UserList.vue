@@ -22,6 +22,7 @@
           :filter-on-id="true"
           :track-by="'id'"
           :label="'name'"
+          :style-type="'admin'"
           @onFilterChange="(v) => setTableFilters(v)"
         />
       </div>
@@ -30,6 +31,7 @@
         :items="visibleUsers"
         :nr-of-records="nrOfRecords"
         :loading="loading"
+        :style-type="'admin'"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
         @records-change="(value) => (nrOfRecords = value)"
       >
@@ -117,7 +119,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     :aria-label="`${user.username} configureren`"
                     content="Wijzig"
                     type="button"
@@ -130,7 +132,7 @@
                   <button
                     v-if="user.id !== currentUser.id"
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Verwijder gebruiker"
                     content="Verwijder"
                     type="button"
@@ -214,7 +216,7 @@ export default {
       }
 
       return this.filteredUsers.filter(
-        (user) => user.username.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+        (user) => user.username.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {

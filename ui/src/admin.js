@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const settings = getSettingsFromPath(data.config);
 
   const layers = data.layers.map((layer) =>
-    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer
+    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer,
   );
 
   const initialState = {
@@ -189,8 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const store = createStore(initialState);
 
   new detectKeyboard();
-
-  Vue.prototype.$primaryColor = "#424bff";
 
   new Vue({
     router,

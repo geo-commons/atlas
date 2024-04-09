@@ -1,5 +1,6 @@
 :root {
-  --color-primary: #424bff;
+  --color-primary: #0066FF;
+  --color-admin-primary: #424bff;
 
   --color-text-grey: rgba(0, 0, 0, 0.55);
 
@@ -8,8 +9,8 @@
   --color-green: #17803c;
   --color-red: #be185e;
 
-  --color-primary-hover: #ebebff;
-  --color-primary-active: #cbccff;
+  --color-admin-primary-hover: #ebebff;
+  --color-admin-primary-active: #cbccff;
   --color-backdrop: #f6f6ff;
 
   --color-grey-20: #eaeaea; /* divider (list items, files) */
@@ -28,8 +29,10 @@
   --color-hover: rgba(0, 0, 0, 0.03);
   --color-active: rgba(0, 0, 0, 0.06);
 
-  /* note: currently PT Sans is used in the main application while roboto is used in admin2 */
+  /* To create a stronger distinction between the map-renderer and admin components two different fonts are used.
+   For the map-renderer PT Sans is used and for the admin components Roboto. */
   --font-family: "PT Sans", sans-serif;
+  --font-family-admin: "Roboto", sans-serif;
 
   --font-size-tiny: 12px;
   --font-size-small: 14px;
@@ -212,6 +215,12 @@ svg {
   background: var(--color-grey-40);
 }
 
+.iconbutton.__admin_hover:not([disabled]):hover {
+    background: var(--color-admin-primary-hover);
+    outline: 2px solid var(--color-white);
+    outline-offset: -2px;
+}
+
 /* If we set the hover state on the svg itself the svg does not change color if the button is hovered. */
 .iconbutton.__inverse.isActive:not([disabled]):hover > svg {
   color: var(--color-primary);
@@ -265,10 +274,21 @@ svg {
   color: white;
 }
 
+.button.__primary_admin {
+  background: var(--color-admin-primary);
+  color: white;
+}
+
 .button.__secondary {
   background: white;
   border: 1px solid var(--color-primary);
   color: var(--color-primary);
+}
+
+.button.__secondary_admin {
+  background: white;
+  border: 1px solid var(--color-admin-primary);
+  color: var(--color-admin-primary);
 }
 
 .button.__tertiary {
@@ -466,19 +486,19 @@ hr {
   height: 24px;
 }
 
-.icon.__medium {
-  width: 20px;
-  height: 20px;
-}
-
 .icon.__small {
   width: 16px;
   height: 16px;
 }
 
-.icon.__medium {
+.icon.__smedium {
   width: 18px;
   height: 18px;
+}
+
+.icon.__medium {
+  width: 20px;
+  height: 20px;
 }
 
 .icon.__grey {
@@ -502,6 +522,10 @@ hr {
 }
 
 /* override multiselect style */
+.multiselect .multiselect__option--highlight {
+  background: var(--color-primary);
+}
+
 .multiselect .multiselect__tags {
   border-color: var(--color-grey-60);
   border-radius: var(--radius-normal);
@@ -528,9 +552,6 @@ hr {
   color: var(--color-white);
 }
 
-.multiselect .multiselect__content .multiselect__option--highlight {
-  background: var(--color-primary);
-}
 
 .multiselect .multiselect__placeholder {
   color: var(--color-text-grey);

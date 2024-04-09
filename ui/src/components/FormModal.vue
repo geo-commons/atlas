@@ -14,7 +14,7 @@
             content="Sluit"
             @click="close"
           >
-            <close-icon-large />
+            <CloseIcon class="icon" />
           </button>
         </header>
 
@@ -27,11 +27,11 @@
 </template>
 
 <script>
-import CloseIconLarge from "@/icons/CloseIconLarge.vue";
+import CloseIcon from "../assets/icons/close-icon.svg";
 
 export default {
   name: "FormModal",
-  components: { CloseIconLarge },
+  components: { CloseIcon },
   props: {
     toggleModal: {
       type: Boolean,

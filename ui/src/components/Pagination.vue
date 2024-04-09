@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="content">
-      <Spinner v-if="loading" />
+      <Spinner v-if="loading" :style-type="styleType" />
       <slot v-else-if="items.length > 0"></slot>
     </div>
 
@@ -10,6 +10,7 @@
         <multiselect
           id="selected_columns"
           v-model="internalNrOfRecords"
+          :class="styleType"
           :placeholder="'Kies aantal'"
           :options="nrRecordsOptions"
           :show-labels="false"
@@ -86,8 +87,8 @@
 </template>
 
 <script>
-import ChevronLeftIcon from "@/icons/ChevronLeftIcon.vue";
-import ChevronRightIcon from "@/icons/ChevronRightIcon.vue";
+import ChevronLeftIcon from "../assets/icons/chevron-left-icon.svg";
+import ChevronRightIcon from "../assets/icons/chevron-right-icon.svg";
 import Multiselect from "vue-multiselect";
 import Spinner from "@/components/Spinner.vue";
 
@@ -104,6 +105,10 @@ export default {
     loading: Boolean,
     nrOfRecords: { default: 10, type: Number },
     displayRange: { default: 5, type: Number },
+    styleType: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -236,7 +241,7 @@ export default {
 
 .active-page {
   border-radius: var(--radius-small);
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--color-admin-primary);
 }
 
 .pagination {

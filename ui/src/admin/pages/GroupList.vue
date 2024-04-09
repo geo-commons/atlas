@@ -5,7 +5,7 @@
         <h1>Groepen</h1>
 
         <div class="top-menu-button-container">
-          <button class="button __primary __normal" type="button" @click="openFormModal">
+          <button class="button __primary_admin __normal" type="button" @click="openFormModal">
             <AddIcon class="icon __white" />
             Nieuwe groep
           </button>
@@ -23,6 +23,7 @@
         :items="visibleGroups"
         :nr-of-records="nrOfRecords"
         :loading="loading"
+        :style-type="'admin'"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
         @records-change="(value) => (nrOfRecords = value)"
       >
@@ -58,7 +59,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     :aria-label="`${group.name} configureren`"
                     content="Wijzig"
                     type="button"
@@ -70,7 +71,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Verwijder groep"
                     content="Verwijder"
                     type="button"
@@ -159,7 +160,7 @@ export default {
       }
 
       return this.sortedGroups.filter(
-        (group) => group.name.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+        (group) => group.name.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {

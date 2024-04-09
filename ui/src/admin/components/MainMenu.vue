@@ -53,12 +53,13 @@ export default {
 
 <style scoped>
 .header {
+  font-family: var(--font-family-admin);
   min-height: 56px;
   display: flex;
   align-items: stretch;
   justify-content: space-between;
   box-shadow: 0 1px 0 var(--color-grey-60);
-  background: var(--color-primary);
+  background: var(--color-admin-primary);
 }
 
 .nav {

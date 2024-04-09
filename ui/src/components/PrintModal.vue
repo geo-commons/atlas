@@ -173,7 +173,7 @@ export default {
   border-radius: var(--radius-small);
   padding: 10px 15px;
   height: 40px;
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-normal);
   line-height: 1.5;

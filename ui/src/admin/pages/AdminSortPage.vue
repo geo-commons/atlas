@@ -2,7 +2,12 @@
   <div class="container __admin">
     <div class="page-title-wrapper">
       <h1>Sortering</h1>
-      <button class="button __secondary __normal top-menu-button" type="button" aria-label="Ga terug" @click="back">
+      <button
+        class="button __secondary_admin __normal top-menu-button"
+        type="button"
+        aria-label="Ga terug"
+        @click="back"
+      >
         <arrow-left-icon class="icon" />Terug
       </button>
     </div>

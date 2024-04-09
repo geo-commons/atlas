@@ -6,7 +6,6 @@
 
 <script>
 import Spinner from "vue-simple-spinner";
-import Vue from "vue";
 
 export default {
   name: "SpinnerComponent",
@@ -18,6 +17,11 @@ export default {
       type: String,
       default: "huge",
     },
+
+    styleType: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -25,9 +29,10 @@ export default {
     };
   },
   created() {
-    this.color = Vue.prototype.$primaryColor
-      ? Vue.prototype.$primaryColor
-      : window.getComputedStyle(document.documentElement).getPropertyValue("--color-primary");
+    this.color =
+      this.styleType === "admin"
+        ? window.getComputedStyle(document.documentElement).getPropertyValue("--color-admin-primary")
+        : window.getComputedStyle(document.documentElement).getPropertyValue("--color-primary");
   },
 };
 </script>

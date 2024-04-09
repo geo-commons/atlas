@@ -47,8 +47,8 @@
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button class="button __secondary" type="button" @click="cancel()">Annuleer</button>
-      <button class="button __primary" type="submit" @click="save">Opslaan</button>
+      <button class="button __secondary_admin" type="button" @click="cancel()">Annuleer</button>
+      <button class="button __primary_admin" type="submit" @click="save">Opslaan</button>
     </div>
   </div>
 </template>

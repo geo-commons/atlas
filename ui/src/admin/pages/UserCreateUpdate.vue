@@ -67,6 +67,7 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import { mapState } from "vuex";
 import draggable from "vuedraggable";
+
 draggable.compatConfig = { MODE: 3 };
 
 export default {
@@ -292,7 +293,7 @@ export default {
 }
 
 .groups-list-item:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-admin-primary-hover);
   cursor: move;
 }
 

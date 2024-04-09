@@ -156,7 +156,7 @@
             <div class="layer-setting">
               <div class="admin-label-button">
                 <label for="linked_data">Gerelateerde data</label>
-                <button class="button __small __secondary" @click="toggleModal('linkedData')">
+                <button class="button __small __secondary_admin" @click="toggleModal('linkedData')">
                   <AddIcon />Voeg toe
                 </button>
               </div>
@@ -182,7 +182,7 @@
             <div class="layer-setting">
               <div class="admin-label-button">
                 <label for="linked_data">Templates</label>
-                <button class="button __small __secondary" @click="toggleModal('templates')">
+                <button class="button __small __secondary_admin" @click="toggleModal('templates')">
                   <AddIcon />Voeg toe
                 </button>
               </div>

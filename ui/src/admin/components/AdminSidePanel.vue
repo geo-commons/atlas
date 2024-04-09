@@ -6,7 +6,7 @@
 
     <div class="content">
       <slot v-if="!loading"></slot>
-      <Spinner v-else />
+      <Spinner v-else style-type="'admin'" />
     </div>
   </aside>
 </template>
@@ -27,6 +27,7 @@ export default {
 
 <style scoped>
 .admin-side-panel {
+  font-family: var(--font-family-admin);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;

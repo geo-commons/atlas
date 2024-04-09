@@ -2,7 +2,7 @@
   <div>
     <div class="sort-column-header-wrapper">
       <h3>{{ title }}</h3>
-      <button class="button __secondary __small" type="button" @click="sortItems">Sorteer alfabetisch</button>
+      <button class="button __secondary_admin __small" type="button" @click="sortItems">Sorteer alfabetisch</button>
     </div>
 
     <div class="help-text-wrapper">
@@ -42,7 +42,7 @@
         <template #item="{ element }">
           <tr
             class="table-border"
-            :class="{ 'active-row': false, [itemGroupClass]: true }"
+            :class="{ 'active-row': checkRow(element), [itemGroupClass]: true }"
             role="option"
             draggable="true"
             tabindex="0"
@@ -66,10 +66,10 @@
 
 <script>
 import draggable from "vuedraggable";
-draggable.compatConfig = { MODE: 3 };
-
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import { debounce } from "@/utils/debouncer";
+
+draggable.compatConfig = { MODE: 3 };
 
 export default {
   name: "SortableList",
@@ -245,12 +245,12 @@ export default {
 
 .help-text-button:hover {
   text-decoration: underline;
-  color: var(--color-primary);
+  color: var(--color-admin-primary);
 }
 
 .active-row {
-  background: var(--color-primary-active);
-  box-shadow: 3px 0 0 var(--color-primary) inset;
+  background: var(--color-admin-primary-active);
+  box-shadow: 3px 0 0 var(--color-admin-primary) inset;
 }
 
 .sort-table {
@@ -260,7 +260,7 @@ export default {
 }
 
 tbody > tr:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-admin-primary-hover);
   cursor: move;
 }
 
