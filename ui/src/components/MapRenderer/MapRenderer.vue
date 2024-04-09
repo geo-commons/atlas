@@ -30,6 +30,7 @@
         @position-changed="setPosition"
         @tool-used="toolUsed"
         @features-selected="featuresSelected"
+        @on-fit="(position) => onFit(position, true)"
       />
     </div>
     <ListPanel
@@ -73,7 +74,7 @@
       ref="dataPanel"
       :layers="layers"
       :position="position"
-      :selected-area="selectedArea"
+      :selected-area="selectedAreaDataPanel"
       :show-data-panel="showDataPanel"
       :user="user"
       :filters="filters"
@@ -387,6 +388,13 @@ export default {
       const geojsonFormat = new GeoJSON();
       return geojsonFormat.readFeatures(this.config.map_area);
     },
+    selectedAreaDataPanel() {
+      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE") {
+        return this.selectedArea;
+      }
+
+      return null;
+    },
   },
   watch: {
     initialPosition: {
@@ -605,6 +613,7 @@ export default {
           this.$store.commit("setSelectedArea", result.sketch.getGeometry());
           break;
         case "SELECT_AREA":
+        case "SELECT_CIRCLE":
           this.showDataPanel = true;
           this.$store.commit("setSelectedArea", result.sketch.getGeometry());
           break;
@@ -644,6 +653,14 @@ export default {
     toggleBaseLayersPanel() {
       this.showPanoramaPanel = false;
       this.showBaseLayersPanel = !this.showBaseLayersPanel;
+    },
+    onFit(position, halfScreen) {
+      // Since onFit is called before the data panel is open we need to make sure the
+      // mapPadding is set correctly.
+      if (halfScreen && !isMobile()) {
+        this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+      }
+      this.$refs.map.fit(position, { maxZoom: 19 });
     },
   },
 };

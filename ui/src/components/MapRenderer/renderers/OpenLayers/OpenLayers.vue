@@ -8,7 +8,14 @@
       :marker-on-click="features.markerOnClick"
       @position-changed="onPositionChanged"
     />
-    <ol-draw-interaction v-if="tool" :tool="tool" :layers="layers" @draw-start="startUsingTool" @draw-end="toolUsed" />
+    <ol-draw-interaction
+      v-if="tool"
+      :tool="tool"
+      :layers="layers"
+      @draw-start="startUsingTool"
+      @draw-end="toolUsed"
+      @on-fit="onFit"
+    />
     <ol-drag-zoom />
     <component
       :is="getComponent(layer.source_type)"
@@ -88,7 +95,7 @@
 </template>
 
 <script>
-import { Icon, Circle, Style, Fill, Stroke, Text } from "ol/style";
+import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import Feature from "ol/Feature";
 import { Point } from "ol/geom";
 import { jsPDF } from "jspdf";
@@ -265,6 +272,9 @@ export default {
     toolUsed(result) {
       this.$emit("tool-used", result);
     },
+    onFit(value) {
+      this.$emit("on-fit", value);
+    },
     fit(geometryOrExtent, options) {
       this.$refs.view.fit(geometryOrExtent, options);
     },
@@ -351,7 +361,7 @@ export default {
                   dim[0] - legends[i].width / 5 - 5,
                   5,
                   legends[i].width / 5,
-                  legends[i].height / 5
+                  legends[i].height / 5,
                 );
               }
             }
