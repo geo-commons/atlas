@@ -23,13 +23,6 @@ export default {
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
 
-html {
-  font-family: "Roboto", sans-serif;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-normal);
-  line-height: 1.5;
-}
-
 body {
   background-color: var(--color-backdrop);
 }
@@ -38,9 +31,12 @@ select {
   padding: 0 16px;
   border: 1px solid var(--color-grey-60);
   border-radius: var(--radius-normal);
-  font-family: "Roboto", sans-serif;
   font-size: var(--font-size-normal);
   font-weight: var(--font-weight-normal);
+}
+
+select.__admin {
+  font-family: var(--font-family-admin);
 }
 
 .container.__admin {
@@ -50,6 +46,7 @@ select {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
+  font-family: var(--font-family-admin);
 }
 
 .section + .section {
@@ -80,7 +77,7 @@ select {
 }
 
 .setting:hover {
-  background: var(--color-primary-hover);
+  background: var(--color-admin-primary-hover);
 }
 
 input[type="text"],
@@ -106,10 +103,6 @@ input:disabled {
 .edit-field-border {
   border-radius: var(--radius-normal);
   border: 1px solid var(--color-grey-60);
-}
-
-.button.__secondary:not([disabled]):hover {
-  background: var(--color-primary-hover);
 }
 
 .multiselect__tags > input {
@@ -203,7 +196,7 @@ input:disabled {
 }
 
 .admin-table > tbody > tr:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-admin-primary-hover);
 }
 
 .admin-table thead tr th {
@@ -235,31 +228,22 @@ th {
   padding-left: 12px;
 }
 
-.multiselect__tag {
+.admin .multiselect__tags-wrap .multiselect__tag {
   background: var(--color-white);
-  border: solid 1px var(--color-primary);
-  color: var(--color-primary);
+  border: solid 1px var(--color-admin-primary);
+  color: var(--color-admin-primary);
 }
 
-.multiselect__tag-icon:focus,
-.multiselect__tag-icon:hover {
-  background: var(--color-primary);
+.admin .multiselect__tags-wrap .multiselect__tag-icon:focus,
+.admin .multiselect__tags-wrap .multiselect__tag-icon:hover {
+  background: var(--color-admin-primary);
 }
 
-.multiselect__option--highlight {
-  background: var(--color-primary);
+.admin .multiselect__option--highlight {
+  background: var(--color-admin-primary);
 }
 
-.multiselect__placeholder {
-  color: var(--color-text-grey);
-}
-
-.multiselect__tags {
-  border-color: var(--color-grey-60);
-  border-radius: var(--radius-normal);
-}
-
-.multiselect__tag-icon:after {
+.admin .multiselect__tags-wrap .multiselect__tag-icon:after {
   color: var(--color-primary);
   font-size: var(--font-size-large);
 }

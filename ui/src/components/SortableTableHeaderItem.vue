@@ -8,23 +8,23 @@
   >
     <span class="table-header-container">
       {{ headerText }}
-      <span class="icon-min-width">
-        <ArrowUpIcon v-if="property === sortKey && sortAscending" />
-        <ArrowDownIcon v-if="property === sortKey && !sortAscending" />
+      <span class="flex __center icon-min-width">
+        <ChevronUpIcon v-if="property === sortKey && sortAscending" class="icon __smedium" />
+        <ChevronDownIcon v-if="property === sortKey && !sortAscending" class="icon __smedium" />
       </span>
     </span>
   </button>
 </template>
 
 <script>
-import ArrowDownIcon from "../icons/ArrowDownIcon.vue";
-import ArrowUpIcon from "../icons/ArrowUpIcon.vue";
+import ChevronDownIcon from "../assets/icons/chevron-down-icon.svg";
+import ChevronUpIcon from "../assets/icons/chevron-up-icon.svg";
 
 export default {
   name: "SortableTableHeaderItem",
   components: {
-    ArrowUpIcon,
-    ArrowDownIcon,
+    ChevronUpIcon,
+    ChevronDownIcon,
   },
   props: {
     headerText: String,
@@ -48,12 +48,11 @@ export default {
 .table-header-container {
   display: flex;
   font-weight: var(--font-weight-normal);
-  gap: 3px;
   text-transform: capitalize;
   justify-content: flex-start;
 }
 
 .icon-min-width {
-  min-width: 24px;
+  min-width: 18px;
 }
 </style>

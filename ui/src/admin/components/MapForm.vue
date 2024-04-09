@@ -149,7 +149,7 @@
 
         <div class="admin-button-wrapper">
           <router-link to="/maps" class="button __tertiary">Annuleer</router-link>
-          <button type="submit" class="button __primary">Opslaan</button>
+          <button type="submit" class="button __primary_admin">Opslaan</button>
         </div>
       </form>
     </template>
@@ -206,7 +206,7 @@ export default {
 }
 
 .button.setting:not([disabled]):hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-admin-primary-hover);
 }
 
 .admin-button-wrapper {

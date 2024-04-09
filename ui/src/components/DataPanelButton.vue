@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import FormIcon from "../icons/FormIcon.vue";
+import FormIcon from "../assets/icons/form-icon.svg";
 
 export default {
   name: "DataPanelButton",

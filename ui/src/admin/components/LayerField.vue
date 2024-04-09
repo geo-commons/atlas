@@ -3,6 +3,7 @@
     <multiselect
       v-bind="field"
       v-model="inputVal"
+      class="admin"
       placeholder="Kies een laag"
       deselect-label="Druk op enter om te verwijderen"
       select-label="Druk op enter om te selecteren"

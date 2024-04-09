@@ -26,7 +26,7 @@
           aria-label="Sluit paneel"
           @click="toggleDataPanel"
         >
-          <close-icon-large />
+          <CloseIcon class="icon" />
         </button>
       </div>
     </template>
@@ -66,8 +66,8 @@
 import DataPanelDetailView from "./DataPanelDetailView.vue";
 import SidePanel from "./SidePanel";
 import SelectButton from "./SelectButton.vue";
-import ArrowLeftIcon from "../icons/ArrowLeftIcon.vue";
-import CloseIconLarge from "../icons/CloseIconLarge.vue";
+import ArrowLeftIcon from "../assets/icons/arrow-left-icon.svg";
+import CloseIcon from "../assets/icons/close-icon.svg";
 
 const visibleSourceTypes = ["WMS_WFS", "WFS"];
 
@@ -78,7 +78,7 @@ export default {
     SidePanel,
     SelectButton,
     ArrowLeftIcon,
-    CloseIconLarge,
+    CloseIcon,
   },
   props: {
     position: Object,

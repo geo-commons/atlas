@@ -3,7 +3,7 @@
     <div class="top-menu-container">
       <div class="page-title-wrapper">
         <h1>Kaarten</h1>
-        <button class="button __primary __normal __full-width-mobile" type="button" @click="openFormModal">
+        <button class="button __primary_admin __normal __full-width-mobile" type="button" @click="openFormModal">
           <AddIcon class="icon __white" />
           Nieuwe kaart
         </button>
@@ -20,6 +20,7 @@
         :items="visibleMaps"
         :nr-of-records="nrOfRecords"
         :loading="loading"
+        :style-type="'admin'"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
         @records-change="(value) => (nrOfRecords = value)"
       >
@@ -55,7 +56,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Bekijk kaart"
                     content="Bekijk"
                     type="button"
@@ -67,7 +68,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Verwijder kaart"
                     content="Verwijder"
                     type="button"

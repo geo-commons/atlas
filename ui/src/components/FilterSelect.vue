@@ -7,6 +7,7 @@
       v-if="!filterOnId"
       :id="filterProperty"
       v-model="selectedItems"
+      :class="styleType"
       :options="currentFilterOptions"
       placeholder="Kies waarde"
       tag-placeholder="Enter voor nieuwe waarde"
@@ -21,6 +22,7 @@
       v-else
       :id="filterProperty"
       v-model="selectedItems"
+      :class="styleType"
       :track-by="trackBy"
       :label="label"
       :options="currentFilterOptions"
@@ -53,6 +55,10 @@ export default {
     },
     trackBy: String,
     label: String,
+    styleType: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {

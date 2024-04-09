@@ -55,7 +55,7 @@
                     :name="question.id"
                     :rules="getRules(question)"
                     as="select"
-                    class="config-select-wrapper"
+                    class="__admin config-select-wrapper"
                     :disabled="question.disabled"
                   >
                     <option disabled value="-1">Selecteer een {{ question.placeholder }}</option>
@@ -144,11 +144,13 @@
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button class="button" :class="createView ? '__secondary' : '__tertiary'" type="button" @click="cancel()">
+      <button class="button" :class="createView ? '__secondary_admin' : '__tertiary'" type="button" @click="cancel()">
         Annuleer
       </button>
-      <button class="button" :class="createView ? '__secondary' : '__primary'" type="submit">Opslaan</button>
-      <button v-if="createView" class="button __primary" type="submit" @click="continueEditing = true">
+      <button class="button" :class="createView ? '__secondary_admin' : '__primary_admin'" type="submit">
+        Opslaan
+      </button>
+      <button v-if="createView" class="button __primary_admin" type="submit" @click="continueEditing = true">
         Opslaan en openen
       </button>
     </div>

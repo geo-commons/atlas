@@ -9,12 +9,12 @@
               name: 'sort',
               params: { parentRoute: 'layers' },
             }"
-            class="button __secondary __normal"
+            class="button __secondary_admin __normal"
             type="button"
             aria-label="Ga naar sortering pagina"
             ><SortIcon class="icon" />Sortering</router-link
           >
-          <button class="button __primary __normal" type="button" @click="openFormModal">
+          <button class="button __primary_admin __normal" type="button" @click="openFormModal">
             <AddIcon class="icon __white" />
             Nieuwe laag
           </button>
@@ -35,6 +35,7 @@
             :field-filters="selectedLayerFilters"
             :filter-property="categoryFilterProperty"
             :filter-property-display-name="'Categorie'"
+            :style-type="'admin'"
             @onFilterChange="(v) => setTableFilters(v)"
           />
           <FilterSelect
@@ -42,6 +43,7 @@
             :field-filters="selectedLayerFilters"
             :filter-property="statusFilterProperty"
             :filter-property-display-name="'Status'"
+            :style-type="'admin'"
             @onFilterChange="(v) => setTableFilters(v)"
           />
         </div>
@@ -51,6 +53,7 @@
         :items="visibleLayers"
         :loading="loading"
         :nr-of-records="nrOfRecords"
+        :style-type="'admin'"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
         @records-change="(value) => (nrOfRecords = value)"
       >
@@ -110,7 +113,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     :aria-label="`${layer.title} configureren`"
                     content="Wijzig"
                     type="button"
@@ -122,7 +125,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Verwijder laag"
                     content="Verwijder"
                     type="button"
@@ -238,7 +241,7 @@ export default {
       }
 
       return this.filteredLayers.filter(
-        (layer) => layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+        (layer) => layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {

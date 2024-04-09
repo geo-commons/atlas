@@ -96,7 +96,7 @@
           @set-position="setPosition"
           @toggle-data-panel="toggleDataPanel"
         />
-        <div class="toggle-buttons">
+        <div class="toggle-buttons" :class="{ 'position-top': !features.searchbar }">
           <div v-if="features.datapanel && !features.searchbar" class="datapanel-btn-wrapper">
             <DataPanelButton
               :is-subcomponent="false"
@@ -218,7 +218,7 @@
 </template>
 
 <script>
-import ListIcon from "@/icons/ListIcon.vue";
+import ListIcon from "../../assets/icons/list-icon.svg";
 import GeoJSON from "ol/format/GeoJSON";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
@@ -235,7 +235,7 @@ import LayersPanel from "../LayersPanel";
 import ToolsPanel from "../ToolsPanel";
 import ZoomPanel from "../ZoomPanel";
 import GeoLocationButton from "../GeoLocationButton";
-import FilterListIcon from "@/icons/FilterListIcon.vue";
+import FilterListIcon from "../../assets/icons/filter-list-icon.svg";
 import DataPanelButton from "../DataPanelButton.vue";
 import { isMobile } from "@/utils/helpers";
 import { transform } from "ol/proj";
@@ -774,10 +774,18 @@ export default {
   display: flex;
 }
 
+.toggle-buttons.position-top {
+  top: 0;
+}
+
 @media (max-width: 576px) {
   .toggle-buttons {
     top: calc(var(--padding-screen) * 2 + var(--width-button-large));
     left: var(--padding-screen);
+  }
+
+  .toggle-buttons.position-top {
+    top: var(--padding-screen);
   }
 }
 

@@ -9,12 +9,12 @@
               name: 'sort',
               params: { parentRoute: 'categories' },
             }"
-            class="button __secondary __normal"
+            class="button __secondary_admin __normal"
             type="button"
             aria-label="Ga naar sortering pagina"
             ><SortIcon class="icon" />Sortering</router-link
           >
-          <button class="button __primary __normal" type="button" @click="openFormModal">
+          <button class="button __primary_admin __normal" type="button" @click="openFormModal">
             <AddIcon class="icon __white" />
             Nieuwe categorie
           </button>
@@ -32,6 +32,7 @@
         :items="visibleCategories"
         :nr-of-records="nrOfRecords"
         :loading="loading"
+        :style-type="'admin'"
         @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
         @records-change="(value) => (nrOfRecords = value)"
       >
@@ -67,7 +68,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     :aria-label="`${category.title} configureren`"
                     content="Wijzig"
                     type="button"
@@ -79,7 +80,7 @@
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __alt_hover"
+                    class="iconbutton __normal __round __admin_hover"
                     aria-label="Verwijder categorie"
                     content="Verwijder"
                     type="button"
@@ -170,7 +171,7 @@ export default {
       }
 
       return this.sortedCategories.filter(
-        (category) => category.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1
+        (category) => category.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {

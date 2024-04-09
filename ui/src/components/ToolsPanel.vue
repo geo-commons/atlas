@@ -10,7 +10,7 @@
         aria-label="Selecteer gebied"
         @click="toggleSelectArea"
       >
-        <AreaSelectIcon class="icon __medium" />
+        <AreaSelectIcon class="icon __smedium" />
       </button>
 
       <button

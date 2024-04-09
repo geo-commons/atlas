@@ -63,7 +63,7 @@
                 aria-label="Bekijk op kaart"
                 @click="() => showFeature(feature)"
               >
-                <PinIcon />
+                <MarkerIcon class="icon __small" />
               </button>
             </td>
             <td v-for="property in displayProperties" :key="property">
@@ -81,7 +81,6 @@
 import Cookies from "js-cookie";
 import SortableTableHeaderItem from "./SortableTableHeaderItem.vue";
 import TableList from "./TableList.vue";
-import PinIcon from "../icons/PinIcon.vue";
 import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import Multiselect from "vue-multiselect";
@@ -89,13 +88,14 @@ import FilterSelect from "./FilterSelect.vue";
 import SwitchSlider from "./SwitchSlider.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import Spinner from "@/components/Spinner.vue";
+import MarkerIcon from "../assets/icons/marker-icon.svg";
 
 export default {
   name: "FeatureTable",
   components: {
     SortableTableHeaderItem,
     TableList,
-    PinIcon,
+    MarkerIcon,
     FilterSelect,
     Multiselect,
     SwitchSlider,

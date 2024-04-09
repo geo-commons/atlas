@@ -4,7 +4,7 @@
       <div class="layer-settings">
         <div class="layer-setting">
           <label class="question-label" for="source">Bron</label>
-          <select id="source" v-model="template.source.id" name="source" class="config-select-wrapper">
+          <select id="source" v-model="template.source.id" name="source" class="__admin config-select-wrapper">
             <option disabled value="-1">Selecteer bron</option>
             <option v-for="source in sources" :key="source.id" :value="source.id">
               {{ source.label }}
@@ -17,7 +17,7 @@
         </div>
         <div class="layer-setting">
           <label class="question-label" for="Method">Methode</label>
-          <select id="method" v-model="template.method" name="method" class="config-select-wrapper">
+          <select id="method" v-model="template.method" name="method" class="__admin config-select-wrapper">
             <option disabled value="-1">Selecteer methode</option>
             <option v-for="method in methods" :key="method.id" :value="method.id">
               {{ method.label }}
@@ -61,8 +61,8 @@
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button class="button __secondary" type="button" @click="cancel()">Annuleer</button>
-      <button class="button __primary" type="submit" @click="save">Opslaan</button>
+      <button class="button __secondary_admin" type="button" @click="cancel()">Annuleer</button>
+      <button class="button __primary_admin" type="submit" @click="save">Opslaan</button>
     </div>
   </div>
 </template>

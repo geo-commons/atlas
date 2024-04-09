@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import ChevronRightIcon from "../icons/ChevronRightIcon.vue";
+import ChevronRightIcon from "../assets/icons/chevron-right-icon.svg";
 
 export default {
   name: "SelectButton",
