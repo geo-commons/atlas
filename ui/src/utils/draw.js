@@ -10,6 +10,7 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
   const mapping = {
     MEASURE_AREA: "Polygon",
     SELECT_AREA: "Polygon",
+    SELECT_CIRCLE: "Circle",
     MEASURE_LINE: "LineString",
     DRAW_POINT: "Point",
     DRAW_LINE: "LineString",
@@ -41,6 +42,14 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
     }),
   });
 
+  let currentCoord;
+
+  if (measure === "SELECT_CIRCLE") {
+    map.on("pointermove", (e) => {
+      currentCoord = e.coordinate;
+    });
+  }
+
   let measureTooltipElement;
   let measureTooltip;
 
@@ -52,7 +61,7 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
 
     map.removeOverlay(measureTooltip);
 
-    if (measure === "MEASURE_LINE" || measure === "MEASURE_AREA") {
+    if (measure === "MEASURE_LINE" || measure === "MEASURE_AREA" || measure === "SELECT_CIRCLE") {
       sketch.getGeometry().on("change", (e) => {
         const geom = e.target;
 
@@ -61,6 +70,8 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
           tooltipCoord = geom.getLastCoordinate();
         } else if (measure === "MEASURE_AREA") {
           tooltipCoord = geom.getInteriorPoint().getCoordinates();
+        } else if (measure === "SELECT_CIRCLE") {
+          tooltipCoord = currentCoord;
         }
 
         if (measureTooltipElement) {
@@ -87,6 +98,9 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
         } else if (measure === "MEASURE_AREA") {
           measureResult = getArea(sketch.getGeometry());
           measureTooltipElement.innerHTML = `${Math.round(measureResult * 100) / 100} m2`;
+        } else if (measure === "SELECT_CIRCLE") {
+          measureResult = sketch.getGeometry().getRadius();
+          measureTooltipElement.innerHTML = `Straal: ${Math.round(measureResult * 100) / 100} m`;
         }
 
         measureTooltip.setPosition(tooltipCoord);

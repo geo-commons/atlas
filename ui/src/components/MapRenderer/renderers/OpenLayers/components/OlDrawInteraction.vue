@@ -4,6 +4,7 @@
 
 <script>
 import constructDraw from "../../../../../utils/draw";
+import { fromCircle } from "ol/geom/Polygon";
 
 export default {
   name: "OlDrawInteraction",
@@ -18,7 +19,16 @@ export default {
     };
 
     const onDrawEnd = (sketch) => {
+      const geometry = sketch.getGeometry();
+      if (this.tool === "SELECT_CIRCLE") {
+        sketch.setGeometry(fromCircle(geometry));
+      }
+
       this.$emit("draw-end", { tool: this.tool, sketch });
+
+      if (this.tool === "SELECT_CIRCLE" || this.tool === "SELECT_AREA") {
+        this.$emit("on-fit", geometry.getExtent());
+      }
     };
 
     this.draw = constructDraw(this.tool, this.map, onDrawStart, onDrawEnd);

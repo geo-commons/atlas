@@ -5,7 +5,7 @@
         v-if="features.selectarea"
         v-tippy="{ placement: 'bottom' }"
         class="iconbutton __inverse"
-        :class="{ isActive: tool === 'SELECT_AREA' }"
+        :class="{ isActive: tool === 'SELECT_AREA' || tool === 'SELECT_CIRCLE' }"
         content="Selecteer gebied"
         aria-label="Selecteer gebied"
         @click="toggleSelectArea"
@@ -40,6 +40,23 @@
       >
         <BrushIcon class="icon" />
       </button>
+    </div>
+
+    <div v-if="showSelectMenu" class="menu">
+      <transition name="fade">
+        <ul class="list">
+          <li>
+            <button aria-label="Selecteer gebied met behulp van cirkel" @click="() => setTool('SELECT_CIRCLE')">
+              Cirkel
+            </button>
+          </li>
+          <li>
+            <button aria-label="Selecteer gebied met behulp van polygoon" @click="() => setTool('SELECT_AREA')">
+              Polygoon
+            </button>
+          </li>
+        </ul>
+      </transition>
     </div>
 
     <div v-if="showMeasureMenu" class="menu">
@@ -115,58 +132,64 @@ export default {
     return {
       showMeasureMenu: false,
       showDrawMenu: false,
-      selectAreaToggled: false,
+      showSelectMenu: false,
     };
   },
-  watch: {
-    tool(value) {
-      if (!value) {
-        // Set selected area toggled to false when tool has no value.
-        this.selectAreaToggled = false;
-      }
-    },
-  },
   methods: {
-    /*
-     * Note: the interaction between toggling select area and the dropdown menus of draw and measure seems to have weird side effects.
-     *       It seems to be working with $nextTick() as it is implemented right now but, it might be nice to refactor this after we implement
-     *       select area to also support selecting by radius. After we have implemented that all options work very similar therefor,
-     *       we should be able to simplify things a little.
-     * */
     toggleMeasure() {
-      if (this.tool) {
-        this.resetAreaSelect();
+      if (this.showSelectMenu) {
+        this.showSelectMenu = false;
+      }
+
+      if (this.showDrawMenu) {
+        this.showDrawMenu = false;
+      }
+
+      if (this.tool === "MEASURE_AREA" || this.tool === "MEASURE_LINE") {
+        this.$emit("set-tool", "");
         return;
       }
 
       this.showMeasureMenu = !this.showMeasureMenu;
     },
     toggleSelectArea() {
-      this.selectAreaToggled = !this.selectAreaToggled;
-
-      if (this.tool) {
-        this.resetAreaSelect();
+      if (this.showMeasureMenu) {
+        this.showMeasureMenu = false;
       }
 
-      this.$nextTick(() => {
-        if (this.selectAreaToggled) {
-          this.$emit("set-tool", "SELECT_AREA");
-        }
-      });
+      if (this.showDrawMenu) {
+        this.showDrawMenu = false;
+      }
+
+      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE") {
+        this.resetAreaSelect();
+        return;
+      }
+
+      this.showSelectMenu = !this.showSelectMenu;
     },
     setTool(chosenTool) {
       if (this.tool) {
         this.resetAreaSelect();
       }
 
+      // Reset values on nextTick need to wait for resetAreaSelect to be finished.
       this.$nextTick(() => {
-        this.selectAreaToggled = false;
         this.$emit("set-tool", chosenTool);
         this.showMeasureMenu = false;
         this.showDrawMenu = false;
+        this.showSelectMenu = false;
       });
     },
     toggleDraw() {
+      if (this.showSelectMenu) {
+        this.showSelectMenu = false;
+      }
+
+      if (this.showMeasureMenu) {
+        this.showMeasureMenu = false;
+      }
+
       if (
         this.tool === "DRAW_POINT" ||
         this.tool === "DRAW_LINE" ||
@@ -246,7 +269,6 @@ export default {
 .menu {
   position: absolute;
   top: var(--width-button-large);
-  right: 0;
   padding: 6px 0;
   background: white;
   border-radius: var(--radius-small);
