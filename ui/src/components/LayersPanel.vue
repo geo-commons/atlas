@@ -447,7 +447,7 @@ export default {
 }
 
 .sublayer > input:disabled + label {
-  text-decoration: line-through;
+  color: var(--color-grey-80);
 }
 
 .zoom-button {
