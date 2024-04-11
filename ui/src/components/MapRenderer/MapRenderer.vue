@@ -224,6 +224,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
 import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
+import { getFetchParameters } from "../../utils/auth";
 
 import PrimaryButton from "../PrimaryButton";
 import ListPanel from "../ListPanel";
@@ -525,7 +526,7 @@ export default {
         });
 
         try {
-          const result = await fetch(url);
+          const result = await fetch(url, getFetchParameters(layer, this.user));
           const data = await result.json();
           this.highlightedFeatures = [
             ...this.highlightedFeatures,

@@ -67,13 +67,9 @@
 
       <template #default>
         <div class="content">
-          <img
-            v-if="layer.source_type === 'WMS' || layer.source_type === 'WMS_WFS'"
-            class="legend"
-            :src="legendImageUrl"
-            :alt="`Legenda voor laag ${layer.title}`"
-          />
-          <span v-if="layer.source_type !== 'WMS' && layer.source_type !== 'WMS_WFS'">Geen legenda beschikbaar</span>
+          <img v-if="layerHasLegend" :src="legendImage" class="legend" :alt="`Legenda voor laag ${layer.title}`" />
+          <span v-if="!layerHasLegend">Geen legenda beschikbaar</span>
+          <span v-if="errorLoadingLegend">Kan de legenda niet laden</span>
         </div>
       </template>
     </ExpandButton>
@@ -86,6 +82,7 @@ import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
 import ExpandButton from "./ExpandButton";
 import LayerInfo from "./LayerInfo";
+import { layerRequiresAuthentication, getFetchParameters } from "../utils/auth";
 
 export default {
   name: "VisibleLayer",
@@ -99,18 +96,43 @@ export default {
     layerOpacityIsChangable: Boolean,
     position: Object,
     isOpen: Boolean,
+    user: Object,
   },
   data() {
     return {
       showSlider: false,
+      errorLoadingLegend: false,
+      legendImage: null,
     };
   },
   computed: {
-    legendImageUrl() {
-      if (this.layer.legend_url) {
-        return this.layer.legend_url;
+    layerHasLegend() {
+      return this.layer.source_type === "WMS" || this.layer.source_type === "WMS_WFS";
+    },
+  },
+  watch: {
+    position(position, oldPosition) {
+      if (position.zoom !== oldPosition.zoom) {
+        this.fetchLegendImage();
       }
-
+    },
+  },
+  mounted() {
+    if (this.layerHasLegend) {
+      this.fetchLegendImage();
+    }
+  },
+  methods: {
+    toggleSlider() {
+      this.showSlider = !this.showSlider;
+    },
+    changeLayerOpacity(layerId, opacity) {
+      this.$emit("set-layer-opacity", [layerId, opacity]);
+    },
+    toggleLayer() {
+      this.$emit("toggle-layer", this.layer);
+    },
+    async fetchLegendImage() {
       const wmsSource = new TileWMS({
         url: this.layer.url,
         servertype: this.layer.server_type,
@@ -137,18 +159,25 @@ export default {
         LEGEND_OPTIONS: "forceTitles:off;forceLabels:on;fontAntiAliasing:true",
       };
 
-      return wmsSource.getLegendUrl(view.getResolution(), params);
-    },
-  },
-  methods: {
-    toggleSlider() {
-      this.showSlider = !this.showSlider;
-    },
-    changeLayerOpacity(layerId, opacity) {
-      this.$emit("set-layer-opacity", [layerId, opacity]);
-    },
-    toggleLayer() {
-      this.$emit("toggle-layer", this.layer);
+      const url = wmsSource.getLegendUrl(view.getResolution(), params);
+
+      if (!layerRequiresAuthentication(this.layer)) {
+        this.legendImage = url;
+        return;
+      }
+
+      try {
+        const result = await fetch(url, getFetchParameters(this.layer, this.user));
+
+        if (result.ok) {
+          const blob = await result.blob();
+          this.legendImage = URL.createObjectURL(blob);
+        } else {
+          this.errorLoadingLegend = true;
+        }
+      } catch (e) {
+        this.errorLoadingLegend = true;
+      }
     },
   },
 };

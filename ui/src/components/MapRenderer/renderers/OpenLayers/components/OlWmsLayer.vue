@@ -16,11 +16,24 @@ const rdProjection = new Projection({
 const authenticatedTileLoader = (token) => {
   return (tile, src) => {
     const client = new XMLHttpRequest();
+    client.responseType = "blob";
     client.open("GET", src);
     client.setRequestHeader("Authorization", `Bearer ${token}`);
 
     client.onload = () => {
-      tile.getImage().src = src;
+      if (client.response) {
+        const objectURL = URL.createObjectURL(client.response);
+        tile.getImage().onload = () => {
+          URL.revokeObjectURL(objectURL);
+        };
+        tile.getImage().src = objectURL;
+      } else {
+        tile.setState(3);
+      }
+    };
+
+    client.onerror = () => {
+      tile.setState(3);
     };
 
     client.send();
