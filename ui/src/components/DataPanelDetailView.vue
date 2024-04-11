@@ -72,6 +72,7 @@
       :query="query"
       :selected-area="selectedArea"
       :filters="filter"
+      :user="user"
       @set-position="(value) => onSetPosition(value)"
       @on-fit="(value) => onFit(value)"
       @update-filters="(value) => updateFilters(value)"

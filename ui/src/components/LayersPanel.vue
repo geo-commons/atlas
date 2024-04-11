@@ -161,6 +161,7 @@
           :layer-is-closable="!isEmbed"
           :layer-opacity-is-changable="!isEmbed"
           :is-open="i === 0"
+          :user="user"
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
         />
@@ -309,7 +310,9 @@ export default {
   overflow: hidden;
   border-radius: var(--radius-normal);
   box-shadow: var(--shadow-normal);
-  transition: width 0.1s ease, border-radius 0.1s;
+  transition:
+    width 0.1s ease,
+    border-radius 0.1s;
 }
 
 .buttons.isOpen {

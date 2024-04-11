@@ -89,6 +89,7 @@ import SwitchSlider from "./SwitchSlider.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import Spinner from "@/components/Spinner.vue";
 import MarkerIcon from "../assets/icons/marker-icon.svg";
+import { getFetchParameters } from "../utils/auth";
 
 export default {
   name: "FeatureTable",
@@ -106,6 +107,7 @@ export default {
     position: Object,
     query: String,
     selectedArea: Object,
+    user: Object,
   },
   data() {
     return {
@@ -223,7 +225,7 @@ export default {
         const url = new URL(this.layer.url);
         url.search = params.toString();
 
-        const result = await fetch(url.toString(), this.getFetchParameters());
+        const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
         const data = await result.json();
 
         this.featureCollection = data;
@@ -281,7 +283,7 @@ export default {
         const url = new URL(this.layer.url);
         url.search = params.toString();
 
-        const result = await fetch(url.toString(), this.getFetchParameters());
+        const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
 
         const data = await result.json();
         const featureType = data.featureTypes[0];
@@ -373,15 +375,6 @@ export default {
       });
 
       this.$emit("on-fit", geometry.getExtent());
-    },
-    getFetchParameters() {
-      if (this.layer.source && this.layer.source.authenticate && this.user && this.user.token) {
-        return {
-          headers: { Authorization: `Bearer ${this.user.token}` },
-        };
-      }
-
-      return {};
     },
     sortColumn(prop) {
       if (this.sortKey !== prop) {
