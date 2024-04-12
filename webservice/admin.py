@@ -3,7 +3,7 @@ from reversion.admin import VersionAdmin
 from import_export.admin import ImportExportActionModelAdmin
 from import_export.formats import base_formats
 from .forms import LayerForm, LinkedDataForm
-from .models import Source, Category, Layer, Template, Selection, Map, LinkedData, Viewer
+from .models import Source, Category, Layer, Template, Selection, Map, MapLayer, LinkedData, Viewer
 from .resources import CategoryResource, LayerResource, SourceResource, SelectionResource, MapResource
 
 
@@ -15,6 +15,11 @@ class LinkedDataInline(admin.TabularInline):
 
 class TemplateInline(admin.StackedInline):
     model = Template
+    extra = 0
+
+
+class MapLayerInline(admin.TabularInline):
+    model = MapLayer
     extra = 0
 
 
@@ -154,12 +159,16 @@ class SelectionAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
 
 class MapAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title', )
-    fields = ('title', 'slug', 'features', 'settings')
+    fields = ('title', 'slug', 'features', 'settings', )
     prepopulated_fields = {'slug': ('title', )}
     filter_horizontal = ()
 
     search_fields = ['title']
     resource_classes = [MapResource]
+
+    inlines = [
+        MapLayerInline,
+    ]
 
 
 class ViewerAdmin(VersionAdmin, admin.ModelAdmin):
