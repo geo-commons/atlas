@@ -543,6 +543,13 @@ class MapLayer(models.Model):
         'Map', on_delete=models.CASCADE, related_name='map_layers')
     settings = models.JSONField()
 
+    class Meta:
+        verbose_name = 'Kaartlaag'
+        verbose_name_plural = 'Kaartlagen'
+
+    def __str__(self):
+        return f"{self.map} - {self.layer}"
+
     def to_dict(self):
         return {
             'layer': self.layer.id,
