@@ -17,15 +17,6 @@ def forwards_func(apps, _):
             )
 
 
-def reverse_func(apps, _):
-    Map = apps.get_model('webservice', 'Map')
-    MapLayer = apps.get_model('webservice', 'MapLayer')
-
-    for current_map in Map.objects.all():
-        current_map.old_layers.set(current_map.layers.all())
-        MapLayer.objects.filter(map=current_map).delete()
-
-
 class Migration(migrations.Migration):
     dependencies = [
         (
@@ -35,5 +26,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(forwards_func, reverse_func),
+        migrations.RunPython(forwards_func, migrations.RunPython.noop),
     ]
