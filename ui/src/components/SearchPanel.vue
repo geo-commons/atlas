@@ -99,7 +99,7 @@ export default {
         const result = await fetch(
           `${suggestEndpoint}?fq=gemeentenaam:(${encodeURIComponent(
             this.$store.state.config.suggest_municipalities,
-          )})&q=${encodeURIComponent(this.query)}`,
+          )})&fq=bron:BAG&q=${encodeURIComponent(this.query)}`,
         );
         const data = await result.json();
 
