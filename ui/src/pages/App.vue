@@ -1,5 +1,5 @@
 <template>
-  <div class="app" :style="computedStyle">
+  <div class="app">
     <header-menu v-if="!isEmbed && config.features.portal" />
     <map-renderer
       v-if="readyToRenderMap"
