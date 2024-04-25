@@ -12,8 +12,21 @@
           <div class="coordinate-wrapper">
             <h1 v-if="!searchQuery.title">{{ searchQuery.coordinates }}</h1>
             <h4 v-else>{{ searchQuery.coordinates }}</h4>
-            <tippy placement="bottom-start" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="null">
-              <button class="iconbutton __round show-on-hover" aria-label="Toon meer informatie">
+            <tippy
+              placement="bottom-start"
+              theme="popover"
+              trigger="click"
+              :distance="8"
+              :delay="[0, 0]"
+              :a11y="null"
+              :interactive="true"
+            >
+              <button
+                v-tippy
+                class="iconbutton __round show-on-hover"
+                content="Toon EPSG:4326 projectie"
+                aria-label="Toon EPSG:4326 projectie"
+              >
                 <marker-icon class="icon __small" />
               </button>
               <template #content>
@@ -184,19 +197,19 @@ h4 {
 }
 
 .heading {
-  padding: 10px 16px;
+  padding: 8px;
   text-align: center;
   border-bottom: 1px solid var(--color-grey-60);
 }
 
 .title {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: var(--font-size-normal);
   font-weight: var(--font-weight-normal);
 }
 
 .property {
-  padding: 10px 16px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   font-weight: var(--font-weight-normal);

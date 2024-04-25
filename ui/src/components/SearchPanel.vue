@@ -13,7 +13,7 @@
           v-model="query"
           type="search"
           name="search"
-          placeholder="Zoek adres"
+          placeholder="Zoek adres of coördinaten"
           autocomplete="off"
           aria-autocomplete="list"
           role="combobox"
@@ -21,6 +21,7 @@
           class="search-address"
           :aria-expanded="showSuggestions && results.length ? true : null"
           @keyup="onSearch"
+          @keydown.enter.prevent="selectFirstAvailable"
         />
       </template>
 
@@ -82,11 +83,23 @@ export default {
       );
     },
   },
+  watch: {
+    "$store.state.searchQuery"(newValue, oldValue) {
+      if (newValue.coordinates !== oldValue.coordinates) {
+        this.results = [];
+      }
+    },
+  },
   methods: {
     toggleDataPanel() {
       this.$emit("toggle-data-panel");
     },
-    async onSearch() {
+    async onSearch(e) {
+      // Since there is a separate enter key event we want to ignore it here.
+      if (e.key === "Enter") {
+        return;
+      }
+
       this.results = [];
 
       if (!this.query) {
@@ -160,7 +173,18 @@ export default {
         this.$store.commit("setAlert", "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
       }
     },
+    async selectFirstAvailable(e) {
+      if (!this.results.length) {
+        return;
+      }
+
+      await this.onNavigate(e, this.results[0]);
+    },
     parseCoordinateQuery() {
+      // If the query contains any alphabetic character the user is searching for an address instead of coordinates.
+      if (/[a-z]/i.test(this.query)) {
+        return;
+      }
       // Remove whitespace and parentheses and split the query on "," and ";".
       const coordinates = this.query.replace(/[() ]/g, "").split(/[\s,;]+/);
       // Next map the strings to integers.
@@ -180,7 +204,7 @@ export default {
         const coordinateResult = {
           type: "coordinates",
           coordinates: intCoordinates,
-          weergavenaam: `(${intCoordinates.join(", ")})`,
+          weergavenaam: `${intCoordinates.join(", ")}`,
         };
         this.results.push(coordinateResult);
       }
