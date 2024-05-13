@@ -234,6 +234,14 @@
         }
     },
     {
+        "model": "webservice.source",
+        "pk": 12,
+        "fields": {
+            "title": "PDOK Achtergrondkaart",
+            "url": "https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0"
+        }
+    },
+    {
         "model": "webservice.layer",
         "pk": 3,
         "fields": {
@@ -7905,8 +7913,8 @@
         "fields": {
             "slug": "topografische-kaart-grijs",
             "title": "Topografische kaart",
-            "layer_name": "topp:topografische_kaart_grijs",
-            "layer_source": 1,
+            "layer_name": "grijs",
+            "layer_source": 12,
             "format": "image/png",
             "meta_name": "Topografische kaart grijs",
             "meta_description": "Basisregistratie Topografie BRT",
@@ -7923,7 +7931,7 @@
             "closed_dataset": false,
             "login_required": false,
             "published": true,
-            "source_type": "WMS",
+            "source_type": "WMTS",
             "is_base": true,
             "is_visible": true,
             "not_in_atlas": false,
@@ -8848,7 +8856,7 @@
         "fields": {
             "source": 10,
             "title": "bag adressen",
-            "layer_name": "topp:bag_adressen",
+            "layer_name": "topp:bag_vbo_pand",
             "url": "https://datalab.purmerend.nl/geoserver/topp/wms?",
             "source_key": "gebouwnummer",
             "target_key": "gebouwnummer",
