@@ -166,6 +166,7 @@
         "pk": 1,
         "fields": {
             "title": "https://datalab.purmerend.nl/geoserver/topp/wms",
+            "slug": "datalab_purmerend_nl_geoserver_topp_wms",
             "url": "https://datalab.purmerend.nl/geoserver/topp/wms"
         }
     },
@@ -174,6 +175,7 @@
         "pk": 2,
         "fields": {
             "title": "https://dpt.purmerend.nl/geoserver/topp/wms?",
+            "slug": "dpt_purmerend_nl_geoserver_topp_wms",
             "url": "https://dpt.purmerend.nl/geoserver/topp/wms?"
         }
     },
@@ -182,6 +184,7 @@
         "pk": 3,
         "fields": {
             "title": "https://datalab.purmerend.nl/geoserver/topp/wms?format=image/vnd.jpeg-png&",
+            "slug": "purmerend_nl_geoserver_topp_wms_format_image_vnd",
             "url": "https://datalab.purmerend.nl/geoserver/topp/wms?format=image/vnd.jpeg-png&"
         }
     },
@@ -190,6 +193,7 @@
         "pk": 5,
         "fields": {
             "title": "https://datalab.purmerend.nl/geoserver/topp/wfs?",
+            "slug": "datalab_purmerend_nl_geoserver_topp_wfs",
             "url": "https://datalab.purmerend.nl/geoserver/topp/wfs?"
         }
     },
@@ -198,6 +202,7 @@
         "pk": 6,
         "fields": {
             "title": "https://hhnk.lizard.net/wms/raster_4c4d3d7f-6dfd-486d-a8b0-65da92187ed4/?",
+            "slug": "hhnk_lizard_wms_raster",
             "url": "https://hhnk.lizard.net/wms/raster_4c4d3d7f-6dfd-486d-a8b0-65da92187ed4/?"
         }
     },
@@ -206,6 +211,7 @@
         "pk": 7,
         "fields": {
             "title": "https://hhnk.lizard.net/wms/raster_1927e4cb-7598-4baf-b28e-14dcac29baae/?request=GetCapabilities",
+            "slug": "hhnk_lizard_wms_raster_capabilities",
             "url": "https://hhnk.lizard.net/wms/raster_1927e4cb-7598-4baf-b28e-14dcac29baae/?request=GetCapabilities"
         }
     },
@@ -214,6 +220,7 @@
         "pk": 9,
         "fields": {
             "title": "BRK PDOK",
+            "slug": "brk_pdok",
             "url": "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0"
         }
     },
@@ -222,6 +229,7 @@
         "pk": 10,
         "fields": {
             "title": "PDOK",
+            "slug": "pdok",
             "url": "https://service.pdok.nl/kadaster/cp/wms/v1_0"
         }
     },
@@ -230,6 +238,7 @@
         "pk": 11,
         "fields": {
             "title": "https://datalab.purmerend.nl/geoserver/gwc/service/wmts",
+            "slug": "datalab_purmerend_nl_geoserver_gwc_service_wmts",
             "url": "https://datalab.purmerend.nl/geoserver/gwc/service/wmts"
         }
     },
@@ -238,6 +247,7 @@
         "pk": 12,
         "fields": {
             "title": "PDOK Achtergrondkaart",
+            "slug": "pdok_achtergrondkaart",
             "url": "https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0"
         }
     },
