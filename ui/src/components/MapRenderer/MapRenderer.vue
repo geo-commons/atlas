@@ -1,5 +1,6 @@
 <template>
   <div
+    id="map-container"
     ref="mapContainer"
     class="map-container"
     :class="{ showInfoPanel, showDataPanel, portalHeader: config.features.portal }"

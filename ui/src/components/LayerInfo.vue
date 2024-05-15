@@ -1,5 +1,13 @@
 <template>
-  <tippy theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="null" :interactive="true">
+  <tippy
+    theme="popover"
+    trigger="click"
+    :distance="8"
+    :delay="[0, 0]"
+    :a11y="null"
+    :interactive="true"
+    :append-to="appendEl"
+  >
     <button
       v-tippy
       content="Meer informatie"
@@ -66,7 +74,16 @@ export default {
     layer: Object,
     showAlways: Boolean,
   },
+  data() {
+    return {
+      appendEl: null,
+    };
+  },
   created() {
+    // The vue tippy pop up does not escape the parent container
+    // when the tippy popup is placed in a scrollable container.
+    // Using the append-to property on the map-container fixes this.
+    this.appendEl = document.getElementById("map-container");
     this.markdownOptions = {
       linkify: true,
     };
