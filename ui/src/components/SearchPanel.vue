@@ -43,6 +43,8 @@
 <script>
 import SearchForm from "./SearchForm";
 import { EPSG28992Bounds } from "@/utils/projections";
+import { useGlobalStore } from "@/stores";
+import { mapStores } from "pinia";
 
 const suggestEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
 const freeEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
@@ -67,14 +69,15 @@ export default {
     };
   },
   computed: {
+    ...mapStores(useGlobalStore),
     query: {
       get() {
-        return this.$store.state.searchQuery.title
-          ? this.$store.state.searchQuery.title
-          : this.$store.state.searchQuery.coordinates;
+        return this.globalStore.searchQuery.title
+          ? this.globalStore.searchQuery.title
+          : this.globalStore.searchQuery.coordinates;
       },
       set(value) {
-        this.$store.commit("setSearchQuery", { title: value });
+        this.globalStore.setSearchQuery({ title: value });
       },
     },
     visibleLayers() {
@@ -83,8 +86,9 @@ export default {
       );
     },
   },
+  // TODO: check if this works
   watch: {
-    "$store.state.searchQuery"(newValue, oldValue) {
+    "this.globalStore.searchQuery"(newValue, oldValue) {
       if (newValue.coordinates !== oldValue.coordinates) {
         this.results = [];
       }
@@ -111,7 +115,7 @@ export default {
       try {
         const result = await fetch(
           `${suggestEndpoint}?fq=gemeentenaam:(${encodeURIComponent(
-            this.$store.state.config.suggest_municipalities,
+            this.globalStore.config.suggest_municipalities,
           )})&fq=bron:BAG&q=${encodeURIComponent(this.query)}`,
         );
         const data = await result.json();
@@ -123,7 +127,7 @@ export default {
         this.parseCoordinateQuery();
       } catch (e) {
         console.error(e);
-        this.$store.commit("setAlert", "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
+        this.globalStore.setAlert("Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
       }
     },
     async onNavigate(e, suggestion) {
@@ -170,7 +174,7 @@ export default {
         this.showSuggestions = false;
       } catch (e) {
         console.error(e);
-        this.$store.commit("setAlert", "Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
+        this.globalStore.setAlert("Er is een fout opgetreden, controleer de verbinding en probeer het opnieuw.");
       }
     },
     async selectFirstAvailable(e) {

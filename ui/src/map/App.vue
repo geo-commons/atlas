@@ -15,9 +15,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import HeaderMenu from "../components/HeaderMenu";
 import MapRenderer from "../components/MapRenderer/MapRenderer";
+import { mapState, mapStores } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "App",
@@ -31,12 +32,8 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      position: (state) => state.position,
-      layers: (state) => state.layers,
-      config: (state) => state.config,
-      map: (state) => state.map,
-    }),
+    ...mapStores(useGlobalStore),
+    ...mapState(useGlobalStore, ["position", "layers", "config", "map"]),
     visibleLayers() {
       if (this.map.layers) {
         // Get base layers.
@@ -98,10 +95,10 @@ export default {
   },
   methods: {
     positionChanged(position) {
-      this.$store.commit("setPosition", position);
+      this.globalStore.setPosition(position);
     },
     layersChanged(layers) {
-      this.$store.commit("setLayers", layers);
+      this.globalStore.setLayers(layers);
     },
     pushHistoryState() {
       const basePath = /(.*?)(@|$)/.exec(window.location.pathname);

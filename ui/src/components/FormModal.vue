@@ -47,7 +47,7 @@ export default {
   mounted() {
     this.setTabMode(this.toggleModal);
   },
-  destroyed() {
+  unmounted() {
     this.enableTabOutside(this.modal);
   },
   methods: {

@@ -160,8 +160,9 @@ import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import StatusIndicatorComponent from "@/admin/components/StatusIndicator.vue";
 import Cookies from "js-cookie";
 import FilterSelect from "@/components/FilterSelect.vue";
-import { mapState } from "vuex";
 import { formatDateValue } from "@/utils/date-formatter";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "UserList",
@@ -189,8 +190,8 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      currentUser: (state) => state.user,
+    ...mapState(useGlobalStore, {
+      currentUser: "user",
     }),
     sortedUsers() {
       if (this.sortKey && this.users) {

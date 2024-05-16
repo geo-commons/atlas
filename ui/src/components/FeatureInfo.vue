@@ -7,11 +7,11 @@
           <table>
             <tbody>
               <tr v-for="property in filterProperties(feature.properties)" :key="property">
-                <td>
+                <td class="text-capitalize">
                   {{
                     layer.friendly_fields && layer.friendly_fields[property]
                       ? layer.friendly_fields[property]
-                      : property | capitalize
+                      : property
                   }}
                 </td>
                 <td>
@@ -19,11 +19,11 @@
                 </td>
               </tr>
               <tr v-for="property in Object.keys(layer.templated_properties)" :key="property">
-                <td>
+                <td class="text-capitalize">
                   {{
                     layer.friendly_fields && layer.friendly_fields[property]
                       ? layer.friendly_fields[property]
-                      : property | capitalize
+                      : property
                   }}
                 </td>
                 <td>
@@ -60,7 +60,6 @@
 
 <script>
 import nunjucks from "nunjucks";
-import { mapState } from "vuex";
 import { getForViewAndSize } from "ol/extent";
 import FeatureTableExpandable from "./FeatureTableExpandable";
 import TableList from "./TableList";
@@ -70,6 +69,8 @@ import ExpandButton from "./ExpandButton";
 import RichValue from "./RichValue";
 import FeatureInfoTemplate from "./FeatureInfoTemplate";
 import MarkdownTemplate from "./MarkdownTemplate";
+import { mapState, mapStores } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -83,15 +84,6 @@ export default {
     FeatureInfoTemplate,
     MarkdownTemplate,
   },
-  filters: {
-    capitalize: function (value) {
-      if (!value) return "";
-      // Replace underscores by spaces
-      value = value.toString().replace(/_/g, " ");
-      // Uppercase first character
-      return value.charAt(0).toUpperCase() + value.slice(1);
-    },
-  },
   props: {
     layer: Object,
     position: Object,
@@ -104,9 +96,8 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      user: (state) => state.user,
-    }),
+    ...mapStores(useGlobalStore),
+    ...mapState(useGlobalStore, ["user"]),
     featureInfoTitle() {
       if (this.features.length > 1) {
         return `${this.layer.title} (${this.features.length})`;
@@ -196,7 +187,7 @@ export default {
     },
     setPosition(value) {
       this.$emit("set-position", value);
-      this.$store.commit("setPosition", value);
+      this.globalStore.setPosition(value);
     },
     filterProperties(fetchedProperties) {
       if (this.layer.display_properties.length > 0) {

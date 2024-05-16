@@ -59,7 +59,7 @@
 
 <script>
 import Cookies from "js-cookie";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 
 import MapRenderer from "../../components/MapRenderer/MapRenderer";
 import MapForm from "../components/MapForm";
@@ -68,6 +68,7 @@ import ListPanelAdmin from "../components/ListPanelAdmin";
 import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
 import MapLayer from "@/admin/components/MapLayer.vue";
 import LayerListPanel from "../components/LayerListPanel.vue";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "MapCreateUpdate",
@@ -92,11 +93,7 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      position: (state) => state.position,
-      layers: (state) => state.layers,
-      config: (state) => state.config,
-    }),
+    ...mapState(useGlobalStore, ["position", "layers", "config"]),
     visibleLayers() {
       if (this.data.layers) {
         let configuredLayers;

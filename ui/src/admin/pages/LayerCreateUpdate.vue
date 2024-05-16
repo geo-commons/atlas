@@ -16,11 +16,11 @@
           <div class="available-groups">
             <label class="question-label" for="list1">Beschikbare groepen</label>
             <draggable
+              v-bind="dragOptions"
               v-model="availableGroups"
               tag="ul"
               item-key="id"
               group="groups"
-              v-bind="dragOptions"
               role="listbox"
             >
               <template #item="{ element }">
@@ -38,11 +38,11 @@
           <div class="selected-groups">
             <label class="question-label" for="list1">Geselecteerde groepen</label>
             <draggable
+              v-bind="dragOptions"
               v-model="selectedGroups"
               tag="ul"
               item-key="id"
               group="groups"
-              v-bind="dragOptions"
               role="listbox"
             >
               <template #item="{ element }">

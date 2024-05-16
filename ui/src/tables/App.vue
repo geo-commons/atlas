@@ -6,8 +6,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import HeaderMenu from "../components/HeaderMenu";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "App",
@@ -15,9 +16,7 @@ export default {
     HeaderMenu,
   },
   computed: {
-    ...mapState({
-      config: (state) => state.config,
-    }),
+    ...mapState(useGlobalStore, ["config"]),
   },
 };
 </script>

@@ -2,32 +2,16 @@ import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
-import Vue from "vue";
-import Vuex from "vuex";
+import { createApp } from "vue";
 import VueTippy from "vue-tippy";
 
 import App from "./pages/App";
 import LegacyEmbedModal from "./pages/LegacyEmbedModal";
-import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
 import { isMobile } from "./utils/helpers";
 import detectKeyboard from "./utils/detect-keyboard";
-
-Vue.use(Vuex);
-Vue.config.productionTip = false;
-
-Vue.use(VueTippy, {
-  directive: "tippy",
-  distance: 5,
-  placement: "top",
-  duration: [200, 175],
-  hideOnClick: true,
-  interactive: true,
-  ignoreAttributes: true,
-  allowHTML: false,
-  boundary: "viewport",
-  delay: [1000, 0],
-});
+import { createPinia } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -69,15 +53,29 @@ document.addEventListener("DOMContentLoaded", () => {
     alert: "",
   };
 
-  const store = createStore(initialState);
+  const pinia = createPinia();
 
   new detectKeyboard();
 
-  new Vue({
-    el: "#app",
-    store,
-    render: (c) => c(App),
-  });
+  const app = createApp(App)
+    .use(pinia)
+    .use(VueTippy, {
+      directive: "tippy",
+      distance: 5,
+      placement: "top",
+      duration: [200, 175],
+      hideOnClick: true,
+      interactive: true,
+      ignoreAttributes: true,
+      allowHTML: false,
+      boundary: "viewport",
+      delay: [1000, 0],
+    });
+
+  const piniaStore = useGlobalStore();
+  piniaStore.setInitialState(initialState);
+
+  app.mount("#app");
 });
 
 // Embed map in jQuery frontend
@@ -102,12 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
     alert: "",
   };
 
-  const store = createStore(initialState);
-  window.vueStore = store; // assign store to window for interoperability with old jQuery frontend
+  const pinia = createPinia();
 
-  new Vue({
-    el: "#embedCode",
-    store,
-    render: (c) => c(LegacyEmbedModal),
-  });
+  const app = createApp(LegacyEmbedModal).use(pinia);
+
+  const piniaStore = useGlobalStore();
+  piniaStore.setInitialState(initialState);
+
+  app.mount("#embedCode");
 });

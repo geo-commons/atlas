@@ -21,14 +21,20 @@
 </template>
 
 <script>
+import { useGlobalStore } from "@/stores";
+import { mapStores } from "pinia";
+
 export default {
   name: "AlertMessage",
   props: {
     alert: String,
   },
+  computed: {
+    ...mapStores(useGlobalStore),
+  },
   methods: {
     onClose() {
-      this.$store.commit("setAlert", "");
+      this.globalStore.setAlert("");
     },
   },
 };
