@@ -4,6 +4,10 @@
       <div class="page-title-wrapper">
         <h1>Kaartlagen</h1>
         <div class="top-menu-button-container">
+          <button class="button __secondary_admin __normal" type="button" @click="toggleAdvance">
+            <CogIcon class="icon" />
+            {{ advanceSettings ? "Minder" : "Meer" }} opties
+          </button>
           <router-link
             :to="{
               name: 'sort',
@@ -12,9 +16,11 @@
             class="button __secondary_admin __normal"
             type="button"
             aria-label="Ga naar sortering pagina"
-            ><SortIcon class="icon" />Sortering</router-link
           >
-          <button class="button __primary_admin __normal" type="button" @click="openFormModal">
+            <SortIcon class="icon" />
+            Sortering
+          </router-link>
+          <button class="button __primary_admin __normal" type="button" @click="openFormModal('newLayer')">
             <AddIcon class="icon __white" />
             Nieuwe laag
           </button>
@@ -49,6 +55,21 @@
         </div>
       </div>
 
+      <div v-if="advanceSettings" class="advance-settings-wrapper">
+        <div class="advance-button-wrapper">
+          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('import')">
+            <ArrowDownTrayIcon class="icon" />
+            Importeren
+          </button>
+          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('export')">
+            <ArrowUpTrayIcon class="icon" />
+            Exporteren
+          </button>
+        </div>
+
+        <span>{{ selectedRowsDisplayText }}</span>
+      </div>
+
       <PaginationComponent
         :items="visibleLayers"
         :loading="loading"
@@ -61,7 +82,10 @@
           <table class="admin-table">
             <thead>
               <tr class="table-border">
-                <th class="first-column-padding">
+                <th v-if="advanceSettings" class="first-column-padding">
+                  <input type="checkbox" @change="onCheckRow(null, true)" />
+                </th>
+                <th :class="{ 'first-column-padding': !advanceSettings }">
                   <SortableTableHeaderItem
                     :header-text="'Titel'"
                     :property="'title'"
@@ -94,7 +118,10 @@
             </thead>
             <tbody>
               <tr v-for="layer in paginatedData" :key="layer.id" class="table-border">
-                <td class="first-column-padding">
+                <td v-if="advanceSettings" class="first-column-padding">
+                  <input type="checkbox" :checked="checkedRows.includes(layer.id)" @change="onCheckRow(layer.id)" />
+                </td>
+                <td :class="{ 'first-column-padding': !advanceSettings }">
                   <router-link
                     class="admin-title-link"
                     type="button"
@@ -141,10 +168,15 @@
       </PaginationComponent>
     </div>
 
-    <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-      <template #header><h3>Configureer nieuwe laag</h3> </template>
+    <FormModal v-show="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+      <template #header>
+        <h3 v-if="modalType === 'newLayer'">Configureer nieuwe kaartlaag</h3>
+        <h3 v-else-if="modalType === 'import'">Importeer bestaande kaartlaag</h3>
+        <h3 v-else-if="modalType === 'export'">Exporteer bestaande kaartlagen</h3>
+      </template>
       <template #body>
         <AdminFormSections
+          v-if="modalType === 'newLayer'"
           ref="formSections"
           :sections="sections"
           :initial-values="newLayerData"
@@ -153,6 +185,12 @@
           :object-specific-save="saveLayer"
           @close="closeFormModal"
         />
+        <div v-else-if="modalType === 'import'">
+          <AdminFileImport :object-name="'kaartlagen'" @import-successful="getLayers" @close="closeFormModal" />
+        </div>
+        <div v-else-if="modalType === 'export'">
+          <AdminFileExport :object-name="'kaartlagen'" :selected-rows="selectedItems" @close="closeFormModal" />
+        </div>
       </template>
     </FormModal>
   </div>
@@ -168,13 +206,20 @@ import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import TrashIcon from "../../assets/icons/trash-icon.svg";
 import EditIcon from "../../assets/icons/edit-icon.svg";
 import AddIcon from "../../assets/icons/add-icon.svg";
+import ArrowUpTrayIcon from "../../assets/icons/arrow-up-tray-icon.svg";
+import ArrowDownTrayIcon from "../../assets/icons/arrow-down-tray-icon.svg";
+import CogIcon from "../../assets/icons/cog-icon.svg";
 import SearchIcon from "../../assets/icons/search-icon.svg";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import SortIcon from "@/assets/icons/sort-icon.svg";
+import AdminFileExport from "@/admin/components/AdminFileExport.vue";
+import AdminFileImport from "@/admin/components/AdminFileImport.vue";
 
 export default {
   name: "LayerList",
   components: {
+    AdminFileImport,
+    AdminFileExport,
     SortIcon,
     AdminFormSections,
     SortableTableHeaderItem,
@@ -184,6 +229,9 @@ export default {
     TrashIcon,
     EditIcon,
     AddIcon,
+    ArrowUpTrayIcon,
+    ArrowDownTrayIcon,
+    CogIcon,
     SearchIcon,
   },
   data() {
@@ -203,6 +251,10 @@ export default {
       sortAscending: true,
       sections: {},
       loading: false,
+      advanceSettings: false,
+      checkedRows: [],
+      selectedItems: null,
+      modalType: null,
     };
   },
   computed: {
@@ -248,6 +300,19 @@ export default {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
       const end = start + this.nrOfRecords;
       return this.visibleLayers.slice(start, end);
+    },
+    selectedRowsDisplayText() {
+      const nrOfRows = this.checkedRows.length;
+
+      if (!nrOfRows) {
+        return "Geen rijen geselecteerd";
+      }
+
+      if (nrOfRows === 1) {
+        return "1 rij geselecteerd";
+      }
+
+      return nrOfRows + " rijen geselecteerd";
     },
   },
   created() {
@@ -355,17 +420,25 @@ export default {
         layer.status = layer.published ? "Gepubliceerd" : "Concept";
       });
     },
-    openFormModal() {
-      this.newLayerData = {
-        title: "",
-        authenticate: false,
-        metadata: { name: "", description: "", organization: "", updated: "", link: "", lineage: "", contact: "" },
-      };
+    openFormModal(modalType) {
+      if (modalType === "newLayer") {
+        this.newLayerData = {
+          title: "",
+          authenticate: false,
+          metadata: { name: "", description: "", organization: "", updated: "", link: "", lineage: "", contact: "" },
+        };
+      }
 
+      if (modalType === "export") {
+        this.selectedItems = this.layers.filter((layer) => this.checkedRows.includes(layer.id));
+      }
+
+      this.modalType = modalType;
       this.showFormModal = true;
     },
     closeFormModal() {
       this.showFormModal = false;
+      this.modalType = null;
     },
     setTableFilters(v) {
       this.selectedLayerFilters = v;
@@ -401,6 +474,32 @@ export default {
       }
 
       return sortItem[this.sortKey].toLowerCase();
+    },
+    toggleAdvance() {
+      this.advanceSettings = !this.advanceSettings;
+    },
+    onCheckRow(id, checkAll = false) {
+      if (id === null && checkAll) {
+        this.allChecked = !this.allChecked;
+
+        if (this.allChecked) {
+          this.visibleLayers.forEach((layer) => {
+            this.checkedRows.push(layer.id);
+          });
+        } else {
+          this.checkedRows = [];
+        }
+
+        return;
+      }
+
+      if (this.checkedRows.includes(id)) {
+        const index = this.checkedRows.indexOf(id);
+        this.checkedRows.splice(index, 1);
+        return;
+      }
+
+      this.checkedRows.push(id);
     },
     getSections() {
       return {

@@ -4,6 +4,10 @@
       <div class="page-title-wrapper">
         <h1>Categorieën</h1>
         <div class="top-menu-button-container">
+          <button class="button __secondary_admin __normal" type="button" @click="toggleAdvance">
+            <CogIcon class="icon" />
+            {{ advanceSettings ? "Minder" : "Meer" }} opties
+          </button>
           <router-link
             :to="{
               name: 'sort',
@@ -14,7 +18,7 @@
             aria-label="Ga naar sortering pagina"
             ><SortIcon class="icon" />Sortering</router-link
           >
-          <button class="button __primary_admin __normal" type="button" @click="openFormModal">
+          <button class="button __primary_admin __normal" type="button" @click="openFormModal('newCategory')">
             <AddIcon class="icon __white" />
             Nieuwe categorie
           </button>
@@ -26,6 +30,20 @@
       <div v-if="!loading" class="admin-search-wrapper">
         <SearchIcon class="icon" />
         <input id="categories-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek categorie" />
+      </div>
+
+      <div v-if="advanceSettings" class="advance-settings-wrapper">
+        <div class="advance-button-wrapper">
+          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('import')">
+            <ArrowDownTrayIcon class="icon" />
+            Importeren
+          </button>
+          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('export')">
+            <ArrowUpTrayIcon class="icon" />
+            Exporteren
+          </button>
+        </div>
+        <span>{{ selectedRowsDisplayText }}</span>
       </div>
 
       <PaginationComponent
@@ -40,7 +58,10 @@
           <table class="admin-table">
             <thead>
               <tr class="table-border">
-                <th class="first-column-padding">
+                <th v-if="advanceSettings" class="first-column-padding">
+                  <input type="checkbox" @change="onCheckRow(null, true)" />
+                </th>
+                <th :class="{ 'first-column-padding': !advanceSettings }">
                   <SortableTableHeaderItem
                     :header-text="'Titel'"
                     :property="'title'"
@@ -55,7 +76,14 @@
             </thead>
             <tbody>
               <tr v-for="category in paginatedData" :key="category.id" class="table-border">
-                <td class="first-column-padding">
+                <td v-if="advanceSettings" class="first-column-padding">
+                  <input
+                    type="checkbox"
+                    :checked="checkedRows.includes(category.id)"
+                    @change="onCheckRow(category.id)"
+                  />
+                </td>
+                <td :class="{ 'first-column-padding': !advanceSettings }">
                   <router-link
                     class="admin-title-link"
                     type="button"
@@ -97,9 +125,14 @@
     </div>
 
     <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-      <template #header><h3>Configureer nieuwe categorie</h3></template>
+      <template #header>
+        <h3 v-if="modalType === 'newCategory'">Configureer nieuwe categorie</h3>
+        <h3 v-else-if="modalType === 'import'">Importeer bestaande categorie(ën)</h3>
+        <h3 v-else-if="modalType === 'export'">Exporteer bestaande categorie(ën)</h3>
+      </template>
       <template #body>
         <AdminFormSections
+          v-if="modalType === 'newCategory'"
           ref="formSections"
           :sections="sections"
           :initial-values="newCategoryData"
@@ -108,6 +141,12 @@
           :object-specific-save="saveCategory"
           @close="closeFormModal"
         />
+        <div v-else-if="modalType === 'import'">
+          <AdminFileImport :object-name="'categorieën'" @import-successful="getCategories" @close="closeFormModal" />
+        </div>
+        <div v-else-if="modalType === 'export'">
+          <AdminFileExport :object-name="'categorieën'" :selected-rows="selectedItems" @close="closeFormModal" />
+        </div>
       </template>
     </FormModal>
   </div>
@@ -125,10 +164,20 @@ import AddIcon from "../../assets/icons/add-icon.svg";
 import SearchIcon from "../../assets/icons/search-icon.svg";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import SortIcon from "../../assets/icons/sort-icon.svg";
+import CogIcon from "@/assets/icons/cog-icon.svg";
+import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
+import ArrowUpTrayIcon from "@/assets/icons/arrow-up-tray-icon.svg";
+import AdminFileImport from "@/admin/components/AdminFileImport.vue";
+import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 
 export default {
   name: "CategoryList",
   components: {
+    AdminFileExport,
+    AdminFileImport,
+    ArrowUpTrayIcon,
+    ArrowDownTrayIcon,
+    CogIcon,
     SortIcon,
     AdminFormSections,
     SortableTableHeaderItem,
@@ -151,6 +200,10 @@ export default {
       sortAscending: true,
       sections: {},
       loading: false,
+      advanceSettings: false,
+      checkedRows: [],
+      selectedItems: null,
+      modalType: null,
     };
   },
   computed: {
@@ -178,6 +231,19 @@ export default {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
       const end = start + this.nrOfRecords;
       return this.visibleCategories.slice(start, end);
+    },
+    selectedRowsDisplayText() {
+      const nrOfRows = this.checkedRows.length;
+
+      if (!nrOfRows) {
+        return "Geen rijen geselecteerd";
+      }
+
+      if (nrOfRows === 1) {
+        return "1 rij geselecteerd";
+      }
+
+      return nrOfRows + " rijen geselecteerd";
     },
   },
   created() {
@@ -241,16 +307,27 @@ export default {
         this.getCategories();
       }
     },
-    openFormModal() {
-      this.newCategoryData = {
-        title: "",
-        authenticate: false,
-      };
+    openFormModal(modalType) {
+      if (modalType === "newCategory") {
+        this.newCategoryData = {
+          title: "",
+          authenticate: false,
+        };
+      }
 
+      if (modalType === "export") {
+        this.selectedItems = this.categories.filter((category) => this.checkedRows.includes(category.id));
+      }
+
+      this.modalType = modalType;
       this.showFormModal = true;
     },
     closeFormModal() {
       this.showFormModal = false;
+      this.modalType = null;
+    },
+    toggleAdvance() {
+      this.advanceSettings = !this.advanceSettings;
     },
     sortColumn(prop) {
       if (this.sortKey !== prop) {
@@ -259,6 +336,29 @@ export default {
       } else {
         this.sortAscending = !this.sortAscending;
       }
+    },
+    onCheckRow(id, checkAll = false) {
+      if (id === null && checkAll) {
+        this.allChecked = !this.allChecked;
+
+        if (this.allChecked) {
+          this.categories.forEach((category) => {
+            this.checkedRows.push(category.id);
+          });
+        } else {
+          this.checkedRows = [];
+        }
+
+        return;
+      }
+
+      if (this.checkedRows.includes(id)) {
+        const index = this.checkedRows.indexOf(id);
+        this.checkedRows.splice(index, 1);
+        return;
+      }
+
+      this.checkedRows.push(id);
     },
     getSections() {
       return {

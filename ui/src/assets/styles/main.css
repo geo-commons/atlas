@@ -25,6 +25,7 @@
   --color-tooltip-dark: #222222;
 
   --color-alert: #eb0000;
+  --color-succesful: #14A34A;
 
   --color-hover: rgba(0, 0, 0, 0.03);
   --color-active: rgba(0, 0, 0, 0.06);
@@ -310,8 +311,7 @@ svg {
 }
 
 .button.__normal {
-  height: 48px;
-  font-size: var(--font-size-large);
+  height: 40px;
 }
 
 .button.__small {
