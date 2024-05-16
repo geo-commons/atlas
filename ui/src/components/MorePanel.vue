@@ -34,8 +34,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import EllipsesVertIcon from "../assets/icons/ellipsis-vert-icon.svg";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "MorePanel",
@@ -55,9 +56,7 @@ export default {
     nextUrl() {
       return window.location.pathname;
     },
-    ...mapState({
-      config: (state) => state.config,
-    }),
+    ...mapState(useGlobalStore, ["config"]),
   },
   methods: {
     toggle() {

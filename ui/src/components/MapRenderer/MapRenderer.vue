@@ -253,6 +253,8 @@ import PrintModal from "@/components/PrintModal.vue";
 import DrawingModal from "@/components/DrawingModal.vue";
 import AlertMessage from "@/components/AlertMessage.vue";
 import EmbedModal from "@/components/EmbedModal.vue";
+import { useGlobalStore } from "@/stores";
+import { mapStores } from "pinia";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -351,6 +353,7 @@ export default {
     };
   },
   computed: {
+    ...mapStores(useGlobalStore),
     showInfoPanel() {
       return this.position.marker ? true : false;
     },
@@ -488,12 +491,12 @@ export default {
         }`;
 
         if (!data.response.docs || data.response.docs.length === 0) {
-          this.$store.commit("setSearchQuery", { coordinates: coordinates, coordEPSG4326: coordEPSG4326 });
+          this.globalStore.setSearchQuery({ coordinates: coordinates, coordEPSG4326: coordEPSG4326 });
           return;
         }
 
         const object = data.response.docs[0];
-        this.$store.commit("setSearchQuery", {
+        this.globalStore.setSearchQuery({
           title: object.weergavenaam,
           coordinates: coordinates,
           coordEPSG4326: coordEPSG4326,
@@ -542,7 +545,7 @@ export default {
       this.$refs.map.printToPdf(settings);
     },
     drawingSaved(id) {
-      this.$store.commit("setDrawing", id);
+      this.globalStore.setDrawing(id);
       this.modal = "drawing";
     },
     toggleModal(modal) {
@@ -612,12 +615,12 @@ export default {
       switch (result.tool) {
         case "MEASURE_AREA":
         case "MEASURE_LINE":
-          this.$store.commit("setSelectedArea", result.sketch.getGeometry());
+          this.globalStore.setSelectedArea(result.sketch.getGeometry());
           break;
         case "SELECT_AREA":
         case "SELECT_CIRCLE":
           this.showDataPanel = true;
-          this.$store.commit("setSelectedArea", result.sketch.getGeometry());
+          this.globalStore.setSelectedArea(result.sketch.getGeometry());
           break;
         case "DRAW_POINT":
         case "DRAW_LINE":

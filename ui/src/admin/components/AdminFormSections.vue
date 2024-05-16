@@ -25,9 +25,9 @@
                   :rules="getRules(question)"
                 >
                   <input
+                    v-bind="field"
                     type="checkbox"
                     :name="question.id"
-                    v-bind="field"
                     :value="true"
                     :disabled="question.disabled"
                   />

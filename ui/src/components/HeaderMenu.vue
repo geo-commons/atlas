@@ -57,15 +57,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "HeaderMenu",
   computed: {
-    ...mapState({
-      user: (state) => state.user,
-      config: (state) => state.config,
-    }),
+    ...mapState(useGlobalStore, ["user", "config"]),
     nextUrl() {
       return window.location.pathname;
     },

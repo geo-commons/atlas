@@ -92,7 +92,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import VueResizable from "vue-resizable";
 
 import GoogleMaps from "../viewers/GoogleMaps.vue";
@@ -100,6 +99,8 @@ import ObliquoViewer from "../viewers/ObliquoViewer.vue";
 import StreetSmart from "../viewers/StreetSmart.vue";
 import IframeViewer from "../viewers/IframeViewer.vue";
 import ButtonViewer from "../viewers/ButtonViewer.vue";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "PanoramaPanel",
@@ -140,9 +141,7 @@ export default {
 
       return this.availableViewers[this.selectedViewerId];
     },
-    ...mapState({
-      config: (state) => state.config,
-    }),
+    ...mapState(useGlobalStore, ["config"]),
   },
   methods: {
     toggle() {

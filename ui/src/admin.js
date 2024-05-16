@@ -2,12 +2,8 @@ import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
-import Vue from "vue";
-import Vuex from "vuex";
-import VueRouter from "vue-router";
+import { createApp } from "vue";
 import VueTippy from "vue-tippy";
-
-import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
 import App from "./admin/App";
 import AdminDashboard from "./admin/pages/AdminDashboard";
@@ -27,24 +23,10 @@ import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
 import GroupList from "@/admin/pages/GroupList.vue";
 import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
 import { defineRule } from "vee-validate";
+import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
-
-Vue.config.productionTip = false;
-
-Vue.use(Vuex);
-Vue.use(VueRouter);
-Vue.use(VueTippy, {
-  directive: "tippy",
-  distance: 5,
-  placement: "top",
-  duration: [200, 175],
-  hideOnClick: true,
-  interactive: true,
-  ignoreAttributes: true,
-  allowHTML: false,
-  boundary: "viewport",
-  delay: [1000, 0],
-});
+import { createPinia } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -153,11 +135,12 @@ const routes = [
       },
     },
   },
-  { path: "*", component: NotFound },
+  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
 ];
 
-const router = new VueRouter({
-  routes,
+const router = createRouter({
+  history: createWebHistory("/atlas/admin2/#"),
+  routes: routes,
 });
 
 // Atlas v3
@@ -186,14 +169,28 @@ document.addEventListener("DOMContentLoaded", () => {
     user: data.user,
   };
 
-  const store = createStore(initialState);
+  const pinia = createPinia();
 
   new detectKeyboard();
 
-  new Vue({
-    router,
-    store,
-    el: "#app",
-    render: (c) => c(App),
-  });
+  const app = createApp(App)
+    .use(pinia)
+    .use(router)
+    .use(VueTippy, {
+      directive: "tippy",
+      distance: 5,
+      placement: "top",
+      duration: [200, 175],
+      hideOnClick: true,
+      interactive: true,
+      ignoreAttributes: true,
+      allowHTML: false,
+      boundary: "viewport",
+      delay: [1000, 0],
+    });
+
+  const piniaStore = useGlobalStore();
+  piniaStore.setInitialState(initialState);
+
+  app.mount("#app");
 });

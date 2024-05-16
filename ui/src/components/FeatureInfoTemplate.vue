@@ -29,12 +29,13 @@
 
 <script>
 import nunjucks from "nunjucks";
-import { mapState } from "vuex";
 import fetchDot from "fetch-dot";
 
 import ExpandButton from "./ExpandButton";
 import TableList from "./TableList";
 import Markdown from "./Markdown";
+import { useGlobalStore } from "@/stores";
+import { mapState } from "pinia";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -60,14 +61,12 @@ export default {
     this.fetchData();
   },
   computed: {
-    ...mapState({
-      user: (state) => state.user,
-    }),
+    ...mapState(useGlobalStore, ["user"]),
   },
   methods: {
     async fetchData() {
       const url = new URL(
-        this.template.source.url + nunjucks.renderString(this.template.endpoint, this.feature.properties)
+        this.template.source.url + nunjucks.renderString(this.template.endpoint, this.feature.properties),
       );
 
       let params = {};

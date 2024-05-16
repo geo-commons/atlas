@@ -28,6 +28,8 @@
 import { getDefinitions } from "../utils/projections";
 import { register } from "ol/proj/proj4";
 import { transform } from "ol/proj";
+import { useGlobalStore } from "@/stores";
+import { mapStores } from "pinia";
 
 // Register EPSG:28992 projection
 register(getDefinitions());
@@ -41,6 +43,9 @@ export default {
     return {
       isLoading: false,
     };
+  },
+  computed: {
+    ...mapStores(useGlobalStore),
   },
   methods: {
     retrieveLocation(e) {
@@ -56,7 +61,7 @@ export default {
         const convertedPosition = transform(
           [position.coords.longitude, position.coords.latitude],
           "EPSG:4326",
-          "EPSG:28992"
+          "EPSG:28992",
         );
 
         this.$emit("set-position", {
@@ -70,9 +75,8 @@ export default {
       };
 
       const onError = () => {
-        this.$store.commit(
-          "setAlert",
-          "Er is een fout opgetreden tijdens het ophalen van de geolocatie. Controleer de permissies en probeer het opnieuw."
+        this.globalStore.setAlert(
+          "Er is een fout opgetreden tijdens het ophalen van de geolocatie. Controleer de permissies en probeer het opnieuw.",
         );
         this.isLoading = false;
       };
@@ -81,7 +85,7 @@ export default {
         this.isLoading = true;
         navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
       } else {
-        this.$store.commit("setAlert", "Geolocatie wordt niet ondersteund door de browser.");
+        this.globalStore.setAlert("Geolocatie wordt niet ondersteund door de browser.");
       }
     },
   },

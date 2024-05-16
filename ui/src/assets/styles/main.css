@@ -574,3 +574,7 @@ hr {
   color: var(--color-alert);
   font-weight: var(--font-weight-bold);
 }
+
+.text-capitalize {
+  text-transform: capitalize;
+}

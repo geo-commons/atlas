@@ -22,10 +22,11 @@ import Cookies from "js-cookie";
 import GeoJSON from "ol/format/GeoJSON";
 import nunjucks from "nunjucks";
 import { register } from "ol/proj/proj4";
-import { mapState } from "vuex";
 import { getDefinitions } from "@/utils/projections";
 import HeaderMenu from "../components/HeaderMenu";
-import MapRenderer from "@/components/MapRenderer/MapRenderer.vue"; // Register EPSG:28992 projection
+import MapRenderer from "@/components/MapRenderer/MapRenderer.vue";
+import { mapState, mapStores } from "pinia";
+import { useGlobalStore } from "@/stores"; // Register EPSG:28992 projection
 
 // Register EPSG:28992 projection
 register(getDefinitions());
@@ -48,19 +49,20 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      isEmbed: (state) => state.isEmbed,
-      alert: (state) => state.alert,
-      position: (state) => state.position,
-      layers: (state) => state.layers,
-      tool: (state) => state.tool,
-      user: (state) => state.user,
-      config: (state) => state.config,
-      selectedArea: (state) => state.selectedArea,
-      initiallyShowLayerList: (state) => state.initiallyShowLayerList,
-      drawing: (state) => state.drawing,
-      map: (state) => state.map,
-    }),
+    ...mapStores(useGlobalStore),
+    ...mapState(useGlobalStore, [
+      "isEmbed",
+      "alert",
+      "position",
+      "layers",
+      "tool",
+      "user",
+      "config",
+      "selectedArea",
+      "initiallyShowLayerList",
+      "drawing",
+      "map",
+    ]),
     visibleLayers() {
       if (this.map?.layers) {
         return this.layers
@@ -135,10 +137,10 @@ export default {
   },
   methods: {
     positionChanged(position) {
-      this.$store.commit("setPosition", position);
+      this.globalStore.setPosition(position);
     },
     layersChanged(layers) {
-      this.$store.commit("setLayers", layers);
+      this.globalStore.setLayers(layers);
     },
     pushHistoryState() {
       const basePath = /(.*?)(@|$)/.exec(window.location.pathname);
@@ -178,10 +180,8 @@ export default {
       }
 
       const data = await response.json();
-      this.$store.commit("setUser", {
-        ...this.user,
-        token: data.token,
-      });
+
+      this.globalStore.setUser({ ...this.user, token: data.token });
 
       this.readyToRenderMap = true;
     },

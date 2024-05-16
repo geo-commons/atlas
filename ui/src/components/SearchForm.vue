@@ -32,8 +32,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import DataPanelButton from "./DataPanelButton.vue";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "SearchForm",
@@ -48,9 +49,7 @@ export default {
     showDataPanel: Boolean,
   },
   computed: {
-    ...mapState({
-      isEmbed: (state) => state.isEmbed,
-    }),
+    ...mapState(useGlobalStore, ["isEmbed"]),
     showDataPanelButton() {
       if (this.disableDataPanelButton) {
         return false;

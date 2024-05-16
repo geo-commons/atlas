@@ -37,24 +37,20 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "IndexView",
   components: {},
   computed: {
-    ...mapState({
-      config: (state) => state.config,
-      selections: (state) => state.selections,
-      tables: (state) => state.tables,
-      maps: (state) => state.maps,
-    }),
+    ...mapState(useGlobalStore, ["config", "tables", "selections", "maps"]),
   },
   methods: {
     getSelectionURL(selection) {
       const position = this.config.position;
       return `/atlas/@${encodeURIComponent(position.center.x.toFixed(2))},${encodeURIComponent(
-        position.center.y.toFixed(2)
+        position.center.y.toFixed(2),
       )},${encodeURIComponent(Math.round(position.zoom * 100) / 100)}z/layers=${selection.layers
         .map((l) => encodeURIComponent(l.id))
         .join(",")}/base=`;

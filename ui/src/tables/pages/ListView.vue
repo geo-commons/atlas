@@ -36,9 +36,10 @@
 
 <script>
 import nunjucks from "nunjucks";
-import { mapState } from "vuex";
 import fetchDot from "fetch-dot";
 import SearchForm from "../components/SearchForm";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "ListView",
@@ -53,9 +54,7 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      tables: (state) => state.tables,
-    }),
+    ...mapState(useGlobalStore, ["tables"]),
     table() {
       const results = this.tables.filter((table) => table.slug == this.$route.params.tableSlug);
 

@@ -30,11 +30,11 @@
         </tr>
       </thead>
       <draggable
+        v-bind="dragOptions"
         v-model="items"
         tag="tbody"
         item-key="id"
         :group="group"
-        v-bind="dragOptions"
         role="listbox"
         @change="onItemMove"
         @start="dragStart"

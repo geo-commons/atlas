@@ -5,17 +5,15 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import EmbedCode from "../components/EmbedCode";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "LegacyEmbedModal",
   components: {
     EmbedCode,
   },
-  computed: mapState({
-    position: (state) => state.position,
-    layers: (state) => state.layers,
-  }),
+  computed: mapState(useGlobalStore, ["layers", "position"]),
 };
 </script>

@@ -2,29 +2,13 @@ import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
-import Vue from "vue";
-import Vuex from "vuex";
+import { createApp } from "vue";
 import VueTippy from "vue-tippy";
 
-import { createStore } from "./store";
 import { getSettingsFromPath } from "./utils/router";
 import App from "./map/App";
-
-Vue.config.productionTip = false;
-
-Vue.use(Vuex);
-Vue.use(VueTippy, {
-  directive: "tippy",
-  distance: 5,
-  placement: "top",
-  duration: [200, 175],
-  hideOnClick: true,
-  interactive: true,
-  ignoreAttributes: true,
-  allowHTML: false,
-  boundary: "viewport",
-  delay: [1000, 0],
-});
+import { useGlobalStore } from "@/stores";
+import { createPinia } from "pinia";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -53,11 +37,25 @@ document.addEventListener("DOMContentLoaded", () => {
     map: data.map,
   };
 
-  const store = createStore(initialState);
+  const pinia = createPinia();
 
-  new Vue({
-    store,
-    el: "#app",
-    render: (c) => c(App),
-  });
+  const app = createApp(App)
+    .use(pinia)
+    .use(VueTippy, {
+      directive: "tippy",
+      distance: 5,
+      placement: "top",
+      duration: [200, 175],
+      hideOnClick: true,
+      interactive: true,
+      ignoreAttributes: true,
+      allowHTML: false,
+      boundary: "viewport",
+      delay: [1000, 0],
+    });
+
+  const piniaStore = useGlobalStore();
+  piniaStore.setInitialState(initialState);
+
+  app.mount("#app");
 });

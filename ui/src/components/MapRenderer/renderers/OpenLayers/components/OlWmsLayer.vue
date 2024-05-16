@@ -3,10 +3,11 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import Projection from "ol/proj/Projection";
 import TileLayer from "ol/layer/Tile";
 import TileWMSSource from "ol/source/TileWMS";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 const rdProjection = new Projection({
   code: "EPSG:28992",
@@ -146,9 +147,7 @@ export default {
   unmounted() {
     this.map.removeLayer(this.tileLayer);
   },
-  computed: mapState({
-    user: (state) => state.user,
-  }),
+  computed: mapState(useGlobalStore, ["user"]),
 };
 </script>
 

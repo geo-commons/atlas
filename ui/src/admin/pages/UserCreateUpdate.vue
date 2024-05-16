@@ -15,11 +15,11 @@
           <div class="available-groups">
             <label class="question-label" for="list1">Beschikbare groepen</label>
             <draggable
+              v-bind="dragOptions"
               v-model="availableGroups"
               tag="ul"
               item-key="id"
               group="groups"
-              v-bind="dragOptions"
               role="listbox"
             >
               <template #item="{ element }">
@@ -37,11 +37,11 @@
           <div class="selected-groups">
             <label class="question-label" for="list1">Geselecteerde groepen</label>
             <draggable
+              v-bind="dragOptions"
               v-model="selectedGroups"
               tag="ul"
               item-key="id"
               group="groups"
-              v-bind="dragOptions"
               role="listbox"
             >
               <template #item="{ element }">
@@ -65,8 +65,9 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import { mapState } from "vuex";
 import draggable from "vuedraggable";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 draggable.compatConfig = { MODE: 3 };
 
@@ -85,8 +86,8 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      currentUser: (state) => state.user,
+    ...mapState(useGlobalStore, {
+      currentUser: "user",
     }),
     editingCurrentUser() {
       return this.currentUser.id === this.initialValues.id;

@@ -78,6 +78,8 @@ import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import CloseIcon from "@/assets/icons/close-icon.svg";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import { Tippy } from "vue-tippy";
+import { useGlobalStore } from "@/stores";
+import { mapStores } from "pinia";
 
 export default {
   name: "PointInfoPanel",
@@ -99,15 +101,16 @@ export default {
     };
   },
   computed: {
+    ...mapStores(useGlobalStore),
     visibleLayers() {
       return this.layers.filter((layer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base);
     },
     searchQuery: {
       get() {
-        return this.$store.state.searchQuery;
+        return this.globalStore.searchQuery;
       },
       set(value) {
-        this.$store.commit("setSearchQuery", { title: value, coordinates: null });
+        this.globalStore.setSearchQuery({ title: value, coordinates: null });
       },
     },
   },
