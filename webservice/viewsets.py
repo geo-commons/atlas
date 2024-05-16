@@ -1,12 +1,13 @@
 from rest_framework import viewsets, permissions, mixins
 
 from user_management.models import AtlasGroup, AtlasUser
+from webservice.mixins import DataExportImportMixin
 
 from .models import Category, Drawing, Map, Source, Layer
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer
 
 
-class MapViewSet(viewsets.ModelViewSet):
+class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Map.objects.all()
     serializer_class = MapSerializer
@@ -15,7 +16,7 @@ class MapViewSet(viewsets.ModelViewSet):
     filterset_fields = []
 
 
-class SourceViewSet(viewsets.ModelViewSet):
+class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
@@ -24,7 +25,7 @@ class SourceViewSet(viewsets.ModelViewSet):
     filterset_fields = []
 
 
-class LayerViewSet(viewsets.ModelViewSet):
+class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     serializer_class = LayerSerializer
 
     search_fields = []
@@ -48,13 +49,14 @@ class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewset
     serializer_class = DrawingSerializer
 
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CategoriesViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
     search_fields = []
     filterset_fields = []
+
 
 class UsersViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]

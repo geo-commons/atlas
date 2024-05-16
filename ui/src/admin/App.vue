@@ -80,6 +80,12 @@ select.__admin {
   background: var(--color-admin-primary-hover);
 }
 
+.advance-settings-wrapper {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
 input[type="text"],
 input[type="number"],
 input[type="email"],
@@ -127,6 +133,18 @@ input:disabled {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+}
+
+.advance-button-wrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.admin-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 30px 0;
 }
 
 .admin-search-wrapper {

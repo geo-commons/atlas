@@ -3,10 +3,20 @@
     <div class="top-menu-container">
       <div class="page-title-wrapper">
         <h1>Kaarten</h1>
-        <button class="button __primary_admin __normal __full-width-mobile" type="button" @click="openFormModal">
-          <AddIcon class="icon __white" />
-          Nieuwe kaart
-        </button>
+        <div class="top-menu-button-container">
+          <button class="button __secondary_admin __normal" type="button" @click="toggleAdvance">
+            <CogIcon class="icon" />
+            {{ advanceSettings ? "Minder" : "Meer" }} opties
+          </button>
+          <button
+            class="button __primary_admin __normal __full-width-mobile"
+            type="button"
+            @click="openFormModal('newMap')"
+          >
+            <AddIcon class="icon __white" />
+            Nieuwe kaart
+          </button>
+        </div>
       </div>
     </div>
 
@@ -14,6 +24,20 @@
       <div v-if="!loading" class="admin-search-wrapper">
         <SearchIcon class="icon" />
         <input id="maps-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek kaart" />
+      </div>
+
+      <div v-if="advanceSettings" class="advance-settings-wrapper">
+        <div class="advance-button-wrapper">
+          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('import')">
+            <ArrowDownTrayIcon class="icon" />
+            Importeren
+          </button>
+          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('export')">
+            <ArrowUpTrayIcon class="icon" />
+            Exporteren
+          </button>
+        </div>
+        <span>{{ selectedRowsDisplayText }}</span>
       </div>
 
       <PaginationComponent
@@ -28,7 +52,10 @@
           <table class="admin-table">
             <thead>
               <tr class="table-border">
-                <th class="first-column-padding">
+                <th v-if="advanceSettings" class="first-column-padding">
+                  <input type="checkbox" @change="onCheckRow(null, true)" />
+                </th>
+                <th :class="{ 'first-column-padding': !advanceSettings }">
                   <SortableTableHeaderItem
                     :header-text="'Titel'"
                     :property="'title'"
@@ -43,7 +70,10 @@
             </thead>
             <tbody>
               <tr v-for="map in paginatedData" :key="map.id" class="table-border">
-                <td class="first-column-padding">
+                <td v-if="advanceSettings" class="first-column-padding">
+                  <input type="checkbox" :checked="checkedRows.includes(map.id)" @change="onCheckRow(map.id)" />
+                </td>
+                <td :class="{ 'first-column-padding': !advanceSettings }">
                   <router-link
                     class="admin-title-link"
                     type="button"
@@ -85,9 +115,14 @@
     </div>
 
     <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-      <template #header><h3>Configureer nieuwe kaart</h3></template>
+      <template #header>
+        <h3 v-if="modalType === 'newMap'">Configureer nieuwe kaart</h3>
+        <h3 v-else-if="modalType === 'import'">Importeer bestaande kaart(en)</h3>
+        <h3 v-else-if="modalType === 'export'">Exporteer bestaande kaart(en)</h3>
+      </template>
       <template #body>
         <AdminFormSections
+          v-if="modalType === 'newMap'"
           ref="formSections"
           :sections="sections"
           :initial-values="newMapData"
@@ -96,6 +131,12 @@
           :object-specific-save="saveMap"
           @close="closeFormModal"
         />
+        <div v-else-if="modalType === 'import'">
+          <AdminFileImport :object-name="'kaarten'" @import-successful="getMaps" @close="closeFormModal" />
+        </div>
+        <div v-else-if="modalType === 'export'">
+          <AdminFileExport :object-name="'kaarten'" :selected-rows="selectedItems" @close="closeFormModal" />
+        </div>
       </template>
     </FormModal>
   </div>
@@ -112,10 +153,20 @@ import ViewIcon from "@/assets/icons/view-icon.svg";
 import PaginationComponent from "@/components/Pagination.vue";
 import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
+import AdminFileImport from "@/admin/components/AdminFileImport.vue";
+import AdminFileExport from "@/admin/components/AdminFileExport.vue";
+import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
+import ArrowUpTrayIcon from "@/assets/icons/arrow-up-tray-icon.svg";
+import CogIcon from "@/assets/icons/cog-icon.svg";
 
 export default {
   name: "MapList",
   components: {
+    CogIcon,
+    ArrowUpTrayIcon,
+    ArrowDownTrayIcon,
+    AdminFileExport,
+    AdminFileImport,
     SortableTableHeaderItem,
     PaginationComponent,
     ViewIcon,
@@ -137,6 +188,10 @@ export default {
       sortKey: "",
       sortAscending: true,
       loading: false,
+      advanceSettings: false,
+      checkedRows: [],
+      selectedItems: null,
+      modalType: null,
     };
   },
   computed: {
@@ -162,6 +217,19 @@ export default {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
       const end = start + this.nrOfRecords;
       return this.visibleMaps.slice(start, end);
+    },
+    selectedRowsDisplayText() {
+      const nrOfRows = this.checkedRows.length;
+
+      if (!nrOfRows) {
+        return "Geen rijen geselecteerd";
+      }
+
+      if (nrOfRows === 1) {
+        return "1 rij geselecteerd";
+      }
+
+      return nrOfRows + " rijen geselecteerd";
     },
   },
   created() {
@@ -234,20 +302,54 @@ export default {
         this.sortAscending = !this.sortAscending;
       }
     },
-    openFormModal() {
-      this.newMapData = {
-        title: "",
-        authenticate: false,
-        layers: [],
-      };
+    openFormModal(modalType) {
+      if (modalType === "kaarten") {
+        this.newMapData = {
+          title: "",
+          authenticate: false,
+          layers: [],
+        };
+      }
 
+      if (modalType === "export") {
+        this.selectedItems = this.maps.filter((map) => this.checkedRows.includes(map.id));
+      }
+
+      this.modalType = modalType;
       this.showFormModal = true;
     },
     closeFormModal() {
       this.showFormModal = false;
+      this.modalType = null;
     },
     updateCurrentValues(newValues) {
       this.newMapData = newValues;
+    },
+    toggleAdvance() {
+      this.advanceSettings = !this.advanceSettings;
+    },
+    onCheckRow(id, checkAll = false) {
+      if (id === null && checkAll) {
+        this.allChecked = !this.allChecked;
+
+        if (this.allChecked) {
+          this.maps.forEach((map) => {
+            this.checkedRows.push(map.id);
+          });
+        } else {
+          this.checkedRows = [];
+        }
+
+        return;
+      }
+
+      if (this.checkedRows.includes(id)) {
+        const index = this.checkedRows.indexOf(id);
+        this.checkedRows.splice(index, 1);
+        return;
+      }
+
+      this.checkedRows.push(id);
     },
     getSections() {
       return {

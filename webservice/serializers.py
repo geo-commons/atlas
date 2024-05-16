@@ -269,3 +269,7 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = AtlasGroup
         fields = ['id', 'name', 'slug', 'external_id']
+
+
+class DataExportSettingsSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField())

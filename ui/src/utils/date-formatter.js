@@ -23,3 +23,22 @@ export function formatDateValue(dateString, customOptions = null) {
 
   return date.toLocaleDateString("nl-NL", options);
 }
+
+/**
+ * Returns a date string representing the current date with the specified delimiter.
+ *
+ * @param {string} delimiter - The delimiter used to separate date components in the date string. Default is "-".
+ * @returns {string} The date string in the format "YYYY-MM-DD" with the specified delimiter.
+ */
+export function getDateString(delimiter = "_") {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Extract the year, month, and day components
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Month is zero-indexed, so we add 1
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  // Construct the date string with the specified delimiter
+  return `${year}${delimiter}${month}${delimiter}${day}`;
+}
