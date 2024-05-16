@@ -17,7 +17,7 @@ Deploy Review App:
       --set secretKey=$SECRET_KEY \
       --set dbHost=atlas-$CI_ENVIRONMENT_SLUG-postgresql \
       --set ingress.hosts[0].host=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN \
-      --set ingress.hosts[0].paths[0].path=/atlas \
+      --set ingress.hosts[0].paths[0].path=/ \
       --set ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
       --set persistence.media.storageClassName=standard-retain \
       --set smartstreetUser=$SMARTSTREET_USER \
@@ -105,7 +105,7 @@ Deploy acceptance:
       --set secretKey=$SECRET_KEY \
       --set dbHost=atlas-acc-postgresql \
       --set ingress.hosts[0].host=atlas-acc.$REVIEW_BASE_DOMAIN \
-      --set ingress.hosts[0].paths[0].path=/atlas \
+      --set ingress.hosts[0].paths[0].path=/ \
       --set ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
       --set persistence.media.storageClassName=standard-retain \
       --set smartstreetUser=$SMARTSTREET_USER \
