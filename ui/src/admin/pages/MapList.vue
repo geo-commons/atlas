@@ -303,7 +303,7 @@ export default {
       }
     },
     openFormModal(modalType) {
-      if (modalType === "kaarten") {
+      if (modalType === "newMap") {
         this.newMapData = {
           title: "",
           authenticate: false,
