@@ -259,7 +259,7 @@ export default {
       const url = "/atlas/api/v1/maps/";
 
       try {
-        const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
+        const result = await this.$refs.formSections.sendSaveRequest(url, "POST", { ...currentValues, layers: [] });
 
         if (result.ok) {
           this.closeFormModal();
