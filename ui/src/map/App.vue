@@ -27,13 +27,11 @@ export default {
     MapRenderer,
   },
   data() {
-    return {
-      user: null,
-    };
+    return {};
   },
   computed: {
     ...mapStores(useGlobalStore),
-    ...mapState(useGlobalStore, ["position", "layers", "config", "map"]),
+    ...mapState(useGlobalStore, ["position", "layers", "config", "map", "user"]),
     visibleLayers() {
       if (this.map.layers) {
         // Get base layers.

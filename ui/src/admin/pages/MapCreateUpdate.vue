@@ -86,14 +86,13 @@ export default {
       data: null,
       mapPadding: [0, 0, 0, 0],
       selectedArea: null,
-      user: null,
       sidebar: "Form",
       selectedLayerData: null,
       userLayerSettings: null,
     };
   },
   computed: {
-    ...mapState(useGlobalStore, ["position", "layers", "config"]),
+    ...mapState(useGlobalStore, ["position", "layers", "config", "user"]),
     visibleLayers() {
       if (this.data.layers) {
         let configuredLayers;

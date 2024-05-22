@@ -64,15 +64,30 @@
             <label for="features.measure">Opmeten</label>
           </div>
 
-      <div class="setting __hover">
-        <input id="features.baselayer" v-model="data.features.baselayer" type="checkbox" name="features.baselayer" />
-        <label for="features.baselayer">Basislagen</label>
-      </div>
+          <div class="setting __hover">
+            <input
+              id="features.morepanel"
+              v-model="data.features.morepanel"
+              type="checkbox"
+              name="features.morepanel"
+            />
+            <label for="features.morepanel">Meer opties</label>
+          </div>
 
-      <div class="setting __hover">
-        <input id="features.gps" v-model="data.features.gps" type="checkbox" name="features.gps" />
-        <label for="features.gps">GPS knop</label>
-      </div>
+          <div class="setting __hover">
+            <input
+              id="features.baselayer"
+              v-model="data.features.baselayer"
+              type="checkbox"
+              name="features.baselayer"
+            />
+            <label for="features.baselayer">Basislagen</label>
+          </div>
+
+          <div class="setting __hover">
+            <input id="features.gps" v-model="data.features.gps" type="checkbox" name="features.gps" />
+            <label for="features.gps">GPS knop</label>
+          </div>
 
           <div class="setting __hover">
             <input id="features.zoom" v-model="data.features.zoom" type="checkbox" name="features.zoom" />
@@ -94,19 +109,24 @@
             <label for="features.markerOnClick">Prikker bij klik</label>
           </div>
 
-      <div class="setting __hover">
-        <input id="features.layerlist" v-model="data.features.layerlist" type="checkbox" name="features.layerlist" />
-        <label for="features.layerlist">Lagenlijst</label>
+          <div class="setting __hover">
+            <input
+              id="features.layerlist"
+              v-model="data.features.layerlist"
+              type="checkbox"
+              name="features.layerlist"
+            />
+            <label for="features.layerlist">Lagenlijst</label>
 
-        <button
-          v-if="data.features.layerlist"
-          type="button"
-          class="button __transparent-bg __no-hover __chevron"
-          @click="() => $emit('show-layerlist')"
-        >
-          <ChevronRightIcon class="icon setting-chevron" />
-        </button>
-      </div>
+            <button
+              v-if="data.features.layerlist"
+              type="button"
+              class="button __transparent-bg __no-hover __chevron"
+              @click="() => $emit('show-layerlist')"
+            >
+              <ChevronRightIcon class="icon setting-chevron" />
+            </button>
+          </div>
 
           <div class="setting __hover">
             <input id="features.legend" v-model="data.features.legend" type="checkbox" name="features.legend" />
