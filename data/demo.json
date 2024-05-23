@@ -252,6 +252,19 @@
         }
     },
     {
+        "model": "webservice.source",
+        "pk": 13,
+        "fields": {
+            "title": "Reqres.in",
+            "slug": "reqresin",
+            "source_type": "REST",
+            "url": "https://reqres.in/api",
+            "login_required": false,
+            "authenticate": false,
+            "atlas_groups": []
+        }
+    },
+    {
         "model": "webservice.layer",
         "pk": 3,
         "fields": {
@@ -8936,6 +8949,32 @@
             "source_key": "ligplaatsnummer",
             "target_key": "ligplaatsnummer",
             "popup_attributes": ""
+        }
+    },
+    {
+        "model": "tables.table",
+        "pk": 1,
+        "fields": {
+            "title": "Users",
+            "slug": "users",
+            "source": 13,
+            "endpoint": "/users",
+            "method": "GET",
+            "list_query": "data",
+            "error_template": null,
+            "list_headings": "Email\r\nVoornaam\r\nAchternaam",
+            "list_fields": "{{ email }}\r\n{{ first_name }}\r\n{{ last_name }}",
+            "search_fields": [
+                {
+                    "name": "email",
+                    "label": "Email"
+                }
+            ],
+            "login_required": false,
+            "only_internal": false,
+            "ordering": 0,
+            "created_at": "2024-05-15T06:06:25.531Z",
+            "updated_at": "2024-05-15T06:09:20.381Z"
         }
     }
 ]
