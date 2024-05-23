@@ -42,18 +42,17 @@
           <tr>
             <th></th>
             <th v-for="property in displayProperties" :key="property">
-              <SortableTableHeaderItem
+              <StackSortableTableHeaderItem
                 :header-text="headerText(property)"
                 :property="property"
-                :sort-key="sortKey"
-                :sort-ascending="sortAscending"
-                @sort="(column) => sortColumn(column)"
+                :sort-stack="sortStack"
+                @sort="(column, ascending) => sortColumn(column, ascending)"
               />
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="feature in sortedFeatures" :key="feature.id">
+          <tr v-for="feature in featureCollection.features" :key="feature.id">
             <td>
               <button
                 v-if="feature.geometry"
@@ -79,22 +78,21 @@
 
 <script>
 import Cookies from "js-cookie";
-import SortableTableHeaderItem from "./SortableTableHeaderItem.vue";
 import TableList from "./TableList.vue";
 import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import Multiselect from "vue-multiselect";
 import FilterSelect from "./FilterSelect.vue";
 import SwitchSlider from "./SwitchSlider.vue";
-import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import Spinner from "@/components/Spinner.vue";
 import MarkerIcon from "../assets/icons/marker-icon.svg";
 import { getFetchParameters } from "../utils/auth";
+import StackSortableTableHeaderItem from "@/components/StackSortableTableHeaderItem.vue";
 
 export default {
   name: "FeatureTable",
   components: {
-    SortableTableHeaderItem,
+    StackSortableTableHeaderItem,
     TableList,
     MarkerIcon,
     FilterSelect,
@@ -111,8 +109,6 @@ export default {
   },
   data() {
     return {
-      sortKey: "",
-      sortAscending: true,
       featureCollection: {
         features: [],
       },
@@ -126,20 +122,8 @@ export default {
       filterFeatures: {},
       loading: false,
       numberMatched: null,
+      sortStack: [],
     };
-  },
-  computed: {
-    sortedFeatures() {
-      if (this.sortKey && this.featureCollection.features) {
-        return this.featureCollection.features.slice(0).sort((a, b) => {
-          const textA = a.properties[this.sortKey];
-          const textB = b.properties[this.sortKey];
-          return sortAlphabetically(textA, textB, this.sortAscending);
-        });
-      }
-
-      return this.featureCollection.features;
-    },
   },
   watch: {
     query() {
@@ -163,6 +147,9 @@ export default {
     selectedArea: "fetchFeatures",
     filter: "fetchFeatures",
     fieldFilters: "fetchFeatures",
+    sortStack() {
+      this.fetchFeatures();
+    },
   },
   mounted() {
     this.fetchFeatures();
@@ -219,6 +206,16 @@ export default {
 
       if (filters.length > 0) {
         params.set("cql_filter", filters.join(" AND "));
+      }
+
+      if (this.sortStack.length > 0) {
+        let sortString = [];
+
+        this.sortStack.map((attr) => {
+          sortString.push(`${attr.id} ${attr.asc ? "A" : "D"}`);
+        });
+
+        params.set("sortBy", sortString);
       }
 
       try {
@@ -376,12 +373,25 @@ export default {
 
       this.$emit("on-fit", geometry.getExtent());
     },
-    sortColumn(prop) {
-      if (this.sortKey !== prop) {
-        this.sortKey = prop;
-        this.sortAscending = true;
+    sortColumn(column, ascending) {
+      const index = this.sortStack.findIndex((item) => item.id === column);
+
+      if (ascending !== null) {
+        // If ascending is not null, either add or update the sortStack
+        if (index === -1) {
+          // If column doesn't exist, add it
+          this.sortStack.push({ id: column, asc: ascending });
+        } else {
+          // If column exists, update it if necessary
+          if (this.sortStack[index].asc !== ascending) {
+            this.sortStack[index].asc = ascending;
+          }
+        }
       } else {
-        this.sortAscending = !this.sortAscending;
+        // If ascending is null, remove the column from sortStack if it exists
+        if (index !== -1) {
+          this.sortStack.splice(index, 1);
+        }
       }
     },
     getFilterOptions(property) {
