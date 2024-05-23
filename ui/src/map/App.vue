@@ -2,6 +2,7 @@
   <div class="app">
     <header-menu v-if="config.features.portal" />
     <map-renderer
+      v-if="readyToRenderMap"
       ref="map"
       :initial-position="position"
       :initial-layers="visibleLayers"
@@ -15,6 +16,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import HeaderMenu from "../components/HeaderMenu";
 import MapRenderer from "../components/MapRenderer/MapRenderer";
 import { mapState, mapStores } from "pinia";
@@ -27,7 +29,9 @@ export default {
     MapRenderer,
   },
   data() {
-    return {};
+    return {
+      readyToRenderMap: false,
+    };
   },
   computed: {
     ...mapStores(useGlobalStore),
@@ -91,6 +95,16 @@ export default {
       deep: true,
     },
   },
+  created() {
+    this.fetchAccessToken();
+
+    this.fetchInterval = setInterval(
+      () => {
+        this.fetchAccessToken();
+      },
+      1000 * 60 * 5,
+    ); // every 5 minutes
+  },
   methods: {
     positionChanged(position) {
       this.globalStore.setPosition(position);
@@ -119,6 +133,27 @@ export default {
           baseLayer.length > 0 ? baseLayer[0] : ""
         }`,
       );
+    },
+    async fetchAccessToken() {
+      const response = await fetch("/atlas/api/v1/token", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+      });
+
+      if (!response.ok) {
+        this.readyToRenderMap = true;
+        return false;
+      }
+
+      const data = await response.json();
+
+      this.globalStore.setUser({ ...this.user, token: data.token });
+
+      this.readyToRenderMap = true;
     },
   },
 };
