@@ -174,7 +174,13 @@
             <div class="layer-setting">
               <div class="admin-label-button">
                 <label for="linked_data">Gerelateerde data</label>
-                <button class="button __small __secondary_admin" @click="toggleModal('linkedData')">
+                <button
+                  v-tippy
+                  content="Voeg gekoppelde data toe"
+                  aria-label="Voeg gekoppelde data toe"
+                  class="button __small __secondary_admin"
+                  @click="toggleModal('linkedData')"
+                >
                   <AddIcon />Voeg toe
                 </button>
               </div>
@@ -184,12 +190,21 @@
                   {{ linkedData.title }}
                   <div class="admin-list-buttons">
                     <button
+                      v-tippy
+                      :content="`Bewerk gekoppelde data ${linkedData.title}`"
+                      :aria-label="`Bewerk gekoppelde data ${linkedData.title}`"
                       class="iconbutton __normal __round __alt_hover"
                       @click="toggleModal('linkedData', linkedData)"
                     >
                       <EditIcon class="icon __medium"></EditIcon>
                     </button>
-                    <button class="iconbutton __normal __round __alt_hover" @click="removeLinkedData(linkedData)">
+                    <button
+                      v-tippy
+                      :content="`Verwijder gekoppelde data ${linkedData.title}`"
+                      :aria-label="`Verwijder gekoppelde data ${linkedData.title}`"
+                      class="iconbutton __normal __round __alt_hover"
+                      @click="removeLinkedData(linkedData)"
+                    >
                       <TrashIcon class="icon __medium"></TrashIcon>
                     </button>
                   </div>
@@ -200,7 +215,13 @@
             <div class="layer-setting">
               <div class="admin-label-button">
                 <label for="linked_data">Templates</label>
-                <button class="button __small __secondary_admin" @click="toggleModal('templates')">
+                <button
+                  v-tippy
+                  content="Voeg template toe"
+                  aria-label="Voeg template toe"
+                  class="button __small __secondary_admin"
+                  @click="toggleModal('templates')"
+                >
                   <AddIcon />Voeg toe
                 </button>
               </div>
@@ -209,10 +230,22 @@
                 <li v-for="template in mapLayerConfig.settings.templates" :key="template.id">
                   {{ template.title }}
                   <div class="admin-list-buttons">
-                    <button class="iconbutton __normal __round __alt_hover" @click="toggleModal('templates', template)">
+                    <button
+                      v-tippy
+                      :content="`Bewerk template ${template.title}`"
+                      :aria-label="`Bewerk template ${template.title}`"
+                      class="iconbutton __normal __round __alt_hover"
+                      @click="toggleModal('templates', template)"
+                    >
                       <EditIcon class="icon __medium"></EditIcon>
                     </button>
-                    <button class="iconbutton __normal __round __alt_hover" @click="removeTemplate(template)">
+                    <button
+                      v-tippy
+                      :content="`Verwijder template ${template.title}`"
+                      :aria-label="`Verwijder template ${template.title}`"
+                      class="iconbutton __normal __round __alt_hover"
+                      @click="removeTemplate(template)"
+                    >
                       <TrashIcon class="icon __medium"></TrashIcon>
                     </button>
                   </div>
@@ -440,7 +473,7 @@ export default {
 
       if (modalType === "linkedData") {
         if (editObject) {
-          this.selectedLinkedData = editObject;
+          this.selectedLinkedData = { ...editObject, edit: true };
         } else {
           this.selectedLinkedData = {
             title: "",
@@ -450,11 +483,12 @@ export default {
             target_key: "",
             display_properties: [],
             headers: [],
+            edit: false,
           };
         }
       } else if (modalType === "templates") {
         if (editObject) {
-          this.selectedTemplate = editObject;
+          this.selectedTemplate = { ...editObject, edit: true };
         } else {
           this.selectedTemplate = {
             title: "",
@@ -467,6 +501,7 @@ export default {
             template: "",
             source_key: "",
             target_key: "",
+            edit: false,
           };
         }
       }
@@ -474,26 +509,38 @@ export default {
       this.showFormModal = true;
     },
     saveLinkedData(newValues) {
-      if (!newValues.id) {
+      if (!newValues.id && !newValues.randomId) {
         // If newValues has no id it needs to be added to the linked_data array.
-        this.mapLayerConfig.settings.linked_data.push(newValues);
+        this.mapLayerConfig.settings.linked_data.push({
+          ...newValues,
+          randomId: crypto.getRandomValues(new Uint32Array(1))[0],
+        });
       } else {
         // Otherwise update existing values.
-        const existingValues = this.mapLayerConfig.settings.linked_data.find((data) => data.id === newValues.id);
-        const index = this.mapLayerConfig.settings.linked_data.indexOf(existingValues);
-        this.mapLayerConfig.settings.linked_data[index] = newValues;
+        const index = this.mapLayerConfig.settings.linked_data.findIndex(
+          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+        );
+
+        if (index !== -1) {
+          this.mapLayerConfig.settings.linked_data.splice(index, 1, newValues);
+        }
       }
       this.closeFormModal();
     },
     saveTemplate(newValues) {
-      // Check if existing object
-      if (!newValues.id) {
-        this.mapLayerConfig.settings.templates.push(newValues);
+      if (!newValues.id && !newValues.randomId) {
+        this.mapLayerConfig.settings.templates.push({
+          ...newValues,
+          randomId: crypto.getRandomValues(new Uint32Array(1))[0],
+        });
       } else {
-        // Otherwise update existing values.
-        const existingValues = this.mapLayerConfig.settings.templates.find((data) => data.id === newValues.id);
-        const index = this.mapLayerConfig.settings.templates.indexOf(existingValues);
-        this.mapLayerConfig.settings.templates[index] = newValues;
+        const index = this.mapLayerConfig.settings.templates.findIndex(
+          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+        );
+
+        if (index !== -1) {
+          this.mapLayerConfig.settings.templates.splice(index, 1, newValues);
+        }
       }
       this.closeFormModal();
     },

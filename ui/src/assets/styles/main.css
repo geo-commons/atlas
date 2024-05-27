@@ -1,5 +1,5 @@
 :root {
-  --color-primary: #0066FF;
+  --color-primary: #0066ff;
   --color-admin-primary: #424bff;
 
   --color-text-grey: rgba(0, 0, 0, 0.55);
@@ -25,7 +25,7 @@
   --color-tooltip-dark: #222222;
 
   --color-alert: #eb0000;
-  --color-succesful: #14A34A;
+  --color-succesful: #14a34a;
 
   --color-hover: rgba(0, 0, 0, 0.03);
   --color-active: rgba(0, 0, 0, 0.06);
@@ -217,9 +217,9 @@ svg {
 }
 
 .iconbutton.__admin_hover:not([disabled]):hover {
-    background: var(--color-admin-primary-hover);
-    outline: 2px solid var(--color-white);
-    outline-offset: -2px;
+  background: var(--color-admin-primary-hover);
+  outline: 2px solid var(--color-white);
+  outline-offset: -2px;
 }
 
 /* If we set the hover state on the svg itself the svg does not change color if the button is hovered. */
@@ -552,7 +552,6 @@ hr {
   color: var(--color-white);
 }
 
-
 .multiselect .multiselect__placeholder {
   color: var(--color-text-grey);
 }
@@ -571,6 +570,12 @@ hr {
 }
 
 .warning-text {
+  color: var(--color-alert);
+  font-weight: var(--font-weight-bold);
+}
+
+/* form styling */
+.form-error {
   color: var(--color-alert);
   font-weight: var(--font-weight-bold);
 }

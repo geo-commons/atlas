@@ -9,7 +9,15 @@
             <h3 class="">{{ section.label }}</h3>
           </div>
 
-          <div class="section-questions">
+          <div v-if="section.label === 'Gekoppelde data'" class="section-questions">
+            <slot name="linkedData"></slot>
+          </div>
+
+          <div v-if="section.label === 'Templates'" class="section-questions" style="z-index: 1000">
+            <slot name="templates"></slot>
+          </div>
+
+          <div v-if="!section.disableInputs" class="section-questions">
             <div v-for="question in section.questions" :key="question.id">
               <!-- note: currently we can only add one custom field per AdminFormSection component.
                             If this is no longer sufficient in the future take a look at how ol-view and ol-layer
