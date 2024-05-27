@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { toRaw } from "vue";
 import Select from "ol/interaction/Select";
 import VectorLayer from "ol/layer/Vector";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
@@ -187,7 +188,7 @@ export default {
       }
 
       try {
-        const olStyle = await olParser.writeStyle(inputStyle);
+        const olStyle = await olParser.writeStyle(toRaw(inputStyle));
         return olStyle.output;
       } catch (e) {
         console.error("Unable to parse style", this.name, e);
