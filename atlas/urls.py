@@ -21,7 +21,7 @@ from revproxy.views import ProxyView
 
 admin.site.site_header = 'Atlas beheer'
 admin.site.site_title = 'Atlas beheer'
-admin.site.site_url = '/atlas'
+admin.site.site_url = '/atlas/'
 
 urlpatterns = [
     path('atlas/admin/', admin.site.urls),
