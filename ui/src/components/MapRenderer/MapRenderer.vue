@@ -144,7 +144,7 @@
       <div class="bottom-left-panels">
         <LayersPanel
           v-if="features.layerlist || features.legend"
-          :layers="layers"
+          :layers="regularLayers"
           :position="position"
           :user="user"
           :show-search-bar="features.layerlistsearch"
@@ -173,7 +173,7 @@
             </button>
           </div>
           <transition name="fade">
-            <BaseLayersPanel v-if="showBaseLayersPanel" :layers="layers" @toggle-layer="toggleLayer" />
+            <BaseLayersPanel v-if="showBaseLayersPanel" :layers="baseLayers" @toggle-layer="toggleLayer" />
           </transition>
         </div>
         <div v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)" class="bottom-right-buttons">
@@ -399,6 +399,12 @@ export default {
       }
 
       return null;
+    },
+    regularLayers() {
+      return this.layers.filter((l) => !l.is_base);
+    },
+    baseLayers() {
+      return this.layers.filter((l) => l.is_base);
     },
   },
   watch: {

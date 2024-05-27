@@ -249,6 +249,7 @@ class LayerListSerializer(serializers.ModelSerializer):
             'published',
             'ordering',
             'is_base',
+            'is_visible',
         ]
 
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-    <div class="header">
+  <AdminSidePanel>
+    <template #header>
       <button
         v-tippy="{ placement: 'bottom' }"
         class="iconbutton __normal __outline"
@@ -15,40 +15,41 @@
         <LayerIcon class="icon" />
         Lagenlijst
       </h1>
-      <div class="header-spacer" />
-    </div>
+    </template>
+    <template #default>
+      <div class="settings">
+        <div class="setting __hover">
+          <input
+            id="features.layerlistsearch"
+            v-model="data.features.layerlistsearch"
+            type="checkbox"
+            name="features.layerlistsearch"
+          />
+          <label for="features.layerlistsearch">Verberg zoekbalk lagenlijst</label>
+        </div>
 
-    <div class="settings">
-      <div class="setting __hover">
-        <input
-          id="features.layerlistsearch"
-          v-model="data.features.layerlistsearch"
-          type="checkbox"
-          name="features.layerlistsearch"
-        />
-        <label for="features.layerlistsearch">Verberg zoekbalk lagenlijst</label>
+        <div class="setting __hover">
+          <input
+            id="features.layerlistsimple"
+            v-model="data.features.layerlistsimple"
+            type="checkbox"
+            name="features.layerlistsimple"
+          />
+          <label for="features.layerlistsimple">Versimpelde weergave lagenlijst</label>
+        </div>
       </div>
-
-      <div class="setting __hover">
-        <input
-          id="features.layerlistsimple"
-          v-model="data.features.layerlistsimple"
-          type="checkbox"
-          name="features.layerlistsimple"
-        />
-        <label for="features.layerlistsimple">Versimpelde weergave lagenlijst</label>
-      </div>
-    </div>
-  </div>
+    </template>
+  </AdminSidePanel>
 </template>
 
 <script>
 import ArrowLeftIcon from "../../assets/icons/arrow-left-icon.svg";
 import LayerIcon from "../../assets/icons/layer-icon.svg";
+import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 
 export default {
   name: "LayerListPanel",
-  components: { ArrowLeftIcon, LayerIcon },
+  components: { AdminSidePanel, ArrowLeftIcon, LayerIcon },
   props: {
     initialData: Object,
   },

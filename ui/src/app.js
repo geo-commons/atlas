@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (layer.is_base) {
       return {
         ...layer,
-        is_visible: settings.visibleBase ? settings.visibleBase == layer.id : layer.is_visible,
+        is_visible: settings.visibleBase ? settings.visibleBase === layer.id : layer.is_visible,
       };
     }
 
