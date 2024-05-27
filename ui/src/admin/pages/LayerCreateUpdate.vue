@@ -60,19 +60,139 @@
           </div>
         </div>
       </template>
+      <template #linkedData>
+        <div class="layer-setting">
+          <div class="admin-label-button">
+            <button
+              v-tippy
+              aria-label="Voeg gekoppelde data toe"
+              content="Voeg gekoppelde data toe"
+              type="button"
+              class="button __small __secondary_admin"
+              @click="toggleModal('linkedData')"
+            >
+              <AddIcon />Voeg toe
+            </button>
+          </div>
+
+          <ul class="admin-list">
+            <li v-for="linkedData in initialValues.linked_data" :key="linkedData.id">
+              {{ linkedData.title }}
+              <div class="admin-list-buttons">
+                <button
+                  v-tippy
+                  :content="`Bewerk gekoppelde data ${linkedData.title}`"
+                  :aria-label="`Bewerk gekoppelde data ${linkedData.title}`"
+                  type="button"
+                  class="iconbutton __normal __round"
+                  @click="toggleModal('linkedData', linkedData)"
+                >
+                  <EditIcon class="icon __medium"></EditIcon>
+                </button>
+                <button
+                  v-tippy
+                  :content="`Verwijder gekoppelde data ${linkedData.title}`"
+                  :aria-label="`Verwijder gekoppelde data ${linkedData.title}`"
+                  type="button"
+                  class="iconbutton __normal __round"
+                  @click="removeLinkedData(linkedData)"
+                >
+                  <TrashIcon class="icon __medium"></TrashIcon>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </template>
+      <template #templates>
+        <div class="layer-setting">
+          <div class="admin-label-button">
+            <button
+              v-tippy
+              content="Voeg template toe"
+              aria-label="Voeg template toe"
+              type="button"
+              class="button __small __secondary_admin"
+              @click="toggleModal('templates')"
+            >
+              <AddIcon />Voeg toe
+            </button>
+          </div>
+
+          <ul class="admin-list">
+            <li v-for="template in initialValues.templates" :key="template.id">
+              {{ template.title }}
+              <div class="admin-list-buttons">
+                <button
+                  v-tippy
+                  :content="`Bewerk template ${template.title}`"
+                  :aria-label="`Bewerk template ${template.title}`"
+                  type="button"
+                  class="iconbutton __normal __round"
+                  @click="toggleModal('templates', template)"
+                >
+                  <EditIcon class="icon __medium"></EditIcon>
+                </button>
+                <button
+                  v-tippy
+                  :content="`Verwijder template ${template.title}`"
+                  :aria-label="`Verwijder template ${template.title}`"
+                  type="button"
+                  class="iconbutton __normal __round"
+                  @click="removeTemplate(template)"
+                >
+                  <TrashIcon class="icon __medium"></TrashIcon>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </template>
     </AdminFormSections>
   </div>
+  <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+    <template #header>
+      <h3 v-if="formModalType === 'linkedData'">Gerelateerde data</h3>
+      <h3 v-else-if="formModalType === 'templates'">Templates</h3>
+    </template>
+    <template #body>
+      <LinkedDataForm
+        v-if="formModalType === 'linkedData'"
+        :initial-linked-data="selectedLinkedData"
+        @close="closeFormModal"
+        @save="saveLinkedData"
+      />
+      <TemplateForm
+        v-else-if="formModalType === 'templates'"
+        :initial-template="selectedTemplate"
+        @close="closeFormModal"
+        @save="saveTemplate"
+      />
+    </template>
+  </FormModal>
 </template>
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import draggable from "vuedraggable";
+import FormModal from "@/components/FormModal.vue";
+import LinkedDataForm from "@/admin/components/LinkedDataForm.vue";
+import TemplateForm from "@/admin/components/TemplateForm.vue";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import AddIcon from "@/assets/icons/add-icon.svg";
+import EditIcon from "@/assets/icons/edit-icon.svg";
 
 draggable.compatConfig = { MODE: 3 };
 
 export default {
   name: "LayerCreateUpdate",
   components: {
+    EditIcon,
+    AddIcon,
+    TrashIcon,
+    TemplateForm,
+    LinkedDataForm,
+    FormModal,
     draggable,
     AdminFormSections,
   },
@@ -89,6 +209,10 @@ export default {
       availableGroups: [],
       selectedGroups: [],
       selectedSource: {},
+      showFormModal: false,
+      formModalType: null,
+      selectedLinkedData: null,
+      selectedTemplate: null,
       assistiveText: "Verplaats een group met behulp van de enter toets",
     };
   },
@@ -148,6 +272,14 @@ export default {
       this.initialValues.metadata_updated = response.metadata.updated;
       this.initialValues.metadata_lineage = response.metadata.lineage;
       this.initialValues.metadata_contact = response.metadata.contact;
+      this.initialValues.metadata_link = response.metadata.link;
+      this.initialValues.client_style = JSON.stringify(response.client_style);
+      this.initialValues.friendly_fields = JSON.stringify(response.friendly_fields);
+      this.initialValues.templated_properties = JSON.stringify(response.templated_properties);
+      this.initialValues.linked_data = response.linked_data;
+      this.initialValues.templates = response.templates;
+      this.initialValues.search_properties = response.search_properties.join("\n");
+      this.initialValues.display_properties = response.display_properties.join("\n");
 
       // Set selectedSource
       this.selectedSource = {
@@ -168,7 +300,27 @@ export default {
       currentValues.metadata.updated = currentValues.metadata_updated;
       currentValues.metadata.lineage = currentValues.metadata_lineage;
       currentValues.metadata.contact = currentValues.metadata_contact;
+      currentValues.metadata.link = currentValues.metadata_link;
       currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+
+      currentValues.display_properties = currentValues.display_properties
+        .split("\n")
+        .filter((value) => value.trim() !== "");
+      currentValues.search_properties = currentValues.search_properties
+        .split("\n")
+        .filter((value) => value.trim() !== "");
+
+      currentValues.extent_min_x = currentValues.extent_min_x === "" ? null : currentValues.extent_min_x;
+      currentValues.extent_min_y = currentValues.extent_min_y === "" ? null : currentValues.extent_min_y;
+      currentValues.extent_max_x = currentValues.extent_max_x === "" ? null : currentValues.extent_max_x;
+      currentValues.extent_max_y = currentValues.extent_max_y === "" ? null : currentValues.extent_max_y;
+
+      currentValues.client_style = this.validateAndParseJsonString(currentValues.client_style);
+      currentValues.friendly_fields = this.validateAndParseJsonString(currentValues.friendly_fields);
+      currentValues.templated_properties = this.validateAndParseJsonString(currentValues.templated_properties);
+
+      currentValues.templates = this.initialValues.templates;
+      currentValues.linked_data = this.initialValues.linked_data;
 
       const url = `/atlas/api/v1/layers/${this.$route.params.id}/`;
 
@@ -228,12 +380,110 @@ export default {
 
       return result;
     },
+    validateAndParseJsonString(text) {
+      if (!text || text.trim() === "") {
+        return {};
+      }
+
+      return JSON.parse(text);
+    },
     moveGroup(item, fromArray, toArray) {
       const arrayAriaText = toArray === this.availableGroups ? "Beschikbare groepen" : "Geselecteerde groepen";
       this.assistiveText = `${item.name}, verplaatst naar ${arrayAriaText}`;
 
       fromArray.splice(fromArray.indexOf(item), 1);
       toArray.push(item);
+    },
+    saveLinkedData(newValues) {
+      if (!newValues.id && !newValues.randomId) {
+        // If newValues has no id it needs to be added to the linked_data array.
+        this.initialValues.linked_data.push({ ...newValues, randomId: crypto.getRandomValues(new Uint32Array(1))[0] });
+      } else {
+        // Otherwise update existing values.
+        const index = this.initialValues.linked_data.findIndex(
+          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+        );
+
+        if (index !== -1) {
+          this.initialValues.linked_data.splice(index, 1, newValues);
+        }
+      }
+      this.closeFormModal();
+    },
+    async saveTemplate(newValues) {
+      if (!newValues.id && !newValues.randomId) {
+        this.initialValues.templates.push({ ...newValues, randomId: crypto.getRandomValues(new Uint32Array(1))[0] });
+      } else {
+        const index = this.initialValues.templates.findIndex(
+          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+        );
+
+        if (index !== -1) {
+          this.initialValues.templates.splice(index, 1, newValues);
+        }
+      }
+      this.closeFormModal();
+    },
+    removeLinkedData(linkedData) {
+      const acknowledged = confirm("Weet je zeker dat je het geselecteerde data object wilt verwijderen?");
+
+      if (acknowledged) {
+        const index = this.initialValues.linked_data.indexOf(linkedData);
+        this.initialValues.linked_data.splice(index, 1);
+      }
+    },
+    removeTemplate(template) {
+      const acknowledged = confirm("Weet je zeker dat je het geselecteerde data object wilt verwijderen?");
+
+      if (acknowledged) {
+        const index = this.initialValues.templates.indexOf(template);
+        this.initialValues.templates.splice(index, 1);
+      }
+    },
+    closeFormModal() {
+      this.showFormModal = false;
+      this.formModalType = null;
+      this.selectedLinkedData = null;
+    },
+    toggleModal(modalType, editObject = null) {
+      this.formModalType = modalType;
+
+      if (modalType === "linkedData") {
+        if (editObject) {
+          this.selectedLinkedData = { ...editObject, edit: true };
+        } else {
+          this.selectedLinkedData = {
+            title: "",
+            url: "",
+            name: "",
+            source_key: "",
+            target_key: "",
+            display_properties: [],
+            headers: [],
+            edit: false,
+          };
+        }
+      } else if (modalType === "templates") {
+        if (editObject) {
+          this.selectedTemplate = { ...editObject, edit: true };
+        } else {
+          this.selectedTemplate = {
+            title: "",
+            source: "",
+            endpoint: "",
+            method: "",
+            list: "",
+            headers: [],
+            fields: [],
+            template: "",
+            source_key: "",
+            target_key: "",
+            edit: false,
+          };
+        }
+      }
+
+      this.showFormModal = true;
     },
     getSections() {
       return {
@@ -365,6 +615,83 @@ export default {
               required: false,
             },
             {
+              label: "Haal detailinformatie als HTML op bij de bron",
+              id: "use_html_info_format",
+              name: "UseHtmlInfoFormat",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              label: "Toon laag in detail- en dataweergave",
+              id: "show_in_detail_panel",
+              name: "ShowInDetailPanel",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              label: "Toon laag alleen in een themakaart",
+              id: "not_in_atlas",
+              name: "NotInAtlas",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              label: "Toon deze velden",
+              id: "display_properties",
+              name: "DisplayProperties",
+              type: "text",
+              multiLine: true,
+              required: false,
+              isNested: true,
+              infoText: "Voer één veld per regel in. Bij geen invoer worden alle velden getoond.",
+            },
+            {
+              label: "Doorzoek deze velden",
+              id: "search_properties",
+              name: "SearchProperties",
+              type: "text",
+              multiLine: true,
+              required: false,
+              isNested: true,
+              infoText: "Voer één veld per regel in. Bij geen invoer worden alle velden getoond.",
+            },
+            {
+              label: "Bereik minimum x",
+              id: "extent_min_x",
+              name: "ExtentMinX",
+              type: "decimal",
+              required: false,
+              step: 0.01,
+              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+            },
+            {
+              label: "Bereik minimum y",
+              id: "extent_min_y",
+              name: "ExtentMinY",
+              type: "decimal",
+              required: false,
+              step: 0.01,
+              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+            },
+            {
+              label: "Bereik maximum x",
+              id: "extent_max_x",
+              name: "ExtentMaxX",
+              type: "decimal",
+              required: false,
+              step: 0.01,
+              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+            },
+            {
+              label: "Bereik maximum y",
+              id: "extent_max_y",
+              name: "ExtentMaxY",
+              type: "decimal",
+              required: false,
+              step: 0.01,
+              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+            },
+            {
               label: "Zoomniveau minimum",
               id: "zoom_min",
               name: "ZoomMin",
@@ -379,6 +706,52 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
+            },
+            {
+              label: "Stijlnaam voor WMS / WMTS laag",
+              id: "server_style",
+              name: "ServerStyle",
+              type: "text",
+              required: false,
+              infoText: "Stijlnaam zoals beschikbaar op de server",
+            },
+            {
+              label: "Stijl voor WFS / MVT laag",
+              id: "client_style",
+              name: "ClientStyle",
+              type: "text",
+              multiLine: true,
+              required: false,
+              isNested: true,
+              infoText: "Stijl in GeoStyler formaat.",
+            },
+            {
+              label: "Vriendelijke veldnamen",
+              id: "friendly_fields",
+              name: "FriendlyFields",
+              type: "text",
+              multiLine: true,
+              required: false,
+              isNested: true,
+              infoText: "Maak veldnamen vriendelijk.",
+            },
+            {
+              label: "Templatevelden",
+              id: "templated_properties",
+              name: "TemplatedProperties",
+              type: "text",
+              multiLine: true,
+              required: false,
+              isNested: true,
+              infoText: "Velden die samengesteld worden vanuit een template.",
+            },
+            {
+              label: "Legenda",
+              id: "legend_url",
+              name: "LegendUrl",
+              type: "text",
+              required: false,
+              infoText: "Overschrijf link naar legenda",
             },
           ],
         },
@@ -437,6 +810,14 @@ export default {
               type: "text",
               required: false,
             },
+            {
+              label: "Meer informatie",
+              id: "metadata_link",
+              name: "MetadataLink",
+              type: "text",
+              required: false,
+              infoText: "Link naar metadatacatalogus met meer informatie",
+            },
           ],
         },
         access: {
@@ -463,6 +844,8 @@ export default {
             },
           ],
         },
+        linkedData: { label: "Gekoppelde data", questions: [], disableInputs: true },
+        templates: { label: "Templates", questions: [], disableInputs: true },
       };
     },
   },
@@ -509,5 +892,33 @@ export default {
     grid-template-columns: 1fr;
     row-gap: 30px;
   }
+}
+
+.admin-label-button {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-list > li {
+  display: flex;
+  align-items: center;
+  background: var(--color-white);
+  padding: 4px 12px;
+}
+
+.admin-list > li:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-60);
+}
+
+.admin-list-buttons {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.admin-list-buttons button:hover {
+  background-color: var(--color-backdrop);
 }
 </style>

@@ -73,35 +73,64 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class LinkedDataSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='layer_name')
-    display_properties = serializers.SerializerMethodField('get_display_properties')
-    headers = serializers.SerializerMethodField('get_headers')
+    display_properties = serializers.ListField(
+        child=serializers.CharField(), required=False)
+    headers = serializers.ListField(
+        child=serializers.CharField(), required=False)
 
-    def get_display_properties(self, obj):
-        return obj.popup_attributes.split('\r\n') if obj.popup_attributes else []
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['display_properties'] = instance.popup_attributes.split(
+            '\r\n') if instance.popup_attributes else []
+        ret['headers'] = instance.headers.split(
+            '\r\n') if instance.headers else []
+        return ret
 
-    def get_headers(self, obj):
-        return obj.headers.split('\r\n') if obj.headers else []
+    def to_internal_value(self, data):
+        ret = super().to_internal_value(data)
+        ret['popup_attributes'] = '\r\n'.join(
+            data.get('display_properties', []))
+        ret['headers'] = '\r\n'.join(data.get('headers', []))
+        return ret
 
     class Meta:
         model = LinkedData
-        fields = ['id', 'title', 'name', 'url', 'source_key', 'target_key', 'headers', 'display_properties']
-
+        fields = ['id', 'title', 'name', 'url', 'source_key',
+                  'target_key', 'headers', 'display_properties']
 
 
 class TemplateSerializer(serializers.ModelSerializer):
-    source = SourceSerializer()
-    fields = serializers.SerializerMethodField('get_template_fields')
-    headers = serializers.SerializerMethodField('get_headers')
+    source_id = serializers.PrimaryKeyRelatedField(
+        source='source', queryset=Source.objects.all())
+    source = SourceSerializer(read_only=True)
+    fields = serializers.ListField(
+        child=serializers.CharField(), required=False)
+    headers = serializers.ListField(
+        child=serializers.CharField(), required=False)
 
-    def get_template_fields(self, obj):
-        return obj.fields.split('\r\n') if obj.fields else []
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if 'source' not in ret:
+            ret['source'] = SourceSerializer(instance.source).data
+        ret['fields'] = instance.fields.split(
+            '\r\n') if instance.fields else []
+        ret['headers'] = instance.headers.split(
+            '\r\n') if instance.headers else []
+        return ret
 
-    def get_headers(self, obj):
-        return obj.headers.split('\r\n') if obj.headers else []
-    
+    def to_internal_value(self, data):
+        ret = super().to_internal_value(data)
+        source_id = data.get('source_id')
+        if source_id:
+            data['source'] = Source.objects.get(pk=source_id)
+        ret['fields'] = '\r\n'.join(data.get('fields', []))
+        ret['headers'] = '\r\n'.join(data.get('headers', []))
+        return ret
+
     class Meta:
         model = Template
-        fields = ['id', 'title', 'source', 'endpoint', 'method', 'list', 'headers', 'fields', 'template', 'ordering']
+        fields = ['id', 'title', 'source', 'endpoint', 'method', 'list',
+                  'headers', 'fields', 'template', 'ordering', 'source_id']
 
 
 class MetadataSerializerField(serializers.Field):
@@ -124,7 +153,8 @@ class MetadataSerializerField(serializers.Field):
             'meta_org': data['organization'],
             'meta_updated': data['updated'],
             'meta_lineage': data['lineage'],
-            'meta_contact': data['contact']
+            'meta_contact': data['contact'],
+            'meta_link': data['link'],
         }
 
 
@@ -171,6 +201,12 @@ class LayerSerializer(serializers.ModelSerializer):
             'is_visible',
             'is_selectable',
             'show_in_detail_panel',
+            'use_html_info_format',
+            'not_in_atlas',
+            'extent_min_x',
+            'extent_min_y',
+            'extent_max_x',
+            'extent_max_y',
             'closed_dataset',
             'login_required',
             'projection',
@@ -181,6 +217,11 @@ class LayerSerializer(serializers.ModelSerializer):
             'category',
             'source',
             'server_type',
+            'server_style',
+            'client_style',
+            'friendly_fields',
+            'templated_properties',
+            'legend_url',
             'display_properties',
             'search_properties',
             'metadata',
@@ -198,6 +239,77 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
     source_id = serializers.PrimaryKeyRelatedField(
         source='layer_source', queryset=Source.objects.all())
     metadata = MetadataSerializerField(source='*')
+    linked_data = LinkedDataSerializer(many=True)
+    templates = TemplateSerializer(many=True)
+    display_properties = serializers.ListField(
+        child=serializers.CharField(), required=False)
+    search_properties = serializers.ListField(
+        child=serializers.CharField(), required=False)
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['display_properties'] = instance.popup_attributes
+        ret['search_properties'] = instance.search_fields
+        return ret
+
+    def to_internal_value(self, data):
+        ret = super().to_internal_value(data)
+        ret['_popup_attributes'] = '\r\n'.join(
+            data.get('display_properties', []))
+        ret['_search_fields'] = '\r\n'.join(data.get('search_properties', []))
+        return ret
+
+    def update(self, instance, validated_data):
+        linked_data, templates = (validated_data.pop(key, None)
+                                  for key in ('linked_data', 'templates'))
+
+        # Handling many-to-many field 'atlas_groups'
+        if 'atlas_groups' in validated_data:
+            atlas_groups_data = validated_data.pop('atlas_groups')
+            instance.atlas_groups.set(atlas_groups_data)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        # Handling many-to-many field 'linked_data'
+        if linked_data is not None:
+            linked_data_to_create = []
+            for data in linked_data:
+                linked_data_to_create.append(LinkedData(
+                    source=data.get('source'),
+                    title=data.get('title'),
+                    layer_name=data.get('layer_name'),
+                    url=data.get('url'),
+                    source_key=data.get('source_key'),
+                    target_key=data.get('target_key'),
+                    popup_attributes=data.get('popup_attributes'),
+                    headers=data.get('headers'),
+                ))
+
+            instance.linked_data.all().delete()
+            instance.linked_data.set(linked_data_to_create, bulk=False)
+
+        # Handling many-to-many field 'templates'
+        if templates is not None:
+            templates_data_to_create = []
+            for data in templates:
+                templates_data_to_create.append(Template(
+                    source=data.get('source'),
+                    endpoint=data.get('endpoint'),
+                    method=data.get('method'),
+                    title=data.get('title'),
+                    list=data.get('list'),
+                    template=data.get('template'),
+                    fields=data.get('fields'),
+                    headers=data.get('headers'),
+                ))
+
+            instance.templates.all().delete()
+            instance.templates.set(templates_data_to_create, bulk=False)
+
+        return instance
 
     class Meta:
         model = Layer
@@ -217,14 +329,30 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'is_base',
             'is_visible',
             'is_selectable',
+            'use_html_info_format',
+            'show_in_detail_panel',
+            'not_in_atlas',
+            'display_properties',
+            'search_properties',
+            'extent_min_x',
+            'extent_min_y',
+            'extent_max_x',
+            'extent_max_y',
             'zoom_min',
             'zoom_max',
+            'server_style',
+            'client_style',
+            'friendly_fields',
+            'templated_properties',
+            'legend_url',
             'metadata',
             'login_required',
             'closed_dataset',
             'ordering',
             'atlas_groups',
-            'published'
+            'published',
+            'linked_data',
+            'templates'
         ]
 
 

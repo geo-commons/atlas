@@ -15,5 +15,6 @@ module.exports = {
     // override/add rules settings here, such as:
     // 'vue/no-unused-vars': 'error'
     "vue/require-default-prop": "off",
+    "vue/no-multiple-template-root": "off",
   },
 };

@@ -1,36 +1,55 @@
 <template>
-  <div>
+  <vee-form @submit="formSubmit">
     <div class="template-form">
       <div class="layer-settings">
         <div class="layer-setting">
           <label class="question-label" for="source">Bron</label>
-          <select id="source" v-model="template.source.id" name="source" class="__admin config-select-wrapper">
+          <vee-field
+            id="source"
+            v-model="template.source_id"
+            as="select"
+            name="source_id"
+            class="__admin config-select-wrapper"
+            rules="required"
+          >
             <option disabled value="-1">Selecteer bron</option>
             <option v-for="source in sources" :key="source.id" :value="source.id">
               {{ source.label }}
             </option>
-          </select>
+          </vee-field>
+          <vee-error-message class="form-error" name="source_id" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="endpoint">Endpoint</label>
-          <input id="endpoint" v-model.trim="template.endpoint" name="endpoint" type="text" />
+          <vee-field id="endpoint" v-model.trim="template.endpoint" name="endpoint" type="text" rules="required" />
+          <vee-error-message class="form-error" name="endpoint" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="Method">Methode</label>
-          <select id="method" v-model="template.method" name="method" class="__admin config-select-wrapper">
+          <vee-field
+            id="method"
+            v-model="template.method"
+            as="select"
+            name="method"
+            class="__admin config-select-wrapper"
+            rules="required"
+          >
             <option disabled value="-1">Selecteer methode</option>
             <option v-for="method in methods" :key="method.id" :value="method.id">
               {{ method.label }}
             </option>
-          </select>
+          </vee-field>
+          <vee-error-message class="form-error" name="method" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="title">Titel</label>
-          <input id="title" v-model.trim="template.title" name="title" type="text" />
+          <vee-field id="title" v-model.trim="template.title" name="title" type="text" rules="required" />
+          <vee-error-message class="form-error" name="title" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="list">Tabel veld met lijst</label>
-          <input id="list" v-model.trim="template.list" name="list" type="text" />
+          <vee-field id="list" v-model.trim="template.list" name="list" type="text" rules="required" />
+          <vee-error-message class="form-error" name="list" />
         </div>
       </div>
       <div class="">
@@ -62,16 +81,20 @@
     </div>
     <div class="config-btn-wrapper">
       <button class="button __secondary_admin" type="button" @click="cancel()">Annuleer</button>
-      <button class="button __primary_admin" type="submit" @click="save">Opslaan</button>
+      <button class="button __primary_admin" type="submit">
+        {{ template.edit ? "Pas toe" : "Voeg toe" }}
+      </button>
     </div>
-  </div>
+  </vee-form>
 </template>
 
 <script>
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
+import { Form as VeeForm, ErrorMessage as VeeErrorMessage, Field as VeeField } from "vee-validate";
 
 export default {
   name: "TemplateForm",
+  components: { VeeForm, VeeField, VeeErrorMessage },
   props: {
     initialTemplate: Object,
   },
@@ -91,7 +114,9 @@ export default {
     },
   },
   async created() {
-    this.template = { ...this.initialTemplate };
+    this.template = {
+      ...this.initialTemplate,
+    };
     this.methods = [
       { id: "GET", label: "GET" },
       { id: "POST", label: "POST" },
@@ -100,6 +125,10 @@ export default {
   },
   methods: {
     updateMultiLineField,
+    formSubmit(data) {
+      const finalData = { ...this.template, ...data };
+      this.$emit("save", finalData);
+    },
     async getSources() {
       const result = await fetch("/atlas/api/v1/sources/", {
         credentials: "same-origin",
@@ -116,12 +145,8 @@ export default {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
     },
-
     cancel() {
       this.$emit("close");
-    },
-    save() {
-      this.$emit("save", this.template);
     },
   },
 };
@@ -155,5 +180,9 @@ export default {
 .config-select-wrapper {
   height: 40px;
   width: 100%;
+}
+
+.question-label {
+  font-weight: var(--font-weight-bold);
 }
 </style>
