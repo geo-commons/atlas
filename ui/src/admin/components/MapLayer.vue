@@ -16,7 +16,7 @@
         Lagen
         <span class="layer-wrapper">
           <ChevronRightIcon class="no-margin" />
-          {{ mapLayerConfig?.settings.title }}
+          {{ layerDefaultSettings?.title }}
         </span>
       </h1>
     </template>
@@ -25,65 +25,84 @@
         <h3>Kaartlaag instellingen bewerken</h3>
         <div class="layer-setting-toggle">
           <switch-slider
-            aria-label="Activeer filters"
+            aria-label="Kaartlaag specifieke instellingen"
             :initial-checked-status="mapLayerConfig.settings.customSettings"
             @toggleSwitch="toggleSettings"
           />
           <div>Kaart specifieke laag instellingen</div>
           <AdminFormInfoText :info-text="toggleSettingsInfo" />
         </div>
-        <div v-if="mapLayerConfig.settings.customSettings">
+        <div v-if="mapLayerConfig.settings.customSettings" class="extra-padding-top">
           <div class="layer-settings">
-            <div>
-              <input id="is_visible" v-model="mapLayerConfig.settings.is_visible" type="checkbox" name="is_visible" />
-              <label for="is_visible">Toon laag</label>
+            <div class="layer-setting-toggle">
+              <switch-slider
+                aria-label="Basislaag"
+                :initial-checked-status="mapLayerConfig.settings.is_base"
+                @toggleSwitch="toggleSliderField('is_base')"
+              />
+              <div>Is een basislaag</div>
             </div>
-            <div>
-              <div class="opacity-wrapper">
-                <label for="opacity">Transparantie</label>
-                <vee-field
+            <div class="layer-setting-toggle">
+              <switch-slider
+                aria-label="Standaard zichtbaar"
+                :initial-checked-status="mapLayerConfig.settings.is_visible"
+                @toggleSwitch="toggleSliderField('is_visible')"
+              />
+              <div>Kaartlaag standaard zichtbaar</div>
+            </div>
+            <div v-if="checkBaseLayerVisible" class="other-base-layer-visible">
+              Merk op: er is al een basislaag met de instelling standaard zichtbaar aanwezig
+              <AdminFormInfoText
+                :info-text="'Er is al een basislaag met de instelling standaard zichtbaar aanwezig, wanneer u is standaard  zichtbaar activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
+              />
+            </div>
+
+            <div class="opacity-wrapper">
+              <label for="opacity">Transparantie</label>
+              <vee-field
+                id="opacity"
+                name="opacity"
+                class="opacity-slider"
+                type="range"
+                :value="mapLayerConfig.settings.opacity * 100"
+              >
+                <input
                   id="opacity"
-                  name="opacity"
                   class="opacity-slider"
                   type="range"
-                  :value="mapLayerConfig.settings.opacity * 100"
-                >
-                  <input
-                    id="opacity"
-                    class="opacity-slider"
-                    type="range"
-                    name="opacity"
-                    min="0"
-                    max="100"
-                    step="10"
-                    aria-label="Transparantie instellen"
-                    :value="mapLayerConfig.settings.opacity * 100"
-                    @change="(e) => changeLayerOpacity(e.target.value / 100)"
-                  />
-                </vee-field>
-                <vee-field
-                  id="opacity"
                   name="opacity"
-                  class="opacity-input"
-                  :value="mapLayerConfig.settings.opacity * 100"
-                  type="number"
+                  min="0"
+                  max="100"
+                  step="10"
                   aria-label="Transparantie instellen"
-                >
-                  <input
-                    id="opacity"
-                    class="opacity-input"
-                    type="number"
-                    name="opacity"
-                    aria-label="Transparantie instellen"
-                    min="0"
-                    max="100"
-                    step="10"
-                    :value="mapLayerConfig.settings.opacity * 100"
-                    @change="(e) => changeLayerOpacity(e.target.value / 100)"
-                  />
-                </vee-field>
-              </div>
+                  :value="mapLayerConfig.settings.opacity * 100"
+                  @change="(e) => changeLayerOpacity(e.target.value / 100)"
+                />
+              </vee-field>
+              <vee-field
+                id="opacity"
+                name="opacity"
+                class="opacity-input"
+                :value="mapLayerConfig.settings.opacity * 100"
+                type="number"
+                aria-label="Transparantie instellen"
+              >
+                <input
+                  id="opacity"
+                  class="opacity-input"
+                  type="number"
+                  name="opacity"
+                  aria-label="Transparantie instellen"
+                  min="0"
+                  max="100"
+                  step="10"
+                  :value="mapLayerConfig.settings.opacity * 100"
+                  @change="(e) => changeLayerOpacity(e.target.value / 100)"
+                />
+              </vee-field>
             </div>
+          </div>
+          <div v-if="!isBaseLayer" class="layer-settings extra-padding-top">
             <div class="layer-setting">
               <label class="question-label" for="zoom_max">Zoomniveau minimum</label>
               <input id="zoom_min" v-model.number="mapLayerConfig.settings.zoom_min" name="zoom_min" type="number" />
@@ -152,7 +171,6 @@
                 @change="(e) => updateJsonField('templated_properties', e.target.value)"
               />
             </div>
-
             <div class="layer-setting">
               <div class="admin-label-button">
                 <label for="linked_data">Gerelateerde data</label>
@@ -202,7 +220,6 @@
               </ul>
             </div>
           </div>
-
           <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
             <template #header>
               <h3 v-if="formModalType === 'linkedData'">Gerelateerde data</h3>
@@ -264,10 +281,14 @@ export default {
   },
   props: {
     initialData: Object,
+    initialConfiguredLayers: Object,
   },
   data() {
     return {
       mapLayerConfig: null,
+      allLayers: [],
+      selectedMapLayerConfigs: [],
+      layerDefaultSettings: null,
       showFormModal: false,
       formModalType: null,
       selectedLinkedData: null,
@@ -293,9 +314,48 @@ export default {
     templatedProperties() {
       return JSON.stringify(this.mapLayerConfig?.settings.templated_properties);
     },
+    isBaseLayer() {
+      return this.mapLayerConfig?.settings.is_base;
+    },
+    otherMapLayerConfigs() {
+      if (!this.selectedMapLayerConfigs) {
+        return [];
+      }
+      return this.selectedMapLayerConfigs.filter((layer) => layer.layer !== this.mapLayerConfig.layer);
+    },
+    checkBaseLayerVisible() {
+      // Check if current layer is a base layer.
+      if (
+        !this.selectedMapLayerConfigs ||
+        (!this.mapLayerConfig.settings.customSettings && !this.layerDefaultSettings.is_base) ||
+        (this.mapLayerConfig.settings.customSettings && !this.mapLayerConfig.settings.is_base)
+      ) {
+        return false;
+      }
+
+      // Check if there is another configured base layer that has is_visible set to true.
+      const baseLayerWithIsVisible = this.otherMapLayerConfigs.find((layer) => {
+        if (layer.settings.customSettings && layer.settings.is_visible) {
+          return layer;
+        }
+
+        const defaultSettings = this.allLayers.find((l) => l.id === layer.layer);
+
+        if (!layer.settings.customSettings && defaultSettings.is_visible) {
+          return layer;
+        }
+      });
+
+      return baseLayerWithIsVisible;
+    },
   },
-  created() {
+  async created() {
     this.mapLayerConfig = this.initialData;
+    this.selectedMapLayerConfigs = this.initialConfiguredLayers;
+
+    await this.getLayers();
+
+    this.layerDefaultSettings = this.allLayers.find((layer) => this.mapLayerConfig.layer === layer.id);
   },
   methods: {
     updateMultiLineField,
@@ -312,6 +372,20 @@ export default {
 
       return result.json();
     },
+    async getLayers() {
+      this.loading = true;
+      const result = await fetch("/atlas/api/v1/layers/", {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch layers");
+      }
+
+      this.allLayers = await result.json();
+      this.loading = false;
+    },
     async toggleSettings() {
       if (!this.mapLayerConfig.settings.customSettings) {
         // Get layer settings.
@@ -327,6 +401,18 @@ export default {
           title: this.mapLayerConfig.settings.title,
         };
       }
+    },
+    toggleSliderField(field) {
+      if (field === "is_visible" && !this.mapLayerConfig.settings[field] && this.checkBaseLayerVisible) {
+        if (this.checkBaseLayerVisible.settings.customSettings) {
+          this.checkBaseLayerVisible.settings.is_visible = false;
+        } else {
+          this.checkBaseLayerVisible.settings.customSettings = true;
+          this.checkBaseLayerVisible.settings.is_visible = false;
+        }
+      }
+
+      this.mapLayerConfig.settings[field] = !this.mapLayerConfig.settings[field];
     },
     changeLayerOpacity(newValue) {
       this.mapLayerConfig.settings.opacity = newValue;
@@ -450,7 +536,6 @@ export default {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding: 24px 0;
 }
 
 .layer-settings {
@@ -462,6 +547,10 @@ export default {
 .layer-setting {
   display: flex;
   flex-direction: column;
+}
+
+.extra-padding-top {
+  padding-top: 20px;
 }
 
 .opacity-wrapper {
@@ -525,5 +614,12 @@ export default {
   display: flex;
   gap: 6px;
   margin-left: auto;
+}
+
+.other-base-layer-visible {
+  display: flex;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  gap: 4px;
 }
 </style>

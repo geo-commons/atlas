@@ -5,12 +5,13 @@
       v-if="readyToRenderMap"
       ref="map"
       :initial-position="position"
-      :initial-layers="visibleLayers"
+      :initial-layers="layers"
       :user="user"
       :features="map.features"
       :settings="map.settings"
       :config="config"
       @position-changed="positionChanged"
+      @layers-changed="layersChanged"
     />
   </div>
 </template>
@@ -34,8 +35,8 @@ export default {
     };
   },
   computed: {
-    ...mapStores(useGlobalStore),
     ...mapState(useGlobalStore, ["position", "layers", "config", "map", "user"]),
+    ...mapStores(useGlobalStore),
     visibleLayers() {
       if (this.map.layers) {
         // Get base layers.
@@ -119,13 +120,12 @@ export default {
       const y = encodeURIComponent(this.position.center[1].toFixed(2));
       const zoom = encodeURIComponent(this.position.zoom);
 
-      const layers = this.visibleLayers
-        .filter((l) => !l.is_base)
+      const layers = this.layers
+        .filter((l) => !l.is_base && l.is_visible)
         .map((l) => l.id)
         .join(",");
 
-      const baseLayer = this.visibleLayers.filter((l) => l.is_base).map((l) => l.id);
-
+      const baseLayer = this.layers.filter((l) => l.is_base && l.is_visible).map((l) => l.id);
       window.history.replaceState(
         {},
         "",

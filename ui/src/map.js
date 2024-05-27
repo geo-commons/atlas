@@ -20,9 +20,60 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = JSON.parse(document.querySelector("#app-data").innerHTML);
   const settings = getSettingsFromPath(data.config);
 
-  const layers = data.layers.map((layer) =>
-    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer,
-  );
+  const allAvailableLayers = data.layers;
+  const configuredLayers = data.map.layers;
+
+  // First set custom settings as configured by user.
+  let layers = configuredLayers.map((configuredLayer) => {
+    const defaultLayer = allAvailableLayers.find((layer) => layer.internal_id === configuredLayer.layer);
+
+    if (configuredLayer.settings.customSettings) {
+      return {
+        ...defaultLayer,
+        is_visible: configuredLayer.settings.is_visible,
+        is_base: configuredLayer.settings.is_base,
+        opacity: configuredLayer.settings.opacity,
+        zoom_min: configuredLayer.settings.zoom_min,
+        zoom_max: configuredLayer.settings.zoom_max,
+        display_properties: configuredLayer.settings.display_properties,
+        search_fields: configuredLayer.settings.search_fields,
+        server_style: configuredLayer.settings.server_style,
+        client_style: configuredLayer.settings.client_style,
+        friendly_fields: configuredLayer.settings.friendly_fields,
+        templated_properties: configuredLayer.settings.templated_properties,
+        linked_data: configuredLayer.settings.linked_data,
+        templates: configuredLayer.settings.templates,
+      };
+    } else {
+      return defaultLayer;
+    }
+  });
+
+  // Check if there is at least 1 base layer configured.
+  const hasBaseLayer = layers.some((layer) => layer.is_base);
+
+  if (!hasBaseLayer) {
+    // If there is no base layer configured get the first available and add is to layers.
+    const baseLayer = allAvailableLayers.find((layer) => layer.is_base);
+    layers.push(baseLayer);
+  }
+
+  // Then check if any specific settings are set by the URL settings.
+  layers = layers.map((layer) => {
+    if (layer.is_base) {
+      return {
+        ...layer,
+        is_visible: settings.visibleBase ? settings.visibleBase === layer.id : layer.is_visible,
+      };
+    }
+
+    if (!layer.is_base) {
+      return {
+        ...layer,
+        is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
+      };
+    }
+  });
 
   const initialState = {
     isEmbed: data.is_embed,

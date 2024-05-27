@@ -10,6 +10,7 @@
     <MapLayer
       v-if="sidebar === 'Layer'"
       :initial-data="selectedLayerData"
+      :initial-configured-layers="data.layers"
       @change="updateLayers"
       @show-layers="() => showSidebar('Layers')"
     />
@@ -22,14 +23,14 @@
     <ListPanelAdmin
       v-if="sidebar === 'List'"
       :initial-data="data"
-      :layers="visibleLayers"
+      :layers="configuredLayers"
       @change="updateLayers"
       @show-form="() => showSidebar('Form')"
     />
     <FiltersPanelAdmin
       v-if="sidebar === 'Filters'"
       :initial-data="data"
-      :layers="visibleLayers"
+      :layers="configuredLayers"
       :user="user"
       @change="updateLayers"
       @show-form="() => showSidebar('Form')"
@@ -42,12 +43,13 @@
       @show-layers="() => showSidebar('Layers')"
       @show-list="() => showSidebar('List')"
       @show-filters="() => showSidebar('Filters')"
+      @show-layerlist="() => showSidebar('LayerList')"
     />
     <MapRenderer
       ref="map"
       class="editor-map"
       :features="data.features"
-      :initial-layers="visibleLayers"
+      :initial-layers="configuredLayers"
       :initial-position="position"
       :settings="data.settings"
       :user="user"
@@ -93,25 +95,19 @@ export default {
   },
   computed: {
     ...mapState(useGlobalStore, ["position", "layers", "config", "user"]),
-    visibleLayers() {
+    baseLayers() {
+      return this.layers.filter((layer) => layer.is_base);
+    },
+    configuredLayers() {
       if (this.data.layers) {
-        let configuredLayers;
-
-        // Get base layers.
-        configuredLayers = this.layers
-          .filter((layer) => layer.is_base && layer.is_visible)
-          .map((layer) => {
-            return {
-              ...layer,
-              is_visible: !layer.is_base ? true : layer.is_visible,
-            };
-          });
+        let configuredLayers = [];
 
         // Get configured layers.
         this.data.layers.forEach((selectedLayer) => {
           const layer = this.layers.find((l) => l.internal_id === selectedLayer.layer);
 
-          if (!selectedLayer.settings.customSettings) {
+          // Push default layer settings if current layer has no custom settings.
+          if (!selectedLayer.settings?.customSettings) {
             configuredLayers.push({ ...layer });
           } else {
             let isVisibleUserSetting;
@@ -128,6 +124,7 @@ export default {
               ...layer,
               is_visible:
                 typeof isVisibleUserSetting === "boolean" ? isVisibleUserSetting : selectedLayer.settings.is_visible,
+              is_base: selectedLayer.settings.is_base,
               opacity: opacityUserSetting ? opacityUserSetting : selectedLayer.settings.opacity,
               zoom_min: selectedLayer.settings.zoom_min,
               zoom_max: selectedLayer.settings.zoom_max,
@@ -177,6 +174,9 @@ export default {
         }
 
         this.data = await result.json();
+
+        this.checkBaseLayersConfigured();
+
         return;
       }
 
@@ -237,6 +237,28 @@ export default {
 
       if (result.ok) {
         this.$router.push(`/maps`);
+      }
+    },
+    checkBaseLayersConfigured() {
+      let hasBase = false;
+      // check if base layer is configured for map
+      this.data.layers.forEach((layer) => {
+        const defaultLayerSettings = this.layers.find((l) => l.internal_id === layer.layer);
+
+        if (defaultLayerSettings.is_base) {
+          hasBase = true;
+        }
+      });
+
+      if (!hasBase) {
+        const baseLayer = this.baseLayers[0];
+
+        this.data.layers.push({
+          layer: baseLayer.internal_id,
+          settings: {
+            customSettings: false,
+          },
+        });
       }
     },
     showSidebar(sidebar) {
