@@ -518,7 +518,7 @@ export default {
       } else {
         // Otherwise update existing values.
         const index = this.mapLayerConfig.settings.linked_data.findIndex(
-          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+          (data) => (data.id && data.id === newValues.id) || (data.randomId && data.randomId === newValues.randomId),
         );
 
         if (index !== -1) {
@@ -535,7 +535,7 @@ export default {
         });
       } else {
         const index = this.mapLayerConfig.settings.templates.findIndex(
-          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+          (data) => (data.id && data.id === newValues.id) || (data.randomId && data.randomId === newValues.randomId),
         );
 
         if (index !== -1) {

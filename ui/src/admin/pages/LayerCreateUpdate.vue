@@ -401,7 +401,7 @@ export default {
       } else {
         // Otherwise update existing values.
         const index = this.initialValues.linked_data.findIndex(
-          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+          (data) => (data.id && data.id === newValues.id) || (data.randomId && data.randomId === newValues.randomId),
         );
 
         if (index !== -1) {
@@ -415,7 +415,7 @@ export default {
         this.initialValues.templates.push({ ...newValues, randomId: crypto.getRandomValues(new Uint32Array(1))[0] });
       } else {
         const index = this.initialValues.templates.findIndex(
-          (data) => (data.id && data.id === newValues.id) || data.randomId === newValues.randomId,
+          (data) => (data.id && data.id === newValues.id) || (data.randomId && data.randomId === newValues.randomId),
         );
 
         if (index !== -1) {
