@@ -10,14 +10,10 @@
     <template #default>
       <form method="POST" class="map-form" @submit="submitForm">
         <div class="margin-content">
-          <input
-            v-model="data.title"
-            type="text"
-            name="title"
-            class="title-input padding"
-            placeholder="Titel van de kaart"
-            required
-          />
+          <div class="title-wrapper">
+            <label for="title" class="setting-label">Titel</label>
+            <input v-model="data.title" type="text" name="title" placeholder="Titel van de kaart" required />
+          </div>
         </div>
 
         <div class="settings">
@@ -215,8 +211,14 @@ export default {
   height: 100%;
 }
 
-.title-input {
+.setting-label {
+  font-weight: var(--font-weight-bold);
+}
+
+.title-wrapper {
   margin-top: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .button.setting {
