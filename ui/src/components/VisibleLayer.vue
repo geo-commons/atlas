@@ -25,13 +25,7 @@
               aria-label="Toon transparantie schuifregelaar"
               @click="toggleSlider"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
-                <path d="M24 0H0v24h24V0zm0 0H0v24h24V0zM0 24h24V0H0v24z" fill="none" />
-                <path
-                  fill="currentColor"
-                  d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                />
-              </svg>
+              <OpacityIcon />
             </button>
             <input
               :id="`${layer.id}-opacity`"
@@ -46,6 +40,17 @@
               @change="(e) => changeLayerOpacity(layer.id, e.target.value / 100)"
             />
           </div>
+          <button
+            v-if="initialIsSelectable"
+            v-tippy="{ placement: 'right' }"
+            class="iconbutton __round"
+            :content="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"
+            :aria-label="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"
+            @click="toggleLayerSelectable"
+          >
+            <SelectableIcon v-if="isSelectable" class="icon __smedium" />
+            <SelectableDisabledIcon v-if="!isSelectable" class="icon __smedium" />
+          </button>
           <LayerInfo :layer="layer" :show-always="true" />
           <button
             v-if="layerIsClosable"
@@ -55,12 +60,7 @@
             aria-label="Sluit laag"
             @click="toggleLayer"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" opacity=".87">
-              <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-              <path
-                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"
-              />
-            </svg>
+            <CloseCircleIcon />
           </button>
         </div>
       </template>
@@ -82,13 +82,21 @@ import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
 import ExpandButton from "./ExpandButton";
 import LayerInfo from "./LayerInfo";
-import { layerRequiresAuthentication, getFetchParameters } from "../utils/auth";
+import { getFetchParameters, layerRequiresAuthentication } from "../utils/auth";
+import CloseCircleIcon from "../assets/icons/close-circle-icon.svg";
+import OpacityIcon from "../assets/icons/opacity-icon.svg";
+import SelectableIcon from "../assets/icons/selectable-icon.svg";
+import SelectableDisabledIcon from "../assets/icons/selectable-disabled-icon.svg";
 
 export default {
   name: "VisibleLayer",
   components: {
     ExpandButton,
     LayerInfo,
+    CloseCircleIcon,
+    OpacityIcon,
+    SelectableIcon,
+    SelectableDisabledIcon,
   },
   props: {
     layer: Object,
@@ -103,6 +111,8 @@ export default {
       showSlider: false,
       errorLoadingLegend: false,
       legendImage: null,
+      isSelectable: null,
+      initialIsSelectable: null,
     };
   },
   computed: {
@@ -121,6 +131,8 @@ export default {
     if (this.layerHasLegend) {
       this.fetchLegendImage();
     }
+    this.isSelectable = this.layer.is_selectable;
+    this.initialIsSelectable = this.layer.is_selectable;
   },
   methods: {
     toggleSlider() {
@@ -130,7 +142,16 @@ export default {
       this.$emit("set-layer-opacity", [layerId, opacity]);
     },
     toggleLayer() {
+      // Make sure to restore is_selectable to its initial value.
+      if (this.initialIsSelectable && this.layer.is_selectable !== this.initialIsSelectable) {
+        this.toggleLayerSelectable();
+      }
+
       this.$emit("toggle-layer", this.layer);
+    },
+    toggleLayerSelectable() {
+      this.isSelectable = !this.isSelectable;
+      this.$emit("toggle-is-selectable", [this.layer.id, this.isSelectable]);
     },
     async fetchLegendImage() {
       const wmsSource = new TileWMS({

@@ -154,6 +154,7 @@
           @set-layer-opacity="setLayerOpacity"
           @on-fit="(layer) => $refs.map.fit(layer)"
           @set-position="setPosition"
+          @toggle-is-selectable="onToggleIsSelectable"
         />
       </div>
       <div class="bottom-right-panels">
@@ -643,13 +644,20 @@ export default {
       this.selectedArea = selectedArea;
     },
     toggleLayer([layerId, isVisible]) {
-      this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, is_visible: isVisible } : layer));
+      this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, is_visible: isVisible } : layer));
       this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], is_visible: isVisible };
       this.$emit("layers-changed", this.layers);
     },
     setLayerOpacity([layerId, opacity]) {
-      this.layers = this.layers.map((layer) => (layer.id == layerId ? { ...layer, opacity: opacity } : layer));
+      this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, opacity: opacity } : layer));
       this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], opacity: opacity };
+      this.$emit("layers-changed", this.layers);
+    },
+    onToggleIsSelectable([layerId, isSelectable]) {
+      this.layers = this.layers.map((layer) =>
+        layer.id === layerId ? { ...layer, is_selectable: isSelectable } : layer,
+      );
+      this.setPosition(this.position);
       this.$emit("layers-changed", this.layers);
     },
     getSelectedLayer(layerId) {

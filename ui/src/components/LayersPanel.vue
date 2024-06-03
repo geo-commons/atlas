@@ -164,6 +164,7 @@
           :user="user"
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
+          @toggle-is-selectable="onToggleIsSelectable"
         />
       </ul>
     </transition>
@@ -278,6 +279,9 @@ export default {
     },
     setLayerOpacity(values) {
       this.$emit("set-layer-opacity", values);
+    },
+    onToggleIsSelectable(values) {
+      this.$emit("toggle-is-selectable", values);
     },
     onFit(selectedLayer) {
       this.$emit("on-fit", selectedLayer.extent);
