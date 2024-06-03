@@ -45,17 +45,23 @@
       @show-filters="() => showSidebar('Filters')"
       @show-layerlist="() => showSidebar('LayerList')"
     />
-    <MapRenderer
-      ref="map"
-      class="editor-map"
-      :features="data.features"
-      :initial-layers="configuredLayers"
-      :initial-position="position"
-      :settings="data.settings"
-      :user="user"
-      :admin-map="true"
-      @update-user-settings="updateUserSettings"
-    />
+    <div class="editor-map-wrapper">
+      <h2>
+        <ViewIcon class="icon __large" />
+        Voorbeeldweergave
+      </h2>
+      <MapRenderer
+        ref="map"
+        class="editor-map"
+        :features="data.features"
+        :initial-layers="configuredLayers"
+        :initial-position="position"
+        :settings="data.settings"
+        :user="user"
+        :admin-map="true"
+        @update-user-settings="updateUserSettings"
+      />
+    </div>
   </div>
 </template>
 
@@ -71,6 +77,7 @@ import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
 import MapLayer from "@/admin/components/MapLayer.vue";
 import LayerListPanel from "../components/LayerListPanel.vue";
 import { useGlobalStore } from "@/stores";
+import ViewIcon from "../../assets/icons/view-icon.svg";
 
 export default {
   name: "MapCreateUpdate",
@@ -82,6 +89,7 @@ export default {
     ListPanelAdmin,
     FiltersPanelAdmin,
     LayerListPanel,
+    ViewIcon,
   },
   data() {
     return {
@@ -292,7 +300,23 @@ export default {
   flex-direction: row;
 }
 
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-map-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin: 20px var(--padding-screen) var(--padding-screen) var(--padding-screen);
+}
+
 .editor-map {
   z-index: 0;
+  outline: 1px solid var(--color-grey-60);
+  border-radius: var(--radius-large);
+  overflow: hidden;
 }
 </style>
