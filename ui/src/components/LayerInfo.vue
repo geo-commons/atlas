@@ -79,7 +79,7 @@ export default {
       appendEl: null,
     };
   },
-  created() {
+  mounted() {
     // The vue tippy pop up does not escape the parent container
     // when the tippy popup is placed in a scrollable container.
     // Using the append-to property on the map-container fixes this.
