@@ -67,7 +67,9 @@ export default {
       this.error = null;
       this.loading = true;
 
-      const url = new URL(this.table.source.url + this.table.endpoint);
+      const fullUrl = this.table.source.url + this.table.endpoint;
+      const renderedUrl = nunjucks.renderString(fullUrl, searchFields);
+      const url = new URL(renderedUrl);
 
       if (this.table.method == "GET") {
         const searchFieldsWithoutUndefinedValues = Object.entries(searchFields)
@@ -78,7 +80,9 @@ export default {
           }, {});
 
         const params = new URLSearchParams(searchFieldsWithoutUndefinedValues);
-        url.search = params.toString();
+        if (!fullUrl.includes("?")) {
+          url.search = params.toString();
+        }
       }
 
       const result = await fetch(url.toString(), {
