@@ -65,9 +65,9 @@ export default {
   },
   methods: {
     async fetchData() {
-      const url = new URL(
-        this.template.source.url + nunjucks.renderString(this.template.endpoint, this.feature.properties),
-      );
+      const fullUrl = this.template.source.url + this.template.endpoint;
+      const renderedUrl = nunjucks.renderString(fullUrl, this.feature.properties);
+      const url = new URL(renderedUrl);
 
       let params = {};
       if (this.template.method === "POST") {
