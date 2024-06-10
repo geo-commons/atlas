@@ -1,24 +1,25 @@
 <template>
   <ExpandButton :title="template.title" class="template">
     <p v-if="error">{{ error }}</p>
-    <table-list v-if="!error && template.headers.length > 0" class="table">
-      <table>
+    <div v-if="!error && template.headers.length > 0" class="table-wrapper">
+      <table class="template-table">
         <thead>
           <tr>
-            <th v-for="(heading, key) in template.headers" :key="key">
+            <th v-for="(heading, key) in template.headers" :key="key" class="template-table-header">
               {{ heading }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(record, key) in fetchedData" :key="key">
-            <td v-for="(field, key) in template.fields" :key="key">
+            <td v-for="(field, key) in template.fields" :key="key" class="template-table-cell">
               {{ renderString(field, record) }}
             </td>
           </tr>
         </tbody>
       </table>
-    </table-list>
+    </div>
+
     <markdown
       v-if="!error && template.headers.length === 0"
       :inline="false"
@@ -32,7 +33,6 @@ import nunjucks from "nunjucks";
 import fetchDot from "fetch-dot";
 
 import ExpandButton from "./ExpandButton";
-import TableList from "./TableList";
 import Markdown from "./Markdown";
 import { useGlobalStore } from "@/stores";
 import { mapState } from "pinia";
@@ -43,7 +43,6 @@ export default {
   name: "FeatureInfoTemplate",
   components: {
     ExpandButton,
-    TableList,
     Markdown,
   },
   props: {
@@ -84,11 +83,11 @@ export default {
         });
 
         if (!result.ok) {
-          if (result.status == 401) {
+          if (result.status === 401) {
             this.error = "U moet ingelogd zijn om deze data te bekijken.";
-          } else if (result.status == 403) {
+          } else if (result.status === 403) {
             this.error = "U heeft geen rechten om deze data te bekijken.";
-          } else if (result.status == 502 || result.status == 504) {
+          } else if (result.status === 502 || result.status === 504) {
             this.error = "De databron kan niet bereikt worden. Probeer het later opnieuw.";
           } else {
             this.error = "Onbekende fout opgetreden. Probeer het later opnieuw.";
@@ -105,7 +104,7 @@ export default {
           this.fetchedData = data;
         }
       } catch (error) {
-        console.error("Catched error", error);
+        console.error("Caught error", error);
 
         this.error = "Kan de data niet ophalen door een verbindingsprobleem. Probeer het later opnieuw.";
       }
@@ -125,3 +124,37 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table-wrapper {
+  word-wrap: break-word;
+  overflow: auto;
+  flex: 1 1 auto;
+}
+
+.template-table {
+  font-size: var(--font-size-small);
+  overflow-x: auto;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.template-table-cell {
+  padding: 4px;
+  text-align: left;
+  height: 30px;
+  border-bottom: 1px solid var(--color-grey-60);
+}
+
+.template-table tbody tr:hover {
+  background-color: var(--color-grey-40);
+}
+
+.template-table-header {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-grey);
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--color-grey-60);
+  text-align: left;
+}
+</style>

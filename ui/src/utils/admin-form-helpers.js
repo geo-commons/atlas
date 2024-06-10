@@ -10,5 +10,8 @@ export function updateMultiLineField(object, field, value) {
     return;
   }
 
-  object[field] = value.split("\n").filter((value) => value.trim() !== "");
+  object[field] = value
+    .split("\n")
+    .filter((value) => value.trim() !== "")
+    .map((value) => value.trim());
 }

@@ -3,6 +3,7 @@
     initial-size-medium
     :initial-size-large="resetSidePanel"
     :show-panel="showPanel"
+    class="point-info-panel"
     @expand-side-panel="toggleSidePanelSize"
   >
     <template #search>
@@ -56,16 +57,25 @@
     </template>
 
     <template #default>
-      <FeatureInfo
-        v-for="visibleLayer in visibleLayers"
-        :key="visibleLayer.id"
-        :is-open="true"
-        :layer="visibleLayer"
-        :position="position"
-        @show-selected-feature="onFeatureSelect"
-        @set-position="(position) => setPosition(position)"
-        @on-fit="onFit"
-      />
+      <div>
+        <FeatureInfoDetails
+          v-if="selectedFeatureDetails"
+          :feature="selectedFeatureDetails"
+          @back="closeFeatureInfoDetails"
+        />
+        <FeatureInfo
+          v-for="visibleLayer in visibleLayers"
+          v-show="!selectedFeatureDetails"
+          :key="visibleLayer.id"
+          :is-open="true"
+          :layer="visibleLayer"
+          :position="position"
+          @show-selected-feature="onFeatureSelect"
+          @set-position="(position) => setPosition(position)"
+          @on-fit="onFit"
+          @select-feature-details="onSelectFeatureDetails"
+        />
+      </div>
     </template>
   </SidePanel>
 </template>
@@ -80,10 +90,12 @@ import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import { Tippy } from "vue-tippy";
 import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
+import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 
 export default {
   name: "PointInfoPanel",
   components: {
+    FeatureInfoDetails,
     Tippy,
     MarkerIcon,
     CloseIcon,
@@ -98,6 +110,7 @@ export default {
   data() {
     return {
       resetSidePanel: null,
+      selectedFeatureDetails: null,
     };
   },
   computed: {
@@ -114,10 +127,21 @@ export default {
       },
     },
   },
+  watch: {
+    searchQuery(newValue, oldValue) {
+      // todo: check if this is the best place to reset selected feature details
+      //       needs to be reset when user clicks on other point of map, checking position does not work well
+      // When user selects a different point on the map we need to reset the selected feature details.
+      if (newValue.title !== oldValue.title) {
+        this.selectedFeatureDetails = null;
+      }
+    },
+  },
   methods: {
     closeInfoPanel() {
       this.searchQuery = "";
       this.resetSidePanel = false;
+      this.selectedFeatureDetails = null;
       this.$emit("set-position", { ...this.position, marker: null });
     },
     onFeatureSelect(feature) {
@@ -143,6 +167,12 @@ export default {
       this.resetSidePanel = value;
       this.$emit("expanded-info-panel", value);
     },
+    onSelectFeatureDetails(selectedFeature) {
+      this.selectedFeatureDetails = selectedFeature;
+    },
+    closeFeatureInfoDetails() {
+      this.selectedFeatureDetails = null;
+    },
   },
 };
 </script>
@@ -157,6 +187,11 @@ h1 {
 h4 {
   margin: 0;
   font-weight: var(--font-weight-normal);
+}
+
+.point-info-panel :deep(.header) {
+  border-bottom: 1px solid var(--color-grey-60);
+  padding: var(--padding-screen);
 }
 
 .search-query {
@@ -178,6 +213,7 @@ h4 {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  gap: 4px;
 }
 
 @media (min-width: 576px) {

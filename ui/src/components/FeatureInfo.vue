@@ -38,15 +38,16 @@
         </table-list>
       </div>
 
-      <div v-for="(linkedData, key) in layer.linked_data" :key="key" class="linked-data">
-        <div v-if="feature.properties[linkedData.source_key]">
-          <FeatureTableExpandable
-            :layer="linkedData"
-            :table-headers="linkedData.headers"
+      <div v-for="(linkedData, key) in layer.linked_data" :key="key">
+        <div v-if="feature.properties[linkedData.source_key]" class="linked-data">
+          <LinkedDataTable
+            :linked-data="linkedData"
+            :initial-table-headers="linkedData.headers"
             :overall-filter="{ key: linkedData.target_key, value: feature.properties[linkedData.source_key] }"
             :position="position"
             @set-position="setPosition"
             @on-fit="(value) => onFit(value)"
+            @select-feature-details="onSelectFeatureDetails"
           />
         </div>
       </div>
@@ -61,7 +62,7 @@
 <script>
 import nunjucks from "nunjucks";
 import { getForViewAndSize } from "ol/extent";
-import FeatureTableExpandable from "./FeatureTableExpandable";
+import LinkedDataTable from "./LinkedDataTable.vue";
 import TableList from "./TableList";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
@@ -78,7 +79,7 @@ export default {
   name: "FeatureInfo",
   components: {
     TableList,
-    FeatureTableExpandable,
+    LinkedDataTable,
     ExpandButton,
     RichValue,
     FeatureInfoTemplate,
@@ -214,27 +215,38 @@ export default {
     onFit(value) {
       this.$emit("on-fit", value);
     },
+    onSelectFeatureDetails(selectedFeature) {
+      this.$emit("select-feature-details", selectedFeature);
+    },
   },
 };
 </script>
 
 <style scoped>
-.feature:not(:last-child) {
-  border-bottom: 1px solid var(--color-grey-50);
+.feature {
+  margin: 0 8px;
+}
+
+.feature :deep(.expand-wrapper) {
+  border-radius: var(--radius-normal);
+  overflow: hidden;
+  height: 40px;
+}
+
+.feature :deep(.expand-button) {
+  align-items: center;
+}
+
+.feature :deep(.name) {
+  font-weight: var(--font-weight-bold);
 }
 
 .linked-data {
-  padding: 0 20px;
-  margin: 4px 0 8px;
+  padding: 0 8px 0 20px;
 }
 
 .template {
-  padding: 0 20px;
-  margin: 4px 0 8px;
-}
-
-.template-title {
-  display: block;
+  padding: 0 8px 0 20px;
 }
 
 .table-wrapper + .table-wrapper {
@@ -256,6 +268,12 @@ export default {
   vertical-align: top;
 }
 
+.border-bottom:not(:last-child) {
+  border-bottom: 1px solid var(--color-grey-50);
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
 .separator-line {
   border: 0;
   border-top: 1px solid var(--color-grey-50);
@@ -267,12 +285,9 @@ export default {
   margin-right: 20px;
 }
 
-.border-bottom:not(:last-child) {
-  border-bottom: 1px solid var(--color-grey-50);
-}
-
 .feature-select:hover {
   background: var(--color-grey-40);
+  border-radius: var(--radius-normal);
   cursor: pointer;
 }
 </style>
