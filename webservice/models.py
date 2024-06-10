@@ -416,9 +416,12 @@ class LinkedData(models.Model):
     url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
-    headers = models.TextField(_('Tabel kopjes'), max_length=128, blank=True, null=True,
+    headers = models.TextField(_('Tabel kopjes'), max_length=250, blank=True, null=True,
                                help_text='Voer één veld per regel in.')
     popup_attributes = models.TextField(_('Tabel velden'), max_length=250, blank=True, null=True,
+                                        help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
+    use_detail_view = models.BooleanField('Gebruik detailweergave', default=False)
+    detail_view_fields = models.TextField(_('Detailweergave velden'), max_length=250, blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
 
     class Meta:
@@ -436,7 +439,9 @@ class LinkedData(models.Model):
             'source_key': self.source_key,
             'target_key': self.target_key,
             'headers': self.headers.split('\r\n') if self.headers else [],
-            'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else []
+            'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else [],
+            'use_detail_view': self.use_detail_view,
+            'detail_view_fields': self.detail_view_fields.split('\r\n') if self.detail_view_fields else []
         }
 
 

@@ -61,6 +61,24 @@
             @change="(e) => updateMultiLineField(linkedData, 'display_properties', e.target.value)"
           />
         </div>
+        <div class="layer-setting-toggle">
+          <switch-slider
+            aria-label="Gebruik detailweergave"
+            :initial-checked-status="linkedData.use_detail_view"
+            @toggleSwitch="toggleUseDetailView"
+          />
+          <div>Gebruik detailweergave</div>
+        </div>
+        <div v-if="linkedData.use_detail_view" class="layer-setting">
+          <label class="question-label" for="display_properties">Toon deze velden in de detailweergave</label>
+          <textarea
+            id="detail_view_fields"
+            name="detail_view_fields"
+            rows="6"
+            :value="detail_view_fields"
+            @change="(e) => updateMultiLineField(linkedData, 'detail_view_fields', e.target.value)"
+          />
+        </div>
       </div>
     </div>
     <div class="config-btn-wrapper">
@@ -74,11 +92,12 @@
 
 <script>
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
-import { Form as VeeForm, Field as VeeField, ErrorMessage as VeeErrorMessage } from "vee-validate";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
+import SwitchSlider from "@/components/SwitchSlider.vue";
 
 export default {
   name: "LinkedDataForm",
-  components: { VeeForm, VeeField, VeeErrorMessage },
+  components: { SwitchSlider, VeeForm, VeeField, VeeErrorMessage },
   props: {
     initialLinkedData: Object,
   },
@@ -93,6 +112,9 @@ export default {
     },
     display_properties() {
       return this.linkedData.display_properties.join("\n");
+    },
+    detail_view_fields() {
+      return this.linkedData.detail_view_fields.join("\n");
     },
   },
   created() {
@@ -109,6 +131,9 @@ export default {
     },
     cancel() {
       this.$emit("close");
+    },
+    toggleUseDetailView() {
+      this.linkedData.use_detail_view = !this.linkedData.use_detail_view;
     },
   },
 };
@@ -141,5 +166,11 @@ export default {
 
 .question-label {
   font-weight: var(--font-weight-bold);
+}
+
+.layer-setting-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 </style>

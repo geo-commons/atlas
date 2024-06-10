@@ -460,6 +460,8 @@ export default {
             target_key: "",
             display_properties: [],
             headers: [],
+            use_detail_view: false,
+            detail_view_fields: [],
             edit: false,
           };
         }

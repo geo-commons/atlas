@@ -19,7 +19,6 @@ export default {
 
 :slotted(.table-wrapper table) {
   width: 100%;
-  font-size: var(--font-size-normal);
   border-collapse: collapse;
 }
 

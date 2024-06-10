@@ -77,6 +77,8 @@ class LinkedDataSerializer(serializers.ModelSerializer):
         child=serializers.CharField(), required=False)
     headers = serializers.ListField(
         child=serializers.CharField(), required=False)
+    detail_view_fields = serializers.ListField(
+        child=serializers.CharField(), required=False)
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -84,6 +86,8 @@ class LinkedDataSerializer(serializers.ModelSerializer):
             '\r\n') if instance.popup_attributes else []
         ret['headers'] = instance.headers.split(
             '\r\n') if instance.headers else []
+        ret['detail_view_fields'] = instance.detail_view_fields.split(
+            '\r\n') if instance.detail_view_fields else []
         return ret
 
     def to_internal_value(self, data):
@@ -91,12 +95,13 @@ class LinkedDataSerializer(serializers.ModelSerializer):
         ret['popup_attributes'] = '\r\n'.join(
             data.get('display_properties', []))
         ret['headers'] = '\r\n'.join(data.get('headers', []))
+        ret['detail_view_fields'] = '\r\n'.join(data.get('detail_view_fields', []))
         return ret
 
     class Meta:
         model = LinkedData
         fields = ['id', 'title', 'name', 'url', 'source_key',
-                  'target_key', 'headers', 'display_properties']
+                  'target_key', 'headers', 'display_properties', 'use_detail_view', 'detail_view_fields']
 
 
 class TemplateSerializer(serializers.ModelSerializer):
@@ -286,6 +291,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
                     target_key=data.get('target_key'),
                     popup_attributes=data.get('popup_attributes'),
                     headers=data.get('headers'),
+                    use_detail_view=data.get('use_detail_view'),
+                    detail_view_fields=data.get('detail_view_fields'),
                 ))
 
             instance.linked_data.all().delete()
