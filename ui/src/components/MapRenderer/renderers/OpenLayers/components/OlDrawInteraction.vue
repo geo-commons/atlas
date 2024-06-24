@@ -12,6 +12,9 @@ export default {
   props: {
     layers: Array,
     tool: String,
+    color: Object,
+    strokeWidth: Number,
+    fontSize: Number,
   },
   created() {
     const onDrawStart = () => {
@@ -31,7 +34,7 @@ export default {
       }
     };
 
-    this.draw = constructDraw(this.tool, this.map, onDrawStart, onDrawEnd);
+    this.draw = constructDraw(this.tool, this.map, onDrawStart, onDrawEnd, this.color, this.strokeWidth, this.fontSize);
     this.map.addInteraction(this.draw);
   },
   unmounted() {

@@ -12,6 +12,9 @@
       v-if="tool"
       :tool="tool"
       :layers="layers"
+      :color="color"
+      :stroke-width="strokeWidth"
+      :font-size="fontSize"
       @draw-start="startUsingTool"
       @draw-end="toolUsed"
       @on-fit="onFit"
@@ -87,8 +90,8 @@
       name="draw"
       :selectable="true"
       :is-visible="true"
-      :vector-style="DRAW_STYLE"
       :features="drawFeatures"
+      :vector-style="DRAW_STYLE"
       :z-index="2"
     />
   </ol-map>
@@ -113,6 +116,8 @@ import OlMvtLayer from "./components/OlMvtLayer";
 import OlVectorLayer from "./components/OlVectorLayer";
 import getMarkerIconUrl from "../../../../utils/generate-marker-icon-url";
 import getLocationIconUrl from "../../../../utils/generate-location-icon-url";
+import "ol/ol.css";
+import { getFeatureFontSize, getFeatureRgba, getFeatureStrokeWidth } from "@/utils/feature-utils";
 
 const MARKER_STYLE = new Style({
   image: new Icon({
@@ -146,26 +151,6 @@ const HIGHLIGHTED_SELECTION_STYLE = new Style({
   fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
 });
 
-const DRAW_STYLE = (feature) =>
-  new Style({
-    image: feature.get("label")
-      ? null
-      : new Circle({
-          radius: 8,
-          fill: new Fill({
-            color: "rgba(0, 102, 255, 1)",
-          }),
-        }),
-    stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
-    fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
-    text: new Text({
-      text: feature.get("label"),
-      fill: new Fill({ color: "rgba(0, 102, 255, 1)" }),
-      font: "22px bold PT Sans, sans-serif",
-      stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 1 }),
-    }),
-  });
-
 export default {
   name: "OpenLayers",
   components: {
@@ -193,8 +178,48 @@ export default {
     drawFeatures: { type: Array, default: () => [] },
     filters: Object,
     padding: { type: Array, default: () => [0, 0, 0, 0] },
+    color: Object,
+    strokeWidth: Number,
+    fontSize: Number,
+  },
+  data() {
+    return {
+      undoRedoInteraction: null,
+    };
   },
   computed: {
+    DRAW_STYLE() {
+      return (feature) =>
+        new Style({
+          image: feature.get("label")
+            ? null
+            : new Circle({
+                radius: getFeatureStrokeWidth(feature, true),
+                fill: new Fill({
+                  color: getFeatureRgba(feature, 1), // color of points
+                }),
+              }),
+          stroke: new Stroke({
+            color: getFeatureRgba(feature, 1),
+            width: getFeatureStrokeWidth(feature, false),
+          }), // color of line
+          fill: new Fill({
+            color: getFeatureRgba(feature, 0.2),
+          }), // fill of polygon (lower opacity part)
+          text: new Text({
+            text: feature.get("label"),
+            fill: new Fill({
+              color: getFeatureRgba(feature, 1),
+            }), // color of text
+            textAlign: "left",
+            font: `${getFeatureFontSize(feature)}px bold PT Sans, sans-serif`,
+            stroke: new Stroke({
+              color: getFeatureRgba(feature, 1),
+              width: 1,
+            }), // color of text
+          }),
+        });
+    },
     markerFeatures() {
       if (!this.position.marker) {
         return [];
@@ -240,7 +265,6 @@ export default {
     this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
     this.SELECTED_AREA_STYLE = SELECTED_AREA_STYLE;
     this.HIGHLIGHTED_SELECTION_STYLE = HIGHLIGHTED_SELECTION_STYLE;
-    this.DRAW_STYLE = DRAW_STYLE;
   },
   methods: {
     getComponent(sourceType) {
