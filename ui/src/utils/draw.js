@@ -6,7 +6,7 @@ import { Circle, Fill, Stroke, Style } from "ol/style";
 
 const source = new VectorSource();
 
-const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
+const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth, fontSize) => {
   const mapping = {
     MEASURE_AREA: "Polygon",
     SELECT_AREA: "Polygon",
@@ -26,7 +26,13 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
         color: "rgba(255, 255, 255, 0.2)",
       }),
       stroke: new Stroke({
-        color: "rgba(0, 0, 0, 0.5)",
+        color:
+          measure === "MEASURE_LINE" ||
+          measure === "MEASURE_AREA" ||
+          measure === "SELECT_CIRCLE" ||
+          measure === "SELECT_AREA"
+            ? "rgba(0, 102, 255, 0.5)"
+            : `rgba(${color.red}, ${color.green}, ${color.blue}, 0.5)`,
         lineDash: [10, 10],
         width: 2,
       }),
@@ -40,6 +46,13 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
         }),
       }),
     }),
+  });
+
+  // Complete drawing on escape or enter touch
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" || event.key === "Enter") {
+      draw.finishDrawing();
+    }
   });
 
   let currentCoord;
@@ -57,11 +70,22 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
   draw.on("drawstart", (e) => {
     sketch = e.feature;
 
+    sketch.setProperties({
+      color: color,
+      strokeWidth: strokeWidth,
+      fontSize: fontSize,
+    });
+
     onDrawStart();
 
     map.removeOverlay(measureTooltip);
 
-    if (measure === "MEASURE_LINE" || measure === "MEASURE_AREA" || measure === "SELECT_CIRCLE") {
+    if (
+      measure === "MEASURE_LINE" ||
+      measure === "MEASURE_AREA" ||
+      measure === "SELECT_CIRCLE" ||
+      measure === "SELECT_AREA"
+    ) {
       sketch.getGeometry().on("change", (e) => {
         const geom = e.target;
 
@@ -72,6 +96,8 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
           tooltipCoord = geom.getInteriorPoint().getCoordinates();
         } else if (measure === "SELECT_CIRCLE") {
           tooltipCoord = currentCoord;
+        } else if (measure === "SELECT_AREA") {
+          tooltipCoord = geom.getInteriorPoint().getCoordinates();
         }
 
         if (measureTooltipElement) {
@@ -101,6 +127,9 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd) => {
         } else if (measure === "SELECT_CIRCLE") {
           measureResult = sketch.getGeometry().getRadius();
           measureTooltipElement.innerHTML = `Straal: ${Math.round(measureResult * 100) / 100} m`;
+        } else if (measure === "SELECT_AREA") {
+          measureResult = getArea(sketch.getGeometry());
+          measureTooltipElement.innerHTML = `${Math.round(measureResult * 100) / 100} m2`;
         }
 
         measureTooltip.setPosition(tooltipCoord);

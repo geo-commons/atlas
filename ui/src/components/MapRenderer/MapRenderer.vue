@@ -28,6 +28,9 @@
         :features="features"
         :filters="filters"
         :draw-features="drawFeatures"
+        :color="color"
+        :stroke-width="strokeWidth"
+        :font-size="fontSize"
         @position-changed="setPosition"
         @tool-used="toolUsed"
         @features-selected="featuresSelected"
@@ -127,12 +130,20 @@
           :features="features"
           :config="config"
           :draw-features="drawFeatures"
+          :removed-draw-features="removedDrawFeatures"
           :tool="tool"
           :user="user"
+          :color="color"
+          :stroke-width="strokeWidth"
+          :font-size="fontSize"
           @set-tool="setTool"
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
           @clear-draw="() => (drawFeatures = [])"
+          @setInteraction="setInteraction"
+          @setColor="setColor"
+          @setStrokeWidth="setStrokeWidth"
+          @setFontSize="setFontSize"
         />
         <MorePanel
           v-if="features.morepanel && !isEmbed && !showPanoramaPanel"
@@ -335,6 +346,7 @@ export default {
       layers: this.initialLayers,
       position: this.initialPosition,
       drawFeatures: [],
+      removedDrawFeatures: [],
       highlightedFeatures: [],
       selectedFeatures: [],
       tool: "",
@@ -350,7 +362,16 @@ export default {
       mapPadding: [0, 0, 0, 0],
       computedStyle: {},
       modal: "",
+      interaction: "",
       userLayerSettings: {},
+      undoRedoInteraction: null,
+      color: {
+        red: 0,
+        green: 102,
+        blue: 255,
+      },
+      strokeWidth: 5,
+      fontSize: 22,
     };
   },
   computed: {
@@ -627,6 +648,7 @@ export default {
         case "SELECT_AREA":
         case "SELECT_CIRCLE":
           this.showDataPanel = true;
+          this.selectedArea = result.sketch.getGeometry();
           this.globalStore.setSelectedArea(result.sketch.getGeometry());
           break;
         case "DRAW_POINT":
@@ -634,7 +656,17 @@ export default {
         case "DRAW_POLYGON":
         case "DRAW_LABEL":
           this.drawFeatures.push(result.sketch);
+          this.removedDrawFeatures = [];
           break;
+      }
+    },
+    setInteraction(interaction) {
+      if (interaction === "UNDO" && this.drawFeatures.length) {
+        this.removedDrawFeatures.push(this.drawFeatures.pop());
+      }
+
+      if (interaction === "REDO" && this.removedDrawFeatures.length) {
+        this.drawFeatures.push(this.removedDrawFeatures.pop());
       }
     },
     featuresSelected(selectedFeatures) {
@@ -680,6 +712,15 @@ export default {
         this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
       }
       this.$refs.map.fit(position, { maxZoom: 19 });
+    },
+    setColor(color) {
+      this.color = color;
+    },
+    setStrokeWidth(strokeWidth) {
+      this.strokeWidth = strokeWidth;
+    },
+    setFontSize(fontSize) {
+      this.fontSize = fontSize;
     },
   },
 };
