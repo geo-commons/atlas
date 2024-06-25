@@ -244,8 +244,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
     source_id = serializers.PrimaryKeyRelatedField(
         source='layer_source', queryset=Source.objects.all())
     metadata = MetadataSerializerField(source='*')
-    linked_data = LinkedDataSerializer(many=True)
-    templates = TemplateSerializer(many=True)
+    linked_data = LinkedDataSerializer(many=True, required=False)
+    templates = TemplateSerializer(many=True, required=False)
     display_properties = serializers.ListField(
         child=serializers.CharField(), required=False)
     search_properties = serializers.ListField(
