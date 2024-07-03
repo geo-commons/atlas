@@ -248,14 +248,14 @@ export default {
       }
     },
     checkBaseLayersConfigured() {
-      let hasBase = false;
-      // check if base layer is configured for map
-      this.data.layers.forEach((layer) => {
+      let hasBase = this.data.layers.some((layer) => {
+        if (layer.settings.customSettings && layer.settings.is_base) {
+          return true;
+        }
+
         const defaultLayerSettings = this.layers.find((l) => l.internal_id === layer.layer);
 
-        if (defaultLayerSettings.is_base) {
-          hasBase = true;
-        }
+        return defaultLayerSettings.is_base;
       });
 
       if (!hasBase) {

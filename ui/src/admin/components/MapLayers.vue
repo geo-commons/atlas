@@ -19,7 +19,10 @@
     <template #default>
       <div>
         <div class="selected-layer-header-wrapper">
-          <label class="setting-label"><MapIcon /> Basis lagen</label>
+          <label class="setting-label">
+            <MapIcon />
+            Basis lagen</label
+          >
           <div v-if="hasMultipleBaseLayersVisible" class="base-layer-warning">
             Let op: er zijn twee basis lagen die standaard zichtbaar zijn
           </div>
@@ -55,7 +58,10 @@
           </li>
         </ul>
         <div class="selected-layer-header-wrapper">
-          <label class="setting-label"> <LayerIcon class="icon" /> Kaartlagen</label>
+          <label class="setting-label">
+            <LayerIcon class="icon" />
+            Kaartlagen</label
+          >
         </div>
         <ul class="settings">
           <li v-for="selectedLayer in selectedRegularLayers" :key="selectedLayer.layer" class="setting">
@@ -195,11 +201,14 @@ export default {
     hasMultipleBaseLayersVisible() {
       return (
         this.selectedMapLayerConfigs.filter((l) => {
+          // Check if the layer has custom settings.
+          if (l.settings.customSettings && l.settings.is_base && l.settings.is_visible) {
+            return l;
+          }
+
+          // When the layer has no custom settings get corresponding default layer settings.
           const layerData = this.allLayers.find((layer) => layer.id === l.layer);
-          if (
-            (!l.settings.customSettings && layerData.is_visible) ||
-            (l.settings.customSettings && l.settings.is_visible)
-          ) {
+          if (!l.settings.customSettings && layerData.is_base && layerData.is_visible) {
             return l;
           }
         }).length > 1

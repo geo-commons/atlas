@@ -50,10 +50,10 @@
               />
               <div>Kaartlaag standaard zichtbaar</div>
             </div>
-            <div v-if="checkBaseLayerVisible" class="other-base-layer-visible">
-              Merk op: er is al een basislaag met de instelling standaard zichtbaar aanwezig
+            <div v-if="otherVisibleBaseLayer" class="other-base-layer-visible">
+              Merk op: er is al een basislaag met de instelling 'kaartlaag standaard zichtbaar' aanwezig
               <AdminFormInfoText
-                :info-text="'Er is al een basislaag met de instelling standaard zichtbaar aanwezig, wanneer u is standaard  zichtbaar activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
+                :info-text="'Er is al een basislaag met de instelling \'kaartlaag standaard zichtbaar\' aanwezig, wanneer u \'kaartlaag standaard zichtbaar\' activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
               />
             </div>
 
@@ -356,7 +356,7 @@ export default {
       }
       return this.selectedMapLayerConfigs.filter((layer) => layer.layer !== this.mapLayerConfig.layer);
     },
-    checkBaseLayerVisible() {
+    otherVisibleBaseLayer() {
       // Check if current layer is a base layer.
       if (
         !this.selectedMapLayerConfigs ||
@@ -366,20 +366,22 @@ export default {
         return false;
       }
 
-      // Check if there is another configured base layer that has is_visible set to true.
-      const baseLayerWithIsVisible = this.otherMapLayerConfigs.find((layer) => {
-        if (layer.settings.customSettings && layer.settings.is_visible) {
+      const otherLayer = this.otherMapLayerConfigs.find((layer) => {
+        // Check if layer has custom settings and is a visible base layer.
+        if (layer.settings.customSettings && layer.settings.is_base && layer.settings.is_visible) {
           return layer;
         }
 
-        const defaultSettings = this.allLayers.find((l) => l.id === layer.layer);
-
-        if (!layer.settings.customSettings && defaultSettings.is_visible) {
-          return layer;
+        // Check if layer is visible base layer by default
+        if (!layer.settings.customSettings) {
+          const layerData = this.allLayers.find((l) => l.id === layer.layer);
+          if (layerData.is_base && layerData.is_visible) {
+            return layer;
+          }
         }
       });
 
-      return baseLayerWithIsVisible;
+      return otherLayer;
     },
   },
   async created() {
@@ -436,16 +438,24 @@ export default {
       }
     },
     toggleSliderField(field) {
-      if (field === "is_visible" && !this.mapLayerConfig.settings[field] && this.checkBaseLayerVisible) {
-        if (this.checkBaseLayerVisible.settings.customSettings) {
-          this.checkBaseLayerVisible.settings.is_visible = false;
-        } else {
-          this.checkBaseLayerVisible.settings.customSettings = true;
-          this.checkBaseLayerVisible.settings.is_visible = false;
-        }
+      if (field === "is_visible" && !this.mapLayerConfig.settings[field] && this.otherVisibleBaseLayer) {
+        this.resetOtherVisibleBaseLayer();
       }
 
       this.mapLayerConfig.settings[field] = !this.mapLayerConfig.settings[field];
+    },
+    async resetOtherVisibleBaseLayer() {
+      if (this.otherVisibleBaseLayer.settings.customSettings) {
+        this.otherVisibleBaseLayer.settings.is_visible = false;
+      } else {
+        const layerData = await this.getLayer(this.otherVisibleBaseLayer.layer);
+
+        this.otherVisibleBaseLayer.settings = {
+          ...layerData,
+          customSettings: true,
+          is_visible: false,
+        };
+      }
     },
     changeLayerOpacity(newValue) {
       this.mapLayerConfig.settings.opacity = newValue;
