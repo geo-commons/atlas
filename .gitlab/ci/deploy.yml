@@ -24,14 +24,13 @@ Deploy Review App:
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
       --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY
-  when: manual
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
     on_stop: Remove Review App
     auto_stop_in: 1 week
   only:
-    - branches@purmerend/atlas
+    - /^feat\/.*$/
   except:
     - master@purmerend/atlas
 
@@ -44,13 +43,12 @@ Remove Review App:
     kubectl config get-contexts
     kubectl config use-context purmerend/atlas:review
     kubectl delete namespace atlas-$CI_ENVIRONMENT_SLUG
-  when: manual
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
     action: stop
   only:
-    - branches@purmerend/atlas
+    - /^feat\/.*$/
   except:
     - master@purmerend/atlas
 

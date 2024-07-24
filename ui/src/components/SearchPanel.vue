@@ -13,7 +13,7 @@
           v-model="query"
           type="search"
           name="search"
-          placeholder="Zoek adres of coördinaten"
+          placeholder="Zoek adres, perceel of coördinaten"
           autocomplete="off"
           aria-autocomplete="list"
           role="combobox"
@@ -47,7 +47,6 @@ import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
 
 const suggestEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
-const freeEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
 
 const visibleSourceTypes = ["WMS_WFS", "WFS"];
 
@@ -104,19 +103,25 @@ export default {
         return;
       }
 
-      this.results = [];
-
       if (!this.query) {
         this.$emit("set-position", { ...this.position, marker: null });
         this.showSuggestions = false;
         return;
       }
 
+      let source, municipalityName;
+      if (this.query.match(/[A-Z]{3}[0-9]{2}/)) {
+        // Check if the user searches a registry numbers (e.g. PMR00)
+        source = "DKK";
+        municipalityName = `kadastrale_gemeentenaam:(${encodeURIComponent(this.globalStore.config.suggest_municipalities)})`;
+      } else {
+        source = "BAG";
+        municipalityName = `gemeentenaam:(${encodeURIComponent(this.globalStore.config.suggest_municipalities)})`;
+      }
+
       try {
         const result = await fetch(
-          `${suggestEndpoint}?fq=gemeentenaam:(${encodeURIComponent(
-            this.globalStore.config.suggest_municipalities,
-          )})&fq=bron:BAG&q=${encodeURIComponent(this.query)}`,
+          `${suggestEndpoint}?fq=bron:${source}&fq=${municipalityName}&fl=weergavenaam,centroide_rd&q=${encodeURIComponent(this.query)}`,
         );
         const data = await result.json();
 
@@ -151,16 +156,7 @@ export default {
       }
 
       try {
-        const result = await fetch(`${freeEndpoint}?q=${encodeURIComponent("id:" + suggestion.id)}`);
-
-        const data = await result.json();
-        if (!data.response.docs) {
-          return;
-        }
-
-        const object = data.response.docs[0];
-
-        const centeroide = /POINT\(([\d.]+) ([\d.]+)\)/.exec(object.centroide_rd);
+        const centeroide = /POINT\(([\d.]+) ([\d.]+)\)/.exec(suggestion.centroide_rd);
         const parsedCenteroide = [parseFloat(centeroide[1]), parseFloat(centeroide[2])];
 
         this.$emit("set-position", {
@@ -170,7 +166,7 @@ export default {
           zoom: 19,
         });
 
-        this.query = object.weergavenaam;
+        this.query = suggestion.weergavenaam;
         this.showSuggestions = false;
       } catch (e) {
         console.error(e);
