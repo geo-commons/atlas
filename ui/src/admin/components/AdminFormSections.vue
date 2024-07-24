@@ -95,19 +95,37 @@
                   v-model="currentValues[question.id]"
                   :name="question.id"
                   type="number"
-                  :rules="getRules(question)"
                   :disabled="question.disabled"
-                />
+                >
+                  <input
+                    :id="question.id"
+                    :value="currentValues[question.id]"
+                    :name="question.id"
+                    type="number"
+                    :disabled="question.disabled"
+                    @change="(e) => handleInput(e, question)"
+                  />
+                </vee-field>
                 <vee-field
                   v-else-if="question.type === 'decimal'"
                   :id="question.id"
-                  v-model="currentValues[question.id]"
+                  :value="currentValues[question.id]"
                   :name="question.id"
-                  type="number"
                   :rules="getRules(question)"
+                  type="number"
                   :disabled="question.disabled"
                   :step="question.step"
-                />
+                >
+                  <input
+                    :id="question.id"
+                    :value="currentValues[question.id]"
+                    :name="question.id"
+                    type="number"
+                    :disabled="question.disabled"
+                    :step="question.step"
+                    @change="(e) => handleInput(e, question)"
+                  />
+                </vee-field>
                 <label v-else-if="question.type === 'label'">{{
                   currentValues[question.id] ? currentValues[question.id] : "-"
                 }}</label>
@@ -306,6 +324,13 @@ export default {
           errorElement.focus({ preventScroll: true });
         });
       }
+    },
+    handleInput(event, question) {
+      let value = event.target.value;
+      if (value === "") {
+        value = null;
+      }
+      this.currentValues[question.id] = value;
     },
   },
 };
