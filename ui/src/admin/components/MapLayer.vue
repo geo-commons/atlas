@@ -104,12 +104,24 @@
           </div>
           <div v-if="!isBaseLayer" class="layer-settings extra-padding-top">
             <div class="layer-setting">
-              <label class="question-label" for="zoom_max">Zoomniveau minimum</label>
-              <input id="zoom_min" v-model.number="mapLayerConfig.settings.zoom_min" name="zoom_min" type="number" />
+              <label class="question-label" for="zoom_min">Zoomniveau minimum</label>
+              <input
+                id="zoom_min"
+                :value="mapLayerConfig.settings.zoom_min"
+                name="zoom_min"
+                type="number"
+                @change="(e) => handleInput(e, 'zoom_min')"
+              />
             </div>
             <div class="layer-setting">
-              <label class="question-label" for="zoom_min">Zoomniveau maximum</label>
-              <input id="zoom_max" v-model.number="mapLayerConfig.settings.zoom_max" name="zoom_max" type="number" />
+              <label class="question-label" for="zoom_man">Zoomniveau maximum</label>
+              <input
+                id="zoom_max"
+                :value="mapLayerConfig.settings.zoom_max"
+                name="zoom_max"
+                type="number"
+                @change="(e) => handleInput(e, 'zoom_max')"
+              />
             </div>
             <div class="layer-setting">
               <label class="question-label" for="display_properties">Toon deze velden</label>
@@ -181,7 +193,8 @@
                   class="button __small __secondary_admin"
                   @click="toggleModal('linkedData')"
                 >
-                  <AddIcon />Voeg toe
+                  <AddIcon />
+                  Voeg toe
                 </button>
               </div>
 
@@ -222,7 +235,8 @@
                   class="button __small __secondary_admin"
                   @click="toggleModal('templates')"
                 >
-                  <AddIcon />Voeg toe
+                  <AddIcon />
+                  Voeg toe
                 </button>
               </div>
 
@@ -577,6 +591,13 @@ export default {
     },
     back() {
       this.$emit("show-layers");
+    },
+    handleInput(event, question) {
+      let value = event.target.value;
+      if (value === "") {
+        value = null;
+      }
+      this.mapLayerConfig.settings[question] = value;
     },
   },
 };
