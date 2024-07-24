@@ -1,6 +1,6 @@
 # Atlas
 
-Atlas is a geo portal that provides a user-friendly interface for layers on a WMS, WFS, WMTS and vector tiles (MVT) server. Atlas is developed by [Datalab Purmerend](https://datalab.purmerend.nl/), part of Gemeente Purmerend and [Delta10](https://www.delta10.nl).
+Atlas is a geo portal that provides a user-friendly interface for layers on a WMS, WFS, WMTS and vector tiles (MVT) server. Atlas is developed by [Datalab Purmerend](https://datalab.purmerend.nl/), part of Gemeente Purmerend, and [Delta10](https://www.delta10.nl).
 
 <img src="https://gitlab.com/purmerend/atlas/uploads/e549ad00397d4f0f593f703ee12ceb9b/image.png" alt="Screenshot of Atlas" width="500"/>
 
@@ -15,7 +15,19 @@ Start Atlas by running the following command in the root of the repository:
 docker-compose up
 ```
 
+If not existing yet, the above will also initialize a persistent Docker volume `atlas_postgres-data`, along with an empty database. To import some test data:
+
+```bash
+docker-compose exec atlas python3 manage.py loaddata data/demo.json
+```
+
 Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
+
+To use the admin interface at [http://localhost:8000/atlas/admin/](http://localhost:8000/atlas/admin/), create a superuser first:
+
+```bash
+docker-compose exec atlas python3 manage.py createsuperuser
+```
 
 The default settings can be used for testing purposes, but are not suitable for production usage. Atlas can be configured with the following settings:
 
@@ -34,7 +46,7 @@ The default settings can be used for testing purposes, but are not suitable for 
 - GOOGLE_MAPS_API_KEY: The [API key](https://developers.google.com/maps/documentation/javascript/get-api-key) for Google Maps (used externally).
 - SENTRY_DSN: The [Sentry](https://sentry.io/) DSN to collect app statistics. (optional)
 
-## Setup a development environment on Linux or MacOS
+## Set up a development environment on Linux or macOS
 
 Make sure you installed the following requirements:
 
@@ -47,7 +59,7 @@ GeoServer is an open source software server written in Java that allows users to
 The default development environment of Atlas uses the Purmerend Datalab Geoserver. However, if you want to present you own geospatial data (and you do), you will need to run you own Geoserver.
 There is a lot of very good [documentation](https://docs.geoserver.org/stable/en/user/) about Geoserver on the Internet.
 
-First setup a new virtual environment for Atlas with:
+First set up a new virtual environment for Atlas with:
 
 ```bash
 python3 -m venv .venv
@@ -61,7 +73,7 @@ Run a Postgres database server with:
 docker-compose up -d postgres
 ```
 
-Now run the database migrations with:
+The above uses the same persistent volume `atlas_postgres-data` as used in [Run Atlas locally](#run-atlas-locally) above. If it did not exist yet, run the database migrations with:
 
 ```bash
 python3 manage.py migrate
@@ -96,10 +108,7 @@ You can easily load demo data into the local backend with:
 python3 manage.py loaddata data/demo.json
 ```
 
-This dump contains some example categories and layers and also creates a superadmin user with the following credentials:
-
-- Username: admin
-- Password: password
+This dump contains some example categories and layers.
 
 ### Create a superuser
 
@@ -109,4 +118,4 @@ To create a new superuser use the following command:
 python3 manage.py createsuperuser
 ```
 
-Follow the steps. You can now login to [http://localhost:8000/atlas/admin/](http://localhost:8000/atlas/admin/).
+Follow the steps. You can now log in to [http://localhost:8000/atlas/admin/](http://localhost:8000/atlas/admin/).
