@@ -67,6 +67,7 @@ import StackSortableTableHeaderItem from "./StackSortableTableHeaderItem.vue";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
+import { formatRawString } from "@/utils/string-helpers";
 
 // todo: check if headers need to be sortable
 
@@ -262,9 +263,11 @@ export default {
       }
     },
     headerText(property) {
-      return this.linkedData.friendly_fields && this.linkedData.friendly_fields[property]
-        ? this.linkedData.friendly_fields[property]
-        : property;
+      if (this.linkedData.friendly_fields && this.linkedData.friendly_fields[property]) {
+        return this.linkedData.friendly_fields[property];
+      }
+
+      return formatRawString(property);
     },
   },
 };

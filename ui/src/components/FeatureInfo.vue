@@ -7,24 +7,14 @@
           <table>
             <tbody>
               <tr v-for="property in filterProperties(feature.properties)" :key="property">
-                <td class="text-capitalize">
-                  {{
-                    layer.friendly_fields && layer.friendly_fields[property]
-                      ? layer.friendly_fields[property]
-                      : property
-                  }}
-                </td>
+                <td>{{ formatProperty(property) }}</td>
                 <td>
                   <RichValue :data-key="property" :data-value="feature.properties[property]" />
                 </td>
               </tr>
               <tr v-for="property in Object.keys(layer.templated_properties)" :key="property">
-                <td class="text-capitalize">
-                  {{
-                    layer.friendly_fields && layer.friendly_fields[property]
-                      ? layer.friendly_fields[property]
-                      : property
-                  }}
+                <td>
+                  {{ formatProperty(property) }}
                 </td>
                 <td>
                   <MarkdownTemplate
@@ -72,6 +62,7 @@ import FeatureInfoTemplate from "./FeatureInfoTemplate";
 import MarkdownTemplate from "./MarkdownTemplate";
 import { mapState, mapStores } from "pinia";
 import { useGlobalStore } from "@/stores";
+import { formatRawString } from "@/utils/string-helpers";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -217,6 +208,13 @@ export default {
     },
     onSelectFeatureDetails(selectedFeature) {
       this.$emit("select-feature-details", selectedFeature);
+    },
+    formatProperty(property) {
+      if (this.layer.friendly_fields && this.layer.friendly_fields[property]) {
+        return this.layer.friendly_fields[property];
+      }
+
+      return formatRawString(property);
     },
   },
 };
