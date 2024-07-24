@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const allAvailableLayers = data.layers;
   const configuredLayers = data.map.layers;
-
   // First set custom settings as configured by user.
   let layers = configuredLayers.map((configuredLayer) => {
     const defaultLayer = allAvailableLayers.find((layer) => layer.internal_id === configuredLayer.layer);
@@ -70,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!layer.is_base) {
       return {
         ...layer,
-        is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
+        is_visible: settings.visibleLayers.length ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
       };
     }
   });
