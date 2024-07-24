@@ -1,13 +1,7 @@
 <template>
   <PanelDisplay title="Verfijn resultaten" :loading="loading" @hidePanel="hidePanel">
     <p v-if="facets.length <= 0" class="info-text">Er zijn nog geen filters geconfigureerd.</p>
-
-    <ExpandButton
-      v-for="facet in facets"
-      :key="facet"
-      :title="layer.friendly_fields && layer.friendly_fields[facet] ? layer.friendly_fields[facet] : facet"
-      is-open
-    >
+    <ExpandButton v-for="facet in facets" :key="facet" :title="getTitle(facet)" is-open>
       <ul v-if="facetValues[facet]">
         <li v-for="value in facetValues[facet]" :key="value">
           <CheckboxField
@@ -28,6 +22,7 @@
 import PanelDisplay from "./PanelDisplay";
 import ExpandButton from "./ExpandButton";
 import CheckboxField from "./CheckboxField";
+import { formatRawString } from "@/utils/string-helpers";
 
 export default {
   name: "FilterPanel",
@@ -140,11 +135,18 @@ export default {
 
       if (!e.target.checked && newFilters[this.layer.id][e.target.name].includes(e.target.value)) {
         newFilters[this.layer.id][e.target.name] = newFilters[this.layer.id][e.target.name].filter(
-          (v) => v !== e.target.value
+          (v) => v !== e.target.value,
         );
       }
 
       this.$emit("update-filters", newFilters);
+    },
+    getTitle(facet) {
+      if (this.layer.friendly_fields && this.layer.friendly_fields[facet]) {
+        return this.layer.friendly_fields[facet];
+      }
+
+      return formatRawString(facet);
     },
   },
 };

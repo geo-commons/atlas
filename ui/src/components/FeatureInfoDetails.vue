@@ -4,14 +4,14 @@
       <ArrowLeftIcon class="icon __smedium" /> <span class="back-button-text">Terug naar overzicht</span>
     </button>
 
-    <h4 class="text-capitalize">{{ feature.title }}</h4>
+    <h4>{{ capitalizeFirstLetter(feature.title) }}</h4>
 
     <table-list>
       <table>
         <tbody>
           <tr v-for="field in feature.detailViewFields" :key="field">
-            <td class="text-capitalize">
-              {{ field }}
+            <td>
+              {{ formatRawString(field) }}
             </td>
             <td>
               <RichValue :data-key="field" :data-value="feature.properties[field]" />
@@ -27,6 +27,7 @@
 import RichValue from "@/components/RichValue.vue";
 import TableList from "@/components/TableList.vue";
 import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
+import { capitalizeFirstLetter, formatRawString } from "@/utils/string-helpers";
 
 export default {
   name: "FeatureInfoDetails",
@@ -35,6 +36,8 @@ export default {
     feature: Object,
   },
   methods: {
+    capitalizeFirstLetter,
+    formatRawString,
     back() {
       this.$emit("back");
     },

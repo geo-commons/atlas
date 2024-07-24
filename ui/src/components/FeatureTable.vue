@@ -88,6 +88,7 @@ import Spinner from "@/components/Spinner.vue";
 import MarkerIcon from "../assets/icons/marker-icon.svg";
 import { getFetchParameters } from "../utils/auth";
 import StackSortableTableHeaderItem from "@/components/StackSortableTableHeaderItem.vue";
+import { formatRawString } from "@/utils/string-helpers";
 
 export default {
   name: "FeatureTable",
@@ -446,9 +447,11 @@ export default {
       }
     },
     headerText(property) {
-      return this.layer.friendly_fields && this.layer.friendly_fields[property]
-        ? this.layer.friendly_fields[property]
-        : property;
+      if (this.layer.friendly_fields && this.layer.friendly_fields[property]) {
+        return this.layer.friendly_fields[property];
+      }
+
+      return formatRawString(property);
     },
   },
 };
