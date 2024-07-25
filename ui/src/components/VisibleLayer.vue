@@ -155,7 +155,7 @@ export default {
     },
     async fetchLegendImage() {
       const wmsSource = new TileWMS({
-        url: this.layer.url,
+        url: this.layer.legend_url ? this.layer.legend_url : this.layer.url,
         servertype: this.layer.server_type,
         params: {
           LAYERS: this.layer.name,
