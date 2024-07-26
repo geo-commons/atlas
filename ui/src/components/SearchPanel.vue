@@ -110,7 +110,7 @@ export default {
       }
 
       let source, municipalityName;
-      if (this.query.match(/[A-Z]{3}[0-9]{2}/)) {
+      if (this.query.match(/[a-zA-Z]{3}[0-9]{2}/)) {
         // Check if the user searches a registry numbers (e.g. PMR00)
         source = "DKK";
         municipalityName = `kadastrale_gemeentenaam:(${encodeURIComponent(this.globalStore.config.suggest_municipalities)})`;
