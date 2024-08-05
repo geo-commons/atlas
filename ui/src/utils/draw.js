@@ -16,6 +16,7 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     DRAW_LINE: "LineString",
     DRAW_POLYGON: "Polygon",
     DRAW_LABEL: "Point",
+    DRAW_COORDINATE: "Point",
   };
 
   const draw = new Draw({
@@ -52,6 +53,13 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" || event.key === "Enter") {
       draw.finishDrawing();
+    }
+  });
+
+  // Test to removeLastPoint
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Backspace" || event.key === "Delete") {
+      draw.removeLastPoint();
     }
   });
 
@@ -137,11 +145,18 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     }
   });
 
-  draw.on("drawend", () => {
+  draw.on("drawend", (evt) => {
     if (measure === "DRAW_LABEL") {
       const result = prompt("Voer het tekstlabel in");
       sketch.setProperties({
         label: result,
+      });
+    }
+
+    if (measure === "DRAW_COORDINATE") {
+      sketch.setProperties({
+        xCoordinate: evt.feature.getGeometry().getCoordinates()[0],
+        yCoordinate: evt.feature.getGeometry().getCoordinates()[1],
       });
     }
 

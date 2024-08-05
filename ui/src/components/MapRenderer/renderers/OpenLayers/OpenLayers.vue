@@ -207,11 +207,21 @@ export default {
             color: getFeatureRgba(feature, 0.2),
           }), // fill of polygon (lower opacity part)
           text: new Text({
-            text: feature.get("label"),
+            text: feature.get("label")
+              ? feature.get("label")
+              : feature.get("xCoordinate") && feature.get("yCoordinate")
+                ? `${+feature.get("xCoordinate").toFixed(2)}, ${+feature.get("yCoordinate").toFixed(2)}`
+                : null,
             fill: new Fill({
               color: getFeatureRgba(feature, 1),
             }), // color of text
             textAlign: "left",
+            offsetX:
+              feature.get("xCoordinate") && feature.get("yCoordinate")
+                ? getFeatureStrokeWidth(feature) > 3
+                  ? 16
+                  : 8
+                : 0,
             font: `${getFeatureFontSize(feature)}px bold PT Sans, sans-serif`,
             stroke: new Stroke({
               color: getFeatureRgba(feature, 1),

@@ -75,48 +75,122 @@
     <div v-if="showDrawMenu">
       <transition name="fade">
         <div class="draw-toolbar">
-          <button
-            v-tippy="{ placement: 'bottom' }"
-            aria-label="Teken punt"
-            class="iconbutton"
-            :class="{
-              isActive: tool === 'DRAW_POINT',
-            }"
-            content="Teken punt"
-            @click="() => setTool('DRAW_POINT')"
-          >
-            <DotIcon />
-          </button>
-          <button
-            v-tippy="{ placement: 'bottom' }"
-            aria-label="Teken lijn"
-            class="iconbutton"
-            :class="{
-              isActive: tool === 'DRAW_LINE',
-            }"
-            content="Teken lijn"
-            @click="() => setTool('DRAW_LINE')"
-          >
-            <LineIcon />
-          </button>
-          <button
-            v-tippy="{ placement: 'bottom' }"
-            aria-label="Teken polygoon"
-            class="iconbutton"
-            :class="{
-              isActive: tool === 'DRAW_POLYGON',
-            }"
-            content="Teken polygoon"
-            @click="() => setTool('DRAW_POLYGON')"
-          >
-            <PolyGonIcon />
-          </button>
+          <div class="menu-wrapper">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Teken punt"
+              class="iconbutton"
+              :class="{
+                isActive: tool === 'DRAW_POINT' || previousTool === 'DRAW_POINT',
+              }"
+              content="Teken punt"
+              @click="() => setTool('DRAW_POINT')"
+            >
+              <DotIcon />
+            </button>
+            <div
+              v-if="
+                showDrawMenu &&
+                (tool === 'DRAW_POINT' ||
+                  previousTool === 'DRAW_POINT' ||
+                  tool === 'DRAW_COORDINATE' ||
+                  previousTool === 'DRAW_COORDINATE')
+              "
+            >
+              <transition name="fade">
+                <div class="detail-menu">
+                  <ul class="list">
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        aria-label="Teken punt met coordinaat"
+                        class="text-button small-text is-fixed-size"
+                        :class="{
+                          isActive: tool === 'DRAW_COORDINATE' || previousTool === 'DRAW_COORDINATE',
+                        }"
+                        content="Teken punt met coordinaat"
+                        @click="() => setTool('DRAW_COORDINATE')"
+                      >
+                        <AddLocationIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
+          <div class="menu-wrapper">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Teken lijn"
+              class="iconbutton"
+              :class="{
+                isActive: tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE',
+              }"
+              content="Teken lijn"
+              @click="() => setTool('DRAW_LINE')"
+            >
+              <LineIcon />
+            </button>
+            <div v-if="showDrawMenu && (tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE')">
+              <transition name="fade">
+                <div class="detail-menu">
+                  <ul class="list">
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        content="Verwijder laatste punt"
+                        aria-label="Verwijder laatste punt"
+                        class="text-button small-text is-fixed-size"
+                        @click="() => emitKeyDown()"
+                      >
+                        <UndoIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
+          <div class="menu-wrapper">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Teken polygoon"
+              class="iconbutton"
+              :class="{
+                isActive: tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON',
+              }"
+              content="Teken polygoon"
+              @click="() => setTool('DRAW_POLYGON')"
+            >
+              <PolyGonIcon />
+            </button>
+            <div v-if="showDrawMenu && (tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON')">
+              <transition name="fade">
+                <div class="detail-menu">
+                  <ul class="list">
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        content="Verwijder laatste punt"
+                        aria-label="Verwijder laatste punt"
+                        class="text-button small-text is-fixed-size"
+                        @click="() => emitKeyDown()"
+                      >
+                        <UndoIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
           <button
             v-tippy="{ placement: 'bottom' }"
             aria-label="Teken label"
             class="iconbutton"
             :class="{
-              isActive: tool === 'DRAW_LABEL',
+              isActive: tool === 'DRAW_LABEL' || previousTool === 'DRAW_LABEL',
             }"
             content="Teken label"
             @click="() => setTool('DRAW_LABEL')"
@@ -136,9 +210,9 @@
           <div class="menu-wrapper">
             <button
               v-tippy="{ placement: 'bottom' }"
-              aria-label="Kies een tekst grote"
+              aria-label="Kies een tekstgrootte"
               class="iconbutton lineweight-toggle"
-              content="Kies een tekst grote"
+              content="Kies een tekstgrootte"
               @click="toggleFontSizeMenu"
             >
               <FormatSizeIcon />
@@ -347,6 +421,7 @@ import ThreePxLineIcon from "../assets/icons/3px-line-icon.svg";
 import FourPxLineIcon from "../assets/icons/4px-line-icon.svg";
 import FivePxLineIcon from "../assets/icons/5px-line-icon.svg";
 import FormatSizeIcon from "../assets/icons/format-size-icon.svg";
+import AddLocationIcon from "../assets/icons/add-location-icon.svg";
 import hexRgb from "hex-rgb";
 import draw from "@/utils/draw";
 
@@ -372,6 +447,7 @@ export default {
     FourPxLineIcon,
     FivePxLineIcon,
     FormatSizeIcon,
+    AddLocationIcon,
   },
   props: {
     tool: String,
@@ -401,6 +477,7 @@ export default {
       showSelectMenu: false,
       showLineWeightMenu: false,
       showFontSizeMenu: false,
+      previousTool: "",
     };
   },
   methods: {
@@ -509,18 +586,23 @@ export default {
       this.$emit("set-tool", "");
     },
     triggerColorPicker() {
+      this.previousTool = this.tool;
       this.$emit("set-tool", "");
       this.$refs.colorpicker.click();
     },
     setColor(e) {
       this.$emit("set-color", hexRgb(e.target.value));
+      this.$emit("set-tool", this.previousTool);
+      this.previousTool = "";
     },
     toggleLineWeightMenu() {
+      this.previousTool = this.tool;
       this.$emit("set-tool", "");
       this.showLineWeightMenu = !this.showLineWeightMenu;
       this.showFontSizeMenu = false;
     },
     toggleFontSizeMenu() {
+      this.previousTool = this.tool;
       this.$emit("set-tool", "");
       this.showFontSizeMenu = !this.showFontSizeMenu;
       this.showLineWeightMenu = false;
@@ -528,10 +610,19 @@ export default {
     setStrokeWidth(strokeWidth) {
       this.showLineWeightMenu = !this.showLineWeightMenu;
       this.$emit("set-stroke-width", strokeWidth);
+      this.$emit("set-tool", this.previousTool);
+      this.previousTool = "";
     },
     setFontSize(fontSize) {
       this.showFontSizeMenu = !this.showFontSizeMenu;
       this.$emit("set-font-size", fontSize);
+      this.$emit("set-tool", this.previousTool);
+      this.previousTool = "";
+    },
+    emitKeyDown() {
+      const keyDownEvent = new KeyboardEvent("keydown", { key: "Backspace" });
+
+      document.dispatchEvent(keyDownEvent);
     },
   },
 };
@@ -660,6 +751,16 @@ export default {
   align-items: center;
   border-bottom: none !important;
   border-radius: 0 !important;
+}
+
+.detail-menu button.is-fixed-size {
+  width: var(--width-button-large);
+  height: var(--width-button-large);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 20;
 }
 
 .detail-menu .text-button {

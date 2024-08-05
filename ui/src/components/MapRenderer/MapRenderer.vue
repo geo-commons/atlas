@@ -654,6 +654,7 @@ export default {
         case "DRAW_POINT":
         case "DRAW_LINE":
         case "DRAW_POLYGON":
+        case "DRAW_COORDINATE":
         case "DRAW_LABEL":
           this.drawFeatures.push(result.sketch);
           this.removedDrawFeatures = [];
