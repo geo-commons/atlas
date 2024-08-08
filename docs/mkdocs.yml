@@ -1,0 +1,4 @@
+site_name: Atlas Documentatie
+site_url: https://documentatie.atlas.nl
+theme:
+  name: material
