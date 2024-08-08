@@ -6,6 +6,8 @@ Atlas is a geo portal that provides a user-friendly interface for layers on a WM
 
 ## Run Atlas locally
 
+hoi
+
 Make sure you installed [Docker](https://www.docker.com/) on your local machine.
 
 Download Atlas from [GitLab](https://gitlab.com/purmerend/atlas) and unpack the downloaded file on your computer.
