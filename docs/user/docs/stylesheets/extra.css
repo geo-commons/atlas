@@ -1,0 +1,7 @@
+:root {
+  --md-primary-fg-color: #0066ff;
+}
+
+.md-footer {
+  display: none;
+}
