@@ -60,7 +60,7 @@ Met het aanzetten van de "is standaard zichtbaar" optie, zorg je ervoor dat de b
 Met het aanzetten van de "is selecteerbaar" optie, zorg je ervoor dat de betreffende kaartlaag selecteerbaar is en je features op deze kaartlaag kan selecteren. *Default*: aan.
 
 **Haal detailinformatie op als HTML bij de bron**:
-Met het aanzetten van de "haal detailinformatie op als HTML bij de bron" optie, zorg je ervoor dat het getFeatureInfo request wat naar betreffende kaartlaag bron wordt gedaan geen JSON data formaat terug verwacht maar een HTML data formaat. *Default*: uit.
+Met het aanzetten van de "haal detailinformatie op als HTML bij de bron" optie, zorg je ervoor dat het getFeatureInfo request wat naar betreffende kaartlaag bron wordt gedaan geen JSON-data formaat terugverwacht maar een HTML-data formaat. *Default*: uit.
 
 **Toon laag in detail- en dataweergave**:
 Met het aanzetten van de "toon laag in detail- en dataweergave" optie zorg je ervoor dat de laag zichtbaar is binnen het detail en dataweergave. *Default*: aan.
@@ -69,7 +69,7 @@ Met het aanzetten van de "toon laag in detail- en dataweergave" optie zorg je er
 Met het aanzetten van de "toon laag alleen in een themakaart" optie zorg je ervoor dat de laag alleen zichtbaar wordt binnen themakaarten waarin deze laag specifiek gekozen is, hiermee verdwijnt de laag dus uit het standaard Atlas hoofscherm. *Default*: uit.
 
 **Toon deze velden**:
-Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in dit pop-up venster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond. *Veld eisen*: Voer een veld per regel in.
+Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in het pop-upvenster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond. *Veld eisen*: Voer een veld per regel in.
 
 **Doorzoek deze velden**:
 Geef in dit veld op door welke velden gezocht kan worden, dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg gelaten wordt, worden alle attributen zoekvelden. *Veld eisen*: Voer een veld per regel in.
@@ -126,7 +126,7 @@ Met het vriendelijke veldnamen veld kan je ervoor zorgen dat de uiteindelijke ve
 }
 ```
 
-Hier is het attribuut ```street_name``` de veldnaam zoals in GeoServer gedefinieerd, de hierbij behorende waarde ```straatnaam``` wordt de uiteindelijke veldnaam die in Atlas wordt getoond. *Veld eisen*: In dit veld moet een geldig JSON formaat opgegeven worden. *Ter informatie*: Lowercase veldnamen krijgen standaard een hoofdletter binnen Atlas. Een liggend streepje (underscore ofwel ```_```) wordt omgezet naar een spatie.
+Hier is het attribuut ```street_name``` de veldnaam zoals in GeoServer gedefinieerd, de hierbij behorende waarde ```straatnaam``` wordt de uiteindelijke veldnaam die in Atlas wordt getoond. *Veld eisen*: In dit veld moet een geldig JSON-formaat opgegeven worden. *Ter informatie*: Lowercase veldnamen krijgen standaard een hoofdletter binnen Atlas. Een liggend streepje (underscore ofwel ```_```) wordt omgezet naar een spatie.
 
 **Templatevelden**:
 TODO: Dit veld moet nog worden voorzien van de juiste documentatie.
@@ -157,7 +157,7 @@ Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een 
 
 **Alleen intern zichtbaar**: Wanneer "alleen intern zichtbaar" aan staat, is betreffende kaartlaag alleen beschikbaar binnen de interne omgeving. *Default*: aan.
 
-**Vereis inlog voor deze dataset**: Wanneer "vereis inlog voor deze dataset" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. Indien je niet ingelogd bent verschijnt de kaartlaag wel in het overzicht van lagen, maar krijg je de kaartlaag niet te zien en zie je enkel een slotje bij de kaartlaag staan om aan te wijzen dat je moet inloggen.
+**Vereis inlog voor deze dataset**: Wanneer "vereis inlog voor deze dataset" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. Indien je niet ingelogd bent, verschijnt de kaartlaag wel in het overzicht van lagen, maar krijg je de kaartlaag niet te zien en zie je enkel een slotje bij de kaartlaag staan om aan te wijzen dat je moet inloggen.
 
 **Groepen**: Onder "beschikbare groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot de kaartlaag.
 
