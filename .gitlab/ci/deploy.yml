@@ -1,6 +1,6 @@
 Deploy Review App:
   stage: Deploy
-  image: registry.gitlab.com/commonground/core/review-app-deployer:latest
+  image: alpine/k8s:1.29.7
   script:
     - |
       echo $CI_MERGE_REQUEST_LABELS
@@ -36,7 +36,7 @@ Deploy Review App:
 
 Remove Review App:
   stage: Deploy
-  image: registry.gitlab.com/commonground/core/review-app-deployer:latest
+  image: alpine/k8s:1.29.7
   variables:
     GIT_STRATEGY: none
   script: |
@@ -51,6 +51,7 @@ Remove Review App:
     - /^feat\/.*$/
   except:
     - master@purmerend/atlas
+  when: manual
 
 Deploy Docker latest tag:
   stage: Deploy
@@ -87,7 +88,7 @@ Deploy Docker version tag:
 
 Deploy acceptance:
   stage: Deploy
-  image: registry.gitlab.com/commonground/core/review-app-deployer:latest
+  image: alpine/k8s:1.29.7
   script:
     - |
       kubectl config get-contexts
@@ -119,7 +120,7 @@ Deploy acceptance:
 Upload helm chart:
   stage: Deploy
   image:
-    name: alpine/helm:latest
+    name: alpine/k8s:1.29.7
     entrypoint: [""]
 
   script:
