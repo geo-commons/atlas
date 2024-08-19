@@ -3,7 +3,7 @@ from reversion.admin import VersionAdmin
 from import_export.admin import ImportExportActionModelAdmin
 from import_export.formats import base_formats
 from .forms import LayerForm, LinkedDataForm
-from .models import Source, Category, Layer, Template, Selection, Map, MapLayer, LinkedData, Viewer
+from .models import Source, Category, Layer, Template, Selection, Map, MapLayer, LinkedData, Viewer, Dataset, Theme
 from .resources import CategoryResource, LayerResource, SourceResource, SelectionResource, MapResource
 
 
@@ -127,7 +127,8 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
                 'meta_org',
                 'meta_contact',
                 'meta_updated',
-                'meta_link'
+                'meta_link',
+                'dataset'
             )
         }),
         ('Toegang', {
@@ -177,9 +178,21 @@ class ViewerAdmin(VersionAdmin, admin.ModelAdmin):
     list_editable = ('ordering',)
 
 
+class DatasetAdmin(VersionAdmin, admin.ModelAdmin):
+    list_display = ('name', 'category')
+    list_display_links = ('name',)
+
+
+class ThemeAdmin(VersionAdmin, admin.ModelAdmin):
+    list_display = ('name',)
+    list_display_links = ('name',)
+
+
 admin.site.register(Source, SourceAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Selection, SelectionAdmin)
 admin.site.register(Map, MapAdmin)
 admin.site.register(Viewer, ViewerAdmin)
+admin.site.register(Dataset, DatasetAdmin)
+admin.site.register(Theme, ThemeAdmin)
