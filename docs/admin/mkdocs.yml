@@ -1,0 +1,13 @@
+site_name: Atlas Admin Documentatie
+site_url: https://documentatie.atlas.nl
+extra_css:
+  - stylesheets/extra.css
+theme:
+  name: material
+  language: nl
+  palette:
+    primary: custom
+  features:
+    - navigation.footer
+extra:
+  generator: false

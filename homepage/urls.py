@@ -6,7 +6,6 @@ from webservice import views as webservice_views, urls
 app_name = 'homepage'
 
 urlpatterns = [
-    path('help', views.v3_help, name='v3_help'),
     path('disclaimer', views.v3_disclaimer, name='v3_disclaimer'),
     path('login', viewclasses.LoginView.as_view(
         template_name='v3/login.html'), name='v3_login'),

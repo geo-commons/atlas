@@ -10,12 +10,8 @@ from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
 
 from webservice.models import Layer, Map, Viewer
-from .lib import get_help_content
-
 
 logger = logging.getLogger(__name__)
-help_content = get_help_content()
-
 
 @xframe_options_exempt
 def embed(request):
@@ -57,13 +53,6 @@ def v3(request, theme_slug=''):
     }
 
     return render(request, 'v3/app.html', context)
-
-
-def v3_help(request):
-    return render(request, 'v3/help.html', {
-        'title': 'Help',
-        'content': help_content
-    })
 
 
 def v3_disclaimer(request):
