@@ -7,6 +7,7 @@
       :initial-values="initialValues"
       :form-object="'layers'"
       :object-specific-save="saveLayer"
+      :show-info-text-under-fields="true"
       @update-source="(source) => (selectedSource = source)"
     >
       <template #custom>
@@ -498,6 +499,8 @@ export default {
               name: "Title",
               type: "text",
               required: true,
+              infoText:
+                "Uitleg: De naam zoals die verschijnt in de legenda van Atlas. Veld eisen: De invoer mag geen speciale tekens bevatten.",
             },
             {
               label: "Kort kenmerk",
@@ -506,7 +509,8 @@ export default {
               type: "text",
               required: true,
               maxLength: 50,
-              infoText: "Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.",
+              infoText:
+                "Uitleg: Een uniek kenmerk dat de kaartlaag van de andere kaartlagen onderscheid. Wordt gebruikt als slug voor betreffende kaartlaag.",
             },
             {
               label: "Categorie",
@@ -516,6 +520,7 @@ export default {
               placeholder: "categorie",
               required: false,
               options: this.getCategories,
+              infoText: "Uitleg: De categorie waar toe de kaartlaag behoort.",
             },
             {
               label: "Gepubliceerd",
@@ -523,6 +528,8 @@ export default {
               name: "Published",
               type: "checkbox",
               required: false,
+              infoText:
+                "Uitleg: Met deze optie bepaal je op de laag wordt gepubliceerd of niet binnen Atlas. <a href='/atlas/admin/docs/admin2-interface/#algemene-gegevens'>Meer uitleg.</a> <i>Default:</i> uit",
             },
           ],
         },
@@ -537,6 +544,7 @@ export default {
               required: true,
               placeholder: "bron",
               options: this.getSources,
+              infoText: "Uitleg: Kies een van de geconfigureerde bronnen binnen Atlas.",
             },
             {
               label: "Laagnaam",
@@ -546,7 +554,8 @@ export default {
               required: true,
               placeholder: "laag",
               sourceField: "source_id",
-              infoText: "De naam van de laag op de geoserver.",
+              infoText:
+                "De naam van de kaartlaag zoals die in Geoserver geconfigureerd is. <a href='/atlas/admin/docs/admin2-interface/#bron'>Meer uitleg.</a>",
             },
             {
               label: "Brontype",
@@ -557,7 +566,7 @@ export default {
               placeholder: "brontype",
               options: this.sourceTypes,
               infoText:
-                '"WMS en WFS" en WFS is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.',
+                'Specifieer wat voor brontype de laag gebruikt. <a href="/atlas/admin/docs/admin2-interface/#bron">Meer uitleg.</a>',
             },
             {
               label: "Projectie",
@@ -565,13 +574,7 @@ export default {
               name: "Projection",
               type: "text",
               required: false,
-            },
-            {
-              label: "Servertype",
-              id: "server_type",
-              name: "ServerType",
-              type: "text",
-              required: false,
+              infoText: "De projectie waarin de kaartlaag bevraagd wordt. <i>Default</i>: EPSG:28992",
             },
             {
               label: "Formaat",
@@ -581,6 +584,8 @@ export default {
               required: false,
               placeholder: "bron",
               options: this.formats,
+              infoText:
+                "Onder het veld formaat specifieer je wat voor soort afbeelding formaat de bron gebruikt. <i>Default:</i> image/png",
             },
           ],
         },
@@ -594,6 +599,8 @@ export default {
               type: "decimal",
               required: true,
               step: 0.1,
+              infoText:
+                "Onder het veld transparantie configureer je hoe transparent de kaartlaag is. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Is basislaag",
@@ -601,6 +608,8 @@ export default {
               name: "IsBase",
               type: "checkbox",
               required: false,
+              infoText:
+                "Met deze optie, zorg je ervoor dat de betreffende kaartlaag de achtergrondkaart wordt. <i>Default</i>: uit.",
             },
             {
               label: "Is standaard zichtbaar",
@@ -608,6 +617,8 @@ export default {
               name: "IsVisible",
               type: "checkbox",
               required: false,
+              infoText:
+                'Met deze optie, zorg je ervoor dat de betreffende kaartlaag standaard zichtbaar wordt. <a href="/atlas/admin/docs/admin2-interface/#weergave">Meer uitleg.</a> <i>Default</i>: uit.',
             },
             {
               label: "Is selecteerbaar",
@@ -615,6 +626,8 @@ export default {
               name: "IsSelectable",
               type: "checkbox",
               required: false,
+              infoText:
+                "Met deze optie, zorg je ervoor dat de betreffende kaartlaag selecteerbaar is en je features op deze kaartlaag kan selecteren. <i>Default</i>: aan.",
             },
             {
               label: "Haal detailinformatie als HTML op bij de bron",
@@ -622,6 +635,8 @@ export default {
               name: "UseHtmlInfoFormat",
               type: "checkbox",
               required: false,
+              infoText:
+                "Met deze optie, zorg je ervoor dat het getFeatureInfo request wat naar betreffende kaartlaag bron wordt gedaan geen JSON-data formaat terugverwacht maar een HTML-data formaat. <i>Default</i>: uit.",
             },
             {
               label: "Toon laag in detail- en dataweergave",
@@ -629,6 +644,8 @@ export default {
               name: "ShowInDetailPanel",
               type: "checkbox",
               required: false,
+              infoText:
+                "Met deze optie zorg je ervoor dat de laag zichtbaar is binnen het detail en dataweergave. <i>Default</i>: aan.",
             },
             {
               label: "Toon laag alleen in een themakaart",
@@ -636,6 +653,8 @@ export default {
               name: "NotInAtlas",
               type: "checkbox",
               required: false,
+              infoText:
+                "Met deze optie zorg je ervoor dat de laag alleen zichtbaar wordt binnen themakaarten waarin deze laag specifiek gekozen is, hiermee verdwijnt de laag dus uit het standaard Atlas hoofscherm. <i>Default</i>: uit.",
             },
             {
               label: "Toon deze velden",
@@ -645,7 +664,8 @@ export default {
               multiLine: true,
               required: false,
               isNested: true,
-              infoText: "Voer één veld per regel in. Bij geen invoer worden alle velden getoond.",
+              infoText:
+                "Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in het pop-upvenster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Doorzoek deze velden",
@@ -655,7 +675,8 @@ export default {
               multiLine: true,
               required: false,
               isNested: true,
-              infoText: "Voer één veld per regel in. Bij geen invoer worden alle velden getoond.",
+              infoText:
+                "Geef in dit veld op door welke velden gezocht kan worden, dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg gelaten wordt, worden alle attributen zoekvelden. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Bereik minimum x",
@@ -664,7 +685,8 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
-              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              infoText:
+                "Vul hier een RD-coordinaat in om de laag inactief te maken wanneer de weergave buiten het bereik ligt van dit RD-coordinaat, bijvoorbeeld: 123467.",
             },
             {
               label: "Bereik minimum y",
@@ -673,7 +695,8 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
-              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              infoText:
+                "Vul hier een RD-coordinaat in om de laag inactief te maken wanneer de weergave buiten het bereik ligt van dit RD-coordinaat, bijvoorbeeld: 499314.",
             },
             {
               label: "Bereik maximum x",
@@ -682,7 +705,8 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
-              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              infoText:
+                "Vul hier een RD-coordinaat in om de laag inactief te maken wanneer de weergave buiten het bereik ligt van dit RD-coordinaat, bijvoorbeeld: 128962.",
             },
             {
               label: "Bereik maximum y",
@@ -691,7 +715,8 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
-              infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              infoText:
+                "Vul hier een RD-coordinaat in om de laag inactief te maken wanneer de weergave buiten het bereik ligt van dit RD-coordinaat, bijvoorbeeld: 503402.",
             },
             {
               label: "Zoomniveau minimum",
@@ -700,6 +725,8 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
+              infoText:
+                'Via dit veld bepaal je hoe laag het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. <a href="/atlas/admin/docs/admin2-interface/#weergave">Meer uitleg.</a>',
             },
             {
               label: "Zoomniveau maximum",
@@ -708,6 +735,8 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
+              infoText:
+                'Via dit veld bepaal je hoe hoog het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. <a href="/atlas/admin/docs/admin2-interface/#weergave">Meer uitleg.</a>',
             },
             {
               label: "Stijlnaam voor WMS / WMTS laag",
@@ -715,7 +744,8 @@ export default {
               name: "ServerStyle",
               type: "text",
               required: false,
-              infoText: "Stijlnaam zoals beschikbaar op de server",
+              infoText:
+                'Via het veld "Stijlnaam voor WMS / WMTS laag" is het mogelijk om gebruik te maken van een stijl aanwezig op de GeoServer door exact die naam in dit veld op te nemen.',
             },
             {
               label: "Stijl voor WFS / MVT laag",
@@ -725,7 +755,8 @@ export default {
               multiLine: true,
               required: false,
               isNested: true,
-              infoText: "Stijl in GeoStyler formaat.",
+              infoText:
+                "Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de inhoud van dit veld moet opgesteld zijn in het GeoStyler formaat. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Voorbeeld.</a>",
             },
             {
               label: "Vriendelijke veldnamen",
@@ -735,7 +766,8 @@ export default {
               multiLine: true,
               required: false,
               isNested: true,
-              infoText: "Maak veldnamen vriendelijk.",
+              infoText:
+                "Met het vriendelijke veldnamen veld kan je ervoor zorgen dat de uiteindelijke veldnamen die in Atlas worden laten zien een andere naam krijgen dan hoe ze binnen GeoServer gedefinieerd staan. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Templatevelden",
@@ -753,7 +785,8 @@ export default {
               name: "LegendUrl",
               type: "text",
               required: false,
-              infoText: "Overschrijf link naar legenda",
+              infoText:
+                'Met het "legenda" veld kan je de legenda link die gebruikt wordt binnen Atlas om de uiteindelijke legenda afbeelding voor de kaartlaag op te halen overschrijven. <a href="/atlas/admin/docs/admin2-interface/#weergave">Voorbeeld.</a>',
             },
           ],
         },
@@ -767,6 +800,7 @@ export default {
               type: "text",
               required: false,
               isNested: true,
+              infoText: "Vul een metadata naam in.",
             },
             {
               label: "Omschrijving",
@@ -776,7 +810,8 @@ export default {
               required: false,
               multiLine: true,
               isNested: true,
-              infoText: "Het is mogelijk om tekst op te maken met Markdown in dit veld.",
+              infoText:
+                "Vul een metadata omschrijving in. <i>Ter informatie:</i> Er kan markdown in dit veld gebruikt worden.",
             },
             {
               label: "Organisatie",
@@ -785,6 +820,7 @@ export default {
               type: "text",
               required: false,
               isNested: true,
+              infoText: "Vul in tot welke organisatie de data behoort.",
             },
             {
               label: "Contactpersoon",
@@ -793,6 +829,8 @@ export default {
               type: "text",
               required: false,
               isNested: true,
+              infoText:
+                "Vul hier de contactpersoon in waarmee contact opgenomen kan worden bij vragen over de kaartlaag en/of data.",
             },
             {
               label: "Herkomst data",
@@ -803,7 +841,7 @@ export default {
               required: false,
               isNested: true,
               infoText:
-                "Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
+                "Vul hier in wat de herkomst van de data is. <i>Ter informatie</i>: Er kan markdown in dit veld gebruikt worden.",
             },
             {
               label: "Laatst bijgewerkt",
@@ -811,6 +849,8 @@ export default {
               name: "metadataUpdated",
               type: "text",
               required: false,
+              infoText:
+                "Vul hier de datum in die overeenkomt met de datum waarop de kaartlaag en/of data voor het laatst bijgewerkt is.",
             },
             {
               label: "Meer informatie",
@@ -818,7 +858,7 @@ export default {
               name: "MetadataLink",
               type: "text",
               required: false,
-              infoText: "Link naar metadatacatalogus met meer informatie",
+              infoText: "Vul hier een link naar een metadatacatalogus in.",
             },
           ],
         },
@@ -831,7 +871,8 @@ export default {
               name: "ClosedDataset",
               type: "checkbox",
               required: false,
-              infoText: "Laag is alleen zichtbaar binnen interne omgeving.",
+              infoText:
+                'Wanneer "alleen intern zichtbaar" aan staat, is betreffende kaartlaag alleen beschikbaar binnen de interne omgeving. <i>Default:</i> aan.',
             },
             {
               label: "Vereis inlog voor deze dataset",
@@ -839,7 +880,8 @@ export default {
               name: "LoginRequired",
               type: "checkbox",
               required: false,
-              infoText: "De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.",
+              infoText:
+                'Wanneer "vereis inlog voor deze dataset" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. <a href="/atlas/admin/docs/admin2-interface/#toegang">Meer uitleg.</a>',
             },
             {
               type: "custom",

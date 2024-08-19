@@ -23,37 +23,47 @@
                             If this is no longer sufficient in the future take a look at how ol-view and ol-layer
                             are decomposed in the OpenLayers.vue component -->
               <slot v-if="question.type === 'custom'" name="custom"></slot>
-              <div v-else-if="question.type === 'checkbox'" class="checkbox-wrapper">
-                <vee-field
-                  v-slot="{ field }"
-                  :name="question.id"
-                  type="checkbox"
-                  :value="true"
-                  :unchecked-value="false"
-                  :rules="getRules(question)"
-                >
-                  <input
-                    v-bind="field"
-                    type="checkbox"
+              <div
+                v-else-if="question.type === 'checkbox'"
+                :class="!showInfoTextUnderFields ? 'checkbox-wrapper' : 'checkbox-sdfds'"
+              >
+                <div class="checkbox-wrapper">
+                  <vee-field
+                    v-slot="{ field }"
                     :name="question.id"
+                    type="checkbox"
                     :value="true"
-                    :disabled="question.disabled"
-                  />
-                </vee-field>
-                <span class="label-info-text-wrapper">
-                  <label :for="question.id">{{ question.label }}</label>
-                  <AdminFormInfoText
-                    v-if="question.infoText && question.infoText !== ''"
-                    :info-text="question.infoText"
-                  />
-                </span>
+                    :unchecked-value="false"
+                    :rules="getRules(question)"
+                  >
+                    <input
+                      v-bind="field"
+                      type="checkbox"
+                      :name="question.id"
+                      :value="true"
+                      :disabled="question.disabled"
+                    />
+                  </vee-field>
+                  <span class="label-info-text-wrapper">
+                    <label :for="question.id">{{ question.label }}</label>
+                    <AdminFormInfoText
+                      v-if="question.infoText && question.infoText !== '' && !showInfoTextUnderFields"
+                      :info-text="question.infoText"
+                    />
+                  </span>
+                </div>
+                <p
+                  v-if="question.infoText && question.infoText !== '' && showInfoTextUnderFields"
+                  class="info-text-under-field"
+                  v-html="question.infoText"
+                />
                 <span class="warning-text"><vee-error-message :name="question.id" /></span>
               </div>
               <div v-else>
                 <span class="label-info-text-wrapper">
                   <label class="question-label" :for="question.id">{{ question.label }}</label>
                   <AdminFormInfoText
-                    v-if="question.infoText && question.infoText !== ''"
+                    v-if="question.infoText && question.infoText !== '' && !showInfoTextUnderFields"
                     :info-text="question.infoText"
                   />
                 </span>
@@ -160,6 +170,11 @@
                   :rules="getRules(question)"
                   type="text"
                 />
+                <p
+                  v-if="question.infoText && question.infoText !== '' && showInfoTextUnderFields"
+                  class="info-text-under-field"
+                  v-html="question.infoText"
+                />
                 <span class="warning-text">
                   <vee-error-message :name="question.id" />
                 </span>
@@ -209,6 +224,10 @@ export default {
       type: Boolean,
     },
     compactLayout: {
+      default: false,
+      type: Boolean,
+    },
+    showInfoTextUnderFields: {
       default: false,
       type: Boolean,
     },
@@ -413,5 +432,11 @@ label.question-label {
 
 .width {
   min-width: 100%;
+}
+
+.info-text-under-field {
+  margin-top: 0.5rem;
+  margin-bottom: 0rem;
+  font-size: 14px;
 }
 </style>
