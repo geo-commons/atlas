@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template
+from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme
 from authz.lib import can_request_access_layer
 
 
@@ -409,3 +409,52 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class DataExportSettingsSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField())
+
+
+class BasicThemeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Theme
+        fields = ['id', 'name']
+
+
+class DatasetSerializer(serializers.ModelSerializer):
+    layers = LayerSerializer(many=True)
+    themes = BasicThemeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Dataset
+        fields = ['id', 'organization', 'category', 'source_description', 'purpose_of_manufacture', 'description', 'name', 'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers', 'themes']
+
+
+class DatasetPatchOrCreateSerializer(serializers.ModelSerializer):
+    layers = serializers.PrimaryKeyRelatedField(queryset=Layer.objects.all(), many=True)
+    themes = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), many=True)
+
+    class Meta:
+        model = Dataset
+        fields = ['organization', 'category', 'source_description', 'purpose_of_manufacture', 'description', 'name',
+                  'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers', 'themes']
+
+
+class BasicDatasetSerializer(serializers.ModelSerializer):
+    layers = LayerSerializer(many=True)
+
+    class Meta:
+        model = Dataset
+        fields = ['id', 'organization', 'category', 'source_description', 'purpose_of_manufacture', 'description', 'name', 'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers']
+
+
+class ThemeSerializer(serializers.ModelSerializer):
+    datasets = BasicDatasetSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Theme
+        fields = ['id', 'name', 'datasets']
+
+
+class ThemePatchOrCreateSerializer(serializers.ModelSerializer):
+    datasets = serializers.PrimaryKeyRelatedField(queryset=Dataset.objects.all(), many=True)
+
+    class Meta:
+        model = Theme
+        fields = ['name', 'datasets']

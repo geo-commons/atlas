@@ -13,3 +13,9 @@ api_router.register(r'users', viewsets.UsersViewSet, basename='users')
 api_router.register(r'groups', viewsets.GroupsViewSet, basename='groups')
 api_router.register(
     r'authorize', authz_viewsets.AuthorizeViewSet, basename='autorize')
+api_router.register(
+    r'datasets', viewsets.DatasetViewSet, basename='datasets'
+)
+api_router.register(
+    r'themes', viewsets.ThemeViewSet, basename='themes'
+)

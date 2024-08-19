@@ -94,6 +94,31 @@ class Source(models.Model):
         return f"{self.title}"
 
 
+class Theme(models.Model):
+    name = models.CharField('Naam', max_length=128, null=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Dataset(models.Model):
+    name = models.CharField('Naam', max_length=128, help_text="De naam van de dataset")
+    description = models.TextField('Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    source_description = models.TextField('Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    organization = models.CharField('Organisatie', max_length=128, null=True, blank=True)
+    contact = models.CharField('Contactpersoon', max_length=128, null=True, blank=True)
+    data_owner = models.CharField('Eigenaar van de data', max_length=128, null=True, blank=True)
+    data_controller = models.CharField('Data beheerder', max_length=128, null=True, blank=True)
+    category = models.CharField('Categorie', max_length=128, null=True, blank=True)
+    last_updated = models.DateTimeField('Laatste update', null=True, blank=True)
+    update_frequency = models.CharField('Update hoeveelheid', max_length=128, null=True, blank=True)
+    purpose_of_manufacture = models.CharField('Doel van de vervaardiging', max_length=128, null=True, blank=True)
+    themes = models.ManyToManyField(Theme, related_name='datasets')
+
+    def __str__(self):
+        return self.name
+
+
 class Layer(models.Model):
     SOURCE_WMS_WFS = 'WMS_WFS'
     SOURCE_WMS = 'WMS'
@@ -251,6 +276,8 @@ class Layer(models.Model):
         help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.')
     zoom_max = models.IntegerField(
         'Zoomniveau maximum', blank=True, default=None, null=True)
+
+    dataset = models.ForeignKey(Dataset, on_delete=models.SET_NULL, null=True, related_name="layers")
 
     def __str__(self):
         return self.title
