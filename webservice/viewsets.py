@@ -73,13 +73,13 @@ class GroupsViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-class DatasetViewSet(viewsets.ModelViewSet):
+class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Dataset.objects.all().prefetch_related('layers')
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['themes']
-    search_fields = ['name']
+    search_fields = ['title']
 
     def get_serializer_class(self):
         if self.action in ['partial_update', 'update', 'create']:
@@ -87,10 +87,11 @@ class DatasetViewSet(viewsets.ModelViewSet):
         return DatasetSerializer
 
 
-class ThemeViewSet(viewsets.ModelViewSet):
+class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Theme.objects.all()
+    serializer_class = ThemeSerializer
 
     def get_serializer_class(self):
         if self.action in ['partial_update', 'update', 'create']:

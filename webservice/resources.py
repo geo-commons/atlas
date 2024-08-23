@@ -1,10 +1,17 @@
 from import_export import resources, fields, widgets
-from .models import Category, Source, Layer, Selection, Map
+from .models import Category, Source, Layer, Selection, Map, Theme
 
 
 class CategoryResource(resources.ModelResource):
     class Meta:
         model = Category
+        exclude = ('id', )
+        import_id_fields = ('slug', )
+
+
+class ThemeResource(resources.ModelResource):
+    class Meta:
+        model = Theme
         exclude = ('id', )
         import_id_fields = ('slug', )
 

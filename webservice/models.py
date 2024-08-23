@@ -10,7 +10,7 @@ from django_extensions.db.fields import AutoSlugField
 import uuid
 
 from user_management.models import AtlasGroup
-from utils.tools import is_internal
+from utils.tools import is_internal, generate_unique_slug
 
 
 class LayerManager(models.Manager):
@@ -95,28 +95,57 @@ class Source(models.Model):
 
 
 class Theme(models.Model):
-    name = models.CharField('Naam', max_length=128, null=False)
+    title = models.CharField('Naam', max_length=128, null=False)
+    slug = models.SlugField('Kort kenmerk', null=True, unique=True,
+                            help_text='Een uniek kort kenmerk voor het Thema in Atlas', editable=True)
 
     def __str__(self):
-        return self.name
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = generate_unique_slug(self, self.title)
+
+        super().save(*args, **kwargs)
 
 
 class Dataset(models.Model):
-    name = models.CharField('Naam', max_length=128, help_text="De naam van de dataset")
-    description = models.TextField('Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
-    source_description = models.TextField('Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
-    organization = models.CharField('Organisatie', max_length=128, null=True, blank=True)
-    contact = models.CharField('Contactpersoon', max_length=128, null=True, blank=True)
-    data_owner = models.CharField('Eigenaar van de data', max_length=128, null=True, blank=True)
-    data_controller = models.CharField('Data beheerder', max_length=128, null=True, blank=True)
-    category = models.CharField('Categorie', max_length=128, null=True, blank=True)
-    last_updated = models.DateTimeField('Laatste update', null=True, blank=True)
-    update_frequency = models.CharField('Update hoeveelheid', max_length=128, null=True, blank=True)
-    purpose_of_manufacture = models.CharField('Doel van de vervaardiging', max_length=128, null=True, blank=True)
+    title = models.CharField('Naam', max_length=128,
+                             help_text="De naam van de dataset")
+    slug = models.SlugField('Kort kenmerk', null=True, unique=True,
+                            help_text='Een uniek kort kenmerk voor de Dataset in Atlas', editable=True)
+    description = models.TextField(
+        'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    source_description = models.TextField(
+        'Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    organization = models.CharField(
+        'Organisatie', max_length=128, null=True, blank=True)
+    contact = models.CharField(
+        'Contactpersoon', max_length=128, null=True, blank=True)
+    data_owner = models.CharField(
+        'Eigenaar van de data', max_length=128, null=True, blank=True)
+    data_controller = models.CharField(
+        'Data beheerder', max_length=128, null=True, blank=True)
+    category = models.CharField(
+        'Categorie', max_length=128, null=True, blank=True)
+    last_updated = models.DateTimeField(
+        'Laatste update', null=True, blank=True)
+    update_frequency = models.CharField(
+        'Update hoeveelheid', max_length=128, null=True, blank=True)
+    purpose_of_manufacture = models.CharField(
+        'Doel van de vervaardiging', max_length=128, null=True, blank=True)
     themes = models.ManyToManyField(Theme, related_name='datasets')
+    dataset_category = models.ForeignKey(
+        Category, verbose_name='Categorie', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = generate_unique_slug(self, self.title)
+
+        super().save(*args, **kwargs)
 
 
 class Layer(models.Model):
@@ -277,7 +306,8 @@ class Layer(models.Model):
     zoom_max = models.IntegerField(
         'Zoomniveau maximum', blank=True, default=None, null=True)
 
-    dataset = models.ForeignKey(Dataset, on_delete=models.SET_NULL, null=True, related_name="layers")
+    dataset = models.ForeignKey(
+        Dataset, on_delete=models.SET_NULL, null=True, related_name="layers")
 
     def __str__(self):
         return self.title
@@ -447,9 +477,10 @@ class LinkedData(models.Model):
                                help_text='Voer één veld per regel in.')
     popup_attributes = models.TextField(_('Tabel velden'), max_length=250, blank=True, null=True,
                                         help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
-    use_detail_view = models.BooleanField('Gebruik detailweergave', default=False)
+    use_detail_view = models.BooleanField(
+        'Gebruik detailweergave', default=False)
     detail_view_fields = models.TextField(_('Detailweergave velden'), max_length=250, blank=True, null=True,
-                                        help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
+                                          help_text='Voer één veld per regel in. Bij geen invoer worden alle velden getoond.')
 
     class Meta:
         verbose_name = 'Gekoppelde data'
