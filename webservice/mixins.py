@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import permissions
 
-from webservice.models import Category, Layer, Map, Source
-from .resources import CategoryResource, LayerResource, MapResource, SourceResource
+from webservice.models import Category, Layer, Map, Source, Theme
+from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ThemeResource
 from .serializers import DataExportSettingsSerializer
 
 
@@ -15,7 +15,8 @@ class DataExportImportMixin:
         Layer: LayerResource,
         Source: SourceResource,
         Map: MapResource,
-        Category: CategoryResource
+        Category: CategoryResource,
+        Theme: ThemeResource,
     }
 
     def get_resource_class(self):

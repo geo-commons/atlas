@@ -1,6 +1,7 @@
 import ipaddress
 import logging
 from django.conf import settings
+from django.utils.text import slugify
 
 logger = logging.getLogger(__name__)
 
@@ -49,3 +50,17 @@ def ip_in_one_of_ranges(ip, ip_ranges):
             return True
 
     return False
+
+
+def generate_unique_slug(model, slug_base):
+    slug_base = slugify(slug_base)
+    generated_slug = slug_base
+
+    queryset = model.__class__.objects.filter(slug=generated_slug)
+    count = 1
+    while queryset.exists():
+        generated_slug = f'{slug_base}{count}'
+        queryset = model.__class__.objects.filter(slug=generated_slug)
+        count += 1
+
+    return generated_slug
