@@ -5,3 +5,9 @@
 .md-footer {
   display: none;
 }
+img {
+    border: 1px solid #555 !important;
+    box-shadow: 2px 2px 5px grey !important;
+    max-width: 100%;
+}
+
