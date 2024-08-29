@@ -11,3 +11,16 @@ theme:
     - navigation.footer
 extra:
   generator: false
+plugins:
+  - search
+markdown_extensions:
+  - smarty
+  - toc:
+      separator: "-"
+nav:
+  - Home: 'index.md'
+  - 'Aan de slag': 'schermuitleg.md'
+  - 'Functies': 'help.md'
+  - 'Gebruikte termen': 'gebruiktetermen.md'
+  - 'Afkortingen': 'afkortingen.md'
+
