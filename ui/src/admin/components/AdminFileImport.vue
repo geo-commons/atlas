@@ -97,6 +97,8 @@ export default {
           return "categories";
         case "kaarten":
           return "maps";
+        case "tables":
+          return "tables";
         case "viewers":
           return "viewers";
       }

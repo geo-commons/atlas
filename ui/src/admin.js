@@ -27,6 +27,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
+import TableList from "@/admin/pages/TableList.vue";
+import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
 
@@ -102,6 +104,16 @@ const routes = [
     path: "/categories/update/:id",
     component: CategoryCreateUpdate,
     meta: { title: "Categorieën", menu: true },
+  },
+  {
+    path: "/tables",
+    component: TableList,
+    meta: { title: "Tabellen", menu: true },
+  },
+  {
+    path: "/tables/update/:id",
+    component: TableCreateUpdate,
+    meta: { title: "Tabellen", menu: true },
   },
   {
     path: "/users",

@@ -20,5 +20,8 @@ api_router.register(
     r'themes', viewsets.ThemeViewSet, basename='themes'
 )
 api_router.register(
+    r'tables', viewsets.TableViewSet, basename='tables'
+)
+api_router.register(
     r'viewers', viewsets.ViewerViewSet, basename='viewers'
 )

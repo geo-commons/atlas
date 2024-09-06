@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import permissions
 
+from tables.models import Table
+from tables.resources import TableResource
 from webservice.models import Category, Layer, Map, Source, Theme, Viewer
 from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ThemeResource, ViewerResource
 from .serializers import DataExportSettingsSerializer
@@ -18,6 +20,7 @@ class DataExportImportMixin:
         Category: CategoryResource,
         Theme: ThemeResource,
         Viewer: ViewerResource,
+        Table: TableResource
     }
 
     def get_resource_class(self):
