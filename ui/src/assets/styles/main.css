@@ -34,11 +34,16 @@
    For the map-renderer PT Sans is used and for the admin components Roboto. */
   --font-family: "PT Sans", sans-serif;
   --font-family-admin: "Roboto", sans-serif;
+  --font-family-portal: "Roboto", sans-serif;
 
   --font-size-tiny: 12px;
   --font-size-small: 14px;
   --font-size-normal: 16px;
   --font-size-large: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 30px;
+  --font-size-3xl: 36px;
+  --font-size-4xl: 40px;
 
   --font-weight-normal: 300;
   --font-weight-bold: 600;
@@ -47,6 +52,7 @@
   --radius-normal: 6px;
   --radius-large: 12px;
 
+  --shadow-light: 0 0 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 0, 0, 0.05);
   --shadow-normal: 0 0 1px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 0, 0, 0.15);
 
   --padding-screen: 8px;
@@ -349,6 +355,26 @@ svg {
   transform: translateX(5px);
 }
 
+.text-button {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: white;
+  color: black;
+  font-size: var(--font-size-normal);
+  text-decoration: none;
+}
+
+.text-button:not([disabled]):hover {
+  text-decoration: underline;
+  font-weight: var(--font-weight-bold);
+}
+
+.text-button:not([disabled]):focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
 @media (max-width: 576px) {
   .button.__full-width-mobile {
     width: 100%;
@@ -502,11 +528,16 @@ hr {
   height: 20px;
 }
 
-.icon.__grey {
-  color: var(--color-icon-grey);
+.icon.__large {
+  width: 28px;
+  height: 28px;
 }
 
 .icon.__grey {
+  color: var(--color-text-grey);
+}
+
+.icon.__black {
   color: var(--color-black);
 }
 

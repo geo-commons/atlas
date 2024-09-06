@@ -17,7 +17,7 @@ class MapSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Map
-        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers']
+        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description']
 
     def create(self, validated_data):
         try:
@@ -433,7 +433,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         model = Dataset
         fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description',
                   'title', 'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers',
-                  'themes', 'slug']
+                  'themes', 'slug', 'thumbnail']
 
 class DatasetPatchOrCreateSerializer(serializers.ModelSerializer):
     themes = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), many=True)

@@ -63,6 +63,16 @@ class Table(models.Model):
     created_at = models.DateTimeField('created_at', auto_now_add=True)
     updated_at = models.DateTimeField('updated_at', auto_now=True)
 
+    description = models.TextField(
+        'Beschrijving van de tabel', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+
+    thumbnail = models.ImageField(
+        upload_to='thumbnails/', 
+        blank=True, 
+        null=True,
+        help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
+    )
+
     class Meta:
         verbose_name = 'Tabel'
         verbose_name_plural = 'Tabellen'
@@ -75,6 +85,7 @@ class Table(models.Model):
         return {
             'title': self.title,
             'slug': self.slug,
+            'description': self.description,
             'source': {
                 'authenticate': self.source.authenticate,
                 'url': self.source.url
@@ -88,5 +99,6 @@ class Table(models.Model):
             'error_template': self.error_template,
             'login_required': self.login_required,
             'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'updated_at': self.updated_at,
+            'thumbnail': self.thumbnail.url if self.thumbnail else None
         }

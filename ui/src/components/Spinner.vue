@@ -29,10 +29,19 @@ export default {
     };
   },
   created() {
-    this.color =
-      this.styleType === "admin"
-        ? window.getComputedStyle(document.documentElement).getPropertyValue("--color-admin-primary")
-        : window.getComputedStyle(document.documentElement).getPropertyValue("--color-primary");
+    this.color = this.getColor(this.styleType);
+  },
+  methods: {
+    getColor(styleType) {
+      switch (styleType) {
+        case "admin":
+          return window.getComputedStyle(document.documentElement).getPropertyValue("--color-admin-primary");
+        case "portal":
+          return window.getComputedStyle(document.documentElement).getPropertyValue("--color-portal-primary");
+        default:
+          return window.getComputedStyle(document.documentElement).getPropertyValue("--color-primary");
+      }
+    },
   },
 };
 </script>

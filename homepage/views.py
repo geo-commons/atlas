@@ -165,6 +165,9 @@ def _get_config(request):
     return {
         'organization_name': config.get('ORGANIZATION_NAME'),
         'organization_logo': settings.MEDIA_URL + config.get('ORGANIZATION_LOGO') if config.get('ORGANIZATION_LOGO') else None,
+        'organization_image': settings.MEDIA_URL + config.get('ORGANIZATION_IMAGE') if config.get('ORGANIZATION_IMAGE') else None,
+        'organization_primary_color': config.get('ORGANIZATION_PRIMARY_COLOR'),
+        'organization_introduction': config.get('ORGANIZATION_INTRODUCTION'),
         'position': {
             'zoom': config.get('POSITION_ZOOM'),
             'center': {

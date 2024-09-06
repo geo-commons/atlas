@@ -160,7 +160,7 @@ class SelectionAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
 
 class MapAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_display = ('title', )
-    fields = ('title', 'slug', 'features', 'settings', )
+    fields = ('title', 'slug', 'features', 'settings', 'description', 'thumbnail' )
     prepopulated_fields = {'slug': ('title', )}
     filter_horizontal = ()
 

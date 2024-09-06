@@ -1,5 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, filters
+from rest_framework.exceptions import NotFound
 
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin
@@ -85,6 +86,23 @@ class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
         if self.action in ['partial_update', 'update', 'create']:
             return DatasetPatchOrCreateSerializer
         return DatasetSerializer
+    
+    def get_object(self):
+        queryset = self.get_queryset()
+        lookup_field_value = self.kwargs.get('pk')
+
+        # Check if the lookup value is numeric (for id) or not (for slug)
+        if lookup_field_value.isdigit():
+            # Try to retrieve by primary key (id)
+            obj = queryset.filter(pk=lookup_field_value).first()
+        else:
+            # If not numeric, try to retrieve by slug
+            obj = queryset.filter(slug=lookup_field_value).first()
+
+        if obj is None:
+            raise NotFound(f"No Dataset matches the given query: {lookup_field_value}")
+
+        return obj
 
 
 class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
