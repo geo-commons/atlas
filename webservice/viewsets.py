@@ -5,10 +5,10 @@ from rest_framework.exceptions import NotFound
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin
 
-from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme
+from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewer
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
-    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer
+    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, ViewerSerializer
 
 
 class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
@@ -115,3 +115,10 @@ class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
         if self.action in ['partial_update', 'update', 'create']:
             return ThemePatchOrCreateSerializer
         return ThemeSerializer
+
+
+class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete']
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Viewer.objects.all()
+    serializer_class = ViewerSerializer

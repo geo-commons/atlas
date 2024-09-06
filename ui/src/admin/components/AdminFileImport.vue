@@ -97,6 +97,8 @@ export default {
           return "categories";
         case "kaarten":
           return "maps";
+        case "viewers":
+          return "viewers";
       }
     },
     closeFormModal() {

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme
+from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer
 from authz.lib import can_request_access_layer
 
 from django.utils.text import slugify
@@ -484,3 +484,15 @@ class ThemePatchOrCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
         fields = ['title', 'datasets']
+
+
+class ViewerSerializer(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()
+
+    def get_title(self, obj):
+        self.title = obj.label
+        return self.title
+
+    class Meta:
+        model = Viewer
+        fields = ['ordering', 'label', 'type', 'username', 'password', 'api_key', 'url', 'is_oblique', 'internal', 'id', 'type', 'title']

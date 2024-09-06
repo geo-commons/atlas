@@ -27,6 +27,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
+import ViewerList from "@/admin/pages/ViewerList.vue";
+import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -120,6 +122,16 @@ const routes = [
     path: "/groups/update/:id",
     component: GroupCreateUpdate,
     meta: { title: "Groepen", menu: true },
+  },
+  {
+    path: "/viewers",
+    component: ViewerList,
+    meta: { title: "Viewers", menu: true },
+  },
+  {
+    path: "/viewers/update/:id",
+    component: ViewerCreateUpdate,
+    meta: { title: "Viewers", menu: true },
   },
   {
     path: "/:parentRoute/sort",
