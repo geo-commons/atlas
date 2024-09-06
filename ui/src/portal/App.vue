@@ -1,17 +1,34 @@
 <template>
-  <div class="app">
-    <header-menu />
+  <div class="app" :style="computedStyle">
+    <portal-header />
+    <portal-breadcrumb />
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HeaderMenu from "../components/HeaderMenu.vue";
+import { useGlobalStore } from "@/stores";
+import PortalHeader from "@/portal/components/PortalHeader.vue";
+import PortalBreadcrumb from "@/portal/components/PortalBreadcrumb.vue";
 
 export default {
   name: "App",
   components: {
-    HeaderMenu,
+    PortalBreadcrumb,
+    PortalHeader,
+  },
+  data() {
+    return {
+      computedStyle: { "--color-primary-organization": "#000000" },
+    };
+  },
+  computed: {
+    config() {
+      return useGlobalStore().config;
+    },
+  },
+  mounted() {
+    this.computedStyle["--color-primary-organization"] = this.config.organization_primary_color;
   },
 };
 </script>
@@ -27,67 +44,17 @@ export default {
 
 <style>
 @import "../assets/styles/main.css";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
 :root {
-  --color-text-grey: rgba(0, 0, 0, 0.55);
+  /* Set default color for organization primary color. Otherwise IDE does not acknowledge its existence. */
+  --color-primary-organization: #000000;
 
-  --color-grey-20: #eaeaea; /* divider (list items, files) */
-  --color-grey-30: #dddddd; /* divider (sections, header) */
-  --color-grey-40: #f5f5f5;
-  --color-grey-50: #eaeaea;
-  --color-grey-60: #dadada;
-  --color-grey-80: #949494;
-
-  --color-icon-grey: rgba(0, 0, 0, 0.42);
-
-  --color-tooltip-dark: #222222;
-
-  --color-alert: #eb0000;
-
-  --color-hover: rgba(0, 0, 0, 0.03);
-  --color-active: rgba(0, 0, 0, 0.06);
-
-  --font-size-tiny: 12px;
-  --font-size-small: 14px;
-  --font-size-normal: 16px;
-  --font-size-large: 18px;
-
-  --font-weight-normal: 300;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
   --font-weight-bold: 500;
-
-  --radius-small: 4px;
-  --radius-normal: 8px;
-
-  --shadow-normal: 0 0 1px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 0, 0, 0.15);
-
-  --padding-screen: 8px;
-
-  --width-detail: 100vw;
-  --width-button-small: 24px;
-  --width-button-normal: 32px;
-  --width-button-large: 40px;
+  --font-weight-extra-bold: 700;
 }
-
-@media (min-width: 576px) {
-  :root {
-    --width-detail: 300px;
-    --padding-screen: 16px;
-  }
-}
-
-@media (min-width: 768px) {
-  :root {
-    --width-detail: 350px;
-  }
-}
-
-@media (min-width: 1200px) {
-  :root {
-    --width-detail: 400px;
-    --padding-screen: 20px;
-  }
-}
-
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
 
 html {
   font-family: "Roboto", sans-serif;
@@ -96,24 +63,53 @@ html {
   line-height: 1.5;
 }
 
-*,
-*:after,
-*:before {
-  box-sizing: border-box;
+.container.__portal {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-family: var(--font-family-portal), sans-serif;
+  padding-bottom: 20px;
 }
 
-/* Remove outline from all focused elements */
-*:focus {
-  outline: none;
-  outline-offset: -2px;
+.brand-color {
+  color: var(--color-primary-organization);
 }
 
-/* Remove highlight color on Android */
-* {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+h1.__portal {
+  font-size: var(--font-size-2xl);
 }
 
-html.keyboard-user *:focus {
-  outline: 2px solid var(--color-primary);
+@media (min-width: 1024px) {
+  h1.__portal {
+    font-size: var(--font-size-4xl);
+  }
+}
+
+.search-container {
+  padding-bottom: 24px;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .search-container {
+    width: clamp(300px, 35%, 400px);
+  }
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 280px);
+  row-gap: 24px;
+  column-gap: 32px;
+  justify-items: start;
+}
+
+@media (max-width: 660px) {
+  .card-container {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

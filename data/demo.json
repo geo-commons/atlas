@@ -8969,52 +8969,457 @@
         }
     },
     {
+        "model": "webservice.maplayer",
+        "pk": 4,
+        "fields": {
+            "layer": 262,
+            "map": 3,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 5,
+        "fields": {
+            "layer": 167,
+            "map": 3,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 6,
+        "fields": {
+            "layer": 168,
+            "map": 3,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 7,
+        "fields": {
+            "layer": 169,
+            "map": 3,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 8,
+        "fields": {
+            "layer": 171,
+            "map": 3,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 9,
+        "fields": {
+            "layer": 276,
+            "map": 3,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 10,
+        "fields": {
+            "layer": 272,
+            "map": 3,
+            "settings": {
+                "id": 272,
+                "slug": "luchtfoto-purmerend-1980",
+                "title": "Luchtfoto Purmerend 1980",
+                "extent": null,
+                "format": "image/png",
+                "source": {
+                    "id": 1,
+                    "url": "https://datalab.purmerend.nl/geoserver/topp/wms",
+                    "slug": "datalab_purmerend_nl_geoserver_topp_wms",
+                    "title": "https://datalab.purmerend.nl/geoserver/topp/wms",
+                    "source_type": "OWS",
+                    "authenticate": false
+                },
+                "is_base": false,
+                "opacity": 0.9,
+                "category": {
+                    "id": 22,
+                    "slug": "luchtfotos",
+                    "title": "Luchtfoto's",
+                    "ordering": 100
+                },
+                "metadata": {
+                    "link": null,
+                    "name": "Luchtfoto Purmerend 1980",
+                    "contact": null,
+                    "lineage": null,
+                    "updated": "05-01-2022",
+                    "description": "Luchtfoto Themakaart",
+                    "organization": "gemeente Purmerend"
+                },
+                "zoom_max": null,
+                "zoom_min": null,
+                "published": true,
+                "templates": [],
+                "can_access": true,
+                "is_visible": false,
+                "layer_name": "topp:lufo_1980_purm",
+                "legend_url": null,
+                "projection": "EPSG:28992",
+                "linked_data": [],
+                "server_type": "geoserver",
+                "source_type": "WMTS",
+                "atlas_groups": [],
+                "client_style": {},
+                "extent_max_x": null,
+                "extent_max_y": null,
+                "extent_min_x": null,
+                "extent_min_y": null,
+                "not_in_atlas": true,
+                "server_style": null,
+                "is_selectable": true,
+                "closed_dataset": false,
+                "customSettings": true,
+                "login_required": false,
+                "friendly_fields": {},
+                "search_properties": [
+                    "-"
+                ],
+                "display_properties": [
+                    "-"
+                ],
+                "show_in_detail_panel": true,
+                "templated_properties": {},
+                "use_html_info_format": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 11,
+        "fields": {
+            "layer": 264,
+            "map": 3,
+            "settings": {
+                "id": 264,
+                "slug": "luchtfoto-2021",
+                "title": "Luchtfoto 2021",
+                "extent": null,
+                "format": "image/vnd.jpeg-png",
+                "source": {
+                    "id": 1,
+                    "url": "https://datalab.purmerend.nl/geoserver/topp/wms",
+                    "slug": "datalab_purmerend_nl_geoserver_topp_wms",
+                    "title": "https://datalab.purmerend.nl/geoserver/topp/wms",
+                    "source_type": "OWS",
+                    "authenticate": false
+                },
+                "is_base": true,
+                "opacity": 0.9,
+                "category": null,
+                "metadata": {
+                    "link": null,
+                    "name": "Luchtfoto 2021",
+                    "contact": null,
+                    "lineage": null,
+                    "updated": "2021",
+                    "description": "Luchtfoto",
+                    "organization": "Gemeente Purmerend"
+                },
+                "zoom_max": null,
+                "zoom_min": null,
+                "published": true,
+                "templates": [],
+                "can_access": true,
+                "is_visible": true,
+                "layer_name": "topp:lufo_2021_purm_beem",
+                "legend_url": null,
+                "projection": "EPSG:28992",
+                "linked_data": [],
+                "server_type": "geoserver",
+                "source_type": "WMS",
+                "atlas_groups": [],
+                "client_style": {},
+                "extent_max_x": null,
+                "extent_max_y": null,
+                "extent_min_x": null,
+                "extent_min_y": null,
+                "not_in_atlas": false,
+                "server_style": null,
+                "is_selectable": true,
+                "closed_dataset": false,
+                "customSettings": true,
+                "login_required": false,
+                "friendly_fields": {},
+                "search_properties": [],
+                "display_properties": [],
+                "show_in_detail_panel": true,
+                "templated_properties": {},
+                "use_html_info_format": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 12,
+        "fields": {
+            "layer": 265,
+            "map": 2,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 13,
+        "fields": {
+            "layer": 89,
+            "map": 2,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 14,
+        "fields": {
+            "layer": 52,
+            "map": 2,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 20,
+        "fields": {
+            "layer": 265,
+            "map": 1,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 21,
+        "fields": {
+            "layer": 26,
+            "map": 1,
+            "settings": {
+                "id": 26,
+                "slug": "id_scholen",
+                "title": "Scholen",
+                "extent": null,
+                "format": "image/png",
+                "source": {
+                    "id": 1,
+                    "url": "https://datalab.purmerend.nl/geoserver/topp/wms",
+                    "slug": "datalab_purmerend_nl_geoserver_topp_wms",
+                    "title": "https://datalab.purmerend.nl/geoserver/topp/wms",
+                    "source_type": "OWS",
+                    "authenticate": false
+                },
+                "is_base": false,
+                "opacity": 0.9,
+                "category": {
+                    "id": 15,
+                    "slug": "wonen-en-leefomgeving",
+                    "title": "Wonen en leefomgeving",
+                    "ordering": 1700
+                },
+                "metadata": {
+                    "link": null,
+                    "name": "Alle type onderwijs",
+                    "contact": null,
+                    "lineage": null,
+                    "updated": "23-07-2019",
+                    "description": "Kaart is nog in bewerking",
+                    "organization": "Gemeente"
+                },
+                "zoom_max": null,
+                "zoom_min": null,
+                "published": true,
+                "templates": [],
+                "can_access": true,
+                "is_visible": true,
+                "layer_name": "topp:scholen",
+                "legend_url": null,
+                "projection": "EPSG:28992",
+                "linked_data": [],
+                "server_type": "geoserver",
+                "source_type": "WMS_WFS",
+                "atlas_groups": [],
+                "client_style": {},
+                "extent_max_x": null,
+                "extent_max_y": null,
+                "extent_min_x": null,
+                "extent_min_y": null,
+                "not_in_atlas": false,
+                "server_style": null,
+                "is_selectable": true,
+                "closed_dataset": false,
+                "customSettings": true,
+                "login_required": false,
+                "friendly_fields": {},
+                "search_properties": [
+                    "straatnaam",
+                    "postcode",
+                    "huisnummer",
+                    "toevoeging",
+                    "plaatsnaam",
+                    "naam_vesti",
+                    "soort_inst"
+                ],
+                "display_properties": [],
+                "show_in_detail_panel": true,
+                "templated_properties": {},
+                "use_html_info_format": false
+            }
+        }
+    },
+    {
+        "model": "webservice.maplayer",
+        "pk": 22,
+        "fields": {
+            "layer": 9,
+            "map": 1,
+            "settings": {
+                "customSettings": false
+            }
+        }
+    },
+    {
+        "model": "webservice.map",
+        "pk": 1,
+        "fields": {
+            "title": "Scholen",
+            "slug": "scholen",
+            "features": {
+                "markerOnClick": true
+            },
+            "settings": {
+                "facets": [],
+                "listLayerId": null,
+                "filterLayerId": null
+            },
+            "login_required": false,
+            "thumbnail": "",
+            "description": "Overzicht van alle scholen in de omgeving Purmerend.",
+            "old_layers": []
+        }
+    },
+    {
+        "model": "webservice.map",
+        "pk": 2,
+        "fields": {
+            "title": "Afvalbakken",
+            "slug": "afvalbakken",
+            "features": {
+                "legend": true,
+                "datapanel": true,
+                "layerlist": true,
+                "searchbar": true
+            },
+            "settings": {
+                "facets": [],
+                "listLayerId": null,
+                "filterLayerId": null
+            },
+            "login_required": false,
+            "thumbnail": "",
+            "description": "Kaart met overzicht van alle afvalbakken.",
+            "old_layers": []
+        }
+    },
+    {
+        "model": "webservice.map",
+        "pk": 3,
+        "fields": {
+            "title": "Luchtfoto's",
+            "slug": "luchtfotos",
+            "features": {
+                "scale": true,
+                "baselayer": true,
+                "layerlist": true,
+                "searchbar": true
+            },
+            "settings": {
+                "facets": [],
+                "listLayerId": null,
+                "filterLayerId": null
+            },
+            "login_required": false,
+            "thumbnail": "",
+            "description": "Overzicht van de meest recente luchtfoto's.",
+            "old_layers": []
+        }
+    },
+    {
         "model": "webservice.theme",
         "pk": 1,
         "fields": {
-            "name": "Geografische Analyse"
+            "title": "Geografische Analyse"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 2,
         "fields": {
-            "name": "Landschap en Milieu"
+            "title": "Landschap en Milieu"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 3,
         "fields": {
-            "name": "Gezondheidskaarten"
+            "title": "Gezondheidskaarten"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 4,
         "fields": {
-            "name": "Milieu Impact"
+            "title": "Milieu Impact"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 5,
         "fields": {
-            "name": "Technologie en Ruimte"
+            "title": "Technologie en Ruimte"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 6,
         "fields": {
-            "name": "Economische Gegevens"
+            "title": "Economische Gegevens"
         }
     },
     {
         "model": "webservice.dataset",
         "pk": 1,
         "fields": {
-            "name": "Voorbeeld Geografische Dataset",
+            "title": "Voorbeeld Geografische Dataset",
+            "slug": "voorbeeld-geografische-dataset",
             "description": "Dit is een voorbeeld geografische dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
             "source_description": "Deze dataset is afkomstig van een voorbeeldbron. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
             "organization": "Voorbeeld Organisatie",
@@ -9035,7 +9440,8 @@
         "model": "webservice.dataset",
         "pk": 2,
         "fields": {
-            "name": "Gezondheidskaarten 2024",
+            "title": "Gezondheidskaarten 2024",
+            "slug": "gezondheidskaarten-2024",
             "description": "Dit is een dataset met gezondheidsinformatie op geografische kaarten.",
             "source_description": "Data verzameld uit ziekenhuizen en klinieken.",
             "organization": "Gezondheidsorganisatie Nederland",
@@ -9055,7 +9461,8 @@
         "model": "webservice.dataset",
         "pk": 3,
         "fields": {
-            "name": "Milieu Impact Analyse",
+            "title": "Milieu Impact Analyse",
+            "slug": "milieu-impact-analyse",
             "description": "Dataset voor het analyseren van milieueffecten in Nederland op basis van geografische data.",
             "source_description": "Data afkomstig van milieubeschermingsorganisaties.",
             "organization": "Nederlandse Milieuraad",
@@ -9075,7 +9482,8 @@
         "model": "webservice.dataset",
         "pk": 4,
         "fields": {
-            "name": "Technologische Innovaties in de Ruimte",
+            "title": "Technologische Innovaties in de Ruimte",
+            "slug": "technologische-innovaties-in-de-ruimte",
             "description": "Dataset met informatie over technologische vooruitgang en innovaties in geografische context.",
             "source_description": "Verzameld door onderzoeksinstituten en technologiebedrijven.",
             "organization": "Innovatiecentrum Nederland",
@@ -9095,7 +9503,8 @@
         "model": "webservice.dataset",
         "pk": 5,
         "fields": {
-            "name": "Economische Geografische Statistieken",
+            "title": "Economische Geografische Statistieken",
+            "slug": "economische-geografische-statistieken",
             "description": "Dataset met economische gegevens en statistieken op geografische kaarten.",
             "source_description": "Verzameld door het Centraal Bureau voor de Statistiek.",
             "organization": "Centraal Bureau voor de Statistiek",
@@ -9117,6 +9526,7 @@
         "fields": {
             "title": "Users",
             "slug": "users",
+            "description": "Tabel met een overzicht van alle beschikbare gebruikers.",
             "source": 13,
             "endpoint": "/users",
             "method": "GET",

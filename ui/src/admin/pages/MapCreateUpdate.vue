@@ -182,7 +182,6 @@ export default {
         }
 
         this.data = await result.json();
-
         this.checkBaseLayersConfigured();
 
         return;
@@ -202,7 +201,7 @@ export default {
 
       if (this.$route.params.id) {
         result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
-          method: "PUT",
+          method: "PATCH",
           credentials: "same-origin",
           headers: {
             "Content-Type": "application/json",

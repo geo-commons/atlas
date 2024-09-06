@@ -6,14 +6,44 @@ import { createApp } from "vue";
 import VueTippy from "vue-tippy";
 
 import App from "./portal/App";
-import IndexView from "./portal/pages/IndexView";
 import NotFound from "./portal/pages/NotFound";
 import { createRouter, createWebHistory } from "vue-router";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
+import PortalDashboard from "@/portal/pages/PortalDashboard.vue";
+import PortalMapsPage from "@/portal/pages/PortalMapsPage.vue";
+import PortalDatasetPage from "@/portal/pages/PortalDatasetsPage.vue";
+import PortalDatasetDetailPage from "@/portal/pages/PortalDatasetDetailPage.vue";
+import PortalTablesPage from "@/portal/pages/PortalTablesPage.vue";
+import PortalSearchPage from "@/portal/pages/PortalSearchPage.vue";
 
 const routes = [
-  { path: "/", component: IndexView },
+  {
+    path: "/",
+    component: PortalDashboard,
+    meta: {
+      breadcrumb: "Home",
+      menu: false,
+    },
+  },
+  { path: "/maps", component: PortalMapsPage, meta: { breadcrumb: "Kaarten", menu: true } },
+  { path: "/tables", component: PortalTablesPage, meta: { breadcrumb: "Tabellen", menu: true } },
+  { path: "/search", component: PortalSearchPage, meta: { breadcrumb: "Zoeken", menu: true } },
+  {
+    path: "/datasets",
+    component: PortalDatasetPage,
+    meta: { breadcrumb: "Datasets", menu: true },
+  },
+  {
+    path: "/datasets/:slug",
+    name: "dataset-details",
+    component: PortalDatasetDetailPage,
+    meta: {
+      breadcrumb: "Dataset details",
+      menu: true,
+      parentName: "Datasets",
+    },
+  },
   { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
 ];
 

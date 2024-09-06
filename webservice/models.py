@@ -137,6 +137,12 @@ class Dataset(models.Model):
     themes = models.ManyToManyField(Theme, related_name='datasets')
     dataset_category = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL, blank=True, null=True)
+    thumbnail = models.ImageField(
+        upload_to='thumbnails/', 
+        blank=True, 
+        null=True,
+        help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
+    )
 
     def __str__(self):
         return self.title
@@ -640,7 +646,17 @@ class Map(models.Model):
 
     login_required = models.BooleanField(
         'Vereis inlog voor deze kaart', default=False, help_text='De inhoud van deze kaart kan alleen bekeken worden door ingelogde gebruikers.')
+    
+    thumbnail = models.ImageField(
+        upload_to='thumbnails/', 
+        blank=True, 
+        null=True,
+        help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
+    )
 
+    description = models.TextField(
+        'Beschrijving van de kaart', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'
 
