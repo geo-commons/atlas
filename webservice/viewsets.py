@@ -2,6 +2,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.exceptions import NotFound
 
+from tables.models import Table
+from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin
 
@@ -122,3 +124,9 @@ class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Viewer.objects.all()
     serializer_class = ViewerSerializer
+
+class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete']
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
