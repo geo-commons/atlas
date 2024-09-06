@@ -20,6 +20,9 @@
         <router-link to="/groups" class="button __tertiary __large" type="button" aria-label="Naar groepen"
           ><GroupIcon class="icon" />Groepen</router-link
         >
+        <router-link to="/viewers" class="button __tertiary __large" type="button" aria-label="Naar viewers"
+          ><ViewIcon class="icon" />Viewers</router-link
+        >
       </div>
     </div>
   </div>
@@ -32,6 +35,7 @@ import LayerIcon from "../../assets/icons/layer-icon.svg";
 import CategoryIcon from "../../assets/icons/category-icon.svg";
 import UserIcon from "../../assets/icons/user-icon.svg";
 import GroupIcon from "../../assets/icons/group-icon.svg";
+import ViewIcon from "../../assets/icons/view-icon.svg";
 
 export default {
   name: "AdminDashboard",
@@ -42,6 +46,7 @@ export default {
     CategoryIcon,
     UserIcon,
     GroupIcon,
+    ViewIcon,
   },
 };
 </script>

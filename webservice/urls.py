@@ -19,3 +19,6 @@ api_router.register(
 api_router.register(
     r'themes', viewsets.ThemeViewSet, basename='themes'
 )
+api_router.register(
+    r'viewers', viewsets.ViewerViewSet, basename='viewers'
+)
