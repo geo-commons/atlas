@@ -27,10 +27,12 @@ import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
+import LogList from "@/admin/pages/LogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
 import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
+import LogView from "@/admin/pages/LogView.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -144,6 +146,16 @@ const routes = [
     path: "/viewers/update/:id",
     component: ViewerCreateUpdate,
     meta: { title: "Viewers", menu: true },
+  },
+  {
+    path: "/logs",
+    component: LogList,
+    meta: { title: "Logs", menu: true },
+  },
+  {
+    path: "/logs/:id",
+    component: LogView,
+    meta: { title: "Logs", menu: true },
   },
   {
     path: "/:parentRoute/sort",

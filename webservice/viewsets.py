@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.exceptions import NotFound
 
+from authz.models import Log
 from tables.models import Table
 from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
@@ -10,8 +11,7 @@ from webservice.mixins import DataExportImportMixin
 from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewer
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
-    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, ViewerSerializer
-
+    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer
 
 class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
@@ -88,7 +88,7 @@ class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
         if self.action in ['partial_update', 'update', 'create']:
             return DatasetPatchOrCreateSerializer
         return DatasetSerializer
-    
+
     def get_object(self):
         queryset = self.get_queryset()
         lookup_field_value = self.kwargs.get('pk')
@@ -130,3 +130,10 @@ class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Table.objects.all()
     serializer_class = TableSerializer
+
+
+class LogViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'delete']
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Log.objects.all()
+    serializer_class = LogSerializer

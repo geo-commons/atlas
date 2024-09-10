@@ -170,10 +170,21 @@
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button class="button" :class="createView ? '__secondary_admin' : '__tertiary'" type="button" @click="cancel()">
+      <button
+        v-if="!disableCreateAndUpdate"
+        class="button"
+        :class="createView ? '__secondary_admin' : '__tertiary'"
+        type="button"
+        @click="cancel()"
+      >
         Annuleer
       </button>
-      <button class="button" :class="createView ? '__secondary_admin' : '__primary_admin'" type="submit">
+      <button
+        v-if="!disableCreateAndUpdate"
+        class="button"
+        :class="createView ? '__secondary_admin' : '__primary_admin'"
+        type="submit"
+      >
         Opslaan
       </button>
       <button v-if="createView" class="button __primary_admin" type="submit" @click="continueEditing = true">
@@ -209,6 +220,10 @@ export default {
       type: Boolean,
     },
     compactLayout: {
+      default: false,
+      type: Boolean,
+    },
+    disableCreateAndUpdate: {
       default: false,
       type: Boolean,
     },
