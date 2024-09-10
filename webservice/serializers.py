@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
 from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer
 from authz.lib import can_request_access_layer
@@ -496,3 +498,9 @@ class ViewerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Viewer
         fields = ['ordering', 'label', 'type', 'username', 'password', 'api_key', 'url', 'is_oblique', 'internal', 'id', 'type', 'title']
+
+
+class LogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Log
+        fields = ['id', 'username', 'user_agent', 'email', 'ip', 'source', 'resource', 'params', 'time_created']
