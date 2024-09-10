@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
+
 :root {
   --color-primary: #0066ff;
   --color-admin-primary: #424bff;
@@ -86,8 +88,6 @@
     --padding-screen: 20px;
   }
 }
-
-@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
 
 html {
   font-family: "PT Sans", sans-serif;

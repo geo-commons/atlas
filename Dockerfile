@@ -61,7 +61,6 @@ COPY --from=api-build /app/venv /app/venv
 ENV PATH="/app/venv/bin:${PATH}"
 
 COPY --from=ui-build /app/homepage/static/dist /app/homepage/static/dist
-COPY --from=ui-build /app/ui/webpack-stats.json /app/ui/webpack-stats.json
 COPY --from=docs-build /app/docs/user/site /app/docs/user/site
 COPY --from=docs-build /app/docs/admin/site /app/docs/admin/site
 

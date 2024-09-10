@@ -1,3 +1,4 @@
+import "vite/modulepreload-polyfill";
 import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";

@@ -7,12 +7,12 @@
     :style="computedStyle"
   >
     <div class="renderer-container">
-      <PanoramaPanel
-        class="panorama-panel"
-        :position="position"
-        :is-open="showPanoramaPanel"
-        @toggle="togglePanoramaPanel"
-      />
+      <!--      <PanoramaPanel-->
+      <!--        class="panorama-panel"-->
+      <!--        :position="position"-->
+      <!--        :is-open="showPanoramaPanel"-->
+      <!--        @toggle="togglePanoramaPanel"-->
+      <!--      />-->
       <OpenLayersRenderer
         ref="map"
         class="renderer"

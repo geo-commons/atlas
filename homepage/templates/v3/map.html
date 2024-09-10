@@ -1,4 +1,4 @@
-{% load render_bundle from webpack_loader %}
+{% load django_vite %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="nl">
@@ -11,11 +11,14 @@
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
     <link rel="shortcut icon" href="{% if config.FAVICON_URL %}{{ config.FAVICON_URL }}{% else %}{% static 'img/favicon.ico' %}{% endif %}" />
+
+    {% vite_hmr_client %}
+    {% vite_asset 'src/map.js' %}
+    {% vite_asset 'src/assets/styles/main.css.js' %}
 </head>
   <body>
     <div id="app" class="app"></div>
     {{ data|json_script:"app-data" }}
-    {% render_bundle "map" %}
 
     {% if google_maps %}
       <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps.api_key }}"></script>
