@@ -12,7 +12,6 @@
     <link rel="shortcut icon" href="{% if config.FAVICON_URL %}{{ config.FAVICON_URL }}{% else %}{% static 'img/favicon.ico' %}{% endif %}" />
     {% vite_hmr_client %}
     {% vite_asset 'src/app.js' %}
-    {% vite_asset 'src/assets/styles/main.css.js' %}
 </head>
   <body>
     {% block content %}{% endblock %}
