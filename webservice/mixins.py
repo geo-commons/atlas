@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import permissions
 
+from authz.models import Authorization
+from authz.resources import AuthorizationResource
 from tables.models import Table
 from tables.resources import TableResource
 from webservice.models import Category, Layer, Map, Source, Theme, Viewer
@@ -20,7 +22,8 @@ class DataExportImportMixin:
         Category: CategoryResource,
         Theme: ThemeResource,
         Viewer: ViewerResource,
-        Table: TableResource
+        Table: TableResource,
+        Authorization: AuthorizationResource
     }
 
     def get_resource_class(self):

@@ -32,6 +32,8 @@ import TableList from "@/admin/pages/TableList.vue";
 import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
+import AuthorizationList from "@/admin/pages/AuthorizationList.vue";
+import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.vue";
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 
@@ -158,6 +160,16 @@ const routes = [
     path: "/logs/:id",
     component: LogView,
     meta: { title: "Logs", menu: true },
+  },
+  {
+    path: "/authorizations",
+    component: AuthorizationList,
+    meta: { title: "Autorisaties", menu: true },
+  },
+  {
+    path: "/authorizations/update/:id",
+    component: AuthorizationCreateUpdate,
+    meta: { title: "Autorisaties", menu: true },
   },
   {
     path: "/:parentRoute/sort",

@@ -45,6 +45,8 @@ export default {
           return "tables";
         case "viewers":
           return "viewers";
+        case "authorizations":
+          return "authorizations";
       }
     },
     async exportItems() {
