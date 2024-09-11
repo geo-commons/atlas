@@ -33,6 +33,7 @@ import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
 import LogView from "@/admin/pages/LogView.vue";
+import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -61,6 +62,7 @@ const routes = [
     component: AdminDashboard,
     meta: { title: "Dashboard", menu: true },
   },
+  { path: "/configuration", component: AdminConfigurationPage, meta: { title: "Configuratie", menu: true } },
   { path: "/maps", component: MapList, meta: { title: "Kaarten", menu: true } },
   {
     path: "/maps/create",

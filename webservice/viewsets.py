@@ -1,5 +1,9 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
 from rest_framework import viewsets, permissions, mixins, filters
+from rest_framework.viewsets import ViewSet
+from constance import config
+from constance import settings as constance_settings
 from rest_framework.exceptions import NotFound
 
 from authz.models import Log
@@ -7,11 +11,17 @@ from tables.models import Table
 from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin
+from webservice.util import get_settings, process_value
 
 from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewer
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
     ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer
+
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
@@ -125,6 +135,7 @@ class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     queryset = Viewer.objects.all()
     serializer_class = ViewerSerializer
 
+
 class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
@@ -137,3 +148,45 @@ class LogViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Log.objects.all()
     serializer_class = LogSerializer
+
+class ConfigurationViewSet(ViewSet):
+    permission_classes = [permissions.IsAdminUser]
+
+    def setting(self, request, allow_settings):
+
+        if request.method != 'GET':
+            # change all allow setting items in allow_settings
+            for key, value in request.data.items():
+                if key in allow_settings:
+                    # Check if current field is an image field by checking if the key has a corresponding file.
+                    if (key in request.FILES):
+                        uploaded_file = request.FILES[key]
+                        # Define the path to save the file
+                        file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
+                        # Save the file
+                        path = default_storage.save(file_path, ContentFile(uploaded_file.read()))
+                        # Save the file path in the Constance setting
+                        setattr(config, 'ORGANIZATION_LOGO', path)
+                    else:
+                        setattr(config, key, process_value(value))
+
+        return Response(data=get_settings(allow_settings))
+
+
+    def create(self, request):
+        """
+        Update with POST: {'Key': new_value}
+        """
+        settings = constance_settings.CONFIG.items()
+        allow_settings = [key for key, options in settings]
+
+        return self.setting(request, allow_settings)
+
+    def list(self, request):
+        """
+        Get all setting item
+        """
+        settings = constance_settings.CONFIG.items()
+        allow_settings = [key for key, options in settings]
+
+        return self.setting(request, allow_settings)

@@ -29,3 +29,4 @@ api_router.register(
 api_router.register(
     r'viewers', viewsets.ViewerViewSet, basename='viewers'
 )
+api_router.register(r'configurations', viewsets.ConfigurationViewSet, basename='configurations')

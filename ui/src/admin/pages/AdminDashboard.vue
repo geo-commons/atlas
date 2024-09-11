@@ -29,6 +29,9 @@
         <router-link to="/viewers" class="button __tertiary __large" type="button" aria-label="Naar viewers"
           ><ViewIcon class="icon" />Viewers</router-link
         >
+        <router-link to="/configuration" class="button __tertiary __large" type="button" aria-label="Naar groepen">
+          <CogIcon class="icon" />Configuratie</router-link
+        >
       </div>
     </div>
   </div>
@@ -43,11 +46,13 @@ import UserIcon from "../../assets/icons/user-icon.svg";
 import GroupIcon from "../../assets/icons/group-icon.svg";
 import ViewIcon from "../../assets/icons/view-icon.svg";
 import TableIcon from "../../assets/icons/table-icon.svg";
+import CogIcon from "@/assets/icons/cog-icon.svg";
 import LogIcon from "../../assets/icons/terminal-icon.svg";
 
 export default {
   name: "AdminDashboard",
   components: {
+    CogIcon,
     MapIcon,
     SourceIcon,
     LayerIcon,
