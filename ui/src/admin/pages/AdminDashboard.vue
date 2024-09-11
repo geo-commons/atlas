@@ -20,15 +20,23 @@
         <router-link to="/groups" class="button __tertiary __large" type="button" aria-label="Naar groepen"
           ><GroupIcon class="icon" />Groepen</router-link
         >
-        <router-link to="/logs" class="button __tertiary __large" type="button" aria-label="Naar logs"
-          ><LogIcon class="icon" />Logs</router-link
-        >
         <router-link to="/tables" class="button __tertiary __large" type="button" aria-label="Naar tabellen"
           ><TableIcon class="icon" />Tabellen</router-link
         >
         <router-link to="/viewers" class="button __tertiary __large" type="button" aria-label="Naar viewers"
           ><ViewIcon class="icon" />Viewers</router-link
         >
+        <router-link to="/logs" class="button __tertiary __large" type="button" aria-label="Naar logs"
+          ><LogIcon class="icon" />Logs</router-link
+        >
+        <router-link
+          to="/authorizations"
+          class="button __tertiary __large"
+          type="button"
+          aria-label="Naar autorisaties"
+        >
+          <ShieldIcon class="icon" /> Autorisaties
+        </router-link>
         <router-link to="/configuration" class="button __tertiary __large" type="button" aria-label="Naar groepen">
           <CogIcon class="icon" />Configuratie</router-link
         >
@@ -48,6 +56,7 @@ import ViewIcon from "../../assets/icons/view-icon.svg";
 import TableIcon from "../../assets/icons/table-icon.svg";
 import CogIcon from "@/assets/icons/cog-icon.svg";
 import LogIcon from "../../assets/icons/terminal-icon.svg";
+import ShieldIcon from "../../assets/icons/shield-icon.svg";
 
 export default {
   name: "AdminDashboard",
@@ -62,6 +71,7 @@ export default {
     ViewIcon,
     TableIcon,
     LogIcon,
+    ShieldIcon,
   },
 };
 </script>

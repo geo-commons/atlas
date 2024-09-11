@@ -29,4 +29,5 @@ api_router.register(
 api_router.register(
     r'viewers', viewsets.ViewerViewSet, basename='viewers'
 )
+api_router.register(r'authorizations', authz_viewsets.AuthorizationViewSet, basename='authorizations')
 api_router.register(r'configurations', viewsets.ConfigurationViewSet, basename='configurations')

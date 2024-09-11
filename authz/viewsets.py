@@ -2,8 +2,12 @@ import json
 from json import JSONDecodeError
 from django.http import JsonResponse
 from rest_framework import viewsets, permissions
+
+from webservice.mixins import DataExportImportMixin
 from webservice.models import Source
 from .lib import can_access_source, authorize_ows_request, authorize_wmts_request, authorize_rest_request
+from .models import Authorization
+from .serializers import AuthorizationSerializer
 
 
 class AuthorizeViewSet(viewsets.ViewSet):
@@ -55,3 +59,10 @@ class AuthorizeViewSet(viewsets.ViewSet):
             'status': 500,
             'message': 'there is no authorizer for this source type provided'
         })
+
+
+class AuthorizationViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'delete', 'patch']
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Authorization.objects.all()
+    serializer_class = AuthorizationSerializer
