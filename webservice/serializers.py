@@ -66,7 +66,7 @@ class MapSerializer(serializers.ModelSerializer):
 class SourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Source
-        fields = ['id', 'title', 'slug', 'url', 'authenticate', 'source_type', 'login_required', 'atlas_groups']
+        fields = ['id', 'title', 'slug', 'url', 'authenticate', 'source_type']
 
 
 class CategorySerializer(serializers.ModelSerializer):
