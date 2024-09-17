@@ -741,7 +741,7 @@ export default {
 
 /* When portal header is active its height must be subtracted of total height. */
 .map-container.portalHeader {
-  height: calc(100vh - 55px);
+  height: calc(100dvh - 55px);
 }
 
 .renderer-container {
