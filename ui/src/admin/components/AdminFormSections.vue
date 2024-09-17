@@ -34,6 +34,7 @@
                 >
                   <input
                     v-bind="field"
+                    :id="question.id"
                     type="checkbox"
                     :name="question.id"
                     :value="true"
@@ -48,6 +49,48 @@
                   />
                 </span>
                 <span class="warning-text"><vee-error-message :name="question.id" /></span>
+              </div>
+              <div v-else-if="question.type === 'image'" class="image-wrapper">
+                <div class="preview-image-wrapper">
+                  <div v-if="imageFieldValues[question.id]?.imagePath" class="current-logo">
+                    <div class="question-label">Huidige logo</div>
+                    <img
+                      :src="`/atlas/media/${imageFieldValues[question.id]?.imagePath}`"
+                      class="logo-preview"
+                      :alt="`voorbeeld weergave van het huidige logo voor ${question.id}`"
+                    />
+                  </div>
+                  <div v-if="imageFieldValues[question.id]?.previewUrl" class="current-logo">
+                    <div class="question-label">Geselecteerde logo</div>
+                    <img
+                      :src="imageFieldValues[question.id]?.previewUrl"
+                      class="logo-preview"
+                      :alt="`voorbeeld weergave van geselecteerde logo`"
+                    />
+                  </div>
+                </div>
+                <div class="upload-button">
+                  <label for="file" class="question-label"
+                    >Upload een afbeelding om het organisatie logo te wijzigen</label
+                  >
+                  <div>
+                    <input
+                      id="file"
+                      :ref="`fileInput_${question.id}`"
+                      type="file"
+                      name="file"
+                      class="inputfile"
+                      accept="image/*"
+                      @change="(e) => onFileUpload(e, question.id)"
+                    />
+                    <label for="file" class="button __primary_admin __import">
+                      <ArrowDownTrayIcon class="icon" />
+                      <span :ref="`fileLabelText_${question.id}`" :content="'selecteer afbeelding'">{{
+                        imageFieldValues[question.id]?.uploadButtonText
+                      }}</span>
+                    </label>
+                  </div>
+                </div>
               </div>
               <div v-else>
                 <span class="label-info-text-wrapper">
@@ -151,6 +194,19 @@
                     :sources="options[question.sourceField] || []"
                   />
                 </vee-field>
+                <vee-field v-else-if="question.type === 'theme-select'" v-slot="{ field }" :name="question.id">
+                  <theme-field v-model="currentValues[question.id]" :field="field" />
+                </vee-field>
+                <vee-field
+                  v-else-if="question.type === 'date'"
+                  :id="question.id"
+                  :value="currentValues[question.id] ? formatDateValue(currentValues[question.id]) : ''"
+                  :name="question.id"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                  type="date"
+                  @input="(event) => (message = event.target.value)"
+                />
                 <vee-field
                   v-else
                   :id="question.id"
@@ -170,10 +226,21 @@
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button class="button" :class="createView ? '__secondary_admin' : '__tertiary'" type="button" @click="cancel()">
+      <button
+        v-if="!disableCreateAndUpdate"
+        class="button"
+        :class="createView ? '__secondary_admin' : '__tertiary'"
+        type="button"
+        @click="cancel()"
+      >
         Annuleer
       </button>
-      <button class="button" :class="createView ? '__secondary_admin' : '__primary_admin'" type="submit">
+      <button
+        v-if="!disableCreateAndUpdate"
+        class="button"
+        :class="createView ? '__secondary_admin' : '__primary_admin'"
+        type="submit"
+      >
         Opslaan
       </button>
       <button v-if="createView" class="button __primary_admin" type="submit" @click="continueEditing = true">
@@ -190,10 +257,14 @@ import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import CloseIcon from "@/assets/icons/close-icon.svg";
 import Cookies from "js-cookie";
 import LayerField from "@/admin/components/LayerField.vue";
+import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
+import ThemeField from "@/admin/components/ThemeField.vue";
 
 export default {
   name: "AdminFormSections",
   components: {
+    ArrowDownTrayIcon,
+    ThemeField,
     LayerField,
     CloseIcon,
     AdminFormInfoText,
@@ -208,7 +279,15 @@ export default {
       default: false,
       type: Boolean,
     },
+    containsImageField: {
+      default: false,
+      type: Boolean,
+    },
     compactLayout: {
+      default: false,
+      type: Boolean,
+    },
+    disableCreateAndUpdate: {
       default: false,
       type: Boolean,
     },
@@ -221,15 +300,28 @@ export default {
       options: {},
       unexpectedError: null,
       continueEditing: false,
+      imageFieldValues: {},
     };
   },
   watch: {
     initialValues(newValues) {
       this.currentValues = newValues;
+
+      if (this.containsImageField && this.currentValues) {
+        this.setImageFieldValues();
+      }
     },
   },
   created() {
     this.retrieveOptions();
+  },
+  unmounted() {
+    // Remove all created previewUrls
+    Object.values(this.imageFieldValues).forEach((value) => {
+      if (value?.previewUrl) {
+        URL.revokeObjectURL(value.previewUrl);
+      }
+    });
   },
   methods: {
     formatDateValue,
@@ -275,6 +367,11 @@ export default {
       dropdownElement.value = "";
     },
     cancel() {
+      if (!this.formObject) {
+        this.$router.push("/");
+        return;
+      }
+
       if (this.createView) {
         this.$emit("close");
       } else {
@@ -284,6 +381,13 @@ export default {
     save(values) {
       if (this.createView) {
         this.objectSpecificSave(values, this.continueEditing);
+      } else if (this.containsImageField) {
+        // Manually add image fields to values object.
+        Object.keys(this.imageFieldValues).forEach((key) => {
+          values[key] = this.currentValues[key];
+        });
+
+        this.objectSpecificSave(values);
       } else {
         this.objectSpecificSave(values);
       }
@@ -326,11 +430,33 @@ export default {
       }
     },
     handleInput(event, question) {
+      event.preventDefault();
       let value = event.target.value;
       if (value === "") {
         value = null;
       }
       this.currentValues[question.id] = value;
+    },
+    setImageFieldValues() {
+      Object.values(this.sections).forEach((section) => {
+        section.questions.forEach((question) => {
+          if (question.type === "image") {
+            this.imageFieldValues[question.id] = {
+              imagePath: this.currentValues[question.id],
+              uploadButtonText: "Selecteer afbeelding",
+            };
+          }
+        });
+      });
+    },
+    onFileUpload(event, id) {
+      event.preventDefault();
+      const file = event.target.files[0];
+      if (file) {
+        this.imageFieldValues[id].uploadButtonText = file?.name;
+        this.imageFieldValues[id].previewUrl = URL.createObjectURL(file);
+        this.currentValues[id] = file;
+      }
     },
   },
 };
@@ -345,7 +471,7 @@ h3 {
   grid-area: section-label;
 }
 
-label.question-label {
+.question-label {
   font-weight: var(--font-weight-bold);
 }
 
@@ -413,5 +539,54 @@ label.question-label {
 
 .width {
   min-width: 100%;
+}
+
+.__import {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.inputfile:focus + label {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.image-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logo-preview {
+  height: auto;
+  max-height: 40px;
+}
+
+.upload-button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.current-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.preview-image-wrapper {
+  display: flex;
+  gap: 80px;
+  align-items: center;
 }
 </style>

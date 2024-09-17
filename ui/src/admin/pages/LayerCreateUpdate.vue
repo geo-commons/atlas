@@ -350,6 +350,22 @@ export default {
         return { id: category.id, label: category.title };
       });
     },
+    async getDatasets() {
+      const result = await fetch("/atlas/api/v1/datasets/", {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch datasets");
+      }
+
+      const response = await result.json();
+
+      return response.map((dataset) => {
+        return { id: dataset.id, label: dataset.title };
+      });
+    },
     async getSources() {
       const result = await fetch("/atlas/api/v1/sources/", {
         credentials: "same-origin",
@@ -516,6 +532,15 @@ export default {
               placeholder: "categorie",
               required: false,
               options: this.getCategories,
+            },
+            {
+              label: "Dataset",
+              id: "dataset",
+              name: "Dataset",
+              type: "dropdown",
+              required: false,
+              placeholder: "Dataset",
+              options: this.getDatasets,
             },
             {
               label: "Gepubliceerd",

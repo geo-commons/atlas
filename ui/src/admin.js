@@ -28,10 +28,19 @@ import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
+import ThemeCreateUpdate from "@/admin/pages/ThemeCreateUpdate.vue";
+import ThemeList from "@/admin/pages/ThemeList.vue";
+import DatasetList from "@/admin/pages/DatasetList.vue";
+import DatasetCreateUpdate from "@/admin/pages/DatasetCreateUpdate.vue";
+import LogList from "@/admin/pages/LogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
 import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
+import AuthorizationList from "@/admin/pages/AuthorizationList.vue";
+import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.vue";
+import LogView from "@/admin/pages/LogView.vue";
+import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -60,6 +69,7 @@ const routes = [
     component: AdminDashboard,
     meta: { title: "Dashboard", menu: true },
   },
+  { path: "/configuration", component: AdminConfigurationPage, meta: { title: "Configuratie", menu: true } },
   { path: "/maps", component: MapList, meta: { title: "Kaarten", menu: true } },
   {
     path: "/maps/create",
@@ -145,6 +155,46 @@ const routes = [
     path: "/viewers/update/:id",
     component: ViewerCreateUpdate,
     meta: { title: "Viewers", menu: true },
+  },
+  {
+    path: "/logs",
+    component: LogList,
+    meta: { title: "Logs", menu: true },
+  },
+  {
+    path: "/logs/:id",
+    component: LogView,
+    meta: { title: "Logs", menu: true },
+  },
+  {
+    path: "/authorizations",
+    component: AuthorizationList,
+    meta: { title: "Autorisaties", menu: true },
+  },
+  {
+    path: "/authorizations/update/:id",
+    component: AuthorizationCreateUpdate,
+    meta: { title: "Autorisaties", menu: true },
+  },
+  {
+    path: "/themes",
+    component: ThemeList,
+    meta: { title: "Thema's", menu: true },
+  },
+  {
+    path: "/themes/update/:id",
+    component: ThemeCreateUpdate,
+    meta: { title: "Thema's", menu: true },
+  },
+  {
+    path: "/datasets",
+    component: DatasetList,
+    meta: { title: "Datasets", menu: true },
+  },
+  {
+    path: "/datasets/update/:id",
+    component: DatasetCreateUpdate,
+    meta: { title: "Datasets", menu: true },
   },
   {
     path: "/:parentRoute/sort",

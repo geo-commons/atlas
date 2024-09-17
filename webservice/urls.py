@@ -20,8 +20,14 @@ api_router.register(
     r'themes', viewsets.ThemeViewSet, basename='themes'
 )
 api_router.register(
+    r'logs', viewsets.LogViewSet, basename='logs'
+)
+
+api_router.register(
     r'tables', viewsets.TableViewSet, basename='tables'
 )
 api_router.register(
     r'viewers', viewsets.ViewerViewSet, basename='viewers'
 )
+api_router.register(r'authorizations', authz_viewsets.AuthorizationViewSet, basename='authorizations')
+api_router.register(r'configurations', viewsets.ConfigurationViewSet, basename='configurations')

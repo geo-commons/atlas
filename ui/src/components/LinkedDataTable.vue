@@ -47,7 +47,7 @@
                     </button>
                   </td>
                   <td v-for="property in displayProperties" :key="property" class="linked-data-cell">
-                    {{ feature.properties[property] }}
+                    <RichValue :data-key="property" :data-value="feature.properties[property]" />
                   </td>
                 </tr>
               </tbody>
@@ -68,12 +68,14 @@ import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
 import { formatRawString } from "@/utils/string-helpers";
+import RichValue from "@/components/RichValue.vue";
 
 // todo: check if headers need to be sortable
 
 export default {
   name: "LinkedDataTable",
   components: {
+    RichValue,
     InformationCircleIcon,
     MarkerIcon,
     ExpandButton,

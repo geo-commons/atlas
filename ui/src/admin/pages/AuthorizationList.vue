@@ -2,15 +2,18 @@
   <div class="container __admin">
     <div class="top-menu-container">
       <div class="page-title-wrapper">
-        <h1>Bronnen</h1>
+        <h1>Autorisaties</h1>
         <div class="top-menu-button-container">
           <button class="button __secondary_admin __normal" type="button" @click="toggleAdvance">
             <CogIcon class="icon" />
             {{ advanceSettings ? "Minder" : "Meer" }} opties
           </button>
-          <button class="button __primary_admin __normal __full-width-mobile" @click="openFormModal('newSource')">
+          <button
+            class="button __primary_admin __normal __full-width-mobile"
+            @click="openFormModal('newAuthorization')"
+          >
             <AddIcon class="icon __white" />
-            Nieuwe bron
+            Nieuwe autorisatie
           </button>
         </div>
       </div>
@@ -19,7 +22,13 @@
     <div class="admin-content-wrapper">
       <div v-if="!loading" class="admin-search-wrapper">
         <SearchIcon class="icon" />
-        <input id="source-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek bron" />
+        <input
+          id="authorization-search"
+          v-model="searchQuery"
+          type="search"
+          name="query"
+          placeholder="Zoek autorisatie"
+        />
       </div>
 
       <div v-if="advanceSettings" class="advance-settings-wrapper">
@@ -37,7 +46,7 @@
       </div>
 
       <PaginationComponent
-        :items="visibleSources"
+        :items="visibleAuthorizations"
         :nr-of-records="nrOfRecords"
         :loading="loading"
         :style-type="'admin'"
@@ -53,8 +62,8 @@
                 </th>
                 <th :class="{ 'first-column-padding': !advanceSettings }">
                   <SortableTableHeaderItem
-                    :header-text="'Titel'"
-                    :property="'title'"
+                    :header-text="'Resource'"
+                    :property="'resource'"
                     :sort-key="sortKey"
                     :sort-ascending="sortAscending"
                     @sort="(column) => sortColumn(column)"
@@ -65,23 +74,27 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="source in paginatedData" :key="source.id" class="table-border">
+              <tr v-for="authorization in paginatedData" :key="authorization.id" class="table-border">
                 <td v-if="advanceSettings" class="first-column-padding">
-                  <input type="checkbox" :checked="checkedRows.includes(source.id)" @change="onCheckRow(source.id)" />
+                  <input
+                    type="checkbox"
+                    :checked="checkedRows.includes(authorization.id)"
+                    @change="onCheckRow(authorization.id)"
+                  />
                 </td>
                 <td :class="{ 'first-column-padding': !advanceSettings }">
-                  <router-link class="admin-title-link" :to="`/sources/update/${source.id}`">
-                    {{ source.title }}
+                  <router-link class="admin-title-link" :to="`/authorizations/update/${authorization.id}`">
+                    {{ authorization.resource }}
                   </router-link>
                 </td>
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __admin_hover"
-                    aria-label="Wijzig bron"
+                    aria-label="Wijzig autorisatie"
                     content="Wijzig"
                     type="button"
-                    @click="$router.push(`/sources/update/${source.id}`)"
+                    @click="$router.push(`/authorizations/update/${authorization.id}`)"
                   >
                     <EditIcon class="icon" />
                   </button>
@@ -90,10 +103,10 @@
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __admin_hover"
-                    aria-label="Verwijder bron"
+                    aria-label="Verwijder autorisatie"
                     content="Verwijder"
                     type="button"
-                    @click="deleteSource(source)"
+                    @click="deleteAuthorization(authorization)"
                   >
                     <TrashIcon class="icon" />
                   </button>
@@ -107,26 +120,30 @@
 
     <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
       <template #header>
-        <h3 v-if="modalType === 'newSource'">Configureer nieuwe bron</h3>
-        <h3 v-else-if="modalType === 'import'">Importeer bestaande bron(nen)</h3>
-        <h3 v-else-if="modalType === 'export'">Exporteer bestaande bron(nen)</h3>
+        <h3 v-if="modalType === 'newAuthorization'">Configureer nieuwe autorisatie</h3>
+        <h3 v-else-if="modalType === 'import'">Importeer bestaande autorisatie(s)</h3>
+        <h3 v-else-if="modalType === 'export'">Exporteer bestaande autorisatie(s)</h3>
       </template>
       <template #body>
         <AdminFormSections
-          v-if="modalType === 'newSource'"
+          v-if="modalType === 'newAuthorization'"
           ref="formSections"
           :sections="sections"
-          :initial-values="newSourceData"
+          :initial-values="newAuthorizationData"
           :create-view="true"
-          :form-object="'sources'"
-          :object-specific-save="saveSource"
+          :form-object="'authorizations'"
+          :object-specific-save="saveAuthorization"
           @close="closeFormModal"
         />
         <div v-else-if="modalType === 'import'">
-          <AdminFileImport :object-name="'bronnen'" @import-successful="getSources" @close="closeFormModal" />
+          <AdminFileImport
+            :object-name="'authorizations'"
+            @import-successful="getAuthorizations"
+            @close="closeFormModal"
+          />
         </div>
         <div v-else-if="modalType === 'export'">
-          <AdminFileExport :object-name="'bronnen'" :selected-rows="selectedItems" @close="closeFormModal" />
+          <AdminFileExport :object-name="'authorizations'" :selected-rows="selectedItems" @close="closeFormModal" />
         </div>
       </template>
     </FormModal>
@@ -151,7 +168,7 @@ import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 import AdminFileImport from "@/admin/components/AdminFileImport.vue";
 
 export default {
-  name: "SourceList",
+  name: "AuthorizationList",
   components: {
     SearchIcon,
     PaginationComponent,
@@ -169,9 +186,9 @@ export default {
   },
   data() {
     return {
-      sources: [],
+      authorizations: [],
       showFormModal: false,
-      newSourceData: {},
+      newAuthorizationData: {},
       searchQuery: "",
       sections: {},
       currentPageNumber: 1,
@@ -186,30 +203,30 @@ export default {
     };
   },
   computed: {
-    sortedSources() {
-      if (this.sortKey && this.sources) {
-        return this.sources.slice(0).sort((a, b) => {
+    sortedAuthorizations() {
+      if (this.sortKey && this.authorizations) {
+        return this.authorizations.slice(0).sort((a, b) => {
           const textA = a[this.sortKey].toLowerCase();
           const textB = b[this.sortKey].toLowerCase();
           return sortAlphabetically(textA, textB, this.sortAscending);
         });
       }
 
-      return this.sources;
+      return this.authorizations;
     },
-    visibleSources() {
+    visibleAuthorizations() {
       if (!this.searchQuery) {
-        return this.sortedSources;
+        return this.sortedAuthorizations;
       }
 
-      return this.sortedSources.filter(
-        (source) => source.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
+      return this.sortedAuthorizations.filter(
+        (authorization) => authorization.resource.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
       const end = start + this.nrOfRecords;
-      return this.visibleSources.slice(start, end);
+      return this.visibleAuthorizations.slice(start, end);
     },
     selectedRowsDisplayText() {
       const nrOfRows = this.checkedRows.length;
@@ -226,12 +243,25 @@ export default {
     },
   },
   created() {
-    this.getSources();
+    this.getAuthorizations();
     this.sections = this.getSections();
   },
   methods: {
-    async getSources() {
+    async getAuthorizations() {
       this.loading = true;
+      const result = await fetch("/atlas/api/v1/authorizations/", {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch authorizations");
+      }
+
+      this.authorizations = await result.json();
+      this.loading = false;
+    },
+    async getSources() {
       const result = await fetch("/atlas/api/v1/sources/", {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -241,16 +271,19 @@ export default {
         console.error("Could not fetch sources");
       }
 
-      this.sources = await result.json();
-      this.loading = false;
+      const response = await result.json();
+
+      return response.map((source) => {
+        return { id: source.id, label: source.title, url: source.url, type: source.source_type };
+      });
     },
-    async deleteSource(source) {
-      const acknowledged = confirm("Weet je zeker dat je de bron wilt verwijderen?");
+    async deleteAuthorization(authorization) {
+      const acknowledged = confirm("Weet je zeker dat je de autorisatie wilt verwijderen?");
       if (!acknowledged) {
         return;
       }
 
-      const result = await fetch(`/atlas/api/v1/sources/${source.id}/`, {
+      const result = await fetch(`/atlas/api/v1/authorizations/${authorization.id}/`, {
         method: "DELETE",
         credentials: "same-origin",
         headers: {
@@ -260,11 +293,11 @@ export default {
       });
 
       if (result.ok) {
-        this.getSources();
+        this.getAuthorizations();
       }
     },
-    async saveSource(currentValues, continueEditing = false) {
-      const url = "/atlas/api/v1/sources/";
+    async saveAuthorization(currentValues, continueEditing = false) {
+      const url = "/atlas/api/v1/authorizations/";
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
@@ -274,26 +307,25 @@ export default {
 
           if (continueEditing) {
             const response = await result.json();
-            this.$router.push(`/sources/update/${response.id}`);
+            this.$router.push(`/authorizations/update/${response.id}`);
           }
 
-          await this.getSources();
+          await this.getAuthorizations();
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);
       }
     },
     openFormModal(modalType) {
-      if (modalType === "newSource") {
-        this.newSourceData = {
-          title: "",
-          url: "",
-          authenticate: false,
+      if (modalType === "newAuthorization") {
+        this.newAuthorizationData = {
+          source: "",
+          resource: "",
         };
       }
 
       if (modalType === "export") {
-        this.selectedItems = this.sources.filter((source) => this.checkedRows.includes(source.id));
+        this.selectedItems = this.authorizations.filter((authorization) => this.checkedRows.includes(authorization.id));
       }
 
       this.showFormModal = true;
@@ -311,8 +343,8 @@ export default {
         this.allChecked = !this.allChecked;
 
         if (this.allChecked) {
-          this.sources.forEach((source) => {
-            this.checkedRows.push(source.id);
+          this.authorizations.forEach((authorization) => {
+            this.checkedRows.push(authorization.id);
           });
         } else {
           this.checkedRows = [];
@@ -343,26 +375,30 @@ export default {
           label: "Algemene gegevens",
           questions: [
             {
-              label: "Titel",
-              id: "title",
-              name: "Title",
-              type: "text",
+              label: "Bron",
+              id: "source",
+              name: "Source",
+              type: "dropdown",
               required: true,
+              placeholder: "bron",
+              options: this.getSources,
             },
             {
-              label: "Kort kenmerk",
-              id: "slug",
-              name: "Slug",
+              label: "Resource",
+              id: "resource",
+              name: "Resource",
               type: "text",
-              required: false,
-              infoText: "Een uniek kort kenmerk voor de bron in Atlas.",
+              required: true,
+              infoText: "Naam van de laag of de resource",
             },
             {
-              label: "URL",
-              id: "url",
-              name: "Url",
-              type: "url",
+              label: "Beschrijving",
+              id: "description",
+              name: "Description",
+              type: "text",
               required: true,
+              multiLine: true,
+              infoText: "Een beschrijvende tekst voor beheerders",
             },
           ],
         },

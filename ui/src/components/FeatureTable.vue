@@ -66,7 +66,7 @@
               </button>
             </td>
             <td v-for="property in displayProperties" :key="property">
-              {{ feature.properties[property] }}
+              <RichValue :data-key="property" :data-value="feature.properties[property]" />
             </td>
           </tr>
         </tbody>
@@ -89,10 +89,12 @@ import MarkerIcon from "../assets/icons/marker-icon.svg";
 import { getFetchParameters } from "../utils/auth";
 import StackSortableTableHeaderItem from "@/components/StackSortableTableHeaderItem.vue";
 import { formatRawString } from "@/utils/string-helpers";
+import RichValue from "@/components/RichValue.vue";
 
 export default {
   name: "FeatureTable",
   components: {
+    RichValue,
     StackSortableTableHeaderItem,
     TableList,
     MarkerIcon,

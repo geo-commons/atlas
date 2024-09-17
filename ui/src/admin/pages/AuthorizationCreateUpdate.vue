@@ -1,13 +1,12 @@
 <template>
   <div class="container __admin">
-    <h1 class="font-weight-normal">Bron wijzigen</h1>
+    <h1 class="font-weight-normal">Autorisatie wijzigen</h1>
     <AdminFormSections
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
-      :compact-layout="false"
-      :form-object="'sources'"
-      :object-specific-save="saveSource"
+      :form-object="'authorizations'"
+      :object-specific-save="saveAuthorization"
     >
       <template #custom>
         <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
@@ -68,23 +67,38 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import draggable from "vuedraggable";
 
+draggable.compatConfig = { MODE: 3 };
+
 export default {
-  name: "SourceCreateUpdate",
+  name: "AuthorizationCreateUpdate",
   components: {
     draggable,
     AdminFormSections,
   },
   data() {
     return {
+      sources: {},
+      groups: [],
       sections: {},
       initialValues: {},
       currentValues: {},
       availableGroups: [],
       selectedGroups: [],
+      assistiveText: "Verplaats een group met behulp van de enter toets",
     };
   },
+  computed: {
+    dragOptions() {
+      return {
+        animation: 0,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost",
+      };
+    },
+  },
   created() {
-    Promise.all([this.getSource(), this.getGroups()]).then(() => {
+    Promise.all([this.getAuthorization(), this.getGroups()]).then(() => {
       this.selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
       this.availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
     });
@@ -92,32 +106,50 @@ export default {
     this.sections = this.getSections();
   },
   methods: {
-    async getSource() {
-      const result = await fetch(`/atlas/api/v1/sources/${this.$route.params.id}/`, {
+    async getAuthorization() {
+      const result = await fetch(`/atlas/api/v1/authorizations/${this.$route.params.id}/`, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
 
       if (!result.ok) {
-        console.error("Could not fetch source");
+        console.error("Could not fetch authorization");
+        return;
       }
 
-      this.initialValues = await result.json();
+      const response = await result.json();
+      this.initialValues = response;
     },
-    async saveSource(currentValues) {
-      const url = `/atlas/api/v1/sources/${this.$route.params.id}/`;
-
+    async saveAuthorization(currentValues) {
       currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+
+      const url = `/atlas/api/v1/authorizations/${this.$route.params.id}/`;
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/sources`);
+          this.$router.push(`/authorizations`);
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);
       }
+    },
+    async getSources() {
+      const result = await fetch("/atlas/api/v1/sources/", {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch sources");
+      }
+
+      const response = await result.json();
+
+      return response.map((source) => {
+        return { id: source.id, label: source.title, url: source.url, type: source.source_type };
+      });
     },
     async getGroups() {
       const result = await fetch("/atlas/api/v1/groups/", {
@@ -133,31 +165,51 @@ export default {
 
       return result;
     },
+    moveGroup(item, fromArray, toArray) {
+      const arrayAriaText = toArray === this.availableGroups ? "Beschikbare groepen" : "Geselecteerde groepen";
+      this.assistiveText = `${item.name}, verplaatst naar ${arrayAriaText}`;
+
+      fromArray.splice(fromArray.indexOf(item), 1);
+      toArray.push(item);
+    },
     getSections() {
       return {
         general: {
           label: "Algemene gegevens",
           questions: [
             {
-              label: "Titel",
-              id: "title",
-              name: "Title",
+              label: "Bron",
+              id: "source",
+              name: "Source",
+              type: "dropdown",
+              required: true,
+              placeholder: "bron",
+              options: this.getSources,
+            },
+            {
+              label: "Resource",
+              id: "resource",
+              name: "Resource",
               type: "text",
               required: true,
+              infoText: "Naam van de laag of de resource",
             },
             {
-              label: "URL",
-              id: "url",
-              name: "URL",
-              type: "url",
+              label: "Beschrijving",
+              id: "description",
+              name: "Description",
+              type: "text",
               required: true,
+              multiLine: true,
+              infoText: "Een beschrijvende tekst voor beheerders",
             },
             {
-              label: "Verstuur authenticatie-informatie naar bron",
-              id: "authenticate",
-              name: "Authenticate",
-              type: "checkbox",
+              label: "Sortering",
+              id: "ordering",
+              name: "Ordering",
+              type: "decimal",
               required: false,
+              step: 1,
             },
           ],
         },
@@ -165,15 +217,40 @@ export default {
           label: "Toegang",
           questions: [
             {
-              label: "Vereis inlog voor deze bron",
+              label: "Vereis inlog van gebruiker",
               id: "login_required",
               name: "LoginRequired",
               type: "checkbox",
               required: false,
-              infoText: "De inhoud van deze bron kan alleen bekeken worden door ingelogde gebruikers.",
+            },
+            {
+              label: "Alleen intern zichtbaar",
+              id: "only_internal",
+              name: "OnlyInternal",
+              type: "checkbox",
+              required: false,
+              infoText: "Alleen zichtbaar binnen interne omgeving",
+            },
+            {
+              label: "Audit log",
+              id: "audit_log",
+              name: "AuditLog",
+              type: "checkbox",
+              required: false,
+              infoText: "Voeg verzoeken toe aan de audit log",
             },
             {
               type: "custom",
+            },
+            {
+              label: "Response filter",
+              id: "response_filter",
+              name: "ResponseFilter",
+              type: "text",
+              multiLine: true,
+              required: false,
+              isNested: true,
+              infoText: "Maak veldnamen vriendelijk.",
             },
           ],
         },

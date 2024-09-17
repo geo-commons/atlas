@@ -2,15 +2,15 @@
   <div class="container __admin">
     <div class="top-menu-container">
       <div class="page-title-wrapper">
-        <h1>Bronnen</h1>
+        <h1>Thema's</h1>
         <div class="top-menu-button-container">
           <button class="button __secondary_admin __normal" type="button" @click="toggleAdvance">
             <CogIcon class="icon" />
             {{ advanceSettings ? "Minder" : "Meer" }} opties
           </button>
-          <button class="button __primary_admin __normal __full-width-mobile" @click="openFormModal('newSource')">
+          <button class="button __primary_admin __normal" type="button" @click="openFormModal('newTheme')">
             <AddIcon class="icon __white" />
-            Nieuwe bron
+            Nieuw thema
           </button>
         </div>
       </div>
@@ -19,7 +19,7 @@
     <div class="admin-content-wrapper">
       <div v-if="!loading" class="admin-search-wrapper">
         <SearchIcon class="icon" />
-        <input id="source-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek bron" />
+        <input id="themes-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek thema" />
       </div>
 
       <div v-if="advanceSettings" class="advance-settings-wrapper">
@@ -37,7 +37,7 @@
       </div>
 
       <PaginationComponent
-        :items="visibleSources"
+        :items="visibleThemes"
         :nr-of-records="nrOfRecords"
         :loading="loading"
         :style-type="'admin'"
@@ -65,23 +65,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="source in paginatedData" :key="source.id" class="table-border">
+              <tr v-for="theme in paginatedData" :key="theme.id" class="table-border">
                 <td v-if="advanceSettings" class="first-column-padding">
-                  <input type="checkbox" :checked="checkedRows.includes(source.id)" @change="onCheckRow(source.id)" />
+                  <input type="checkbox" :checked="checkedRows.includes(theme.id)" @change="onCheckRow(theme.id)" />
                 </td>
                 <td :class="{ 'first-column-padding': !advanceSettings }">
-                  <router-link class="admin-title-link" :to="`/sources/update/${source.id}`">
-                    {{ source.title }}
+                  <router-link
+                    class="admin-title-link"
+                    type="button"
+                    :aria-label="`${theme.title} configureren`"
+                    :to="`/themes/update/${theme.id}`"
+                  >
+                    {{ theme.title }}
                   </router-link>
                 </td>
                 <td class="btn-col">
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __admin_hover"
-                    aria-label="Wijzig bron"
+                    :aria-label="`${theme.title} configureren`"
                     content="Wijzig"
                     type="button"
-                    @click="$router.push(`/sources/update/${source.id}`)"
+                    @click="$router.push(`/themes/update/${theme.id}`)"
                   >
                     <EditIcon class="icon" />
                   </button>
@@ -90,10 +95,10 @@
                   <button
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __admin_hover"
-                    aria-label="Verwijder bron"
+                    aria-label="Verwijder thema"
                     content="Verwijder"
                     type="button"
-                    @click="deleteSource(source)"
+                    @click="deleteTheme(theme)"
                   >
                     <TrashIcon class="icon" />
                   </button>
@@ -107,26 +112,26 @@
 
     <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
       <template #header>
-        <h3 v-if="modalType === 'newSource'">Configureer nieuwe bron</h3>
-        <h3 v-else-if="modalType === 'import'">Importeer bestaande bron(nen)</h3>
-        <h3 v-else-if="modalType === 'export'">Exporteer bestaande bron(nen)</h3>
+        <h3 v-if="modalType === 'newTheme'">Configureer nieuw thema</h3>
+        <h3 v-else-if="modalType === 'import'">Importeer bestaande thema's</h3>
+        <h3 v-else-if="modalType === 'export'">Exporteer bestaande thema's</h3>
       </template>
       <template #body>
         <AdminFormSections
-          v-if="modalType === 'newSource'"
+          v-if="modalType === 'newTheme'"
           ref="formSections"
           :sections="sections"
-          :initial-values="newSourceData"
+          :initial-values="newThemeData"
           :create-view="true"
-          :form-object="'sources'"
-          :object-specific-save="saveSource"
+          :form-object="'themes'"
+          :object-specific-save="saveTheme"
           @close="closeFormModal"
         />
         <div v-else-if="modalType === 'import'">
-          <AdminFileImport :object-name="'bronnen'" @import-successful="getSources" @close="closeFormModal" />
+          <AdminFileImport :object-name="'themes'" @import-successful="getThemes" @close="closeFormModal" />
         </div>
         <div v-else-if="modalType === 'export'">
-          <AdminFileExport :object-name="'bronnen'" :selected-rows="selectedItems" @close="closeFormModal" />
+          <AdminFileExport :object-name="'themes'" :selected-rows="selectedItems" @close="closeFormModal" />
         </div>
       </template>
     </FormModal>
@@ -135,49 +140,49 @@
 
 <script>
 import Cookies from "js-cookie";
-import AddIcon from "@/assets/icons/add-icon.svg";
-import FormModal from "@/components/FormModal.vue";
-import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
-import EditIcon from "@/assets/icons/edit-icon.svg";
-import TrashIcon from "@/assets/icons/trash-icon.svg";
-import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import PaginationComponent from "@/components/Pagination.vue";
-import SearchIcon from "@/assets/icons/search-icon.svg";
+import FormModal from "@/components/FormModal.vue";
+import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
+import { sortAlphabetically } from "@/utils/table-sort-helpers";
+import TrashIcon from "../../assets/icons/trash-icon.svg";
+import EditIcon from "../../assets/icons/edit-icon.svg";
+import AddIcon from "../../assets/icons/add-icon.svg";
+import SearchIcon from "../../assets/icons/search-icon.svg";
+import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import CogIcon from "@/assets/icons/cog-icon.svg";
-import ArrowUpTrayIcon from "../../assets/icons/arrow-up-tray-icon.svg";
-import ArrowDownTrayIcon from "../../assets/icons/arrow-down-tray-icon.svg";
-import AdminFileExport from "@/admin/components/AdminFileExport.vue";
+import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
+import ArrowUpTrayIcon from "@/assets/icons/arrow-up-tray-icon.svg";
 import AdminFileImport from "@/admin/components/AdminFileImport.vue";
+import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 
 export default {
-  name: "SourceList",
+  name: "ThemeList",
   components: {
-    SearchIcon,
+    AdminFileExport,
+    AdminFileImport,
+    ArrowUpTrayIcon,
+    ArrowDownTrayIcon,
+    CogIcon,
+    AdminFormSections,
+    SortableTableHeaderItem,
+    FormModal,
     PaginationComponent,
     TrashIcon,
     EditIcon,
-    SortableTableHeaderItem,
-    AdminFormSections,
-    FormModal,
     AddIcon,
-    CogIcon,
-    ArrowUpTrayIcon,
-    ArrowDownTrayIcon,
-    AdminFileExport,
-    AdminFileImport,
+    SearchIcon,
   },
   data() {
     return {
-      sources: [],
-      showFormModal: false,
-      newSourceData: {},
+      themes: [],
+      newThemeData: null,
       searchQuery: "",
-      sections: {},
       currentPageNumber: 1,
       nrOfRecords: 20,
-      sortAscending: true,
+      showFormModal: false,
       sortKey: "",
+      sortAscending: true,
+      sections: {},
       loading: false,
       advanceSettings: false,
       checkedRows: [],
@@ -186,30 +191,30 @@ export default {
     };
   },
   computed: {
-    sortedSources() {
-      if (this.sortKey && this.sources) {
-        return this.sources.slice(0).sort((a, b) => {
+    sortedThemes() {
+      if (this.sortKey && this.themes) {
+        return this.themes.slice(0).sort((a, b) => {
           const textA = a[this.sortKey].toLowerCase();
           const textB = b[this.sortKey].toLowerCase();
           return sortAlphabetically(textA, textB, this.sortAscending);
         });
       }
 
-      return this.sources;
+      return this.themes;
     },
-    visibleSources() {
+    visibleThemes() {
       if (!this.searchQuery) {
-        return this.sortedSources;
+        return this.sortedThemes;
       }
 
-      return this.sortedSources.filter(
-        (source) => source.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
+      return this.sortedThemes.filter(
+        (theme) => theme.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
       );
     },
     paginatedData() {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
       const end = start + this.nrOfRecords;
-      return this.visibleSources.slice(start, end);
+      return this.visibleThemes.slice(start, end);
     },
     selectedRowsDisplayText() {
       const nrOfRows = this.checkedRows.length;
@@ -226,45 +231,31 @@ export default {
     },
   },
   created() {
-    this.getSources();
+    this.getThemes();
+
     this.sections = this.getSections();
   },
   methods: {
-    async getSources() {
+    async getThemes() {
       this.loading = true;
-      const result = await fetch("/atlas/api/v1/sources/", {
+
+      const result = await fetch("/atlas/api/v1/themes/", {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
 
       if (!result.ok) {
-        console.error("Could not fetch sources");
+        console.error("Could not fetch themes");
       }
 
-      this.sources = await result.json();
+      this.themes = await result.json();
+
       this.loading = false;
     },
-    async deleteSource(source) {
-      const acknowledged = confirm("Weet je zeker dat je de bron wilt verwijderen?");
-      if (!acknowledged) {
-        return;
-      }
+    async saveTheme(currentValues, continueEditing = false) {
+      const url = "/atlas/api/v1/themes/";
 
-      const result = await fetch(`/atlas/api/v1/sources/${source.id}/`, {
-        method: "DELETE",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-      });
-
-      if (result.ok) {
-        this.getSources();
-      }
-    },
-    async saveSource(currentValues, continueEditing = false) {
-      const url = "/atlas/api/v1/sources/";
+      currentValues.datasets = [];
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
@@ -274,30 +265,48 @@ export default {
 
           if (continueEditing) {
             const response = await result.json();
-            this.$router.push(`/sources/update/${response.id}`);
+            this.$router.push(`/themes/update/${response.id}`);
           }
 
-          await this.getSources();
+          await this.getThemes();
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);
       }
     },
+    async deleteTheme(theme) {
+      const acknowledged = confirm("Weet je zeker dat je dit thema wilt verwijderen?");
+      if (!acknowledged) {
+        return;
+      }
+
+      const result = await fetch(`/atlas/api/v1/themes/${theme.id}/`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+      });
+
+      if (result.ok) {
+        this.getThemes();
+      }
+    },
     openFormModal(modalType) {
-      if (modalType === "newSource") {
-        this.newSourceData = {
+      if (modalType === "newTheme") {
+        this.newThemeData = {
           title: "",
-          url: "",
           authenticate: false,
         };
       }
 
       if (modalType === "export") {
-        this.selectedItems = this.sources.filter((source) => this.checkedRows.includes(source.id));
+        this.selectedItems = this.themes.filter((theme) => this.checkedRows.includes(theme.id));
       }
 
-      this.showFormModal = true;
       this.modalType = modalType;
+      this.showFormModal = true;
     },
     closeFormModal() {
       this.showFormModal = false;
@@ -306,13 +315,21 @@ export default {
     toggleAdvance() {
       this.advanceSettings = !this.advanceSettings;
     },
+    sortColumn(prop) {
+      if (this.sortKey !== prop) {
+        this.sortKey = prop;
+        this.sortAscending = true;
+      } else {
+        this.sortAscending = !this.sortAscending;
+      }
+    },
     onCheckRow(id, checkAll = false) {
       if (id === null && checkAll) {
         this.allChecked = !this.allChecked;
 
         if (this.allChecked) {
-          this.sources.forEach((source) => {
-            this.checkedRows.push(source.id);
+          this.themes.forEach((theme) => {
+            this.checkedRows.push(theme.id);
           });
         } else {
           this.checkedRows = [];
@@ -329,39 +346,16 @@ export default {
 
       this.checkedRows.push(id);
     },
-    sortColumn(prop) {
-      if (this.sortKey !== prop) {
-        this.sortKey = prop;
-        this.sortAscending = true;
-      } else {
-        this.sortAscending = !this.sortAscending;
-      }
-    },
     getSections() {
       return {
         general: {
           label: "Algemene gegevens",
           questions: [
             {
-              label: "Titel",
+              label: "Naam",
               id: "title",
               name: "Title",
               type: "text",
-              required: true,
-            },
-            {
-              label: "Kort kenmerk",
-              id: "slug",
-              name: "Slug",
-              type: "text",
-              required: false,
-              infoText: "Een uniek kort kenmerk voor de bron in Atlas.",
-            },
-            {
-              label: "URL",
-              id: "url",
-              name: "Url",
-              type: "url",
               required: true,
             },
           ],
