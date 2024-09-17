@@ -355,7 +355,6 @@ export default {
               name: "Slug",
               type: "text",
               required: false,
-              maxLength: 50,
               infoText: "Een uniek kort kenmerk voor de bron in Atlas.",
             },
             {
