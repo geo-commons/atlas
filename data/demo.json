@@ -3,13 +3,13 @@
         "model": "user_management.atlasuser",
         "pk": 1,
         "fields": {
-            "password": "pbkdf2_sha256$720000$gMnVYdX3x7ovTHfLyuBPGT$HGI8mCVV4gH6VnvGsi/ecjxvzKAVVwcI1FVnNXRIPc0=",
-            "email": "admin@example.com",
-            "name": "Admin",
-            "is_superuser": true,
-            "is_staff": true,
-            "username": "admin@example.com",
-            "external_id": "CgVhZG1pbhIFbG9jYWw"
+          "password": "pbkdf2_sha256$720000$gMnVYdX3x7ovTHfLyuBPGT$HGI8mCVV4gH6VnvGsi/ecjxvzKAVVwcI1FVnNXRIPc0=",
+          "email": "admin@example.com",
+          "name": "Admin",
+          "is_superuser": true,
+          "is_staff": true,
+          "username": "CgVhZG1pbhIFbG9jYWw",
+          "external_id": "CgVhZG1pbhIFbG9jYWw"
         }
     },
     {
@@ -9376,42 +9376,48 @@
         "model": "webservice.theme",
         "pk": 1,
         "fields": {
-            "title": "Geografische Analyse"
+            "title": "Geografische Analyse",
+            "slug": "geografische-analyse"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 2,
         "fields": {
-            "title": "Landschap en Milieu"
+            "title": "Landschap en Milieu",
+            "slug": "landschap-en-milieu"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 3,
         "fields": {
-            "title": "Gezondheidskaarten"
+            "title": "Gezondheidskaarten",
+            "slug": "gezondheidskaarten"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 4,
         "fields": {
-            "title": "Milieu Impact"
+            "title": "Milieu Impact",
+            "slug": "milieu-impact"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 5,
         "fields": {
-            "title": "Technologie en Ruimte"
+            "title": "Technologie en Ruimte",
+            "slug": "technologie-en-ruimte"
         }
     },
     {
         "model": "webservice.theme",
         "pk": 6,
         "fields": {
-            "title": "Economische Gegevens"
+            "title": "Economische Gegevens",
+            "slug": "economische-gegevens"
         }
     },
     {
@@ -9419,14 +9425,14 @@
         "pk": 1,
         "fields": {
             "title": "Voorbeeld Geografische Dataset",
-            "slug": "voorbeeld-geografische-dataset",
             "description": "Dit is een voorbeeld geografische dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
             "source_description": "Deze dataset is afkomstig van een voorbeeldbron. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
             "organization": "Voorbeeld Organisatie",
             "contact": "Jan de Vries",
             "data_owner": "Pieter Jansen",
             "data_controller": "Anna Bakker",
-            "category": "Geografie",
+            "slug": "voorbeeld-geografische-dataset",
+            "dataset_category": 1,
             "last_updated": "2024-07-20T14:30:00Z",
             "update_frequency": "Wekelijks",
             "purpose_of_manufacture": "Onderzoek en Analyse",
@@ -9441,14 +9447,14 @@
         "pk": 2,
         "fields": {
             "title": "Gezondheidskaarten 2024",
-            "slug": "gezondheidskaarten-2024",
             "description": "Dit is een dataset met gezondheidsinformatie op geografische kaarten.",
             "source_description": "Data verzameld uit ziekenhuizen en klinieken.",
             "organization": "Gezondheidsorganisatie Nederland",
             "contact": "Maria van der Heijden",
             "data_owner": "Koen Smits",
             "data_controller": "Els de Boer",
-            "category": "Gezondheid",
+            "slug": "gezondheidskaarten-2024",
+            "dataset_category": 1,
             "last_updated": "2024-06-15T10:20:00Z",
             "update_frequency": "Maandelijks",
             "purpose_of_manufacture": "Medisch Onderzoek",
@@ -9462,14 +9468,14 @@
         "pk": 3,
         "fields": {
             "title": "Milieu Impact Analyse",
-            "slug": "milieu-impact-analyse",
             "description": "Dataset voor het analyseren van milieueffecten in Nederland op basis van geografische data.",
             "source_description": "Data afkomstig van milieubeschermingsorganisaties.",
             "organization": "Nederlandse Milieuraad",
             "contact": "Henk de Groot",
             "data_owner": "Linda van Leeuwen",
             "data_controller": "Mark Janssen",
-            "category": "Milieu",
+            "slug": "milieu-impact-analyse",
+            "dataset_category": 6,
             "last_updated": "2024-05-30T08:45:00Z",
             "update_frequency": "Jaarlijks",
             "purpose_of_manufacture": "Milieubeheer",
@@ -9483,14 +9489,14 @@
         "pk": 4,
         "fields": {
             "title": "Technologische Innovaties in de Ruimte",
-            "slug": "technologische-innovaties-in-de-ruimte",
             "description": "Dataset met informatie over technologische vooruitgang en innovaties in geografische context.",
             "source_description": "Verzameld door onderzoeksinstituten en technologiebedrijven.",
             "organization": "Innovatiecentrum Nederland",
             "contact": "Sander de Vries",
             "data_owner": "Eva de Jong",
             "data_controller": "Tom Visser",
-            "category": "Technologie",
+            "slug": "technologische-innovaties-in-de-ruimte",
+            "dataset_category": 7,
             "last_updated": "2024-07-01T12:00:00Z",
             "update_frequency": "Kwartaal",
             "purpose_of_manufacture": "Technologisch Onderzoek",
@@ -9504,14 +9510,14 @@
         "pk": 5,
         "fields": {
             "title": "Economische Geografische Statistieken",
-            "slug": "economische-geografische-statistieken",
             "description": "Dataset met economische gegevens en statistieken op geografische kaarten.",
             "source_description": "Verzameld door het Centraal Bureau voor de Statistiek.",
             "organization": "Centraal Bureau voor de Statistiek",
             "contact": "Willem van Dijk",
             "data_owner": "Rosa Dekker",
             "data_controller": "Jeroen de Wit",
-            "category": "Economie",
+            "slug": "economische-geografische-statistieken",
+            "dataset_category": 2,
             "last_updated": "2024-04-10T09:30:00Z",
             "update_frequency": "Halfjaarlijks",
             "purpose_of_manufacture": "Economisch Onderzoek",

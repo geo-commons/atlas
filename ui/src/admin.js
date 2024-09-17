@@ -27,6 +27,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
+import ThemeCreateUpdate from "@/admin/pages/ThemeCreateUpdate.vue";
+import ThemeList from "@/admin/pages/ThemeList.vue";
+import DatasetList from "@/admin/pages/DatasetList.vue";
+import DatasetCreateUpdate from "@/admin/pages/DatasetCreateUpdate.vue";
 import LogList from "@/admin/pages/LogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
 import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
@@ -170,6 +174,26 @@ const routes = [
     path: "/authorizations/update/:id",
     component: AuthorizationCreateUpdate,
     meta: { title: "Autorisaties", menu: true },
+  },
+  {
+    path: "/themes",
+    component: ThemeList,
+    meta: { title: "Thema's", menu: true },
+  },
+  {
+    path: "/themes/update/:id",
+    component: ThemeCreateUpdate,
+    meta: { title: "Thema's", menu: true },
+  },
+  {
+    path: "/datasets",
+    component: DatasetList,
+    meta: { title: "Datasets", menu: true },
+  },
+  {
+    path: "/datasets/update/:id",
+    component: DatasetCreateUpdate,
+    meta: { title: "Datasets", menu: true },
   },
   {
     path: "/:parentRoute/sort",

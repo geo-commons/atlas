@@ -93,6 +93,7 @@ class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['themes']
     search_fields = ['title']
+    serializer_class = DatasetSerializer
 
     def get_serializer_class(self):
         if self.action in ['partial_update', 'update', 'create']:
