@@ -20,6 +20,12 @@
         <router-link to="/groups" class="button __tertiary __large" type="button" aria-label="Naar groepen"
           ><GroupIcon class="icon" />Groepen</router-link
         >
+        <router-link to="/themes" class="button __tertiary __large" type="button" aria-label="Naar thema's"
+          ><BookIcon class="icon" />Thema's</router-link
+        >
+        <router-link to="/datasets" class="button __tertiary __large" type="button" aria-label="Naar datasets"
+          ><DatabaseIcon class="icon" />Datasets</router-link
+        >
         <router-link to="/tables" class="button __tertiary __large" type="button" aria-label="Naar tabellen"
           ><TableIcon class="icon" />Tabellen</router-link
         >
@@ -54,6 +60,8 @@ import UserIcon from "../../assets/icons/user-icon.svg";
 import GroupIcon from "../../assets/icons/group-icon.svg";
 import ViewIcon from "../../assets/icons/view-icon.svg";
 import TableIcon from "../../assets/icons/table-icon.svg";
+import BookIcon from "../../assets/icons/book-icon.svg";
+import DatabaseIcon from "../../assets/icons/database-icon.svg";
 import CogIcon from "@/assets/icons/cog-icon.svg";
 import LogIcon from "../../assets/icons/terminal-icon.svg";
 import ShieldIcon from "../../assets/icons/shield-icon.svg";
@@ -68,6 +76,8 @@ export default {
     CategoryIcon,
     UserIcon,
     GroupIcon,
+    BookIcon,
+    DatabaseIcon,
     ViewIcon,
     TableIcon,
     LogIcon,

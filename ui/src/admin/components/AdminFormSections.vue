@@ -194,6 +194,19 @@
                     :sources="options[question.sourceField] || []"
                   />
                 </vee-field>
+                <vee-field v-else-if="question.type === 'theme-select'" v-slot="{ field }" :name="question.id">
+                  <theme-field v-model="currentValues[question.id]" :field="field" />
+                </vee-field>
+                <vee-field
+                  v-else-if="question.type === 'date'"
+                  :id="question.id"
+                  :value="currentValues[question.id] ? formatDateValue(currentValues[question.id]) : ''"
+                  :name="question.id"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                  type="date"
+                  @input="(event) => (message = event.target.value)"
+                />
                 <vee-field
                   v-else
                   :id="question.id"
@@ -245,11 +258,13 @@ import CloseIcon from "@/assets/icons/close-icon.svg";
 import Cookies from "js-cookie";
 import LayerField from "@/admin/components/LayerField.vue";
 import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
+import ThemeField from "@/admin/components/ThemeField.vue";
 
 export default {
   name: "AdminFormSections",
   components: {
     ArrowDownTrayIcon,
+    ThemeField,
     LayerField,
     CloseIcon,
     AdminFormInfoText,

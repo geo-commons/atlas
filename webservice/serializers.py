@@ -238,7 +238,8 @@ class LayerSerializer(serializers.ModelSerializer):
             'templates',
             'atlas_groups',
             'published',
-            'templated_properties'
+            'templated_properties',
+            'dataset'
         ]
 
 
@@ -363,7 +364,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'atlas_groups',
             'published',
             'linked_data',
-            'templates'
+            'templates',
+            'dataset'
         ]
 
 
@@ -424,18 +426,15 @@ class BasicThemeSerializer(serializers.ModelSerializer):
 class DatasetSerializer(serializers.ModelSerializer):
     layers = LayerSerializer(many=True)
     themes = BasicThemeSerializer(many=True, read_only=True)
-    last_updated = serializers.SerializerMethodField()
-
-    def get_last_updated(self, obj):
-        if obj.last_updated:
-            return obj.last_updated.date().strftime('%Y-%m-%d')
-        return None
+    dataset_category = CategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = Dataset
-        fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description',
+        fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture',
+                  'description',
                   'title', 'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers',
                   'themes', 'slug', 'thumbnail']
+
 
 class DatasetPatchOrCreateSerializer(serializers.ModelSerializer):
     themes = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), many=True)
@@ -444,22 +443,17 @@ class DatasetPatchOrCreateSerializer(serializers.ModelSerializer):
         model = Dataset
         fields = ['organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description', 'title',
                   'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'themes', 'id', 'slug']
-        read_only_fields = ['slug', 'id']
+        read_only_fields = ['id']
 
 
 class BasicDatasetSerializer(serializers.ModelSerializer):
     layers = LayerSerializer(many=True)
-    last_updated = serializers.SerializerMethodField()
-
-    def get_last_updated(self, obj):
-        if obj.last_updated:
-            return obj.last_updated.date().strftime('%Y-%m-%d')
-        return None
 
     class Meta:
         model = Dataset
         fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description', 'title',
                    'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers', 'slug']
+
 
 class ThemeSerializer(serializers.ModelSerializer):
     datasets = BasicDatasetSerializer(many=True, read_only=True)
@@ -472,6 +466,11 @@ class ThemeSerializer(serializers.ModelSerializer):
 class ThemePatchOrCreateSerializer(serializers.ModelSerializer):
     datasets = serializers.PrimaryKeyRelatedField(queryset=Dataset.objects.all(), many=True)
 
+    class Meta:
+        model = Theme
+        fields = ['title', 'datasets', 'id', 'slug']
+        read_only_fields = ['slug', 'id']
+
     def update(self, instance, validated_data):
         if 'title' in validated_data and validated_data['title'] != instance.title:
             instance.slug = slugify(validated_data['title'])
@@ -482,10 +481,6 @@ class ThemePatchOrCreateSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
-    class Meta:
-        model = Theme
-        fields = ['title', 'datasets']
 
 
 class ViewerSerializer(serializers.ModelSerializer):

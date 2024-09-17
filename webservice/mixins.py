@@ -9,8 +9,8 @@ from authz.models import Authorization
 from authz.resources import AuthorizationResource
 from tables.models import Table
 from tables.resources import TableResource
-from webservice.models import Category, Layer, Map, Source, Theme, Viewer
-from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ThemeResource, ViewerResource
+from webservice.models import Category, Layer, Map, Source, Theme, Viewer, Dataset as Datasets
+from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ThemeResource, ViewerResource, DatasetResource
 from .serializers import DataExportSettingsSerializer
 
 
@@ -21,6 +21,7 @@ class DataExportImportMixin:
         Map: MapResource,
         Category: CategoryResource,
         Theme: ThemeResource,
+        Datasets: DatasetResource,
         Viewer: ViewerResource,
         Table: TableResource,
         Authorization: AuthorizationResource
@@ -33,7 +34,6 @@ class DataExportImportMixin:
 
     @action(methods=['post'], url_path='export', detail=False, permission_classes=[permissions.IsAdminUser])
     def data_export(self, request):
-
         serializer = DataExportSettingsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

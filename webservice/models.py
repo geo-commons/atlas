@@ -4,13 +4,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from django.db.models import Q
 from django_extensions.db.fields import AutoSlugField
 import uuid
 
 from user_management.models import AtlasGroup
-from utils.tools import is_internal, generate_unique_slug
+from utils.tools import is_internal
 
 
 class LayerManager(models.Manager):
@@ -96,61 +97,56 @@ class Source(models.Model):
 
 class Theme(models.Model):
     title = models.CharField('Naam', max_length=128, null=False)
-    slug = models.SlugField('Kort kenmerk', null=True, unique=True,
-                            help_text='Een uniek kort kenmerk voor het Thema in Atlas', editable=True)
+    slug = models.SlugField('Kort kenmerk', null=False, unique=True, help_text='Een uniek kort kenmerk voor het Thema in Atlas', editable=True)
+
+    class Meta:
+        verbose_name = 'Theme'
+        verbose_name_plural = 'Themes'
+        ordering = ['title']
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = generate_unique_slug(self, self.title)
-
+            self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
 
 class Dataset(models.Model):
-    title = models.CharField('Naam', max_length=128,
-                             help_text="De naam van de dataset")
-    slug = models.SlugField('Kort kenmerk', null=True, unique=True,
-                            help_text='Een uniek kort kenmerk voor de Dataset in Atlas', editable=True)
-    description = models.TextField(
-        'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
-    source_description = models.TextField(
-        'Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
-    organization = models.CharField(
-        'Organisatie', max_length=128, null=True, blank=True)
-    contact = models.CharField(
-        'Contactpersoon', max_length=128, null=True, blank=True)
-    data_owner = models.CharField(
-        'Eigenaar van de data', max_length=128, null=True, blank=True)
-    data_controller = models.CharField(
-        'Data beheerder', max_length=128, null=True, blank=True)
-    category = models.CharField(
-        'Categorie', max_length=128, null=True, blank=True)
-    last_updated = models.DateTimeField(
-        'Laatste update', null=True, blank=True)
-    update_frequency = models.CharField(
-        'Update hoeveelheid', max_length=128, null=True, blank=True)
-    purpose_of_manufacture = models.CharField(
-        'Doel van de vervaardiging', max_length=128, null=True, blank=True)
+    title = models.CharField('Naam', max_length=128, help_text="De naam van de dataset")
+    slug = models.SlugField('Kort kenmerk', null=False, unique=True, help_text='Een uniek kort kenmerk voor de Dataset in Atlas', editable=True)
+    description = models.TextField('Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    source_description = models.TextField('Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    organization = models.CharField('Organisatie', max_length=128, null=True, blank=True)
+    contact = models.CharField('Contactpersoon', max_length=128, null=True, blank=True)
+    data_owner = models.CharField('Eigenaar van de data', max_length=128, null=True, blank=True)
+    data_controller = models.CharField('Data beheerder', max_length=128, null=True, blank=True)
+    last_updated = models.DateTimeField('Laatste update', null=True, blank=True)
+    update_frequency = models.CharField('Update hoeveelheid', max_length=128, null=True, blank=True)
+    purpose_of_manufacture = models.CharField('Doel van de vervaardiging', max_length=128, null=True, blank=True)
     themes = models.ManyToManyField(Theme, related_name='datasets')
     dataset_category = models.ForeignKey(
-        Category, verbose_name='Categorie', on_delete=models.SET_NULL, blank=True, null=True)
+        Category, verbose_name='Categorie', on_delete=models.SET_NULL,
+        blank=True, null=True)
     thumbnail = models.ImageField(
-        upload_to='thumbnails/', 
-        blank=True, 
+        upload_to='thumbnails/',
+        blank=True,
         null=True,
         help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
     )
+
+    class Meta:
+        verbose_name = 'Dataset'
+        verbose_name_plural = 'Datasets'
+        ordering = ['title']
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = generate_unique_slug(self, self.title)
-
+            self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
 
@@ -312,8 +308,7 @@ class Layer(models.Model):
     zoom_max = models.IntegerField(
         'Zoomniveau maximum', blank=True, default=None, null=True)
 
-    dataset = models.ForeignKey(
-        Dataset, on_delete=models.SET_NULL, null=True, related_name="layers")
+    dataset = models.ForeignKey(Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
 
     def __str__(self):
         return self.title
@@ -646,17 +641,17 @@ class Map(models.Model):
 
     login_required = models.BooleanField(
         'Vereis inlog voor deze kaart', default=False, help_text='De inhoud van deze kaart kan alleen bekeken worden door ingelogde gebruikers.')
-    
+
     thumbnail = models.ImageField(
-        upload_to='thumbnails/', 
-        blank=True, 
+        upload_to='thumbnails/',
+        blank=True,
         null=True,
         help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
     )
 
     description = models.TextField(
         'Beschrijving van de kaart', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
-    
+
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'
 

@@ -41,6 +41,10 @@ export default {
           return "categories";
         case "kaarten":
           return "maps";
+        case "themes":
+          return "themes";
+        case "datasets":
+          return "datasets";
         case "tables":
           return "tables";
         case "viewers":

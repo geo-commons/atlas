@@ -4,7 +4,7 @@ from import_export.admin import ImportExportActionModelAdmin
 from import_export.formats import base_formats
 from .forms import LayerForm, LinkedDataForm
 from .models import Source, Category, Layer, Template, Selection, Map, MapLayer, LinkedData, Viewer, Dataset, Theme
-from .resources import CategoryResource, LayerResource, SourceResource, SelectionResource, MapResource, ThemeResource
+from .resources import CategoryResource, LayerResource, SourceResource, SelectionResource, MapResource, ThemeResource, DatasetResource
 
 
 class LinkedDataInline(admin.TabularInline):
@@ -179,16 +179,18 @@ class ViewerAdmin(VersionAdmin, admin.ModelAdmin):
 
 
 class DatasetAdmin(VersionAdmin, admin.ModelAdmin):
-    list_display = ('title',)
+    list_display = ('title', )
     list_display_links = ('title',)
-    prepopulated_fields = {'slug': ('title', )}
 
-    resource_classes = [ThemeResource]
+    resource_classes = [DatasetResource]
+    prepopulated_fields = {'slug': ('title', )}
 
 
 class ThemeAdmin(VersionAdmin, admin.ModelAdmin):
     list_display = ('title',)
     list_display_links = ('title',)
+
+    resource_classes = [ThemeResource]
     prepopulated_fields = {'slug': ('title', )}
 
 
