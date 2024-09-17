@@ -237,5 +237,10 @@ export default {
 .search-address {
   width: 100%;
   padding-left: 16px;
+  text-overflow: ellipsis;
+}
+
+::-webkit-search-cancel-button {
+  display: none;
 }
 </style>
