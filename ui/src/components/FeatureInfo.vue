@@ -2,10 +2,10 @@
   <ExpandButton v-if="features.length > 0 || html" :title="featureInfoTitle" :is-open="isOpen" class="feature">
     <div v-if="html" class="html" v-html="html" />
     <div v-for="feature in features" :key="feature.id" class="border-bottom">
-      <div class="feature-select" @click="() => $emit('show-selected-feature', feature)">
+      <div class="feature-select">
         <table-list>
           <table>
-            <tbody>
+            <tbody tabindex="0" @click="onSelectFeature(feature)" @keydown.enter.prevent="onSelectFeature(feature)">
               <tr v-for="property in filterProperties(feature.properties)" :key="property">
                 <td>{{ formatProperty(property) }}</td>
                 <td>
@@ -205,6 +205,13 @@ export default {
     },
     onFit(value) {
       this.$emit("on-fit", value);
+    },
+    onSelectFeature(feature) {
+      const selection = window.getSelection().toString();
+      if (!selection) {
+        // Only emit the event if no text is selected
+        this.$emit("show-selected-feature", feature);
+      }
     },
     onSelectFeatureDetails(selectedFeature) {
       this.$emit("select-feature-details", selectedFeature);
