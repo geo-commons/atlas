@@ -5,20 +5,15 @@
       <slot v-else-if="items.length > 0"></slot>
     </div>
 
-    <div v-if="items" class="pagination-wrapper">
+    <div v-if="items" class="flex flex-row justify-between items-center py-5">
       <div class="nr-pages-wrapper">
-        <multiselect
-          id="selected_columns"
-          v-model="internalNrOfRecords"
-          :class="styleType"
+        <Select
+          :model-value="internalNrOfRecords"
           :placeholder="'Kies aantal'"
           :options="nrRecordsOptions"
-          :show-labels="false"
-          :allow-empty="false"
-          :searchable="false"
           @update:modelValue="(value) => updateNrOfRecords(value)"
         />
-        <label>Aantal rijen per pagina</label>
+        <label class="text-md">Aantal rijen per pagina</label>
       </div>
 
       <ul v-if="pages.length > 1" class="pagination">
@@ -81,7 +76,7 @@
         </li>
       </ul>
 
-      <span>Totaal aantal resultaten: {{ items.length }}</span>
+      <span class="text-md">Totaal aantal resultaten: {{ items.length }}</span>
     </div>
   </div>
 </template>
@@ -170,6 +165,7 @@ export default {
       }
     },
     updateNrOfRecords(value) {
+      this.internalNrOfRecords = value;
       this.resetPagination();
       this.$emit("records-change", value);
     },

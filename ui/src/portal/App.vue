@@ -17,6 +17,9 @@ export default {
     PortalBreadcrumb,
     PortalHeader,
   },
+  compatConfig: {
+    MODE: 3,
+  },
   data() {
     return {
       computedStyle: { "--color-primary-organization": "#000000" },

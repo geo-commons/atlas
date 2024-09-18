@@ -4,6 +4,7 @@ import "es6-promise/auto";
 import "whatwg-fetch";
 
 import { createApp } from "vue";
+import PrimeVue from "primevue/config";
 import VueTippy from "vue-tippy";
 import { getSettingsFromPath } from "./utils/router";
 import App from "./admin/App";
@@ -41,6 +42,7 @@ import AuthorizationList from "@/admin/pages/AuthorizationList.vue";
 import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.vue";
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
+import { AtlasPreset } from "@/utils/theme-preset";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -249,6 +251,17 @@ document.addEventListener("DOMContentLoaded", () => {
   new detectKeyboard();
 
   const app = createApp(App)
+    .use(PrimeVue, {
+      theme: {
+        preset: AtlasPreset,
+        options: {
+          cssLayer: {
+            name: "primevue",
+            order: "tailwind-base, primevue, tailwind-utilities",
+          },
+        },
+      },
+    })
     .use(pinia)
     .use(router)
     .use(VueTippy, {

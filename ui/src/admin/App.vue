@@ -86,11 +86,11 @@ select.__admin {
   flex-direction: column;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="date"],
-input[type="url"] {
+input[type="text"]:not(.p-inputtext),
+input[type="number"]:not(.p-inputtext),
+input[type="email"]:not(.p-inputtext),
+input[type="date"]:not(.p-inputtext),
+input[type="url"]:not(.p-inputtext) {
   width: 100%;
   border: 1px solid var(--color-grey-60);
   border-radius: var(--radius-normal);

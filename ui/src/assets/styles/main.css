@@ -1,5 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
 
+@layer tailwind-base, primevue, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
 :root {
   --color-primary: #0066ff;
   --color-admin-primary: #424bff;
@@ -131,10 +142,11 @@ html.keyboard-user *:focus {
   }
 }
 
-input,
-button {
+input:not(.p-inputtext),
+button:not(.p-button) {
   margin: 0;
   padding: 0;
+  background-color: red;
   border: none;
   color: inherit;
   background: var(--color-white);
@@ -604,4 +616,11 @@ hr {
 .form-error {
   color: var(--color-alert);
   font-weight: var(--font-weight-bold);
+}
+
+/* admin tailwind styling */
+.__admin {
+  h1 {
+    @apply text-[28px] font-medium;
+  }
 }
