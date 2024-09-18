@@ -1,10 +1,20 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import svgLoader from "vite-svg-loader";
-const path = require("path");
+import path from "path";
 
 export default defineConfig({
-  plugins: [vue(), svgLoader({ defaultImport: "component" })],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2
+          }
+        }
+      }
+    }),
+    svgLoader({ defaultImport: "component" })],
   base: "/atlas/static/",
   build: {
     outDir: path.resolve(__dirname, "../static/atlas"),
@@ -21,6 +31,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "vue": "@vue/compat",
       "@": path.resolve(__dirname, "./src"),
     },
     extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],

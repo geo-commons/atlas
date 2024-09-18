@@ -7,6 +7,10 @@
 </template>
 
 <script>
+import defaultMapsThumbnail from "@/assets/images/default_map_thumbnal.png";
+import defaultTableThumbnail from "../../assets/images/default_table_thumbnail.png";
+import defaultDatasetThumbnail from "../../assets/images/default_dataset_thumbnail.png";
+
 export default {
   name: "PortalCard",
   props: {
@@ -20,23 +24,16 @@ export default {
       type: Boolean,
     },
   },
-  data() {
-    return {
-      defaultMapsThumbnail: require("@/assets/images/default_map_thumbnal.png"),
-      defaultTableThumbnail: require("../../assets/images/default_table_thumbnail.png"),
-      defaultDatasetThumbnail: require("../../assets/images/default_dataset_thumbnail.png"),
-    };
-  },
   computed: {
     getImageUrl() {
       if (!this.thumbnail) {
         switch (this.objectType) {
           case "map":
-            return this.defaultMapsThumbnail;
+            return defaultMapsThumbnail;
           case "table":
-            return this.defaultTableThumbnail;
+            return defaultTableThumbnail;
           case "dataset":
-            return this.defaultDatasetThumbnail;
+            return defaultDatasetThumbnail;
         }
       }
       return this.thumbnail;

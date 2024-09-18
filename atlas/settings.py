@@ -331,10 +331,11 @@ CONSTANCE_CONFIG_FIELDSETS = {
 }
 
 DJANGO_VITE_DEV_MODE = True
+DJANGO_VITE_DEV_SERVER_PORT = os.getenv('DJANGO_VITE_DEV_SERVER_PORT', '4173')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Add the build.outDir from vite.config.js to STATICFILES_DIRS
+# Add the build.outDir from vite.config.mjs to STATICFILES_DIRS
 # so that collectstatic can collect your compiled vite assets.
 STATICFILES_DIRS = [
     BASE_DIR / "homepage/static/dist"
