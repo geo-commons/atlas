@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import defaultMapsThumbnail from "@/assets/images/default_map_thumbnal.png";
-import defaultTableThumbnail from "../../assets/images/default_table_thumbnail.png";
-import defaultDatasetThumbnail from "../../assets/images/default_dataset_thumbnail.png";
+import defaultMapsThumbnail from "@/assets/images/default_map_thumbnail.png";
+import defaultTableThumbnail from "@/assets/images/default_table_thumbnail.png";
+import defaultDatasetThumbnail from "@/assets/images/default_dataset_thumbnail.png";
 
 export default {
   name: "PortalCard",

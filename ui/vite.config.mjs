@@ -14,11 +14,13 @@ export default defineConfig({
         }
       }
     }),
-    svgLoader({ defaultImport: "component" })],
+    svgLoader({ defaultImport: "component" })
+  ],
   base: "/atlas/static/",
   build: {
     outDir: path.resolve(__dirname, "../static/atlas"),
     manifest: true,
+    assetsInlineLimit: 0,
     rollupOptions: {
       input: {
         app: path.resolve(__dirname, "src/app.js"),
@@ -35,5 +37,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
     extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],
+  },
+  server: {
+    origin: 'http://localhost:5173',
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+    },
   },
 });
