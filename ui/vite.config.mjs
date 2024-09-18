@@ -18,8 +18,8 @@ export default defineConfig({
   ],
   base: "/atlas/static/",
   build: {
-    outDir: path.resolve(__dirname, "../static/atlas"),
-    manifest: true,
+    outDir: path.resolve(__dirname, "../homepage/static/dist"),
+    manifest: "manifest.json",
     assetsInlineLimit: 0,
     rollupOptions: {
       input: {

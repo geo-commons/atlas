@@ -330,8 +330,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     )
 }
 
-DJANGO_VITE_DEV_MODE = True
-DJANGO_VITE_DEV_SERVER_PORT = os.getenv('DJANGO_VITE_DEV_SERVER_PORT', '4173')
+DJANGO_VITE_DEV_MODE = os.getenv("ATLAS_ENVIRONMENT") != "production"
+DJANGO_VITE_MANIFEST_PATH = os.path.join(BASE_DIR, 'homepage/static/dist/manifest.json')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
