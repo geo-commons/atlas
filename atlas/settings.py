@@ -116,6 +116,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'utils.middleware.check_access_admin',
+    'utils.middleware.disable_admin1',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -304,6 +305,7 @@ CONSTANCE_CONFIG = {
     'FEATURE_PORTAL': (False, ('Portaalfunctionaliteit')),
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
     'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
+    'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
     'ORGANIZATION_IMAGE': ('','Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
     'ORGANIZATION_PRIMARY_COLOR': ('#000000', 'Primaire kleur van de organisatie.\n Note: voor nu alleen beschikbaar in HEX'),
     'ORGANIZATION_INTRODUCTION': ('', 'Introductie tekst die wordt laten zien bovenaan de pagina'),
@@ -330,7 +332,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     '4. Features': (
         'FEATURE_PORTAL',
         'FEATURE_PRINT',
-        'FEATURE_DRAW'
+        'FEATURE_DRAW',
+        'FEATURE_DISABLE_ADMIN1'
     ),
     '5. Portaal configuratie': (
         'ORGANIZATION_IMAGE',

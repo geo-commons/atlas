@@ -12,7 +12,7 @@ urlpatterns = [
     path('login/failure', views.v3_login_failure, name='v3_login_failure'),
     path('logout', auth_views.LogoutView.as_view(
         template_name='v3/logout.html'), name='v3_logout'),
-    path('admin2/', views.v3_admin, name='v3_admin'),
+    path('admin/', views.v3_admin, name='v3_admin'),
     path('api/v1/token', webservice_views.v3_token, name='v3_token'),
     path('api/v1/', include(urls.api_router.urls)),
     path('convert/<str:output_format>',

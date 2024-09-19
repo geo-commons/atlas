@@ -213,7 +213,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory("/atlas/admin2/#"),
+  history: createWebHistory("/atlas/admin/#"),
   routes: routes,
 });
 

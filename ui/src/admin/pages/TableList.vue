@@ -84,16 +84,16 @@
                   </router-link>
                 </td>
                 <td class="btn-col">
-                  <button
+                  <router-link
                     v-tippy="{ placement: 'bottom' }"
                     class="iconbutton __normal __round __admin_hover"
                     aria-label="Wijzig tabel"
                     content="Wijzig"
                     type="button"
-                    @click="gotoTable(table)"
+                    :to="`/tables/update/${table.id}`"
                   >
                     <EditIcon class="icon" />
-                  </button>
+                  </router-link>
                 </td>
                 <td class="btn-col">
                   <button
@@ -253,9 +253,6 @@ export default {
 
       this.tables = await result.json();
       this.loading = false;
-    },
-    gotoTable(table) {
-      window.location.href = `/atlas/admin2/#/tables/update/${table.id}`;
     },
     async getSources() {
       const result = await fetch("/atlas/api/v1/sources/", {

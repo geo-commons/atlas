@@ -198,6 +198,12 @@ export default {
               name: "featureDraw",
               type: "checkbox",
             },
+            {
+              label: "Zet oude beheerpaneel uit",
+              id: "FEATURE_DISABLE_ADMIN1",
+              name: "featureDisableAdmin1",
+              type: "checkbox",
+            },
           ],
         },
       };

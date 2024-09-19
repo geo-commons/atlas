@@ -24,7 +24,7 @@ admin.site.site_title = 'Atlas beheer'
 admin.site.site_url = '/atlas/'
 
 urlpatterns = [
-    path('atlas/admin/', admin.site.urls),
+    path('atlas/admin1/', admin.site.urls),
 ]
 
 if settings.AUTHENTICATION_ENABLE_CREDENTIALS:
