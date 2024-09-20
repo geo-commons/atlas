@@ -1,6 +1,6 @@
 from datetime import timedelta
 import os
-import sys
+from pathlib import Path
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -90,7 +90,6 @@ INSTALLED_APPS = [
     'portal',
     'user_management',
     'authz',
-    'webpack_loader',
     'atlas.apps.CustomConstance',
     'constance.backends.database',
     'mozilla_django_oidc',
@@ -106,6 +105,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_vite'
 ]
 
 MIDDLEWARE = [
@@ -249,16 +249,6 @@ FILE_UPLOAD_PERMISSIONS = None
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-STATS_FILE = os.path.join(BASE_DIR, 'ui', 'webpack-stats.json')
-if 'test' in sys.argv:
-    STATS_FILE = os.path.join(BASE_DIR, 'ui', 'webpack-stats-test.json')
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'STATS_FILE': STATS_FILE,
-    }
-}
-
 LOGIN_URL = '/atlas/login'
 LOGIN_REDIRECT_URL = '/atlas/'
 LOGOUT_REDIRECT_URL = '/atlas/'
@@ -341,3 +331,14 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'ORGANIZATION_INTRODUCTION',
     )
 }
+
+DJANGO_VITE_DEV_MODE = os.getenv("ATLAS_ENVIRONMENT") != "production"
+DJANGO_VITE_MANIFEST_PATH = os.path.join(BASE_DIR, 'homepage/static/dist/manifest.json')
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Add the build.outDir from vite.config.mjs to STATICFILES_DIRS
+# so that collectstatic can collect your compiled vite assets.
+STATICFILES_DIRS = [
+    BASE_DIR / "homepage/static/dist"
+]
