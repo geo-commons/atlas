@@ -95,7 +95,7 @@ npm install
 And start a watch server:
 
 ```bash
-npm run serve
+npm run dev
 ```
 
 Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).

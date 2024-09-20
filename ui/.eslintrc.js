@@ -1,6 +1,7 @@
 module.exports = {
   env: {
     node: true,
+    es2022: true,
   },
   // Note: make sure prettier is the last file in the extends array,
   // as the order of the configs determine duplicate rules in different configs are handled.
