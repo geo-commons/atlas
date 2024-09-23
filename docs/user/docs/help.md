@@ -146,7 +146,7 @@ Met de meetknop kunnen afstanden en oppervlaktes in de kaart gemeten worden. Kie
 
 ##Tekenen
 
-<img src="../images/tekenfunctie.png" alt="tekensymbool" title="het tekensymbool" width="400" /> Na [inloggen](./help.md#inloggen-binnen-atlas-intern-en-extern) binnen Atlas is, afhankelijk van de configuratie, de tekenfunctie zichtbaar in het extra-instellingen menu.
+<img src="../images/tekenfunctie.png" alt="tekenfunctie" title="het tekensymbool" width="400" /> Na [inloggen](./help.md#inloggen-binnen-atlas-intern-en-extern) binnen Atlas is, afhankelijk van de configuratie, de tekenfunctie zichtbaar in het extra-instellingen menu.
 Met de tekenfunctie kunnen punten, lijnen en polygonen getekend worden.
 Daarnaast is het mogelijk met tekst labels te plaatsen.
 De tekenfunctie is bedoeld om "notities" in een kaartlaag te maken ter verduidelijking.
