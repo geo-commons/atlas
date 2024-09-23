@@ -4,11 +4,11 @@ Functies binnen Atlas
 ##Keuze van de zichtbare kaartlagen
 
 ![image4](images/image4.png)
-<img src="../images/kaartlagenmenu.png" alt="kaartlagenmenu" title="kaartlagenmenu" width="200" /> 
+<img src="../images/kaartlagenmenu.png" alt="kaartlagenmenu" title="kaartlagenmenu" width="200" />
 
 Met deze knop wordt het menu geopend waarin de kaartlagen geselecteerd kunnen worden. Klik op één van de categorieën om de onderliggende kaartlagen te tonen.
 
-<img src="../images/keuzevandezichtbarekaartlagen.png" alt="Keuze van de zichtbare kaartlagen" title="Keuze van de zichtbare kaartlagen" width="200" /> 
+<img src="../images/keuzevandezichtbarekaartlagen.png" alt="Keuze van de zichtbare kaartlagen" title="Keuze van de zichtbare kaartlagen" width="200" />
 
 Selecteer een kaartlaag door er op te klikken. Achter de categorie staat nu het aantal kaartlagen dat geopend is. Dit kan handig zijn wanneer vanuit meerdere categorieën kaartlagen geopend zijn.
 
@@ -17,25 +17,25 @@ Selecteer een kaartlaag door er op te klikken. Achter de categorie staat nu het 
 ##Legenda
 ![icoonzichtbarelagen](images/icoonzichtbarelagen.png)
 
-Wanneer 1 of meer lagen geselecteerd zijn, wordt het sybool Zichtbare lagen weergegeven. Klik hierop om de legenda van de actieve kaartlaag te tonen.  
+Wanneer 1 of meer lagen geselecteerd zijn, wordt het sybool Zichtbare lagen weergegeven. Klik hierop om de legenda van de actieve kaartlaag te tonen.
 
-<img src="../images/legenda.png" alt="Legenda" title="Legenda" width="300" />  
+<img src="../images/legenda.png" alt="Legenda" title="Legenda" width="300" /> 
 
-Klik op het [Transparantie symbool](./help.md#zichtbaarheid-transparantieopacity) Transparantie symbool om de transparantie van de kaartlaag in te stellen. Dit kan handig zijn wanneer meerdere kaartlagen geopend zijn en de zichtbaarheid van onderliggende kaartlagen groter moet zijn.  
-Klik op het [ⓘ symbool om metadata](./help.md#toon-metadata-van-een-kaartlaag) over de kaartlaag te bekijken.  
-Klik op het kruisje om een kaartlaag te sluiten.  
+Klik op het [Transparantie symbool](./help.md#zichtbaarheid-transparantieopacity) Transparantie symbool om de transparantie van de kaartlaag in te stellen. Dit kan handig zijn wanneer meerdere kaartlagen geopend zijn en de zichtbaarheid van onderliggende kaartlagen groter moet zijn.
+Klik op het [ⓘ symbool om metadata](./help.md#toon-metadata-van-een-kaartlaag) over de kaartlaag te bekijken. 
+Klik op het kruisje om een kaartlaag te sluiten. 
 
 ##Toon metadata van een kaartlaag
 
-Metadata geeft informatie over de data. Bijvoorbeeld wanneer deze voor het laatst is bijgewerkt, wie verantwoordelijk is voor de juiste gegevens en wat het doel van de kaartlaag is. 
-De metadata wordt zichtbaar wanneer je op het ⓘ symbool klikt. Dit symbool is zichtbaar als je met de muis, in het kaartlagenmenu, over de kaartlagen gaat of wanneer je op dit symbool klikt vanuit de [legenda](./help.md#legenda).  
+Metadata geeft informatie over de data. Bijvoorbeeld wanneer deze voor het laatst is bijgewerkt, wie verantwoordelijk is voor de juiste gegevens en wat het doel van de kaartlaag is.
+De metadata wordt zichtbaar wanneer je op het ⓘ symbool klikt. Dit symbool is zichtbaar als je met de muis, in het kaartlagenmenu, over de kaartlagen gaat of wanneer je op dit symbool klikt vanuit de [legenda](./help.md#legenda).
 
-![metadata](images/toon-metadata.png)  
-  
+![metadata](images/toon-metadata.png) 
+
 Wanneer uitgebreide metadata beschikbaar is voor een kaartlaag dan wordt ook de link Meer informatie getoond. Via deze link wordt een extra pagina met informatie over de kaartlaag getoond.
- 
-<img src="../images/meerinformatie.png" alt="Meer informatie" title="Meer informatie" width="300" />  
-<img src="../images/meerinformatie2.png" alt="Metadata, meer informatie" title="Metadata, meer informatie" width="400" /> 
+
+<img src="../images/meerinformatie.png" alt="Meer informatie" title="Meer informatie" width="300" /> 
+<img src="../images/meerinformatie2.png" alt="Metadata, meer informatie" title="Metadata, meer informatie" width="400" />
 
 ##Zoek op kaartlaag
 
@@ -86,9 +86,9 @@ Met de Toon details knop kan het detail paneel ingeklapt en uitgeklapt worden.
 
 ##Gekoppelde gegevens bekijken
 
-Aan sommige objecten in de kaart kunnen meer gegevens hangen dan alleen de directe objectgegevens. Dit geldt bijvoorbeeld voor de kadastrale percelen. Het vlak in de kaart heeft een kadastraal nummer.  
+Aan sommige objecten in de kaart kunnen meer gegevens hangen dan alleen de directe objectgegevens. Dit geldt bijvoorbeeld voor de kadastrale percelen. Het vlak in de kaart heeft een kadastraal nummer.
 In gekoppelde tabellen zijn deelpercelen, adressen en eigenaren (rechthebbenden) terug te vinden. Soms zijn dit meerdere per gekoppelde tabel. Zo kunnen zogeheten 1:n relaties bevraagd worden. (Bijvoorbeeld: 1 perceel met 2 eigenaren).
-Als de beheerder gekoppelde tabellen heeft geconfigureerd, zijn bij het opvragen van de details van een object, de gekoppelde gegevens ook in het detailpaneel terug te vinden.  
+Als de beheerder gekoppelde tabellen heeft geconfigureerd, zijn bij het opvragen van de details van een object, de gekoppelde gegevens ook in het detailpaneel terug te vinden.
 Voor het bekijken van gekoppelde gegevens kunnen extra gebruikersrechten nodig zijn.
 
 <img src="../images/gekoppeldegegevens.png" alt="Gekoppelde gegevens bekijken" title="Gekoppelde gegevens bekijken" width="300" />
@@ -118,18 +118,18 @@ Als je adressen in een vlak wilt selecteren zet dan de laag BAG Adressen (onder 
 
 ##Rondkijkfoto
 
-Atlas heeft de mogelijkheid om meerdere externe viewers te configureren. Een voorbeeld van een externe viewer is Google Street View. 
-Wanneer een externe viewer is geconfigureerd, wordt bij het aanklikken van een locatie in het kaartscherm rechtsonder in beeld de panoramaknop getoond. 
+Atlas heeft de mogelijkheid om meerdere externe viewers te configureren. Een voorbeeld van een externe viewer is Google Street View.
+Wanneer een externe viewer is geconfigureerd, wordt bij het aanklikken van een locatie in het kaartscherm rechtsonder in beeld de panoramaknop getoond.
 
 ![rondkijkfoto](images/rondkijkfoto.png)
 
-Met de panoramaknop wordt de externe viewer geopend. Rechtsboven in beeld is te zien welke externe viewer actief is. 
+Met de panoramaknop wordt de externe viewer geopend. Rechtsboven in beeld is te zien welke externe viewer actief is.
 Wanneer meerdere externe viewers zijn geconfigureerd kan hier gekozen worden voor een andere externe viewer.
 
 <img src="../images/externe_viewer.png" alt="Externe viewer selecteren" title="Externe viewer selecteren" width="200" />
 
-Gemeente Purmerend heeft binnen de interne organisatie de beschikking over de obliek en panoramabeelden van 
-<a href="https://kavel10.nl/" target="_blank" rel="noopener noreferrer">Kavel-10</a> en 
+Gemeente Purmerend heeft binnen de interne organisatie de beschikking over de obliek en panoramabeelden van
+<a href="https://kavel10.nl/" target="_blank" rel="noopener noreferrer">Kavel-10</a> en
 <a href="https://www.cyclomedia.com/nl/" target="_blank" rel="noopener noreferrer">Cyclomedia</a> en Street View van Google. Extern wordt alleen Google Streetview getoond.
 
 ![panorama-groot-sluit](images/panorama-groot-sluit.png)
@@ -146,24 +146,25 @@ Met de meetknop kunnen afstanden en oppervlaktes in de kaart gemeten worden. Kie
 
 ##Tekenen
 
-<img src="../images/tekenknop.png" alt="tekensymbool" title="het tekensymbool" width="50" /> Met de tekenfunctie kunnen punten, lijnen en polygonen getekend worden. 
+<img src="../images/tekenfunctie.png" alt="tekensymbool" title="het tekensymbool" width="400" /> Na [inloggen](./help.md#inloggen-binnen-atlas-intern-en-extern) binnen Atlas is, afhankelijk van de configuratie, de tekenfunctie zichtbaar in het extra-instellingen menu.
+Met de tekenfunctie kunnen punten, lijnen en polygonen getekend worden.
 Daarnaast is het mogelijk met tekst labels te plaatsen.
-De tekenfunctie is bedoeld om "notities" in een kaartlaag te maken ter verduidelijking. 
-De tekening kan worden opgeslagen als url en is door iedereen die de url kent weer op te roepen. 
+De tekenfunctie is bedoeld om "notities" in een kaartlaag te maken ter verduidelijking.
+De tekening kan worden opgeslagen als url en is door iedereen die de url kent weer op te roepen.
 Met de "undo" en "redo" functie kunnen acties ongedaan worden gemaakt of opnieuw uitvoerd worden. Bij het klikken op Verwijder tekening, wordt de hele tekening verwijderd.
-Na het klikken op het tekensymbool, verschijnt een aantal keuzes:  
-- Teken punt  
-- Teken lijn  
-- Teken polygoon  
-- Teken label  
-- Kies een kleur
-- Kies tekstgrootte
-- Kies lijndikte
-- Undo
-- Redo
-- Verwijder tekening  
-- Sla tekening op  
-  
+Na het klikken op het tekensymbool, verschijnt een aantal keuzes: 
+- Teken punt 
+- Teken lijn
+- Teken polygoon
+- Teken label 
+- Kies een kleur 
+- Kies tekstgrootte 
+- Kies lijndikte 
+- Undo 
+- Redo 
+- Verwijder tekening
+- Sla tekening op
+
 Het klikken op een van de keuzes activeert deze keuze.
 
 ##Toon data
@@ -199,7 +200,7 @@ Kaartlagen binnen Atlas kunnen gedownload worden in verschillende formaten:
 Let op dat bij het downloaden naar een CSV bestand de coordinaten van objecten niet meekomen.
 Voer de volgende stappen uit om een kaartlaag te kunnen downloaden:
 
-- Selecteer een laag om te downloaden (er kunnen meerdere lagen tegelijk geselecteerd worden maar deze kunnen slecht per stuk gedownload worden). 
+- Selecteer een laag om te downloaden (er kunnen meerdere lagen tegelijk geselecteerd worden maar deze kunnen slecht per stuk gedownload worden).
 - Klik op het Toon Data icoon linksboven in het weergavescherm. Nu verschijnt het scherm Zichtbare lagen.
 - Klik op de laagnaam die je wilt downloaden in het Zichtbare lagen scherm.
 - Klik op het Download icoon linksboven in het scherm en selecteer het gewenste downloadformaat.
@@ -210,16 +211,16 @@ Voer de volgende stappen uit om een kaartlaag te kunnen downloaden:
 
 Atlas kan een schermafdruk naar een PDF bestand maken. Dit PDF bestand kan afgedrukt worden. Klik in het [extra instellingen](./help.md#extra-instellingen-menu) menu op Print. Het volgende scherm komt nu in beeld:
 
-<img src="../images/afdrukken.png" alt="afdrukken" title="afdrukken" width="400" /> 
+<img src="../images/afdrukken.png" alt="afdrukken" title="afdrukken" width="400" />
 
-Bij het aanmaken van het PDF bestand kan een aantal opties meegegeven worden:  
-*Titel*: Wanneer een titel wordt meegegeven dan verschijnt deze linksboven in het document.  
-*Opmerkingen*: Wanneer opmerkingen worden ingevuld, verschijnen deze linksboven in het document.  
-*Formaat*: standaard is dit A4. Een grootte tot A0 is mogelijk. Let op dat een bestand op A0 formaat een aantal honderd MB groot kan zijn, Het aanmaken van een A0 bestand neemt veel tijd in beslag.  
-*Oriëntatie*: Liggend (Landscape) of staand (Potrait).  
-*Toon legenda*: Wanneer dit JA is dan wordt de legenda rechtsboven in het PDF document weergegeven.  
-*Toon datum/tijd*:  Wanneer dit JA is dan wordt de datum en de tijd linksboven in het document weergegeven.  
-*Toon schaal*: Wanneer dit JA is dan wodt de schaal linksonder in het PDF document weergegeven.  
+Bij het aanmaken van het PDF bestand kan een aantal opties meegegeven worden: 
+*Titel*: Wanneer een titel wordt meegegeven dan verschijnt deze linksboven in het document. 
+*Opmerkingen*: Wanneer opmerkingen worden ingevuld, verschijnen deze linksboven in het document. 
+*Formaat*: standaard is dit A4. Een grootte tot A0 is mogelijk. Let op dat een bestand op A0 formaat een aantal honderd MB groot kan zijn, Het aanmaken van een A0 bestand neemt veel tijd in beslag.
+*Oriëntatie*: Liggend (Landscape) of staand (Potrait). 
+*Toon legenda*: Wanneer dit JA is dan wordt de legenda rechtsboven in het PDF document weergegeven. 
+*Toon datum/tijd*:  Wanneer dit JA is dan wordt de datum en de tijd linksboven in het document weergegeven. 
+*Toon schaal*: Wanneer dit JA is dan wodt de schaal linksonder in het PDF document weergegeven. 
 
 
 ##Huidige kaartscherm embedden in een andere webpagina
@@ -244,7 +245,7 @@ betreffende:
 
 Na het klikken rechtsboven in het scherm op de drie verticale puntjes, verschijnt het extra instellingen menu.
 
-<img src="../images/extra_instellingen.png" alt="extra instellingen" title="extra instellingen" width="150" /> 
+<img src="../images/extra_instellingen.png" alt="extra instellingen" title="extra instellingen" width="150" />
 
 
 ##Inloggen binnen Atlas, intern en extern
@@ -254,15 +255,14 @@ De gesloten kaartlagen zijn alleen voor bepaalde gebruikersgroepen te bekijken. 
 alleen zichtbaar zijn wanneer de gebruiker ook binnen het Purmerend netwerk is ingelogd.
 De login binnen Atlas werkt volgens het 'Single Sign On'(SSO) principe. Wanneer een gebruiker binnen het netwerk van Purmerend al is ingelogd, dan is het inloggen binnen Atlas slechts een kwestie van op de
 login-knop klikken. Probeert een gebruiker extern binnen Atlas in te loggen dan is het nodig eenmalig de accountnaam en wachtwoord in te geven. Dit is de standaard 2-factor authenticatie (2FA) login.
-Wanneer geprobeerd wordt om gesloten kaartlaaggegevens op te vragen zonder ingelogd te zijn, dan is alleen de melding: "U moet ingelogd zijn om deze data te bekijken" zichtbaar. Wanneer geprobeert wordt om
+Wanneer geprobeert wordt om gesloten kaartlaaggegevens op te vragen zonder ingelogd te zijn, dan is alleen de melding: "U moet ingelogd zijn om deze data te bekijken" zichtbaar. Wanneer geprobeert wordt om
 gesloten kaartlaaggegevens op te vragen zonder rechten hiervoor, dan is alleen de melding: "U heeft geen rechten om deze data te bekijken" zichtbaar. Mocht je onterecht een van deze meldingen zien, neem dan
 contact op met de beheerder van Atlas.
 
-<img src="../images/loginscherm.png" alt="Loginscherm" title="Loginscherm" width="150" />
+Klik rechtsboven in het Atlas-scherm op de drie verticale puntjes om het extra instellingen menu met de loginkeuze te tonen.
 
-Klik rechtsboven in het Atlas-scherm op de drie verticale puntjes om het extra_instellingen menu met de loginkeuze te tonen.
+![externe_inlog](images/externe_inlog.png)
 
 Wanneer extern binnen Atlas wordt ingelogt, dan is het nodig gebruikersnaam en wachtwoord in te geven. De manier waarop dit gebeurt kan per organisatie verschillen
 
 [Versie-informatie](https://gitlab.com/purmerend/atlas/-/releases)
-
