@@ -254,7 +254,7 @@ De gesloten kaartlagen zijn alleen voor bepaalde gebruikersgroepen te bekijken. 
 alleen zichtbaar zijn wanneer de gebruiker ook binnen het Purmerend netwerk is ingelogd.
 De login binnen Atlas werkt volgens het 'Single Sign On'(SSO) principe. Wanneer een gebruiker binnen het netwerk van Purmerend al is ingelogd, dan is het inloggen binnen Atlas slechts een kwestie van op de
 login-knop klikken. Probeert een gebruiker extern binnen Atlas in te loggen dan is het nodig eenmalig de accountnaam en wachtwoord in te geven. Dit is de standaard 2-factor authenticatie (2FA) login.
-Wanneer geprobeert wordt om gesloten kaartlaaggegevens op te vragen zonder ingelogd te zijn, dan is alleen de melding: "U moet ingelogd zijn om deze data te bekijken" zichtbaar. Wanneer geprobeert wordt om
+Wanneer geprobeerd wordt om gesloten kaartlaaggegevens op te vragen zonder ingelogd te zijn, dan is alleen de melding: "U moet ingelogd zijn om deze data te bekijken" zichtbaar. Wanneer geprobeert wordt om
 gesloten kaartlaaggegevens op te vragen zonder rechten hiervoor, dan is alleen de melding: "U heeft geen rechten om deze data te bekijken" zichtbaar. Mocht je onterecht een van deze meldingen zien, neem dan
 contact op met de beheerder van Atlas.
 
