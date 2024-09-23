@@ -260,9 +260,7 @@ contact op met de beheerder van Atlas.
 
 <img src="../images/loginscherm.png" alt="Loginscherm" title="Loginscherm" width="150" />
 
-Klik rechtsboven in het Atlas-scherm op de drie verticale puntjes om het optiemenu met de loginkeuze te tonen.
-
-![externe_inlog](images/externe_inlog.png)
+Klik rechtsboven in het Atlas-scherm op de drie verticale puntjes om het extra_instellingen menu met de loginkeuze te tonen.
 
 Wanneer extern binnen Atlas wordt ingelogt, dan is het nodig gebruikersnaam en wachtwoord in te geven. De manier waarop dit gebeurt kan per organisatie verschillen
 
