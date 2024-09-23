@@ -242,7 +242,7 @@ betreffende:
 
 ##Extra instellingen menu
 
-Na het klikken rechtsboven in het scherm op de drie verticale puntjes, verschijnt het extra intstellingen menu.
+Na het klikken rechtsboven in het scherm op de drie verticale puntjes, verschijnt het extra instellingen menu.
 
 <img src="../images/extra_instellingen.png" alt="extra instellingen" title="extra instellingen" width="150" /> 
 
