@@ -71,7 +71,7 @@ SUGGEST_MUNICIPALITIES Een komma-gescheiden lijst van gemeenten om adressen in t
 ## GEBRUIKERSBEHEER
 
 In het gebruikersbeheerscherm bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden aan een Atlas groep.
-(\*) Groepen kunnen aangemaakt worden om toegang tot lagen te configureren.
+Groepen kunnen aangemaakt worden om toegang tot lagen te configureren.
 
 In het gebruikersscherm kan een gebruiker worden toegevoegd of bewerkt. Voor een nieuwe gebruiker moet een gebruikersnaam en wachtwoord worden ingegeven. De gebruikersnaam moet 150 tekens of minder lang zijn. Alleen letters, cijfers en @/,/+/-/\_ tekens zijn toegestaan. Aan het wachtwoord zijn de volgende beperkingen gebonden:
 
@@ -156,7 +156,6 @@ De bewerkingsgeschiedenis kan bekeken worden door op de knop "Geschiedenis" te k
 Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het openklikken van een hoofdonderwerp/categorie
 zorgt ervoor dat eronder de verschillende kaartlagen van die categorie in de legenda worden getoond.
 Bij het toevoegen van een kaartlaag wordt aangegeven onder welke categorie deze valt.
-(\*) Er kan voor gekozen worden om een categorie als tegel op het hoofdscherm weer te geven of alleen in de lijstweergave of beide.
 
 <img src="images/categorieen.png" alt="categorieën" width="400"/>
 
