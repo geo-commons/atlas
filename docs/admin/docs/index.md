@@ -1,9 +1,7 @@
-Handleiding Admin Module Atlas versie 3.14.0
+Handleiding Admin Module Atlas 
 ============================================
 
 Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt Atlas geconfigureerd.
-
-LET OP: (\*) Deze opties zijn bij het maken van deze handleiding nog niet functioneel (06-04-2022)
 
 ## Inhoud
 
