@@ -1,5 +1,6 @@
-site_name: Atlas Admin Documentatie
-site_url: https://documentatie.atlas.nl
+site_name: Atlas Admin module Documentatie
+site_url: https://127.0.0.1:8808
+dev_addr: '127.0.0.1:8808'
 extra_css:
   - stylesheets/extra.css
 theme:
@@ -18,8 +19,6 @@ markdown_extensions:
   - toc:
       separator: "-"
 nav:
-  - Home: 'index.md'
-  - 'Aan de slag': 'schermuitleg.md'
-  - 'Functies': 'help.md'
-  - 'Gebruikte termen': 'gebruiktetermen.md'
-  - 'Afkortingen': 'afkortingen.md'
+  - 'Admin documentatie': 'index.md'
+  - 'Installatie': 'installlokaal.md'
+  - 'Beveiliging': 'layer_security.md'
