@@ -74,7 +74,7 @@ SUGGEST_MUNICIPALITIES Een komma-gescheiden lijst van gemeenten om adressen in t
 In het gebruikersbeheerscherm bevindt zich het aanmaken en bewerken van Atlas gebruikers. Atlas gebruikers kunnen op hun beurt weer toegevoegd worden aan een Atlas groep.  
 (\*) Groepen kunnen aangemaakt worden om toegang tot lagen te configureren.
 
-In het gebruikersscherm kan een gebruiker worden toegevoegd of bewerkt. Voor een nieuwe gebruiker moet een gebruikersnaam en wachtwoord worden ingegeven. De gebruikersnaam moet 150 tekens of minder lang zijn. Alleen letters, cijfers en @/,/+/-/\_ tekens zijn toegestaan. Aan het wachtwoord zijn de volgende beperkingen gebonden:
+In het gebruikersscherm kan een gebruiker worden toegevoegd of bewerkt. Voor een nieuwe gebruiker moet een gebruikersnaam en wachtwoord worden ingegeven. De gebruikersnaam kan 150 tekens lang of minder zijn. Alleen letters, cijfers en @/,/+/-/\_ tekens zijn toegestaan. Aan het wachtwoord zijn de volgende beperkingen gebonden:
 
 - Uw wachtwoord mag niet te veel lijken op uw overige persoonlijke informatie.
 - Uw wachtwoord moet minstens 8 tekens lang zijn.
