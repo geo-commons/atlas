@@ -7,9 +7,47 @@
     </div>
 
     <div class="admin-content-wrapper">
-      <div v-if="!loading" class="admin-search-wrapper">
-        <SearchIcon class="icon" />
-        <input id="log-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek log" />
+      <div class="search-filter-container">
+        <div v-show="!loading" class="admin-search-wrapper">
+          <SearchIcon class="icon" />
+          <input id="users-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek gebruiker" />
+        </div>
+
+        <div class="filter-wrapper">
+          <FilterSelect
+            v-if="users.length > 0"
+            :filter-options="users"
+            :field-filters="selectedLogsFilters"
+            :filter-property="userFilterProperty"
+            :filter-property-display-name="'Gebruiker'"
+            :track-by="''"
+            :label="''"
+            :style-type="'admin'"
+            @onFilterChange="(v) => setTableFilters(v)"
+          />
+          <FilterSelect
+            v-if="resources.length > 0"
+            :filter-options="resources"
+            :field-filters="selectedLogsFilters"
+            :filter-property="resourceFilterProperty"
+            :filter-property-display-name="'Resource'"
+            :track-by="''"
+            :label="''"
+            :style-type="'admin'"
+            @onFilterChange="(v) => setTableFilters(v)"
+          />
+          <FilterSelect
+            v-if="sources.length > 0"
+            :filter-options="sources"
+            :field-filters="selectedLogsFilters"
+            :filter-property="sourceFilterProperty"
+            :filter-property-display-name="'Bron'"
+            :track-by="''"
+            :label="''"
+            :style-type="'admin'"
+            @onFilterChange="(v) => setTableFilters(v)"
+          />
+        </div>
       </div>
 
       <PaginationComponent
@@ -100,10 +138,12 @@ import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import PaginationComponent from "@/components/Pagination.vue";
 import SearchIcon from "@/assets/icons/search-icon.svg";
 import { formatDateValue } from "../../utils/date-formatter";
+import FilterSelect from "@/components/FilterSelect.vue";
 
 export default {
   name: "LogList",
   components: {
+    FilterSelect,
     SearchIcon,
     PaginationComponent,
     TrashIcon,
@@ -119,8 +159,15 @@ export default {
       nrOfRecords: 20,
       sortAscending: true,
       sortKey: "",
+      users: [],
+      sources: [],
+      resources: [],
       loading: false,
       checkedRows: [],
+      selectedLogsFilters: {},
+      userFilterProperty: "user",
+      sourceFilterProperty: "source",
+      resourceFilterProperty: "resource",
     };
   },
   computed: {
@@ -135,12 +182,37 @@ export default {
 
       return this.logs;
     },
-    visibleLogs() {
-      if (!this.searchQuery) {
+    filteredLogs() {
+      const filters = [];
+
+      if (this.selectedLogsFilters[this.userFilterProperty]) {
+        filters.push(this.checkUser);
+      }
+
+      if (this.selectedLogsFilters[this.sourceFilterProperty]) {
+        filters.push(this.checkSource);
+      }
+
+      if (this.selectedLogsFilters[this.resourceFilterProperty]) {
+        filters.push(this.checkResource);
+      }
+
+      if (filters.length === 0) {
         return this.sortedLogs;
       }
 
-      return this.sortedLogs.filter((log) => log.username.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1);
+      return this.sortedLogs.filter((log) => {
+        return filters.every((filter) => filter.call(this, log));
+      });
+    },
+    visibleLogs() {
+      if (!this.searchQuery) {
+        return this.filteredLogs;
+      }
+
+      return this.filteredLogs.filter(
+        (log) => log.username.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
+      );
     },
     paginatedData() {
       const start = (this.currentPageNumber - 1) * this.nrOfRecords;
@@ -150,6 +222,7 @@ export default {
   },
   created() {
     this.getLogs();
+    this.getUsers();
   },
   methods: {
     formatDateValue,
@@ -165,7 +238,21 @@ export default {
       }
 
       this.logs = await result.json();
+
+      this.sources = await this.getLogSources();
+      this.resources = await this.getResources();
+      this.users = await this.getUsers();
+
       this.loading = false;
+    },
+    async getLogSources() {
+      return Array.from(new Set(this.logs.map((log) => log.source).filter((source) => source !== null)));
+    },
+    async getResources() {
+      return Array.from(new Set(this.logs.map((log) => log.resource).filter((resource) => resource !== null)));
+    },
+    async getUsers() {
+      return Array.from(new Set(this.logs.map((log) => log.username).filter((username) => username !== null)));
     },
     async deleteLog(log) {
       const acknowledged = confirm("Weet je zeker dat je de log wilt verwijderen?");
@@ -186,6 +273,32 @@ export default {
         this.getLogs();
       }
     },
+    setTableFilters(v) {
+      this.selectedLogsFilters = v;
+    },
+    checkUser(filteredUser) {
+      if (!this.selectedLogsFilters[this.userFilterProperty]) {
+        return true;
+      }
+
+      return this.selectedLogsFilters[this.userFilterProperty].some((user) => user === filteredUser.username);
+    },
+    checkSource(filteredSource) {
+      if (!this.selectedLogsFilters[this.sourceFilterProperty]) {
+        return true;
+      }
+
+      return this.selectedLogsFilters[this.sourceFilterProperty].some((source) => source === filteredSource.source);
+    },
+    checkResource(filteredResource) {
+      if (!this.selectedLogsFilters[this.resourceFilterProperty]) {
+        return true;
+      }
+
+      return this.selectedLogsFilters[this.resourceFilterProperty].some(
+        (resource) => resource === filteredResource.resource,
+      );
+    },
     sortColumn(prop) {
       if (this.sortKey !== prop) {
         this.sortKey = prop;
@@ -199,7 +312,30 @@ export default {
 </script>
 
 <style>
+.search-filter-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
 .no-padding {
   padding-bottom: 0 !important;
+}
+
+.filter-wrapper {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 576px) {
+  .search-filter-container,
+  .filter-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-wrapper {
+    width: 100%;
+  }
 }
 </style>

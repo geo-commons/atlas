@@ -147,8 +147,14 @@ class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
 class LogViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'delete']
     permission_classes = [permissions.IsAdminUser]
-    queryset = Log.objects.all()
     serializer_class = LogSerializer
+
+    def get_queryset(self):
+        if self.action == 'list':
+            return Log.objects.all().order_by('-id')[:5000]
+
+        return Log.objects.all()
+
 
 class ConfigurationViewSet(ViewSet):
     permission_classes = [permissions.IsAdminUser]
