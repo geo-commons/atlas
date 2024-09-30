@@ -1,17 +1,28 @@
 <template>
   <div class="app">
     <AppMenu v-if="$route.meta.menu" />
+    <AdminEnvironmentIndicator v-if="config.application_environment !== 'production'" />
+    <admin-breadcrumb v-if="$route.meta.menu" />
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import AppMenu from "./components/MainMenu.vue";
+import AdminBreadcrumb from "./components/AdminBreadcrumb.vue";
+import AdminEnvironmentIndicator from "@/admin/components/AdminEnvironmentIndicator.vue";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "App",
   components: {
+    AdminEnvironmentIndicator,
+    AdminBreadcrumb,
     AppMenu,
+  },
+  computed: {
+    ...mapState(useGlobalStore, ["config"]),
   },
 };
 </script>
@@ -47,6 +58,7 @@ select.__admin {
   max-width: 1280px;
   margin: 0 auto;
   font-family: var(--font-family-admin);
+  padding-bottom: 32px;
 }
 
 .section + .section {

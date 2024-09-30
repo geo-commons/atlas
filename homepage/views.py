@@ -1,4 +1,5 @@
 import logging
+import os
 
 from constance.admin import get_values
 from django.http import HttpResponseNotFound
@@ -9,6 +10,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
 
+from homepage.templatetags.app_version import app_version
 from webservice.models import Layer, Map, Viewer
 
 logger = logging.getLogger(__name__)
@@ -88,9 +90,16 @@ def v3_admin(request):
         'layer_source', 'layer_type', 'linked_data', 'templates'
     )
 
+    config = _get_config(request)
+    config = { 
+        **config,                 
+        'application_version': app_version(),
+        'application_environment': os.getenv('ATLAS_ENVIRONMENT'),
+        }
+    
     context = {
         'data':  {
-            'config': _get_config(request),
+            'config': config,
             'user': _get_user(request),
             'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
         }
