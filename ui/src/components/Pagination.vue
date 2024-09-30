@@ -5,20 +5,15 @@
       <slot v-else-if="items.length > 0"></slot>
     </div>
 
-    <div v-if="items" class="pagination-wrapper">
+    <div v-if="items" class="tw-flex tw-flex-row tw-justify-between tw-items-center tw-py-5">
       <div class="nr-pages-wrapper">
-        <multiselect
-          id="selected_columns"
-          v-model="internalNrOfRecords"
-          :class="styleType"
+        <Select
+          :model-value="internalNrOfRecords"
           :placeholder="'Kies aantal'"
           :options="nrRecordsOptions"
-          :show-labels="false"
-          :allow-empty="false"
-          :searchable="false"
           @update:modelValue="(value) => updateNrOfRecords(value)"
         />
-        <label>Aantal rijen per pagina</label>
+        <label class="tw-text-md">Aantal rijen per pagina</label>
       </div>
 
       <ul v-if="pages.length > 1" class="pagination">
@@ -81,7 +76,7 @@
         </li>
       </ul>
 
-      <span>Totaal aantal resultaten: {{ items.length }}</span>
+      <span class="tw-text-md">Totaal aantal resultaten: {{ items.length }}</span>
     </div>
   </div>
 </template>
@@ -89,13 +84,11 @@
 <script>
 import ChevronLeftIcon from "../assets/icons/chevron-left-icon.svg";
 import ChevronRightIcon from "../assets/icons/chevron-right-icon.svg";
-import Multiselect from "vue-multiselect";
 import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "PaginationComponent",
   components: {
-    Multiselect,
     ChevronLeftIcon,
     ChevronRightIcon,
     Spinner,
@@ -170,6 +163,7 @@ export default {
       }
     },
     updateNrOfRecords(value) {
+      this.internalNrOfRecords = value;
       this.resetPagination();
       this.$emit("records-change", value);
     },
@@ -233,10 +227,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.nr-pages-wrapper > .multiselect {
-  width: fit-content;
 }
 
 .active-page {

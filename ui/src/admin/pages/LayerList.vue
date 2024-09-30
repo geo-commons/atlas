@@ -41,7 +41,6 @@
             :field-filters="selectedLayerFilters"
             :filter-property="categoryFilterProperty"
             :filter-property-display-name="'Categorie'"
-            :style-type="'admin'"
             @onFilterChange="(v) => setTableFilters(v)"
           />
           <FilterSelect
@@ -49,7 +48,6 @@
             :field-filters="selectedLayerFilters"
             :filter-property="statusFilterProperty"
             :filter-property-display-name="'Status'"
-            :style-type="'admin'"
             @onFilterChange="(v) => setTableFilters(v)"
           />
         </div>

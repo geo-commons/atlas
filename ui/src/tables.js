@@ -12,6 +12,8 @@ import ListView from "./tables/pages/ListView";
 import NotFound from "./tables/pages/NotFound";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
+import PrimeVue from "primevue/config";
+import { AtlasPreset } from "@/utils/theme-preset";
 
 const routes = [
   { path: "/:tableSlug", component: ListView },
@@ -33,7 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const pinia = createPinia();
 
+  // Note: darkModeSelector is set to "light" until we implement dark mode.
   const app = createApp(App)
+    .use(PrimeVue, {
+      theme: {
+        preset: AtlasPreset,
+        options: {
+          prefix: "prime",
+          darkModeSelector: "light",
+          cssLayer: false,
+        },
+      },
+    })
     .use(pinia)
     .use(router)
     .use(VueTippy, {

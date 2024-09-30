@@ -1,5 +1,6 @@
 import { defineComponent } from "vue";
 import MarkdownIt from "markdown-it";
+import { h } from "vue";
 
 const Markdown = defineComponent({
   name: "VueMarkdown",
@@ -67,8 +68,10 @@ const Markdown = defineComponent({
       return defaultRender(tokens, idx, options, env, self);
     };
   },
-  render(h) {
-    return h("div", { domProps: { innerHTML: this.content } });
+  render() {
+    return h("div", {
+      innerHTML: this.content,
+    });
   },
 });
 

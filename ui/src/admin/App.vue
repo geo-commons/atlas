@@ -27,8 +27,6 @@ export default {
 };
 </script>
 
-<!-- Include multiselect -->
-<style src="vue-multiselect/dist/vue-multiselect.css" />
 <style>
 @import "../assets/styles/main.css";
 
@@ -122,10 +120,6 @@ input:disabled {
 .edit-field-border {
   border-radius: var(--radius-normal);
   border: 1px solid var(--color-grey-60);
-}
-
-.multiselect__tags > input {
-  border: none;
 }
 
 .top-menu-container {
@@ -257,26 +251,6 @@ th {
 
 .first-column-padding {
   padding-left: 12px;
-}
-
-.admin .multiselect__tags-wrap .multiselect__tag {
-  background: var(--color-white);
-  border: solid 1px var(--color-admin-primary);
-  color: var(--color-admin-primary);
-}
-
-.admin .multiselect__tags-wrap .multiselect__tag-icon:focus,
-.admin .multiselect__tags-wrap .multiselect__tag-icon:hover {
-  background: var(--color-admin-primary);
-}
-
-.admin .multiselect__option--highlight {
-  background: var(--color-admin-primary);
-}
-
-.admin .multiselect__tags-wrap .multiselect__tag-icon:after {
-  color: var(--color-primary);
-  font-size: var(--font-size-large);
 }
 </style>
 

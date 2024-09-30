@@ -20,9 +20,8 @@
           :filter-property="groupFilterProperty"
           :filter-property-display-name="'Groep'"
           :filter-on-id="true"
-          :track-by="'id'"
+          :option-label="'name'"
           :label="'name'"
-          :style-type="'admin'"
           @onFilterChange="(v) => setTableFilters(v)"
         />
       </div>

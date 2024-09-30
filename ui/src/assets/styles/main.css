@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --color-primary: #0066ff;
@@ -82,6 +85,8 @@
     --padding-screen: 20px;
   }
 }
+
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
 
 html {
   font-family: "PT Sans", sans-serif;
@@ -547,41 +552,6 @@ hr {
   color: var(--color-red);
 }
 
-/* override multiselect style */
-.multiselect .multiselect__option--highlight {
-  background: var(--color-primary);
-}
-
-.multiselect .multiselect__tags {
-  border-color: var(--color-grey-60);
-  border-radius: var(--radius-normal);
-}
-
-.multiselect .multiselect__tags-wrap .multiselect__tag {
-  background: var(--color-white);
-  border: solid 1px var(--color-primary);
-  color: var(--color-primary);
-}
-
-.multiselect .multiselect__tags-wrap .multiselect__tag-icon:focus,
-.multiselect .multiselect__tags-wrap .multiselect__tag-icon:hover {
-  background: var(--color-primary);
-}
-
-.multiselect .multiselect__tags-wrap .multiselect__tag-icon:after {
-  color: var(--color-primary);
-  font-size: var(--font-size-large);
-}
-
-.multiselect .multiselect__tags-wrap .multiselect__tag-icon:focus:after,
-.multiselect .multiselect__tags-wrap .multiselect__tag-icon:hover:after {
-  color: var(--color-white);
-}
-
-.multiselect .multiselect__placeholder {
-  color: var(--color-text-grey);
-}
-
 /* Copied tailwind class sr-only */
 .sr-only {
   position: absolute;
@@ -604,4 +574,11 @@ hr {
 .form-error {
   color: var(--color-alert);
   font-weight: var(--font-weight-bold);
+}
+
+/* admin tailwind styling */
+.__admin {
+  h1 {
+    @apply tw-text-[28px] tw-font-medium;
+  }
 }

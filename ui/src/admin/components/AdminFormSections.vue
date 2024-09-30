@@ -92,6 +92,35 @@
                   </div>
                 </div>
               </div>
+              <div v-else-if="question.type === 'picklist'" class="picklist-wrapper">
+                <label class="question-label" :for="question.id">{{ question.label }}</label>
+                <vee-field
+                  :id="question.id"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                  class="__admin config-select-wrapper"
+                  :disabled="question.disabled"
+                >
+                  <PickList
+                    v-model="currentValues[question.id]"
+                    data-key="id"
+                    breakpoint="900px"
+                    :disabled="question.disabled"
+                    :show-source-controls="false"
+                    :show-target-controls="false"
+                  >
+                    <template #option="{ option }">
+                      {{ option.name }}
+                    </template>
+                    <template #sourceheader>
+                      <span class="picklist-header">Beschikbare {{ question.objectDisplayName }}</span>
+                    </template>
+                    <template #targetheader>
+                      <span class="picklist-header">Geselecteerde {{ question.objectDisplayName }}</span>
+                    </template>
+                  </PickList>
+                </vee-field>
+              </div>
               <div v-else>
                 <span class="label-info-text-wrapper">
                   <label class="question-label" :for="question.id">{{ question.label }}</label>
@@ -187,15 +216,22 @@
                   class="width"
                 />
                 <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id">
+                  <InputText v-model="currentValues[question.id]" class="!tw-mb-2" placeholder="Laagnaam" type="text" />
+                  <span class="">Of selecteer een laagnaam</span>
                   <layer-field
-                    v-model="currentValues[question.id]"
+                    :model-value="currentValues[question.id]"
                     :field="field"
                     :current-source-id="values[question.sourceField]"
                     :sources="options[question.sourceField] || []"
+                    @update:modelValue="(value) => (currentValues[question.id] = value)"
                   />
                 </vee-field>
                 <vee-field v-else-if="question.type === 'theme-select'" v-slot="{ field }" :name="question.id">
-                  <theme-field v-model="currentValues[question.id]" :field="field" />
+                  <theme-field
+                    :model-value="currentValues[question.id]"
+                    :field="field"
+                    @update:modelValue="(value) => (currentValues[question.id] = value)"
+                  />
                 </vee-field>
                 <vee-field
                   v-else-if="question.type === 'date'"
@@ -333,12 +369,12 @@ export default {
           }
 
           if (question.options instanceof Array) {
-            this.$set(this.options, question.id, question.options);
+            this.options[question.id] = question.options;
             return;
           }
 
           if (question.options instanceof Function) {
-            this.$set(this.options, question.id, await question.options());
+            this.options[question.id] = await question.options();
             return;
           }
 
@@ -588,5 +624,15 @@ h3 {
   display: flex;
   gap: 80px;
   align-items: center;
+}
+
+.picklist-header {
+  font-weight: var(--font-weight-bold);
+}
+
+.picklist-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="container __admin">
-    <h1 class="font-weight-normal">Dataset wijzigen</h1>
+    <h1 class="py-8">Dataset wijzigen</h1>
     <AdminFormSections
       ref="formSections"
       :sections="sections"

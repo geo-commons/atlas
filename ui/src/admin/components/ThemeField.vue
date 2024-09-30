@@ -1,89 +1,72 @@
 <template>
-  <div class="theme-field">
-    <multiselect
-      v-model="inputVal"
-      v-bind="field"
+  <div class="theme-field" :style="{ maxWidth: `${questionsWidth}px` }">
+    <multi-select
+      :v-bind="field"
+      :loading="!availableThemes.length"
+      :model-value="props.modelValue"
       :options="availableThemes"
-      :multiple="true"
-      label="title"
-      track-by="title"
+      option-label="title"
       placeholder="Kies thema's"
-      deselect-label="Druk op enter om te verwijderen"
-      select-label="Druk op enter om te selecteren"
-      selected-label="Geselecteerd"
-    >
-    </multiselect>
+      data-key="id"
+      filter
+      fluid
+      class="!max-w-full"
+      filter-placeholder="Zoek thema"
+      @update:modelValue="(value) => emit('update:modelValue', value)"
+    />
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-import Multiselect from "vue-multiselect";
+<script setup>
+import { ref, onMounted, onUnmounted } from "vue";
 
-export default defineComponent({
-  name: "ThemeField",
-  components: { Multiselect },
-  props: {
-    field: Object,
-    sources: Array,
-    value: Array,
+const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: () => [],
   },
-  emits: ["update:modelValue"],
-  data() {
-    return {
-      availableThemes: [],
-    };
-  },
-  computed: {
-    inputVal: {
-      get() {
-        return Array.isArray(this.value) ? this.value : [];
-      },
-      set(val) {
-        this.$emit("input", val);
-      },
-    },
-  },
-  created() {
-    this.getThemes();
-  },
-  methods: {
-    async getThemes() {
-      const result = await fetch("/atlas/api/v1/themes/", {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch themes");
-      }
-
-      const response = await result.json();
-
-      this.availableThemes = response.map((theme) => {
-        return { id: theme.id, title: theme.title };
-      });
-    },
+  field: {
+    type: Object,
+    default: () => ({}),
   },
 });
+const emit = defineEmits(["update:modelValue"]);
+
+const availableThemes = ref([]);
+const questionsWidth = ref(0);
+
+const getThemes = async () => {
+  try {
+    const result = await fetch("/atlas/api/v1/themes/", {
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!result.ok) {
+      throw new Error("Could not fetch themes");
+    }
+
+    const response = await result.json();
+    availableThemes.value = response.map((theme) => ({
+      id: theme.id,
+      title: theme.title,
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const setQuestionsWidth = () => {
+  questionsWidth.value = document.getElementsByClassName("section-questions")[0].offsetWidth;
+};
+
+onMounted(() => {
+  getThemes();
+  setQuestionsWidth();
+  window.addEventListener("resize", setQuestionsWidth);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", setQuestionsWidth);
+});
 </script>
-
-<style scoped>
-.theme-field :deep(.multiselect .multiselect__input) {
-  padding: 0;
-}
-
-.theme-field :deep(.multiselect) {
-  padding: 0px;
-}
-
-.theme-field :deep(.multiselect__tags) {
-  padding: 8px 40px 0 16px;
-  font-size: 16px;
-}
-
-.theme-field :deep(.multiselect__single) {
-  padding: 0;
-  margin-bottom: 0;
-}
-</style>

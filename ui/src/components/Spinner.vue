@@ -1,17 +1,12 @@
 <template>
   <div class="spinner-wrapper">
-    <Spinner :size="size" :line-fg-color="color" />
+    <ProgressSpinner stroke-width="2" fill="transparent" :style="{ stroke: color }" />
   </div>
 </template>
 
 <script>
-import Spinner from "vue-simple-spinner";
-
 export default {
   name: "SpinnerComponent",
-  components: {
-    Spinner,
-  },
   props: {
     size: {
       type: String,
@@ -35,11 +30,9 @@ export default {
     getColor(styleType) {
       switch (styleType) {
         case "admin":
-          return window.getComputedStyle(document.documentElement).getPropertyValue("--color-admin-primary");
-        case "portal":
-          return window.getComputedStyle(document.documentElement).getPropertyValue("--color-portal-primary");
+          return "#424bff";
         default:
-          return window.getComputedStyle(document.documentElement).getPropertyValue("--color-primary");
+          return "#0066ff";
       }
     },
   },

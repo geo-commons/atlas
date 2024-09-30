@@ -7,82 +7,24 @@
       :initial-values="initialValues"
       :form-object="'users'"
       :object-specific-save="saveUser"
-    >
-      <template #custom>
-        <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
-
-        <div class="group-list-wrapper">
-          <div class="available-groups">
-            <label class="question-label" for="list1">Beschikbare groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="availableGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  @keydown.enter.prevent="moveGroup(element, availableGroups, selectedGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-          <div class="selected-groups">
-            <label class="question-label" for="list1">Geselecteerde groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="selectedGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  aria-describedby="reorder_instructions"
-                  @keydown.enter.prevent="moveGroup(element, selectedGroups, availableGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-        </div>
-      </template>
-    </AdminFormSections>
+    />
   </div>
 </template>
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import draggable from "vuedraggable";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
 
-draggable.compatConfig = { MODE: 3 };
-
 export default {
   name: "UserCreateUpdateComponent",
-  components: { AdminFormSections, draggable },
+  components: { AdminFormSections },
   data() {
     return {
       sections: {},
       initialValues: {},
       currentValues: {},
       groups: [],
-      availableGroups: [],
-      selectedGroups: [],
-      assistiveText: "Verplaats een group met behulp van de enter toets",
     };
   },
   computed: {
@@ -92,20 +34,10 @@ export default {
     editingCurrentUser() {
       return this.currentUser.id === this.initialValues.id;
     },
-    dragOptions() {
-      return {
-        animation: 0,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost",
-      };
-    },
   },
   created() {
     Promise.all([this.getUser(), this.getGroups()]).then(() => {
-      this.selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      this.availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
-
+      this.setAtlasGroups();
       this.sections = this.getSections();
     });
   },
@@ -140,8 +72,13 @@ export default {
 
       return result;
     },
+    setAtlasGroups() {
+      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
+      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      this.initialValues.atlas_groups = [availableGroups, selectedGroups];
+    },
     async saveUser(currentValues) {
-      currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
       currentValues.is_staff = currentValues.is_admin;
       currentValues.is_superuser = currentValues.is_admin;
 
@@ -236,7 +173,11 @@ export default {
           label: "Groepen",
           questions: [
             {
-              type: "custom",
+              label: "Groepen",
+              objectDisplayName: "groepen",
+              id: "atlas_groups",
+              name: "atlasGroups",
+              type: "picklist",
             },
           ],
         },
@@ -263,52 +204,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.config-btn-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  padding: 30px 0;
-}
-
-.available-groups {
-  grid-area: available-groups;
-}
-
-.selected-groups {
-  grid-area: selected-groups;
-}
-
-.group-list-wrapper {
-  display: grid;
-  grid-template-areas: "available-groups selected-groups";
-  grid-template-columns: 1fr 1fr;
-  column-gap: 100px;
-  padding-bottom: 50px;
-}
-
-.groups-list-item {
-  background: var(--color-white);
-  padding: 10px 20px;
-  word-break: break-word;
-}
-
-.groups-list-item:hover {
-  background-color: var(--color-admin-primary-hover);
-  cursor: move;
-}
-
-.groups-list-item:not(:last-child) {
-  border-bottom: 1px solid var(--color-grey-50);
-}
-
-@media (max-width: 768px) {
-  .group-list-wrapper {
-    grid-template-areas:
-      "available-groups"
-      "selected-groups";
-    grid-template-columns: 1fr;
-    row-gap: 30px;
-  }
-}
-</style>
+<style scoped></style>

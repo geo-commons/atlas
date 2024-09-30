@@ -93,11 +93,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.config-btn-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  padding: 30px 0;
-}
-</style>
+<style scoped></style>

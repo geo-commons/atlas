@@ -8,70 +8,16 @@
       :compact-layout="false"
       :form-object="'sources'"
       :object-specific-save="saveSource"
-    >
-      <template #custom>
-        <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
-
-        <div class="group-list-wrapper">
-          <div class="available-groups">
-            <label class="question-label" for="list1">Beschikbare groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="availableGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  @keydown.enter.prevent="moveGroup(element, availableGroups, selectedGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-          <div class="selected-groups">
-            <label class="question-label" for="list1">Geselecteerde groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="selectedGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  aria-describedby="reorder_instructions"
-                  @keydown.enter.prevent="moveGroup(element, selectedGroups, availableGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-        </div>
-      </template>
-    </AdminFormSections>
+    />
   </div>
 </template>
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import draggable from "vuedraggable";
 
 export default {
   name: "SourceCreateUpdate",
   components: {
-    draggable,
     AdminFormSections,
   },
   data() {
@@ -79,17 +25,14 @@ export default {
       sections: {},
       initialValues: {},
       currentValues: {},
-      availableGroups: [],
-      selectedGroups: [],
+      groups: [],
     };
   },
   created() {
     Promise.all([this.getSource(), this.getGroups()]).then(() => {
-      this.selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      this.availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      this.setAtlasGroups();
+      this.sections = this.getSections();
     });
-
-    this.sections = this.getSections();
   },
   methods: {
     async getSource() {
@@ -107,7 +50,7 @@ export default {
     async saveSource(currentValues) {
       const url = `/atlas/api/v1/sources/${this.$route.params.id}/`;
 
-      currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
@@ -132,6 +75,11 @@ export default {
       this.groups = await result.json();
 
       return result;
+    },
+    setAtlasGroups() {
+      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
+      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
     getSections() {
       return {
@@ -173,7 +121,11 @@ export default {
               infoText: "De inhoud van deze bron kan alleen bekeken worden door ingelogde gebruikers.",
             },
             {
-              type: "custom",
+              label: "Groepen",
+              objectDisplayName: "groepen",
+              id: "atlas_groups",
+              name: "atlasGroups",
+              type: "picklist",
             },
           ],
         },
@@ -184,47 +136,6 @@ export default {
 </script>
 
 <style scoped>
-.available-groups {
-  grid-area: available-groups;
-}
-
-.selected-groups {
-  grid-area: selected-groups;
-}
-
-.group-list-wrapper {
-  display: grid;
-  grid-template-areas: "available-groups selected-groups";
-  grid-template-columns: 1fr 1fr;
-  column-gap: 100px;
-  padding-bottom: 50px;
-}
-
-.groups-list-item {
-  background: var(--color-white);
-  padding: 10px 20px;
-  word-break: break-word;
-}
-
-.groups-list-item:hover {
-  background-color: var(--color-admin-primary-hover);
-  cursor: move;
-}
-
-.groups-list-item:not(:last-child) {
-  border-bottom: 1px solid var(--color-grey-50);
-}
-
-@media (max-width: 768px) {
-  .group-list-wrapper {
-    grid-template-areas:
-      "available-groups"
-      "selected-groups";
-    grid-template-columns: 1fr;
-    row-gap: 30px;
-  }
-}
-
 .admin-list > li {
   display: flex;
   align-items: center;
