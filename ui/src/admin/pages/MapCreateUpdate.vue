@@ -1,5 +1,5 @@
 <template>
-  <div v-if="data" class="map-update">
+  <div v-if="data" class="map-update" :class="{ environmentIndicator: showEnvironmentIndicator }">
     <MapLayers
       v-if="sidebar === 'Layers'"
       :initial-data="data"
@@ -103,6 +103,9 @@ export default {
   },
   computed: {
     ...mapState(useGlobalStore, ["position", "layers", "config", "user"]),
+    showEnvironmentIndicator() {
+      return this.config.application_environment !== "production";
+    },
     baseLayers() {
       return this.layers.filter((layer) => layer.is_base);
     },
@@ -297,6 +300,10 @@ export default {
   display: flex;
   height: 100%;
   flex-direction: row;
+}
+
+.map-update.environmentIndicator {
+  height: calc(100dvh - 40px);
 }
 
 h2 {
