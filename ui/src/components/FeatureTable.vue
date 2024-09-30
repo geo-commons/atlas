@@ -7,16 +7,21 @@
       </div>
       <div v-if="showFilters" class="filter-padding filter-grid">
         <div>
-          <label for="selected_columns" class="filter-label-padding">Kolom(men) om op te filteren</label>
-          <multiselect
+          <label for="selected_columns" class="filter-label-padding tw-pt-2">Kolom(men) om op te filteren</label>
+          <multi-select
             id="selected_columns"
             v-model="selectedFilterProperties"
+            :style="{ maxWidth: 'clamp(200px,100%,400px)', minWidth: 'clamp(200px, 100%, 400px)' }"
             :options="filterProperties"
-            :multiple="true"
-            :show-labels="false"
             :placeholder="'Kies kolom(men)'"
-            open-direction="bottom"
-            @remove="(filter) => removeFilter(filter)"
+            filter
+            display="chip"
+            filter-placeholder="Zoek kolom"
+            :pt="{
+              label: {
+                class: ['!tw-flex tw-flex-wrap'],
+              },
+            }"
           />
         </div>
         <div v-if="selectedFilterProperties" class="selected-filter-container">
@@ -36,7 +41,7 @@
       {{ numberMatched }} {{ numberMatched === 1 ? "resultaat" : "resultaten" }}
     </p>
 
-    <table-list v-if="!loading" class="table table-border table-margin">
+    <table-list v-if="!loading" class="table table-wrapper table-border table-margin">
       <table>
         <thead>
           <tr>
@@ -81,7 +86,6 @@ import Cookies from "js-cookie";
 import TableList from "./TableList.vue";
 import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
-import Multiselect from "vue-multiselect";
 import FilterSelect from "./FilterSelect.vue";
 import SwitchSlider from "./SwitchSlider.vue";
 import Spinner from "@/components/Spinner.vue";
@@ -99,7 +103,6 @@ export default {
     TableList,
     MarkerIcon,
     FilterSelect,
-    Multiselect,
     SwitchSlider,
     Spinner,
   },
@@ -152,6 +155,13 @@ export default {
     fieldFilters: "fetchFeatures",
     sortStack() {
       this.fetchFeatures();
+    },
+    selectedFilterProperties(newValue, oldValue) {
+      const listWithRemovedFilters = oldValue.filter((value) => !newValue.includes(value));
+
+      listWithRemovedFilters.map((removedFilter) => {
+        this.removeFilter(removedFilter);
+      });
     },
   },
   mounted() {
@@ -463,6 +473,7 @@ export default {
 .filter-table-container {
   display: flex;
   flex-flow: column;
+  max-width: 100%;
   max-height: calc(100 * var(--vh) - 10rem);
 }
 
@@ -508,7 +519,7 @@ tbody > tr:hover {
   grid-template-columns: clamp(200px, 35%, 400px) auto;
   grid-template-rows: auto;
   grid-gap: 1rem;
-  align-items: end;
+  align-items: start;
 }
 
 @media (max-width: 576px) {

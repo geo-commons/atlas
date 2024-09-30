@@ -23,7 +23,7 @@
 import { Form as VeeForm, Field as VeeField, ErrorMessage as VeeErrorMessage } from "vee-validate";
 
 export default {
-  name: "SearchForm",
+  name: "SearchFormTable",
   components: {
     VeeForm,
     VeeField,

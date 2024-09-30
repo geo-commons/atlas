@@ -1,39 +1,46 @@
 <template>
   <div class="container __admin">
-    <div class="top-menu-container">
-      <div class="page-title-wrapper">
-        <h1>Datasets</h1>
-        <div class="top-menu-button-container">
-          <button class="button __secondary_admin __normal" type="button" @click="toggleAdvance">
-            <CogIcon class="icon" />
-            {{ advanceSettings ? "Minder" : "Meer" }} opties
-          </button>
-          <button class="button __primary_admin __normal" type="button" @click="openFormModal('newDataset')">
-            <AddIcon class="icon __white" />
-            Nieuwe dataset
-          </button>
-        </div>
+    <div class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-py-8">
+      <h1>Datasets</h1>
+      <div class="top-menu-button-container">
+        <Button outlined @click="toggleAdvance">
+          <CogIcon class="tw-w-4 tw-h-4" />
+          {{ advanceSettings ? "Minder" : "Meer" }} opties
+        </Button>
+        <Button class="tw-text-md" type="submit" @click="() => openFormModal('newDataset')">
+          <AddIcon class="tw-w-4 tw-h-4" />
+          Nieuwe dataset
+        </Button>
       </div>
     </div>
 
     <div class="admin-content-wrapper">
-      <div v-if="!loading" class="admin-search-wrapper">
-        <SearchIcon class="icon" />
-        <input id="datasets-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek dataset" />
+      <div v-if="!loading">
+        <InputGroup class="!tw-w-1/4">
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+          <InputText
+            :model-value="searchQuery"
+            name="query"
+            placeholder="Zoek dataset"
+            @update:modelValue="searchQuery = $event"
+          />
+        </InputGroup>
       </div>
 
-      <div v-if="advanceSettings" class="advance-settings-wrapper">
-        <div class="advance-button-wrapper">
-          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('import')">
-            <ArrowDownTrayIcon class="icon" />
+      <div v-if="advanceSettings" class="tw-flex tw-flex-col tw-gap-2">
+        <div class="tw-flex tw-flex-row tw-gap-3">
+          <Button size="small" outlined @click="openFormModal('import')">
+            <ArrowDownTrayIcon class="tw-w-4 tw-h-4" />
             Importeren
-          </button>
-          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('export')">
-            <ArrowUpTrayIcon class="icon" />
+          </Button>
+          <Button size="small" outlined @click="openFormModal('export')">
+            <ArrowUpTrayIcon class="tw-w-4 tw-h-4" />
             Exporteren
-          </button>
+          </Button>
         </div>
-        <span>{{ selectedRowsDisplayText }}</span>
+        <span class="tw-text-sm">{{ selectedRowsDisplayText }}</span>
       </div>
 
       <PaginationComponent
@@ -139,38 +146,47 @@
       </PaginationComponent>
     </div>
 
-    <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-      <template #header>
-        <h3 v-if="modalType === 'newDataset'">Configureer nieuwe dataset</h3>
-        <h3 v-else-if="modalType === 'import'">Importeer bestaande datasets</h3>
-        <h3 v-else-if="modalType === 'export'">Exporteer bestaande datasets</h3>
-      </template>
-      <template #body>
-        <AdminFormSections
-          v-if="modalType === 'newDataset'"
-          ref="formSections"
-          :sections="sections"
-          :initial-values="newDatasetData"
-          :create-view="true"
-          :form-object="'datasets'"
-          :object-specific-save="saveDataset"
-          @close="closeFormModal"
-        />
-        <div v-else-if="modalType === 'import'">
-          <AdminFileImport :object-name="'datasets'" @import-successful="getDatasets" @close="closeFormModal" />
-        </div>
-        <div v-else-if="modalType === 'export'">
-          <AdminFileExport :object-name="'datasets'" :selected-rows="selectedItems" @close="closeFormModal" />
-        </div>
-      </template>
-    </FormModal>
+    <Dialog
+      :visible="showFormModal"
+      :modal="true"
+      :closable="true"
+      :draggable="false"
+      :header="
+        modalType === 'newDataset'
+          ? 'Configureer nieuwe dataset'
+          : modalType === 'import'
+            ? 'Importeer bestaande datasets'
+            : modalType === 'export'
+              ? 'Exporteer bestaande datasets'
+              : ''
+      "
+      :dismissable-mask="true"
+      class="tw-w-[80%]"
+      @update:visible="closeFormModal"
+    >
+      <AdminFormSections
+        v-if="modalType === 'newDataset'"
+        ref="formSections"
+        :sections="sections"
+        :initial-values="newDatasetData"
+        :create-view="true"
+        :form-object="'datasets'"
+        :object-specific-save="saveDataset"
+        @close="closeFormModal"
+      />
+      <div v-else-if="modalType === 'import'">
+        <AdminFileImport :object-name="'datasets'" @import-successful="getDatasets" @close="closeFormModal" />
+      </div>
+      <div v-else-if="modalType === 'export'">
+        <AdminFileExport :object-name="'datasets'" :selected-rows="selectedItems" @close="closeFormModal" />
+      </div>
+    </Dialog>
   </div>
 </template>
 
 <script>
 import Cookies from "js-cookie";
 import PaginationComponent from "@/components/Pagination.vue";
-import FormModal from "@/components/FormModal.vue";
 import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import TrashIcon from "../../assets/icons/trash-icon.svg";
@@ -195,7 +211,6 @@ export default {
     CogIcon,
     AdminFormSections,
     SortableTableHeaderItem,
-    FormModal,
     PaginationComponent,
     TrashIcon,
     EditIcon,

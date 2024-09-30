@@ -3,7 +3,6 @@
     <MapLayers
       v-if="sidebar === 'Layers'"
       :initial-data="data"
-      @change="updateLayers"
       @show-form="() => showSidebar('Form')"
       @show-layer="showLayerSettings"
     />
@@ -11,20 +10,13 @@
       v-if="sidebar === 'Layer'"
       :initial-data="selectedLayerData"
       :initial-configured-layers="data.layers"
-      @change="updateLayers"
       @show-layers="() => showSidebar('Layers')"
     />
-    <LayerListPanel
-      v-if="sidebar === 'LayerList'"
-      :initial-data="data"
-      @change="updateLayers"
-      @show-form="() => showSidebar('Form')"
-    />
+    <LayerListPanel v-if="sidebar === 'LayerList'" :initial-data="data" @show-form="() => showSidebar('Form')" />
     <ListPanelAdmin
       v-if="sidebar === 'List'"
       :initial-data="data"
       :layers="configuredLayers"
-      @change="updateLayers"
       @show-form="() => showSidebar('Form')"
     />
     <FiltersPanelAdmin
@@ -32,7 +24,6 @@
       :initial-data="data"
       :layers="configuredLayers"
       :user="user"
-      @change="updateLayers"
       @show-form="() => showSidebar('Form')"
     />
     <MapForm
@@ -277,9 +268,6 @@ export default {
     showLayerSettings(selectedLayerId) {
       this.selectedLayerData = this.data.layers.find((layer) => layer.layer === selectedLayerId);
       this.showSidebar("Layer");
-    },
-    updateLayers(layers) {
-      this.data.layers = layers;
     },
     resetSelectedFilter() {
       this.data.settings.filterLayerId = null;

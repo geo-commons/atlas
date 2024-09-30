@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="section">
-      <SearchForm
+      <SearchFormTable
         v-if="table.search_fields.length > 0"
         :table="table"
         :disable-data-panel-button="true"
@@ -37,14 +37,14 @@
 <script>
 import nunjucks from "nunjucks";
 import fetchDot from "fetch-dot";
-import SearchForm from "../components/SearchForm";
+import SearchFormTable from "../components/SearchFormTable.vue";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
 
 export default {
   name: "ListView",
   components: {
-    SearchForm,
+    SearchFormTable,
   },
   data() {
     return {

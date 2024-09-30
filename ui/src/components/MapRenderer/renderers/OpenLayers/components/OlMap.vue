@@ -128,6 +128,11 @@ export default {
   font-size: 10px;
 }
 
+/* Make sure map fills window when viewers are enabled. */
+.map.in-splitter {
+  height: 100%;
+}
+
 .scale {
   position: absolute;
   right: calc(var(--padding-screen) * 2 + var(--width-button-normal));

@@ -6,7 +6,7 @@
         <ChevronDownIcon v-else class="expand-icon" />
 
         <h3>{{ title }}</h3>
-        <PrimaryButton class="close-btn" size="large" @click="hidePanel">
+        <PrimaryButton class="close-btn" size="large" @on-button-click="hidePanel">
           <close-icon class="icon __black" />
         </PrimaryButton>
       </slot>
@@ -40,6 +40,7 @@ export default {
     goBack: Function,
     loading: Boolean,
   },
+  emits: ["hidePanel"],
   data() {
     return {
       expand: false,

@@ -69,8 +69,6 @@ import draggable from "vuedraggable";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import { debounce } from "@/utils/debouncer";
 
-draggable.compatConfig = { MODE: 3 };
-
 export default {
   name: "SortableList",
   components: { draggable },
@@ -129,7 +127,7 @@ export default {
   },
   methods: {
     update() {
-      this.$emit("update", this.items);
+      this.$emit("updateList", this.items);
     },
     sortItems() {
       this.items = this.items.slice(0).sort((a, b) => {

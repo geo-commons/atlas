@@ -37,6 +37,7 @@ export default {
     user: Object,
     filters: Object,
   },
+  emits: ["hidePanel", "update-filters"],
   data() {
     return {
       facetValues: {},

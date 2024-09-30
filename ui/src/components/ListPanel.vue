@@ -35,6 +35,7 @@ export default {
     shortDescriptionTemplate: String,
     filters: Object,
   },
+  emits: ["hidePanel"],
   data() {
     return {
       features: [],

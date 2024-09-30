@@ -4,6 +4,7 @@ import "es6-promise/auto";
 import "whatwg-fetch";
 
 import { createApp } from "vue";
+import PrimeVue from "primevue/config";
 import VueTippy from "vue-tippy";
 import { getSettingsFromPath } from "./utils/router";
 import App from "./admin/App";
@@ -42,6 +43,7 @@ import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.v
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
+import { AtlasPreset } from "@/utils/theme-preset";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -248,7 +250,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   new detectKeyboard();
 
+  // Note: darkModeSelector is set to "light" until we implement dark mode.
   const app = createApp(App)
+    .use(PrimeVue, {
+      theme: {
+        preset: AtlasPreset,
+        options: {
+          prefix: "prime",
+          darkModeSelector: "light",
+          cssLayer: false,
+        },
+      },
+      locale: {
+        emptySearchMessage: "Geen resultaten gevonden",
+        emptyFilterMessage: "Geen resultaten gevonden",
+        emptyMessage: "Geen resultaten gevonden",
+      },
+    })
     .use(pinia)
     .use(router)
     .use(VueTippy, {

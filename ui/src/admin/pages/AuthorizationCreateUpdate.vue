@@ -67,8 +67,6 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import draggable from "vuedraggable";
 
-draggable.compatConfig = { MODE: 3 };
-
 export default {
   name: "AuthorizationCreateUpdate",
   components: {
