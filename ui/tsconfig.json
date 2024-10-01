@@ -14,14 +14,21 @@
     "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    }
+      "@/*": ["src/*", "tests/*"]
+    },
+    "types": [
+      "@vitest/browser/providers/playwright"
+    ]
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.vue",
-    "src/**/*.js"
+    "src/**/*.js",
+    "tests/**/*.ts",
+    "tests/**/*.d.ts",
+    "tests/**/*.vue",
+    "tests/**/*.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

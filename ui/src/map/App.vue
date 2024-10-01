@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" data-testid="app">
     <header-menu v-if="config.features.portal" />
     <map-renderer
       v-if="readyToRenderMap"
