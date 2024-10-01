@@ -24,5 +24,6 @@ module.exports = {
     // 'vue/no-unused-vars': 'error'
     "vue/require-default-prop": "off",
     "vue/no-multiple-template-root": "off",
+    "typescript-eslint/no-unused-vars": "warn",
   },
 };
