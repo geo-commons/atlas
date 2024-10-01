@@ -237,6 +237,7 @@ export default {
   align-items: flex-end;
   gap: 12px;
   margin-top: auto;
+  padding-bottom: 32px;
 }
 
 .setting-icon {

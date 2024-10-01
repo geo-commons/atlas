@@ -107,10 +107,10 @@ export default {
   },
   computed: {
     headers() {
-      return this.template.headers.join("\n");
+      return this.template.headers ? this.template.headers.join("\n") : "";
     },
     fields() {
-      return this.template.fields.join("\n");
+      return this.template.fields ? this.template.fields.join("\n") : "";
     },
   },
   async created() {

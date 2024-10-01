@@ -5,6 +5,7 @@
       :initial-data="data"
       @show-form="() => showSidebar('Form')"
       @show-layer="showLayerSettings"
+      @update-layers="updateLayers"
     />
     <MapLayer
       v-if="sidebar === 'Layer'"
@@ -278,6 +279,9 @@ export default {
     },
     updateUserSettings(value) {
       this.userLayerSettings = value;
+    },
+    updateLayers(layers) {
+      this.data.layers = layers;
     },
   },
 };

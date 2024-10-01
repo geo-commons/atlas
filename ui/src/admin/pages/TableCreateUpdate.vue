@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Tabel wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -14,28 +16,36 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "TableCreateUpdate",
   components: {
+    Spinner,
     AdminFormSections,
   },
   data() {
     return {
+      sources: [],
       sections: {},
       initialValues: {},
       currentValues: {},
       endpointMethods: [],
+      loading: false,
     };
   },
   created() {
+    this.loading = true;
+
     this.endpointMethods = [
       { id: "GET", label: "GET" },
       { id: "POST", label: "POST" },
     ];
 
-    this.getTable();
-    this.sections = this.getSections();
+    Promise.all([this.getTable(), this.getSources()]).then(() => {
+      this.sections = this.getSections();
+      this.loading = false;
+    });
   },
   methods: {
     async getTable() {
@@ -50,6 +60,7 @@ export default {
 
       this.initialValues = await result.json();
       this.initialValues.search_fields = JSON.stringify(this.initialValues.search_fields);
+      return result;
     },
     async getSources() {
       const result = await fetch("/atlas/api/v1/sources/", {
@@ -63,9 +74,11 @@ export default {
 
       const response = await result.json();
 
-      return response.map((source) => {
+      this.sources = response.map((source) => {
         return { id: source.id, label: source.title };
       });
+
+      return response;
     },
     async saveTable(currentValues) {
       const url = `/atlas/api/v1/tables/${this.$route.params.id}/`;
@@ -113,7 +126,7 @@ export default {
               type: "dropdown",
               required: true,
               placeholder: "bron",
-              options: this.getSources,
+              options: this.sources,
             },
             {
               label: "Endpoint",

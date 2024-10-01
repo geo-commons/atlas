@@ -240,13 +240,14 @@ export default {
         layer: layer.id,
         settings: { customSettings: false },
       });
-      this.$emit("change", this.selectedMapLayerConfigs);
+      this.$emit("update-layers", this.selectedMapLayerConfigs);
     },
     deselectLayer(layer) {
       this.selectedMapLayerConfigs = this.selectedMapLayerConfigs.filter(
         (selectedLayer) => selectedLayer.layer !== layer.id,
       );
-      this.$emit("change", this.selectedMapLayerConfigs);
+
+      this.$emit("update-layers", this.selectedMapLayerConfigs);
     },
     back() {
       this.$emit("show-form");

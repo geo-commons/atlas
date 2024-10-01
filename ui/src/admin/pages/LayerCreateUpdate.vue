@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Kaartlaag wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -131,10 +133,12 @@ import TemplateForm from "@/admin/components/TemplateForm.vue";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "LayerCreateUpdate",
   components: {
+    Spinner,
     EditIcon,
     AddIcon,
     TrashIcon,
@@ -145,7 +149,8 @@ export default {
   },
   data() {
     return {
-      categories: {},
+      categories: [],
+      datasets: [],
       sources: {},
       sourceTypes: [],
       groups: [],
@@ -158,9 +163,12 @@ export default {
       formModalType: null,
       selectedLinkedData: null,
       selectedTemplate: null,
+      loading: false,
     };
   },
   created() {
+    this.loading = true;
+
     this.sourceTypes = [
       { id: "WMS_WFS", label: "WMS en WFS" },
       { id: "WMS", label: "WMS" },
@@ -175,10 +183,13 @@ export default {
       { id: "image/vnd.jpeg-png", label: "image/vnd.jpeg-png" },
     ];
 
-    Promise.all([this.getLayer(), this.getGroups()]).then(() => {
-      this.setAtlasGroups();
-      this.sections = this.getSections();
-    });
+    Promise.all([this.getLayer(), this.getGroups(), this.getCategories(), this.getDatasets(), this.getSources()]).then(
+      () => {
+        this.setAtlasGroups();
+        this.sections = this.getSections();
+        this.loading = false;
+      },
+    );
   },
   methods: {
     async getLayer() {
@@ -281,9 +292,10 @@ export default {
 
       const response = await result.json();
 
-      return response.map((category) => {
+      this.categories = response.map((category) => {
         return { id: category.id, label: category.title };
       });
+      return response;
     },
     async getDatasets() {
       const result = await fetch("/atlas/api/v1/datasets/", {
@@ -297,9 +309,10 @@ export default {
 
       const response = await result.json();
 
-      return response.map((dataset) => {
+      this.datasets = response.map((dataset) => {
         return { id: dataset.id, label: dataset.title };
       });
+      return response;
     },
     async getSources() {
       const result = await fetch("/atlas/api/v1/sources/", {
@@ -313,9 +326,11 @@ export default {
 
       const response = await result.json();
 
-      return response.map((source) => {
+      this.sources = response.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
+
+      return response;
     },
     async getGroups() {
       const result = await fetch("/atlas/api/v1/groups/", {
@@ -471,7 +486,7 @@ export default {
               type: "dropdown",
               placeholder: "categorie",
               required: false,
-              options: this.getCategories,
+              options: this.categories,
             },
             {
               label: "Dataset",
@@ -480,7 +495,7 @@ export default {
               type: "dropdown",
               required: false,
               placeholder: "Dataset",
-              options: this.getDatasets,
+              options: this.datasets,
             },
             {
               label: "Gepubliceerd",
@@ -501,7 +516,7 @@ export default {
               type: "dropdown",
               required: true,
               placeholder: "bron",
-              options: this.getSources,
+              options: this.sources,
             },
             {
               label: "Laagnaam",
@@ -511,6 +526,7 @@ export default {
               required: true,
               placeholder: "laag",
               sourceField: "source_id",
+              options: this.sources,
               infoText: "De naam van de laag op de geoserver.",
             },
             {

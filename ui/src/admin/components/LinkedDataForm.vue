@@ -108,13 +108,13 @@ export default {
   },
   computed: {
     headers() {
-      return this.linkedData.headers.join("\n");
+      return this.linkedData.headers ? this.linkedData.headers.join("\n") : "";
     },
     display_properties() {
-      return this.linkedData.display_properties.join("\n");
+      return this.linkedData.display_properties ? this.linkedData.display_properties.join("\n") : "";
     },
     detail_view_fields() {
-      return this.linkedData.detail_view_fields.join("\n");
+      return this.linkedData.detail_view_fields ? this.linkedData.detail_view_fields.join("\n") : "";
     },
   },
   created() {
