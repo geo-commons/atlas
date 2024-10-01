@@ -1,107 +1,48 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Autorisatie wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
       :form-object="'authorizations'"
       :object-specific-save="saveAuthorization"
-    >
-      <template #custom>
-        <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
-
-        <div class="group-list-wrapper">
-          <div class="available-groups">
-            <label class="question-label" for="list1">Beschikbare groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="availableGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  @keydown.enter.prevent="moveGroup(element, availableGroups, selectedGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-          <div class="selected-groups">
-            <label class="question-label" for="list1">Geselecteerde groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="selectedGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  aria-describedby="reorder_instructions"
-                  @keydown.enter.prevent="moveGroup(element, selectedGroups, availableGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-        </div>
-      </template>
-    </AdminFormSections>
+    />
   </div>
 </template>
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import draggable from "vuedraggable";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "AuthorizationCreateUpdate",
   components: {
-    draggable,
+    Spinner,
     AdminFormSections,
   },
   data() {
     return {
-      sources: {},
+      sources: [],
       groups: [],
       sections: {},
       initialValues: {},
       currentValues: {},
       availableGroups: [],
       selectedGroups: [],
-      assistiveText: "Verplaats een group met behulp van de enter toets",
+      loading: false,
     };
   },
-  computed: {
-    dragOptions() {
-      return {
-        animation: 0,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost",
-      };
-    },
-  },
   created() {
-    Promise.all([this.getAuthorization(), this.getGroups()]).then(() => {
-      this.selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      this.availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
-    });
+    this.loading = true;
 
-    this.sections = this.getSections();
+    Promise.all([this.getAuthorization(), this.getGroups(), this.getSources()]).then(() => {
+      this.setAtlasGroups();
+      this.sections = this.getSections();
+      this.loading = false;
+    });
   },
   methods: {
     async getAuthorization() {
@@ -117,9 +58,10 @@ export default {
 
       const response = await result.json();
       this.initialValues = response;
+      return response;
     },
     async saveAuthorization(currentValues) {
-      currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
 
       const url = `/atlas/api/v1/authorizations/${this.$route.params.id}/`;
 
@@ -145,9 +87,11 @@ export default {
 
       const response = await result.json();
 
-      return response.map((source) => {
+      this.sources = response.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
+      console.log(this.sources);
+      return response;
     },
     async getGroups() {
       const result = await fetch("/atlas/api/v1/groups/", {
@@ -163,12 +107,10 @@ export default {
 
       return result;
     },
-    moveGroup(item, fromArray, toArray) {
-      const arrayAriaText = toArray === this.availableGroups ? "Beschikbare groepen" : "Geselecteerde groepen";
-      this.assistiveText = `${item.name}, verplaatst naar ${arrayAriaText}`;
-
-      fromArray.splice(fromArray.indexOf(item), 1);
-      toArray.push(item);
+    setAtlasGroups() {
+      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
+      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
     getSections() {
       return {
@@ -182,7 +124,7 @@ export default {
               type: "dropdown",
               required: true,
               placeholder: "bron",
-              options: this.getSources,
+              options: this.sources,
             },
             {
               label: "Resource",
@@ -249,6 +191,13 @@ export default {
               required: false,
               isNested: true,
               infoText: "Maak veldnamen vriendelijk.",
+            },
+            {
+              label: "Groepen",
+              objectDisplayName: "groepen",
+              id: "atlas_groups",
+              name: "atlasGroups",
+              type: "picklist",
             },
           ],
         },

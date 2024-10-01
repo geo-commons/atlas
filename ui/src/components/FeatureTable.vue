@@ -67,7 +67,7 @@
                 aria-label="Bekijk op kaart"
                 @click="() => showFeature(feature)"
               >
-                <MarkerIcon class="icon __small" />
+                <MarkerIcon class="icon __small __marker" />
               </button>
             </td>
             <td v-for="property in displayProperties" :key="property">
@@ -545,5 +545,11 @@ tbody > tr:hover {
 
 .total-results {
   margin-bottom: 0;
+}
+
+.__marker {
+  stroke: currentColor;
+  stroke-width: 2px;
+  fill: white;
 }
 </style>

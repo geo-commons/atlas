@@ -1,5 +1,6 @@
 <template>
-  <vee-form v-slot="{ values }" ref="formRef" :initial-values="currentValues" @submit="save">
+  <div v-if="loading">laden...</div>
+  <vee-form v-else v-slot="{ values }" ref="formRef" :initial-values="currentValues" @submit="save">
     <div :class="{ 'create-view-container': createView || compactLayout }">
       <p v-if="unexpectedError" class="warning-text">{{ unexpectedError }}</p>
       <div v-for="section in sections" :key="section.label">
@@ -139,7 +140,7 @@
                     :disabled="question.disabled"
                   >
                     <option disabled value="-1">Selecteer een {{ question.placeholder }}</option>
-                    <option v-for="option in options[question.id]" :key="option.id" :value="option.id">
+                    <option v-for="option in question.options" :key="option.id" :value="option.id">
                       {{ option.label }}
                     </option>
                   </vee-field>
@@ -222,7 +223,7 @@
                     :model-value="currentValues[question.id]"
                     :field="field"
                     :current-source-id="values[question.sourceField]"
-                    :sources="options[question.sourceField] || []"
+                    :sources="question.options || []"
                     @update:modelValue="(value) => (currentValues[question.id] = value)"
                   />
                 </vee-field>
@@ -337,6 +338,7 @@ export default {
       unexpectedError: null,
       continueEditing: false,
       imageFieldValues: {},
+      loading: false,
     };
   },
   watch: {
@@ -348,9 +350,6 @@ export default {
       }
     },
   },
-  created() {
-    this.retrieveOptions();
-  },
   unmounted() {
     // Remove all created previewUrls
     Object.values(this.imageFieldValues).forEach((value) => {
@@ -361,27 +360,6 @@ export default {
   },
   methods: {
     formatDateValue,
-    retrieveOptions() {
-      Object.values(this.sections).forEach((section) => {
-        section.questions.forEach(async (question) => {
-          if (question.type !== "dropdown") {
-            return;
-          }
-
-          if (question.options instanceof Array) {
-            this.options[question.id] = question.options;
-            return;
-          }
-
-          if (question.options instanceof Function) {
-            this.options[question.id] = await question.options();
-            return;
-          }
-
-          console.error(`Expected options of question id: ${question.id} to be of type Array or Function.`);
-        });
-      });
-    },
     getRules(question) {
       let rules = [];
 

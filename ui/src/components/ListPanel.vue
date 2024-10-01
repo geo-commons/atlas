@@ -1,5 +1,9 @@
 <template>
-  <PanelDisplay :title="layerDisplayName" :loading="loading" @hidePanel="hidePanel">
+  <PanelDisplay
+    :title="layerDisplayName ? layerDisplayName : 'Lijstweergave'"
+    :loading="loading"
+    @hidePanel="hidePanel"
+  >
     <p v-if="!layer" class="info-text">De lijstweergave is nog niet geconfigureerd.</p>
 
     <ul v-if="layer">

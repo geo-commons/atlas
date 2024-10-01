@@ -141,7 +141,7 @@ export default {
   mounted() {
     if (this.data.settings.listLayerId) {
       this.selectedLayer = this.getLayerById(this.data.settings.listLayerId);
-      this.selectedLayerTitle = this.selectedLayer.id;
+      this.selectedLayerTitle = this.selectedLayer ? this.selectedLayer.id : "";
     }
   },
   methods: {

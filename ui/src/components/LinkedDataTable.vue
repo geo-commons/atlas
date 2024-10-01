@@ -33,7 +33,7 @@
                       aria-label="Bekijk op kaart"
                       @click="() => showFeature(feature)"
                     >
-                      <MarkerIcon class="icon __small" />
+                      <MarkerIcon class="icon __small __marker" />
                     </button>
                   </td>
                   <td v-if="linkedData.use_detail_view" class="linked-data-cell">
@@ -306,5 +306,11 @@ export default {
   padding: 8px 4px;
   border-bottom: 1px solid var(--color-grey-60);
   text-align: left;
+}
+
+.__marker {
+  stroke: currentColor;
+  stroke-width: 2px;
+  fill: white;
 }
 </style>
