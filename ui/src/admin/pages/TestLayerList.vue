@@ -2,6 +2,7 @@
 import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
 import { Ref, ref } from "vue";
 import { useRouter } from "vue-router";
+import { TableHeader } from "@/admin/components/AdminListTable.vue";
 
 const router = useRouter();
 
@@ -15,9 +16,32 @@ const initialCreateLayerData = {
   authenticate: false,
   metadata: { name: "", description: "", organization: "", updated: "", link: "", lineage: "", contact: "" },
 };
+const tableHeaders: Array<TableHeader> = [
+  {
+    header: "Titel",
+    key: "title",
+    enableLink: true,
+  },
+  {
+    header: "Categorie",
+    key: "category.title",
+    enableLink: false,
+  },
+];
 
-const getLayers = async () => {
-  console.log("get layers");
+const getLayers = async (): Promise<Array<object>> => {
+  const result = await fetch("/atlas/api/v1/layers/", {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!result.ok) {
+    console.error("Could not fetch layers");
+  }
+
+  const items = await result.json();
+
+  return items;
 };
 
 const selectedItems = ref([]);
@@ -137,5 +161,6 @@ const getCreateLayerSections = () => {
     :save-create-object-dialog-data="saveLayer"
     :get-objects="getLayers"
     :selected-items="selectedItems"
+    :table-headers="tableHeaders"
   />
 </template>

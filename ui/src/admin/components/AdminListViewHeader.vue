@@ -51,7 +51,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="tw-flex tw-flex-col gap-2 md:tw-flex-row md:tw-justify-between md:tw-items-center">
+  <div class="tw-flex tw-flex-col gap-2 md:tw-flex-row md:tw-justify-between md:tw-items-center tw-pb-4">
     <h1>{{ props.name }}</h1>
     <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
       <Button

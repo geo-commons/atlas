@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import AdminListViewHeader from "@/admin/components/AdminListViewHeader.vue";
 import AdminListViewDialog from "@/admin/components/AdminListViewDialog.vue";
-import { Ref, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
+import AdminListTable, { TableHeader } from "@/admin/components/AdminListTable.vue";
 
 // Properties
 type AdminListViewProps = {
@@ -11,7 +12,8 @@ type AdminListViewProps = {
   singularName: string;
   pluralName: string;
   apiName: string;
-  getObjects: () => void;
+  getObjects: () => Promise<Array<object>>;
+  tableHeaders: Array<TableHeader>;
   // These 3 props are only necessary if enableCreateObject is true
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
@@ -39,6 +41,14 @@ const showDialog: Ref<ShowDialogType> = ref({
   type: "create-object-dialog",
 });
 
+// Table logic
+const items: Ref<Array<object>> = ref([]);
+
+// Lifehooks
+onMounted(async () => {
+  items.value = await props.getObjects();
+});
+
 const toggleDialog = (type: DialogTypes) => {
   showDialog.value = {
     type: type,
@@ -60,6 +70,7 @@ defineExpose({ toggleDialog });
       :api-name="props.apiName"
       @update-dialog="toggleDialog"
     />
+    <AdminListTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
     <AdminListViewDialog
       ref="adminListViewDialogRef"
       :show-dialog="showDialog"
