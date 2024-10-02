@@ -17,7 +17,8 @@
       "@/*": ["src/*", "tests/*"]
     },
     "types": [
-      "@vitest/browser/providers/playwright"
+      "@vitest/browser/providers/playwright",
+      "vite-svg-loader"
     ]
   },
   "include": [
@@ -28,7 +29,8 @@
     "tests/**/*.ts",
     "tests/**/*.d.ts",
     "tests/**/*.vue",
-    "tests/**/*.js"
+    "tests/**/*.js",
+    "vite-env.d.ts"
   ],
   "exclude": ["node_modules"],
 }
