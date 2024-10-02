@@ -9,6 +9,7 @@ export type TableHeader = {
   key: string;
   enableLink: boolean;
   isArrayWithKey?: string;
+  mapValues?: { [key: string]: any };
 };
 
 type AdminListViewProps = {
@@ -27,11 +28,15 @@ const deleteObject = (object: any) => {
   console.log("delete object");
 };
 
-const getNestedValue = (obj: object, keyString: string, isArrayWithKey?: string): any => {
+const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapValues?: { [key: string]: any }): any => {
   const value = keyString.split(".").reduce((acc: any, key: string) => acc && acc[key], obj);
 
   if (Array.isArray(value) && isArrayWithKey) {
     return value.map((item: any) => item[isArrayWithKey]).join(", ");
+  }
+
+  if (mapValues && mapValues[value]) {
+    return mapValues[value];
   }
 
   return value;
@@ -53,7 +58,7 @@ const getNestedValue = (obj: object, keyString: string, isArrayWithKey?: string)
       <tbody>
         <tr v-for="layer in items" :key="layer.id" class="table-border">
           <td v-for="header in tableHeaders" :key="header.key" class="first:tw-pl-4">
-            <p v-if="!header.enableLink">{{ getNestedValue(layer, header.key, header.isArrayWithKey) }}</p>
+            <p v-if="!header.enableLink">{{ getValue(layer, header.key, header.isArrayWithKey, header.mapValues) }}</p>
             <router-link
               v-else
               class="admin-title-link"
@@ -61,7 +66,7 @@ const getNestedValue = (obj: object, keyString: string, isArrayWithKey?: string)
               :aria-label="`${layer[header.key]} configureren`"
               :to="`/${props.apiName}/update/${layer.id}`"
             >
-              {{ getNestedValue(layer, header.key, header.isArrayWithKey) }}
+              {{ getValue(layer, header.key, header.isArrayWithKey, header.mapValues) }}
             </router-link>
           </td>
           <td class="btn-col">

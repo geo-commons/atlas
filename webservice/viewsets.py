@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.viewsets import ViewSet
@@ -44,8 +45,10 @@ class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
 class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     serializer_class = LayerSerializer
 
-    search_fields = []
+    search_fields = ['title']
     filterset_fields = ['layer_source']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
 
     def get_serializer_class(self):
         if self.action == 'list':

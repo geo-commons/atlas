@@ -3,6 +3,8 @@ import AdminListViewHeader from "@/admin/components/AdminListViewHeader.vue";
 import AdminListViewDialog from "@/admin/components/AdminListViewDialog.vue";
 import { onMounted, Ref, ref } from "vue";
 import AdminListViewTable, { TableHeader } from "@/admin/components/AdminListViewTable.vue";
+import AdminListViewFilter from "@/admin/components/AdminListViewFilter.vue";
+import { useRoute, useRouter } from "vue-router";
 
 // Properties
 type AdminListViewProps = {
@@ -12,7 +14,7 @@ type AdminListViewProps = {
   singularName: string;
   pluralName: string;
   apiName: string;
-  getObjects: () => Promise<Array<object>>;
+  getObjects: (searchParams?: URLSearchParams) => Promise<Array<object>>;
   tableHeaders: Array<TableHeader>;
   // These 3 props are only necessary if enableCreateObject is true
   getCreateObjectDialogSections?: () => object;
@@ -42,11 +44,34 @@ const showDialog: Ref<ShowDialogType> = ref({
 });
 
 // Table logic
+let params: URLSearchParams = new URLSearchParams();
 const items: Ref<Array<object>> = ref([]);
+const router = useRouter();
+const route = useRoute();
+
+const updateSearchTerm = async (value: string) => {
+  const searchParams = new URLSearchParams();
+
+  if (value) {
+    searchParams.set("search", value);
+  } else {
+    searchParams.delete("search");
+  }
+
+  await router.push({
+    path: route.path,
+    query: {
+      ...Object.fromEntries(searchParams),
+    },
+  });
+
+  items.value = await props.getObjects(searchParams);
+};
 
 // Lifehooks
 onMounted(async () => {
-  items.value = await props.getObjects();
+  params = new URLSearchParams(route.query as any);
+  items.value = await props.getObjects(params);
 });
 
 const toggleDialog = (type: DialogTypes) => {
@@ -70,6 +95,7 @@ defineExpose({ toggleDialog });
       :api-name="props.apiName"
       @update-dialog="toggleDialog"
     />
+    <AdminListViewFilter :params="params" @update-search-term="updateSearchTerm" />
     <AdminListViewTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
     <AdminListViewDialog
       ref="adminListViewDialogRef"

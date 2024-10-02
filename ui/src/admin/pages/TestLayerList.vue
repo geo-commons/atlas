@@ -27,10 +27,26 @@ const tableHeaders: Array<TableHeader> = [
     key: "category.title",
     enableLink: false,
   },
+  {
+    header: "Status",
+    key: "published",
+    enableLink: false,
+    mapValues: {
+      true: "Gepubliceerd",
+      false: "Concept",
+    },
+  },
 ];
 
-const getLayers = async (): Promise<Array<object>> => {
-  const result = await fetch("/atlas/api/v1/layers/", {
+const getLayers = async (params?: URLSearchParams): Promise<Array<object>> => {
+  const url = new URL("/atlas/api/v1/layers/", window.location.origin);
+
+  // If params are provided, append them to the URL
+  if (params) {
+    url.search = params.toString(); // Automatically adds the query string
+  }
+
+  const result = await fetch(url.toString(), {
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
   });
@@ -40,6 +56,8 @@ const getLayers = async (): Promise<Array<object>> => {
   }
 
   const items = await result.json();
+
+  console.log(items);
 
   return items;
 };
