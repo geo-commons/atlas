@@ -2,7 +2,7 @@
 import AdminListViewHeader from "@/admin/components/AdminListViewHeader.vue";
 import AdminListViewDialog from "@/admin/components/AdminListViewDialog.vue";
 import { onMounted, Ref, ref } from "vue";
-import AdminListTable, { TableHeader } from "@/admin/components/AdminListTable.vue";
+import AdminListViewTable, { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 
 // Properties
 type AdminListViewProps = {
@@ -70,7 +70,7 @@ defineExpose({ toggleDialog });
       :api-name="props.apiName"
       @update-dialog="toggleDialog"
     />
-    <AdminListTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
+    <AdminListViewTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
     <AdminListViewDialog
       ref="adminListViewDialogRef"
       :show-dialog="showDialog"

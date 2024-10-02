@@ -2,7 +2,7 @@
 import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
 import { Ref, ref } from "vue";
 import { useRouter } from "vue-router";
-import { TableHeader } from "@/admin/components/AdminListTable.vue";
+import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 
 const router = useRouter();
 
