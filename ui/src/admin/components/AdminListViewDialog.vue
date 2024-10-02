@@ -3,7 +3,7 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 import AdminFileImport from "@/admin/components/AdminFileImport.vue";
 import { ShowDialogType, DialogTypes } from "@/admin/components/AdminListView.vue";
-import { onMounted, Ref, ref } from "vue";
+import { onMounted, ref } from "vue";
 
 // Properties
 type AdminListViewDialogProps = {
@@ -11,6 +11,7 @@ type AdminListViewDialogProps = {
   singularName: string;
   pluralName: string;
   showDialog: ShowDialogType;
+  getObjects: () => void;
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
   saveCreateObjectDialogData?: (
@@ -18,6 +19,8 @@ type AdminListViewDialogProps = {
     continueEditing: boolean,
     sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
   ) => void;
+  // This prop is only necessary if enableImportExport is true
+  selectedItems?: Array<any>;
 };
 
 const props = withDefaults(defineProps<AdminListViewDialogProps>(), {});
@@ -29,9 +32,6 @@ const emit = defineEmits<{
 
 // Dialog logic
 const sections = ref({});
-
-const adminFormsRef: Ref<null | { sendSaveRequest: (apiUrl: any, method: any, currentValues: any) => void }> =
-  ref(null);
 
 // lifecycle hooks
 onMounted(async () => {
@@ -75,11 +75,19 @@ onMounted(async () => {
       :object-specific-save="props.saveCreateObjectDialogData"
       @close="$emit('update-dialog', props.showDialog.type)"
     />
-    <!--    <div v-else-if="modalType === 'import'">-->
-    <!--      <AdminFileImport :object-name="'datasets'" @import-successful="getDatasets" @close="closeFormModal" />-->
-    <!--    </div>-->
-    <!--    <div v-else-if="modalType === 'export'">-->
-    <!--      <AdminFileExport :object-name="'datasets'" :selected-rows="selectedItems" @close="closeFormModal" />-->
-    <!--    </div>-->
+    <div v-else-if="props.showDialog.type === 'import-dialog'">
+      <AdminFileImport
+        :object-name="props.apiName"
+        @import-successful="props.getObjects"
+        @close="$emit('update-dialog', props.showDialog.type)"
+      />
+    </div>
+    <div v-else-if="props.showDialog.type === 'export-dialog'">
+      <AdminFileExport
+        :object-name="props.apiName"
+        :selected-rows="props.selectedItems"
+        @close="$emit('update-dialog', props.showDialog.type)"
+      />
+    </div>
   </Dialog>
 </template>

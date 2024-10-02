@@ -16,6 +16,12 @@ const initialCreateLayerData = {
   metadata: { name: "", description: "", organization: "", updated: "", link: "", lineage: "", contact: "" },
 };
 
+const getLayers = async () => {
+  console.log("get layers");
+};
+
+const selectedItems = ref([]);
+
 const getCategories = async () => {
   const result = await fetch("/atlas/api/v1/categories/", {
     credentials: "same-origin",
@@ -129,5 +135,7 @@ const getCreateLayerSections = () => {
     :get-create-object-dialog-sections="getCreateLayerSections"
     :initial-create-object-dialog-data="initialCreateLayerData"
     :save-create-object-dialog-data="saveLayer"
+    :get-objects="getLayers"
+    :selected-items="selectedItems"
   />
 </template>

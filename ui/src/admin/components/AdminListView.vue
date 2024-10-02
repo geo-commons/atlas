@@ -11,6 +11,8 @@ type AdminListViewProps = {
   singularName: string;
   pluralName: string;
   apiName: string;
+  getObjects: () => void;
+  // These 3 props are only necessary if enableCreateObject is true
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
   saveCreateObjectDialogData?: (
@@ -18,6 +20,8 @@ type AdminListViewProps = {
     continueEditing: boolean,
     sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
   ) => void;
+  // This prop is only necessary if enableImportExport is true
+  selectedItems?: Array<any>;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {
@@ -53,6 +57,7 @@ defineExpose({ toggleDialog });
       :enable-sort="props.enableSort"
       :enable-create-object="props.enableCreateObject"
       :enable-import-export="props.enableImportExport"
+      :api-name="props.apiName"
       @update-dialog="toggleDialog"
     />
     <AdminListViewDialog
@@ -64,6 +69,8 @@ defineExpose({ toggleDialog });
       :save-create-object-dialog-data="props.saveCreateObjectDialogData"
       :initial-create-object-dialog-data="props.initialCreateObjectDialogData"
       :api-name="props.apiName"
+      :get-objects="props.getObjects"
+      :selected-items="props.selectedItems"
       @update-dialog="toggleDialog"
     />
   </div>

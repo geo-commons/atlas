@@ -96,7 +96,7 @@ const routes = [
     meta: { title: "Kaartlagen", menu: true },
   },
   {
-    path: "/test/layers",
+    path: "/lagen",
     component: TestLayerList,
     meta: { title: "Kaartlagen", menu: true },
   },

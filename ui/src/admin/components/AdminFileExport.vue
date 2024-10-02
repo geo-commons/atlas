@@ -35,11 +35,19 @@ export default {
       switch (objectType) {
         case "kaartlagen":
           return "layers";
+        case "layers":
+          return "layers";
         case "bronnen":
+          return "sources";
+        case "sources":
           return "sources";
         case "categorieën":
           return "categories";
+        case "categories":
+          return "categories";
         case "kaarten":
+          return "maps";
+        case "maps":
           return "maps";
         case "themes":
           return "themes";
