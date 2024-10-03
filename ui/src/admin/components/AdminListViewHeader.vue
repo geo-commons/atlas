@@ -29,6 +29,13 @@ const toggle = (event: any) => {
 
 const items = ref([
   {
+    label: "Selecteren",
+    icon: "pi pi-plus",
+    command: () => {
+      emit("toggle-select");
+    },
+  },
+  {
     label: "Importeren",
     icon: "pi pi-file-import",
     command: () => {
@@ -47,6 +54,7 @@ const items = ref([
 // Emits
 const emit = defineEmits<{
   (e: "update-dialog", type: DialogTypes): void;
+  (e: "toggle-select"): void;
 }>();
 </script>
 

@@ -66,8 +66,6 @@ const getLayers = async (params?: URLSearchParams): Promise<{ results: Array<obj
   return items;
 };
 
-const selectedItems = ref([]);
-
 const getCategories = async (): Promise<Array<object>> => {
   const result = await fetch("/atlas/api/v1/categories/", {
     credentials: "same-origin",
@@ -210,7 +208,6 @@ const getTableFilters = (): Array<TableFilter> => {
     :initial-create-object-dialog-data="initialCreateLayerData"
     :save-create-object-dialog-data="saveLayer"
     :get-objects="getLayers"
-    :selected-items="selectedItems"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"
   />

@@ -10,6 +10,7 @@ declare module 'vue' {
     AlertMessage: typeof import('./src/components/AlertMessage.vue')['default']
     BaseLayersPanel: typeof import('./src/components/BaseLayersPanel.vue')['default']
     Button: typeof import('primevue/button')['default']
+    Checkbox: typeof import('primevue/checkbox')['default']
     CheckboxField: typeof import('./src/components/CheckboxField.vue')['default']
     Column: typeof import('primevue/column')['default']
     DataPanel: typeof import('./src/components/DataPanel.vue')['default']

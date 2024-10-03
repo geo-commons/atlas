@@ -29,8 +29,6 @@ type AdminListViewProps = {
     continueEditing: boolean,
     sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
   ) => void;
-  // This prop is only necessary if enableImportExport is true
-  selectedItems?: Array<any>;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {
@@ -56,6 +54,7 @@ const items: Ref<{ results: Array<object>; count: number }> = ref({
 });
 const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
 const pagination: Ref<PaginationRef> = ref({ page: 1, rows: 20 });
+const selectedItems: Ref<Set<{ id: number; title: string }>> = ref(new Set([]));
 const router = useRouter();
 const route = useRoute();
 
@@ -160,6 +159,23 @@ const updateListPagination = async (pageState: PageState) => {
   items.value = await props.getObjects(params);
 };
 
+const toggleSelectedItems = (value: boolean, key: number, title: string) => {
+  if (value) {
+    selectedItems.value.add({
+      title: title,
+      id: key,
+    });
+    return;
+  }
+
+  for (let item of selectedItems.value) {
+    if (item.id === key) {
+      selectedItems.value.delete(item);
+      break;
+    }
+  }
+};
+
 // Lifecycle hooks
 onMounted(async () => {
   params = new URLSearchParams(route.query as any);
@@ -204,6 +220,12 @@ const toggleDialog = (type: DialogTypes) => {
   };
 };
 
+const enableSelectable: Ref<boolean> = ref(false);
+
+const toggleSelect = () => {
+  enableSelectable.value = !enableSelectable.value;
+};
+
 // Define expose, expose functions / elements to parent element
 defineExpose({ toggleDialog });
 </script>
@@ -217,6 +239,7 @@ defineExpose({ toggleDialog });
       :enable-import-export="props.enableImportExport"
       :api-name="props.apiName"
       @update-dialog="toggleDialog"
+      @toggle-select="toggleSelect"
     />
     <div v-if="loading">Laden...</div>
     <div v-else>
@@ -227,11 +250,13 @@ defineExpose({ toggleDialog });
         @update-list-filters="updateListFilters"
       />
       <AdminListViewTable
+        :enable-selectable="enableSelectable"
         :items="items.results"
         :api-name="props.apiName"
         :table-headers="props.tableHeaders"
         :sort="sort"
         @update-list-sort="updateListSort"
+        @toggle-element-in-checked-row="toggleSelectedItems"
       />
       <AdminListViewPaginator
         :total-results="items.count"
@@ -248,7 +273,7 @@ defineExpose({ toggleDialog });
         :initial-create-object-dialog-data="props.initialCreateObjectDialogData"
         :api-name="props.apiName"
         :get-objects="props.getObjects"
-        :selected-items="props.selectedItems"
+        :selected-items="Array.from(selectedItems)"
         @update-dialog="toggleDialog"
       />
     </div>

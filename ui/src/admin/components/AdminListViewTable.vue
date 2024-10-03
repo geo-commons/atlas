@@ -3,6 +3,7 @@ import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import { useRouter } from "vue-router";
 import AdminListViewTableHeader, { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
+import { Ref, ref } from "vue";
 
 // Properties
 export type TableHeader = {
@@ -19,6 +20,7 @@ type AdminListViewProps = {
   apiName: string;
   tableHeaders: Array<TableHeader>;
   sort: TableHeaderRef;
+  enableSelectable: boolean;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {});
@@ -26,6 +28,7 @@ const props = withDefaults(defineProps<AdminListViewProps>(), {});
 // Emits
 const emit = defineEmits<{
   (e: "update-list-sort", key: string): void;
+  (e: "toggle-element-in-checked-row", value: boolean, id: number, title: string): void;
 }>();
 
 // Initiation
@@ -35,6 +38,8 @@ const router = useRouter();
 const deleteObject = (object: any) => {
   console.log("delete object");
 };
+
+const checkedRows: Ref<Array<object>> = ref([]);
 
 const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapValues?: { [key: string]: any }): any => {
   const value = keyString.split(".").reduce((acc: any, key: string) => acc && acc[key], obj);
@@ -56,6 +61,9 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
     <table class="admin-table tw-rounded-md">
       <thead>
         <tr class="table-border">
+          <th v-if="enableSelectable" class="tw-max-w-4 tw-mr-2 tw-pl-4">
+            <!--            <Checkbox v-model="checked" :binary="true" />-->
+          </th>
           <th v-for="header in props.tableHeaders" :key="header.key" class="first:tw-pl-4">
             <AdminListViewTableHeader
               :header="header"
@@ -68,27 +76,43 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
         </tr>
       </thead>
       <tbody v-if="items.length">
-        <tr v-for="layer in items" :key="layer.id" class="table-border">
+        <tr v-for="row in items" :key="row.id" class="table-border">
+          <td v-if="enableSelectable" class="tw-max-w-4 tw-mr-2 tw-pl-4">
+            <Checkbox
+              v-model="checkedRows[row.id]"
+              :binary="true"
+              @update:modelValue="
+                (value: boolean) =>
+                  emit(
+                    'toggle-element-in-checked-row',
+                    value,
+                    row.id,
+                    row.title ? row.title : row.label ? row.label : '',
+                  )
+              "
+            />
+          </td>
+
           <td v-for="header in tableHeaders" :key="header.key" class="first:tw-pl-4">
-            <p v-if="!header.enableLink">{{ getValue(layer, header.key, header.isArrayWithKey, header.mapValues) }}</p>
+            <p v-if="!header.enableLink">{{ getValue(row, header.key, header.isArrayWithKey, header.mapValues) }}</p>
             <router-link
               v-else
               class="admin-title-link"
               type="button"
-              :aria-label="`${layer[header.key]} configureren`"
-              :to="`/${props.apiName}/update/${layer.id}`"
+              :aria-label="`${row[header.key]} configureren`"
+              :to="`/${props.apiName}/update/${row.id}`"
             >
-              {{ getValue(layer, header.key, header.isArrayWithKey, header.mapValues) }}
+              {{ getValue(row, header.key, header.isArrayWithKey, header.mapValues) }}
             </router-link>
           </td>
           <td class="btn-col">
             <button
               v-tippy="{ placement: 'bottom' }"
               class="iconbutton __normal __round __admin_hover tw-my-1"
-              :aria-label="`${layer[props.tableHeaders[0].header]} configureren`"
+              :aria-label="`${row[props.tableHeaders[0].header]} configureren`"
               content="Wijzig"
               type="button"
-              @click="router.push(`/${props.apiName}/update/${layer.id}`)"
+              @click="router.push(`/${props.apiName}/update/${row.id}`)"
             >
               <EditIcon class="icon" />
             </button>
@@ -100,7 +124,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
               aria-label="Verwijder"
               content="Verwijder"
               type="button"
-              @click="deleteObject(layer)"
+              @click="deleteObject(row)"
             >
               <TrashIcon class="icon" />
             </button>
