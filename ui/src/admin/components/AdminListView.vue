@@ -5,6 +5,7 @@ import { onMounted, Ref, ref } from "vue";
 import AdminListViewTable, { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import AdminListViewFilter, { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { useRoute, useRouter } from "vue-router";
+import { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
 
 // Properties
 type AdminListViewProps = {
@@ -48,6 +49,7 @@ const showDialog: Ref<ShowDialogType> = ref({
 // Table logic
 let params: URLSearchParams = new URLSearchParams();
 const items: Ref<Array<object>> = ref([]);
+const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
 const router = useRouter();
 const route = useRoute();
 
@@ -85,9 +87,39 @@ const updateListFilters = async (value: any, key: string) => {
   items.value = await props.getObjects(params);
 };
 
-// Lifehooks
+const updateListSort = async (key: string) => {
+  if (sort.value.sortKey === key) {
+    sort.value = {
+      sortKey: key,
+      sortAscending: !sort.value.sortAscending,
+    };
+  } else {
+    sort.value = {
+      sortKey: key,
+      sortAscending: true,
+    };
+  }
+
+  params.set("ordering", `${sort.value.sortAscending ? "" : "-"}${sort.value.sortKey}`);
+
+  await router.push({
+    path: route.path,
+    query: {
+      ...Object.fromEntries(params),
+    },
+  });
+
+  items.value = await props.getObjects(params);
+};
+
+// Lifecycle hooks
 onMounted(async () => {
   params = new URLSearchParams(route.query as any);
+  const order = params.get("ordering");
+  sort.value = {
+    sortKey: order ? order.replace("-", "") : "",
+    sortAscending: order ? !order.startsWith("-") : true,
+  };
   items.value = await props.getObjects(params);
 });
 
@@ -120,7 +152,13 @@ defineExpose({ toggleDialog });
         @update-search-term="updateSearchTerm"
         @update-list-filters="updateListFilters"
       />
-      <AdminListViewTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
+      <AdminListViewTable
+        :items="items"
+        :api-name="props.apiName"
+        :table-headers="props.tableHeaders"
+        :sort="sort"
+        @update-list-sort="updateListSort"
+      />
       <AdminListViewDialog
         ref="adminListViewDialogRef"
         :show-dialog="showDialog"

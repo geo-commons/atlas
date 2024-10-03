@@ -2,11 +2,13 @@
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import { useRouter } from "vue-router";
+import AdminListViewTableHeader, { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
 
 // Properties
 export type TableHeader = {
   header: string;
   key: string;
+  overrideKeyForFilter?: string;
   enableLink: boolean;
   isArrayWithKey?: string;
   mapValues?: { [key: string]: any };
@@ -16,9 +18,15 @@ type AdminListViewProps = {
   items: Array<any>;
   apiName: string;
   tableHeaders: Array<TableHeader>;
+  sort: TableHeaderRef;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {});
+
+// Emits
+const emit = defineEmits<{
+  (e: "update-list-sort", key: string): void;
+}>();
 
 // Initiation
 const router = useRouter();
@@ -49,7 +57,11 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
       <thead>
         <tr class="table-border">
           <th v-for="header in props.tableHeaders" :key="header.key" class="first:tw-pl-4">
-            {{ header.header }}
+            <AdminListViewTableHeader
+              :header="header"
+              :sort="props.sort"
+              @update-list-sort="(key: string) => $emit('update-list-sort', key)"
+            />
           </th>
           <th></th>
           <th></th>

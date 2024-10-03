@@ -31,6 +31,7 @@ const tableHeaders: Array<TableHeader> = [
   {
     header: "Categorie",
     key: "category.title",
+    overrideKeyForFilter: "category",
     enableLink: false,
   },
   {
