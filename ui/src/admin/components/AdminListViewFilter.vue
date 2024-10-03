@@ -48,7 +48,7 @@ onMounted(async () => {
         @update:modelValue="(value: string) => $emit('update-search-term', value)"
       />
     </InputGroup>
-    <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
+    <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2 tw-max-w-full">
       <div v-for="filter in tableFilters" :key="filter.key" class="tw-flex tw-flex-col tw-gap-1">
         <span class="tw-font-medium tw-text-sm">{{ filter.name }}</span>
         <AdminListViewMultiSelect

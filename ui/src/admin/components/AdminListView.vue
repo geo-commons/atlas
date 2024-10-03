@@ -14,6 +14,7 @@ type AdminListViewProps = {
   singularName: string;
   pluralName: string;
   apiName: string;
+  loading: boolean;
   getObjects: (searchParams?: URLSearchParams) => Promise<Array<object>>;
   tableHeaders: Array<TableHeader>;
   getTableFilters?: () => Array<TableFilter>;
@@ -111,25 +112,28 @@ defineExpose({ toggleDialog });
       :api-name="props.apiName"
       @update-dialog="toggleDialog"
     />
-    <AdminListViewFilter
-      :params="params"
-      :get-table-filters="props.getTableFilters"
-      @update-search-term="updateSearchTerm"
-      @update-list-filters="updateListFilters"
-    />
-    <AdminListViewTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
-    <AdminListViewDialog
-      ref="adminListViewDialogRef"
-      :show-dialog="showDialog"
-      :singular-name="props.singularName"
-      :plural-name="props.pluralName"
-      :get-create-object-dialog-sections="props.getCreateObjectDialogSections"
-      :save-create-object-dialog-data="props.saveCreateObjectDialogData"
-      :initial-create-object-dialog-data="props.initialCreateObjectDialogData"
-      :api-name="props.apiName"
-      :get-objects="props.getObjects"
-      :selected-items="props.selectedItems"
-      @update-dialog="toggleDialog"
-    />
+    <div v-if="loading">Laden...</div>
+    <div v-else>
+      <AdminListViewFilter
+        :params="params"
+        :get-table-filters="props.getTableFilters"
+        @update-search-term="updateSearchTerm"
+        @update-list-filters="updateListFilters"
+      />
+      <AdminListViewTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
+      <AdminListViewDialog
+        ref="adminListViewDialogRef"
+        :show-dialog="showDialog"
+        :singular-name="props.singularName"
+        :plural-name="props.pluralName"
+        :get-create-object-dialog-sections="props.getCreateObjectDialogSections"
+        :save-create-object-dialog-data="props.saveCreateObjectDialogData"
+        :initial-create-object-dialog-data="props.initialCreateObjectDialogData"
+        :api-name="props.apiName"
+        :get-objects="props.getObjects"
+        :selected-items="props.selectedItems"
+        @update-dialog="toggleDialog"
+      />
+    </div>
   </div>
 </template>

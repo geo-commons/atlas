@@ -49,7 +49,7 @@ watch(multiselect, () => {
     :option-label="filter.label"
     placeholder="Kies waarde"
     filter-placeholder="Zoek waarde"
-    class="!tw-mt-0 !tw-text-sm"
+    class="!tw-mt-0 !tw-text-sm md:!tw-max-w-48 md:!tw-min-w-48"
     filter
     :data-key="filter.dataKey"
   />

@@ -199,10 +199,9 @@ const getTableFilters = (): Array<TableFilter> => {
 </script>
 
 <template>
-  <div v-if="loading">Laden...</div>
   <AdminListView
-    v-if="!loading"
     ref="childRef"
+    :loading="loading"
     singular-name="Kaartlaag"
     plural-name="Kaartlagen"
     api-name="layers"
