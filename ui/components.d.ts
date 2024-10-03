@@ -60,6 +60,7 @@ declare module 'vue' {
     OlXyzLayer: typeof import('./src/components/MapRenderer/renderers/OpenLayers/components/OlXyzLayer.vue')['default']
     OpenLayers: typeof import('./src/components/MapRenderer/renderers/OpenLayers/OpenLayers.vue')['default']
     Pagination: typeof import('./src/components/Pagination.vue')['default']
+    Paginator: typeof import('primevue/paginator')['default']
     PanelDisplay: typeof import('./src/components/PanelDisplay.vue')['default']
     PanoramaPanel: typeof import('./src/components/PanoramaPanel.vue')['default']
     PickList: typeof import('primevue/picklist')['default']

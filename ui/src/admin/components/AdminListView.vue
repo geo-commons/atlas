@@ -6,6 +6,8 @@ import AdminListViewTable, { TableHeader } from "@/admin/components/AdminListVie
 import AdminListViewFilter, { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { useRoute, useRouter } from "vue-router";
 import { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
+import AdminListViewPaginator, { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
+import { PageState } from "primevue/paginator";
 
 // Properties
 type AdminListViewProps = {
@@ -16,7 +18,7 @@ type AdminListViewProps = {
   pluralName: string;
   apiName: string;
   loading: boolean;
-  getObjects: (searchParams?: URLSearchParams) => Promise<Array<object>>;
+  getObjects: (searchParams?: URLSearchParams) => Promise<{ results: Array<object>; count: number }>;
   tableHeaders: Array<TableHeader>;
   getTableFilters?: () => Array<TableFilter>;
   // These 3 props are only necessary if enableCreateObject is true
@@ -48,8 +50,12 @@ const showDialog: Ref<ShowDialogType> = ref({
 
 // Table logic
 let params: URLSearchParams = new URLSearchParams();
-const items: Ref<Array<object>> = ref([]);
+const items: Ref<{ results: Array<object>; count: number }> = ref({
+  results: [],
+  count: 0,
+});
 const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
+const pagination: Ref<PaginationRef> = ref({ page: 1, rows: 20 });
 const router = useRouter();
 const route = useRoute();
 
@@ -60,6 +66,9 @@ const updateSearchTerm = async (value: string) => {
     params.delete("search");
   }
 
+  params.set("page", "1");
+  params.set("page_size", pagination.value.rows.toString());
+
   await router.push({
     path: route.path,
     query: {
@@ -67,7 +76,12 @@ const updateSearchTerm = async (value: string) => {
     },
   });
 
-  items.value = await props.getObjects(params);
+  const result = await props.getObjects(params);
+
+  items.value = {
+    results: result.results,
+    count: result.count,
+  };
 };
 
 const updateListFilters = async (value: any, key: string) => {
@@ -77,6 +91,9 @@ const updateListFilters = async (value: any, key: string) => {
     params.delete(key);
   }
 
+  params.set("page", "1");
+  params.set("page_size", pagination.value.rows.toString());
+
   await router.push({
     path: route.path,
     query: {
@@ -84,7 +101,12 @@ const updateListFilters = async (value: any, key: string) => {
     },
   });
 
-  items.value = await props.getObjects(params);
+  const result = await props.getObjects(params);
+
+  items.value = {
+    results: result.results,
+    count: result.count,
+  };
 };
 
 const updateListSort = async (key: string) => {
@@ -101,6 +123,32 @@ const updateListSort = async (key: string) => {
   }
 
   params.set("ordering", `${sort.value.sortAscending ? "" : "-"}${sort.value.sortKey}`);
+  params.set("page", "1");
+  params.set("page_size", pagination.value.rows.toString());
+
+  await router.push({
+    path: route.path,
+    query: {
+      ...Object.fromEntries(params),
+    },
+  });
+
+  const result = await props.getObjects(params);
+
+  items.value = {
+    results: result.results,
+    count: result.count,
+  };
+};
+
+const updateListPagination = async (pageState: PageState) => {
+  pagination.value = {
+    page: pageState.page,
+    rows: pageState.rows,
+  };
+
+  params.set("page", (pagination.value.page + 1).toString());
+  params.set("page_size", pagination.value.rows.toString());
 
   await router.push({
     path: route.path,
@@ -115,12 +163,33 @@ const updateListSort = async (key: string) => {
 // Lifecycle hooks
 onMounted(async () => {
   params = new URLSearchParams(route.query as any);
+
+  // Page
+  const page = params.get("page");
+  const pageSize = params.get("page_size");
+
+  if (!page) {
+    params.set("page", pagination.value.page.toString());
+  }
+
+  if (!pageSize) {
+    params.set("page_size", pagination.value.rows.toString());
+  }
+
+  // Order params
   const order = params.get("ordering");
   sort.value = {
     sortKey: order ? order.replace("-", "") : "",
     sortAscending: order ? !order.startsWith("-") : true,
   };
-  items.value = await props.getObjects(params);
+
+  // Set items
+  const result = await props.getObjects(params);
+
+  items.value = {
+    results: result.results,
+    count: result.count,
+  };
 });
 
 const toggleDialog = (type: DialogTypes) => {
@@ -153,11 +222,16 @@ defineExpose({ toggleDialog });
         @update-list-filters="updateListFilters"
       />
       <AdminListViewTable
-        :items="items"
+        :items="items.results"
         :api-name="props.apiName"
         :table-headers="props.tableHeaders"
         :sort="sort"
         @update-list-sort="updateListSort"
+      />
+      <AdminListViewPaginator
+        :total-results="items.count"
+        :pagination="pagination"
+        @update-list-pagination="updateListPagination"
       />
       <AdminListViewDialog
         ref="adminListViewDialogRef"

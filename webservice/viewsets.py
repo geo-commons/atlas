@@ -16,6 +16,7 @@ from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
 
 from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewer
+from .pagination import CustomPageNumberPagination
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
     ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer
@@ -45,6 +46,7 @@ class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
 
 class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     serializer_class = LayerSerializer
+    pagination_class = CustomPageNumberPagination
 
     search_fields = ['title']
 
