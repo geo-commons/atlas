@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
-import { Ref, ref } from "vue";
+import { onMounted, Ref, ref, unref } from "vue";
 import { useRouter } from "vue-router";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
+import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 
 const router = useRouter();
 
@@ -10,7 +11,12 @@ const childRef: Ref<null | {
   toggleDialog: (type: DialogTypes) => void;
 }> = ref(null);
 
-const categories = ref([]);
+const categories: Ref<Array<object>> = ref([]);
+const layers: Ref<Array<object>> = ref([]);
+const availableLayers: Ref<Array<object>> = ref([]);
+const loading: Ref<boolean> = ref(true);
+const sources: Ref<Array<object>> = ref([]);
+
 const initialCreateLayerData = {
   title: "",
   authenticate: false,
@@ -57,14 +63,12 @@ const getLayers = async (params?: URLSearchParams): Promise<Array<object>> => {
 
   const items = await result.json();
 
-  console.log(items);
-
   return items;
 };
 
 const selectedItems = ref([]);
 
-const getCategories = async () => {
+const getCategories = async (): Promise<Array<object>> => {
   const result = await fetch("/atlas/api/v1/categories/", {
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
@@ -76,14 +80,12 @@ const getCategories = async () => {
 
   const response = await result.json();
 
-  categories.value = response.map((category: any) => category.title);
-
   return response.map((category: any) => {
     return { id: category.id, label: category.title };
   });
 };
 
-const getSources = async () => {
+const getSources = async (): Promise<Array<object>> => {
   const result = await fetch("/atlas/api/v1/sources/", {
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
@@ -95,10 +97,22 @@ const getSources = async () => {
 
   const response = await result.json();
 
-  return response.map((source: any) => {
+  const sources = response.map((source: any) => {
     return { id: source.id, label: source.title };
   });
+
+  return sources;
 };
+
+// onMounted
+onMounted(() => {
+  Promise.all([getSources(), getLayers(), getCategories()]).then((result) => {
+    sources.value = result[0];
+    layers.value = result[1];
+    categories.value = result[2];
+    loading.value = false;
+  });
+});
 
 const saveLayer = async (
   currentValues: any,
@@ -145,7 +159,7 @@ const getCreateLayerSections = () => {
           type: "dropdown",
           required: false,
           placeholder: "categorie",
-          options: getCategories,
+          options: categories,
         },
       ],
     },
@@ -159,16 +173,35 @@ const getCreateLayerSections = () => {
           type: "dropdown",
           required: true,
           placeholder: "bron",
-          options: getSources,
+          options: sources,
         },
       ],
     },
   };
 };
+
+const getTableFilters = (): Array<TableFilter> => {
+  return [
+    { options: unref(sources), name: "Bronnen", key: "layer_source", label: "label", dataKey: "id" },
+    { options: unref(categories), name: "Categorie", key: "layer_type", label: "label", dataKey: "id" },
+    {
+      options: [
+        { label: "Gepubliceerd", id: "True" },
+        { label: "Concept", id: "False" },
+      ],
+      name: "Status",
+      key: "published",
+      label: "label",
+      dataKey: "id",
+    },
+  ];
+};
 </script>
 
 <template>
+  <div v-if="loading">Laden...</div>
   <AdminListView
+    v-if="!loading"
     ref="childRef"
     singular-name="Kaartlaag"
     plural-name="Kaartlagen"
@@ -180,5 +213,6 @@ const getCreateLayerSections = () => {
     :get-objects="getLayers"
     :selected-items="selectedItems"
     :table-headers="tableHeaders"
+    :get-table-filters="getTableFilters"
   />
 </template>

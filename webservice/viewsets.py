@@ -13,6 +13,7 @@ from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin
 from webservice.util import get_settings, process_value
+from .filters import MultipleFieldsFilter
 
 from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewer
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
@@ -46,9 +47,9 @@ class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     serializer_class = LayerSerializer
 
     search_fields = ['title']
-    filterset_fields = ['layer_source']
 
-    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter, MultipleFieldsFilter]
+    multiple_lookup_fields = ['layer_source', 'layer_type', 'published']
 
     def get_serializer_class(self):
         if self.action == 'list':

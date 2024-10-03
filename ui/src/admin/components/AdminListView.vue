@@ -3,7 +3,7 @@ import AdminListViewHeader from "@/admin/components/AdminListViewHeader.vue";
 import AdminListViewDialog from "@/admin/components/AdminListViewDialog.vue";
 import { onMounted, Ref, ref } from "vue";
 import AdminListViewTable, { TableHeader } from "@/admin/components/AdminListViewTable.vue";
-import AdminListViewFilter from "@/admin/components/AdminListViewFilter.vue";
+import AdminListViewFilter, { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { useRoute, useRouter } from "vue-router";
 
 // Properties
@@ -16,6 +16,7 @@ type AdminListViewProps = {
   apiName: string;
   getObjects: (searchParams?: URLSearchParams) => Promise<Array<object>>;
   tableHeaders: Array<TableHeader>;
+  getTableFilters?: () => Array<TableFilter>;
   // These 3 props are only necessary if enableCreateObject is true
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
@@ -50,22 +51,37 @@ const router = useRouter();
 const route = useRoute();
 
 const updateSearchTerm = async (value: string) => {
-  const searchParams = new URLSearchParams();
-
   if (value) {
-    searchParams.set("search", value);
+    params.set("search", value);
   } else {
-    searchParams.delete("search");
+    params.delete("search");
   }
 
   await router.push({
     path: route.path,
     query: {
-      ...Object.fromEntries(searchParams),
+      ...Object.fromEntries(params),
     },
   });
 
-  items.value = await props.getObjects(searchParams);
+  items.value = await props.getObjects(params);
+};
+
+const updateListFilters = async (value: any, key: string) => {
+  if (value && value?.length) {
+    params.set(key, value.map((val: any) => val.id).join(","));
+  } else {
+    params.delete(key);
+  }
+
+  await router.push({
+    path: route.path,
+    query: {
+      ...Object.fromEntries(params),
+    },
+  });
+
+  items.value = await props.getObjects(params);
 };
 
 // Lifehooks
@@ -95,7 +111,12 @@ defineExpose({ toggleDialog });
       :api-name="props.apiName"
       @update-dialog="toggleDialog"
     />
-    <AdminListViewFilter :params="params" @update-search-term="updateSearchTerm" />
+    <AdminListViewFilter
+      :params="params"
+      :get-table-filters="props.getTableFilters"
+      @update-search-term="updateSearchTerm"
+      @update-list-filters="updateListFilters"
+    />
     <AdminListViewTable :items="items" :api-name="props.apiName" :table-headers="props.tableHeaders" />
     <AdminListViewDialog
       ref="adminListViewDialogRef"
