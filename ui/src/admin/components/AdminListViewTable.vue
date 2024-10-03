@@ -57,7 +57,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
 </script>
 
 <template>
-  <div class="card !tw-text-sm">
+  <div class="card !tw-text-sm tw-overflow-x-scroll">
     <table class="admin-table tw-rounded-md">
       <thead>
         <tr class="table-border">
@@ -77,7 +77,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
       </thead>
       <tbody v-if="items.length">
         <tr v-for="row in items" :key="row.id" class="table-border">
-          <td v-if="enableSelectable" class="tw-max-w-4 tw-mr-2 tw-pl-4">
+          <td v-if="enableSelectable" class="lg:tw-max-w-4 tw-mx-4 tw-px-4">
             <Checkbox
               v-model="checkedRows[row.id]"
               :binary="true"
