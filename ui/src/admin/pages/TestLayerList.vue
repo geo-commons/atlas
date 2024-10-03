@@ -44,7 +44,7 @@ const tableHeaders: Array<TableHeader> = [
   },
 ];
 
-const getLayers = async (params?: URLSearchParams): Promise<Array<object>> => {
+const getLayers = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
   const url = new URL("/atlas/api/v1/layers/", window.location.origin);
 
   // If params are provided, append them to the URL
@@ -108,7 +108,7 @@ const getSources = async (): Promise<Array<object>> => {
 onMounted(() => {
   Promise.all([getSources(), getLayers(), getCategories()]).then((result) => {
     sources.value = result[0];
-    layers.value = result[1];
+    layers.value = result[1].results;
     categories.value = result[2];
     loading.value = false;
   });

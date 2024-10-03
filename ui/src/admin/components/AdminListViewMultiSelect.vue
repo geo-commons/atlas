@@ -37,7 +37,11 @@ onMounted(() => {
   multiselect.value = item;
 });
 
-watch(multiselect, () => {
+watch(multiselect, (value, oldValue) => {
+  if (!oldValue) {
+    return;
+  }
+
   emit("update-list-filters", multiselect.value, props.filter.key);
 });
 </script>

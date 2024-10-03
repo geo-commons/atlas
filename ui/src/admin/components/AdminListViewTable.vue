@@ -52,7 +52,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
 </script>
 
 <template>
-  <div class="card">
+  <div class="card !tw-text-sm">
     <table class="admin-table tw-rounded-md">
       <thead>
         <tr class="table-border">

@@ -168,6 +168,11 @@ onMounted(async () => {
   const page = params.get("page");
   const pageSize = params.get("page_size");
 
+  pagination.value = {
+    page: page ? parseInt(page) : 1,
+    rows: pageSize ? parseInt(pageSize) : 20,
+  };
+
   if (!page) {
     params.set("page", pagination.value.page.toString());
   }

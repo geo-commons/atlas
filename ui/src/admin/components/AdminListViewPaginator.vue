@@ -22,9 +22,10 @@ export type PaginationRef = {
 </script>
 
 <template>
-  <div class="tw-py-4">
+  <div class="tw-py-4 !tw-text-sm">
     <Paginator
       :rows="pagination.rows"
+      :first="(pagination.page - 1) * pagination.rows + 1"
       :total-records="totalResults"
       template="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
       :rows-per-page-options="[10, 15, 20, 30, 50, 100, 200, 500]"
@@ -33,7 +34,7 @@ export type PaginationRef = {
           class: [''],
         },
         root: {
-          class: ['!tw-bg-transparent'],
+          class: ['!tw-bg-transparent !tw-px-0'],
         },
         page: {
           class: [''],
@@ -42,7 +43,7 @@ export type PaginationRef = {
       @page="(pageState: PageState) => $emit('update-list-pagination', pageState)"
     >
       <template #end>
-        <p>Aantal resultaten: {{ props.totalResults }}</p>
+        <p class="tw-text-sm">Aantal resultaten: {{ props.totalResults }}</p>
       </template>
     </Paginator>
   </div>
