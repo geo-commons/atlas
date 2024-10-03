@@ -13,7 +13,6 @@ const childRef: Ref<null | {
 
 const categories: Ref<Array<object>> = ref([]);
 const layers: Ref<Array<object>> = ref([]);
-const availableLayers: Ref<Array<object>> = ref([]);
 const loading: Ref<boolean> = ref(true);
 const sources: Ref<Array<object>> = ref([]);
 

@@ -25,7 +25,7 @@ export type TableHeaderRef = { sortKey: string; sortAscending: boolean };
     v-tippy="{ placement: 'bottom' }"
     aria-label="Sorteer kolom"
     content="Sorteer"
-    class=""
+    class="tw-min-h-8"
     @click="
       () =>
         $emit(

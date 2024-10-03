@@ -67,7 +67,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
           <th></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="items.length">
         <tr v-for="layer in items" :key="layer.id" class="table-border">
           <td v-for="header in tableHeaders" :key="header.key" class="first:tw-pl-4">
             <p v-if="!header.enableLink">{{ getValue(layer, header.key, header.isArrayWithKey, header.mapValues) }}</p>
@@ -105,6 +105,11 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
               <TrashIcon class="icon" />
             </button>
           </td>
+        </tr>
+      </tbody>
+      <tbody v-else>
+        <tr class="table-border">
+          <td class="tw-pl-4 tw-py-4">Geen resultaten gevonden</td>
         </tr>
       </tbody>
     </table>
