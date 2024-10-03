@@ -3,7 +3,7 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 import AdminFileImport from "@/admin/components/AdminFileImport.vue";
 import { ShowDialogType, DialogTypes } from "@/admin/components/AdminListView.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 // Properties
 type AdminListViewDialogProps = {
@@ -11,6 +11,7 @@ type AdminListViewDialogProps = {
   singularName: string;
   pluralName: string;
   showDialog: ShowDialogType;
+  isAllSelected: boolean;
   getObjects: () => void;
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
@@ -86,6 +87,7 @@ onMounted(async () => {
       <AdminFileExport
         :object-name="props.apiName"
         :selected-rows="props.selectedItems"
+        :is-all-selected="props.isAllSelected"
         @close="$emit('update-dialog', props.showDialog.type)"
       />
     </div>

@@ -2,9 +2,10 @@
   <div class="export-wrapper">
     <p v-if="selectedRows.length > 0">Weet u zeker dat u de volgende {{ objectName }} wilt exporteren?</p>
     <p v-else>Er zijn geen {{ objectName }} geselecteerd.</p>
-    <ul class="selected-rows">
+    <ul v-if="!isAllSelected" class="selected-rows">
       <li v-for="row in selectedRows" :key="row.id">- {{ row.title }}</li>
     </ul>
+    <p v-if="isAllSelected">Alle {{ objectName }}.</p>
     <div class="admin-btn-wrapper">
       <button class="button __secondary_admin" type="button" @click="closeFormModal">Annuleer</button>
       <button class="button __primary_admin" type="button" :disabled="!selectedRows" @click="exportItems">
@@ -23,6 +24,7 @@ export default {
   props: {
     selectedRows: Array,
     objectName: String,
+    isAllSelected: Boolean,
   },
   data() {
     return {};
@@ -64,7 +66,7 @@ export default {
     async exportItems() {
       const ids = { ids: this.selectedRows.map((row) => row.id) };
 
-      const data = JSON.stringify(ids);
+      const data = JSON.stringify(this.isAllSelected ? { ids: [] } : ids);
 
       let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName)}/export/`;
 

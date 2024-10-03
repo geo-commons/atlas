@@ -3,7 +3,8 @@ import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import { useRouter } from "vue-router";
 import AdminListViewTableHeader, { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
-import { Ref, ref } from "vue";
+import { Ref, ref, watch } from "vue";
+import { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
 
 // Properties
 export type TableHeader = {
@@ -21,6 +22,7 @@ type AdminListViewProps = {
   tableHeaders: Array<TableHeader>;
   sort: TableHeaderRef;
   enableSelectable: boolean;
+  pagination: PaginationRef;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {});
@@ -29,6 +31,8 @@ const props = withDefaults(defineProps<AdminListViewProps>(), {});
 const emit = defineEmits<{
   (e: "update-list-sort", key: string): void;
   (e: "toggle-element-in-checked-row", value: boolean, id: number, title: string): void;
+  (e: "remove-all-elements-from-selected-items"): void;
+  (e: "toggle-is-all-selected", value: boolean): void;
 }>();
 
 // Initiation
@@ -40,6 +44,41 @@ const deleteObject = (object: any) => {
 };
 
 const checkedRows: Ref<Array<object>> = ref([]);
+const checkedAllRows: Ref<boolean> = ref(false);
+
+const checkAllRows = (value: boolean) => {
+  for (const row of props.items) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    checkedRows.value[row.id] = value;
+
+    emit("toggle-element-in-checked-row", value, row.id, row.title ? row.title : row.label ? row.label : "");
+  }
+};
+
+watch(
+  () => props.items,
+  (value) => {
+    if (checkedAllRows.value) {
+      checkAllRows(true);
+    }
+  },
+);
+
+watch(
+  () => checkedAllRows.value,
+  (newValue, oldValue) => {
+    if (newValue) {
+      emit("toggle-is-all-selected", true);
+    }
+
+    if (!newValue && oldValue) {
+      checkedRows.value = [];
+      emit("remove-all-elements-from-selected-items");
+      emit("toggle-is-all-selected", false);
+    }
+  },
+);
 
 const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapValues?: { [key: string]: any }): any => {
   const value = keyString.split(".").reduce((acc: any, key: string) => acc && acc[key], obj);
@@ -62,7 +101,11 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
       <thead>
         <tr class="table-border">
           <th v-if="enableSelectable" class="tw-max-w-4 tw-mr-2 tw-pl-4">
-            <!--            <Checkbox v-model="checked" :binary="true" />-->
+            <Checkbox
+              v-model="checkedAllRows"
+              :binary="true"
+              @update:modelValue="(value: boolean) => checkAllRows(value)"
+            />
           </th>
           <th v-for="header in props.tableHeaders" :key="header.key" class="first:tw-pl-4">
             <AdminListViewTableHeader

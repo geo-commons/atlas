@@ -55,6 +55,7 @@ const items: Ref<{ results: Array<object>; count: number }> = ref({
 const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
 const pagination: Ref<PaginationRef> = ref({ page: 0, rows: 20 });
 const selectedItems: Ref<Set<{ id: number; title: string }>> = ref(new Set([]));
+const isAllSelected: Ref<boolean> = ref(false);
 const router = useRouter();
 const route = useRoute();
 
@@ -176,6 +177,10 @@ const toggleSelectedItems = (value: boolean, key: number, title: string) => {
   }
 };
 
+const removeAllSelectedItems = () => {
+  selectedItems.value = new Set<{ id: number; title: string }>([]);
+};
+
 // Lifecycle hooks
 onMounted(async () => {
   params = new URLSearchParams(route.query as any);
@@ -190,7 +195,7 @@ onMounted(async () => {
   };
 
   if (!page) {
-    params.set("page", pagination.value.page === 0 ? 1 : pagination.value.page.toString());
+    params.set("page", pagination.value.page === 0 ? "1" : pagination.value.page.toString());
   }
 
   if (!pageSize) {
@@ -226,6 +231,10 @@ const toggleSelect = () => {
   enableSelectable.value = !enableSelectable.value;
 };
 
+const toggleIsAllSelected = (value: boolean) => {
+  isAllSelected.value = value;
+};
+
 // Define expose, expose functions / elements to parent element
 defineExpose({ toggleDialog });
 </script>
@@ -253,10 +262,13 @@ defineExpose({ toggleDialog });
         :enable-selectable="enableSelectable"
         :items="items.results"
         :api-name="props.apiName"
+        :pagination="pagination"
         :table-headers="props.tableHeaders"
         :sort="sort"
         @update-list-sort="updateListSort"
         @toggle-element-in-checked-row="toggleSelectedItems"
+        @remove-all-elements-from-selected-items="removeAllSelectedItems"
+        @toggle-is-all-selected="toggleIsAllSelected"
       />
       <AdminListViewPaginator
         :total-results="items.count"
@@ -274,6 +286,7 @@ defineExpose({ toggleDialog });
         :api-name="props.apiName"
         :get-objects="props.getObjects"
         :selected-items="Array.from(selectedItems)"
+        :is-all-selected="isAllSelected"
         @update-dialog="toggleDialog"
       />
     </div>
