@@ -33,16 +33,13 @@ const emit = defineEmits<{
   (e: "toggle-element-in-checked-row", value: boolean, id: number, title: string): void;
   (e: "remove-all-elements-from-selected-items"): void;
   (e: "toggle-is-all-selected", value: boolean): void;
+  (e: "delete-row", row: any): void;
 }>();
 
 // Initiation
 const router = useRouter();
 
 // Table logic
-const deleteObject = (object: any) => {
-  console.log("delete object");
-};
-
 const checkedRows: Ref<Array<object>> = ref([]);
 const checkedAllRows: Ref<boolean> = ref(false);
 
@@ -167,7 +164,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
               aria-label="Verwijder"
               content="Verwijder"
               type="button"
-              @click="deleteObject(row)"
+              @click="emit('delete-row', row)"
             >
               <TrashIcon class="icon" />
             </button>

@@ -8,6 +8,7 @@ import { useRoute, useRouter } from "vue-router";
 import { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
 import AdminListViewPaginator, { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
 import { PageState } from "primevue/paginator";
+import Cookies from "js-cookie";
 
 // Properties
 type AdminListViewProps = {
@@ -45,6 +46,13 @@ const showDialog: Ref<ShowDialogType> = ref({
   show: false,
   type: "create-object-dialog",
 });
+
+const toggleDialog = (type: DialogTypes) => {
+  showDialog.value = {
+    type: type,
+    show: !showDialog.value.show,
+  };
+};
 
 // Table logic
 let params: URLSearchParams = new URLSearchParams();
@@ -160,6 +168,26 @@ const updateListPagination = async (pageState: PageState) => {
   items.value = await props.getObjects(params);
 };
 
+const deleteRow = async (row: any) => {
+  const acknowledged = confirm(`Weet je zeker dat je de ${props.singularName} wilt verwijderen?`);
+  if (!acknowledged) {
+    return;
+  }
+
+  const result = await fetch(`/atlas/api/v1/${props.apiName}/${row.id}/`, {
+    method: "DELETE",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+  });
+
+  if (result.ok) {
+    items.value = await props.getObjects(params);
+  }
+};
+
 const toggleSelectedItems = (value: boolean, key: number, title: string) => {
   if (value) {
     selectedItems.value.add({
@@ -179,6 +207,16 @@ const toggleSelectedItems = (value: boolean, key: number, title: string) => {
 
 const removeAllSelectedItems = () => {
   selectedItems.value = new Set<{ id: number; title: string }>([]);
+};
+
+const enableSelectable: Ref<boolean> = ref(false);
+
+const toggleSelect = () => {
+  enableSelectable.value = !enableSelectable.value;
+};
+
+const toggleIsAllSelected = (value: boolean) => {
+  isAllSelected.value = value;
 };
 
 // Lifecycle hooks
@@ -218,23 +256,6 @@ onMounted(async () => {
   };
 });
 
-const toggleDialog = (type: DialogTypes) => {
-  showDialog.value = {
-    type: type,
-    show: !showDialog.value.show,
-  };
-};
-
-const enableSelectable: Ref<boolean> = ref(false);
-
-const toggleSelect = () => {
-  enableSelectable.value = !enableSelectable.value;
-};
-
-const toggleIsAllSelected = (value: boolean) => {
-  isAllSelected.value = value;
-};
-
 // Define expose, expose functions / elements to parent element
 defineExpose({ toggleDialog });
 </script>
@@ -269,6 +290,7 @@ defineExpose({ toggleDialog });
         @toggle-element-in-checked-row="toggleSelectedItems"
         @remove-all-elements-from-selected-items="removeAllSelectedItems"
         @toggle-is-all-selected="toggleIsAllSelected"
+        @delete-row="deleteRow"
       />
       <AdminListViewPaginator
         :total-results="items.count"

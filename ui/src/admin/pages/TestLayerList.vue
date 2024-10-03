@@ -129,9 +129,6 @@ const saveLayer = async (
         const response = await result.json();
         await router.push(`/layers/update/${response.id}`);
       }
-
-      // TODO: implement this.getLayers()
-      // await this.getLayers();
     }
   } catch (e) {
     console.error("An unexpected error occurred:", e);
