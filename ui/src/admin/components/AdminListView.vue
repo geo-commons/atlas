@@ -53,7 +53,7 @@ const items: Ref<{ results: Array<object>; count: number }> = ref({
   count: 0,
 });
 const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
-const pagination: Ref<PaginationRef> = ref({ page: 1, rows: 20 });
+const pagination: Ref<PaginationRef> = ref({ page: 0, rows: 20 });
 const selectedItems: Ref<Set<{ id: number; title: string }>> = ref(new Set([]));
 const router = useRouter();
 const route = useRoute();
@@ -185,12 +185,12 @@ onMounted(async () => {
   const pageSize = params.get("page_size");
 
   pagination.value = {
-    page: page ? parseInt(page) : 1,
+    page: page ? parseInt(page) - 1 : 0,
     rows: pageSize ? parseInt(pageSize) : 20,
   };
 
   if (!page) {
-    params.set("page", pagination.value.page.toString());
+    params.set("page", pagination.value.page === 0 ? 1 : pagination.value.page.toString());
   }
 
   if (!pageSize) {

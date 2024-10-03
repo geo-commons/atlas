@@ -25,7 +25,7 @@ export type PaginationRef = {
   <div class="tw-py-4 !tw-text-sm">
     <Paginator
       :rows="pagination.rows"
-      :first="(pagination.page - 1) * pagination.rows + 1"
+      :first="pagination.page * pagination.rows - 1 + pagination.rows"
       :total-records="totalResults"
       template="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
       :rows-per-page-options="[10, 15, 20, 30, 50, 100, 200, 500]"
