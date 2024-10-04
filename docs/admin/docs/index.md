@@ -240,6 +240,11 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
   "v_3": "Veldnaam 3"
 }
 
+!!! warning "Waarschuwing"
+
+    Wanneer JSON formaat gekopieerd wordt (bijvoorbeeld bovenstaande code naar Atlas), dan kan de characterset veranderen. Dit zorgt ervoor dat aanhalingstekens niet herkent worden en de code niet geaccepteerd wordt.
+
+
 Overigens krijgen lowercase veldnamen standaard een hoofdletter binnen Atlas. Een liggend streepje (underscore) wordt omgezet naar een spatie.
 - **Naam:** (Vul een naam in voor de laag als metadata. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
 - **Soort:** (Vul een categorie in voor de laag als metadata. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
