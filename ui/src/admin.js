@@ -43,7 +43,7 @@ import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.v
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
-import { AtlasPreset } from "@/utils/theme-preset";
+import { AtlasPresetAdmin, AtlasPresetApp } from "@/utils/theme-preset";
 import TestLayerList from "@/admin/pages/TestLayerList.vue";
 
 defineRule("required", (value) => {
@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPreset,
+        preset: AtlasPresetAdmin,
         options: {
           prefix: "prime",
           darkModeSelector: "light",

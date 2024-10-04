@@ -18,7 +18,7 @@ import PortalDatasetDetailPage from "@/portal/pages/PortalDatasetDetailPage.vue"
 import PortalTablesPage from "@/portal/pages/PortalTablesPage.vue";
 import PortalSearchPage from "@/portal/pages/PortalSearchPage.vue";
 import PrimeVue from "primevue/config";
-import { AtlasPreset } from "@/utils/theme-preset";
+import { AtlasPresetApp } from "@/utils/theme-preset";
 
 const routes = [
   {
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPreset,
+        preset: AtlasPresetApp,
         options: {
           prefix: "prime",
           darkModeSelector: "light",

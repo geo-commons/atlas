@@ -14,7 +14,7 @@ import detectKeyboard from "./utils/detect-keyboard";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import PrimeVue from "primevue/config";
-import { AtlasPreset } from "@/utils/theme-preset";
+import { AtlasPresetApp } from "@/utils/theme-preset";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPreset,
+        preset: AtlasPresetApp,
         options: {
           prefix: "prime",
           darkModeSelector: "light",
