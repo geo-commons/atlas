@@ -23,7 +23,7 @@ Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module w
 Bij het installeren van Atlas wordt in de laatste stap een [superuser aangemaakt](./installlokaal.md#maak-een-superuser-aan). Met deze gebruiker (superuser) kan in de adminmodule worden ingelogd op http://localhost:8000/atlas/admin/ (Let op dat de url eindigt met een /).
 Binnen de adminmodule kunnen additionele gebruikers worden aangemaakt en rechten worden toegekend. Alleen gebruikers met supergebruikerstatus hebben toegang tot de adminmodule. 
 Via de parameter ADMIN_IPS (zie README.md) kan worden bepaald welke ip adressen toegang hebben tot de adminmodule. Om beveiligingsredenen zouden deze ip adressen altijd binnen het netwerk van de interne WFS server moeten liggen.
-Het inloggen in de adminmodule verloopt via Single-Sign-On. Het openen van de adminmodule buiten het interne netwerk leidt tot een foutmelding
+Het inloggen in de adminmodule verloopt via Single-Sign-On. Het openen van de adminmodule buiten het interne netwerk leidt tot een foutmelding  
 <img src="images/inlog-admin-sso.png" alt="Inlogscherm Adminmodule" width="300"/>
 
 ---
