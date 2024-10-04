@@ -96,6 +96,7 @@ class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Dataset.objects.all().prefetch_related('layers')
+    pagination_class = CustomPageNumberPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['themes']
     search_fields = ['title']

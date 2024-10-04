@@ -47,9 +47,8 @@ const tableHeaders: Array<TableHeader> = [
 const getLayers = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
   const url = new URL("/atlas/api/v1/layers/", window.location.origin);
 
-  // If params are provided, append them to the URL
   if (params) {
-    url.search = params.toString(); // Automatically adds the query string
+    url.search = params.toString();
   }
 
   const result = await fetch(url.toString(), {
@@ -129,6 +128,8 @@ const saveLayer = async (
         const response = await result.json();
         await router.push(`/layers/update/${response.id}`);
       }
+
+      await getLayers();
     }
   } catch (e) {
     console.error("An unexpected error occurred:", e);

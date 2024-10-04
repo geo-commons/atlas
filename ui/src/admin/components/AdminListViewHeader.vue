@@ -11,6 +11,7 @@ type AdminListViewHeaderProps = {
   enableCreateObject?: boolean;
   enableSort?: boolean;
   name: string;
+  singularName: string;
   apiName: string;
 };
 
@@ -95,7 +96,7 @@ const emit = defineEmits<{
         @click="$emit('update-dialog', 'create-object-dialog')"
       >
         <AddIcon class="tw-w-4 tw-h-4" />
-        Nieuwe laag</Button
+        Nieuwe {{ props.singularName.toLowerCase() }}</Button
       >
     </div>
   </div>

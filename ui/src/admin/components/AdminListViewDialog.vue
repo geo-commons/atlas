@@ -50,11 +50,11 @@ onMounted(async () => {
     :draggable="false"
     :header="
       props.showDialog.type === 'create-object-dialog'
-        ? `Configureer nieuwe ${props.singularName}`
+        ? `Configureer nieuwe ${props.singularName.toLowerCase()}`
         : props.showDialog.type === 'import-dialog'
-          ? `Importeer bestaande ${props.pluralName}`
+          ? `Importeer bestaande ${props.pluralName.toLowerCase()}`
           : props.showDialog.type === 'export-dialog'
-            ? `Exporteer bestaande ${props.pluralName}`
+            ? `Exporteer bestaande ${props.pluralName.toLowerCase()}`
             : ''
     "
     :dismissable-mask="true"

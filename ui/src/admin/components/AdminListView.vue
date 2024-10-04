@@ -240,6 +240,13 @@ onMounted(async () => {
     params.set("page_size", pagination.value.rows.toString());
   }
 
+  await router.push({
+    path: route.path,
+    query: {
+      ...Object.fromEntries(params),
+    },
+  });
+
   // Order params
   const order = params.get("ordering");
   sort.value = {
@@ -264,6 +271,7 @@ defineExpose({ toggleDialog });
   <div class="container __admin">
     <AdminListViewHeader
       :name="props.pluralName"
+      :singular-name="props.singularName"
       :enable-sort="props.enableSort"
       :enable-create-object="props.enableCreateObject"
       :enable-import-export="props.enableImportExport"
