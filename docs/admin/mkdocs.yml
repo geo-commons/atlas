@@ -39,7 +39,7 @@ markdown_extensions:
   - pymdownx.superfences
 
 nav:
-  - 'Admin documentatie': 'index.md'
+  - 'Introductie': 'index.md'
   - 'Installatie': 'installlokaal.md'
+  - 'Configuratie': 'dashboard.md'
   - 'Beveiliging': 'layer_security.md'
-
