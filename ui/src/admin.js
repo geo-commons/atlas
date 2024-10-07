@@ -165,7 +165,7 @@ const routes = [
     meta: { title: "Logs", menu: true },
   },
   {
-    path: "/logs/:id",
+    path: "/logs/update/:id",
     component: LogView,
     meta: { title: "Log Bewerken", menu: true, breadcrumb: { viewers: { title: "Logs" } } },
   },
