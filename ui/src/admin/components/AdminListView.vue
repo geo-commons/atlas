@@ -94,7 +94,7 @@ const updateSearchTerm = async (value: string) => {
 
 const updateListFilters = async (value: any, key: string) => {
   if (value && value?.length) {
-    params.set(key, value.map((val: any) => val.id).join(","));
+    params.set(key, value.map((val: any) => (val.id ? val.id : val)).join(","));
   } else {
     params.delete(key);
   }

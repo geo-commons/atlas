@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, mixins, filters
@@ -159,13 +160,28 @@ class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
 class LogViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'delete']
     permission_classes = [permissions.IsAdminUser]
+    queryset = Log.objects.all()
     serializer_class = LogSerializer
+    pagination_class = CustomPageNumberPagination
 
-    def get_queryset(self):
-        if self.action == 'list':
-            return Log.objects.all().order_by('-id')[:5000]
+    search_fields = ['username']
 
-        return Log.objects.all()
+    filter_backends = [SearchFilter, DjangoFilterBackend, MultipleFieldsFilter]
+    multiple_lookup_fields = ['username', 'source', 'resource']
+
+    @action(detail=False, methods=['get'], url_path='unique-fields')
+    def unique_fields(self, request):
+        unique_usernames = Log.objects.order_by('username').values_list('username', flat=True).distinct()
+        unique_sources = Log.objects.order_by('source').values_list('source', flat=True).distinct()
+        unique_resources = Log.objects.order_by('resource').values_list('resource', flat=True).distinct()
+
+        data = {
+            "usernames": list(unique_usernames),
+            "sources": list(unique_sources),
+            "resources": list(unique_resources)
+        }
+
+        return Response(data)
 
 
 class ConfigurationViewSet(ViewSet):

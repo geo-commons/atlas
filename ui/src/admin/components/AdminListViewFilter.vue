@@ -22,7 +22,7 @@ export type TableFilter = {
   key: string;
   options: any;
   label: string;
-  dataKey: string;
+  dataKey?: string;
 };
 
 const tableFilters: Ref<Array<TableFilter>> = ref([]);

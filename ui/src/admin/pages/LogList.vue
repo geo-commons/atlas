@@ -1,341 +1,104 @@
-<template>
-  <div class="container __admin">
-    <div class="top-menu-container">
-      <div class="page-title-wrapper no-padding">
-        <h1>Logs</h1>
-      </div>
-    </div>
+<script setup lang="ts">
+import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
+import { onMounted, Ref, ref, unref } from "vue";
+import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
+import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 
-    <div class="admin-content-wrapper">
-      <div class="search-filter-container">
-        <div v-show="!loading" class="admin-search-wrapper">
-          <SearchIcon class="icon" />
-          <input id="users-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek gebruiker" />
-        </div>
+const childRef: Ref<null | {
+  toggleDialog: (type: DialogTypes) => void;
+}> = ref(null);
 
-        <div class="filter-wrapper">
-          <FilterSelect
-            v-if="users.length > 0"
-            :filter-options="users"
-            :field-filters="selectedLogsFilters"
-            :filter-property="userFilterProperty"
-            :filter-property-display-name="'Gebruiker'"
-            :track-by="''"
-            :label="''"
-            :style-type="'admin'"
-            @onFilterChange="(v) => setTableFilters(v)"
-          />
-          <FilterSelect
-            v-if="resources.length > 0"
-            :filter-options="resources"
-            :field-filters="selectedLogsFilters"
-            :filter-property="resourceFilterProperty"
-            :filter-property-display-name="'Resource'"
-            :track-by="''"
-            :label="''"
-            :style-type="'admin'"
-            @onFilterChange="(v) => setTableFilters(v)"
-          />
-          <FilterSelect
-            v-if="sources.length > 0"
-            :filter-options="sources"
-            :field-filters="selectedLogsFilters"
-            :filter-property="sourceFilterProperty"
-            :filter-property-display-name="'Bron'"
-            :track-by="''"
-            :label="''"
-            :style-type="'admin'"
-            @onFilterChange="(v) => setTableFilters(v)"
-          />
-        </div>
-      </div>
+const logs: Ref<Array<object>> = ref([]);
+const loading: Ref<boolean> = ref(true);
+const sources: Ref<Array<object>> = ref([]);
+const resources: Ref<Array<object>> = ref([]);
+const users: Ref<Array<object>> = ref([]);
 
-      <PaginationComponent
-        :items="visibleLogs"
-        :nr-of-records="nrOfRecords"
-        :loading="loading"
-        :style-type="'admin'"
-        @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
-        @records-change="(value) => (nrOfRecords = value)"
-      >
-        <template #default>
-          <table class="admin-table">
-            <thead>
-              <tr class="table-border">
-                <th class="first-column-padding">
-                  <SortableTableHeaderItem
-                    :header-text="'Datum'"
-                    :property="'time_created'"
-                    :sort-key="sortKey"
-                    :sort-ascending="sortAscending"
-                    @sort="(column) => sortColumn(column)"
-                  />
-                </th>
-                <th class="first-column-padding">
-                  <SortableTableHeaderItem
-                    :header-text="'Gebruikersnaam'"
-                    :property="'username'"
-                    :sort-key="sortKey"
-                    :sort-ascending="sortAscending"
-                    @sort="(column) => sortColumn(column)"
-                  />
-                </th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="log in paginatedData" :key="log.id" class="table-border">
-                <td class="first-column-padding">
-                  <router-link class="admin-title-link" :to="`/logs/${log.id}`">
-                    {{ formatDateValue(log.time_created) }}
-                  </router-link>
-                </td>
-                <td class="first-column-padding">
-                  <router-link class="admin-title-link" :to="`/logs/${log.id}`">
-                    {{ log.username }}
-                  </router-link>
-                </td>
-                <td class="btn-col">
-                  <button
-                    v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __admin_hover"
-                    aria-label="Bekijk log"
-                    content="Bekijk"
-                    type="button"
-                    @click="$router.push(`/logs/${log.id}`)"
-                  >
-                    <ViewIcon class="icon" />
-                  </button>
-                </td>
-                <td class="btn-col">
-                  <button
-                    v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __admin_hover"
-                    aria-label="Verwijder log"
-                    content="Verwijder"
-                    type="button"
-                    @click="deleteLog(log)"
-                  >
-                    <TrashIcon class="icon" />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </template>
-      </PaginationComponent>
-    </div>
-  </div>
-</template>
-
-<script>
-import Cookies from "js-cookie";
-import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
-import ViewIcon from "@/assets/icons/view-icon.svg";
-import TrashIcon from "@/assets/icons/trash-icon.svg";
-import { sortAlphabetically } from "@/utils/table-sort-helpers";
-import PaginationComponent from "@/components/Pagination.vue";
-import SearchIcon from "@/assets/icons/search-icon.svg";
-import { formatDateValue } from "../../utils/date-formatter";
-import FilterSelect from "@/components/FilterSelect.vue";
-
-export default {
-  name: "LogList",
-  components: {
-    FilterSelect,
-    SearchIcon,
-    PaginationComponent,
-    TrashIcon,
-    ViewIcon,
-    SortableTableHeaderItem,
+const tableHeaders: Array<TableHeader> = [
+  {
+    header: "Datum",
+    key: "time_created",
+    enableLink: true,
   },
-  data() {
-    return {
-      logs: [],
-      newLogData: {},
-      searchQuery: "",
-      currentPageNumber: 1,
-      nrOfRecords: 20,
-      sortAscending: true,
-      sortKey: "",
-      users: [],
-      sources: [],
-      resources: [],
-      loading: false,
-      checkedRows: [],
-      selectedLogsFilters: {},
-      userFilterProperty: "user",
-      sourceFilterProperty: "source",
-      resourceFilterProperty: "resource",
-    };
+  {
+    header: "Gebruikersnaam",
+    key: "username",
+    enableLink: true,
   },
-  computed: {
-    sortedLogs() {
-      if (this.sortKey && this.logs) {
-        return this.logs.slice(0).sort((a, b) => {
-          const textA = a[this.sortKey].toLowerCase();
-          const textB = b[this.sortKey].toLowerCase();
-          return sortAlphabetically(textA, textB, this.sortAscending);
-        });
-      }
+];
 
-      return this.logs;
-    },
-    filteredLogs() {
-      const filters = [];
+const getLogs = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
+  const url = new URL("/atlas/api/v1/logs/", window.location.origin);
 
-      if (this.selectedLogsFilters[this.userFilterProperty]) {
-        filters.push(this.checkUser);
-      }
+  if (params) {
+    url.search = params.toString();
+  }
 
-      if (this.selectedLogsFilters[this.sourceFilterProperty]) {
-        filters.push(this.checkSource);
-      }
+  const result = await fetch(url.toString(), {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+  });
 
-      if (this.selectedLogsFilters[this.resourceFilterProperty]) {
-        filters.push(this.checkResource);
-      }
+  if (!result.ok) {
+    console.error("Could not fetch logs");
+  }
 
-      if (filters.length === 0) {
-        return this.sortedLogs;
-      }
+  const items = await result.json();
 
-      return this.sortedLogs.filter((log) => {
-        return filters.every((filter) => filter.call(this, log));
-      });
-    },
-    visibleLogs() {
-      if (!this.searchQuery) {
-        return this.filteredLogs;
-      }
+  return items;
+};
 
-      return this.filteredLogs.filter(
-        (log) => log.username.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
-      );
-    },
-    paginatedData() {
-      const start = (this.currentPageNumber - 1) * this.nrOfRecords;
-      const end = start + this.nrOfRecords;
-      return this.visibleLogs.slice(start, end);
-    },
-  },
-  created() {
-    this.getLogs();
-    this.getUsers();
-  },
-  methods: {
-    formatDateValue,
-    async getLogs() {
-      this.loading = true;
-      const result = await fetch("/atlas/api/v1/logs/", {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
+const getUniqueFields = async () => {
+  const result = await fetch("/atlas/api/v1/logs/unique-fields/", {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+  });
 
-      if (!result.ok) {
-        console.error("Could not fetch logs");
-      }
+  if (!result.ok) {
+    console.error("Could not fetch unique fields for logs");
+  }
 
-      this.logs = await result.json();
+  const items = await result.json();
 
-      this.sources = await this.getLogSources();
-      this.resources = await this.getResources();
-      this.users = await this.getUsers();
+  const usernames = items.usernames.filter((username: string | null) => username !== null);
+  const resources = items.resources.filter((resource: string | null) => resource !== null);
+  const sources = items.sources.filter((source: string | null) => source !== null);
 
-      this.loading = false;
-    },
-    async getLogSources() {
-      return Array.from(new Set(this.logs.map((log) => log.source).filter((source) => source !== null)));
-    },
-    async getResources() {
-      return Array.from(new Set(this.logs.map((log) => log.resource).filter((resource) => resource !== null)));
-    },
-    async getUsers() {
-      return Array.from(new Set(this.logs.map((log) => log.username).filter((username) => username !== null)));
-    },
-    async deleteLog(log) {
-      const acknowledged = confirm("Weet je zeker dat je de log wilt verwijderen?");
-      if (!acknowledged) {
-        return;
-      }
+  return { usernames, resources, sources };
+};
 
-      const result = await fetch(`/atlas/api/v1/logs/${log.id}/`, {
-        method: "DELETE",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-      });
+// onMounted
+onMounted(() => {
+  Promise.all([getLogs(), getUniqueFields()]).then((result) => {
+    logs.value = result[0].results;
+    users.value = result[1].usernames;
+    resources.value = result[1].resources;
+    sources.value = result[1].sources;
+    loading.value = false;
+  });
+});
 
-      if (result.ok) {
-        this.getLogs();
-      }
-    },
-    setTableFilters(v) {
-      this.selectedLogsFilters = v;
-    },
-    checkUser(filteredUser) {
-      if (!this.selectedLogsFilters[this.userFilterProperty]) {
-        return true;
-      }
-
-      return this.selectedLogsFilters[this.userFilterProperty].some((user) => user === filteredUser.username);
-    },
-    checkSource(filteredSource) {
-      if (!this.selectedLogsFilters[this.sourceFilterProperty]) {
-        return true;
-      }
-
-      return this.selectedLogsFilters[this.sourceFilterProperty].some((source) => source === filteredSource.source);
-    },
-    checkResource(filteredResource) {
-      if (!this.selectedLogsFilters[this.resourceFilterProperty]) {
-        return true;
-      }
-
-      return this.selectedLogsFilters[this.resourceFilterProperty].some(
-        (resource) => resource === filteredResource.resource,
-      );
-    },
-    sortColumn(prop) {
-      if (this.sortKey !== prop) {
-        this.sortKey = prop;
-        this.sortAscending = true;
-      } else {
-        this.sortAscending = !this.sortAscending;
-      }
-    },
-  },
+const getTableFilters = (): Array<TableFilter> => {
+  return [
+    { options: unref(users), name: "Gebruiker", key: "username", label: "" },
+    { options: unref(resources), name: "Resource", key: "resource", label: "" },
+    { options: unref(sources), name: "Bron", key: "source", label: "" },
+  ];
 };
 </script>
 
-<style>
-.search-filter-container {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.no-padding {
-  padding-bottom: 0 !important;
-}
-
-.filter-wrapper {
-  display: flex;
-  gap: 12px;
-}
-
-@media (max-width: 576px) {
-  .search-filter-container,
-  .filter-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .filter-wrapper {
-    width: 100%;
-  }
-}
-</style>
+<template>
+  <AdminListView
+    ref="childRef"
+    :loading="loading"
+    singular-name="Log"
+    plural-name="Logs"
+    api-name="logs"
+    :enable-sort="false"
+    :enable-create-object="false"
+    :enable-import-export="false"
+    :get-objects="getLogs"
+    :table-headers="tableHeaders"
+    :get-table-filters="getTableFilters"
+  />
+</template>

@@ -29,9 +29,10 @@ onMounted(() => {
 
   const selectedItems = paramValue ? paramValue.split(",") : [];
 
-  const item = props.filter.options.filter(
-    (option: any) =>
-      selectedItems.includes(option[props.filter.dataKey].toString()) || selectedItems.includes(option.toString()),
+  const item = props.filter.options.filter((option: any) =>
+    props.filter.dataKey
+      ? selectedItems.includes(option[props.filter.dataKey].toString())
+      : selectedItems.includes(option.toString()),
   );
 
   multiselect.value = item;
