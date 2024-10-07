@@ -149,6 +149,11 @@ class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Table.objects.all()
     serializer_class = TableSerializer
+    pagination_class = CustomPageNumberPagination
+
+    search_fields = ['title']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend]
 
 
 class LogViewSet(viewsets.ModelViewSet):
