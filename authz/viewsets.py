@@ -1,10 +1,13 @@
 import json
 from json import JSONDecodeError
 from django.http import JsonResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions
+from rest_framework.filters import SearchFilter
 
 from webservice.mixins import DataExportImportMixin
 from webservice.models import Source
+from webservice.pagination import CustomPageNumberPagination
 from .lib import can_access_source, authorize_ows_request, authorize_wmts_request, authorize_rest_request
 from .models import Authorization
 from .serializers import AuthorizationSerializer
@@ -66,3 +69,8 @@ class AuthorizationViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Authorization.objects.all()
     serializer_class = AuthorizationSerializer
+    pagination_class = CustomPageNumberPagination
+
+    search_fields = ['resource']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend]

@@ -43,7 +43,7 @@ import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.v
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
-import { AtlasPresetAdmin, AtlasPresetApp } from "@/utils/theme-preset";
+import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import TestLayerList from "@/admin/pages/TestLayerList.vue";
 
 defineRule("required", (value) => {
