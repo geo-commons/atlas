@@ -81,7 +81,7 @@ const saveViewer = async (
 
       if (continueEditing) {
         const response = await result.json();
-        await router.push(`/layers/update/${response.id}`);
+        await router.push(`/viewers/update/${response.id}`);
       }
     }
   } catch (e) {

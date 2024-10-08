@@ -149,6 +149,10 @@ class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Theme.objects.all()
     serializer_class = ThemeSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+
+    search_fields = ['title']
 
     def get_serializer_class(self):
         if self.action in ['partial_update', 'update', 'create']:
