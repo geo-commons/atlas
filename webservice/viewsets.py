@@ -161,6 +161,11 @@ class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Viewer.objects.all()
     serializer_class = ViewerSerializer
+    pagination_class = CustomPageNumberPagination
+
+    search_fields = ['label']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend]
 
 
 class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):

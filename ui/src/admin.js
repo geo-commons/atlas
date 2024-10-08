@@ -35,8 +35,8 @@ import DatasetList from "@/admin/pages/DatasetList.vue";
 import DatasetCreateUpdate from "@/admin/pages/DatasetCreateUpdate.vue";
 import LogList from "@/admin/pages/LogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
-import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
+import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
 import AuthorizationList from "@/admin/pages/AuthorizationList.vue";
 import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.vue";
@@ -45,7 +45,6 @@ import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import TestLayerList from "@/admin/pages/TestLayerList.vue";
-import UserListV2 from "@/admin/pages/UserListV2.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
