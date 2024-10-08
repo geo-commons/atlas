@@ -70,8 +70,6 @@ import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
 import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 
-// todo: check if headers need to be sortable
-
 export default {
   name: "LinkedDataTable",
   components: {
@@ -84,7 +82,6 @@ export default {
   props: {
     linkedData: Object,
     isOpen: Boolean,
-    initialTableHeaders: Array,
     overallFilter: Object,
     position: Object,
     user: Object,
@@ -92,7 +89,7 @@ export default {
   data() {
     return {
       features: [],
-      displayProperties: [],
+      fetchedDisplayProperties: [],
       loading: false,
       error: "",
       numberMatched: null,
@@ -108,12 +105,23 @@ export default {
 
       return this.linkedData.title;
     },
-    tableHeaders() {
-      if (!this.initialTableHeaders.length && this.features) {
-        return Object.keys(this.features[0].properties);
+    displayProperties() {
+      if (this.linkedData.headers.length) {
+        return this.fetchedDisplayProperties.slice(0, this.linkedData.headers.length);
       }
 
-      return this.initialTableHeaders;
+      return this.fetchedDisplayProperties;
+    },
+    tableHeaders() {
+      if (this.linkedData.headers.length) {
+        return this.linkedData.headers;
+      }
+
+      if (this.linkedData.display_properties.length) {
+        return Object.keys(this.features[0].properties).slice(0, this.linkedData.display_properties.length);
+      }
+
+      return Object.keys(this.features[0].properties);
     },
   },
   watch: {
@@ -188,18 +196,18 @@ export default {
         this.features = data.features;
         this.numberMatched = data.numberMatched;
 
-        if (this.displayProperties.length === 0 && data.features.length > 0) {
-          // cache first retrieval of properties into this.displayProperties
+        if (this.fetchedDisplayProperties.length === 0 && data.features.length > 0) {
+          // cache first retrieval of properties into this.fetchedDisplayProperties
           const fetchedProperties = Object.keys(data.features[0].properties);
 
-          this.displayProperties =
+          this.fetchedDisplayProperties =
             this.linkedData.display_properties.length > 0 ? this.linkedData.display_properties : fetchedProperties;
         }
       } catch (e) {
         console.error(e);
         this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
         this.features = [];
-        this.displayProperties = [];
+        this.fetchedDisplayProperties = [];
         this.searchProperties = [];
         this.numberMatched = 0;
       }
@@ -306,11 +314,5 @@ export default {
   padding: 8px 4px;
   border-bottom: 1px solid var(--color-grey-60);
   text-align: left;
-}
-
-.__marker {
-  stroke: currentColor;
-  stroke-width: 2px;
-  fill: white;
 }
 </style>

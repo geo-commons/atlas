@@ -546,10 +546,4 @@ tbody > tr:hover {
 .total-results {
   margin-bottom: 0;
 }
-
-.__marker {
-  stroke: currentColor;
-  stroke-width: 2px;
-  fill: white;
-}
 </style>

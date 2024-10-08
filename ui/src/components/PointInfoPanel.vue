@@ -28,7 +28,7 @@
                 content="Toon EPSG:4326 projectie"
                 aria-label="Toon EPSG:4326 projectie"
               >
-                <marker-icon class="icon __small" />
+                <marker-icon class="icon __small __marker" />
               </button>
               <template #content>
                 <div class="container">

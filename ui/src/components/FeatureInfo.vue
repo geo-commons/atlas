@@ -32,7 +32,6 @@
         <div v-if="feature.properties[linkedData.source_key]" class="linked-data">
           <LinkedDataTable
             :linked-data="linkedData"
-            :initial-table-headers="linkedData.headers"
             :overall-filter="{ key: linkedData.target_key, value: feature.properties[linkedData.source_key] }"
             :position="position"
             @set-position="setPosition"
