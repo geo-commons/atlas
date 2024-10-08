@@ -41,9 +41,10 @@ class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
-    search_fields = []
-    filterset_fields = []
+    search_fields = ['title']
 
 
 class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
@@ -87,7 +88,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     queryset = AtlasUser.objects.all()
     serializer_class = UserSerializer
     pagination_class = CustomPageNumberPagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
 
     search_fields = ['username', 'email', 'first_name', 'last_name', 'name']
     multiple_lookup_fields = ['atlas_groups']
@@ -106,7 +107,7 @@ class GroupsViewSet(viewsets.ModelViewSet):
     queryset = AtlasGroup.objects.all()
     serializer_class = GroupSerializer
     pagination_class = CustomPageNumberPagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
     search_fields = ['name']
 
@@ -116,7 +117,7 @@ class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Dataset.objects.all().prefetch_related('layers')
     pagination_class = CustomPageNumberPagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
     filterset_fields = ['themes']
     search_fields = ['title']
     serializer_class = DatasetSerializer
@@ -150,7 +151,7 @@ class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     queryset = Theme.objects.all()
     serializer_class = ThemeSerializer
     pagination_class = CustomPageNumberPagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
     search_fields = ['title']
 
@@ -169,7 +170,7 @@ class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
 
     search_fields = ['label']
 
-    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
 
 
 class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
@@ -181,7 +182,7 @@ class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
 
     search_fields = ['title']
 
-    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
 
 
 class LogViewSet(viewsets.ModelViewSet):
@@ -193,7 +194,7 @@ class LogViewSet(viewsets.ModelViewSet):
 
     search_fields = ['username']
 
-    filter_backends = [SearchFilter, DjangoFilterBackend, MultipleFieldsFilter]
+    filter_backends = [SearchFilter, DjangoFilterBackend, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['username', 'source', 'resource']
 
     @action(detail=False, methods=['get'], url_path='unique-fields')
