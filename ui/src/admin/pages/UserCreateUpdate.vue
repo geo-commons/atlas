@@ -73,8 +73,9 @@ export default {
       return result;
     },
     setAtlasGroups() {
-      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      const groups = this.initialValues.atlas_groups.map((group) => group.id);
+      const selectedGroups = this.groups.filter((group) => groups.includes(group.id));
+      const availableGroups = this.groups.filter((group) => !groups.includes(group.id));
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
     async saveUser(currentValues) {

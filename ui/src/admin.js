@@ -45,6 +45,7 @@ import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import TestLayerList from "@/admin/pages/TestLayerList.vue";
+import UserListV2 from "@/admin/pages/UserListV2.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {

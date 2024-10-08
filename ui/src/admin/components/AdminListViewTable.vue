@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import AdminListViewTableHeader, { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
 import { Ref, ref, watch } from "vue";
 import { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
+import AdminListViewTableValue from "@/admin/components/AdminListViewTableValue.vue";
 
 // Properties
 export type TableHeader = {
@@ -134,7 +135,9 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
           </td>
 
           <td v-for="header in tableHeaders" :key="header.key" class="first:tw-pl-4">
-            <p v-if="!header.enableLink">{{ getValue(row, header.key, header.isArrayWithKey, header.mapValues) }}</p>
+            <p v-if="!header.enableLink">
+              <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
+            </p>
             <router-link
               v-else
               class="admin-title-link"
@@ -142,7 +145,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
               :aria-label="`${row[header.key]} configureren`"
               :to="`/${props.apiName}/update/${row.id}`"
             >
-              {{ getValue(row, header.key, header.isArrayWithKey, header.mapValues) }}
+              <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
             </router-link>
           </td>
           <td class="btn-col">

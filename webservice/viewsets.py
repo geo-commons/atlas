@@ -20,7 +20,8 @@ from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewe
 from .pagination import CustomPageNumberPagination
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
-    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer
+    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer, \
+    UserCreateUpdateSerializer
 
 import os
 from django.core.files.storage import default_storage
@@ -85,12 +86,29 @@ class UsersViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = AtlasUser.objects.all()
     serializer_class = UserSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter]
+
+    search_fields = ['username', 'email', 'first_name', 'last_name', 'name']
+    multiple_lookup_fields = ['atlas_groups']
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return UserSerializer
+        if self.action in ['create', 'update', 'partial_update']:
+            return UserCreateUpdateSerializer
+
+        return UserSerializer
 
 
 class GroupsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = AtlasGroup.objects.all()
     serializer_class = GroupSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+
+    search_fields = ['name']
 
 
 class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
