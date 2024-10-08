@@ -32,9 +32,10 @@ class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Map.objects.all()
     serializer_class = MapSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
-    search_fields = []
-    filterset_fields = []
+    search_fields = ['title']
 
 
 class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
@@ -78,9 +79,10 @@ class CategoriesViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
-    search_fields = []
-    filterset_fields = []
+    search_fields = ['title']
 
 
 class UsersViewSet(viewsets.ModelViewSet):
