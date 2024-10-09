@@ -81,7 +81,8 @@ const emit = defineEmits<{
         outlined
         class="!tw-text-sm !tw-font-medium !tw-no-underline"
         as="router-link"
-        label="Router"
+        label="Sortering"
+        aria-label="Sortering"
         :to="{
           name: 'sort',
           params: { parentRoute: props.apiName },
