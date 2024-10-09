@@ -81,7 +81,7 @@ const updateSearchTerm = async (value: string) => {
   params.set("page", "1");
   params.set("page_size", pagination.value.rows.toString());
 
-  await router.push({
+  await router.replace({
     path: route.path,
     query: {
       ...Object.fromEntries(params),
@@ -106,7 +106,7 @@ const updateListFilters = async (value: any, key: string) => {
   params.set("page", "1");
   params.set("page_size", pagination.value.rows.toString());
 
-  await router.push({
+  await router.replace({
     path: route.path,
     query: {
       ...Object.fromEntries(params),
@@ -138,7 +138,7 @@ const updateListSort = async (key: string) => {
   params.set("page", "1");
   params.set("page_size", pagination.value.rows.toString());
 
-  await router.push({
+  await router.replace({
     path: route.path,
     query: {
       ...Object.fromEntries(params),
@@ -162,7 +162,7 @@ const updateListPagination = async (pageState: PageState) => {
   params.set("page", (pagination.value.page + 1).toString());
   params.set("page_size", pagination.value.rows.toString());
 
-  await router.push({
+  await router.replace({
     path: route.path,
     query: {
       ...Object.fromEntries(params),
@@ -255,7 +255,7 @@ onMounted(async () => {
     params.set("page_size", pagination.value.rows.toString());
   }
 
-  await router.push({
+  await router.replace({
     path: route.path,
     query: {
       ...Object.fromEntries(params),
