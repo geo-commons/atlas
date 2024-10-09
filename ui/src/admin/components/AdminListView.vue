@@ -135,8 +135,6 @@ const updateListSort = async (key: string) => {
   }
 
   params.set("ordering", `${sort.value.sortAscending ? "" : "-"}${sort.value.sortKey}`);
-  params.set("page", "1");
-  params.set("page_size", pagination.value.rows.toString());
 
   await router.replace({
     path: route.path,
