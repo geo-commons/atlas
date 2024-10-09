@@ -35,42 +35,12 @@ export default {
     closeFormModal() {
       this.$emit("close");
     },
-    getObjectPath(objectType) {
-      switch (objectType) {
-        case "kaartlagen":
-          return "layers";
-        case "layers":
-          return "layers";
-        case "bronnen":
-          return "sources";
-        case "sources":
-          return "sources";
-        case "categorieën":
-          return "categories";
-        case "categories":
-          return "categories";
-        case "kaarten":
-          return "maps";
-        case "maps":
-          return "maps";
-        case "themes":
-          return "themes";
-        case "datasets":
-          return "datasets";
-        case "tables":
-          return "tables";
-        case "viewers":
-          return "viewers";
-        case "authorizations":
-          return "authorizations";
-      }
-    },
     async exportItems() {
       const ids = { ids: this.selectedRows.map((row) => row.id) };
 
       const data = JSON.stringify(this.isAllSelected ? { ids: [] } : ids);
 
-      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName.apiName)}/export/`;
+      let fetchUrl = `/atlas/api/v1/${this.objectName.apiName}/export/`;
 
       const result = await fetch(fetchUrl, {
         method: "POST",

@@ -87,36 +87,6 @@ export default {
       }
       return "";
     },
-    getObjectPath(objectType) {
-      switch (objectType) {
-        case "kaartlagen":
-          return "layers";
-        case "layers":
-          return "layers";
-        case "bronnen":
-          return "sources";
-        case "sources":
-          return "sources";
-        case "categorieën":
-          return "categories";
-        case "categories":
-          return "categories";
-        case "kaarten":
-          return "maps";
-        case "maps":
-          return "maps";
-        case "themes":
-          return "themes";
-        case "datasets":
-          return "datasets";
-        case "tables":
-          return "tables";
-        case "viewers":
-          return "viewers";
-        case "authorizations":
-          return "authorizations";
-      }
-    },
     closeFormModal() {
       this.$emit("close");
     },
@@ -148,7 +118,7 @@ export default {
       const data = new FormData();
       data.append("file", this.uploadedFile);
 
-      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName.apiName)}/import/`;
+      let fetchUrl = `/atlas/api/v1/${this.objectName.apiName}/import/`;
 
       if (dryRun) {
         fetchUrl += "?dry_run=1";
