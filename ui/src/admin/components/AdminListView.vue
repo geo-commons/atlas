@@ -278,6 +278,26 @@ onMounted(async () => {
   };
 });
 
+const handleSaveCreateObjectDialogData = async (
+  currentValues: object,
+  continueEditing: boolean,
+  sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
+) => {
+  if (!props.saveCreateObjectDialogData) {
+    return;
+  }
+
+  const result = await props.saveCreateObjectDialogData(currentValues, continueEditing, sendSaveRequest);
+
+  // Set items
+  const newItems = await props.getObjects(params);
+
+  items.value = {
+    results: newItems.results,
+    count: newItems.count,
+  };
+};
+
 // Define expose, expose functions / elements to parent element
 defineExpose({ toggleDialog });
 </script>
@@ -329,7 +349,7 @@ defineExpose({ toggleDialog });
         :singular-name="props.singularName"
         :plural-name="props.pluralName"
         :get-create-object-dialog-sections="props.getCreateObjectDialogSections"
-        :save-create-object-dialog-data="props.saveCreateObjectDialogData"
+        :save-create-object-dialog-data="handleSaveCreateObjectDialogData"
         :initial-create-object-dialog-data="props.initialCreateObjectDialogData"
         :api-name="props.apiName"
         :get-objects="props.getObjects"
