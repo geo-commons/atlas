@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Properties
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
-import { onMounted, Ref, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 type AdminListViewFilterProps = {

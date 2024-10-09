@@ -94,7 +94,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
 </script>
 
 <template>
-  <div class="card !tw-text-sm tw-overflow-x-scroll">
+  <div class="card !tw-text-md tw-overflow-x-scroll">
     <table class="admin-table tw-rounded-md">
       <thead>
         <tr class="table-border">

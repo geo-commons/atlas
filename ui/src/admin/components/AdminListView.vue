@@ -301,6 +301,7 @@ defineExpose({ toggleDialog });
         @delete-row="deleteRow"
       />
       <AdminListViewPaginator
+        v-if="items.count > pagination.rows"
         :total-results="items.count"
         :pagination="pagination"
         @update-list-pagination="updateListPagination"
