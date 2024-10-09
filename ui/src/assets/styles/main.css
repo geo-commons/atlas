@@ -363,6 +363,7 @@ svg {
   color: black;
   font-size: var(--font-size-normal);
   text-decoration: none;
+  height: fit-content;
 }
 
 .text-button:not([disabled]):hover {

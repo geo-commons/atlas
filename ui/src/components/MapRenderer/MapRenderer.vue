@@ -3,7 +3,7 @@
     id="map-container"
     ref="mapContainer"
     class="map-container"
-    :class="{ showInfoPanel, showDataPanel, portalHeader: config.features.portal }"
+    :class="{ showInfoPanel, showDataPanel, portalHeader: !isEmbed && config.features.portal }"
     :style="computedStyle"
   >
     <div class="renderer-container">

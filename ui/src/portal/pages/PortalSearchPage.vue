@@ -1,18 +1,20 @@
 <template>
-  <div class="container __portal">
-    <h1 class="__portal">Alle zoekresultaten voor: "{{ searchQuery }}" ({{ datasets.length }} resultaten)</h1>
+  <div class="tw-mx-auto tw-max-w-7xl tw-px-4 md:tw-pt-6 tw-my-4 tw-w-full">
+    <h1 class="tw-text-2xl md:tw-text-4xl tw-my-0 tw-mb-2">
+      Alle zoekresultaten voor: "{{ searchQuery }}" ({{ datasets.length }} resultaten)
+    </h1>
     <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-    <section v-else class="search-results-wrapper">
-      <div class="search-container">
+    <section v-else class="tw-flex-1">
+      <div class="tw-w-full md:tw-w-2/6 tw-my-5">
         <PortalSearchField :initial-search-query="searchQuery" @on-search="onSearch" />
       </div>
       <div v-if="results > 0">
         <div v-if="datasets.length > 0">
-          <h3>Datasets</h3>
+          <h3 class="tw-m-0 tw-text-3xl md:tw-mt-6 md:tw-mb-2">Datasets</h3>
           <PortalDatasetList :datasets="datasets" />
         </div>
       </div>
-      <div v-else class="no-results-wrapper">
+      <div v-else class="tw-mt-4">
         <p>Helaas er zijn geen resultaten gevonden voor de zoekopdracht: "{{ searchQuery }}"</p>
       </div>
     </section>
@@ -66,25 +68,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-h3 {
-  margin: 0;
-  font-size: var(--font-size-xl);
-}
-
-@media (min-width: 1024px) {
-  h3 {
-    margin: 12px 0;
-    font-size: var(--font-size-2xl);
-  }
-}
-
-.search-results-wrapper {
-  flex: 1;
-}
-
-.no-results-wrapper {
-  padding-top: 20px;
-}
-</style>
