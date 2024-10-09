@@ -5,6 +5,7 @@ import AdminListViewMultiSelect from "@/admin/components/AdminListViewMultiSelec
 // Properties
 type AdminListViewFilterProps = {
   params: URLSearchParams;
+  singularName: string;
   getTableFilters?: () => Array<TableFilter>;
 };
 
@@ -44,7 +45,7 @@ onMounted(async () => {
       <InputText
         :model-value="props.params.get('search')"
         class="!tw-text-sm"
-        placeholder="Zoekterm..."
+        :placeholder="'Zoek op ' + props.singularName.toLowerCase()"
         @update:modelValue="(value: string) => $emit('update-search-term', value)"
       />
     </InputGroup>

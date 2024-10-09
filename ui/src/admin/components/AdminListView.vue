@@ -9,6 +9,7 @@ import { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue"
 import AdminListViewPaginator, { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
 import { PageState } from "primevue/paginator";
 import Cookies from "js-cookie";
+import SpinnerComponent from "@/components/Spinner.vue";
 
 // Properties
 type AdminListViewProps = {
@@ -312,11 +313,12 @@ defineExpose({ toggleDialog });
       @update-dialog="toggleDialog"
       @toggle-select="toggleSelect"
     />
-    <div v-if="loading">Laden...</div>
+    <div v-if="loading"><SpinnerComponent /></div>
     <div v-else>
       <AdminListViewFilter
         :params="params"
         :get-table-filters="props.getTableFilters"
+        :singular-name="props.singularName"
         @update-search-term="updateSearchTerm"
         @update-list-filters="updateListFilters"
       />
