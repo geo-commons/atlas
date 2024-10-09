@@ -59,7 +59,7 @@ export default {
   name: "AdminFileImport",
   components: { ArrowDownTrayIcon },
   props: {
-    objectName: String,
+    objectName: Object,
   },
   data() {
     return {
@@ -148,7 +148,7 @@ export default {
       const data = new FormData();
       data.append("file", this.uploadedFile);
 
-      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName)}/import/`;
+      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName.apiName)}/import/`;
 
       if (dryRun) {
         fetchUrl += "?dry_run=1";

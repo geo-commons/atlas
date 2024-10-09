@@ -3,7 +3,7 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 import AdminFileImport from "@/admin/components/AdminFileImport.vue";
 import { ShowDialogType, DialogTypes } from "@/admin/components/AdminListView.vue";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 // Properties
 type AdminListViewDialogProps = {
@@ -34,6 +34,16 @@ const emit = defineEmits<{
 // Dialog logic
 const sections = ref({});
 
+const header = computed(() => {
+  return props.showDialog.type === "create-object-dialog"
+    ? `Configureer nieuwe ${props.singularName.toLowerCase()}`
+    : props.showDialog.type === "import-dialog"
+      ? `Importeer bestaande ${props.pluralName.toLowerCase()}`
+      : props.showDialog.type === "export-dialog"
+        ? `Exporteer bestaande ${props.pluralName.toLowerCase()}`
+        : "";
+});
+
 // lifecycle hooks
 onMounted(async () => {
   if (props.getCreateObjectDialogSections) {
@@ -48,15 +58,7 @@ onMounted(async () => {
     :modal="true"
     :closable="true"
     :draggable="false"
-    :header="
-      props.showDialog.type === 'create-object-dialog'
-        ? `Configureer nieuwe ${props.singularName.toLowerCase()}`
-        : props.showDialog.type === 'import-dialog'
-          ? `Importeer bestaande ${props.pluralName.toLowerCase()}`
-          : props.showDialog.type === 'export-dialog'
-            ? `Exporteer bestaande ${props.pluralName.toLowerCase()}`
-            : ''
-    "
+    :header="header"
     :dismissable-mask="true"
     class="tw-w-[80%]"
     @update:visible="$emit('update-dialog', props.showDialog.type)"
@@ -78,14 +80,14 @@ onMounted(async () => {
     />
     <div v-else-if="props.showDialog.type === 'import-dialog'">
       <AdminFileImport
-        :object-name="props.apiName"
+        :object-name="{ apiName: props.apiName, singularName: props.singularName, pluralName: props.pluralName }"
         @import-successful="props.getObjects"
         @close="$emit('update-dialog', props.showDialog.type)"
       />
     </div>
     <div v-else-if="props.showDialog.type === 'export-dialog'">
       <AdminFileExport
-        :object-name="props.apiName"
+        :object-name="{ apiName: props.apiName, singularName: props.singularName, pluralName: props.pluralName }"
         :selected-rows="props.selectedItems"
         :is-all-selected="props.isAllSelected"
         @close="$emit('update-dialog', props.showDialog.type)"

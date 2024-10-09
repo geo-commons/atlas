@@ -1,11 +1,13 @@
 <template>
   <div class="export-wrapper">
-    <p v-if="selectedRows.length > 0">Weet u zeker dat u de volgende {{ objectName }} wilt exporteren?</p>
-    <p v-else>Er zijn geen {{ objectName }} geselecteerd.</p>
+    <p v-if="selectedRows.length > 0">
+      Weet u zeker dat u de volgende {{ objectName.pluralName.toLowerCase() }} wilt exporteren?
+    </p>
+    <p v-else>Er zijn geen {{ objectName.pluralName.toLowerCase() }} geselecteerd.</p>
     <ul v-if="!isAllSelected" class="selected-rows">
       <li v-for="row in selectedRows" :key="row.id">- {{ row.title }}</li>
     </ul>
-    <p v-if="isAllSelected">Alle {{ objectName }}.</p>
+    <p v-if="isAllSelected">Alle {{ objectName.pluralName.toLowerCase() }}.</p>
     <div class="admin-btn-wrapper">
       <button class="button __secondary_admin" type="button" @click="closeFormModal">Annuleer</button>
       <button class="button __primary_admin" type="button" :disabled="!selectedRows" @click="exportItems">
@@ -23,7 +25,7 @@ export default {
   name: "AdminFileExport",
   props: {
     selectedRows: Array,
-    objectName: String,
+    objectName: Object,
     isAllSelected: Boolean,
   },
   data() {
@@ -68,7 +70,7 @@ export default {
 
       const data = JSON.stringify(this.isAllSelected ? { ids: [] } : ids);
 
-      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName)}/export/`;
+      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName.apiName)}/export/`;
 
       const result = await fetch(fetchUrl, {
         method: "POST",
@@ -92,7 +94,7 @@ export default {
       fileLink.href = fileBlob;
       fileLink.setAttribute("target", "_blank");
 
-      const exportName = this.objectName + "_" + getDateString();
+      const exportName = this.objectName.apiName + "_" + getDateString();
       fileLink.download = exportName + ".json";
 
       // simulate click
