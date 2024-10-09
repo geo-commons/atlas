@@ -90,7 +90,6 @@ export default {
       this.sources = response.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
-      console.log(this.sources);
       return response;
     },
     async getGroups() {

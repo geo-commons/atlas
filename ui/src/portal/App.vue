@@ -1,5 +1,5 @@
 <template>
-  <div class="app" :style="computedStyle">
+  <div class="tw-flex tw-min-h-full tw-w-full tw-flex-col" :style="computedStyle">
     <portal-header />
     <portal-breadcrumb />
     <router-view></router-view>
@@ -32,15 +32,6 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.app {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-}
-</style>
 
 <style>
 @import "../assets/styles/main.css";
