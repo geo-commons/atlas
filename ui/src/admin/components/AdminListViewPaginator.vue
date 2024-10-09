@@ -34,7 +34,7 @@ export type PaginationRef = {
           class: ['!tw-bg-transparent !tw-px-0 !tw-flex'],
         },
       }"
-      @page="(pageState: PageState) => $emit('update-list-pagination', pageState)"
+      @page="(pageState: PageState) => emit('update-list-pagination', pageState)"
     >
     </Paginator>
     <p class="tw-text-sm">Aantal resultaten: {{ props.totalResults }}</p>

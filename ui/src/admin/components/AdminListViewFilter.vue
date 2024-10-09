@@ -46,7 +46,7 @@ onMounted(async () => {
         :model-value="props.params.get('search')"
         class="!tw-text-sm"
         :placeholder="'Zoek op ' + props.singularName.toLowerCase()"
-        @update:modelValue="(value: string) => $emit('update-search-term', value)"
+        @update:modelValue="(value: string) => emit('update-search-term', value)"
       />
     </InputGroup>
     <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2 tw-max-w-full">
@@ -54,7 +54,7 @@ onMounted(async () => {
         <span class="tw-font-medium tw-text-sm">{{ filter.name }}</span>
         <AdminListViewMultiSelect
           :filter="filter"
-          @update-list-filters="(value: any, key: string) => $emit('update-list-filters', value, key)"
+          @update-list-filters="(value: any, key: string) => emit('update-list-filters', value, key)"
         />
       </div>
     </div>
