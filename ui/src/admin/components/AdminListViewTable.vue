@@ -24,6 +24,7 @@ type AdminListViewProps = {
   sort: TableHeaderRef;
   enableSelectable: boolean;
   pagination: PaginationRef;
+  clearSelected: boolean;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {});
@@ -35,6 +36,7 @@ const emit = defineEmits<{
   (e: "remove-all-elements-from-selected-items"): void;
   (e: "toggle-is-all-selected", value: boolean): void;
   (e: "delete-row", row: any): void;
+  (e: "toggle-clear-selected"): void;
 }>();
 
 // Initiation
@@ -53,6 +55,19 @@ const checkAllRows = (value: boolean) => {
     emit("toggle-element-in-checked-row", value, row.id, row.title ? row.title : row.label ? row.label : "");
   }
 };
+
+watch(
+  () => props.clearSelected,
+  (value) => {
+    if (value) {
+      checkedAllRows.value = false;
+      checkedRows.value = [];
+      checkAllRows(false);
+
+      emit("toggle-clear-selected");
+    }
+  },
+);
 
 watch(
   () => props.items,

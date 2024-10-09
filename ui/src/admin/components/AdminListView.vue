@@ -52,6 +52,10 @@ const toggleDialog = (type: DialogTypes) => {
     type: type,
     show: !showDialog.value.show,
   };
+
+  if (type === "export-dialog" && showDialog.value.show && selectedItems.value.size < 1) {
+    enableSelectable.value = true;
+  }
 };
 
 // Table logic
@@ -210,13 +214,24 @@ const removeAllSelectedItems = () => {
 };
 
 const enableSelectable: Ref<boolean> = ref(false);
+const clearSelected: Ref<boolean> = ref(false);
 
 const toggleSelect = () => {
   enableSelectable.value = !enableSelectable.value;
+
+  if (!enableSelectable.value) {
+    removeAllSelectedItems();
+    isAllSelected.value = false;
+    clearSelected.value = true;
+  }
 };
 
 const toggleIsAllSelected = (value: boolean) => {
   isAllSelected.value = value;
+};
+
+const toggleClearSelected = () => {
+  clearSelected.value = !clearSelected.value;
 };
 
 // Lifecycle hooks
@@ -294,11 +309,13 @@ defineExpose({ toggleDialog });
         :pagination="pagination"
         :table-headers="props.tableHeaders"
         :sort="sort"
+        :clear-selected="clearSelected"
         @update-list-sort="updateListSort"
         @toggle-element-in-checked-row="toggleSelectedItems"
         @remove-all-elements-from-selected-items="removeAllSelectedItems"
         @toggle-is-all-selected="toggleIsAllSelected"
         @delete-row="deleteRow"
+        @toggle-clear-selected="toggleClearSelected"
       />
       <AdminListViewPaginator
         v-if="items.count > pagination.rows"
