@@ -52,7 +52,7 @@
           <vee-error-message class="form-error" name="list" />
         </div>
       </div>
-      <div class="">
+      <div>
         <div class="layer-setting">
           <label class="question-label" for="headers">Tabel kopjes</label>
           <textarea
@@ -90,7 +90,7 @@
 
 <script>
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
-import { Form as VeeForm, ErrorMessage as VeeErrorMessage, Field as VeeField } from "vee-validate";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 
 export default {
   name: "TemplateForm",

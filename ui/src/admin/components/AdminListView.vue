@@ -268,7 +268,9 @@ defineExpose({ toggleDialog });
       :api-name="props.apiName"
       @update-dialog="toggleDialog"
     />
-    <div v-if="loading"><SpinnerComponent /></div>
+    <div v-if="loading">
+      <SpinnerComponent />
+    </div>
     <div v-else>
       <AdminListViewFilter
         :params="params"
@@ -283,6 +285,7 @@ defineExpose({ toggleDialog });
         :pagination="pagination"
         :table-headers="props.tableHeaders"
         :sort="sort"
+        :enable-import-export="props.enableImportExport"
         @update-list-sort="updateListSort"
         @toggle-element-in-checked-row="toggleSelectedItems"
         @remove-all-elements-from-selected-items="removeAllSelectedItems"

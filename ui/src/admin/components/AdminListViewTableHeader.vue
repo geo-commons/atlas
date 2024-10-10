@@ -43,7 +43,6 @@ export type TableHeaderRef = { sortKey: string; sortAscending: boolean };
               ? props.header.overrideKeyForFilter === props.sort.sortKey
               : props.header.key === props.sort.sortKey) && props.sort.sortAscending
           "
-          class=""
         />
         <ChevronDownIcon
           v-if="
@@ -51,7 +50,6 @@ export type TableHeaderRef = { sortKey: string; sortAscending: boolean };
               ? props.header.overrideKeyForFilter === props.sort.sortKey
               : props.header.key === props.sort.sortKey) && !props.sort.sortAscending
           "
-          class=""
         />
       </span>
     </span>

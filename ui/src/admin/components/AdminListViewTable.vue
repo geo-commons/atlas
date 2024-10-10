@@ -23,6 +23,7 @@ type AdminListViewProps = {
   tableHeaders: Array<TableHeader>;
   sort: TableHeaderRef;
   pagination: PaginationRef;
+  enableImportExport: boolean;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {});
@@ -98,7 +99,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
     <table class="admin-table tw-rounded-md">
       <thead>
         <tr class="table-border">
-          <th class="tw-min-w-[32px] tw-max-w-[32px] tw-overflow-x-hidden">
+          <th v-if="props.enableImportExport" class="tw-w-8 tw-p-2">
             <Checkbox
               v-model="checkedAllRows"
               :binary="true"
@@ -118,7 +119,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
       </thead>
       <tbody v-if="items.length">
         <tr v-for="row in items" :key="row.id" class="table-border">
-          <td class="">
+          <td v-if="props.enableImportExport" class="tw-w-8 tw-p-2">
             <Checkbox
               v-model="checkedRows[row.id]"
               :binary="true"
