@@ -29,7 +29,6 @@ export default {
   },
   mounted() {
     this.computedStyle["--color-primary-organization"] = this.config.organization_primary_color;
-    console.log("test");
   },
 };
 </script>
