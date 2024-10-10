@@ -70,7 +70,7 @@ onMounted(async () => {
     :header="header"
     :dismissable-mask="true"
     class="tw-w-[80%]"
-    @update:visible="$emit('update-dialog', props.showDialog.type)"
+    @update:visible="updateDialog"
   >
     <AdminFormSections
       v-if="
