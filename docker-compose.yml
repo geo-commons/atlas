@@ -13,6 +13,7 @@ services:
       - DB_USER=atlas
       - DB_PASSWORD=atlas
       - DB_NAME=atlas
+      - ENVIRONMENT=acceptance
       - SMARTSTREET_USER=
       - SMARTSTREET_PASSWORD=
       - SMARTSTREET_API_KEY=

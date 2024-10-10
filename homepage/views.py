@@ -94,7 +94,7 @@ def v3_admin(request):
     config = { 
         **config,                 
         'application_version': app_version(),
-        'application_environment': os.getenv('ATLAS_ENVIRONMENT'),
+        'application_environment': os.getenv('ENVIRONMENT'),
         }
     
     context = {
