@@ -12,6 +12,7 @@ data:
   DB_HOST: "{{ .Values.dbHost }}"
   DB_USER: "{{ .Values.dbUser }}"
   DB_NAME: "{{ .Values.dbName }}"
+  ENVIRONMENT: "{{ .Values.environment }}"
   SMARTSTREET_USER: "{{ .Values.smartstreetUser }}"
   MATOMO_URL: "{{ .Values.matomoUrl }}"
   MATOMO_SITE_ID: "{{ .Values.matomoSiteId }}"
