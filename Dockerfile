@@ -70,7 +70,8 @@ RUN chmod +x /start.sh
 RUN mkdir -p /app/static /app/media && chown www-data:www-data /app/static /app/media /app/docs/user/site /app/docs/admin/site
 
 ENV PYTHONUNBUFFERED 1
-ENV ATLAS_ENVIRONMENT production
+ENV USE_SAFE_SETTINGS 1
+ENV ENVIRONMENT production
 
 EXPOSE 8000
 CMD ["/start.sh"]

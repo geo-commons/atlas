@@ -7,7 +7,7 @@
         <hr v-if="!createView && !compactLayout" />
         <div :class="{ 'config-section-wrapper': !createView && !compactLayout }">
           <div v-if="!createView && !compactLayout" class="section-label">
-            <h3 class="">{{ section.label }}</h3>
+            <h3>{{ section.label }}</h3>
           </div>
 
           <div v-if="section.label === 'Gekoppelde data'" class="section-questions">
@@ -218,7 +218,7 @@
                 />
                 <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id">
                   <InputText v-model="currentValues[question.id]" class="!tw-mb-2" placeholder="Laagnaam" type="text" />
-                  <span class="">Of selecteer een laagnaam</span>
+                  <span>Of selecteer een laagnaam</span>
                   <layer-field
                     :model-value="currentValues[question.id]"
                     :field="field"

@@ -23,7 +23,8 @@ Deploy Review App:
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
-      --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY
+      --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY \
+      --set environment=development
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
@@ -110,7 +111,8 @@ Deploy acceptance:
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
-      --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY
+      --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY \
+      --set environment=acceptance
   environment:
     name: review/acc
     url: https://atlas-acc.$REVIEW_BASE_DOMAIN/atlas/
@@ -121,7 +123,7 @@ Upload helm chart:
   stage: Deploy
   image:
     name: alpine/k8s:1.29.7
-    entrypoint: [""]
+    entrypoint: [ "" ]
 
   script:
     - cd helm
