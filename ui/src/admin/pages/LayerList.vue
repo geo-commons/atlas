@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
+import AdminListView from "@/admin/components/AdminListView.vue";
 import { onMounted, Ref, ref, unref } from "vue";
 import { useRouter } from "vue-router";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
+import { EDialogTypes } from "@/types/dialog";
 
 const router = useRouter();
 
 const childRef: Ref<null | {
-  toggleDialog: (type: DialogTypes) => void;
+  toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
 
 const categories: Ref<Array<object>> = ref([]);
@@ -122,7 +123,7 @@ const saveLayer = async (
     const result = await sendSaveRequest(url, "POST", currentValues);
 
     if (result.ok) {
-      childRef?.value?.toggleDialog("create-object-dialog");
+      childRef?.value?.toggleDialog(EDialogTypes.Create);
 
       if (continueEditing) {
         const response = await result.json();

@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
+import AdminListView from "@/admin/components/AdminListView.vue";
 import { onMounted, Ref, ref, unref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
-
-const childRef: Ref<null | {
-  toggleDialog: (type: DialogTypes) => void;
-}> = ref(null);
 
 const loading: Ref<boolean> = ref(true);
 const users: Ref<Array<object>> = ref([]);
@@ -112,7 +108,6 @@ const getTableFilters = (): Array<TableFilter> => {
 
 <template>
   <AdminListView
-    ref="childRef"
     :loading="loading"
     singular-name="Gebruiker"
     plural-name="Gebruikers"

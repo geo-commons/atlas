@@ -2,8 +2,8 @@
 import CogIcon from "@/assets/icons/cog-icon.svg";
 import SortIcon from "@/assets/icons/sort-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
-import { DialogTypes } from "@/admin/components/AdminListView.vue";
 import { ref } from "vue";
+import { EDialogTypes } from "@/types/dialog";
 
 // Properties
 type AdminListViewHeaderProps = {
@@ -40,21 +40,21 @@ const items = ref([
     label: "Importeren",
     icon: "pi pi-file-import",
     command: () => {
-      emit("update-dialog", "import-dialog");
+      emit("update-dialog", EDialogTypes.Import);
     },
   },
   {
     label: "Exporteren",
     icon: "pi pi-file-export",
     command: () => {
-      emit("update-dialog", "export-dialog");
+      emit("update-dialog", EDialogTypes.Export);
     },
   },
 ]);
 
 // Emits
 const emit = defineEmits<{
-  (e: "update-dialog", type: DialogTypes): void;
+  (e: "update-dialog", type: EDialogTypes): void;
   (e: "toggle-select"): void;
 }>();
 </script>
@@ -94,7 +94,7 @@ const emit = defineEmits<{
       <Button
         v-if="props.enableCreateObject"
         class="!tw-text-sm !tw-font-medium"
-        @click="$emit('update-dialog', 'create-object-dialog')"
+        @click="$emit('update-dialog', EDialogTypes.Create)"
       >
         <AddIcon class="tw-w-4 tw-h-4" />
         Nieuwe {{ props.singularName.toLowerCase() }}</Button

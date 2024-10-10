@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
+import AdminListView from "@/admin/components/AdminListView.vue";
 import { onMounted, ref, Ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { useRouter } from "vue-router";
+import { EDialogTypes } from "@/types/dialog";
 
 const router = useRouter();
 
 const loading: Ref<boolean> = ref(true);
 
 const childRef: Ref<null | {
-  toggleDialog: (type: DialogTypes) => void;
+  toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
 
 const getGroups = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
@@ -44,7 +45,7 @@ const saveGroup = async (
     const result = await sendSaveRequest(url, "POST", currentValues);
 
     if (result.ok) {
-      childRef?.value?.toggleDialog("create-object-dialog");
+      childRef?.value?.toggleDialog(EDialogTypes.Create);
 
       if (continueEditing) {
         const response = await result.json();

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import AdminListView, { DialogTypes } from "@/admin/components/AdminListView.vue";
+import AdminListView from "@/admin/components/AdminListView.vue";
 import { onMounted, Ref, ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { useRouter } from "vue-router";
+import { EDialogTypes } from "@/types/dialog";
 
 const childRef: Ref<null | {
-  toggleDialog: (type: DialogTypes) => void;
+  toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
 
 const authorizations: Ref<Array<object>> = ref([]);
@@ -76,7 +77,7 @@ const saveAuthorization = async (
     const result = await sendSaveRequest(url, "POST", currentValues);
 
     if (result.ok) {
-      childRef?.value?.toggleDialog("create-object-dialog");
+      childRef?.value?.toggleDialog(EDialogTypes.Create);
 
       if (continueEditing) {
         const response = await result.json();

@@ -10,6 +10,7 @@ import AdminListViewPaginator, { PaginationRef } from "@/admin/components/AdminL
 import { PageState } from "primevue/paginator";
 import Cookies from "js-cookie";
 import SpinnerComponent from "@/components/Spinner.vue";
+import { EDialogTypes, ShowDialogType } from "@/types/dialog";
 
 // Properties
 type AdminListViewProps = {
@@ -40,21 +41,18 @@ const props = withDefaults(defineProps<AdminListViewProps>(), {
 });
 
 // Dialog logic
-export type DialogTypes = "import-dialog" | "export-dialog" | "create-object-dialog";
-export type ShowDialogType = { show: boolean; type: DialogTypes };
-
 const showDialog: Ref<ShowDialogType> = ref({
   show: false,
-  type: "create-object-dialog",
+  type: EDialogTypes.Create,
 });
 
-const toggleDialog = (type: DialogTypes) => {
+const toggleDialog = (type: EDialogTypes) => {
   showDialog.value = {
     type: type,
     show: !showDialog.value.show,
   };
 
-  if (type === "export-dialog" && showDialog.value.show && selectedItems.value.size < 1) {
+  if (type === EDialogTypes.Export && showDialog.value.show && selectedItems.value.size < 1) {
     enableSelectable.value = true;
   }
 };
