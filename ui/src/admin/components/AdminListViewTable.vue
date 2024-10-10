@@ -22,9 +22,7 @@ type AdminListViewProps = {
   apiName: string;
   tableHeaders: Array<TableHeader>;
   sort: TableHeaderRef;
-  enableSelectable: boolean;
   pagination: PaginationRef;
-  clearSelected: boolean;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {});
@@ -55,19 +53,6 @@ const checkAllRows = (value: boolean) => {
     emit("toggle-element-in-checked-row", value, row.id, row.title ? row.title : row.label ? row.label : "");
   }
 };
-
-watch(
-  () => props.clearSelected,
-  (value) => {
-    if (value) {
-      checkedAllRows.value = false;
-      checkedRows.value = [];
-      checkAllRows(false);
-
-      emit("toggle-clear-selected");
-    }
-  },
-);
 
 watch(
   () => props.items,
@@ -113,7 +98,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
     <table class="admin-table tw-rounded-md">
       <thead>
         <tr class="table-border">
-          <th v-if="enableSelectable" class="tw-max-w-4 tw-mr-2 tw-pl-4">
+          <th class="tw-min-w-[32px] tw-max-w-[32px] tw-overflow-x-hidden">
             <Checkbox
               v-model="checkedAllRows"
               :binary="true"
@@ -133,7 +118,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
       </thead>
       <tbody v-if="items.length">
         <tr v-for="row in items" :key="row.id" class="table-border">
-          <td v-if="enableSelectable" class="lg:tw-max-w-4 tw-mx-4 tw-px-4">
+          <td class="">
             <Checkbox
               v-model="checkedRows[row.id]"
               :binary="true"

@@ -30,13 +30,6 @@ const toggle = (event: any) => {
 
 const items = ref([
   {
-    label: "Selecteren",
-    icon: "pi pi-plus",
-    command: () => {
-      emit("toggle-select");
-    },
-  },
-  {
     label: "Importeren",
     icon: "pi pi-file-import",
     command: () => {
@@ -55,7 +48,6 @@ const items = ref([
 // Emits
 const emit = defineEmits<{
   (e: "update-dialog", type: EDialogTypes): void;
-  (e: "toggle-select"): void;
 }>();
 </script>
 
@@ -72,7 +64,7 @@ const emit = defineEmits<{
         @click="toggle"
       >
         <CogIcon class="tw-w-4 tw-h-4" />
-        Meer opties</Button
+        Acties</Button
       >
       <Menu id="overlay_menu" ref="menu" :model="items" :popup="true" class="!tw-text-sm" />
 
