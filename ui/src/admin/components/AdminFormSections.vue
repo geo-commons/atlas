@@ -69,6 +69,15 @@
                     />
                   </div>
                 </div>
+                <div>
+                  <FileUpload
+                    mode="basic"
+                    custom-upload
+                    severity="secondary"
+                    class="p-button-outlined"
+                    @select="onFileUpload(question.id)"
+                  />
+                </div>
                 <div class="upload-button">
                   <label for="file" class="question-label"
                     >Upload een afbeelding om het organisatie logo te wijzigen</label
@@ -486,7 +495,7 @@ export default {
       });
     },
     onFileUpload(event, id) {
-      event.preventDefault();
+      // event.preventDefault();
       const file = event.target.files[0];
       if (file) {
         this.imageFieldValues[id].uploadButtonText = file?.name;

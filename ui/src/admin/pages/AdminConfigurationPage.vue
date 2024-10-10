@@ -45,6 +45,7 @@ export default {
 
       let data = await result.json();
       this.initialValues = this.constructFormValues(data);
+      console.log(this.initialValues);
     },
     async saveConfiguration(currentValues) {
       try {
@@ -203,6 +204,33 @@ export default {
               id: "FEATURE_DISABLE_ADMIN1",
               name: "featureDisableAdmin1",
               type: "checkbox",
+            },
+          ],
+        },
+        portaal: {
+          label: "Portaal configuratie",
+          questions: [
+            {
+              label: "Introductie",
+              id: "ORGANIZATION_INTRODUCTION",
+              name: "organizationIntroduction",
+              type: "text",
+              multiLine: true,
+              infoText: "Introductie tekst die wordt laten zien bovenaan de dashboard pagina",
+            },
+            {
+              label: "Organisatie primaire kleur",
+              id: "ORGANIZATION_PRIMARY_COLOR",
+              name: "organizationPrimaryColor",
+              type: "color-picker",
+              infoText: "Primaire kleur van de organisatie.\n" + "Note: voor nu alleen beschikbaar in HEX",
+            },
+            {
+              label: "Organisatie dashboard afbeelding",
+              id: "ORGANIZATION_IMAGE",
+              name: "organizationImage",
+              type: "image",
+              infoText: "Afbeelding die wordt laten zien op de dashboard pagina",
             },
           ],
         },
