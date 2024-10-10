@@ -93,6 +93,18 @@ export default {
       userLayerSettings: null,
     };
   },
+  watch: {
+    "data.features.filters"(newValue) {
+      if (!newValue && this.$refs.map && this.$refs.map.showFilters) {
+        this.$refs.map.toggleFilters();
+      }
+    },
+    "data.features.list"(newValue) {
+      if (!newValue && this.$refs.map && this.$refs.map.showList) {
+        this.$refs.map.toggleList();
+      }
+    },
+  },
   computed: {
     ...mapState(useGlobalStore, ["position", "layers", "config", "user"]),
     showEnvironmentIndicator() {
@@ -149,18 +161,6 @@ export default {
       return this.layers;
     },
   },
-  watch: {
-    "data.features.filters"(newValue) {
-      if (!newValue) {
-        this.resetSelectedFilter();
-      }
-    },
-    "data.features.list"(newValue) {
-      if (!newValue) {
-        this.resetSelectedList();
-      }
-    },
-  },
   created() {
     this.getMap();
   },
@@ -193,6 +193,15 @@ export default {
     },
     async saveMap(data) {
       let result;
+
+      if (!data.features.list) {
+        data.settings.listLayerId = null;
+      }
+
+      if (!data.features.filters) {
+        data.settings.filterLayerId = null;
+        data.settings.facets = [];
+      }
 
       if (this.$route.params.id) {
         result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
@@ -269,13 +278,6 @@ export default {
     showLayerSettings(selectedLayerId) {
       this.selectedLayerData = this.data.layers.find((layer) => layer.layer === selectedLayerId);
       this.showSidebar("Layer");
-    },
-    resetSelectedFilter() {
-      this.data.settings.filterLayerId = null;
-      this.data.settings.facets = [];
-    },
-    resetSelectedList() {
-      this.data.settings.listLayerId = null;
     },
     updateUserSettings(value) {
       this.userLayerSettings = value;
