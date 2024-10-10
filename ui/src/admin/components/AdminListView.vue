@@ -70,16 +70,7 @@ const isAllSelected: Ref<boolean> = ref(false);
 const router = useRouter();
 const route = useRoute();
 
-const updateSearchTerm = async (value: string) => {
-  if (value) {
-    params.set("search", value);
-  } else {
-    params.delete("search");
-  }
-
-  params.set("page", "1");
-  params.set("page_size", pagination.value.rows.toString());
-
+const doRequestAndUpdateRouter = async (params: URLSearchParams) => {
   await router.replace({
     path: route.path,
     query: {
@@ -95,6 +86,19 @@ const updateSearchTerm = async (value: string) => {
   };
 };
 
+const updateSearchTerm = async (value: string) => {
+  if (value) {
+    params.set("search", value);
+  } else {
+    params.delete("search");
+  }
+
+  params.set("page", "1");
+  params.set("page_size", pagination.value.rows.toString());
+
+  await doRequestAndUpdateRouter(params);
+};
+
 const updateListFilters = async (value: any, key: string) => {
   if (value && value?.length) {
     params.set(key, value.map((val: any) => (val.id ? val.id : val)).join(","));
@@ -105,19 +109,7 @@ const updateListFilters = async (value: any, key: string) => {
   params.set("page", "1");
   params.set("page_size", pagination.value.rows.toString());
 
-  await router.replace({
-    path: route.path,
-    query: {
-      ...Object.fromEntries(params),
-    },
-  });
-
-  const result = await props.getObjects(params);
-
-  items.value = {
-    results: result.results,
-    count: result.count,
-  };
+  await doRequestAndUpdateRouter(params);
 };
 
 const updateListSort = async (key: string) => {
@@ -135,19 +127,7 @@ const updateListSort = async (key: string) => {
 
   params.set("ordering", `${sort.value.sortAscending ? "" : "-"}${sort.value.sortKey}`);
 
-  await router.replace({
-    path: route.path,
-    query: {
-      ...Object.fromEntries(params),
-    },
-  });
-
-  const result = await props.getObjects(params);
-
-  items.value = {
-    results: result.results,
-    count: result.count,
-  };
+  await doRequestAndUpdateRouter(params);
 };
 
 const updateListPagination = async (pageState: PageState) => {
@@ -159,14 +139,7 @@ const updateListPagination = async (pageState: PageState) => {
   params.set("page", (pagination.value.page + 1).toString());
   params.set("page_size", pagination.value.rows.toString());
 
-  await router.replace({
-    path: route.path,
-    query: {
-      ...Object.fromEntries(params),
-    },
-  });
-
-  items.value = await props.getObjects(params);
+  await doRequestAndUpdateRouter(params);
 };
 
 const deleteRow = async (row: any) => {
