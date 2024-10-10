@@ -2,7 +2,7 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 import AdminFileImport from "@/admin/components/AdminFileImport.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, Ref, ref } from "vue";
 import { EDialogTypes, ShowDialogType } from "@/types/dialog";
 
 // Properties
@@ -33,6 +33,7 @@ const emit = defineEmits<{
 
 // Dialog logic
 const sections = ref({});
+const adminFormSectionsRef: Ref<{ resetForm: () => void } | null> = ref(null);
 
 const header = computed(() => {
   return props.showDialog.type === EDialogTypes.Create
@@ -43,6 +44,14 @@ const header = computed(() => {
         ? `Exporteer bestaande ${props.pluralName.toLowerCase()}`
         : "";
 });
+
+const updateDialog = () => {
+  emit("update-dialog", props.showDialog.type);
+
+  if (adminFormSectionsRef.value) {
+    adminFormSectionsRef.value.resetForm();
+  }
+};
 
 // lifecycle hooks
 onMounted(async () => {
@@ -71,12 +80,14 @@ onMounted(async () => {
         props.apiName &&
         props.showDialog.type === EDialogTypes.Create
       "
+      ref="adminFormSectionsRef"
       :sections="sections"
       :initial-values="props.initialCreateObjectDialogData"
+      :reset-values="props.initialCreateObjectDialogData"
       :create-view="true"
       :form-object="props.apiName"
       :object-specific-save="props.saveCreateObjectDialogData"
-      @close="$emit('update-dialog', props.showDialog.type)"
+      @close="updateDialog"
     />
     <div v-else-if="props.showDialog.type === EDialogTypes.Import">
       <AdminFileImport

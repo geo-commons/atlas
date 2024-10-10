@@ -332,7 +332,7 @@ export default {
   },
   data() {
     return {
-      currentValues: this.initialValues,
+      currentValues: { ...this.initialValues },
       options: {},
       unexpectedError: null,
       continueEditing: false,
@@ -493,6 +493,9 @@ export default {
         this.imageFieldValues[id].previewUrl = URL.createObjectURL(file);
         this.currentValues[id] = file;
       }
+    },
+    resetForm() {
+      this.$refs.formRef.resetForm();
     },
   },
 };
