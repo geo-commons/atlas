@@ -3,6 +3,12 @@ module.exports = {
     node: true,
     es2022: true,
   },
+  parser: "vue-eslint-parser",
+  parserOptions: {
+    parser: "@typescript-eslint/parser",
+    ecmaVersion: 2020,
+    sourceType: "module",
+  },
   // Note: make sure prettier is the last file in the extends array,
   // as the order of the configs determine duplicate rules in different configs are handled.
   extends: [
@@ -10,6 +16,7 @@ module.exports = {
     "plugin:vue/essential",
     "plugin:vue/strongly-recommended",
     "plugin:vue/recommended",
+    "plugin:@typescript-eslint/recommended",
     "prettier",
   ],
   rules: {
@@ -17,5 +24,6 @@ module.exports = {
     // 'vue/no-unused-vars': 'error'
     "vue/require-default-prop": "off",
     "vue/no-multiple-template-root": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
   },
 };
