@@ -160,7 +160,8 @@ export default {
         console.error("Could not fetch datasets");
       }
 
-      this.datasets = await result.json();
+      const response = await result.json();
+      this.datasets = response.results;
       return result;
     },
     async getMaps() {
@@ -175,7 +176,8 @@ export default {
         console.error("Could not fetch maps");
       }
 
-      this.maps = await result.json();
+      const response = await result.json();
+      this.maps = response.results;
       return result;
     },
     onSearch(searchQuery) {

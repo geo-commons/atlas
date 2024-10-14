@@ -1,389 +1,122 @@
-<template>
-  <div class="container __admin">
-    <div class="top-menu-container">
-      <div class="page-title-wrapper">
-        <h1>Categorieën</h1>
-        <div class="top-menu-button-container">
-          <button class="button __secondary_admin __normal" type="button" @click="toggleAdvance">
-            <CogIcon class="icon" />
-            {{ advanceSettings ? "Minder" : "Meer" }} opties
-          </button>
-          <router-link
-            :to="{
-              name: 'sort',
-              params: { parentRoute: 'categories' },
-            }"
-            class="button __secondary_admin __normal"
-            type="button"
-            aria-label="Ga naar sortering pagina"
-            ><SortIcon class="icon" />Sortering</router-link
-          >
-          <button class="button __primary_admin __normal" type="button" @click="openFormModal('newCategory')">
-            <AddIcon class="icon __white" />
-            Nieuwe categorie
-          </button>
-        </div>
-      </div>
-    </div>
+<script setup lang="ts">
+import AdminListView from "@/admin/components/AdminListView.vue";
+import { onMounted, Ref, ref } from "vue";
+import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
+import { useRouter } from "vue-router";
+import { EDialogTypes } from "@/types/dialog";
 
-    <div class="admin-content-wrapper">
-      <div v-if="!loading" class="admin-search-wrapper">
-        <SearchIcon class="icon" />
-        <input id="categories-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek categorie" />
-      </div>
+const router = useRouter();
 
-      <div v-if="advanceSettings" class="advance-settings-wrapper">
-        <div class="advance-button-wrapper">
-          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('import')">
-            <ArrowDownTrayIcon class="icon" />
-            Importeren
-          </button>
-          <button class="button __secondary_admin __normal" type="button" @click="openFormModal('export')">
-            <ArrowUpTrayIcon class="icon" />
-            Exporteren
-          </button>
-        </div>
-        <span>{{ selectedRowsDisplayText }}</span>
-      </div>
+const childRef: Ref<null | {
+  toggleDialog: (type: EDialogTypes) => void;
+}> = ref(null);
 
-      <PaginationComponent
-        :items="visibleCategories"
-        :nr-of-records="nrOfRecords"
-        :loading="loading"
-        :style-type="'admin'"
-        @page-change="(pageNumber) => (currentPageNumber = pageNumber)"
-        @records-change="(value) => (nrOfRecords = value)"
-      >
-        <template #default>
-          <table class="admin-table">
-            <thead>
-              <tr class="table-border">
-                <th v-if="advanceSettings" class="first-column-padding">
-                  <input type="checkbox" @change="onCheckRow(null, true)" />
-                </th>
-                <th :class="{ 'first-column-padding': !advanceSettings }">
-                  <SortableTableHeaderItem
-                    :header-text="'Titel'"
-                    :property="'title'"
-                    :sort-key="sortKey"
-                    :sort-ascending="sortAscending"
-                    @sort="(column) => sortColumn(column)"
-                  />
-                </th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="category in paginatedData" :key="category.id" class="table-border">
-                <td v-if="advanceSettings" class="first-column-padding">
-                  <input
-                    type="checkbox"
-                    :checked="checkedRows.includes(category.id)"
-                    @change="onCheckRow(category.id)"
-                  />
-                </td>
-                <td :class="{ 'first-column-padding': !advanceSettings }">
-                  <router-link
-                    class="admin-title-link"
-                    type="button"
-                    :aria-label="`${category.title} configureren`"
-                    :to="`/categories/update/${category.id}`"
-                  >
-                    {{ category.title }}
-                  </router-link>
-                </td>
-                <td class="btn-col">
-                  <button
-                    v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __admin_hover"
-                    :aria-label="`${category.title} configureren`"
-                    content="Wijzig"
-                    type="button"
-                    @click="$router.push(`/categories/update/${category.id}`)"
-                  >
-                    <EditIcon class="icon" />
-                  </button>
-                </td>
-                <td class="btn-col">
-                  <button
-                    v-tippy="{ placement: 'bottom' }"
-                    class="iconbutton __normal __round __admin_hover"
-                    aria-label="Verwijder categorie"
-                    content="Verwijder"
-                    type="button"
-                    @click="deleteCategory(category)"
-                  >
-                    <TrashIcon class="icon" />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </template>
-      </PaginationComponent>
-    </div>
+const categories: Ref<Array<object>> = ref([]);
+const loading: Ref<boolean> = ref(true);
 
-    <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-      <template #header>
-        <h3 v-if="modalType === 'newCategory'">Configureer nieuwe categorie</h3>
-        <h3 v-else-if="modalType === 'import'">Importeer bestaande categorie(ën)</h3>
-        <h3 v-else-if="modalType === 'export'">Exporteer bestaande categorie(ën)</h3>
-      </template>
-      <template #body>
-        <AdminFormSections
-          v-if="modalType === 'newCategory'"
-          ref="formSections"
-          :sections="sections"
-          :initial-values="newCategoryData"
-          :create-view="true"
-          :form-object="'categories'"
-          :object-specific-save="saveCategory"
-          @close="closeFormModal"
-        />
-        <div v-else-if="modalType === 'import'">
-          <AdminFileImport :object-name="'categorieën'" @import-successful="getCategories" @close="closeFormModal" />
-        </div>
-        <div v-else-if="modalType === 'export'">
-          <AdminFileExport :object-name="'categorieën'" :selected-rows="selectedItems" @close="closeFormModal" />
-        </div>
-      </template>
-    </FormModal>
-  </div>
-</template>
-
-<script>
-import Cookies from "js-cookie";
-import PaginationComponent from "@/components/Pagination.vue";
-import FormModal from "@/components/FormModal.vue";
-import SortableTableHeaderItem from "@/components/SortableTableHeaderItem.vue";
-import { sortAlphabetically } from "@/utils/table-sort-helpers";
-import TrashIcon from "../../assets/icons/trash-icon.svg";
-import EditIcon from "../../assets/icons/edit-icon.svg";
-import AddIcon from "../../assets/icons/add-icon.svg";
-import SearchIcon from "../../assets/icons/search-icon.svg";
-import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import SortIcon from "../../assets/icons/sort-icon.svg";
-import CogIcon from "@/assets/icons/cog-icon.svg";
-import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
-import ArrowUpTrayIcon from "@/assets/icons/arrow-up-tray-icon.svg";
-import AdminFileImport from "@/admin/components/AdminFileImport.vue";
-import AdminFileExport from "@/admin/components/AdminFileExport.vue";
-
-export default {
-  name: "CategoryList",
-  components: {
-    AdminFileExport,
-    AdminFileImport,
-    ArrowUpTrayIcon,
-    ArrowDownTrayIcon,
-    CogIcon,
-    SortIcon,
-    AdminFormSections,
-    SortableTableHeaderItem,
-    FormModal,
-    PaginationComponent,
-    TrashIcon,
-    EditIcon,
-    AddIcon,
-    SearchIcon,
+const tableHeaders: Array<TableHeader> = [
+  {
+    header: "Titel",
+    key: "title",
+    enableLink: true,
   },
-  data() {
-    return {
-      categories: [],
-      newCategoryData: null,
-      searchQuery: "",
-      currentPageNumber: 1,
-      nrOfRecords: 20,
-      showFormModal: false,
-      sortKey: "",
-      sortAscending: true,
-      sections: {},
-      loading: false,
-      advanceSettings: false,
-      checkedRows: [],
-      selectedItems: null,
-      modalType: null,
-    };
-  },
-  computed: {
-    sortedCategories() {
-      if (this.sortKey && this.categories) {
-        return this.categories.slice(0).sort((a, b) => {
-          const textA = a[this.sortKey].toLowerCase();
-          const textB = b[this.sortKey].toLowerCase();
-          return sortAlphabetically(textA, textB, this.sortAscending);
-        });
-      }
+];
 
-      return this.categories;
-    },
-    visibleCategories() {
-      if (!this.searchQuery) {
-        return this.sortedCategories;
-      }
-
-      return this.sortedCategories.filter(
-        (category) => category.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
-      );
-    },
-    paginatedData() {
-      const start = (this.currentPageNumber - 1) * this.nrOfRecords;
-      const end = start + this.nrOfRecords;
-      return this.visibleCategories.slice(start, end);
-    },
-    selectedRowsDisplayText() {
-      const nrOfRows = this.checkedRows.length;
-
-      if (!nrOfRows) {
-        return "Geen rijen geselecteerd";
-      }
-
-      if (nrOfRows === 1) {
-        return "1 rij geselecteerd";
-      }
-
-      return nrOfRows + " rijen geselecteerd";
-    },
-  },
-  created() {
-    this.getCategories();
-
-    this.sections = this.getSections();
-  },
-  methods: {
-    async getCategories() {
-      this.loading = true;
-
-      const result = await fetch("/atlas/api/v1/categories/", {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch categories");
-      }
-
-      this.categories = await result.json();
-
-      this.loading = false;
-    },
-    async saveCategory(currentValues, continueEditing = false) {
-      const url = "/atlas/api/v1/categories/";
-
-      try {
-        const result = await this.$refs.formSections.sendSaveRequest(url, "POST", currentValues);
-
-        if (result.ok) {
-          this.closeFormModal();
-
-          if (continueEditing) {
-            const response = await result.json();
-            this.$router.push(`/categories/update/${response.id}`);
-          }
-
-          await this.getCategories();
-        }
-      } catch (e) {
-        console.error("An unexpected error occurred:", e);
-      }
-    },
-    async deleteCategory(category) {
-      const acknowledged = confirm("Weet je zeker dat je de categorie wilt verwijderen?");
-      if (!acknowledged) {
-        return;
-      }
-
-      const result = await fetch(`/atlas/api/v1/categories/${category.id}/`, {
-        method: "DELETE",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-      });
-
-      if (result.ok) {
-        this.getCategories();
-      }
-    },
-    openFormModal(modalType) {
-      if (modalType === "newCategory") {
-        this.newCategoryData = {
-          title: "",
-          authenticate: false,
-        };
-      }
-
-      if (modalType === "export") {
-        this.selectedItems = this.categories.filter((category) => this.checkedRows.includes(category.id));
-      }
-
-      this.modalType = modalType;
-      this.showFormModal = true;
-    },
-    closeFormModal() {
-      this.showFormModal = false;
-      this.modalType = null;
-    },
-    toggleAdvance() {
-      this.advanceSettings = !this.advanceSettings;
-    },
-    sortColumn(prop) {
-      if (this.sortKey !== prop) {
-        this.sortKey = prop;
-        this.sortAscending = true;
-      } else {
-        this.sortAscending = !this.sortAscending;
-      }
-    },
-    onCheckRow(id, checkAll = false) {
-      if (id === null && checkAll) {
-        this.allChecked = !this.allChecked;
-
-        if (this.allChecked) {
-          this.categories.forEach((category) => {
-            this.checkedRows.push(category.id);
-          });
-        } else {
-          this.checkedRows = [];
-        }
-
-        return;
-      }
-
-      if (this.checkedRows.includes(id)) {
-        const index = this.checkedRows.indexOf(id);
-        this.checkedRows.splice(index, 1);
-        return;
-      }
-
-      this.checkedRows.push(id);
-    },
-    getSections() {
-      return {
-        general: {
-          label: "Algemene gegevens",
-          questions: [
-            {
-              label: "Titel",
-              id: "title",
-              name: "Title",
-              type: "text",
-              required: true,
-            },
-            {
-              label: "Kort kenmerk",
-              id: "slug",
-              name: "Slug",
-              type: "text",
-              required: false,
-              infoText: "Een uniek kort kenmerk voor de categorie in Atlas.",
-            },
-          ],
-        },
-      };
-    },
-  },
+const initialCategoryData = {
+  title: "",
+  authenticate: false,
 };
+
+const getCategories = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
+  const url = new URL("/atlas/api/v1/categories/", window.location.origin);
+
+  if (params) {
+    url.search = params.toString();
+  }
+
+  const result = await fetch(url.toString(), {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!result.ok) {
+    console.error("Could not fetch categories");
+  }
+
+  const items = await result.json();
+
+  return items;
+};
+
+const getCreateCategorySections = () => {
+  return {
+    general: {
+      label: "Algemene gegevens",
+      questions: [
+        {
+          label: "Titel",
+          id: "title",
+          name: "Title",
+          type: "text",
+          required: true,
+        },
+        {
+          label: "Kort kenmerk",
+          id: "slug",
+          name: "Slug",
+          type: "text",
+          required: false,
+          infoText: "Een uniek kort kenmerk voor de categorie in Atlas.",
+        },
+      ],
+    },
+  };
+};
+
+const saveCategory = async (
+  currentValues: any,
+  continueEditing = false,
+  sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
+) => {
+  const url = "/atlas/api/v1/categories/";
+
+  try {
+    const result = await sendSaveRequest(url, "POST", currentValues);
+
+    if (result.ok) {
+      childRef?.value?.toggleDialog(EDialogTypes.Create);
+
+      if (continueEditing) {
+        const response = await result.json();
+        await router.push(`/categories/update/${response.id}`);
+      }
+    }
+  } catch (e) {
+    console.error("An unexpected error occurred:", e);
+  }
+};
+
+// onMounted
+onMounted(() => {
+  Promise.all([getCategories()]).then((result) => {
+    categories.value = result[0].results;
+    loading.value = false;
+  });
+});
 </script>
+
+<template>
+  <AdminListView
+    ref="childRef"
+    :loading="loading"
+    singular-name="Categorie"
+    plural-name="Categorieën"
+    api-name="categories"
+    :enable-sort="true"
+    :get-create-object-dialog-sections="getCreateCategorySections"
+    :initial-create-object-dialog-data="initialCategoryData"
+    :save-create-object-dialog-data="saveCategory"
+    :get-objects="getCategories"
+    :table-headers="tableHeaders"
+  />
+</template>

@@ -13,7 +13,7 @@ import NotFound from "./tables/pages/NotFound";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import PrimeVue from "primevue/config";
-import { AtlasPreset } from "@/utils/theme-preset";
+import { AtlasPresetApp } from "@/utils/theme-preset";
 
 const routes = [
   { path: "/:tableSlug", component: ListView },
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPreset,
+        preset: AtlasPresetApp,
         options: {
           prefix: "prime",
           darkModeSelector: "light",

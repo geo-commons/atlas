@@ -333,7 +333,7 @@ export default {
   },
   data() {
     return {
-      currentValues: this.initialValues,
+      currentValues: { ...this.initialValues },
       options: {},
       unexpectedError: null,
       continueEditing: false,
@@ -394,16 +394,16 @@ export default {
     },
     save(values) {
       if (this.createView) {
-        this.objectSpecificSave(values, this.continueEditing);
+        this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
       } else if (this.containsImageField) {
         // Manually add image fields to values object.
         Object.keys(this.imageFieldValues).forEach((key) => {
           values[key] = this.currentValues[key];
         });
 
-        this.objectSpecificSave(values);
+        this.objectSpecificSave(values, false, this.sendSaveRequest);
       } else {
-        this.objectSpecificSave(values);
+        this.objectSpecificSave(values, false, this.sendSaveRequest);
       }
     },
     async sendSaveRequest(apiUrl, method, currentValues) {
@@ -471,6 +471,9 @@ export default {
         this.imageFieldValues[id].previewUrl = URL.createObjectURL(file);
         this.currentValues[id] = file;
       }
+    },
+    resetForm() {
+      this.$refs.formRef.resetForm();
     },
   },
 };

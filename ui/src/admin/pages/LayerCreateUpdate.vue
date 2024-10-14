@@ -134,6 +134,7 @@ import TrashIcon from "@/assets/icons/trash-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import Spinner from "@/components/Spinner.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "LayerCreateUpdate",
@@ -281,7 +282,8 @@ export default {
       }
     },
     async getCategories() {
-      const result = await fetch("/atlas/api/v1/categories/", {
+      const url = getAllObjects("/atlas/api/v1/categories/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -292,13 +294,14 @@ export default {
 
       const response = await result.json();
 
-      this.categories = response.map((category) => {
+      this.categories = response.results.map((category) => {
         return { id: category.id, label: category.title };
       });
       return response;
     },
     async getDatasets() {
-      const result = await fetch("/atlas/api/v1/datasets/", {
+      const url = getAllObjects("/atlas/api/v1/datasets/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -309,13 +312,14 @@ export default {
 
       const response = await result.json();
 
-      this.datasets = response.map((dataset) => {
+      this.datasets = response.results.map((dataset) => {
         return { id: dataset.id, label: dataset.title };
       });
       return response;
     },
     async getSources() {
-      const result = await fetch("/atlas/api/v1/sources/", {
+      const url = getAllObjects("/atlas/api/v1/sources/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -326,7 +330,7 @@ export default {
 
       const response = await result.json();
 
-      this.sources = response.map((source) => {
+      this.sources = response.results.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
 
@@ -342,9 +346,9 @@ export default {
         console.error("Could not fetch groups");
       }
 
-      this.groups = await result.json();
-
-      return result;
+      const response = await result.json();
+      this.groups = response.results;
+      return response;
     },
     setAtlasGroups() {
       const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));

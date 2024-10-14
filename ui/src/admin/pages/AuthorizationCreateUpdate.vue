@@ -16,6 +16,7 @@
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "AuthorizationCreateUpdate",
@@ -76,7 +77,8 @@ export default {
       }
     },
     async getSources() {
-      const result = await fetch("/atlas/api/v1/sources/", {
+      const url = getAllObjects("/atlas/api/v1/sources/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -87,7 +89,7 @@ export default {
 
       const response = await result.json();
 
-      this.sources = response.map((source) => {
+      this.sources = response.results.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
       return response;
@@ -102,7 +104,8 @@ export default {
         console.error("Could not fetch groups");
       }
 
-      this.groups = await result.json();
+      const response = await result.json();
+      this.groups = response.results;
 
       return result;
     },

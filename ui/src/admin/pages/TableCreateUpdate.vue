@@ -17,6 +17,7 @@
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "TableCreateUpdate",
@@ -63,7 +64,8 @@ export default {
       return result;
     },
     async getSources() {
-      const result = await fetch("/atlas/api/v1/sources/", {
+      const url = getAllObjects("/atlas/api/v1/sources/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -74,7 +76,7 @@ export default {
 
       const response = await result.json();
 
-      this.sources = response.map((source) => {
+      this.sources = response.results.map((source) => {
         return { id: source.id, label: source.title };
       });
 

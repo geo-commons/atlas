@@ -91,6 +91,7 @@
 <script>
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "TemplateForm",
@@ -130,7 +131,8 @@ export default {
       this.$emit("save", finalData);
     },
     async getSources() {
-      const result = await fetch("/atlas/api/v1/sources/", {
+      const url = getAllObjects("/atlas/api/v1/sources/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -141,7 +143,7 @@ export default {
 
       const response = await result.json();
 
-      return response.map((source) => {
+      return response.results.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
     },
