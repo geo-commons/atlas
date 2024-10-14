@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -47,7 +47,7 @@ const getThemes = async () => {
     }
 
     const response = await result.json();
-    availableThemes.value = response.map((theme) => ({
+    availableThemes.value = response.results.map((theme) => ({
       id: theme.id,
       title: theme.title,
     }));

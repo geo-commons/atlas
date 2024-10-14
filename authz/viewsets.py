@@ -1,7 +1,9 @@
 import json
 from json import JSONDecodeError
 from django.http import JsonResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions
+from rest_framework.filters import SearchFilter
 
 from webservice.mixins import DataExportImportMixin
 from webservice.models import Source
@@ -66,3 +68,7 @@ class AuthorizationViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Authorization.objects.all()
     serializer_class = AuthorizationSerializer
+
+    search_fields = ['resource']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend]

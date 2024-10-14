@@ -73,7 +73,8 @@ export default {
         console.error("Could not fetch maps");
       }
 
-      this.maps = await result.json();
+      const response = await result.json();
+      this.maps = response.results;
       this.loading = false;
     },
     setSearchQuery(newSearchQuery) {

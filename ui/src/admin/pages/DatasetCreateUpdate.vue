@@ -17,6 +17,7 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import slugify from "slugify";
 import Spinner from "@/components/Spinner.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "DatasetCreateUpdate",
@@ -29,6 +30,7 @@ export default {
       sections: {},
       initialValues: {},
       currentValues: {},
+      categories: {},
       loading: false,
     };
   },
@@ -80,7 +82,8 @@ export default {
       }
     },
     async getCategories() {
-      const result = await fetch("/atlas/api/v1/categories/", {
+      const url = getAllObjects("/atlas/api/v1/categories/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -91,11 +94,10 @@ export default {
 
       const response = await result.json();
 
-      this.categories = response.map((category) => {
+      this.categories = response.results.map((category) => {
         return { id: category.id, label: category.title };
       });
-
-      return response;
+      return result;
     },
     getSections() {
       return {

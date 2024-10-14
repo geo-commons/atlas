@@ -25,5 +25,6 @@ module.exports = {
     "vue/require-default-prop": "off",
     "vue/no-multiple-template-root": "off",
     "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
   },
 };

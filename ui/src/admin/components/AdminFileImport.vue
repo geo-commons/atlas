@@ -59,7 +59,7 @@ export default {
   name: "AdminFileImport",
   components: { ArrowDownTrayIcon },
   props: {
-    objectName: String,
+    objectName: Object,
   },
   data() {
     return {
@@ -86,28 +86,6 @@ export default {
         return row.diff[3];
       }
       return "";
-    },
-    getObjectPath(objectType) {
-      switch (objectType) {
-        case "kaartlagen":
-          return "layers";
-        case "bronnen":
-          return "sources";
-        case "categorieën":
-          return "categories";
-        case "kaarten":
-          return "maps";
-        case "themes":
-          return "themes";
-        case "datasets":
-          return "datasets";
-        case "tables":
-          return "tables";
-        case "viewers":
-          return "viewers";
-        case "authorizations":
-          return "authorizations";
-      }
     },
     closeFormModal() {
       this.$emit("close");
@@ -140,7 +118,7 @@ export default {
       const data = new FormData();
       data.append("file", this.uploadedFile);
 
-      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName)}/import/`;
+      let fetchUrl = `/atlas/api/v1/${this.objectName.apiName}/import/`;
 
       if (dryRun) {
         fetchUrl += "?dry_run=1";

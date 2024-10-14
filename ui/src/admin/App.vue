@@ -13,6 +13,7 @@ import AdminBreadcrumb from "./components/AdminBreadcrumb.vue";
 import AdminEnvironmentIndicator from "@/admin/components/AdminEnvironmentIndicator.vue";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
+import "primeicons/primeicons.css";
 
 export default {
   name: "App",

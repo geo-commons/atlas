@@ -58,7 +58,8 @@ export default {
         console.error("Could not fetch datasets");
       }
 
-      this.datasets = await result.json();
+      const response = await result.json();
+      this.datasets = response.results;
       this.loading = false;
     },
     onSearch(searchQuery) {

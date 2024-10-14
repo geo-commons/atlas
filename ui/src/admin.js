@@ -35,15 +35,15 @@ import DatasetList from "@/admin/pages/DatasetList.vue";
 import DatasetCreateUpdate from "@/admin/pages/DatasetCreateUpdate.vue";
 import LogList from "@/admin/pages/LogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
-import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
+import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
 import AuthorizationList from "@/admin/pages/AuthorizationList.vue";
 import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.vue";
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
-import { AtlasPreset } from "@/utils/theme-preset";
+import { AtlasPresetAdmin } from "@/utils/theme-preset";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -159,7 +159,7 @@ const routes = [
     meta: { title: "Logs", menu: true },
   },
   {
-    path: "/logs/:id",
+    path: "/logs/update/:id",
     component: LogView,
     meta: { title: "Log Bewerken", menu: true, breadcrumb: { viewers: { title: "Logs" } } },
   },
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPreset,
+        preset: AtlasPresetAdmin,
         options: {
           prefix: "prime",
           darkModeSelector: "light",

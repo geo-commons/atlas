@@ -8,7 +8,8 @@
         aria-label="Ga terug"
         @click="back"
       >
-        <arrow-left-icon class="icon" />Terug
+        <arrow-left-icon class="icon" />
+        Terug
       </button>
     </div>
 
@@ -42,6 +43,7 @@
 import Cookies from "js-cookie";
 import ArrowLeftIcon from "../../assets/icons/arrow-left-icon.svg";
 import SortableList from "@/admin/components/SortableList.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "AdminSortPage",
@@ -77,7 +79,8 @@ export default {
   },
   methods: {
     async getCategories() {
-      const result = await fetch("/atlas/api/v1/categories/", {
+      const url = getAllObjects("/atlas/api/v1/categories/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -87,12 +90,13 @@ export default {
       }
 
       const response = await result.json();
-      this.categories = response.map((c, index) => {
+      this.categories = response.results.map((c, index) => {
         return { title: c.title, newOrder: index, id: c.id, currentOrder: c.ordering };
       });
     },
     async getLayers() {
-      const result = await fetch("/atlas/api/v1/layers/", {
+      const url = getAllObjects("/atlas/api/v1/layers/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -102,7 +106,7 @@ export default {
       }
 
       this.layerData = await result.json();
-      this.layers = this.layerData.map((l) => {
+      this.layers = this.layerData.results.map((l) => {
         return { title: l.title, newOrder: l.ordering, id: l.id, category: l.category, currentOrder: l.ordering };
       });
     },
