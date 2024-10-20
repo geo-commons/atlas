@@ -529,7 +529,7 @@ export default {
               type: "checkbox",
               required: false,
               infoText:
-                "Uitleg: Met deze optie bepaal je op de laag wordt gepubliceerd of niet binnen Atlas. <a href='/atlas/admin/docs/admin2-interface/#algemene-gegevens'>Meer uitleg.</a> <i>Default:</i> uit",
+                "Uitleg: Met deze optie bepaal je op de laag wordt gepubliceerd of niet binnen Atlas. <a href='/atlas/admin/docs/admin2/#algemene-gegevens'>Meer uitleg.</a> <i>Default:</i> uit",
             },
           ],
         },
@@ -555,7 +555,7 @@ export default {
               placeholder: "laag",
               sourceField: "source_id",
               infoText:
-                "De naam van de kaartlaag zoals die in Geoserver geconfigureerd is. <a href='/atlas/admin/docs/admin2-interface/#bron'>Meer uitleg.</a>",
+                "De naam van de kaartlaag zoals die in Geoserver geconfigureerd is. <a href='/atlas/admin/docs/admin2/#bron'>Meer uitleg.</a>",
             },
             {
               label: "Brontype",
@@ -566,7 +566,7 @@ export default {
               placeholder: "brontype",
               options: this.sourceTypes,
               infoText:
-                'Specifieer wat voor brontype de laag gebruikt. <a href="/atlas/admin/docs/admin2-interface/#bron">Meer uitleg.</a>',
+                'Specifieer wat voor brontype de laag gebruikt. <a href="/atlas/admin/docs/admin2/#bron">Meer uitleg.</a>',
             },
             {
               label: "Projectie",
@@ -600,7 +600,7 @@ export default {
               required: true,
               step: 0.1,
               infoText:
-                "Onder het veld transparantie configureer je hoe transparent de kaartlaag is. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
+                "Onder het veld transparantie configureer je hoe transparent de kaartlaag is. <a href='/atlas/admin/docs/admin2/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Is basislaag",
@@ -618,7 +618,7 @@ export default {
               type: "checkbox",
               required: false,
               infoText:
-                'Met deze optie, zorg je ervoor dat de betreffende kaartlaag standaard zichtbaar wordt. <a href="/atlas/admin/docs/admin2-interface/#weergave">Meer uitleg.</a> <i>Default</i>: uit.',
+                'Met deze optie, zorg je ervoor dat de betreffende kaartlaag standaard zichtbaar wordt. <a href="/atlas/admin/docs/admin2/#weergave">Meer uitleg.</a> <i>Default</i>: uit.',
             },
             {
               label: "Is selecteerbaar",
@@ -665,7 +665,7 @@ export default {
               required: false,
               isNested: true,
               infoText:
-                "Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in het pop-upvenster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
+                "Bij klikken op een object in de kaart, verschijnt een pop-up venster met uitgebreide informatie. Geef in dit veld op welke velden in het pop-upvenster verschijnen. Dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg wordt gelaten worden alle attributen getoond. <a href='/atlas/admin/docs/admin2/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Doorzoek deze velden",
@@ -676,7 +676,7 @@ export default {
               required: false,
               isNested: true,
               infoText:
-                "Geef in dit veld op door welke velden gezocht kan worden, dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg gelaten wordt, worden alle attributen zoekvelden. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
+                "Geef in dit veld op door welke velden gezocht kan worden, dit zijn de veldnamen zoals in Geoserver gedefiniëerd. Als dit leeg gelaten wordt, worden alle attributen zoekvelden. <a href='/atlas/admin/docs/admin2/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Bereik minimum x",
@@ -726,7 +726,7 @@ export default {
               required: false,
               step: 0.01,
               infoText:
-                'Via dit veld bepaal je hoe laag het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. <a href="/atlas/admin/docs/admin2-interface/#weergave">Meer uitleg.</a>',
+                'Via dit veld bepaal je hoe laag het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. <a href="/atlas/admin/docs/admin2/#weergave">Meer uitleg.</a>',
             },
             {
               label: "Zoomniveau maximum",
@@ -736,7 +736,7 @@ export default {
               required: false,
               step: 0.01,
               infoText:
-                'Via dit veld bepaal je hoe hoog het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. <a href="/atlas/admin/docs/admin2-interface/#weergave">Meer uitleg.</a>',
+                'Via dit veld bepaal je hoe hoog het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. <a href="/atlas/admin/docs/admin2/#weergave">Meer uitleg.</a>',
             },
             {
               label: "Stijlnaam voor WMS / WMTS laag",
@@ -756,7 +756,7 @@ export default {
               required: false,
               isNested: true,
               infoText:
-                "Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de inhoud van dit veld moet opgesteld zijn in het GeoStyler formaat. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Voorbeeld.</a>",
+                "Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de inhoud van dit veld moet opgesteld zijn in het GeoStyler formaat. <a href='/atlas/admin/docs/admin2/#weergave'>Voorbeeld.</a>",
             },
             {
               label: "Vriendelijke veldnamen",
@@ -767,7 +767,7 @@ export default {
               required: false,
               isNested: true,
               infoText:
-                "Met het vriendelijke veldnamen veld kan je ervoor zorgen dat de uiteindelijke veldnamen die in Atlas worden laten zien een andere naam krijgen dan hoe ze binnen GeoServer gedefinieerd staan. <a href='/atlas/admin/docs/admin2-interface/#weergave'>Meer uitleg.</a>",
+                "Met het vriendelijke veldnamen veld kan je ervoor zorgen dat de uiteindelijke veldnamen die in Atlas worden laten zien een andere naam krijgen dan hoe ze binnen GeoServer gedefinieerd staan. <a href='/atlas/admin/docs/admin2/#weergave'>Meer uitleg.</a>",
             },
             {
               label: "Templatevelden",
@@ -786,7 +786,7 @@ export default {
               type: "text",
               required: false,
               infoText:
-                'Met het "legenda" veld kan je de legenda link die gebruikt wordt binnen Atlas om de uiteindelijke legenda afbeelding voor de kaartlaag op te halen overschrijven. <a href="/atlas/admin/docs/admin2-interface/#weergave">Voorbeeld.</a>',
+                'Met het "legenda" veld kan je de legenda link die gebruikt wordt binnen Atlas om de uiteindelijke legenda afbeelding voor de kaartlaag op te halen overschrijven. <a href="/atlas/admin/docs/admin2/#weergave">Voorbeeld.</a>',
             },
           ],
         },
@@ -881,7 +881,7 @@ export default {
               type: "checkbox",
               required: false,
               infoText:
-                'Wanneer "vereis inlog voor deze dataset" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. <a href="/atlas/admin/docs/admin2-interface/#toegang">Meer uitleg.</a>',
+                'Wanneer "vereis inlog voor deze dataset" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. <a href="/atlas/admin/docs/admin2/#toegang">Meer uitleg.</a>',
             },
             {
               type: "custom",

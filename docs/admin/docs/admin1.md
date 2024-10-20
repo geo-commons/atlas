@@ -1,5 +1,4 @@
-Handleiding Admin Module Atlas versie 3.14.0
-============================================
+# Oud beheerpaneel
 
 Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt Atlas geconfigureerd.
 
@@ -233,14 +232,15 @@ De volgende velden moeten worden ingevuld bij het toevoegen van een kaartlaag:
 - **Zoomniveau minimum:** (Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt)
 - **Zoomniveau maximum:** (Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt)
 - **Stijl:** (Voeg een stijlbestand in Geostyler formaat toe. Hiermee wordt de WFS stijl in Geoserver overruled)
-- **Vriendelijke veldnamen:** (In JSON formaat kunnen hier te tonen veldnamen aangepast worden. Bijvoorbeeld:   
-{  
-  "veldnm1": "Veldnaam 1",  
-  "v2": "Veldnaam 2",  
-  "v_3": "Veldnaam 3"  
-}  
+- **Vriendelijke veldnamen:** (In JSON formaat kunnen hier te tonen veldnamen aangepast worden. Bijvoorbeeld:  
+  {  
+   "veldnm1": "Veldnaam 1",  
+   "v2": "Veldnaam 2",  
+   "v_3": "Veldnaam 3"  
+  }
 
-Overigens krijgen lowercase veldnamen standaard een hoofdletter binnen Atlas. Een liggend streepje (underscore) wordt omgezet naar een spatie.    
+Overigens krijgen lowercase veldnamen standaard een hoofdletter binnen Atlas. Een liggend streepje (underscore) wordt omgezet naar een spatie.
+
 - **Naam:** (Vul een naam in voor de laag als metadata. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
 - **Soort:** (Vul een categorie in voor de laag als metadata. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
 - **Organisatie:** (Vul de eigenaar van de betreffende data in. Deze informatie verschijnt wanneer op het 'i' symbool wordt geklikt)
