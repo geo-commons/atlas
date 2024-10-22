@@ -72,7 +72,8 @@ export default {
         console.error("Could not fetch groups");
       }
 
-      this.groups = await result.json();
+      const response = await result.json();
+      this.groups = response.results;
 
       return result;
     },

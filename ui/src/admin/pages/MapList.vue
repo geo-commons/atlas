@@ -118,6 +118,6 @@ onMounted(() => {
     :save-create-object-dialog-data="saveMap"
     :get-objects="getMaps"
     :table-headers="tableHeaders"
-    :show-eye-icon-in-table="true"
+    :view-base-url="'/atlas/maps'"
   />
 </template>

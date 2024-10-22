@@ -105,8 +105,9 @@ export default {
         console.error("Could not fetch layers");
       }
 
-      this.layerData = await result.json();
-      this.layers = this.layerData.results.map((l) => {
+      const response = await result.json();
+      this.layerData = response.results;
+      this.layers = this.layerData.map((l) => {
         return { title: l.title, newOrder: l.ordering, id: l.id, category: l.category, currentOrder: l.ordering };
       });
     },

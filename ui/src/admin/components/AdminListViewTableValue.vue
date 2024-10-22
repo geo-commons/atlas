@@ -5,7 +5,7 @@ import CircleCrossIcon from "@/assets/icons/circle-cross-icon.svg";
 import { formatDateValue } from "../../utils/date-formatter";
 
 type AdminListViewTableValueProps = {
-  value: string | boolean;
+  value: string | boolean | null;
 };
 
 const props = withDefaults(defineProps<AdminListViewTableValueProps>(), {});
