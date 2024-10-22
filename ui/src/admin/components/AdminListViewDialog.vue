@@ -11,7 +11,6 @@ type AdminListViewDialogProps = {
   singularName: string;
   pluralName: string;
   showDialog: ShowDialogType;
-  isAllSelected: boolean;
   getObjects: () => void;
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
@@ -21,7 +20,7 @@ type AdminListViewDialogProps = {
     sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
   ) => void;
   // This prop is only necessary if enableImportExport is true
-  selectedItems?: Array<any>;
+  selectedItems?: Array<{ id: number; title: string }>;
 };
 
 const props = withDefaults(defineProps<AdminListViewDialogProps>(), {});
@@ -29,6 +28,7 @@ const props = withDefaults(defineProps<AdminListViewDialogProps>(), {});
 // Emits
 const emit = defineEmits<{
   (e: "update-dialog", type: EDialogTypes): void;
+  (e: "reset-selection"): void;
 }>();
 
 // Dialog logic
@@ -40,7 +40,7 @@ const header = computed(() => {
     ? `Configureer nieuwe ${props.singularName.toLowerCase()}`
     : props.showDialog.type === EDialogTypes.Import
       ? `Importeer bestaande ${props.pluralName.toLowerCase()}`
-      : props.showDialog.type === EDialogTypes.Export
+      : props.showDialog.type === EDialogTypes.Export || props.showDialog.type === EDialogTypes.ExportAll
         ? `Exporteer bestaande ${props.pluralName.toLowerCase()}`
         : "";
 });
@@ -92,16 +92,17 @@ onMounted(async () => {
     <div v-else-if="props.showDialog.type === EDialogTypes.Import">
       <AdminFileImport
         :object-name="{ apiName: props.apiName, singularName: props.singularName, pluralName: props.pluralName }"
-        @import-successful="props.getObjects"
-        @close="$emit('update-dialog', props.showDialog.type)"
+        @import-successful="emit('reset-selection')"
+        @close="emit('update-dialog', props.showDialog.type)"
       />
     </div>
-    <div v-else-if="props.showDialog.type === EDialogTypes.Export">
+    <div v-else-if="props.showDialog.type === EDialogTypes.Export || props.showDialog.type === EDialogTypes.ExportAll">
       <AdminFileExport
         :object-name="{ apiName: props.apiName, singularName: props.singularName, pluralName: props.pluralName }"
         :selected-rows="props.selectedItems"
-        :is-all-selected="props.isAllSelected"
-        @close="$emit('update-dialog', props.showDialog.type)"
+        :export-type="props.showDialog.type"
+        @close="emit('update-dialog', props.showDialog.type)"
+        @export-successful="emit('reset-selection')"
       />
     </div>
   </Dialog>

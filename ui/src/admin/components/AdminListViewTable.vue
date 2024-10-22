@@ -25,58 +25,63 @@ type AdminListViewProps = {
   sort: TableHeaderRef;
   pagination: PaginationRef;
   enableImportExport: boolean;
-  showEyeIconInTable: boolean;
+  viewBaseUrl?: string;
+  blockDelete: Array<number>;
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {});
 
 // Emits
 const emit = defineEmits<{
+  (e: "update-selected-items", selectedItems: Array<{ id: number; title: string }>): void;
   (e: "update-list-sort", key: string): void;
-  (e: "toggle-element-in-checked-row", value: boolean, id: number, title: string): void;
-  (e: "remove-all-elements-from-selected-items"): void;
-  (e: "toggle-is-all-selected", value: boolean): void;
   (e: "delete-row", row: any): void;
-  (e: "toggle-clear-selected"): void;
 }>();
 
 // Initiation
 const router = useRouter();
 
 // Table logic
-const checkedRows: Ref<Array<object>> = ref([]);
-const checkedAllRows: Ref<boolean> = ref(false);
+const selectedRows: Ref<Array<{ id: number; title: string }>> = ref([]);
+const selectedRowsCheckedValue: Ref<Record<number, boolean>> = ref({});
 
-const checkAllRows = (value: boolean) => {
-  for (const row of props.items) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    checkedRows.value[row.id] = value;
+const selectAllRows: Ref<boolean> = ref(false);
 
-    emit("toggle-element-in-checked-row", value, row.id, row.title ? row.title : row.label ? row.label : "");
+const onSelectAllRows = (value: boolean) => {
+  if (!value) {
+    selectedRows.value = [];
+    selectedRowsCheckedValue.value = {};
+  } else {
+    props.items.forEach((item) => {
+      selectedRows.value.push({ id: item.id, title: item.title });
+      selectedRowsCheckedValue.value[item.id] = true;
+    });
   }
+
+  emit("update-selected-items", selectedRows.value);
+};
+
+const onSelectRow = (row: any) => {
+  if (selectedRows.value.some((selectedRow) => selectedRow.id === row.id)) {
+    selectAllRows.value = false;
+    selectedRows.value = selectedRows.value.filter((selectedRow) => selectedRow.id !== row.id);
+
+    delete selectedRowsCheckedValue.value[row.id];
+  } else {
+    selectedRows.value.push({ id: row.id, title: row.title ? row.title : row.label ? row.label : "" });
+    selectedRowsCheckedValue.value[row.id] = true;
+  }
+
+  emit("update-selected-items", selectedRows.value);
 };
 
 watch(
   () => props.items,
-  (value) => {
-    if (checkedAllRows.value) {
-      checkAllRows(true);
-    }
-  },
-);
-
-watch(
-  () => checkedAllRows.value,
-  (newValue, oldValue) => {
-    if (newValue) {
-      emit("toggle-is-all-selected", true);
-    }
-
-    if (!newValue && oldValue) {
-      checkedRows.value = [];
-      emit("remove-all-elements-from-selected-items");
-      emit("toggle-is-all-selected", false);
+  () => {
+    if (selectAllRows.value) {
+      selectedRows.value = [];
+      selectedRowsCheckedValue.value = {};
+      onSelectAllRows(true);
     }
   },
 );
@@ -94,6 +99,23 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
 
   return value;
 };
+
+const blockDelete = (obj: any): any => {
+  if (!props.blockDelete.length) {
+    return false;
+  }
+
+  return props.blockDelete.includes(obj.id);
+};
+
+const resetSelection = () => {
+  selectAllRows.value = false;
+  selectedRows.value = [];
+  selectedRowsCheckedValue.value = {};
+  emit("update-selected-items", selectedRows.value);
+};
+
+defineExpose({ resetSelection });
 </script>
 
 <template>
@@ -102,11 +124,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
       <thead>
         <tr class="table-border">
           <th v-if="items.length && props.enableImportExport" class="tw-w-8 tw-p-2">
-            <Checkbox
-              v-model="checkedAllRows"
-              :binary="true"
-              @update:modelValue="(value: boolean) => checkAllRows(value)"
-            />
+            <Checkbox v-model="selectAllRows" :binary="true" @update:modelValue="onSelectAllRows" />
           </th>
           <th v-for="header in props.tableHeaders" :key="header.key" class="first:tw-pl-4">
             <AdminListViewTableHeader
@@ -116,6 +134,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
             />
           </th>
           <th></th>
+          <th v-if="props.viewBaseUrl"></th>
           <th></th>
         </tr>
       </thead>
@@ -123,17 +142,9 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
         <tr v-for="row in items" :key="row.id" class="table-border">
           <td v-if="props.enableImportExport" class="tw-w-8 tw-p-2">
             <Checkbox
-              v-model="checkedRows[row.id]"
+              :model-value="selectedRowsCheckedValue[row.id]"
               :binary="true"
-              @update:modelValue="
-                (value: boolean) =>
-                  emit(
-                    'toggle-element-in-checked-row',
-                    value,
-                    row.id,
-                    row.title ? row.title : row.label ? row.label : '',
-                  )
-              "
+              @update:modelValue="onSelectRow(row)"
             />
           </td>
 
@@ -151,7 +162,7 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
               <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
             </router-link>
           </td>
-          <td v-if="!showEyeIconInTable" class="btn-col">
+          <td class="btn-col">
             <button
               v-tippy="{ placement: 'bottom' }"
               class="iconbutton __normal __round __admin_hover tw-my-1"
@@ -163,25 +174,27 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
               <EditIcon class="icon" />
             </button>
           </td>
-          <td v-if="showEyeIconInTable" class="btn-col">
-            <button
+          <td v-if="props.viewBaseUrl" class="btn-col">
+            <a
               v-tippy="{ placement: 'bottom' }"
-              class="iconbutton __normal __round __admin_hover tw-my-1"
+              class="iconbutton __normal __round __admin_hover tw-my-1 tw-bg-white"
               :aria-label="`${row[props.tableHeaders[0].header]} bekijken`"
               content="Bekijk"
               type="button"
-              @click="router.push(`/${props.apiName}/update/${row.id}`)"
+              target="_blank"
+              :href="`${props.viewBaseUrl}/${row.slug}`"
             >
               <ViewIcon class="icon" />
-            </button>
+            </a>
           </td>
           <td class="btn-col">
             <button
               v-tippy="{ placement: 'bottom' }"
+              :disabled="blockDelete(row)"
               class="iconbutton __normal __round __admin_hover tw-my-1"
               aria-label="Verwijder"
-              content="Verwijder"
               type="button"
+              content="Verwijder"
               @click="emit('delete-row', row)"
             >
               <TrashIcon class="icon" />

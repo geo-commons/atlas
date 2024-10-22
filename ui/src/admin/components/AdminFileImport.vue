@@ -13,13 +13,14 @@
 
     <div v-if="!importSuccessful">
       <input id="file" ref="fileInput" type="file" name="file" class="inputfile" />
-      <label for="file" class="button __primary_admin __import"
-        ><ArrowDownTrayIcon class="icon" /><span ref="fileLabelText">Selecteer een bestand om te importeren</span>
+      <label for="file" class="button __primary_admin __import">
+        <ArrowDownTrayIcon class="icon" />
+        <span ref="fileLabelText">Selecteer een bestand om te importeren</span>
       </label>
     </div>
     <h3 v-else class="successful-import-text">Importeren geslaagd!</h3>
 
-    <div v-if="uploadedFileResponse && !importSuccessful" class="test">
+    <div v-if="uploadedFileResponse && !importSuccessful" class="selected-rows">
       <ul>
         <li v-for="row in uploadedFileResponse.rows" :key="row">
           <h4 class="upload-row-title" v-html="getRowTitle(row)"></h4>
@@ -184,9 +185,10 @@ export default {
   z-index: -1;
 }
 
-.test {
-  max-height: 70vh;
+.selected-rows {
+  max-height: 55vh;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .upload-content {

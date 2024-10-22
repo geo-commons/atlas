@@ -3,10 +3,12 @@ import AdminListView from "@/admin/components/AdminListView.vue";
 import { onMounted, Ref, ref, unref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
+import { useGlobalStore } from "@/stores";
 
 const loading: Ref<boolean> = ref(true);
 const users: Ref<Array<object>> = ref([]);
 const groups: Ref<Array<object>> = ref([]);
+const store = useGlobalStore();
 
 const tableHeaders: Array<TableHeader> = [
   {
@@ -115,6 +117,7 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-sort="false"
     :enable-create-object="false"
     :enable-import-export="false"
+    :block-delete="[store?.user?.id]"
     :get-objects="getUsers"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"

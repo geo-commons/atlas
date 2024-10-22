@@ -43,6 +43,13 @@ const items = ref([
       emit("update-dialog", EDialogTypes.Export);
     },
   },
+  {
+    label: "Alle rijen exporteren",
+    icon: "pi pi-file-export",
+    command: () => {
+      emit("update-dialog", EDialogTypes.ExportAll);
+    },
+  },
 ]);
 
 // Emits
@@ -64,8 +71,8 @@ const emit = defineEmits<{
         @click="toggle"
       >
         <CogIcon class="tw-w-4 tw-h-4" />
-        Acties</Button
-      >
+        Acties
+      </Button>
       <Menu id="overlay_menu" ref="menu" :model="items" :popup="true" class="!tw-text-sm" />
 
       <Button
@@ -81,16 +88,16 @@ const emit = defineEmits<{
         }"
       >
         <SortIcon class="tw-w-4 tw-h-4" />
-        Sortering</Button
-      >
+        Sortering
+      </Button>
       <Button
         v-if="props.enableCreateObject"
         class="!tw-text-sm !tw-font-medium"
         @click="$emit('update-dialog', EDialogTypes.Create)"
       >
         <AddIcon class="tw-w-4 tw-h-4" />
-        Nieuwe {{ props.singularName.toLowerCase() }}</Button
-      >
+        Nieuwe {{ props.singularName.toLowerCase() }}
+      </Button>
     </div>
   </div>
 </template>

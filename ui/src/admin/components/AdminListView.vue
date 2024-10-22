@@ -24,7 +24,8 @@ type AdminListViewProps = {
   getObjects: (searchParams?: URLSearchParams) => Promise<{ results: Array<object>; count: number }>;
   tableHeaders: Array<TableHeader>;
   getTableFilters?: () => Array<TableFilter>;
-  showEyeIconInTable?: boolean;
+  viewBaseUrl?: string;
+  blockDelete?: Array<number>;
   // These 3 props are only necessary if enableCreateObject is true
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
@@ -39,7 +40,7 @@ const props = withDefaults(defineProps<AdminListViewProps>(), {
   enableImportExport: true,
   enableCreateObject: true,
   enableSort: false,
-  showEyeIconInTable: false,
+  blockDelete: () => [],
 });
 
 // Dialog logic
@@ -63,8 +64,7 @@ const items: Ref<{ results: Array<object>; count: number }> = ref({
 });
 const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
 const pagination: Ref<PaginationRef> = ref({ page: 0, rows: 20 });
-const selectedItems: Ref<Set<{ id: number; title: string }>> = ref(new Set([]));
-const isAllSelected: Ref<boolean> = ref(false);
+const selectedItems: Ref<Array<{ id: number; title: string }>> = ref([]);
 const router = useRouter();
 const route = useRoute();
 
@@ -160,35 +160,8 @@ const deleteRow = async (row: any) => {
   }
 };
 
-const toggleSelectedItems = (value: boolean, key: number, title: string) => {
-  if (value) {
-    selectedItems.value.add({
-      title: title,
-      id: key,
-    });
-    return;
-  }
-
-  for (let item of selectedItems.value) {
-    if (item.id === key) {
-      selectedItems.value.delete(item);
-      break;
-    }
-  }
-};
-
-const removeAllSelectedItems = () => {
-  selectedItems.value = new Set<{ id: number; title: string }>([]);
-};
-
-const clearSelected: Ref<boolean> = ref(false);
-
-const toggleIsAllSelected = (value: boolean) => {
-  isAllSelected.value = value;
-};
-
-const toggleClearSelected = () => {
-  clearSelected.value = !clearSelected.value;
+const updateSelectedItems = (updatedSelectedItems: Array<{ id: number; title: string }>) => {
+  selectedItems.value = updatedSelectedItems;
 };
 
 // Lifecycle hooks
@@ -255,6 +228,15 @@ const handleSaveCreateObjectDialogData = async (
   };
 };
 
+const adminListViewTableRef: Ref<null | {
+  resetSelection: () => void;
+}> = ref(null);
+
+const refreshAndResetItems = async () => {
+  items.value = await props.getObjects(params);
+  adminListViewTableRef?.value?.resetSelection();
+};
+
 // Define expose, expose functions / elements to parent element
 defineExpose({ toggleDialog });
 </script>
@@ -282,17 +264,17 @@ defineExpose({ toggleDialog });
         @update-list-filters="updateListFilters"
       />
       <AdminListViewTable
+        ref="adminListViewTableRef"
         :items="items.results"
         :api-name="props.apiName"
         :pagination="pagination"
         :table-headers="props.tableHeaders"
         :sort="sort"
         :enable-import-export="props.enableImportExport"
-        :show-eye-icon-in-table="props.showEyeIconInTable"
+        :view-base-url="props.viewBaseUrl"
+        :block-delete="props.blockDelete"
         @update-list-sort="updateListSort"
-        @toggle-element-in-checked-row="toggleSelectedItems"
-        @remove-all-elements-from-selected-items="removeAllSelectedItems"
-        @toggle-is-all-selected="toggleIsAllSelected"
+        @update-selected-items="updateSelectedItems"
         @delete-row="deleteRow"
       />
       <AdminListViewPaginator
@@ -310,9 +292,9 @@ defineExpose({ toggleDialog });
         :initial-create-object-dialog-data="props.initialCreateObjectDialogData"
         :api-name="props.apiName"
         :get-objects="props.getObjects"
-        :selected-items="Array.from(selectedItems)"
-        :is-all-selected="isAllSelected"
+        :selected-items="selectedItems"
         @update-dialog="toggleDialog"
+        @reset-selection="refreshAndResetItems"
       />
     </div>
   </div>
