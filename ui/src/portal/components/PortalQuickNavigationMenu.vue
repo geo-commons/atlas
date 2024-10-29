@@ -8,19 +8,19 @@
           Hoofdkaart</a
         >
       </li>
-      <li>
+      <li v-if="availableLinks.maps">
         <a href="/maps" class="text-button">
           <ChevronRightIcon class="icon __large" />
           Alle kaarten</a
         >
       </li>
-      <li>
+      <li v-if="availableLinks.datasets">
         <a href="/datasets" class="text-button">
           <ChevronRightIcon class="icon __large" />
           Alle datasets</a
         >
       </li>
-      <li>
+      <li v-if="availableLinks.tables">
         <a href="/tables" class="text-button">
           <ChevronRightIcon class="icon __large" />
           Alle tabellen</a
@@ -36,6 +36,18 @@ import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
 export default {
   name: "PortalQuickNavigationMenu",
   components: { ChevronRightIcon },
+  props: {
+    availableLinks: {
+      type: Object,
+      default: () => {
+        return {
+          maps: false,
+          tables: false,
+          datasets: false,
+        };
+      },
+    },
+  },
 };
 </script>
 

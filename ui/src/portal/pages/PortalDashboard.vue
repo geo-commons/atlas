@@ -17,11 +17,9 @@
       />
     </section>
     <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-    <div v-else-if="noContentAvailable" class="tw-flex tw-justify-center tw-text-xl">
-      <p>Het lijkt er op dat er nog geen data geconfigureerd is...</p>
-    </div>
     <div v-else class="tw-flex tw-flex-col tw-gap-4 md:tw-gap-8 tw-mt-4 md:tw-mt-8">
-      <section class="tw-flex tw-justify-center">
+      <!-- Note: currently we can only search through datasets that is why it is the only check in the v-if below.     -->
+      <section v-if="availableLinks.datasets" class="tw-flex tw-justify-center">
         <div class="tw-w-full lg:tw-w-4/6">
           <PortalSearchField :size="'large'" @on-search="onSearch" />
         </div>
@@ -29,73 +27,77 @@
 
       <section class="tw-grid md:tw-grid-cols-12 tw-gap-4 lg:tw-gap-12 tw-mt-4 md:tw-mt-8">
         <EmbedAtlasFrame class="md:tw-col-span-7" :embed-url="embedUrl" />
-        <PortalQuickNavigationMenu class="md:tw-col-span-5" />
+        <PortalQuickNavigationMenu :available-links="availableLinks" class="md:tw-col-span-5" />
       </section>
 
-      <section v-if="maps.length">
-        <div class="tw-flex tw-justify-between tw-items-center">
-          <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Kaarten</h2>
-          <router-link class="text-button" to="/maps">
-            Toon alle kaarten
-            <ArrowRightIcon class="icon __smedium" />
-          </router-link>
-        </div>
-        <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-          <PortalCard
-            v-for="map in visibleMaps"
-            :key="map.id"
-            :object-type="'map'"
-            :title="map.title"
-            :thumbnail="map.thumbnail"
-            :summary="map.description"
-            :show-thumbnail="true"
-            :object-url="`/atlas/maps/${map.slug}`"
-          />
-        </div>
-      </section>
-
-      <section v-if="datasets.length">
-        <div class="tw-flex tw-justify-between tw-items-center">
-          <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Datasets</h2>
-          <router-link class="text-button" to="/datasets">
-            Toon alle datasets
-            <ArrowRightIcon class="icon __smedium" />
-          </router-link>
-        </div>
-        <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-          <PortalCard
-            v-for="dataset in visibleDatasets"
-            :key="dataset.id"
-            :object-type="'dataset'"
-            :title="dataset.title"
-            :summary="dataset.description"
-            :thumbnail="dataset.thumbnail"
-            :show-thumbnail="true"
-            :object-url="`/datasets/${dataset.slug}`"
-          />
-        </div>
-      </section>
-      <section v-if="tables.length">
-        <div class="tw-flex tw-justify-between tw-items-center">
-          <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Tabellen</h2>
-          <router-link class="text-button" to="/tables">
-            Toon alle tabellen
-            <ArrowRightIcon class="icon __smedium" />
-          </router-link>
-        </div>
-        <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-          <PortalCard
-            v-for="table in visibleTables"
-            :key="table.id"
-            :object-type="'table'"
-            :title="table.title"
-            :summary="table.description"
-            :thumbnail="table.thumbnail"
-            :show-thumbnail="true"
-            :object-url="`/tables/#/${table.slug}`"
-          />
-        </div>
-      </section>
+      <div v-if="noContentAvailable" class="tw-flex tw-justify-center tw-text-xl">
+        <p v-if="user">Het lijkt er op dat er nog geen data geconfigureerd is...</p>
+      </div>
+      <div v-else class="tw-flex tw-flex-col tw-gap-4 md:tw-gap-8">
+        <section v-if="maps.length">
+          <div class="tw-flex tw-justify-between tw-items-center">
+            <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Kaarten</h2>
+            <router-link class="text-button" to="/maps">
+              Toon alle kaarten
+              <ArrowRightIcon class="icon __smedium" />
+            </router-link>
+          </div>
+          <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
+            <PortalCard
+              v-for="map in visibleMaps"
+              :key="map.id"
+              :object-type="'map'"
+              :title="map.title"
+              :thumbnail="map.thumbnail"
+              :summary="map.description"
+              :show-thumbnail="true"
+              :object-url="`/atlas/maps/${map.slug}`"
+            />
+          </div>
+        </section>
+        <section v-if="datasets.length">
+          <div class="tw-flex tw-justify-between tw-items-center">
+            <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Datasets</h2>
+            <router-link class="text-button" to="/datasets">
+              Toon alle datasets
+              <ArrowRightIcon class="icon __smedium" />
+            </router-link>
+          </div>
+          <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
+            <PortalCard
+              v-for="dataset in visibleDatasets"
+              :key="dataset.id"
+              :object-type="'dataset'"
+              :title="dataset.title"
+              :summary="dataset.description"
+              :thumbnail="dataset.thumbnail"
+              :show-thumbnail="true"
+              :object-url="`/datasets/${dataset.slug}`"
+            />
+          </div>
+        </section>
+        <section v-if="tables.length">
+          <div class="tw-flex tw-justify-between tw-items-center">
+            <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Tabellen</h2>
+            <router-link class="text-button" to="/tables">
+              Toon alle tabellen
+              <ArrowRightIcon class="icon __smedium" />
+            </router-link>
+          </div>
+          <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
+            <PortalCard
+              v-for="table in visibleTables"
+              :key="table.id"
+              :object-type="'table'"
+              :title="table.title"
+              :summary="table.description"
+              :thumbnail="table.thumbnail"
+              :show-thumbnail="true"
+              :object-url="`/tables/#/${table.slug}`"
+            />
+          </div>
+        </section>
+      </div>
     </div>
   </main>
 </template>
@@ -122,6 +124,9 @@ export default {
     };
   },
   computed: {
+    user() {
+      return useGlobalStore().user;
+    },
     config() {
       return useGlobalStore().config;
     },
@@ -138,7 +143,10 @@ export default {
       return this.tables.slice(0, this.maxNrItems);
     },
     noContentAvailable() {
-      return !this.maps.length && !this.tables.length && !this.datasets.length;
+      return !this.maps?.length && !this.tables?.length && !this.datasets?.length;
+    },
+    availableLinks() {
+      return { maps: this.maps?.length > 0, datasets: this.datasets?.length > 0, tables: this.tables?.length > 0 };
     },
   },
   created() {
