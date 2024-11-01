@@ -1,0 +1,26 @@
+listenAddress: :8050
+
+authorizationServiceUrl: http://host.docker.internal:8000/atlas/api/v1/authorize/
+
+cors:
+  allowedOrigins:
+    - http://localhost:8000
+  allowedHeaders:
+    - Accept
+    - Authorization
+    - Content-Type
+    - X-Requested-With
+  allowCredentials: true
+  allowPrivateNetwork: true
+  debugLogging: true
+
+paths:
+  - path: /api/ows
+    backend:
+      slug: geoserver
+      path: /ows
+
+backends:
+  geoserver:
+    type: OWS
+    baseUrl: https://dpt.purmerend.nl/geoserver
