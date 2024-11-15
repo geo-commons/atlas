@@ -39,7 +39,7 @@ onMounted(async () => {
 <template>
   <div class="tw-pb-4 tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between md:tw-items-end tw-gap-2">
     <InputGroup class="!tw-w-full md:!tw-w-1/4">
-      <InputGroupAddon>
+      <InputGroupAddon class="tw-w-10">
         <i class="pi pi-search !tw-h-4 !tw-w-4"></i>
       </InputGroupAddon>
       <InputText
