@@ -1,5 +1,7 @@
 <template>
-  <div class="filter-table-container">
+  <Spinner v-if="loading" />
+  <div v-else-if="error">Er is iets fout gegaan bij het ophalen van de data...</div>
+  <div v-else class="filter-table-container">
     <div class="filter-container">
       <div class="toggle-filter-container">
         <switch-slider aria-label="Activeer filters" @toggleSwitch="toggleFilters()" />
@@ -27,7 +29,7 @@
         <div v-if="selectedFilterProperties" class="selected-filter-container">
           <div v-for="property in selectedFilterProperties" :key="property">
             <FilterSelect
-              :filter-options="getFilterOptions(property)"
+              :filter-options="filterOptions[property]"
               :field-filters="fieldFilters"
               :filter-property="property"
               @onFilterChange="(v) => setFieldFilters(v, property)"
@@ -37,11 +39,7 @@
       </div>
     </div>
 
-    <p v-if="numberMatched !== null" class="total-results">
-      {{ numberMatched }} {{ numberMatched === 1 ? "resultaat" : "resultaten" }}
-    </p>
-
-    <table-list v-if="!loading" class="table table-wrapper table-border table-margin">
+    <table-list class="table table-wrapper table-border table-margin">
       <table>
         <thead>
           <tr>
@@ -77,7 +75,23 @@
         </tbody>
       </table>
     </table-list>
-    <Spinner v-else />
+    <div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-center md:tw-relative">
+      <p v-if="numberMatched !== null" class="total-results md:tw-left-0 md:tw-absolute">
+        {{ numberMatched }} {{ numberMatched === 1 ? "resultaat" : "resultaten" }}
+      </p>
+      <Paginator
+        :template="{
+          '640px': 'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+          default: 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown',
+        }"
+        :current-page-report-template="'({currentPage} van {totalPages})'"
+        :rows="pageState.rows"
+        :total-records="numberMatched"
+        :first="pageState.page * pageState.rows - 1 + pageState.rows"
+        :rows-per-page-options="[10, 20, 30, 50, 100]"
+        @page="updatePageState"
+      ></Paginator>
+    </div>
   </div>
 </template>
 
@@ -88,12 +102,12 @@ import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import FilterSelect from "./FilterSelect.vue";
 import SwitchSlider from "./SwitchSlider.vue";
-import Spinner from "@/components/Spinner.vue";
 import MarkerIcon from "../assets/icons/marker-icon.svg";
 import { getFetchParameters } from "../utils/auth";
 import StackSortableTableHeaderItem from "@/components/StackSortableTableHeaderItem.vue";
 import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "FeatureTable",
@@ -126,9 +140,16 @@ export default {
       filterProperties: [],
       filterOptions: {},
       filterFeatures: {},
-      loading: false,
       numberMatched: null,
       sortStack: [],
+      pageState: {
+        page: 0,
+        first: 20,
+        rows: 20,
+        pageCount: 4,
+      },
+      error: false,
+      loading: true,
     };
   },
   watch: {
@@ -153,11 +174,19 @@ export default {
     selectedArea: "fetchFeatures",
     filter: "fetchFeatures",
     fieldFilters: "fetchFeatures",
-    sortStack() {
-      this.fetchFeatures();
+    pageState: "fetchFeatures",
+    sortStack: {
+      handler() {
+        this.fetchFeatures();
+      },
+      deep: true,
     },
     selectedFilterProperties(newValue, oldValue) {
       const listWithRemovedFilters = oldValue.filter((value) => !newValue.includes(value));
+      const newFilterProperty = newValue.filter((value) => !oldValue.includes(value))[0];
+      if (newFilterProperty) {
+        this.getFilterOptions(newFilterProperty);
+      }
 
       listWithRemovedFilters.map((removedFilter) => {
         this.removeFilter(removedFilter);
@@ -170,7 +199,6 @@ export default {
   },
   methods: {
     async fetchFeatures() {
-      this.loading = true;
       this.error = false;
 
       const params = new URLSearchParams([
@@ -179,7 +207,8 @@ export default {
         ["request", "GetFeature"],
         ["typename", this.layer.name],
         ["outputFormat", "application/json"],
-        ["maxFeatures", "5000"],
+        ["maxFeatures", this.pageState.rows],
+        ["startIndex", this.pageState.rows * this.pageState.page],
       ]);
 
       const filters = [];
@@ -234,7 +263,6 @@ export default {
       try {
         const url = new URL(this.layer.url);
         url.search = params.toString();
-
         const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
         const data = await result.json();
 
@@ -305,17 +333,95 @@ export default {
       } catch (e) {
         console.error(e);
       }
+      this.loading = false;
     },
-    downloadCSV() {
+    async fetchFeaturesForDownload() {
+      this.error = false;
+
+      const params = new URLSearchParams([
+        ["service", "WFS"],
+        ["version", "1.0.0"],
+        ["request", "GetFeature"],
+        ["typename", this.layer.name],
+        ["outputFormat", "application/json"],
+      ]);
+
+      const filters = [];
+
+      if (this.query && this.searchProperties.length > 0) {
+        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(" OR ")})`;
+
+        filters.push(searchQuery);
+
+        this.$emit(
+          "update-filters",
+          {
+            ...this.filters,
+            [this.layer.id]: {
+              ...this.fieldFilters,
+              search: searchQuery,
+            },
+          },
+          this.layer.id,
+        );
+      }
+
+      if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
+        Object.keys(this.fieldFilters).forEach((key) => {
+          filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+        });
+      }
+
+      if (this.selectedArea) {
+        filters.push(
+          `INTERSECTS(geom,POLYGON((${this.selectedArea
+            .getCoordinates()[0]
+            .map((c) => `${c[0]} ${c[1]}`)
+            .join(",")})))`,
+        );
+      }
+
+      if (filters.length > 0) {
+        params.set("cql_filter", filters.join(" AND "));
+      }
+
+      if (this.sortStack.length > 0) {
+        let sortString = [];
+
+        this.sortStack.map((attr) => {
+          sortString.push(`${attr.id} ${attr.asc ? "A" : "D"}`);
+        });
+
+        params.set("sortBy", sortString);
+      }
+
+      try {
+        const url = new URL(this.layer.url);
+        url.search = params.toString();
+        const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
+        const data = await result.json();
+
+        // this.featureCollection = data;
+        return data;
+      } catch (e) {
+        console.error("Er is iets fout gegaan bij het ophalen van de data voor de download", e);
+      }
+
+      this.loading = false;
+      return [];
+    },
+    async downloadCSV() {
       const separator = ";";
       const filename = this.layer.title
         .replace(" ", "-")
         .replace(/[^a-z0-9-]/gi, "")
         .toLowerCase();
 
+      const fetchDownloadData = await this.fetchFeaturesForDownload();
+
       let data = this.displayProperties.map((property) => `"${property.replace(/"/g, '""')}"`).join(separator) + "\n";
 
-      this.featureCollection.features.forEach((feature) => {
+      fetchDownloadData.features.forEach((feature) => {
         data +=
           this.displayProperties
             .map((property) =>
@@ -333,6 +439,8 @@ export default {
       hiddenElement.click();
     },
     async download(outputFormat) {
+      const fetchDownloadData = await this.fetchFeaturesForDownload();
+
       const result = await fetch(`/atlas/convert/${outputFormat}`, {
         method: "POST",
         credentials: "same-origin",
@@ -342,7 +450,7 @@ export default {
         },
         body: JSON.stringify({
           outputFormat,
-          featureCollection: this.featureCollection,
+          featureCollection: fetchDownloadData,
         }),
       });
 
@@ -407,25 +515,44 @@ export default {
         }
       }
     },
-    getFilterOptions(property) {
+    async fetchFilterOptionsForProperty(property) {
+      const params = new URLSearchParams([
+        ["service", "WFS"],
+        ["version", "1.0.0"],
+        ["request", "GetFeature"],
+        ["typename", this.layer.name],
+        ["outputFormat", "application/json"],
+        ["cql_filter", `${property} IS NOT NULL`],
+        ["propertyName", property],
+        ["sortBy", property],
+      ]);
+      try {
+        const url = new URL(this.layer.url);
+        url.search = params.toString();
+
+        const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
+
+        if (result.ok) {
+          const data = await result.json();
+          return data.features;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      return [];
+    },
+    async getFilterOptions(property) {
       if (this.filterOptions[property]) {
         return this.filterOptions[property];
       }
 
-      // initialize filters for relevant feature property
-      let filters = [];
-      let featurePropSet = new Set();
+      const fetchedFeatureFilters = await this.fetchFilterOptionsForProperty(property);
 
-      if (this.filterFeatures && property) {
-        this.filterFeatures.forEach((feature) => {
-          if (feature.properties[property]) {
-            featurePropSet.add(feature.properties[property]);
-          }
-        });
-      }
-      filters = [...featurePropSet];
+      // Extract the unique values from the fetched features
+      const filters = Array.from(new Set(fetchedFeatureFilters.map((feature) => feature.properties[property])));
+
       this.filterOptions[property] = filters;
-      return this.filterOptions[property];
     },
     setFieldFilters(v) {
       let newFilters = { ...this.filters };
@@ -464,6 +591,9 @@ export default {
       }
 
       return formatRawString(property);
+    },
+    updatePageState(updatedPageState) {
+      this.pageState = updatedPageState;
     },
   },
 };

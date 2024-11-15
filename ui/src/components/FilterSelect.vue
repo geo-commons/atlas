@@ -45,6 +45,11 @@ export default {
       currentFilterOptions: this.filterOptions,
     };
   },
+  watch: {
+    filterOptions(value) {
+      this.currentFilterOptions = value;
+    },
+  },
   methods: {
     updateFieldFilters() {
       if (this.selectedItems.length > 0) {
