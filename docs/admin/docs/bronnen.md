@@ -1,34 +1,31 @@
-Binnen Bronnen kunnen meerdere endpoints geconfigureerd worden. Wanneer bijvoorbeeld een Geoserver met meerdere omgevingen gebruikt wordt of als ook externe kaartlagen gebruikt worden,
-kan dit handig zijn. Bronnen kunnen toegevoegd, bewerkt of verwijderd worden.
 
-<img src="../images/bronnen1.png" alt="bronnen" width="400"/>
+Binnen Bronnen worden de zogenaamde endpoints geconfigureerd. Een endpoint biedt toegang tot de gegevens die bijvoorbeeld op [Geoserver](https://geoserver.org/){target="_blank"} opgeslagen zijn.
+Om bijvoorbeeld WMS (Web Map Service) gegevens van Geoserver op te halen kan dit het endpoint zijn:
+```
+http://mijnserver.nl/geoserver/wms
+```
 
-Klik op een bron om deze te bewerken of te verwijderen. Om meerdere bronnen te verwijderen kunnen deze geselecteerd worden, kies bij Actie "Geselecteerde Bronnen verwijderen".
-Klik links bovenin op "BRON TOEVOEGEN" om een nieuwe bron toe te voegen.
+Binnen Atlas kunnen meerdere endpoints geconfigureerd worden. Zo kan er een bron voor WMS lagen zijn, voor WFS (Web Feature Service) of bronnen voor externe kaartlagen. Bronnen kunnen toegevoegd, bewerkt of verwijderd worden.  
 
-<img src="../images/bronnen2.png" alt="bronnen" width="400"/>
+Klik op Nieuwe bron om een bron toe te voegen. Vul de Titel in, deze verschijnt in het hoofdmenu bronnen. Het veld Kort kenmerk moet een unieke waarde hebben en mag geen spaties bevatten. Vul bij de URL het endpoint in.
 
-Vul bij een nieuwe bron een titel in voor deze bron en het endpoint als Url. Voor de achtergrondkaarten van PDOK is dit bijvoorbeeld: https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0.
+### Algemene gegevens
 
-<img src="../images/bronnen3.png" alt="bronnen" width="400"/>
+- **Titel**
+	Dit is de titel zoals ingegeven bij het aanmaken van de bron.  
 
-De bewerkingsgeschiedenis kan bekeken worden door op de knop "Geschiedenis" te klikken.
+- **URL**
+	Dit is de URL zoals ingegeven bij het aanmaken van de bron.  
 
----
-<div id="categorieen">
-<h2>CATEGORIEËN</h2> 
-</div>
----
+- **Verstuur authenticatie-informatie naar bron**
+	Deze optie kan aangevinkt worden wanneer extra beveiliging nodig is om de laag te kunnen bekijken. Wanneer deze optie aangevinkt is, kan de kaartlaag die deze bron gebruikt zo geconfigureerd worden dat deze maar door een beperkte groep gebruikers te zien is. Zie hiervoor het onderdeel [beveiliging](layer_security.md){target="_blank"}.  
+	Standaard waarde: *uit*
+	
 
-Categorieën zijn de hoofdonderwerpen zoals die links in het scherm van Atlas worden getoond. Het openklikken van een hoofdonderwerp/categorie
-zorgt ervoor dat eronder de verschillende kaartlagen van die categorie in de legenda worden getoond.
-Bij het toevoegen van een kaartlaag wordt aangegeven onder welke categorie deze valt.
+### Toegang
 
-<img src="../images/categorieen.png" alt="categorieën" width="400"/>
-
-De volgende velden moeten worden ingevuld bij het toevoegen van een categorie:
-
-- **Titel:** (De naam zoals die in het viewer scherm van Atlas komt te staan)
-- **Sortering:** (default waarde: 0)
-
-<img src="../images/categorie-toevoegen.png" alt="categorie toevoegen" width="500"/>
+- **Vereis inlog voor deze bron**  
+	Wanneer deze optie is aangevinkt kan de kaartlaag die deze bron gebruikt, alleen bekeken worden door ingelogde gebruikers.  
+	Gebruik dit ook voor ['per layer security'](layer_security.md){target="_blank"}.  
+- **Groepen**
+	Wanneer er [gebruikersgroepen](groepen.md){target="_blank"} zijn aangemaakt, kunnen hier deze gebruikersgroepen geselecteerd worden. De kaartlagen die deze bron gebruiken, kunnen dan alleen bekeken worden door de geselecteerde gebruikergroepen. Zie ook het onderdeel [beveiliging](layer_security.md){target="_blank"}.  
