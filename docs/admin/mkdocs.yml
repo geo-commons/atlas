@@ -37,9 +37,18 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - attr_list
 
 nav:
   - 'Introductie': 'index.md'
   - 'Installatie': 'installlokaal.md'
-  - 'Configuratie': 'dashboard.md'
+  - 'Dashboard': 'dashboard.md'
+  - 'Kaarten': 'kaarten.md'
+  - 'Bronnen': 'bronnen.md'
+  - 'Kaartlagen': 'kaartlagen.md'
+  - 'Categorieën': 'categorie.md'
+  - 'Gebruikersbeheer': 'gebruikers.md'
+  - 'Groepen': 'groepen.md'
+  - 'Viewers': 'viewers.md'
   - 'Beveiliging': 'layer_security.md'
+  - 'Configuratie': 'configuratie.md'
