@@ -159,7 +159,7 @@ export default {
     },
     async saveCategory(category) {
       let result;
-      const categoryBody = { id: category.id, title: category.title, ordering: category.newOrder };
+      const categoryBody = { id: category.id, ordering: category.newOrder };
 
       result = await fetch(`/atlas/api/v1/categories/${category.id}/`, {
         method: "PATCH",
@@ -180,8 +180,7 @@ export default {
     },
     async saveLayer(layer) {
       let result;
-      const currentLayer = this.layerData.find((l) => l.id === layer.id);
-      const layerBody = { ...currentLayer, ordering: layer.newOrder };
+      const layerBody = { id: layer.id, ordering: layer.newOrder };
 
       result = await fetch(`/atlas/api/v1/layers/${layer.id}/`, {
         method: "PATCH",
