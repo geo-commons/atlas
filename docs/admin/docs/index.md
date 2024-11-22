@@ -1,5 +1,4 @@
-Handleiding Admin Module Atlas
-============================================
+# Handleiding Admin Module Atlas1
 
 Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module wordt Atlas geconfigureerd.
 
@@ -27,4 +26,4 @@ Het inloggen in de adminmodule verloopt via Single-Sign-On. Het openen van de ad
 <img src="images/inlog-admin-sso.png" alt="Inlogscherm Adminmodule" width="300"/>
 
 !!! Alert "Let op"
-    In tegenstelling met de URL voor Atlas, moet de URL voor de adminmodule afgesloten worden met een /. Zonder een / aan het eind zal een 'Page not found' / 404 error verschijnen.
+In tegenstelling met de URL voor Atlas, moet de URL voor de adminmodule afgesloten worden met een /. Zonder een / aan het eind zal een 'Page not found' / 404 error verschijnen.
