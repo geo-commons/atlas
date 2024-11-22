@@ -9,11 +9,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from homepage.templatetags.app_version import app_version
 from webservice.models import Layer, Map, Viewer
 
 logger = logging.getLogger(__name__)
+
 
 @xframe_options_exempt
 def embed(request):
@@ -33,6 +35,7 @@ def embed(request):
 
 
 @xframe_options_exempt
+@ensure_csrf_cookie
 def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.for_request(request).prefetch_related(
         'layer_source', 'layer_type', 'linked_data', 'templates'
@@ -82,6 +85,7 @@ def v3_login_failure(request):
 
 
 @login_required(login_url='admin:login')
+@ensure_csrf_cookie
 def v3_admin(request):
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
@@ -91,12 +95,12 @@ def v3_admin(request):
     )
 
     config = _get_config(request)
-    config = { 
-        **config,                 
+    config = {
+        **config,
         'application_version': app_version(),
         'application_environment': os.getenv('ENVIRONMENT'),
-        }
-    
+    }
+
     context = {
         'data':  {
             'config': config,
