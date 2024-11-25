@@ -12,7 +12,7 @@ DEFAULT_SESSION_COOKIE_SECURE = 'False'
 DEFAULT_SESSION_EXPIRE_AT_BROWSER_CLOSE = 'False'
 DEFAULT_SESSION_COOKIE_AGE = '1909600'  # 2 weeks
 
-if os.getenv('ATLAS_ENVIRONMENT') == 'production':
+if os.getenv('USE_SAFE_SETTINGS'):
     DEBUG_DEFAULT = 'False'
     DEBUG_API_PROXY_DEFAULT = ''
     SECRET_KEY_DEFAULT = None
@@ -24,6 +24,8 @@ if os.getenv('ATLAS_ENVIRONMENT') == 'production':
 SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY_DEFAULT)
 DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
 DEBUG_API_PROXY = os.getenv('DEBUG_API_PROXY', DEBUG_API_PROXY_DEFAULT)
+
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ALLOWED_HOSTS_DEFAULT).split(',')
 INTERNAL_IPS = list(filter(None, os.getenv('INTERNAL_IPS', '').split(',')))
@@ -144,7 +146,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'webservice.pagination.StandardResultsSetPagination',
 }
 
 SIMPLE_JWT = {
@@ -332,7 +335,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     )
 }
 
-DJANGO_VITE_DEV_MODE = os.getenv("ATLAS_ENVIRONMENT") != "production"
+DJANGO_VITE_DEV_MODE = DEBUG
 DJANGO_VITE_MANIFEST_PATH = os.path.join(BASE_DIR, 'homepage/static/dist/manifest.json')
 
 BASE_DIR = Path(__file__).resolve().parent.parent

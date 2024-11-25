@@ -8,7 +8,8 @@
         aria-label="Ga terug"
         @click="back"
       >
-        <arrow-left-icon class="icon" />Terug
+        <arrow-left-icon class="icon" />
+        Terug
       </button>
     </div>
 
@@ -19,7 +20,7 @@
         :group="'categories'"
         :selectable-items="true"
         class="category-table"
-        @update="(newCategories) => updateCategories(newCategories)"
+        @updateList="(newCategories) => updateCategories(newCategories)"
         @item-selected="(selectedItem) => selectCategory(selectedItem)"
       />
 
@@ -29,7 +30,7 @@
         :title="'Kaartlagen'"
         :group="'layers'"
         class="layer-table"
-        @update="(newLayers) => updateLayers(newLayers)"
+        @updateList="(newLayers) => updateLayers(newLayers)"
       >
         <template #empty-list>De geselecteerde categorie heeft geen bijbehorende kaartlagen.</template>
       </SortableList>
@@ -42,6 +43,7 @@
 import Cookies from "js-cookie";
 import ArrowLeftIcon from "../../assets/icons/arrow-left-icon.svg";
 import SortableList from "@/admin/components/SortableList.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "AdminSortPage",
@@ -77,7 +79,8 @@ export default {
   },
   methods: {
     async getCategories() {
-      const result = await fetch("/atlas/api/v1/categories/", {
+      const url = getAllObjects("/atlas/api/v1/categories/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -87,12 +90,13 @@ export default {
       }
 
       const response = await result.json();
-      this.categories = response.map((c, index) => {
+      this.categories = response.results.map((c, index) => {
         return { title: c.title, newOrder: index, id: c.id, currentOrder: c.ordering };
       });
     },
     async getLayers() {
-      const result = await fetch("/atlas/api/v1/layers/", {
+      const url = getAllObjects("/atlas/api/v1/layers/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -101,7 +105,8 @@ export default {
         console.error("Could not fetch layers");
       }
 
-      this.layerData = await result.json();
+      const response = await result.json();
+      this.layerData = response.results;
       this.layers = this.layerData.map((l) => {
         return { title: l.title, newOrder: l.ordering, id: l.id, category: l.category, currentOrder: l.ordering };
       });
@@ -154,7 +159,7 @@ export default {
     },
     async saveCategory(category) {
       let result;
-      const categoryBody = { id: category.id, title: category.title, ordering: category.newOrder };
+      const categoryBody = { id: category.id, ordering: category.newOrder };
 
       result = await fetch(`/atlas/api/v1/categories/${category.id}/`, {
         method: "PATCH",
@@ -175,8 +180,7 @@ export default {
     },
     async saveLayer(layer) {
       let result;
-      const currentLayer = this.layerData.find((l) => l.id === layer.id);
-      const layerBody = { ...currentLayer, ordering: layer.newOrder };
+      const layerBody = { id: layer.id, ordering: layer.newOrder };
 
       result = await fetch(`/atlas/api/v1/layers/${layer.id}/`, {
         method: "PATCH",

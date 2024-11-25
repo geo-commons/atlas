@@ -52,7 +52,7 @@
           <vee-error-message class="form-error" name="list" />
         </div>
       </div>
-      <div class="">
+      <div>
         <div class="layer-setting">
           <label class="question-label" for="headers">Tabel kopjes</label>
           <textarea
@@ -90,7 +90,8 @@
 
 <script>
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
-import { Form as VeeForm, ErrorMessage as VeeErrorMessage, Field as VeeField } from "vee-validate";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "TemplateForm",
@@ -107,10 +108,10 @@ export default {
   },
   computed: {
     headers() {
-      return this.template.headers.join("\n");
+      return this.template.headers ? this.template.headers.join("\n") : "";
     },
     fields() {
-      return this.template.fields.join("\n");
+      return this.template.fields ? this.template.fields.join("\n") : "";
     },
   },
   async created() {
@@ -130,7 +131,8 @@ export default {
       this.$emit("save", finalData);
     },
     async getSources() {
-      const result = await fetch("/atlas/api/v1/sources/", {
+      const url = getAllObjects("/atlas/api/v1/sources/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -141,7 +143,7 @@ export default {
 
       const response = await result.json();
 
-      return response.map((source) => {
+      return response.results.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
     },

@@ -4,7 +4,7 @@
     class="button"
     :data-size="size"
     :class="{ dropShadow, hasLabel: !!label }"
-    @click="() => $emit('click')"
+    @click="() => $emit('on-button-click')"
   >
     <slot></slot>
     <span v-if="label" class="label">{{ label }}</span>

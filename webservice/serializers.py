@@ -400,17 +400,26 @@ class DrawingSerializer(serializers.ModelSerializer):
         fields = ['id', 'features']
 
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AtlasGroup
+        fields = ['id', 'name', 'slug', 'external_id']
+
+
 class UserSerializer(serializers.ModelSerializer):
+    atlas_groups = GroupSerializer(many=True, read_only=True)
+
     class Meta:
         model = AtlasUser
         fields = ['id', 'username', 'name', 'email', 'is_staff', 'is_active',
                   'is_superuser', 'atlas_groups', 'external_id', 'date_joined', 'last_login']
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class UserCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AtlasGroup
-        fields = ['id', 'name', 'slug', 'external_id']
+        model = AtlasUser
+        fields = ['id', 'username', 'name', 'email', 'is_staff', 'is_active',
+                  'is_superuser', 'atlas_groups', 'external_id', 'date_joined', 'last_login']
 
 
 class DataExportSettingsSerializer(serializers.Serializer):

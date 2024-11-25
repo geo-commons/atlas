@@ -3,19 +3,54 @@
     id="map-container"
     ref="mapContainer"
     class="map-container"
-    :class="{ showInfoPanel, showDataPanel, portalHeader: config.features.portal }"
+    :class="{ showInfoPanel, showDataPanel, portalHeader: !isEmbed && config.features.portal }"
     :style="computedStyle"
   >
     <div class="renderer-container">
-      <PanoramaPanel
-        class="panorama-panel"
-        :position="position"
-        :is-open="showPanoramaPanel"
-        @toggle="togglePanoramaPanel"
-      />
+      <Splitter
+        v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)"
+        ref="splitter"
+        style="height: 100vh"
+        layout="vertical"
+      >
+        <SplitterPanel v-if="showPanoramaPanel" class="flex items-center justify-center panorama-splitter">
+          <PanoramaPanel
+            class="panorama-panel"
+            :position="position"
+            @toggle="togglePanoramaPanel"
+            @toggle-full-screen="togglePanoramaPanelFullScreen"
+          />
+        </SplitterPanel>
+        <SplitterPanel v-if="!showPanoramaPanelFullScreen" class="flex items-center justify-center">
+          <OpenLayersRenderer
+            ref="map"
+            class="renderer in-splitter"
+            :position="position"
+            :layers="layers"
+            :tool="tool"
+            :selected-area="selectedArea"
+            :highlighted-features="highlightedFeatures"
+            :selected-features="selectedFeatures"
+            :map-area="mapArea"
+            :user="user"
+            :padding="mapPadding"
+            :features="features"
+            :filters="filters"
+            :draw-features="drawFeatures"
+            :color="color"
+            :stroke-width="strokeWidth"
+            :font-size="fontSize"
+            @position-changed="setPosition"
+            @tool-used="toolUsed"
+            @features-selected="featuresSelected"
+            @on-fit="(position) => onFit(position, true)"
+          />
+        </SplitterPanel>
+      </Splitter>
       <OpenLayersRenderer
+        v-else
         ref="map"
-        class="renderer"
+        class="renderer in-splitter"
         :position="position"
         :layers="layers"
         :tool="tool"
@@ -109,7 +144,13 @@
               @show-data-panel="toggleDataPanel"
             />
           </div>
-          <PrimaryButton v-if="features.list && !showList" size="large" label="Lijst" drop-shadow @click="toggleList">
+          <PrimaryButton
+            v-if="features.list && !showList"
+            size="large"
+            label="Lijst"
+            drop-shadow
+            @on-button-click="toggleList"
+          >
             <ListIcon />
           </PrimaryButton>
           <PrimaryButton
@@ -117,7 +158,7 @@
             size="large"
             label="Verfijn"
             drop-shadow
-            @click="toggleFilters"
+            @on-button-click="toggleFilters"
           >
             <FilterListIcon />
           </PrimaryButton>
@@ -259,7 +300,6 @@ import MapIcon from "../../assets/icons/map-icon.svg";
 import PanoramaIcon from "../../assets/icons/panorama-icon.svg";
 import ObliqueIcon from "../../assets/icons/oblique-icon.svg";
 import MorePanel from "@/components/MorePanel.vue";
-import PanoramaPanel from "@/components/PanoramaPanel.vue";
 import nunjucks from "nunjucks";
 import PrintModal from "@/components/PrintModal.vue";
 import DrawingModal from "@/components/DrawingModal.vue";
@@ -267,17 +307,18 @@ import AlertMessage from "@/components/AlertMessage.vue";
 import EmbedModal from "@/components/EmbedModal.vue";
 import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
+import PanoramaPanel from "../PanoramaPanel.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
   components: {
+    PanoramaPanel,
     EmbedModal,
     AlertMessage,
     DrawingModal,
     PrintModal,
-    PanoramaPanel,
     MorePanel,
     BaseLayersPanel,
     FilterListIcon,
@@ -372,6 +413,7 @@ export default {
       },
       strokeWidth: 5,
       fontSize: 22,
+      showPanoramaPanelFullScreen: false,
     };
   },
   computed: {
@@ -454,7 +496,7 @@ export default {
           // Add missing userLayerSettings entries for new layers
           this.layers.forEach((layer) => {
             if (!(layer.id in this.userLayerSettings)) {
-              this.$set(this.userLayerSettings, layer.id, {});
+              this.userLayerSettings[layer.id] = {};
             }
           });
         }
@@ -582,6 +624,13 @@ export default {
     togglePanoramaPanel() {
       this.showBaseLayersPanel = false;
       this.showPanoramaPanel = !this.showPanoramaPanel;
+
+      if (!this.showPanoramaPanel) {
+        this.showPanoramaPanelFullScreen = false;
+      }
+    },
+    togglePanoramaPanelFullScreen(fullscreen) {
+      this.showPanoramaPanelFullScreen = fullscreen;
     },
     toggleDataPanel() {
       this.showDataPanel = !this.showDataPanel;
@@ -604,27 +653,27 @@ export default {
     setWindowInnerWidth() {
       // Do not adjust the inner window padding for mobile screens.
       if (isMobile()) {
-        this.$set(this.mapPadding, 3, 0);
+        this.mapPadding[3] = 0;
         return;
       }
 
       if (this.showDataPanel && !this.showDataPanelFullScreen) {
-        this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+        this.mapPadding[3] = window.innerWidth * 0.5;
         return;
       }
 
       if (this.showInfoPanel) {
         if (this.infoPanelExpanded) {
-          this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+          this.mapPadding[3] = window.innerWidth * 0.5;
           return;
         }
 
-        this.$set(this.mapPadding, 3, window.innerWidth * 0.25);
+        this.mapPadding[3] = window.innerWidth * 0.25;
         return;
       }
 
       // reset padding of the inner window.
-      this.$set(this.mapPadding, 3, 0);
+      this.mapPadding[3] = 0;
     },
     toggleList() {
       this.showList = !this.showList;
@@ -710,7 +759,7 @@ export default {
       // Since onFit is called before the data panel is open we need to make sure the
       // mapPadding is set correctly.
       if (halfScreen && !isMobile()) {
-        this.$set(this.mapPadding, 3, window.innerWidth * 0.5);
+        this.mapPadding[3] = window.innerWidth * 0.5;
       }
       this.$refs.map.fit(position, { maxZoom: 19 });
     },
@@ -904,5 +953,9 @@ export default {
 .bottom-right-buttons .iconbutton:first-child & .iconbutton:not(:only-child) {
   box-sizing: content-box;
   border-bottom: 1px solid var(--color-grey-50);
+}
+
+.panorama-splitter {
+  z-index: 2;
 }
 </style>

@@ -1,23 +1,33 @@
 <template>
   <div class="app">
     <AppMenu v-if="$route.meta.menu" />
+    <AdminEnvironmentIndicator v-if="config.application_environment !== 'production'" />
+    <admin-breadcrumb v-if="$route.meta.menu" />
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import AppMenu from "./components/MainMenu.vue";
+import AdminBreadcrumb from "./components/AdminBreadcrumb.vue";
+import AdminEnvironmentIndicator from "@/admin/components/AdminEnvironmentIndicator.vue";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
+import "primeicons/primeicons.css";
 
 export default {
   name: "App",
   components: {
+    AdminEnvironmentIndicator,
+    AdminBreadcrumb,
     AppMenu,
+  },
+  computed: {
+    ...mapState(useGlobalStore, ["config"]),
   },
 };
 </script>
 
-<!-- Include multiselect -->
-<style src="vue-multiselect/dist/vue-multiselect.css" />
 <style>
 @import "../assets/styles/main.css";
 
@@ -47,6 +57,7 @@ select.__admin {
   max-width: 1280px;
   margin: 0 auto;
   font-family: var(--font-family-admin);
+  padding-bottom: 32px;
 }
 
 .section + .section {
@@ -110,10 +121,6 @@ input:disabled {
 .edit-field-border {
   border-radius: var(--radius-normal);
   border: 1px solid var(--color-grey-60);
-}
-
-.multiselect__tags > input {
-  border: none;
 }
 
 .top-menu-container {
@@ -245,26 +252,6 @@ th {
 
 .first-column-padding {
   padding-left: 12px;
-}
-
-.admin .multiselect__tags-wrap .multiselect__tag {
-  background: var(--color-white);
-  border: solid 1px var(--color-admin-primary);
-  color: var(--color-admin-primary);
-}
-
-.admin .multiselect__tags-wrap .multiselect__tag-icon:focus,
-.admin .multiselect__tags-wrap .multiselect__tag-icon:hover {
-  background: var(--color-admin-primary);
-}
-
-.admin .multiselect__option--highlight {
-  background: var(--color-admin-primary);
-}
-
-.admin .multiselect__tags-wrap .multiselect__tag-icon:after {
-  color: var(--color-primary);
-  font-size: var(--font-size-large);
 }
 </style>
 

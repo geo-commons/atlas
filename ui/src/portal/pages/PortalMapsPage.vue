@@ -1,16 +1,16 @@
 <template>
-  <div class="container __portal">
-    <h1 class="__portal">Kaarten</h1>
+  <main class="tw-mx-auto tw-max-w-7xl tw-px-4 md:tw-pt-6 tw-my-4 tw-w-full">
+    <h1 class="tw-text-4xl tw-my-0 tw-mb-2">Kaarten</h1>
     <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-    <section>
-      <div class="search-container">
+    <section class="">
+      <div class="tw-w-full md:tw-w-2/6 tw-my-5">
         <PortalSearchField
           :initial-search-query="searchQuery"
           :placeholder="'Zoek op kaarten'"
           @on-search="setSearchQuery"
         />
       </div>
-      <div class="card-container">
+      <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
         <PortalCard
           v-for="map in visibleMaps"
           :key="map.id"
@@ -23,7 +23,7 @@
         />
       </div>
     </section>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -73,7 +73,8 @@ export default {
         console.error("Could not fetch maps");
       }
 
-      this.maps = await result.json();
+      const response = await result.json();
+      this.maps = response.results;
       this.loading = false;
     },
     setSearchQuery(newSearchQuery) {
@@ -82,10 +83,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-h2 {
-  font-size: var(--font-size-3xl);
-  margin: 20px 0;
-}
-</style>

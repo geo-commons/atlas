@@ -1,20 +1,22 @@
 <template>
   <PanelDisplay title="Verfijn resultaten" :loading="loading" @hidePanel="hidePanel">
-    <p v-if="facets.length <= 0" class="info-text">Er zijn nog geen filters geconfigureerd.</p>
-    <ExpandButton v-for="facet in facets" :key="facet" :title="getTitle(facet)" is-open>
-      <ul v-if="facetValues[facet]">
-        <li v-for="value in facetValues[facet]" :key="value">
-          <CheckboxField
-            :name="facet"
-            :value="value"
-            :checked="
-              filters && filters[layer.id] && filters[layer.id][facet] && filters[layer.id][facet].includes(value)
-            "
-            @click="onChangeFilter"
-          />
-        </li>
-      </ul>
-    </ExpandButton>
+    <p v-if="facets.length <= 0 || !layer" class="info-text">Er zijn nog geen filters geconfigureerd.</p>
+    <div v-if="layer">
+      <ExpandButton v-for="facet in facets" :key="facet" :title="getTitle(facet)" is-open>
+        <ul v-if="facetValues[facet]">
+          <li v-for="value in facetValues[facet]" :key="value">
+            <CheckboxField
+              :name="facet"
+              :value="value"
+              :checked="
+                filters && filters[layer.id] && filters[layer.id][facet] && filters[layer.id][facet].includes(value)
+              "
+              @click="onChangeFilter"
+            />
+          </li>
+        </ul>
+      </ExpandButton>
+    </div>
   </PanelDisplay>
 </template>
 
@@ -37,6 +39,7 @@ export default {
     user: Object,
     filters: Object,
   },
+  emits: ["hidePanel", "update-filters"],
   data() {
     return {
       facetValues: {},
@@ -48,8 +51,8 @@ export default {
       handler() {
         this.fetchFacetValues();
       },
+      deep: true,
     },
-    deep: true,
   },
   mounted() {
     this.fetchFacetValues();

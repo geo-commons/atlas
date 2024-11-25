@@ -1,30 +1,23 @@
 <template>
-  <div v-if="data" class="map-update">
+  <div v-if="data" class="map-update" :class="{ environmentIndicator: showEnvironmentIndicator }">
     <MapLayers
       v-if="sidebar === 'Layers'"
       :initial-data="data"
-      @change="updateLayers"
       @show-form="() => showSidebar('Form')"
       @show-layer="showLayerSettings"
+      @update-layers="updateLayers"
     />
     <MapLayer
       v-if="sidebar === 'Layer'"
       :initial-data="selectedLayerData"
       :initial-configured-layers="data.layers"
-      @change="updateLayers"
       @show-layers="() => showSidebar('Layers')"
     />
-    <LayerListPanel
-      v-if="sidebar === 'LayerList'"
-      :initial-data="data"
-      @change="updateLayers"
-      @show-form="() => showSidebar('Form')"
-    />
+    <LayerListPanel v-if="sidebar === 'LayerList'" :initial-data="data" @show-form="() => showSidebar('Form')" />
     <ListPanelAdmin
       v-if="sidebar === 'List'"
       :initial-data="data"
       :layers="configuredLayers"
-      @change="updateLayers"
       @show-form="() => showSidebar('Form')"
     />
     <FiltersPanelAdmin
@@ -32,7 +25,6 @@
       :initial-data="data"
       :layers="configuredLayers"
       :user="user"
-      @change="updateLayers"
       @show-form="() => showSidebar('Form')"
     />
     <MapForm
@@ -101,8 +93,23 @@ export default {
       userLayerSettings: null,
     };
   },
+  watch: {
+    "data.features.filters"(newValue) {
+      if (!newValue && this.$refs.map && this.$refs.map.showFilters) {
+        this.$refs.map.toggleFilters();
+      }
+    },
+    "data.features.list"(newValue) {
+      if (!newValue && this.$refs.map && this.$refs.map.showList) {
+        this.$refs.map.toggleList();
+      }
+    },
+  },
   computed: {
     ...mapState(useGlobalStore, ["position", "layers", "config", "user"]),
+    showEnvironmentIndicator() {
+      return this.config.application_environment !== "production";
+    },
     baseLayers() {
       return this.layers.filter((layer) => layer.is_base);
     },
@@ -154,18 +161,6 @@ export default {
       return this.layers;
     },
   },
-  watch: {
-    "data.features.filters"(newValue) {
-      if (!newValue) {
-        this.resetSelectedFilter();
-      }
-    },
-    "data.features.list"(newValue) {
-      if (!newValue) {
-        this.resetSelectedList();
-      }
-    },
-  },
   created() {
     this.getMap();
   },
@@ -198,6 +193,15 @@ export default {
     },
     async saveMap(data) {
       let result;
+
+      if (!data.features.list) {
+        data.settings.listLayerId = null;
+      }
+
+      if (!data.features.filters) {
+        data.settings.filterLayerId = null;
+        data.settings.facets = [];
+      }
 
       if (this.$route.params.id) {
         result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
@@ -275,18 +279,11 @@ export default {
       this.selectedLayerData = this.data.layers.find((layer) => layer.layer === selectedLayerId);
       this.showSidebar("Layer");
     },
-    updateLayers(layers) {
-      this.data.layers = layers;
-    },
-    resetSelectedFilter() {
-      this.data.settings.filterLayerId = null;
-      this.data.settings.facets = [];
-    },
-    resetSelectedList() {
-      this.data.settings.listLayerId = null;
-    },
     updateUserSettings(value) {
       this.userLayerSettings = value;
+    },
+    updateLayers(layers) {
+      this.data.layers = layers;
     },
   },
 };
@@ -297,6 +294,10 @@ export default {
   display: flex;
   height: 100%;
   flex-direction: row;
+}
+
+.map-update.environmentIndicator {
+  height: calc(100dvh - 40px);
 }
 
 h2 {

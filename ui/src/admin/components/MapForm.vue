@@ -144,11 +144,6 @@
           </div>
 
           <div class="setting __hover">
-            <input id="features.detail" v-model="data.features.detail" type="checkbox" name="features.detail" />
-            <label for="features.detail">Detailweergave</label>
-          </div>
-
-          <div class="setting __hover">
             <input id="features.filters" v-model="data.features.filters" type="checkbox" name="features.filters" />
             <label for="features.filters">Filters</label>
 
@@ -237,6 +232,7 @@ export default {
   align-items: flex-end;
   gap: 12px;
   margin-top: auto;
+  padding-bottom: 32px;
 }
 
 .setting-icon {

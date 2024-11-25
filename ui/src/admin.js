@@ -4,6 +4,7 @@ import "es6-promise/auto";
 import "whatwg-fetch";
 
 import { createApp } from "vue";
+import PrimeVue from "primevue/config";
 import VueTippy from "vue-tippy";
 import { getSettingsFromPath } from "./utils/router";
 import App from "./admin/App";
@@ -34,13 +35,15 @@ import DatasetList from "@/admin/pages/DatasetList.vue";
 import DatasetCreateUpdate from "@/admin/pages/DatasetCreateUpdate.vue";
 import LogList from "@/admin/pages/LogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
-import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
+import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
 import ViewerCreateUpdate from "@/admin/pages/ViewerCreateUpdate.vue";
 import AuthorizationList from "@/admin/pages/AuthorizationList.vue";
 import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.vue";
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
+import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
+import { AtlasPresetAdmin } from "@/utils/theme-preset";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -72,11 +75,6 @@ const routes = [
   { path: "/configuration", component: AdminConfigurationPage, meta: { title: "Configuratie", menu: true } },
   { path: "/maps", component: MapList, meta: { title: "Kaarten", menu: true } },
   {
-    path: "/maps/create",
-    component: MapCreateUpdate,
-    meta: { title: "Kaarten", menu: false },
-  },
-  {
     path: "/maps/update/:id",
     component: MapCreateUpdate,
     meta: { title: "Kaarten", menu: false },
@@ -87,14 +85,9 @@ const routes = [
     meta: { title: "Bronnen", menu: true },
   },
   {
-    path: "/sources/create",
-    component: SourceCreateUpdate,
-    meta: { title: "Bronnen", menu: true },
-  },
-  {
     path: "/sources/update/:id",
     component: SourceCreateUpdate,
-    meta: { title: "Bronnen", menu: true },
+    meta: { title: "Bron bewerken", menu: true, breadcrumb: { sources: { title: "Bronnen" } } },
   },
   {
     path: "/layers",
@@ -104,7 +97,7 @@ const routes = [
   {
     path: "/layers/update/:id",
     component: LayerCreateUpdate,
-    meta: { title: "Kaartlagen", menu: true },
+    meta: { title: "Kaartlaag bewerken", menu: true, breadcrumb: { layers: { title: "Kaartlagen" } } },
   },
   {
     path: "/categories",
@@ -114,7 +107,11 @@ const routes = [
   {
     path: "/categories/update/:id",
     component: CategoryCreateUpdate,
-    meta: { title: "Categorieën", menu: true },
+    meta: {
+      title: "Categorie bewerken",
+      menu: true,
+      breadcrumb: { categories: { title: "Categorieën" } },
+    },
   },
   {
     path: "/tables",
@@ -124,7 +121,7 @@ const routes = [
   {
     path: "/tables/update/:id",
     component: TableCreateUpdate,
-    meta: { title: "Tabellen", menu: true },
+    meta: { title: "Tabel bewerken", menu: true, breadcrumb: { tables: { title: "Tabellen" } } },
   },
   {
     path: "/users",
@@ -134,7 +131,7 @@ const routes = [
   {
     path: "/users/update/:id",
     component: UserCreateUpdate,
-    meta: { title: "Gebruikers", menu: true },
+    meta: { title: "Gebruiker bewerken", menu: true, breadcrumb: { users: { title: "Gebruikers" } } },
   },
   {
     path: "/groups",
@@ -144,7 +141,7 @@ const routes = [
   {
     path: "/groups/update/:id",
     component: GroupCreateUpdate,
-    meta: { title: "Groepen", menu: true },
+    meta: { title: "Groep bewerken", menu: true, breadcrumb: { groups: { title: "Groepen" } } },
   },
   {
     path: "/viewers",
@@ -154,7 +151,7 @@ const routes = [
   {
     path: "/viewers/update/:id",
     component: ViewerCreateUpdate,
-    meta: { title: "Viewers", menu: true },
+    meta: { title: "Viewer bewerken", menu: true, breadcrumb: { viewers: { title: "Viewers" } } },
   },
   {
     path: "/logs",
@@ -162,9 +159,9 @@ const routes = [
     meta: { title: "Logs", menu: true },
   },
   {
-    path: "/logs/:id",
+    path: "/logs/update/:id",
     component: LogView,
-    meta: { title: "Logs", menu: true },
+    meta: { title: "Log Bewerken", menu: true, breadcrumb: { viewers: { title: "Logs" } } },
   },
   {
     path: "/authorizations",
@@ -174,7 +171,7 @@ const routes = [
   {
     path: "/authorizations/update/:id",
     component: AuthorizationCreateUpdate,
-    meta: { title: "Autorisaties", menu: true },
+    meta: { title: "Autorisatie bewerken", menu: true, breadcrumb: { authorizations: { title: "Autorisaties" } } },
   },
   {
     path: "/themes",
@@ -184,7 +181,7 @@ const routes = [
   {
     path: "/themes/update/:id",
     component: ThemeCreateUpdate,
-    meta: { title: "Thema's", menu: true },
+    meta: { title: "Thema bewerken", menu: true, breadcrumb: { themes: { title: "Thema's" } } },
   },
   {
     path: "/datasets",
@@ -194,7 +191,12 @@ const routes = [
   {
     path: "/datasets/update/:id",
     component: DatasetCreateUpdate,
-    meta: { title: "Datasets", menu: true },
+    meta: { title: "Dataset Bewerken", menu: true, breadcrumb: { datasets: { title: "Datasets" } } },
+  },
+  {
+    path: "/general-information",
+    component: AdminGeneralInformationPage,
+    meta: { title: "Algemene informatie", menu: true },
   },
   {
     path: "/:parentRoute/sort",
@@ -205,8 +207,8 @@ const routes = [
       title: "Sortering",
       menu: true,
       breadcrumb: {
-        layers: { url: "/layers", displayName: "Kaartlagen" },
-        categories: { url: "/categories", displayName: "Categorieën" },
+        layers: { url: "/layers", title: "Kaartlagen" },
+        categories: { url: "/categories", title: "Categorieën" },
       },
     },
   },
@@ -248,7 +250,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   new detectKeyboard();
 
+  // Note: darkModeSelector is set to "light" until we implement dark mode.
   const app = createApp(App)
+    .use(PrimeVue, {
+      theme: {
+        preset: AtlasPresetAdmin,
+        options: {
+          prefix: "prime",
+          darkModeSelector: "light",
+          cssLayer: false,
+        },
+      },
+      locale: {
+        emptySearchMessage: "Geen resultaten gevonden",
+        emptyFilterMessage: "Geen resultaten gevonden",
+        emptyMessage: "Geen resultaten gevonden",
+      },
+    })
     .use(pinia)
     .use(router)
     .use(VueTippy, {

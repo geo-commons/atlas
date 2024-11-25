@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" data-testid="app">
     <header-menu v-if="config.features.portal" />
     <map-renderer
       v-if="readyToRenderMap"
@@ -159,8 +159,6 @@ export default {
 };
 </script>
 
-<!-- Include multiselect -->
-<style src="vue-multiselect/dist/vue-multiselect.css" />
 <style>
 @import "../assets/styles/main.css";
 </style>

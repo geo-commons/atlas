@@ -13,13 +13,14 @@
 
     <div v-if="!importSuccessful">
       <input id="file" ref="fileInput" type="file" name="file" class="inputfile" />
-      <label for="file" class="button __primary_admin __import"
-        ><ArrowDownTrayIcon class="icon" /><span ref="fileLabelText">Selecteer een bestand om te importeren</span>
+      <label for="file" class="button __primary_admin __import">
+        <ArrowDownTrayIcon class="icon" />
+        <span ref="fileLabelText">Selecteer een bestand om te importeren</span>
       </label>
     </div>
     <h3 v-else class="successful-import-text">Importeren geslaagd!</h3>
 
-    <div v-if="uploadedFileResponse && !importSuccessful" class="test">
+    <div v-if="uploadedFileResponse && !importSuccessful" class="selected-rows">
       <ul>
         <li v-for="row in uploadedFileResponse.rows" :key="row">
           <h4 class="upload-row-title" v-html="getRowTitle(row)"></h4>
@@ -59,7 +60,7 @@ export default {
   name: "AdminFileImport",
   components: { ArrowDownTrayIcon },
   props: {
-    objectName: String,
+    objectName: Object,
   },
   data() {
     return {
@@ -86,28 +87,6 @@ export default {
         return row.diff[3];
       }
       return "";
-    },
-    getObjectPath(objectType) {
-      switch (objectType) {
-        case "kaartlagen":
-          return "layers";
-        case "bronnen":
-          return "sources";
-        case "categorieën":
-          return "categories";
-        case "kaarten":
-          return "maps";
-        case "themes":
-          return "themes";
-        case "datasets":
-          return "datasets";
-        case "tables":
-          return "tables";
-        case "viewers":
-          return "viewers";
-        case "authorizations":
-          return "authorizations";
-      }
     },
     closeFormModal() {
       this.$emit("close");
@@ -140,7 +119,7 @@ export default {
       const data = new FormData();
       data.append("file", this.uploadedFile);
 
-      let fetchUrl = `/atlas/api/v1/${this.getObjectPath(this.objectName)}/import/`;
+      let fetchUrl = `/atlas/api/v1/${this.objectName.apiName}/import/`;
 
       if (dryRun) {
         fetchUrl += "?dry_run=1";
@@ -206,9 +185,10 @@ export default {
   z-index: -1;
 }
 
-.test {
-  max-height: 70vh;
+.selected-rows {
+  max-height: 55vh;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .upload-content {

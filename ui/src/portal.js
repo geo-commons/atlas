@@ -17,6 +17,8 @@ import PortalDatasetPage from "@/portal/pages/PortalDatasetsPage.vue";
 import PortalDatasetDetailPage from "@/portal/pages/PortalDatasetDetailPage.vue";
 import PortalTablesPage from "@/portal/pages/PortalTablesPage.vue";
 import PortalSearchPage from "@/portal/pages/PortalSearchPage.vue";
+import PrimeVue from "primevue/config";
+import { AtlasPresetApp } from "@/utils/theme-preset";
 
 const routes = [
   {
@@ -62,7 +64,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = JSON.parse(document.querySelector("#app-data").innerHTML);
   const pinia = createPinia();
 
+  // Note: darkModeSelector is set to "light" until we implement dark mode.
   const app = createApp(App)
+    .use(PrimeVue, {
+      theme: {
+        preset: AtlasPresetApp,
+        options: {
+          prefix: "prime",
+          darkModeSelector: "light",
+          cssLayer: false,
+        },
+      },
+    })
     .use(pinia)
     .use(router)
     .use(VueTippy, {

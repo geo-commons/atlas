@@ -1,0 +1,103 @@
+<script setup lang="ts">
+import CogIcon from "@/assets/icons/cog-icon.svg";
+import SortIcon from "@/assets/icons/sort-icon.svg";
+import AddIcon from "@/assets/icons/add-icon.svg";
+import { ref } from "vue";
+import { EDialogTypes } from "@/types/dialog";
+
+// Properties
+type AdminListViewHeaderProps = {
+  enableImportExport?: boolean;
+  enableCreateObject?: boolean;
+  enableSort?: boolean;
+  name: string;
+  singularName: string;
+  apiName: string;
+};
+
+const props = withDefaults(defineProps<AdminListViewHeaderProps>(), {
+  enableImportExport: true,
+  enableCreateObject: true,
+  enableSort: false,
+});
+
+// Import / Export logic
+const menu = ref();
+
+const toggle = (event: any) => {
+  menu.value.toggle(event);
+};
+
+const items = ref([
+  {
+    label: "Importeren",
+    icon: "pi pi-file-import",
+    command: () => {
+      emit("update-dialog", EDialogTypes.Import);
+    },
+  },
+  {
+    label: "Exporteren",
+    icon: "pi pi-file-export",
+    command: () => {
+      emit("update-dialog", EDialogTypes.Export);
+    },
+  },
+  {
+    label: "Alle rijen exporteren",
+    icon: "pi pi-file-export",
+    command: () => {
+      emit("update-dialog", EDialogTypes.ExportAll);
+    },
+  },
+]);
+
+// Emits
+const emit = defineEmits<{
+  (e: "update-dialog", type: EDialogTypes): void;
+}>();
+</script>
+
+<template>
+  <div class="tw-flex tw-flex-col gap-2 md:tw-flex-row md:tw-justify-between md:tw-items-center tw-pb-4">
+    <h1>{{ props.name }}</h1>
+    <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
+      <Button
+        v-if="props.enableImportExport"
+        outlined
+        class="!tw-text-sm !tw-font-medium"
+        aria-haspopup="true"
+        aria-controls="overlay_menu"
+        @click="toggle"
+      >
+        <CogIcon class="tw-w-4 tw-h-4" />
+        Acties
+      </Button>
+      <Menu id="overlay_menu" ref="menu" :model="items" :popup="true" class="!tw-text-sm" />
+
+      <Button
+        v-if="props.enableSort"
+        outlined
+        class="!tw-text-sm !tw-font-medium !tw-no-underline"
+        as="router-link"
+        label="Sortering"
+        aria-label="Sortering"
+        :to="{
+          name: 'sort',
+          params: { parentRoute: props.apiName },
+        }"
+      >
+        <SortIcon class="tw-w-4 tw-h-4" />
+        Sortering
+      </Button>
+      <Button
+        v-if="props.enableCreateObject"
+        class="!tw-text-sm !tw-font-medium"
+        @click="$emit('update-dialog', EDialogTypes.Create)"
+      >
+        <AddIcon class="tw-w-4 tw-h-4" />
+        Nieuwe {{ props.singularName.toLowerCase() }}
+      </Button>
+    </div>
+  </div>
+</template>

@@ -89,6 +89,7 @@ export default {
     filters: Object,
     fullSizeWindow: Boolean,
   },
+  emits: ["toggle-data-panel", "set-position", "on-fit", "toggle-full-side-panel", "update-filters"],
   data() {
     return {
       selectedLayerId: null,

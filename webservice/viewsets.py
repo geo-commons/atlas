@@ -1,4 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.viewsets import ViewSet
@@ -12,11 +14,13 @@ from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin
 from webservice.util import get_settings, process_value
+from .filters import MultipleFieldsFilter
 
 from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewer
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
-    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer
+    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer, \
+    UserCreateUpdateSerializer
 
 import os
 from django.core.files.storage import default_storage
@@ -27,25 +31,27 @@ class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Map.objects.all()
     serializer_class = MapSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
-    search_fields = []
-    filterset_fields = []
+    search_fields = ['title']
 
 
 class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
-    search_fields = []
-    filterset_fields = []
+    search_fields = ['title']
 
 
 class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     serializer_class = LayerSerializer
 
-    search_fields = []
-    filterset_fields = ['layer_source']
+    search_fields = ['title']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter, MultipleFieldsFilter]
+    multiple_lookup_fields = ['layer_source', 'layer_type', 'published']
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -70,27 +76,43 @@ class CategoriesViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-    search_fields = []
-    filterset_fields = []
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
+
+    search_fields = ['title']
 
 
 class UsersViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = AtlasUser.objects.all()
     serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
+
+    search_fields = ['username', 'email', 'first_name', 'last_name', 'name']
+    multiple_lookup_fields = ['atlas_groups']
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return UserSerializer
+        if self.action in ['create', 'update', 'partial_update']:
+            return UserCreateUpdateSerializer
+
+        return UserSerializer
 
 
 class GroupsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = AtlasGroup.objects.all()
     serializer_class = GroupSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
+
+    search_fields = ['name']
 
 
 class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Dataset.objects.all().prefetch_related('layers')
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
     filterset_fields = ['themes']
     search_fields = ['title']
     serializer_class = DatasetSerializer
@@ -123,6 +145,9 @@ class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Theme.objects.all()
     serializer_class = ThemeSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
+
+    search_fields = ['title']
 
     def get_serializer_class(self):
         if self.action in ['partial_update', 'update', 'create']:
@@ -136,6 +161,10 @@ class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     queryset = Viewer.objects.all()
     serializer_class = ViewerSerializer
 
+    search_fields = ['label']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+
 
 class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
@@ -143,12 +172,36 @@ class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     queryset = Table.objects.all()
     serializer_class = TableSerializer
 
+    search_fields = ['title']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+
 
 class LogViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Log.objects.all()
     serializer_class = LogSerializer
+
+    search_fields = ['username']
+
+    filter_backends = [SearchFilter, DjangoFilterBackend, MultipleFieldsFilter, OrderingFilter]
+    multiple_lookup_fields = ['username', 'source', 'resource']
+
+    @action(detail=False, methods=['get'], url_path='unique-fields')
+    def unique_fields(self, request):
+        unique_usernames = Log.objects.order_by('username').values_list('username', flat=True).distinct()
+        unique_sources = Log.objects.order_by('source').values_list('source', flat=True).distinct()
+        unique_resources = Log.objects.order_by('resource').values_list('resource', flat=True).distinct()
+
+        data = {
+            "usernames": list(unique_usernames),
+            "sources": list(unique_sources),
+            "resources": list(unique_resources)
+        }
+
+        return Response(data)
+
 
 class ConfigurationViewSet(ViewSet):
     permission_classes = [permissions.IsAdminUser]

@@ -1,17 +1,5 @@
 <template>
-  <vue-resizable
-    :active="isFullscreen ? null : ['b']"
-    width="auto"
-    :min-height="windowHeight / 6"
-    :max-height="(windowHeight / 6) * 5"
-    :height="isFullscreen ? windowHeight : windowHeight / 2"
-    :fit-parent="true"
-    :style="{ display: isOpen ? 'block' : 'none' }"
-    drag-selector="undefined"
-    @resize:start="resizeStart"
-    @resize:move="onResize"
-    @resize:end="resizeEnd"
-  >
+  <div class="panorama-panel">
     <div class="buttons">
       <select v-if="availableViewers.length > 0" v-model="selectedViewerId" name="viewer">
         <option v-for="(viewer, i) in availableViewers" :key="viewer.id" :value="i">
@@ -29,71 +17,48 @@
         </svg>
       </button>
       <button class="iconbutton" aria-label="Sluiten" @click="toggle">
-        <svg
-          width="14px"
-          height="14px"
-          viewBox="0 0 14 14"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-        >
-          <title>Path</title>
-          <g id="Wireframes" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g id="streetview" transform="translate(-985.000000, -413.000000)" fill="#000000" fill-rule="nonzero">
-              <g id="Group-5" transform="translate(976.000000, 404.000000)">
-                <polygon
-                  id="Path"
-                  points="23 10.41 21.59 9 16 14.59 10.41 9 9 10.41 14.59 16 9 21.59 10.41 23 16 17.41 21.59 23 23 21.59 17.41 16"
-                ></polygon>
-              </g>
-            </g>
-          </g>
-        </svg>
+        <close-icon class="icon __smedium"></close-icon>
       </button>
     </div>
-    <div v-if="isOpen" :class="{ viewer: true, isResizing: isResizing }">
-      <div v-if="selectedViewer !== null" class="viewer">
-        <google-maps v-if="position.marker && selectedViewer.type == 'GOOGLE_MAPS'" ref="viewer" :position="position" />
-        <obliquo-viewer
-          v-if="selectedViewer.type == 'OBLIQUO'"
-          ref="viewer"
-          :position="position"
-          :url="selectedViewer.url"
-          :username="selectedViewer.username"
-          :password="selectedViewer.password"
-        />
-        <street-smart
-          v-if="position.marker && selectedViewer.type == 'STREET_SMART'"
-          ref="viewer"
-          :position="position"
-          :username="selectedViewer.username"
-          :password="selectedViewer.password"
-          :api-key="selectedViewer.api_key"
-        />
-        <iframe-viewer
-          v-if="position.marker && selectedViewer.type == 'IFRAME'"
-          ref="viewer"
-          :position="position"
-          :url="selectedViewer.url"
-        />
-        <button-viewer
-          v-if="position.marker && selectedViewer.type == 'BUTTON'"
-          ref="viewer"
-          :position="position"
-          :url="selectedViewer.url"
-        />
-        <div v-if="!selectedViewer" class="message">
-          Er is geen panoramaweergave beschikbaar. Configureer een viewer in het beheerpaneel.
-        </div>
-        <div v-if="!position.marker" class="message">Klik op een punt in de kaart om de panorama te bekijken.</div>
+    <div v-if="selectedViewer !== null" class="viewer">
+      <google-maps v-if="position.marker && selectedViewer.type == 'GOOGLE_MAPS'" ref="viewer" :position="position" />
+      <obliquo-viewer
+        v-if="selectedViewer.type == 'OBLIQUO'"
+        ref="viewer"
+        :position="position"
+        :url="selectedViewer.url"
+        :username="selectedViewer.username"
+        :password="selectedViewer.password"
+      />
+      <street-smart
+        v-if="position.marker && selectedViewer.type == 'STREET_SMART'"
+        ref="viewer"
+        :position="position"
+        :username="selectedViewer.username"
+        :password="selectedViewer.password"
+        :api-key="selectedViewer.api_key"
+      />
+      <iframe-viewer
+        v-if="position.marker && selectedViewer.type == 'IFRAME'"
+        ref="viewer"
+        :position="position"
+        :url="selectedViewer.url"
+      />
+      <button-viewer
+        v-if="position.marker && selectedViewer.type == 'BUTTON'"
+        ref="viewer"
+        :position="position"
+        :url="selectedViewer.url"
+      />
+      <div v-if="!selectedViewer" class="message">
+        Er is geen panoramaweergave beschikbaar. Configureer een viewer in het beheerpaneel.
       </div>
+      <div v-if="!position.marker" class="message">Klik op een punt in de kaart om de panorama te bekijken.</div>
     </div>
-  </vue-resizable>
+  </div>
 </template>
 
 <script>
-import VueResizable from "vue-resizable";
-
 import GoogleMaps from "../viewers/GoogleMaps.vue";
 import ObliquoViewer from "../viewers/ObliquoViewer.vue";
 import StreetSmart from "../viewers/StreetSmart.vue";
@@ -101,34 +66,27 @@ import IframeViewer from "../viewers/IframeViewer.vue";
 import ButtonViewer from "../viewers/ButtonViewer.vue";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
+import CloseIcon from "../assets/icons/close-icon.svg";
 
 export default {
   name: "PanoramaPanel",
   components: {
-    VueResizable,
+    CloseIcon,
     GoogleMaps,
     ObliquoViewer,
     StreetSmart,
     IframeViewer,
     ButtonViewer,
   },
+  props: {
+    position: Object,
+  },
+  emits: ["toggle-full-screen", "toggle"],
   data() {
     return {
       isFullscreen: false,
-      isResizing: false,
-      viewer: null,
       selectedViewerId: 0,
-      windowWidth: 200,
-      windowHeight: 200,
     };
-  },
-  created() {
-    window.addEventListener("resize", this.onResizeWindow);
-    this.setViewportWidth();
-    this.setViewportHeight();
-  },
-  unmounted() {
-    window.removeEventListener("resize", this.onResizeWindow);
   },
   computed: {
     availableViewers: function () {
@@ -147,75 +105,26 @@ export default {
     toggle() {
       this.$emit("toggle");
     },
-    async toggleSize() {
+    toggleSize() {
       this.isFullscreen = !this.isFullscreen;
-
-      await this.$nextTick();
-
-      this.onResize();
+      this.$emit("toggle-full-screen", this.isFullscreen);
     },
-    resizeStart() {
-      this.isResizing = true;
-    },
-    resizeEnd() {
-      this.isResizing = false;
-    },
-    onResize() {
-      if (!this.$refs.viewer) {
-        return;
-      }
-
-      this.$refs.viewer.resize();
-    },
-    onResizeWindow() {
-      this.setViewportWidth();
-      this.setViewportHeight();
-    },
-    setViewportWidth() {
-      this.windowWidth = window.innerWidth;
-    },
-    setViewportHeight() {
-      this.windowHeight = window.innerHeight;
-    },
-  },
-  props: {
-    isOpen: Boolean,
-    position: Object,
   },
 };
 </script>
 
-<style>
-.resizable-b {
-  cursor: ns-resize !important;
-}
-
-.resizable-b:before {
-  content: "";
-  position: absolute;
-  background: black;
-  width: 100%;
-  height: 2px;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto 0;
-}
-
-.mosaic-tile {
-  /* Remove black border from StreetSmart */
-  margin: 0 !important;
-}
-</style>
-
 <style scoped>
+.panorama-panel {
+  flex-grow: 1;
+  height: 100%;
+}
+
 .buttons {
   position: absolute;
   top: 0;
   right: 0;
   display: flex;
   background: white;
-  border-bottom-left-radius: var(--radius-normal);
   box-shadow: var(--shadow-normal);
   overflow: hidden;
   /* Show buttons on top of viewer (buttons) */
@@ -223,19 +132,12 @@ export default {
 }
 
 .viewer {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background: white;
   overflow: hidden;
   /* Show viewer on top of .scale */
   z-index: 2;
-}
-
-.viewer.isResizing {
-  pointer-events: none;
 }
 
 .buttons .iconbutton:first-child {
@@ -254,7 +156,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-normal);
   color: var(--color-text-grey);
 }
 </style>

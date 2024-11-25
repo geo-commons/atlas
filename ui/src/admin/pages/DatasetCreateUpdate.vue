@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
-    <h1 class="font-weight-normal">Dataset wijzigen</h1>
+    <h1 class="py-8">Dataset wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -14,10 +16,13 @@
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import slugify from "slugify";
+import Spinner from "@/components/Spinner.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "DatasetCreateUpdate",
   components: {
+    Spinner,
     AdminFormSections,
   },
   data() {
@@ -25,12 +30,17 @@ export default {
       sections: {},
       initialValues: {},
       currentValues: {},
+      categories: {},
+      loading: false,
     };
   },
   created() {
-    this.getDataset();
+    this.loading = true;
 
-    this.sections = this.getSections();
+    Promise.all([this.getDataset(), this.getCategories()]).then(() => {
+      this.sections = this.getSections();
+      this.loading = false;
+    });
   },
   methods: {
     async getDataset() {
@@ -72,7 +82,8 @@ export default {
       }
     },
     async getCategories() {
-      const result = await fetch("/atlas/api/v1/categories/", {
+      const url = getAllObjects("/atlas/api/v1/categories/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -83,9 +94,10 @@ export default {
 
       const response = await result.json();
 
-      return response.map((category) => {
+      this.categories = response.results.map((category) => {
         return { id: category.id, label: category.title };
       });
+      return result;
     },
     getSections() {
       return {
@@ -120,7 +132,7 @@ export default {
               type: "dropdown",
               placeholder: "categorie",
               required: false,
-              options: this.getCategories,
+              options: this.categories,
             },
             {
               label: "Bron Beschrijving",

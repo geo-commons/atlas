@@ -15,7 +15,7 @@
         <LayerIcon class="icon" />
         Lagen
         <span class="layer-wrapper">
-          <ChevronRightIcon class="no-margin" />
+          <ChevronRightIcon class="no-margin icon __medium" />
           {{ layerDefaultSettings?.title }}
         </span>
       </h1>
@@ -308,6 +308,7 @@ import { Field as VeeField } from "vee-validate";
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
 import SwitchSlider from "@/components/SwitchSlider.vue";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "MapLayer",
@@ -423,7 +424,8 @@ export default {
     },
     async getLayers() {
       this.loading = true;
-      const result = await fetch("/atlas/api/v1/layers/", {
+      const url = getAllObjects("/atlas/api/v1/layers/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -432,7 +434,8 @@ export default {
         console.error("Could not fetch layers");
       }
 
-      this.allLayers = await result.json();
+      const response = await result.json();
+      this.allLayers = response.results;
       this.loading = false;
     },
     async toggleSettings() {

@@ -3,7 +3,7 @@
     <div class="select-button-wrapper">
       <button class="select-button" :aria-controls="id" @click="onSelectItem">
         <div class="name">{{ title }}</div>
-        <ChevronRightIcon />
+        <ChevronRightIcon class="icon __medium" />
       </button>
     </div>
   </div>
@@ -31,6 +31,7 @@ export default {
 .select-button-wrapper {
   display: flex;
 }
+
 .select-button {
   display: flex;
   width: 100%;

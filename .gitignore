@@ -11,8 +11,10 @@ htmlcov
 
 /ui/node_modules
 /ui/webpack-stats.json
+/ui/package-lock.json
 
 !.vscode/
 .vscode/tasks.json
 
 .idea
+.vite

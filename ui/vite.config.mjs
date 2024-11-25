@@ -1,20 +1,19 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import svgLoader from "vite-svg-loader";
+import Components from 'unplugin-vue-components/vite';
+import {PrimeVueResolver} from '@primevue/auto-import-resolver';
 import path from "path";
 
 export default defineConfig({
   plugins: [
-    vue({
-      template: {
-        compilerOptions: {
-          compatConfig: {
-            MODE: 2
-          }
-        }
-      }
+    vue(),
+    Components({
+      resolvers: [
+        PrimeVueResolver()
+      ]
     }),
-    svgLoader({ defaultImport: "component" })
+    svgLoader({ defaultImport: "component" }),
   ],
   base: "/atlas/static/",
   build: {
@@ -33,7 +32,6 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "vue": "@vue/compat",
       "@": path.resolve(__dirname, "./src"),
     },
     extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],

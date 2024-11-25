@@ -1,12 +1,13 @@
 <template>
-  <vee-form v-slot="{ values }" ref="formRef" :initial-values="currentValues" @submit="save">
+  <div v-if="loading">laden...</div>
+  <vee-form v-else v-slot="{ values }" ref="formRef" :initial-values="currentValues" @submit="save">
     <div :class="{ 'create-view-container': createView || compactLayout }">
       <p v-if="unexpectedError" class="warning-text">{{ unexpectedError }}</p>
       <div v-for="section in sections" :key="section.label">
         <hr v-if="!createView && !compactLayout" />
         <div :class="{ 'config-section-wrapper': !createView && !compactLayout }">
           <div v-if="!createView && !compactLayout" class="section-label">
-            <h3 class="">{{ section.label }}</h3>
+            <h3>{{ section.label }}</h3>
           </div>
 
           <div v-if="section.label === 'Gekoppelde data'" class="section-questions">
@@ -92,6 +93,35 @@
                   </div>
                 </div>
               </div>
+              <div v-else-if="question.type === 'picklist'" class="picklist-wrapper">
+                <label class="question-label" :for="question.id">{{ question.label }}</label>
+                <vee-field
+                  :id="question.id"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                  class="__admin config-select-wrapper"
+                  :disabled="question.disabled"
+                >
+                  <PickList
+                    v-model="currentValues[question.id]"
+                    data-key="id"
+                    breakpoint="900px"
+                    :disabled="question.disabled"
+                    :show-source-controls="false"
+                    :show-target-controls="false"
+                  >
+                    <template #option="{ option }">
+                      {{ option.name }}
+                    </template>
+                    <template #sourceheader>
+                      <span class="picklist-header">Beschikbare {{ question.objectDisplayName }}</span>
+                    </template>
+                    <template #targetheader>
+                      <span class="picklist-header">Geselecteerde {{ question.objectDisplayName }}</span>
+                    </template>
+                  </PickList>
+                </vee-field>
+              </div>
               <div v-else>
                 <span class="label-info-text-wrapper">
                   <label class="question-label" :for="question.id">{{ question.label }}</label>
@@ -110,7 +140,7 @@
                     :disabled="question.disabled"
                   >
                     <option disabled value="-1">Selecteer een {{ question.placeholder }}</option>
-                    <option v-for="option in options[question.id]" :key="option.id" :value="option.id">
+                    <option v-for="option in question.options" :key="option.id" :value="option.id">
                       {{ option.label }}
                     </option>
                   </vee-field>
@@ -187,15 +217,22 @@
                   class="width"
                 />
                 <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id">
+                  <InputText v-model="currentValues[question.id]" class="!tw-mb-2" placeholder="Laagnaam" type="text" />
+                  <span>Of selecteer een laagnaam</span>
                   <layer-field
-                    v-model="currentValues[question.id]"
+                    :model-value="currentValues[question.id]"
                     :field="field"
                     :current-source-id="values[question.sourceField]"
-                    :sources="options[question.sourceField] || []"
+                    :sources="question.options || []"
+                    @update:modelValue="(value) => (currentValues[question.id] = value)"
                   />
                 </vee-field>
                 <vee-field v-else-if="question.type === 'theme-select'" v-slot="{ field }" :name="question.id">
-                  <theme-field v-model="currentValues[question.id]" :field="field" />
+                  <theme-field
+                    :model-value="currentValues[question.id]"
+                    :field="field"
+                    @update:modelValue="(value) => (currentValues[question.id] = value)"
+                  />
                 </vee-field>
                 <vee-field
                   v-else-if="question.type === 'date'"
@@ -296,11 +333,12 @@ export default {
   },
   data() {
     return {
-      currentValues: this.initialValues,
+      currentValues: { ...this.initialValues },
       options: {},
       unexpectedError: null,
       continueEditing: false,
       imageFieldValues: {},
+      loading: false,
     };
   },
   watch: {
@@ -312,9 +350,6 @@ export default {
       }
     },
   },
-  created() {
-    this.retrieveOptions();
-  },
   unmounted() {
     // Remove all created previewUrls
     Object.values(this.imageFieldValues).forEach((value) => {
@@ -325,27 +360,6 @@ export default {
   },
   methods: {
     formatDateValue,
-    retrieveOptions() {
-      Object.values(this.sections).forEach((section) => {
-        section.questions.forEach(async (question) => {
-          if (question.type !== "dropdown") {
-            return;
-          }
-
-          if (question.options instanceof Array) {
-            this.$set(this.options, question.id, question.options);
-            return;
-          }
-
-          if (question.options instanceof Function) {
-            this.$set(this.options, question.id, await question.options());
-            return;
-          }
-
-          console.error(`Expected options of question id: ${question.id} to be of type Array or Function.`);
-        });
-      });
-    },
     getRules(question) {
       let rules = [];
 
@@ -380,16 +394,16 @@ export default {
     },
     save(values) {
       if (this.createView) {
-        this.objectSpecificSave(values, this.continueEditing);
+        this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
       } else if (this.containsImageField) {
         // Manually add image fields to values object.
         Object.keys(this.imageFieldValues).forEach((key) => {
           values[key] = this.currentValues[key];
         });
 
-        this.objectSpecificSave(values);
+        this.objectSpecificSave(values, false, this.sendSaveRequest);
       } else {
-        this.objectSpecificSave(values);
+        this.objectSpecificSave(values, false, this.sendSaveRequest);
       }
     },
     async sendSaveRequest(apiUrl, method, currentValues) {
@@ -457,6 +471,9 @@ export default {
         this.imageFieldValues[id].previewUrl = URL.createObjectURL(file);
         this.currentValues[id] = file;
       }
+    },
+    resetForm() {
+      this.$refs.formRef.resetForm();
     },
   },
 };
@@ -588,5 +605,15 @@ h3 {
   display: flex;
   gap: 80px;
   align-items: center;
+}
+
+.picklist-header {
+  font-weight: var(--font-weight-bold);
+}
+
+.picklist-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 </style>

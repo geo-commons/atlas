@@ -232,7 +232,7 @@ huidige scherm met de HTML code om deze op te vragen. Gebruik de code om deze ka
 
 ##Huidige kaartscherm delen met een collega
 
-Kopieer de URL in de adresbalk om een kaartscherm met alle instellingen te delen, via bijvoorbeel mail.
+Kopieer de URL in de adresbalk om een kaartscherm met alle instellingen te delen, via bijvoorbeeld mail.
 
 Iemand die via de gedeelde link Atlas opent, ziet dezelfde instellingen
 betreffende:

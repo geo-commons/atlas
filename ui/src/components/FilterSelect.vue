@@ -3,47 +3,31 @@
     <label :for="filterProperty" class="filter-label-padding">{{
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
-    <multiselect
+    <multi-select
       v-if="!filterOnId"
-      :id="filterProperty"
       v-model="selectedItems"
-      :class="styleType"
       :options="currentFilterOptions"
       placeholder="Kies waarde"
-      tag-placeholder="Enter voor nieuwe waarde"
-      :show-labels="false"
-      :multiple="true"
-      :taggable="true"
-      open-direction="bottom"
+      filter-placeholder="Zoek waarde"
+      filter
       @update:modelValue="updateFieldFilters()"
-      @tag="addFacetValue"
     />
-    <multiselect
+    <multi-select
       v-else
-      :id="filterProperty"
       v-model="selectedItems"
-      :class="styleType"
-      :track-by="trackBy"
-      :label="label"
+      :option-label="optionLabel"
       :options="currentFilterOptions"
       placeholder="Kies waarde"
-      tag-placeholder="Enter voor nieuwe waarde"
-      :show-labels="false"
-      :multiple="true"
-      :taggable="true"
-      open-direction="bottom"
+      filter-placeholder="Zoek waarde"
+      filter
       @update:modelValue="updateFieldFilters()"
-      @tag="addFacetValue"
     />
   </div>
 </template>
 
 <script>
-import Multiselect from "vue-multiselect";
-
 export default {
   name: "FilterSelect",
-  components: { Multiselect },
   props: {
     filterOptions: Array,
     fieldFilters: Object,
@@ -53,18 +37,18 @@ export default {
       type: Boolean,
       default: false,
     },
-    trackBy: String,
-    label: String,
-    styleType: {
-      type: String,
-      default: "",
-    },
+    optionLabel: String,
   },
   data() {
     return {
       selectedItems: [],
       currentFilterOptions: this.filterOptions,
     };
+  },
+  watch: {
+    filterOptions(value) {
+      this.currentFilterOptions = value;
+    },
   },
   methods: {
     updateFieldFilters() {
@@ -79,11 +63,6 @@ export default {
       const newFieldFilter = { ...this.fieldFilters };
       delete newFieldFilter[this.filterProperty];
       this.$emit("onFilterChange", newFieldFilter);
-    },
-    addFacetValue(newTag) {
-      this.currentFilterOptions.push(newTag);
-      this.selectedItems.push(newTag);
-      this.updateFieldFilters();
     },
   },
 };

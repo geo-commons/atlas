@@ -1,6 +1,6 @@
 <template>
-  <div class="breadcrumb-wrapper">
-    <ul v-if="routeArray.length >= 1" class="breadcrumb">
+  <div v-if="routeArray.length >= 1" class="breadcrumb-wrapper">
+    <ul class="breadcrumb">
       <li>
         <router-link class="text-button" to="/">Home</router-link>
         <span class="grey">/</span>

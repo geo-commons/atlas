@@ -129,6 +129,7 @@ import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import MapIcon from "@/assets/icons/map-icon.svg";
 import ViewIcon from "@/assets/icons/view-icon.svg";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "MapLayers",
@@ -223,7 +224,8 @@ export default {
   methods: {
     async getLayers() {
       this.loading = true;
-      const result = await fetch("/atlas/api/v1/layers/", {
+      const url = getAllObjects("/atlas/api/v1/layers/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -232,7 +234,8 @@ export default {
         console.error("Could not fetch layers");
       }
 
-      this.allLayers = await result.json();
+      const response = await result.json();
+      this.allLayers = response.results;
       this.loading = false;
     },
     selectLayer(layer) {
@@ -240,13 +243,14 @@ export default {
         layer: layer.id,
         settings: { customSettings: false },
       });
-      this.$emit("change", this.selectedMapLayerConfigs);
+      this.$emit("update-layers", this.selectedMapLayerConfigs);
     },
     deselectLayer(layer) {
       this.selectedMapLayerConfigs = this.selectedMapLayerConfigs.filter(
         (selectedLayer) => selectedLayer.layer !== layer.id,
       );
-      this.$emit("change", this.selectedMapLayerConfigs);
+
+      this.$emit("update-layers", this.selectedMapLayerConfigs);
     },
     back() {
       this.$emit("show-form");

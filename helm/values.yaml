@@ -24,6 +24,8 @@ dbName: atlas
 
 loadDemoData: false
 
+environment: production
+
 existingSecret: null # Refer to existing secret to avoid managing secrets through Helm
 
 smartstreetUser: ""
@@ -67,7 +69,8 @@ service:
 
 ingress:
   enabled: true
-  annotations: {}
+  annotations:
+    {}
     # cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
     - host: atlas.example.com

@@ -101,7 +101,7 @@ export default {
   mounted() {
     if (this.data.settings.filterLayerId) {
       this.selectedLayer = this.getLayerById(this.data.settings.filterLayerId);
-      this.selectedLayerTitle = this.selectedLayer.id;
+      this.selectedLayerTitle = this.selectedLayer ? this.selectedLayer.id : "";
     }
 
     if (this.selectedLayerTitle) {

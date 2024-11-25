@@ -88,10 +88,6 @@ p {
   p {
     font-size: var(--font-size-normal);
   }
-
-  .card-link {
-    max-width: 280px;
-  }
 }
 
 @media (max-width: 660px) {

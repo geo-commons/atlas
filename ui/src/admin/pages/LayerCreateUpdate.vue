@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Kaartlaag wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -9,57 +11,6 @@
       :object-specific-save="saveLayer"
       @update-source="(source) => (selectedSource = source)"
     >
-      <template #custom>
-        <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
-
-        <div class="group-list-wrapper">
-          <div class="available-groups">
-            <label class="question-label" for="list1">Beschikbare groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="availableGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  @keydown.enter.prevent="moveGroup(element, availableGroups, selectedGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-          <div class="selected-groups">
-            <label class="question-label" for="list1">Geselecteerde groepen</label>
-            <draggable
-              v-bind="dragOptions"
-              v-model="selectedGroups"
-              tag="ul"
-              item-key="id"
-              group="groups"
-              role="listbox"
-            >
-              <template #item="{ element }">
-                <li
-                  :key="element.id"
-                  class="groups-list-item"
-                  tabindex="0"
-                  aria-describedby="reorder_instructions"
-                  @keydown.enter.prevent="moveGroup(element, selectedGroups, availableGroups)"
-                >
-                  {{ element.name }}
-                </li>
-              </template>
-            </draggable>
-          </div>
-        </div>
-      </template>
       <template #linkedData>
         <div class="layer-setting">
           <div class="admin-label-button">
@@ -71,7 +22,8 @@
               class="button __small __secondary_admin"
               @click="toggleModal('linkedData')"
             >
-              <AddIcon />Voeg toe
+              <AddIcon />
+              Voeg toe
             </button>
           </div>
 
@@ -115,7 +67,8 @@
               class="button __small __secondary_admin"
               @click="toggleModal('templates')"
             >
-              <AddIcon />Voeg toe
+              <AddIcon />
+              Voeg toe
             </button>
           </div>
 
@@ -174,31 +127,31 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import draggable from "vuedraggable";
 import FormModal from "@/components/FormModal.vue";
 import LinkedDataForm from "@/admin/components/LinkedDataForm.vue";
 import TemplateForm from "@/admin/components/TemplateForm.vue";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
-
-draggable.compatConfig = { MODE: 3 };
+import Spinner from "@/components/Spinner.vue";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "LayerCreateUpdate",
   components: {
+    Spinner,
     EditIcon,
     AddIcon,
     TrashIcon,
     TemplateForm,
     LinkedDataForm,
     FormModal,
-    draggable,
     AdminFormSections,
   },
   data() {
     return {
-      categories: {},
+      categories: [],
+      datasets: [],
       sources: {},
       sourceTypes: [],
       groups: [],
@@ -206,27 +159,17 @@ export default {
       sections: {},
       initialValues: {},
       currentValues: {},
-      availableGroups: [],
-      selectedGroups: [],
       selectedSource: {},
       showFormModal: false,
       formModalType: null,
       selectedLinkedData: null,
       selectedTemplate: null,
-      assistiveText: "Verplaats een group met behulp van de enter toets",
+      loading: false,
     };
   },
-  computed: {
-    dragOptions() {
-      return {
-        animation: 0,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost",
-      };
-    },
-  },
   created() {
+    this.loading = true;
+
     this.sourceTypes = [
       { id: "WMS_WFS", label: "WMS en WFS" },
       { id: "WMS", label: "WMS" },
@@ -241,12 +184,13 @@ export default {
       { id: "image/vnd.jpeg-png", label: "image/vnd.jpeg-png" },
     ];
 
-    Promise.all([this.getLayer(), this.getGroups()]).then(() => {
-      this.selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      this.availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
-    });
-
-    this.sections = this.getSections();
+    Promise.all([this.getLayer(), this.getGroups(), this.getCategories(), this.getDatasets(), this.getSources()]).then(
+      () => {
+        this.setAtlasGroups();
+        this.sections = this.getSections();
+        this.loading = false;
+      },
+    );
   },
   methods: {
     async getLayer() {
@@ -292,6 +236,9 @@ export default {
       return result;
     },
     async saveLayer(currentValues) {
+      currentValues.layer_name =
+        typeof currentValues.layer_name === "string" ? currentValues.layer_name : currentValues.layer_name.value;
+
       currentValues.metadata = {};
       // Convert internal fields back to layer model.
       currentValues.metadata.name = currentValues.metadata_name;
@@ -301,7 +248,7 @@ export default {
       currentValues.metadata.lineage = currentValues.metadata_lineage;
       currentValues.metadata.contact = currentValues.metadata_contact;
       currentValues.metadata.link = currentValues.metadata_link;
-      currentValues.atlas_groups = this.selectedGroups.map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
 
       currentValues.display_properties = currentValues.display_properties
         .split("\n")
@@ -335,7 +282,8 @@ export default {
       }
     },
     async getCategories() {
-      const result = await fetch("/atlas/api/v1/categories/", {
+      const url = getAllObjects("/atlas/api/v1/categories/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -346,12 +294,14 @@ export default {
 
       const response = await result.json();
 
-      return response.map((category) => {
+      this.categories = response.results.map((category) => {
         return { id: category.id, label: category.title };
       });
+      return response;
     },
     async getDatasets() {
-      const result = await fetch("/atlas/api/v1/datasets/", {
+      const url = getAllObjects("/atlas/api/v1/datasets/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -362,12 +312,14 @@ export default {
 
       const response = await result.json();
 
-      return response.map((dataset) => {
+      this.datasets = response.results.map((dataset) => {
         return { id: dataset.id, label: dataset.title };
       });
+      return response;
     },
     async getSources() {
-      const result = await fetch("/atlas/api/v1/sources/", {
+      const url = getAllObjects("/atlas/api/v1/sources/");
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -378,9 +330,11 @@ export default {
 
       const response = await result.json();
 
-      return response.map((source) => {
+      this.sources = response.results.map((source) => {
         return { id: source.id, label: source.title, url: source.url, type: source.source_type };
       });
+
+      return response;
     },
     async getGroups() {
       const result = await fetch("/atlas/api/v1/groups/", {
@@ -392,9 +346,14 @@ export default {
         console.error("Could not fetch groups");
       }
 
-      this.groups = await result.json();
-
-      return result;
+      const response = await result.json();
+      this.groups = response.results;
+      return response;
+    },
+    setAtlasGroups() {
+      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
+      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
     validateAndParseJsonString(text) {
       if (!text || text.trim() === "") {
@@ -531,7 +490,7 @@ export default {
               type: "dropdown",
               placeholder: "categorie",
               required: false,
-              options: this.getCategories,
+              options: this.categories,
             },
             {
               label: "Dataset",
@@ -540,7 +499,7 @@ export default {
               type: "dropdown",
               required: false,
               placeholder: "Dataset",
-              options: this.getDatasets,
+              options: this.datasets,
             },
             {
               label: "Gepubliceerd",
@@ -561,7 +520,7 @@ export default {
               type: "dropdown",
               required: true,
               placeholder: "bron",
-              options: this.getSources,
+              options: this.sources,
             },
             {
               label: "Laagnaam",
@@ -571,6 +530,7 @@ export default {
               required: true,
               placeholder: "laag",
               sourceField: "source_id",
+              options: this.sources,
               infoText: "De naam van de laag op de geoserver.",
             },
             {
@@ -867,7 +827,11 @@ export default {
               infoText: "De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.",
             },
             {
-              type: "custom",
+              label: "Groepen",
+              objectDisplayName: "groepen",
+              id: "atlas_groups",
+              name: "atlasGroups",
+              type: "picklist",
             },
           ],
         },
@@ -880,47 +844,6 @@ export default {
 </script>
 
 <style scoped>
-.available-groups {
-  grid-area: available-groups;
-}
-
-.selected-groups {
-  grid-area: selected-groups;
-}
-
-.group-list-wrapper {
-  display: grid;
-  grid-template-areas: "available-groups selected-groups";
-  grid-template-columns: 1fr 1fr;
-  column-gap: 100px;
-  padding-bottom: 50px;
-}
-
-.groups-list-item {
-  background: var(--color-white);
-  padding: 10px 20px;
-  word-break: break-word;
-}
-
-.groups-list-item:hover {
-  background-color: var(--color-admin-primary-hover);
-  cursor: move;
-}
-
-.groups-list-item:not(:last-child) {
-  border-bottom: 1px solid var(--color-grey-50);
-}
-
-@media (max-width: 768px) {
-  .group-list-wrapper {
-    grid-template-areas:
-      "available-groups"
-      "selected-groups";
-    grid-template-columns: 1fr;
-    row-gap: 30px;
-  }
-}
-
 .admin-label-button {
   display: flex;
   justify-content: end;

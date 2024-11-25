@@ -14,7 +14,7 @@
       :class="{ iconbutton: true, showAlways: showAlways }"
       aria-label="Toon meer informatie"
     >
-      <InformationCircleIcon />
+      <InformationCircleIcon class="icon __small" />
     </button>
     <template #content>
       <div class="container">

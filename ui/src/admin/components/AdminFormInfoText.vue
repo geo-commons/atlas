@@ -1,7 +1,7 @@
 <template>
   <tippy placement="right-end" theme="popover" trigger="click" :distance="8" :delay="[0, 0]" :a11y="null">
     <button class="iconbutton __transparent-bg" aria-label="Toon meer informatie" type="button">
-      <InformationCircleIcon />
+      <InformationCircleIcon class="icon __small" />
     </button>
     <template #content>
       <div class="info-text">{{ infoText }}</div>

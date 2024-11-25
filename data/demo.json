@@ -175,6 +175,15 @@
         }
     },
     {
+      "model": "webservice.category",
+      "pk": 25,
+      "fields": {
+          "title": "Afgeschermd",
+          "slug": "afgeschermd",
+          "ordering": 0
+      }
+    },
+    {
         "model": "webservice.source",
         "pk": 1,
         "fields": {
@@ -276,6 +285,19 @@
             "authenticate": false,
             "atlas_groups": []
         }
+    },
+    {
+      "model": "webservice.source",
+      "pk": 14,
+      "fields": {
+          "title": "filter-proxy",
+          "slug": "geoserver",
+          "source_type": "OWS",
+          "url": "http://localhost:8050/api/ows",
+          "login_required": false,
+          "authenticate": true,
+          "atlas_groups": []
+      }
     },
     {
         "model": "webservice.layer",
@@ -8889,6 +8911,47 @@
             "zoom_max": null,
             "atlas_groups": []
         }
+    },
+    {
+      "model": "webservice.layer",
+      "pk": 293,
+      "fields": {
+          "slug": "scholen-afgeschermd",
+          "title": "Scholen afgeschermd",
+          "layer_name": "topp:scholen",
+          "layer_source": 14,
+          "format": "image/png",
+          "meta_name": "-",
+          "meta_description": "-",
+          "meta_org": "-",
+          "meta_updated": "-",
+          "opacity": "0.9",
+          "visible": false,
+          "client_style": {},
+          "layer_type": 25,
+          "_popup_attributes": "",
+          "_search_fields": "",
+          "projection": "EPSG:28992",
+          "server_type": "geoserver",
+          "closed_dataset": false,
+          "login_required": true,
+          "published": true,
+          "source_type": "WMS_WFS",
+          "is_base": false,
+          "is_visible": false,
+          "not_in_atlas": false,
+          "owner": null,
+          "created_at": "2022-05-17T14:30:26.697Z",
+          "updated_at": "2022-07-01T14:59:33.372Z",
+          "ordering": 13510,
+          "extent_min_x": null,
+          "extent_min_y": null,
+          "extent_max_x": null,
+          "extent_max_y": null,
+          "zoom_min": null,
+          "zoom_max": null,
+          "atlas_groups": []
+      }
     },
     {
         "model": "webservice.linkeddata",
