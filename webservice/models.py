@@ -19,20 +19,21 @@ class LayerManager(models.Manager):
         if request.user.is_authenticated and request.user.is_superuser:
             return self.distinct()
 
-        open_datasets = Q(published=True) & Q(closed_dataset=False)
-        closed_unassigned_datasets = Q(published=True) & Q(
-            closed_dataset=True) & Q(atlas_groups=None)
+        query = Q(published=True)
+
+        if not request.user.is_authenticated and settings.SHOW_LAYERS_ONLY_WHEN_ACCESSIBLE:
+            query &= Q(login_required=False)
 
         if not is_internal(request):
-            return self.filter(open_datasets).distinct()
+            query &= Q(closed_dataset=False)
 
-        if request.user.is_anonymous:
-            return self.filter(open_datasets | closed_unassigned_datasets).distinct()
+        if request.user.is_authenticated:
+            query &= Q(atlas_groups__in=request.user.atlas_groups.all()) | Q(
+                atlas_groups=None)
+        else:
+            query &= Q(atlas_groups=None)
 
-        closed_and_assigned_to_group = Q(published=True) & Q(
-            closed_dataset=True) & Q(atlas_groups__in=request.user.atlas_groups.all())
-
-        return self.filter(open_datasets | closed_unassigned_datasets | closed_and_assigned_to_group).distinct()
+        return self.filter(query).distinct()
 
 
 class Category(models.Model):
@@ -97,7 +98,8 @@ class Source(models.Model):
 
 class Theme(models.Model):
     title = models.CharField('Naam', max_length=128, null=False)
-    slug = models.SlugField('Kort kenmerk', null=False, unique=True, help_text='Een uniek kort kenmerk voor het Thema in Atlas', editable=True)
+    slug = models.SlugField('Kort kenmerk', null=False, unique=True,
+                            help_text='Een uniek kort kenmerk voor het Thema in Atlas', editable=True)
 
     class Meta:
         verbose_name = 'Theme'
@@ -114,17 +116,28 @@ class Theme(models.Model):
 
 
 class Dataset(models.Model):
-    title = models.CharField('Naam', max_length=128, help_text="De naam van de dataset")
-    slug = models.SlugField('Kort kenmerk', null=False, unique=True, help_text='Een uniek kort kenmerk voor de Dataset in Atlas', editable=True)
-    description = models.TextField('Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
-    source_description = models.TextField('Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
-    organization = models.CharField('Organisatie', max_length=128, null=True, blank=True)
-    contact = models.CharField('Contactpersoon', max_length=128, null=True, blank=True)
-    data_owner = models.CharField('Eigenaar van de data', max_length=128, null=True, blank=True)
-    data_controller = models.CharField('Data beheerder', max_length=128, null=True, blank=True)
-    last_updated = models.DateTimeField('Laatste update', null=True, blank=True)
-    update_frequency = models.CharField('Update hoeveelheid', max_length=128, null=True, blank=True)
-    purpose_of_manufacture = models.CharField('Doel van de vervaardiging', max_length=128, null=True, blank=True)
+    title = models.CharField('Naam', max_length=128,
+                             help_text="De naam van de dataset")
+    slug = models.SlugField('Kort kenmerk', null=False, unique=True,
+                            help_text='Een uniek kort kenmerk voor de Dataset in Atlas', editable=True)
+    description = models.TextField(
+        'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    source_description = models.TextField(
+        'Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+    organization = models.CharField(
+        'Organisatie', max_length=128, null=True, blank=True)
+    contact = models.CharField(
+        'Contactpersoon', max_length=128, null=True, blank=True)
+    data_owner = models.CharField(
+        'Eigenaar van de data', max_length=128, null=True, blank=True)
+    data_controller = models.CharField(
+        'Data beheerder', max_length=128, null=True, blank=True)
+    last_updated = models.DateTimeField(
+        'Laatste update', null=True, blank=True)
+    update_frequency = models.CharField(
+        'Update hoeveelheid', max_length=128, null=True, blank=True)
+    purpose_of_manufacture = models.CharField(
+        'Doel van de vervaardiging', max_length=128, null=True, blank=True)
     themes = models.ManyToManyField(Theme, related_name='datasets')
     dataset_category = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
@@ -308,7 +321,8 @@ class Layer(models.Model):
     zoom_max = models.IntegerField(
         'Zoomniveau maximum', blank=True, default=None, null=True)
 
-    dataset = models.ForeignKey(Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
+    dataset = models.ForeignKey(
+        Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
 
     def __str__(self):
         return self.title

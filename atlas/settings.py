@@ -72,6 +72,9 @@ if OIDC_AD_ADD_AUTH_REQUEST_EXTRA_PARAMS:
         'resource': 'urn:microsoft:userinfo'
     }
 
+SHOW_LAYERS_ONLY_WHEN_ACCESSIBLE = os.getenv(
+    'SHOW_LAYERS_ONLY_WHEN_ACCESSIBLE', 'False') == 'True'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 DATABASES = {
@@ -299,7 +302,7 @@ CONSTANCE_CONFIG = {
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
     'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
     'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
-    'ORGANIZATION_IMAGE': ('','Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
+    'ORGANIZATION_IMAGE': ('', 'Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
     'ORGANIZATION_PRIMARY_COLOR': ('#000000', 'Primaire kleur van de organisatie.\n Note: voor nu alleen beschikbaar in HEX'),
     'ORGANIZATION_INTRODUCTION': ('', 'Introductie tekst die wordt laten zien bovenaan de pagina'),
 }
@@ -336,7 +339,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
 }
 
 DJANGO_VITE_DEV_MODE = DEBUG
-DJANGO_VITE_MANIFEST_PATH = os.path.join(BASE_DIR, 'homepage/static/dist/manifest.json')
+DJANGO_VITE_MANIFEST_PATH = os.path.join(
+    BASE_DIR, 'homepage/static/dist/manifest.json')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

@@ -54,6 +54,8 @@ oidcUsernameClaim: sub
 oidcActivateOnCreate: true
 oidcSyncGroups: false
 
+showLayersOnlyWhenAccessible: false
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

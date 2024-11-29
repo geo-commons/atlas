@@ -28,3 +28,4 @@ data:
   OIDC_USERNAME_CLAIM: "{{ .Values.oidcUsernameClaim }}"
   OIDC_ACTIVATE_ON_CREATE: "{{ if .Values.oidcActivateOnCreate }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
   OIDC_SYNC_GROUPS: "{{ if .Values.oidcSyncGroups }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
+  SHOW_LAYERS_ONLY_WHEN_ACCESSIBLE: "{{ if .Values.showLayersOnlyWhenAccessible }}{{ "True" }}{{ else }}{{ "False" }}{{ end }}"
