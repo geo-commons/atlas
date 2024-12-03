@@ -43,7 +43,7 @@ export default {
       this.setPosition(this.position.marker);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.StreetSmartApi.destroy({
       targetElement: this.$refs.viewer,
     });
