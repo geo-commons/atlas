@@ -508,6 +508,7 @@ export default {
         this.drawFeatures = value;
       },
       deep: true,
+      immediate: true,
     },
     userLayerSettings: {
       handler(value) {
