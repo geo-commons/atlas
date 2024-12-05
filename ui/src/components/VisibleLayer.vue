@@ -67,8 +67,23 @@
 
       <template #default>
         <div class="content">
-          <img v-if="layerHasLegend" :src="legendImage" class="legend" :alt="`Legenda voor laag ${layer.title}`" />
-          <span v-if="!layerHasLegend">Geen legenda beschikbaar</span>
+          <img
+            v-if="layerHasLegend && !legendJson"
+            :src="legendImage"
+            class="legend"
+            :alt="`Legenda voor laag ${layer.title}`"
+          />
+          <div v-if="layerHasLegend && legendJson">
+            <div
+              v-for="legendField in legendJson"
+              :key="legendField.name"
+              class="tw-flex tw-flex-row tw-items-center tw-gap-2"
+            >
+              <img :src="getLegendFieldImage(legendField.name)" />
+              {{ legendField.name }}
+            </div>
+          </div>
+          <span v-if="!layerHasLegend && !legendJson">Geen legenda beschikbaar</span>
           <span v-if="errorLoadingLegend">Kan de legenda niet laden</span>
         </div>
       </template>
@@ -111,6 +126,7 @@ export default {
       showSlider: false,
       errorLoadingLegend: false,
       legendImage: null,
+      legendJson: null,
       isSelectable: null,
       initialIsSelectable: null,
     };
@@ -154,6 +170,18 @@ export default {
       this.$emit("toggle-is-selectable", [this.layer.id, this.isSelectable]);
     },
     async fetchLegendImage() {
+      // Attempt to fetch the legend as JSON for interactive filtering support.
+      // If JSON retrieval fails, fall back to rendering the legend as a static image.
+      try {
+        const result = await this.fetchLegendAsJson();
+
+        this.legendJson = result.Legend[0].rules;
+
+        return;
+      } catch (e) {
+        console.log(e);
+      }
+
       const wmsSource = new TileWMS({
         url: this.layer.legend_url ? this.layer.legend_url : this.layer.url,
         servertype: this.layer.server_type,
@@ -199,6 +227,54 @@ export default {
       } catch (e) {
         this.errorLoadingLegend = true;
       }
+    },
+    async fetchLegendAsJson() {
+      const params = new URLSearchParams({
+        SERVICE: "WMS",
+        VERSION: "1.1.1",
+        REQUEST: "GetLegendGraphic",
+        FORMAT: "application/json",
+        LAYER: this.layer.name,
+        STYLE: this.layer.server_style || "",
+      });
+
+      const url = `${this.layer.url}?${params.toString()}`;
+
+      try {
+        const fetchParams = layerRequiresAuthentication(this.layer) ? getFetchParameters(this.layer, this.user) : {};
+
+        const response = await fetch(url, fetchParams);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch legend");
+        }
+
+        let legendJson;
+        try {
+          legendJson = await response.json();
+        } catch (jsonError) {
+          throw new Error("Failed to parse JSON response: " + jsonError.message);
+        }
+
+        return legendJson;
+      } catch (e) {
+        console.log(e);
+        throw e;
+      }
+    },
+    getLegendFieldImage(rule) {
+      const params = new URLSearchParams({
+        SERVICE: "WMS",
+        VERSION: "1.1.1",
+        REQUEST: "GetLegendGraphic",
+        FORMAT: "image/png",
+        LAYER: this.layer.name,
+        RULE: rule,
+      });
+
+      const url = `${this.layer.url}?${params.toString()}`;
+
+      return url;
     },
   },
 };
