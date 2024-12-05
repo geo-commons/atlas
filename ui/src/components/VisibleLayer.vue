@@ -324,7 +324,8 @@ export default {
           this.checkboxFilters[`${this.layer.id}-${key}-${value}`] = true;
         });
 
-        // Find keys in this.checkboxFilters where the value is not in the fieldFilter array
+        // Find keys in this.checkboxFilters where the value is not in the fieldFilter array and
+        // delete the belonging filter from the checkboxFilter state
         Object.keys(this.checkboxFilters).forEach((checkboxKey) => {
           // Assuming 'value' is always the last part of the key
           const valuePart = checkboxKey.split("-").pop();
