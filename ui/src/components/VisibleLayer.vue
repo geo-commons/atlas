@@ -309,7 +309,8 @@ export default {
       const filterFields = Object.keys(layerFilterObject).filter((filterKey) => filterKey && filterKey !== "search");
 
       if (!filterFields.length) {
-        // Find keys in this.checkboxFilters where the value is not in the fieldFilter array
+        // If filterFields is empty, set the checkboxFilters for this layer to an empty object.
+        // To keep datapanel filter state in sync with legend filter state
         this.checkboxFilters = {};
       }
 
