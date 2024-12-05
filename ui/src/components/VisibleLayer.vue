@@ -73,14 +73,26 @@
             class="legend"
             :alt="`Legenda voor laag ${layer.title}`"
           />
-          <div v-if="layerHasLegend && legendJson">
-            <div
-              v-for="legendField in legendJson"
-              :key="legendField.name"
-              class="tw-flex tw-flex-row tw-items-center tw-gap-2"
-            >
-              <img :src="getLegendFieldImage(legendField.name)" />
-              {{ legendField.name }}
+          <div v-if="layerHasLegend && legendJson" class="tw-flex tw-flex-col tw-gap-2">
+            <div v-for="legendField in legendJson" :key="legendField.name">
+              <div v-if="legendField.filter" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
+                <Checkbox
+                  :model-value="
+                    checkboxFilters[`${layer.id}-${getFilterParameter(legendField.filter)}-${legendField.name}`]
+                  "
+                  :input-id="legendField.name"
+                  binary
+                  @update:model-value="(value) => updateCheckboxFilter(value)"
+                />
+                <label :for="legendField.name" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
+                  <img :src="getLegendFieldImage(legendField.name)" />{{ legendField.name }}
+                </label>
+              </div>
+              <div v-else>
+                <div class="tw-flex tw-flex-row tw-items-start tw-gap-2">
+                  <img :src="getLegendFieldImage(legendField.name)" />{{ legendField.name }}
+                </div>
+              </div>
             </div>
           </div>
           <span v-if="!layerHasLegend && !legendJson">Geen legenda beschikbaar</span>
@@ -120,6 +132,7 @@ export default {
     position: Object,
     isOpen: Boolean,
     user: Object,
+    filters: Object,
   },
   data() {
     return {
@@ -129,6 +142,7 @@ export default {
       legendJson: null,
       isSelectable: null,
       initialIsSelectable: null,
+      checkboxFilters: {},
     };
   },
   computed: {
@@ -140,6 +154,13 @@ export default {
     position(position, oldPosition) {
       if (position.zoom !== oldPosition.zoom) {
         this.fetchLegendImage();
+      }
+    },
+    filters(value) {
+      const layerFilterObject = value[this.layer.id];
+
+      if (layerFilterObject) {
+        this.syncCheckboxFiltersWithOtherApplicationFilters(layerFilterObject);
       }
     },
   },
@@ -275,6 +296,43 @@ export default {
       const url = `${this.layer.url}?${params.toString()}`;
 
       return url;
+    },
+    getFilterParameter(filterString) {
+      // Regex to extract the parameter name before '='
+      const match = filterString.match(/\[([a-zA-Z0-9_]+)\s*=/);
+      return match ? match[1] : null;
+    },
+    updateCheckboxFilter(value) {
+      console.log(value);
+    },
+    syncCheckboxFiltersWithOtherApplicationFilters(layerFilterObject) {
+      const filterFields = Object.keys(layerFilterObject).filter((filterKey) => filterKey && filterKey !== "search");
+
+      if (!filterFields.length) {
+        // Find keys in this.checkboxFilters where the value is not in the fieldFilter array
+        this.checkboxFilters = {};
+      }
+
+      filterFields.map((key) => {
+        const fieldFilter = layerFilterObject[key];
+
+        // If filter value for a specific field, like "spanning_k = 380 kV" is set,
+        // set this filter on the checkboxFilters,
+        // where in this example key is the name (spanning_k) of the filter and value is the 380 kV.
+        fieldFilter.map((value) => {
+          this.checkboxFilters[`${this.layer.id}-${key}-${value}`] = true;
+        });
+
+        // Find keys in this.checkboxFilters where the value is not in the fieldFilter array
+        Object.keys(this.checkboxFilters).forEach((checkboxKey) => {
+          // Assuming 'value' is always the last part of the key
+          const valuePart = checkboxKey.split("-").pop();
+
+          if (!fieldFilter.includes(valuePart)) {
+            delete this.checkboxFilters[checkboxKey];
+          }
+        });
+      });
     },
   },
 };

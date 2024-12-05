@@ -162,6 +162,7 @@
           :layer-opacity-is-changable="!isEmbed"
           :is-open="i === 0"
           :user="user"
+          :filters="filters"
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
           @toggle-is-selectable="onToggleIsSelectable"
@@ -196,6 +197,7 @@ export default {
   props: {
     layers: Array,
     position: Object,
+    filters: Object,
     user: Object,
     showSearchBar: Boolean,
     showSimpleLayerList: Boolean,

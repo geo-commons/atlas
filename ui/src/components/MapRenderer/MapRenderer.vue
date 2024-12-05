@@ -199,6 +199,7 @@
           :layers="regularLayers"
           :position="position"
           :user="user"
+          :filters="filters"
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
           :is-embed="features.legend && !features.layerlist"
