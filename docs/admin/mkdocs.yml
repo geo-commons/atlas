@@ -1,8 +1,25 @@
-site_name: Atlas Admin Documentatie
-site_url: https://documentatie.atlas.nl
+site_name: Atlas Admin module Documentatie
+site_url: https://127.0.0.1:8808
+dev_addr: "127.0.0.1:8808"
 extra_css:
   - stylesheets/extra.css
 theme:
+  theme:
+    icon:
+      admonition:
+        alert: material/alert-16
+        note: octicons/tag-16
+        abstract: octicons/checklist-16
+        info: octicons/info-16
+        tip: octicons/squirrel-16
+        success: octicons/check-16
+        question: octicons/question-16
+        warning: octicons/alert-16
+        failure: octicons/x-circle-16
+        danger: octicons/zap-16
+        bug: octicons/bug-16
+        example: octicons/beaker-16
+        quote: octicons/quote-16
   name: material
   language: nl
   palette:
@@ -11,3 +28,33 @@ theme:
     - navigation.footer
 extra:
   generator: false
+plugins:
+  - search
+markdown_extensions:
+  - smarty
+  - toc:
+      separator: "-"
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+
+nav:
+  - "Introductie": "index.md"
+  - "Installatie": "installlokaal.md"
+  - "Beheerpagina": "dashboard.md"
+  - "Configuratie": "configuratie.md"
+  - "Algemene gegevens": "algemeen.md"
+  - "Bronnen": "bronnen.md"
+  - "Categorieën": "categorie.md"
+  - "Datasets": "datasets.md"
+  - "Kaarten": "kaarten.md"
+  - "Kaartlagen": "kaartlagen.md"
+  - "Thema`s": "themas.md"
+  - "Viewers": "viewers.md"
+  - "Gebruikersbeheer": "gebruikers.md"
+  - "Groepen": "groepen.md"
+  - "Autorisaties": "autorisaties.md"
+  - "logs": "logs.md"
+  - "Tabellen": "tabellen.md"
+  - "Beveiliging": "layer_security.md"
