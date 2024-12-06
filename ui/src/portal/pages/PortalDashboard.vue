@@ -34,7 +34,7 @@
         <p v-if="user">Het lijkt er op dat er nog geen data geconfigureerd is...</p>
       </div>
       <div v-else class="tw-flex tw-flex-col tw-gap-4 md:tw-gap-8">
-        <section v-if="maps.length">
+        <section v-if="maps?.length">
           <div class="tw-flex tw-justify-between tw-items-center">
             <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Kaarten</h2>
             <router-link class="text-button" to="/maps">
@@ -55,7 +55,7 @@
             />
           </div>
         </section>
-        <section v-if="datasets.length">
+        <section v-if="datasets?.length">
           <div class="tw-flex tw-justify-between tw-items-center">
             <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Datasets</h2>
             <router-link class="text-button" to="/datasets">
@@ -76,7 +76,7 @@
             />
           </div>
         </section>
-        <section v-if="tables.length">
+        <section v-if="tables?.length">
           <div class="tw-flex tw-justify-between tw-items-center">
             <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Tabellen</h2>
             <router-link class="text-button" to="/tables">
