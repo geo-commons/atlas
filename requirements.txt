@@ -11,7 +11,7 @@ djangorestframework==3.14.0
 fiona==1.9.5
 mistune==3.0.2
 mozilla-django-oidc==4.0.1
-Pillow==10.2.0
+Pillow==11.1.0
 django-vite==3.0.4
 prospector==1.12.1
 psycopg2-binary==2.9.9
