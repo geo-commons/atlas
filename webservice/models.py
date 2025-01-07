@@ -288,14 +288,6 @@ class Layer(models.Model):
         default=False,
         help_text='De laag wordt niet getoond in de standaardkaart')
 
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name='Eigenaar',
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT,
-        related_name='owner')
-
     atlas_groups = models.ManyToManyField(
         AtlasGroup, blank=True, verbose_name='Groepen', help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
 
