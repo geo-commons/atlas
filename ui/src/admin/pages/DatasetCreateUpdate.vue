@@ -184,6 +184,24 @@ export default {
               type: "text",
               required: false,
             },
+            {
+              label: "Gepubliceerd",
+              id: "published",
+              name: "Published",
+              type: "checkbox",
+              required: false,
+              infoText:
+                "Markeer dit veld als Gepubliceerd om de dataset te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de dataset te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.",
+            },
+            {
+              label: "Toon in dataportal",
+              id: "show_in_overview",
+              name: "showInOverview",
+              type: "checkbox",
+              required: false,
+              infoText:
+                "Schakel dit veld in om de dataset weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de dataset te verbergen in het overzicht, zelfs als deze gepubliceerd is.",
+            },
           ],
         },
         themes: {

@@ -1,12 +1,17 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, mixins, filters
-from rest_framework.viewsets import ViewSet
+import os
+
 from constance import config
 from constance import settings as constance_settings
+from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, permissions, mixins, filters
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
 from authz.models import Log
 from tables.models import Table
@@ -15,25 +20,22 @@ from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
-
-from .models import Category, Drawing, Map, Source, Layer, Dataset, Theme, Viewer
+from .models import Category, Drawing, Source, Layer, Theme, Viewer, Map, Dataset
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
     ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer, \
     UserCreateUpdateSerializer
 
-import os
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.conf import settings
 
 class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAdminUser]
-    queryset = Map.objects.all()
     serializer_class = MapSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
+    multiple_lookup_fields = ['published', 'show_in_overview']
 
     search_fields = ['title']
+
+    def get_queryset(self):
+        return Map.authorized.for_request(self.request)
 
 
 class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
@@ -110,12 +112,13 @@ class GroupsViewSet(viewsets.ModelViewSet):
 
 class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
-    permission_classes = [permissions.IsAdminUser]
-    queryset = Dataset.objects.all().prefetch_related('layers')
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
-    filterset_fields = ['themes']
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
+    multiple_lookup_fields = ['themes', 'published', 'show_in_overview']
     search_fields = ['title']
     serializer_class = DatasetSerializer
+
+    def get_queryset(self):
+        return Dataset.authorized.for_request(self.request).prefetch_related('layers')
 
     def get_serializer_class(self):
         if self.action in ['partial_update', 'update', 'create']:
@@ -225,7 +228,6 @@ class ConfigurationViewSet(ViewSet):
                         setattr(config, key, process_value(value))
 
         return Response(data=get_settings(allow_settings))
-
 
     def create(self, request):
         """

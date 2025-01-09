@@ -1,14 +1,15 @@
+import uuid
 from os import path
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
-from django.db.models import Q
 from django_extensions.db.fields import AutoSlugField
-import uuid
 
 from user_management.models import AtlasGroup
 from utils.tools import is_internal
@@ -43,7 +44,8 @@ class Category(models.Model):
     # so inform them when changing.
     title = models.CharField('Titel', max_length=128, null=True)
 
-    slug = AutoSlugField('Kort kenmerk', default=None, blank=False, unique=True, populate_from='title', overwrite_on_add=False, editable=True,
+    slug = AutoSlugField('Kort kenmerk', default=None, blank=False, unique=True, populate_from='title',
+                         overwrite_on_add=False, editable=True,
                          help_text='Een uniek kort kenmerk voor de categorie in Atlas.')
 
     ordering = models.PositiveIntegerField('Sortering',
@@ -70,7 +72,8 @@ class Source(models.Model):
     ]
 
     title = models.CharField('Titel', max_length=128, null=True)
-    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title', editable=True,
+    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
+                         editable=True,
                          help_text='Een uniek kort kenmerk voor de bron in Atlas.')
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_OWS, max_length=20,
@@ -79,10 +82,12 @@ class Source(models.Model):
     url = models.URLField()
 
     login_required = models.BooleanField(
-        'Vereis inlog voor deze bron', default=False, help_text='De inhoud van deze bron kan alleen bekeken worden door ingelogde gebruikers.')
+        'Vereis inlog voor deze bron', default=False,
+        help_text='De inhoud van deze bron kan alleen bekeken worden door ingelogde gebruikers.')
 
     atlas_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen', help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
+        AtlasGroup, blank=True, verbose_name='Groepen',
+        help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
 
     authenticate = models.BooleanField('Verstuur authenticatieinformatie naar bron', default=False,
                                        help_text='Configureer dit alleen voor vertrouwde bronnen')
@@ -115,15 +120,32 @@ class Theme(models.Model):
         super().save(*args, **kwargs)
 
 
+class DatasetManager(models.Manager):
+    def for_request(self, request):
+        if request.user.is_anonymous:
+            return self.filter(published=True, show_in_overview=True)
+
+        if request.user.is_authenticated and request.user.is_superuser:
+            return self.all()
+
+        return self.filter(published=True)
+
+
 class Dataset(models.Model):
+    objects = models.Manager()
+    authorized = DatasetManager()
+
     title = models.CharField('Naam', max_length=128,
                              help_text="De naam van de dataset")
     slug = models.SlugField('Kort kenmerk', null=False, unique=True,
                             help_text='Een uniek kort kenmerk voor de Dataset in Atlas', editable=True)
     description = models.TextField(
-        'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+        'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld",
+        blank=True)
     source_description = models.TextField(
-        'Bron omschrijving', null=True, help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+        'Bron omschrijving', null=True,
+        help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld",
+        blank=True)
     organization = models.CharField(
         'Organisatie', max_length=128, null=True, blank=True)
     contact = models.CharField(
@@ -148,6 +170,13 @@ class Dataset(models.Model):
         null=True,
         help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
     )
+
+    published = models.BooleanField('Gepubliceerd',
+                                    help_text="Markeer dit veld als Gepubliceerd om de dataset te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de dataset te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.",
+                                    default=False)
+    show_in_overview = models.BooleanField('Toon in overzicht weergave',
+                                           help_text="Schakel dit veld in om de dataset weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de dataset te verbergen in het overzicht, zelfs als deze gepubliceerd is.",
+                                           default=True)
 
     class Meta:
         verbose_name = 'Dataset'
@@ -193,7 +222,8 @@ class Layer(models.Model):
 
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
     # so inform them when changing.
-    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title', overwrite_on_add=False, editable=True,
+    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
+                         overwrite_on_add=False, editable=True,
                          help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)')
 
     title = models.CharField('Titel', max_length=128, null=True)
@@ -212,7 +242,7 @@ class Layer(models.Model):
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on the meta_* fields
     # so inform them when changing.
     meta_name = models.CharField(
-        'Naam', max_length=128, blank=True, null=True,)
+        'Naam', max_length=128, blank=True, null=True, )
     meta_description = models.TextField('Omschrijving', blank=True, null=True,
                                         help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_lineage = models.TextField('Bron', blank=True, null=True,
@@ -222,16 +252,20 @@ class Layer(models.Model):
     meta_contact = models.CharField(
         'Contactpersoon', max_length=200, blank=True, null=True)
     meta_updated = models.CharField(
-        'Laatst bijgewerkt', max_length=128, blank=True, null=True, help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
+        'Laatst bijgewerkt', max_length=128, blank=True, null=True,
+        help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
     meta_link = models.URLField(
-        'Meer informatie', max_length=200, blank=True, null=True, help_text='Link naar metadatacatalogus met meer informatie')
+        'Meer informatie', max_length=200, blank=True, null=True,
+        help_text='Link naar metadatacatalogus met meer informatie')
 
     opacity = models.DecimalField(
-        'Transparantie', max_digits=2, decimal_places=1, default=0.9, validators=[MinValueValidator(0), MaxValueValidator(1)])
+        'Transparantie', max_digits=2, decimal_places=1, default=0.9,
+        validators=[MinValueValidator(0), MaxValueValidator(1)])
     visible = models.BooleanField('Zichtbaar', default=False)
 
     server_style = models.CharField(
-        'Stijlnaam voor WMS / WMTS laag', max_length=128, blank=True, null=True, help_text='Stijlnaam zoals beschikbaar op de server')
+        'Stijlnaam voor WMS / WMTS laag', max_length=128, blank=True, null=True,
+        help_text='Stijlnaam zoals beschikbaar op de server')
 
     client_style = models.JSONField(
         'Stijl voor WFS / MVT laag', default=dict, help_text='Stijl in GeoStyler formaat', blank=True, null=True)
@@ -240,7 +274,8 @@ class Layer(models.Model):
         'Vriendelijke veldnamen', default=dict, help_text='Maak veldnamen vriendelijk', blank=True, null=True)
 
     templated_properties = models.JSONField(
-        'Templatevelden', default=dict, help_text='Velden die samengesteld worden vanuit een template', blank=True, null=True)
+        'Templatevelden', default=dict, help_text='Velden die samengesteld worden vanuit een template', blank=True,
+        null=True)
 
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
@@ -264,7 +299,8 @@ class Layer(models.Model):
         'Alleen intern zichtbaar', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.')
 
     login_required = models.BooleanField(
-        'Vereis inlog voor deze dataset', default=False, help_text='De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.')
+        'Vereis inlog voor deze dataset', default=False,
+        help_text='De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.')
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
@@ -289,7 +325,8 @@ class Layer(models.Model):
         help_text='De laag wordt niet getoond in de standaardkaart')
 
     atlas_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen', help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
+        AtlasGroup, blank=True, verbose_name='Groepen',
+        help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
     updated_at = models.DateTimeField('updated_at', auto_now=True)
@@ -562,14 +599,6 @@ class Template(models.Model):
         }
 
 
-class MapManager(models.Manager):
-    def for_request(self, request):
-        if request.user.is_anonymous:
-            return self.filter(login_required=False)
-
-        return self.all()
-
-
 class SelectionManager(models.Manager):
     def for_request(self, request):
         if request.user.is_anonymous:
@@ -589,7 +618,8 @@ class Selection(models.Model):
     layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
 
     login_required = models.BooleanField(
-        'Vereis inlog voor deze selectie', default=False, help_text='De selectie kan alleen bekeken worden door ingelogde gebruikers.')
+        'Vereis inlog voor deze selectie', default=False,
+        help_text='De selectie kan alleen bekeken worden door ingelogde gebruikers.')
 
     class Meta:
         verbose_name = 'Selectie'
@@ -627,6 +657,17 @@ class MapLayer(models.Model):
         }
 
 
+class MapManager(models.Manager):
+    def for_request(self, request):
+        if request.user.is_anonymous:
+            return self.filter(published=True, show_in_overview=True)
+
+        if request.user.is_authenticated and request.user.is_superuser:
+            return self.all()
+
+        return self.filter(published=True)
+
+
 class Map(models.Model):
     objects = models.Manager()
     authorized = MapManager()
@@ -646,7 +687,8 @@ class Map(models.Model):
         default=dict, blank=True, verbose_name='Instellingen')
 
     login_required = models.BooleanField(
-        'Vereis inlog voor deze kaart', default=False, help_text='De inhoud van deze kaart kan alleen bekeken worden door ingelogde gebruikers.')
+        'Vereis inlog voor deze kaart', default=False,
+        help_text='De inhoud van deze kaart kan alleen bekeken worden door ingelogde gebruikers.')
 
     thumbnail = models.ImageField(
         upload_to='thumbnails/',
@@ -656,7 +698,15 @@ class Map(models.Model):
     )
 
     description = models.TextField(
-        'Beschrijving van de kaart', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+        'Beschrijving van de kaart', null=True,
+        help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+
+    published = models.BooleanField('Gepubliceerd',
+                                    help_text="Markeer dit veld als Gepubliceerd om de kaart te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de kaart te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.",
+                                    default=False)
+    show_in_overview = models.BooleanField('Toon in overzicht weergave',
+                                           help_text="Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.",
+                                           default=True)
 
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'

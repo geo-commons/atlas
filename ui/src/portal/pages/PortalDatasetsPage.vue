@@ -33,7 +33,7 @@ export default {
     async getDatasets() {
       this.loading = true;
 
-      let fetchUrl = "/atlas/api/v1/datasets/";
+      let fetchUrl = "/atlas/api/v1/datasets/?published=True&show_in_overview=True";
 
       if (this.searchQuery) {
         fetchUrl += `?search=${this.searchQuery}`;

@@ -159,7 +159,7 @@ export default {
     async getDatasets() {
       this.loading = true;
 
-      const result = await fetch("/atlas/api/v1/datasets/", {
+      const result = await fetch("/atlas/api/v1/datasets/?published=True&show_in_overview=True", {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -175,7 +175,7 @@ export default {
     async getMaps() {
       this.loading = true;
 
-      const result = await fetch("/atlas/api/v1/maps/", {
+      const result = await fetch("/atlas/api/v1/maps/?published=True&show_in_overview=True", {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
