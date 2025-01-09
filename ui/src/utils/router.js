@@ -13,6 +13,8 @@ export const getSettingsFromPath = (defaultConfig) => {
     params[matches.groups.key] = matches.groups.value;
   }
 
+  const marker = params.marker?.split(",") ?? null;
+
   return {
     position: {
       zoom: pathMatch.groups.zoom ? parseFloat(pathMatch.groups.zoom) : defaultConfig.position.zoom,
@@ -20,7 +22,7 @@ export const getSettingsFromPath = (defaultConfig) => {
         pathMatch.groups.x ? parseFloat(pathMatch.groups.x) : defaultConfig.position.center.x,
         pathMatch.groups.y ? parseFloat(pathMatch.groups.y) : defaultConfig.position.center.y,
       ],
-      marker: null,
+      marker: marker && marker.length === 2 ? [parseFloat(marker[0]), parseFloat(marker[1])] : null,
       geolocation: null,
     },
     drawing: params.drawing ? params.drawing : null,
