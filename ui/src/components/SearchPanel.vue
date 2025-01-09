@@ -61,6 +61,7 @@ export default {
     features: Object,
     showDataPanel: Boolean,
   },
+  emits: ["toggle-data-panel", "set-position"],
   data() {
     return {
       showSuggestions: false,
@@ -148,6 +149,7 @@ export default {
           marker: suggestion.coordinates,
           center: suggestion.coordinates,
           zoom: 19,
+          flyTo: true,
         });
         this.query = suggestion.weergavenaam;
         this.showSuggestions = false;
@@ -164,6 +166,7 @@ export default {
           marker: parsedCenteroide,
           center: parsedCenteroide,
           zoom: 19,
+          flyTo: true,
         });
 
         this.query = suggestion.weergavenaam;

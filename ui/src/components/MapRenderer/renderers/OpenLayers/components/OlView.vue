@@ -28,14 +28,18 @@ export default {
     position(value, oldValue) {
       const view = this.map.getView();
 
-      if (value.center != oldValue.center) {
+      if (value.flyTo) {
+        this.centerOn(value.center);
+      }
+
+      if (value.center != oldValue.center && !value.flyTo) {
         view.setCenter(value.center);
       }
 
-      if (value.zoom != oldValue.zoom) {
+      if (value.zoom != oldValue.zoom && !value.flyTo) {
         view.animate({
           zoom: value.zoom,
-          duration: 250,
+          duration: 1500,
         });
       }
     },
@@ -64,7 +68,7 @@ export default {
       const resolution = getPointResolution(
         this.view.getProjection(),
         this.view.getResolution(),
-        this.view.getCenter()
+        this.view.getCenter(),
       );
 
       const mpu = this.view.getProjection().getMetersPerUnit();
@@ -76,6 +80,7 @@ export default {
         center: view.getCenter(),
         zoom: view.getZoom(),
         extent: view.calculateExtent(this.map.getSize()),
+        flyTo: false, // reset fly to
       });
     });
 
@@ -96,8 +101,8 @@ export default {
     fit(geometryOrExtent, options) {
       this.view.fit(geometryOrExtent, options);
     },
-    centerOn(coordinates) {
-      this.view.animate({ center: coordinates, duration: 100 });
+    centerOn(coordinates, zoom) {
+      this.view.animate({ center: coordinates, zoom: zoom, duration: 1000 });
     },
     adjustZoom(delta) {
       this.view.animate({ zoom: this.view.getZoom() + delta, duration: 100 });
