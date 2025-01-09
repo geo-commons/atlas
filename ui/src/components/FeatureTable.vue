@@ -490,6 +490,7 @@ export default {
       this.$emit("set-position", {
         ...this.position,
         marker: center,
+        flyTo: true,
       });
 
       this.$emit("on-fit", geometry.getExtent());

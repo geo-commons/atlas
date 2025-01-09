@@ -99,7 +99,7 @@
       :show-panel="!showDataPanel && showInfoPanel"
       :user="user"
       @set-position="setPosition"
-      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19 })"
+      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
       @expanded-info-panel="toggleInfoPanel"
     />
     <DetailPanel
@@ -119,7 +119,7 @@
       :filters="filters"
       :full-size-window="showDataPanelFullScreen"
       @set-position="setPosition"
-      @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19 })"
+      @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19, duration: 1000 })"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
       @update-filters="(value) => (filters = value)"

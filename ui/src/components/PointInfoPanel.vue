@@ -155,6 +155,7 @@ export default {
         ...this.position,
         marker: center,
         center: center,
+        flyTo: true,
       });
     },
     onFit(value) {

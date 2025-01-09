@@ -2,7 +2,7 @@
   <ExpandButton v-if="features.length > 0 || html" :title="featureInfoTitle" :is-open="isOpen" class="feature">
     <div v-if="html" class="html" v-html="html" />
     <div v-for="feature in features" :key="feature.id" class="border-bottom">
-      <div class="feature-select" @click="() => $emit('show-selected-feature', feature)">
+      <div class="feature-select">
         <table-list>
           <table>
             <tbody>
@@ -26,6 +26,31 @@
             </tbody>
           </table>
         </table-list>
+      </div>
+
+      <div class="tw-flex tw-px-5 tw-py-2 tw-gap-3">
+        <Button
+          outlined
+          severity="secondary"
+          class="!tw-text-sm !tw-font-medium"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+          @click="() => $emit('show-selected-feature', feature)"
+        >
+          Bekijk
+          <MarkerIcon class="icon __marker __smedium" />
+        </Button>
+        <Button
+          outlined
+          severity="secondary"
+          class="!tw-text-sm !tw-font-medium"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+          @click="copyFeature(feature)"
+        >
+          {{ checkCopyStatus(feature.id) ? "Gekopieerd!" : "Kopieer" }}
+          <CopyIcon class="icon __smedium" />
+        </Button>
       </div>
 
       <div v-for="(linkedData, key) in layer.linked_data" :key="key">
@@ -62,12 +87,16 @@ import MarkdownTemplate from "./MarkdownTemplate";
 import { mapState, mapStores } from "pinia";
 import { useGlobalStore } from "@/stores";
 import { formatRawString } from "@/utils/string-helpers";
+import MarkerIcon from "@/assets/icons/marker-icon.svg";
+import CopyIcon from "@/assets/icons/copy-icon.svg";
 
 nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "FeatureInfo",
   components: {
+    MarkerIcon,
+    CopyIcon,
     TableList,
     LinkedDataTable,
     ExpandButton,
@@ -80,10 +109,12 @@ export default {
     position: Object,
     isOpen: Boolean,
   },
+  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature"],
   data() {
     return {
       features: [],
       html: "",
+      onCopy: {},
     };
   },
   computed: {
@@ -215,6 +246,36 @@ export default {
 
       return formatRawString(property);
     },
+    async copyFeature(feature) {
+      if (!navigator.clipboard) {
+        console.error("Clipboard API not supported");
+        return;
+      }
+
+      const properties = this.filterProperties(feature.properties);
+
+      const featureData = properties.reduce((acc, item) => {
+        acc[item] = feature.properties[item];
+        return acc;
+      }, {});
+
+      const formattedText = Object.entries(featureData)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join("\n");
+      try {
+        await navigator.clipboard.writeText(formattedText);
+        this.onCopy[feature.id] = true;
+      } catch (err) {
+        console.error("Failed to copy:", err);
+      }
+
+      setTimeout(() => {
+        this.onCopy[feature.id] = false;
+      }, 1000);
+    },
+    checkCopyStatus(featureId) {
+      return this.onCopy[featureId];
+    },
   },
 };
 </script>
@@ -266,15 +327,9 @@ export default {
 }
 
 .border-bottom:not(:last-child) {
-  border-bottom: 1px solid var(--color-grey-50);
+  border-bottom: 1px solid var(--color-grey-60);
   margin-bottom: 10px;
   padding-bottom: 10px;
-}
-
-.separator-line {
-  border: 0;
-  border-top: 1px solid var(--color-grey-50);
-  margin: 0 20px;
 }
 
 .html {
@@ -282,9 +337,11 @@ export default {
   margin-right: 20px;
 }
 
+/*
 .feature-select:hover {
   background: var(--color-grey-40);
   border-radius: var(--radius-normal);
   cursor: pointer;
 }
+*/
 </style>
