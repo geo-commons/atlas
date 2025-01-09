@@ -200,6 +200,7 @@ export default {
   props: {
     initialData: Object,
   },
+  emits: ["submit", "show-filters", "show-list", "show-layerlist", "show-layers"],
   data() {
     return {
       data: this.initialData || { features: {} },

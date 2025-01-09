@@ -121,18 +121,29 @@ export default {
       const zoom = encodeURIComponent(this.position.zoom);
 
       const layers = this.layers
-        .filter((l) => !l.is_base && l.is_visible)
+        .filter((l) => l.is_visible && !l.is_base)
         .map((l) => l.id)
         .join(",");
 
-      const baseLayer = this.layers.filter((l) => l.is_base && l.is_visible).map((l) => l.id);
-      window.history.replaceState(
-        {},
-        "",
-        `${basePath[1]}@${x},${y},${Math.round(zoom * 100) / 100}z/layers=${layers}/base=${
-          baseLayer.length > 0 ? baseLayer[0] : ""
-        }`,
-      );
+      const baseLayer = this.layers.filter((l) => l.is_visible && l.is_base).map((l) => l.id);
+
+      const markerCoords = this.position?.marker?.map((coord) => encodeURIComponent(coord.toFixed(2)));
+
+      const urlParts = [
+        `${basePath[1]}@${x},${y},${Math.round(zoom * 100) / 100}z`,
+        `layers=${layers}`,
+        `base=${baseLayer[0] || ""}`,
+      ];
+
+      if (this.drawing) {
+        urlParts.push(`drawing=${this.drawing}`);
+      }
+
+      if (markerCoords?.length === 2) {
+        urlParts.push(`marker=${markerCoords.join(",")}`);
+      }
+
+      window.history.replaceState({}, "", urlParts.join("/"));
     },
     async fetchAccessToken() {
       const response = await fetch("/atlas/api/v1/token", {
