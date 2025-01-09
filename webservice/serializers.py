@@ -1,11 +1,10 @@
+from django.utils.text import slugify
 from rest_framework import serializers
 
+from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
 from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer
-from authz.lib import can_request_access_layer
-
-from django.utils.text import slugify
 
 
 class MapLayerSerializer(serializers.ModelSerializer):
@@ -19,7 +18,8 @@ class MapSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Map
-        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description']
+        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description', 'published',
+                  'show_in_overview']
 
     def create(self, validated_data):
         try:
@@ -442,7 +442,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture',
                   'description',
                   'title', 'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers',
-                  'themes', 'slug', 'thumbnail']
+                  'themes', 'slug', 'thumbnail', 'published', 'show_in_overview']
 
 
 class DatasetPatchOrCreateSerializer(serializers.ModelSerializer):
@@ -450,8 +450,10 @@ class DatasetPatchOrCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dataset
-        fields = ['organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description', 'title',
-                  'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'themes', 'id', 'slug']
+        fields = ['organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description',
+                  'title',
+                  'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'themes', 'id',
+                  'slug', 'published', 'show_in_overview']
         read_only_fields = ['id']
 
 
@@ -460,8 +462,10 @@ class BasicDatasetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dataset
-        fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description', 'title',
-                   'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers', 'slug']
+        fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture',
+                  'description', 'title',
+                  'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers', 'slug',
+                  'published', 'show_in_overview']
 
 
 class ThemeSerializer(serializers.ModelSerializer):
@@ -501,7 +505,8 @@ class ViewerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Viewer
-        fields = ['ordering', 'label', 'type', 'username', 'password', 'api_key', 'url', 'is_oblique', 'internal', 'id', 'type', 'title']
+        fields = ['ordering', 'label', 'type', 'username', 'password', 'api_key', 'url', 'is_oblique', 'internal', 'id',
+                  'type', 'title']
 
 
 class LogSerializer(serializers.ModelSerializer):

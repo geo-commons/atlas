@@ -17,6 +17,20 @@
         </div>
 
         <div class="settings">
+          <div class="setting __hover">
+            <input id="published" v-model="data.published" type="checkbox" name="published" />
+            <label for="published">Publiceer kaart</label>
+            <AdminFormInfoText
+              :info-text="'Markeer dit veld als Gepubliceerd om de kaart te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de kaart te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.'"
+            />
+          </div>
+          <div class="setting __hover">
+            <input id="show_in_overview" v-model="data.show_in_overview" type="checkbox" name="show_in_overview" />
+            <label for="show_in_overview">Toon kaart in overzicht weergave</label>
+            <AdminFormInfoText
+              :info-text="'Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.'"
+            />
+          </div>
           <button type="button" class="button __chevron setting" @click="() => $emit('show-layers')">
             <LayerIcon class="icon setting-icon" />
             Lagen
@@ -172,10 +186,12 @@ import LayerIcon from "../../assets/icons/layer-icon.svg";
 import ChevronRightIcon from "../../assets/icons/chevron-right-icon.svg";
 import MapIcon from "../../assets/icons/map-icon.svg";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
+import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 
 export default {
   name: "MapForm",
   components: {
+    AdminFormInfoText,
     LayerIcon,
     ChevronRightIcon,
     MapIcon,

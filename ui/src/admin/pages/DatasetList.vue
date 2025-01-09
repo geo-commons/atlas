@@ -88,6 +88,20 @@ const tableHeaders: Array<TableHeader> = [
     key: "title",
     enableLink: true,
   },
+  {
+    header: "Status",
+    key: "published",
+    enableLink: false,
+    mapValues: {
+      true: "Gepubliceerd",
+      false: "Concept",
+    },
+  },
+  {
+    header: "Tonen op portal",
+    key: "show_in_overview",
+    enableLink: false,
+  },
 ];
 
 // onMounted
