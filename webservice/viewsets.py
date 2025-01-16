@@ -222,8 +222,8 @@ class ConfigurationViewSet(ViewSet):
                         file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
                         # Save the file
                         path = default_storage.save(file_path, ContentFile(uploaded_file.read()))
-                        # Save the file path in the Constance setting
-                        setattr(config, 'ORGANIZATION_LOGO', path)
+                        # Save the file path in the Constance setting (key is the field name)
+                        setattr(config, key, path)
                     else:
                         setattr(config, key, process_value(value))
 

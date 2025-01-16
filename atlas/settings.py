@@ -1,5 +1,5 @@
-from datetime import timedelta
 import os
+from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -206,22 +206,22 @@ if AUTHENTICATION_ENABLE_OIDC:
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+            'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME':
-        'django.contrib.auth.password_validation.MinimumLengthValidator',
+            'django.contrib.auth.password_validation.MinimumLengthValidator',
         "OPTIONS": {
             "min_length": 24,
         },
     },
     {
         'NAME':
-        'django.contrib.auth.password_validation.CommonPasswordValidator',
+            'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME':
-        'django.contrib.auth.password_validation.NumericPasswordValidator',
+            'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -293,7 +293,8 @@ CONSTANCE_CONFIG = {
     'POSITION_ZOOM': (13, 'Het zoomniveau van de opstartpositie'),
     'POSITION_CENTER_X': (126910, 'Het centrum X-coordinaat van de opstartpositie'),
     'POSITION_CENTER_Y': (505834, 'Het centrum Y-coordinaat van de opstartpositie'),
-    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
+    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster',
+                               'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
     'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico')),
     'MATOMO_URL': ('', ('Configureer de URL van Matomo om statistieken bij te houden')),
     'MATOMO_SITE_ID': ('', ('Configureer het site ID van Matomo om statistieken bij te houden')),
@@ -302,9 +303,12 @@ CONSTANCE_CONFIG = {
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
     'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
     'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
-    'ORGANIZATION_IMAGE': ('', 'Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
-    'ORGANIZATION_PRIMARY_COLOR': ('#000000', 'Primaire kleur van de organisatie.\n Note: voor nu alleen beschikbaar in HEX'),
+    'ORGANIZATION_IMAGE': (
+        '', 'Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
+    'ORGANIZATION_PRIMARY_COLOR': (
+        '#000000', 'Primaire kleur van de organisatie.\n Note: voor nu alleen beschikbaar in HEX'),
     'ORGANIZATION_INTRODUCTION': ('', 'Introductie tekst die wordt laten zien bovenaan de pagina'),
+    'ORGANIZATION_HEADER': ('', 'Header tekst die bovenaan de portaal pagina zichtbaar is'),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -335,6 +339,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'ORGANIZATION_IMAGE',
         'ORGANIZATION_PRIMARY_COLOR',
         'ORGANIZATION_INTRODUCTION',
+        'ORGANIZATION_HEADER'
     )
 }
 

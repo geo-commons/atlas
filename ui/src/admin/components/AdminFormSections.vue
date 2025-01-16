@@ -52,39 +52,40 @@
                 <span class="warning-text"><vee-error-message :name="question.id" /></span>
               </div>
               <div v-else-if="question.type === 'image'" class="image-wrapper">
-                <div class="preview-image-wrapper">
+                <div
+                  v-if="imageFieldValues[question.id]?.imagePath || imageFieldValues[question.id]?.previewUrl"
+                  class="preview-image-wrapper"
+                >
                   <div v-if="imageFieldValues[question.id]?.imagePath" class="current-logo">
-                    <div class="question-label">Huidige logo</div>
+                    <div class="question-label">Huidige afbeelding</div>
                     <img
                       :src="`/atlas/media/${imageFieldValues[question.id]?.imagePath}`"
                       class="logo-preview"
-                      :alt="`voorbeeld weergave van het huidige logo voor ${question.id}`"
+                      :alt="`voorbeeld weergave van de huidige afbeelding voor ${question.id}`"
                     />
                   </div>
                   <div v-if="imageFieldValues[question.id]?.previewUrl" class="current-logo">
-                    <div class="question-label">Geselecteerde logo</div>
+                    <div class="question-label">Geselecteerde afbeelding</div>
                     <img
                       :src="imageFieldValues[question.id]?.previewUrl"
                       class="logo-preview"
-                      :alt="`voorbeeld weergave van geselecteerde logo`"
+                      :alt="`voorbeeld weergave van geselecteerde afbeelding`"
                     />
                   </div>
                 </div>
                 <div class="upload-button">
-                  <label for="file" class="question-label"
-                    >Upload een afbeelding om het organisatie logo te wijzigen</label
-                  >
+                  <label for="file" class="question-label">{{ question.label }}</label>
                   <div>
                     <input
-                      id="file"
+                      :id="`file_${question.id}`"
                       :ref="`fileInput_${question.id}`"
                       type="file"
-                      name="file"
+                      :name="`file_${question.id}`"
                       class="inputfile"
                       accept="image/*"
                       @change="(e) => onFileUpload(e, question.id)"
                     />
-                    <label for="file" class="button __primary_admin __import">
+                    <label :for="`file_${question.id}`" class="button __primary_admin __import">
                       <ArrowDownTrayIcon class="icon" />
                       <span :ref="`fileLabelText_${question.id}`" :content="'selecteer afbeelding'">{{
                         imageFieldValues[question.id]?.uploadButtonText
@@ -243,6 +244,16 @@
                   :rules="getRules(question)"
                   type="date"
                   @input="(event) => (message = event.target.value)"
+                />
+                <vee-field
+                  v-else-if="question.type === 'color'"
+                  :id="question.id"
+                  :name="question.id"
+                  :value="currentValues[question.id]"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                  type="color"
+                  @input="(event) => (currentValues[question.id] = event.target.value)"
                 />
                 <vee-field
                   v-else
