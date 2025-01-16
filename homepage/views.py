@@ -2,10 +2,10 @@ import logging
 import os
 
 from constance.admin import get_values
-from django.http import HttpResponseNotFound
-from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -102,7 +102,7 @@ def v3_admin(request):
     }
 
     context = {
-        'data':  {
+        'data': {
             'config': config,
             'user': _get_user(request),
             'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
@@ -177,10 +177,13 @@ def _get_config(request):
 
     return {
         'organization_name': config.get('ORGANIZATION_NAME'),
-        'organization_logo': settings.MEDIA_URL + config.get('ORGANIZATION_LOGO') if config.get('ORGANIZATION_LOGO') else None,
-        'organization_image': settings.MEDIA_URL + config.get('ORGANIZATION_IMAGE') if config.get('ORGANIZATION_IMAGE') else None,
+        'organization_logo': settings.MEDIA_URL + config.get('ORGANIZATION_LOGO') if config.get(
+            'ORGANIZATION_LOGO') else None,
+        'organization_image': settings.MEDIA_URL + config.get('ORGANIZATION_IMAGE') if config.get(
+            'ORGANIZATION_IMAGE') else None,
         'organization_primary_color': config.get('ORGANIZATION_PRIMARY_COLOR'),
         'organization_introduction': config.get('ORGANIZATION_INTRODUCTION'),
+        'organization_header': config.get('ORGANIZATION_HEADER'),
         'position': {
             'zoom': config.get('POSITION_ZOOM'),
             'center': {

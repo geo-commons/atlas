@@ -3,7 +3,7 @@
     <section class="tw-grid md:tw-grid-cols-12 lg:tw-gap-12 tw-gap-4">
       <div class="md:tw-col-span-7">
         <h1 class="tw-text-4xl tw-my-0 tw-mb-2">
-          Dataportaal van de <span class="tw-lowercase">{{ config.organization_name }}!</span>
+          {{ config.organization_header ? config.organization_header : "Welkom op het dataportaal!" }}
         </h1>
         <p v-if="config.organization_introduction" class="tw-leading-8">
           {{ config.organization_introduction }}
