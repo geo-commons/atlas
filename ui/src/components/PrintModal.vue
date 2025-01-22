@@ -1,76 +1,108 @@
 <template>
-  <div class="overlay">
-    <button class="background" @click="closeModal" />
-    <div class="modal">
-      <form method="POST" @submit="onSubmit">
-        <div class="input-container">
+  <Dialog
+    :visible="showDialog"
+    :modal="true"
+    :closable="true"
+    :draggable="false"
+    :header="'Kaart printen'"
+    :dismissable-mask="true"
+    class="tw-w-[60%]"
+    @update:visible="closeModal"
+  >
+    <form method="POST" class="tw-flex tw-flex-col tw-gap-4" @submit="onSubmit">
+      <div class="tw-flex tw-flex-col tw-gap-4 tw-w-[50%]">
+        <div class="tw-flex tw-flex-col">
           <label class="label" for="title">Titel</label>
-          <input id="title" v-model="title" class="input" name="title" placeholder="Kies optioneel een titel" />
+          <InputText id="title" v-model="title" class="input" name="title" placeholder="Kies optioneel een titel" />
         </div>
-        <div class="input-container">
+
+        <div class="tw-flex tw-flex-col">
           <label class="label" for="remarks">Opmerkingen</label>
-          <textarea
+          <Textarea
             id="remarks"
             v-model="remarks"
             class="input"
             name="remarks"
+            rows="3"
+            auto-resize
             placeholder="Plaats optioneel opmerkingen"
           />
         </div>
-        <div class="input-container">
+      </div>
+
+      <div class="tw-flex tw-flex-col tw-gap-4 tw-w-full md:tw-w-56">
+        <div class="tw-flex tw-flex-col">
           <label class="label" for="format">Formaat</label>
-          <select id="format" v-model="format" class="select" name="format">
-            <option value="a0">A0</option>
-            <option value="a1">A1</option>
-            <option value="a2">A2</option>
-            <option value="a3">A3</option>
-            <option value="a4">A4</option>
-          </select>
+          <Select
+            id="format"
+            v-model="format"
+            class="tw-w-full"
+            name="format"
+            :options="availableFormats"
+            option-label="label"
+            option-value="value"
+          />
         </div>
 
-        <div class="input-container">
+        <div class="tw-flex tw-flex-col">
           <label class="label" for="orientation">Orientatie</label>
-          <select id="orientation" v-model="orientation" class="select" name="orientation">
-            <option value="landscape">Liggend</option>
-            <option value="portrait">Staand</option>
-          </select>
+          <Select
+            id="orientation"
+            v-model="orientation"
+            class="tw-w-full"
+            name="orientation"
+            :options="availableOrientations"
+            option-label="label"
+            option-value="value"
+          />
         </div>
 
-        <div class="input-container">
+        <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full tw-mt-4">
           <label class="label" for="showLegend">Toon legenda</label>
-          <select id="showLegend" v-model="showLegend" class="select" name="showLegend">
-            <option :value="true">Ja</option>
-            <option :value="false">Nee</option>
-          </select>
+          <ToggleSwitch id="showLegend" v-model="showLegend" name="showLegend" />
         </div>
 
-        <div class="input-container">
-          <label class="label" for="showLegend">Toon datum/tijd</label>
-          <select id="showDateTime" v-model="showDateTime" class="select" name="showDateTime">
-            <option :value="true">Ja</option>
-            <option :value="false">Nee</option>
-          </select>
+        <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full">
+          <label class="label" for="showDateTime">Toon datum/tijd</label>
+          <ToggleSwitch id="showDateTime" v-model="showDateTime" name="showDateTime" />
         </div>
 
-        <div class="input-container">
-          <label class="label" for="showLegend">Toon schaal</label>
-          <select id="showScale" v-model="showScale" class="select" name="showScale">
-            <option :value="true">Ja</option>
-            <option :value="false">Nee</option>
-          </select>
+        <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full">
+          <label class="label" for="showScale">Toon schaal</label>
+          <ToggleSwitch id="showScale" v-model="showScale" name="showScale" />
         </div>
 
-        <button type="submit" class="button __primary">Afdrukken</button>
-      </form>
-    </div>
-  </div>
+        <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full">
+          <label class="label" for="showLogo">Toon organisatielogo</label>
+          <ToggleSwitch id="showLogo" v-model="showLogo" name="showLogo" />
+        </div>
+
+        <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full">
+          <label class="label" for="showNorth">Toon noordpijl</label>
+          <ToggleSwitch id="showNorth" v-model="showNorth" name="showNorth" />
+        </div>
+      </div>
+      <div class="tw-flex tw-gap-2 tw-mt-4">
+        <Button type="submit" class="!tw-font-medium" :disabled="loading">
+          <i v-if="loading" class="pi pi-spin pi-spinner-dotted"></i>
+          Afdrukken
+        </Button>
+        <Button type="button" outlined class="!tw-font-medium" @click="closeModal">Sluit</Button>
+      </div>
+    </form>
+  </Dialog>
 </template>
 
 <script>
 export default {
   name: "PrintModal",
+  props: {
+    loading: Boolean,
+  },
+  emits: ["toggle-modal", "print-map-to-pdf"],
   data() {
     return {
+      showDialog: true,
       title: "",
       remarks: "",
       format: "a4",
@@ -78,10 +110,24 @@ export default {
       showLegend: true,
       showDateTime: true,
       showScale: true,
+      showLogo: true,
+      showNorth: true,
+      availableFormats: [
+        { label: "A4", value: "a4" },
+        { label: "A3", value: "a3" },
+        { label: "A2", value: "a2" },
+        { label: "A1", value: "a1" },
+        { label: "A0", value: "a0" },
+      ],
+      availableOrientations: [
+        { label: "Staand", value: "landscape" },
+        { label: "Liggend", value: "portrait" },
+      ],
     };
   },
   methods: {
     closeModal() {
+      this.showDialog = false;
       this.$emit("toggle-modal", "");
     },
     onSubmit(e) {
@@ -95,6 +141,8 @@ export default {
         showLegend: this.showLegend,
         showDateTime: this.showDateTime,
         showScale: this.showScale,
+        showLogo: this.showLogo,
+        showNorth: this.showNorth,
       });
     },
   },
@@ -102,66 +150,7 @@ export default {
 </script>
 
 <style scoped>
-.overlay {
-  position: fixed;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow-y: auto;
-}
-
-.background {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.buttons {
-  position: absolute;
-  top: calc((var(--width-button-normal) + 8px) * -1);
-  right: -8px;
-  padding: 8px 8px 0;
-  overflow: hidden;
-}
-
-.iconbutton {
-  width: var(--width-button-normal);
-  height: var(--width-button-normal);
-  border-top-left-radius: var(--radius-normal);
-  border-top-right-radius: var(--radius-normal);
-  background: white;
-  box-shadow: var(--shadow-normal);
-}
-
-.modal {
-  position: relative;
-  padding: var(--padding-screen);
-  background-color: white;
-  border-radius: var(--radius-normal);
-  box-shadow: var(--shadow-normal);
-  width: 600px;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.input-container {
-  margin-bottom: 20px;
-}
-
 .label {
-  width: 100%;
   font-size: var(--font-size-normal);
   font-weight: var(--font-weight-bold);
 }
@@ -177,43 +166,5 @@ export default {
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-normal);
   line-height: 1.5;
-}
-
-.select {
-  display: block;
-  margin-top: 5px;
-  border: 1px solid var(--color-grey-80);
-  border-radius: var(--radius-small);
-  padding: 0 16px;
-  height: 40px;
-}
-
-.button:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.button {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  padding: 0 20px;
-  border-radius: var(--radius-normal);
-  line-height: 1;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-bold);
-  text-decoration: none;
-  overflow: hidden;
-}
-
-.button.__primary {
-  background: var(--color-primary);
-  color: white;
 }
 </style>
