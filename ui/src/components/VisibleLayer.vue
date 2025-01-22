@@ -77,16 +77,13 @@
 </template>
 
 <script>
-import Projection from "ol/proj/Projection";
-import TileWMS from "ol/source/TileWMS";
-import View from "ol/View";
 import ExpandButton from "./ExpandButton";
 import LayerInfo from "./LayerInfo";
-import { getFetchParameters, layerRequiresAuthentication } from "../utils/auth";
 import CloseCircleIcon from "../assets/icons/close-circle-icon.svg";
 import OpacityIcon from "../assets/icons/opacity-icon.svg";
 import SelectableIcon from "../assets/icons/selectable-icon.svg";
 import SelectableDisabledIcon from "../assets/icons/selectable-disabled-icon.svg";
+import { fetchLegendImage } from "@/utils/legend-utils";
 
 export default {
   name: "VisibleLayer",
@@ -121,20 +118,25 @@ export default {
     },
   },
   watch: {
-    position(position, oldPosition) {
+    async position(position, oldPosition) {
       if (position.zoom !== oldPosition.zoom) {
-        this.fetchLegendImage();
+        const { url, error } = await this.fetchLegendImage(this.layer, this.position, this.user);
+        this.legendImage = url;
+        this.errorLoadingLegend = error;
       }
     },
   },
-  mounted() {
+  async mounted() {
     if (this.layerHasLegend) {
-      this.fetchLegendImage();
+      const { url, error } = await this.fetchLegendImage(this.layer, this.position, this.user);
+      this.legendImage = url;
+      this.errorLoadingLegend = error;
     }
     this.isSelectable = this.layer.is_selectable;
     this.initialIsSelectable = this.layer.is_selectable;
   },
   methods: {
+    fetchLegendImage,
     toggleSlider() {
       this.showSlider = !this.showSlider;
     },
@@ -152,53 +154,6 @@ export default {
     toggleLayerSelectable() {
       this.isSelectable = !this.isSelectable;
       this.$emit("toggle-is-selectable", [this.layer.id, this.isSelectable]);
-    },
-    async fetchLegendImage() {
-      const wmsSource = new TileWMS({
-        url: this.layer.legend_url ? this.layer.legend_url : this.layer.url,
-        servertype: this.layer.server_type,
-        params: {
-          LAYERS: this.layer.name,
-          TILED: true,
-        },
-      });
-
-      const rdProjection = new Projection({
-        code: "EPSG:28992",
-        units: "m",
-      });
-
-      const view = new View({
-        projection: rdProjection,
-        enableRotation: false,
-        center: this.position.center,
-        zoom: this.position.zoom,
-      });
-
-      const params = {
-        STYLE: this.layer.server_style ? this.layer.server_style : "",
-        LEGEND_OPTIONS: "forceTitles:off;forceLabels:on;fontAntiAliasing:true",
-      };
-
-      const url = wmsSource.getLegendUrl(view.getResolution(), params);
-
-      if (!layerRequiresAuthentication(this.layer)) {
-        this.legendImage = url;
-        return;
-      }
-
-      try {
-        const result = await fetch(url, getFetchParameters(this.layer, this.user));
-
-        if (result.ok) {
-          const blob = await result.blob();
-          this.legendImage = URL.createObjectURL(blob);
-        } else {
-          this.errorLoadingLegend = true;
-        }
-      } catch (e) {
-        this.errorLoadingLegend = true;
-      }
     },
   },
 };

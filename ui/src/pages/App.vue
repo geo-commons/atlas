@@ -27,6 +27,7 @@ import HeaderMenu from "../components/HeaderMenu";
 import MapRenderer from "@/components/MapRenderer/MapRenderer.vue";
 import { mapState, mapStores } from "pinia";
 import { useGlobalStore } from "@/stores"; // Register EPSG:28992 projection
+import "primeicons/primeicons.css";
 
 // Register EPSG:28992 projection
 register(getDefinitions());

@@ -33,6 +33,7 @@
             :selected-features="selectedFeatures"
             :map-area="mapArea"
             :user="user"
+            :config="config"
             :padding="mapPadding"
             :features="features"
             :filters="filters"
@@ -44,6 +45,7 @@
             @tool-used="toolUsed"
             @features-selected="featuresSelected"
             @on-fit="(position) => onFit(position, true)"
+            @loading-print-to-pdf="setLoadingPrint"
           />
         </SplitterPanel>
       </Splitter>
@@ -59,6 +61,7 @@
         :selected-features="selectedFeatures"
         :map-area="mapArea"
         :user="user"
+        :config="config"
         :padding="mapPadding"
         :features="features"
         :filters="filters"
@@ -70,6 +73,7 @@
         @tool-used="toolUsed"
         @features-selected="featuresSelected"
         @on-fit="(position) => onFit(position, true)"
+        @loading-print-to-pdf="setLoadingPrint"
       />
     </div>
     <ListPanel
@@ -264,7 +268,12 @@
     <transition name="fade">
       <div>
         <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
-        <PrintModal v-if="modal === 'print'" @toggle-modal="toggleModal" @print-map-to-pdf="printMapToPdf" />
+        <PrintModal
+          v-if="modal === 'print'"
+          :loading="loadingPrint"
+          @toggle-modal="toggleModal"
+          @print-map-to-pdf="printMapToPdf"
+        />
         <DrawingModal v-if="modal === 'drawing'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
       </div>
     </transition>
@@ -414,6 +423,7 @@ export default {
       strokeWidth: 5,
       fontSize: 22,
       showPanoramaPanelFullScreen: false,
+      loadingPrint: false,
     };
   },
   computed: {
@@ -772,6 +782,9 @@ export default {
     },
     setFontSize(fontSize) {
       this.fontSize = fontSize;
+    },
+    setLoadingPrint(loading) {
+      this.loadingPrint = loading;
     },
   },
 };

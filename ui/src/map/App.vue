@@ -22,6 +22,7 @@ import HeaderMenu from "../components/HeaderMenu";
 import MapRenderer from "../components/MapRenderer/MapRenderer";
 import { mapState, mapStores } from "pinia";
 import { useGlobalStore } from "@/stores";
+import "primeicons/primeicons.css";
 
 export default {
   name: "App",
