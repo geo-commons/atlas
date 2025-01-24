@@ -309,7 +309,7 @@ class Layer(models.Model):
                                    )
 
     legend_url = models.URLField(
-        'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True)
+        'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True, max_length=1000)
 
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)

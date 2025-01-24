@@ -114,7 +114,11 @@ export default {
   },
   computed: {
     layerHasLegend() {
-      return this.layer.source_type === "WMS" || this.layer.source_type === "WMS_WFS";
+      return (
+        this.layer.source_type === "WMS" ||
+        this.layer.source_type === "WMS_WFS" ||
+        (this.layer.source_type === "WMTS" && this.layer.legend_url)
+      );
     },
   },
   watch: {
