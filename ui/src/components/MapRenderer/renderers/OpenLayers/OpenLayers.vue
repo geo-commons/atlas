@@ -28,7 +28,6 @@
       :name="layer.name"
       :url="layer.url"
       :format="layer.format"
-      :filters="filters"
       :is-visible="layer.is_visible === true"
       :is-selectable="layer.is_selectable === true"
       :send-token-with-request="layer.login_required && layer.source.authenticate && user && user.token ? true : false"
@@ -36,6 +35,7 @@
       :z-index="layer.is_base ? 0 : 1"
       :min-zoom="layer.zoom_min"
       :max-zoom="layer.zoom_max"
+      :map-id="mapId"
       :client-style="layer.client_style"
       :server-style="layer.server_style"
       :opacity="layer.opacity"
@@ -169,6 +169,7 @@ export default {
     position: Object,
     layers: Array,
     tool: String,
+    mapId: String,
     mapArea: Array,
     selectedArea: Object,
     user: Object,
@@ -177,7 +178,6 @@ export default {
     selectedFeatures: Array,
     highlightedFeatures: { type: Array, default: () => [] },
     drawFeatures: { type: Array, default: () => [] },
-    filters: Object,
     padding: { type: Array, default: () => [0, 0, 0, 0] },
     color: Object,
     strokeWidth: Number,

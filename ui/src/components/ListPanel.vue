@@ -26,6 +26,7 @@ import MarkdownTemplate from "./MarkdownTemplate";
 import GeoJSON from "ol/format/GeoJSON";
 
 import PanelDisplay from "./PanelDisplay";
+import { useMapStore } from "@/stores/map_store";
 
 export default {
   name: "ListPanel",
@@ -37,19 +38,21 @@ export default {
     layer: Object,
     titleTemplate: String,
     shortDescriptionTemplate: String,
-    filters: Object,
+    mapId: String,
   },
-  emits: ["hidePanel"],
+  emits: ["hidePanel", "on-fit"],
   data() {
     return {
       features: [],
       error: false,
       loading: false,
+      store: null,
     };
   },
   computed: {
     filteredFeatures() {
-      const filters = this.filters[this.layer.id];
+      const filters = this.store.getFiltersForLayer(this.layer.id);
+
       if (!filters || Object.keys(filters).length === 0) {
         return this.features;
       }
@@ -75,6 +78,9 @@ export default {
   },
   watch: {
     layer: "fetchFeatures",
+  },
+  created() {
+    this.store = useMapStore(this.mapId);
   },
   mounted() {
     if (this.layer) {

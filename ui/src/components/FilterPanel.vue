@@ -9,7 +9,10 @@
               :name="facet"
               :value="value"
               :checked="
-                filters && filters[layer.id] && filters[layer.id][facet] && filters[layer.id][facet].includes(value)
+                store.layerFilters &&
+                store.layerFilters[layer.id] &&
+                store.layerFilters[layer.id]['filters'][facet] &&
+                store.layerFilters[layer.id]['filters'][facet].includes(value)
               "
               @click="onChangeFilter"
             />
@@ -25,6 +28,7 @@ import PanelDisplay from "./PanelDisplay";
 import ExpandButton from "./ExpandButton";
 import CheckboxField from "./CheckboxField";
 import { formatRawString } from "@/utils/string-helpers";
+import { useMapStore } from "@/stores/map_store";
 
 export default {
   name: "FilterPanel",
@@ -34,16 +38,17 @@ export default {
     CheckboxField,
   },
   props: {
+    mapId: String,
     facets: Array,
     layer: Object,
     user: Object,
-    filters: Object,
   },
-  emits: ["hidePanel", "update-filters"],
+  emits: ["hidePanel"],
   data() {
     return {
       facetValues: {},
       loading: false,
+      store: null,
     };
   },
   watch: {
@@ -56,6 +61,9 @@ export default {
   },
   mounted() {
     this.fetchFacetValues();
+  },
+  created() {
+    this.store = useMapStore(this.mapId);
   },
   methods: {
     hidePanel() {
@@ -122,27 +130,26 @@ export default {
       return {};
     },
     onChangeFilter(e) {
-      let newFilters = { ...this.filters };
+      const { name, value, checked } = e.target;
 
-      if (!newFilters[this.layer.id]) {
-        newFilters[this.layer.id] = {};
+      let newFilters = this.store.getFiltersForLayer(this.layer.id);
+
+      if (!newFilters[name]) {
+        newFilters[name] = [];
       }
 
-      if (!newFilters[this.layer.id][e.target.name]) {
-        newFilters[this.layer.id][e.target.name] = [];
+      if (checked && !newFilters[name].includes(value)) {
+        newFilters[name].push(value);
       }
 
-      if (e.target.checked && !newFilters[this.layer.id][e.target.name].includes(e.target.value)) {
-        newFilters[this.layer.id][e.target.name].push(e.target.value);
+      if (!checked && newFilters[name].includes(value)) {
+        newFilters[name] = newFilters[name].filter((v) => v !== value);
       }
 
-      if (!e.target.checked && newFilters[this.layer.id][e.target.name].includes(e.target.value)) {
-        newFilters[this.layer.id][e.target.name] = newFilters[this.layer.id][e.target.name].filter(
-          (v) => v !== e.target.value,
-        );
-      }
+      // somehow there sometimes ends up an element with key "undefined" in newFilters, this breaks Atlas. We also don't want filterKeys in this array with no values.
+      delete newFilters["undefined"];
 
-      this.$emit("update-filters", newFilters);
+      this.store.updateFiltersForLayer(this.layer.id, newFilters);
     },
     getTitle(facet) {
       if (this.layer.friendly_fields && this.layer.friendly_fields[facet]) {

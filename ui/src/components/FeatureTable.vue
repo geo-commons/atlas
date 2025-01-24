@@ -4,8 +4,12 @@
   <div v-else class="filter-table-container">
     <div class="filter-container">
       <div class="toggle-filter-container">
-        <switch-slider aria-label="Activeer filters" @toggleSwitch="toggleFilters()" />
-        <div>Activeer filters</div>
+        <switch-slider
+          :initial-checked-status="showFilters"
+          :aria-label="`${showFilters ? 'Deactiveer' : 'Activeer'} filters voor laag ${layer.title}`"
+          @toggleSwitch="toggleFilters()"
+        />
+        <div>{{ showFilters ? "Deactiveer" : "Activeer" }} filters voor {{ layer.title.toLowerCase() }}</div>
       </div>
       <div v-if="showFilters" class="filter-padding filter-grid">
         <div>
@@ -29,6 +33,8 @@
         <div v-if="selectedFilterProperties" class="selected-filter-container">
           <div v-for="property in selectedFilterProperties" :key="property">
             <FilterSelect
+              :map-id="mapId"
+              :layer-id="layer.id"
               :filter-options="filterOptions[property]"
               :field-filters="fieldFilters"
               :filter-property="property"
@@ -108,6 +114,7 @@ import StackSortableTableHeaderItem from "@/components/StackSortableTableHeaderI
 import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import Spinner from "@/components/Spinner.vue";
+import { useMapStore } from "@/stores/map_store";
 
 export default {
   name: "FeatureTable",
@@ -124,6 +131,7 @@ export default {
     layer: Object,
     position: Object,
     query: String,
+    mapId: String,
     selectedArea: Object,
     user: Object,
   },
@@ -158,17 +166,7 @@ export default {
 
       // If query gets deleted or removed, set searchValue to an empty string
       if (!this.query) {
-        this.$emit(
-          "update-filters",
-          {
-            ...this.filters,
-            [this.layer.id]: {
-              ...this.fieldFilters,
-              search: "",
-            },
-          },
-          this.layer.id,
-        );
+        this.store.updateSearchQueryForLayer(this.layer.id, "");
       }
     },
     selectedArea: "fetchFeatures",
@@ -183,10 +181,11 @@ export default {
     },
     selectedFilterProperties(newValue, oldValue) {
       const listWithRemovedFilters = oldValue.filter((value) => !newValue.includes(value));
-      const newFilterProperty = newValue.filter((value) => !oldValue.includes(value))[0];
-      if (newFilterProperty) {
+      const newFilterProperty = newValue.filter((value) => !oldValue.includes(value));
+
+      newFilterProperty.map((newFilterProperty) => {
         this.getFilterOptions(newFilterProperty);
-      }
+      });
 
       listWithRemovedFilters.map((removedFilter) => {
         this.removeFilter(removedFilter);
@@ -194,8 +193,28 @@ export default {
     },
   },
   mounted() {
-    this.fetchFeatures();
     this.fetchSearchProperties();
+  },
+  created() {
+    this.store = useMapStore(this.mapId);
+
+    this.fetchFilterProperties();
+
+    const filters = this.store.getFiltersForLayer(this.layer.id);
+
+    this.fieldFilters = filters;
+
+    this.showFilters = Object.keys(this.fieldFilters).length ? true : false;
+
+    this.selectedFilterProperties = Object.keys(filters);
+
+    this.store.$subscribe((mutation, state) => {
+      this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
+
+      this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
+    });
+
+    this.fetchFeatures();
   },
   methods: {
     async fetchFeatures() {
@@ -218,22 +237,14 @@ export default {
 
         filters.push(searchQuery);
 
-        this.$emit(
-          "update-filters",
-          {
-            ...this.filters,
-            [this.layer.id]: {
-              ...this.fieldFilters,
-              search: searchQuery,
-            },
-          },
-          this.layer.id,
-        );
+        this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
       }
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+          if (this.fieldFilters[key].length) {
+            filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+          }
         });
       }
 
@@ -269,6 +280,34 @@ export default {
         this.featureCollection = data;
 
         this.numberMatched = data.numberMatched;
+      } catch (e) {
+        console.error(e);
+        this.error = true;
+        this.featureCollection = { features: [] };
+        this.searchProperties = [];
+        this.numberMatched = 0;
+      }
+
+      this.loading = false;
+    },
+    async fetchFilterProperties() {
+      this.error = false;
+
+      const params = new URLSearchParams([
+        ["service", "WFS"],
+        ["version", "1.0.0"],
+        ["request", "GetFeature"],
+        ["typename", this.layer.name],
+        ["outputFormat", "application/json"],
+        ["maxFeatures", this.pageState.rows],
+        ["startIndex", this.pageState.rows * this.pageState.page],
+      ]);
+
+      try {
+        const url = new URL(this.layer.url);
+        url.search = params.toString();
+        const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
+        const data = await result.json();
 
         if (this.displayProperties.length === 0 && data.features.length > 0) {
           // cache first retrieval of properties into this.displayProperties
@@ -295,10 +334,8 @@ export default {
       } catch (e) {
         console.error(e);
         this.error = true;
-        this.featureCollection = { features: [] };
         this.displayProperties = [];
         this.searchProperties = [];
-        this.numberMatched = 0;
       }
 
       this.loading = false;
@@ -353,22 +390,14 @@ export default {
 
         filters.push(searchQuery);
 
-        this.$emit(
-          "update-filters",
-          {
-            ...this.filters,
-            [this.layer.id]: {
-              ...this.fieldFilters,
-              search: searchQuery,
-            },
-          },
-          this.layer.id,
-        );
+        this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
       }
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+          if (this.fieldFilters[key].length) {
+            filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+          }
         });
       }
 
@@ -551,33 +580,28 @@ export default {
       const fetchedFeatureFilters = await this.fetchFilterOptionsForProperty(property);
 
       // Extract the unique values from the fetched features
-      const filters = Array.from(new Set(fetchedFeatureFilters.map((feature) => feature.properties[property])));
+      const filters = Array.from(new Set(fetchedFeatureFilters.map((feature) => feature.properties[property]))).filter(
+        (filter) => filter !== null && filter.trim() !== "",
+      );
+
+      console.log(filters);
 
       this.filterOptions[property] = filters;
     },
     setFieldFilters(v) {
-      let newFilters = { ...this.filters };
-
-      newFilters[this.layer.id] = {
-        ...v,
-        search: this.filters[this.layer.id]?.["search"] ? this.filters[this.layer.id]["search"] : "",
-      };
-
       this.fieldFilters = v;
-      this.$emit("update-filters", newFilters);
-    },
-    resetFieldFilters() {
-      this.fieldFilters = {};
-      this.selectedFilterProperties = [];
-      this.$emit("update-filters", {});
+
+      this.store.updateFiltersForLayer(this.layer.id, v);
     },
     toggleFilters() {
       this.showFilters = !this.showFilters;
 
       if (this.showFilters) {
         this.filterFeatures = this.featureCollection.features;
-      } else {
-        this.resetFieldFilters();
+      }
+
+      if (!this.showFilters) {
+        this.store.updateFiltersForLayer(this.layer.id, {});
       }
     },
     removeFilter(filter) {

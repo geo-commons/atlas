@@ -2,12 +2,35 @@
   <div v-if="false"></div>
 </template>
 
-<script>
+<script setup>
+import { inject, onMounted, onUnmounted, watch } from "vue";
 import Projection from "ol/proj/Projection";
 import TileLayer from "ol/layer/Tile";
 import TileWMSSource from "ol/source/TileWMS";
-import { mapState } from "pinia";
+import { storeToRefs } from "pinia";
 import { useGlobalStore } from "@/stores";
+import { useMapStore } from "@/stores/map_store";
+
+const props = defineProps({
+  id: String,
+  mapId: String,
+  name: String,
+  url: String,
+  layer: String,
+  isVisible: Boolean,
+  sendTokenWithRequest: Boolean,
+  opacity: Number,
+  zIndex: Number,
+  format: String,
+  serverStyle: String,
+  minZoom: Number,
+  maxZoom: Number,
+});
+
+const map = inject("map");
+const globalStore = useGlobalStore();
+const mapStore = useMapStore(props.mapId);
+const { user } = storeToRefs(globalStore);
 
 const rdProjection = new Projection({
   code: "EPSG:28992",
@@ -41,114 +64,124 @@ const authenticatedTileLoader = (token) => {
   };
 };
 
-export default {
-  name: "WmsLayer",
-  inject: ["map"],
-  props: {
-    id: String,
-    name: String,
-    url: String,
-    layer: String,
-    isVisible: Boolean,
-    sendTokenWithRequest: Boolean,
-    opacity: Number,
-    zIndex: Number,
-    format: String,
-    serverStyle: String,
-    filters: Object,
-    minZoom: Number,
-    maxZoom: Number,
+let source;
+let tileLayer;
+
+// Create source and layer
+onMounted(() => {
+  source = new TileWMSSource({
+    url: props.url,
+    crossOrigin: "anonymous",
+    params: {
+      VERSION: "1.1.1",
+      FORMAT: props.format,
+      LAYERS: props.name,
+      STYLES: props.serverStyle ? props.serverStyle : "",
+      tiled: true,
+      tilesOrigin: 117000 + "," + 498000.00000000023,
+    },
+    projection: rdProjection,
+    tileLoadFunction: props.sendTokenWithRequest ? authenticatedTileLoader(user.value.token) : null,
+  });
+
+  tileLayer = new TileLayer({
+    name: props.name,
+    visible: props.isVisible,
+    opacity: props.opacity,
+    source: source,
+    zIndex: props.zIndex,
+    minZoom: props.minZoom ? props.minZoom - 1 : undefined,
+    maxZoom: props.maxZoom ? props.maxZoom : undefined,
+  });
+
+  map.addLayer(tileLayer);
+});
+
+// Clean up on unmount
+onUnmounted(() => {
+  map.removeLayer(tileLayer);
+});
+
+// Watch for prop changes
+watch(
+  () => props.url,
+  (value) => {
+    source.set("url", value);
   },
-  watch: {
-    url(value) {
-      this.source.set("url", value);
-    },
-    name(value) {
-      this.tileLayer.set("name", value);
-    },
-    isVisible(value) {
-      this.tileLayer.set("visible", value);
-    },
-    opacity(value) {
-      this.tileLayer.set("opacity", value);
-    },
-    filters(value) {
-      // If filters object is empty, refresh source
-      if (!Object.keys(value).length) {
-        this.source.updateParams({
-          ...this.source.getParams(),
-          CQL_FILTER: null,
-        });
+);
 
-        this.source.refresh();
-      }
+watch(
+  () => props.name,
+  (value) => {
+    tileLayer.set("name", value);
+  },
+);
 
-      // Don't filter if there are no filters specified for specific layer
-      if (!Object.keys(value).includes(this.id)) {
+watch(
+  () => props.isVisible,
+  (value) => {
+    tileLayer.set("visible", value);
+  },
+);
+
+watch(
+  () => props.opacity,
+  (value) => {
+    tileLayer.set("opacity", value);
+  },
+);
+
+watch(
+  () => mapStore.layerFilters,
+  (value) => {
+    // If filters object is empty, refresh source
+    if (!Object.keys(value).length) {
+      source.updateParams({
+        ...source.getParams(),
+        CQL_FILTER: null,
+      });
+      source.refresh();
+      return;
+    }
+
+    // Don't filter if there are no filters specified for specific layer
+    if (!Object.keys(value).includes(props.id)) {
+      return;
+    }
+
+    if (!value[props.id]) {
+      return;
+    }
+
+    const cqlFilters = [];
+
+    Object.keys(value[props.id]).forEach((key) => {
+      if (key === "searchQuery" && value[props.id]["searchQuery"] !== "") {
+        cqlFilters.push(value[props.id][key]);
         return;
       }
 
-      if (!value[this.id]) {
+      if (value[props.id][key].length == 0) {
         return;
       }
 
-      const cqlFilters = [];
+      Object.keys(value[props.id][key]).map((filterKey) => {
+        const values = value[props.id][key][filterKey].map((filterValue) => `'${filterValue}'`).join(",");
 
-      Object.keys(value[this.id]).forEach((key) => {
-        if (key === "search" && value[this.id]["search"] !== "") {
-          cqlFilters.push(value[this.id][key]);
-          return;
+        // Check to make sure filterKey has values
+        if (values.length) {
+          cqlFilters.push(`${filterKey} IN (${values})`);
         }
-
-        if (value[this.id][key].length == 0) {
-          return;
-        }
-
-        const values = value[this.id][key].map((value) => `'${value}'`).join(",");
-        cqlFilters.push(`${key} IN (${values})`);
       });
-
-      this.source.updateParams({
-        ...this.source.getParams(),
-        CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(" AND ") : null,
-      });
-
-      this.source.refresh();
-    },
-  },
-  created() {
-    this.source = new TileWMSSource({
-      url: this.url,
-      crossOrigin: "anonymous",
-      params: {
-        VERSION: "1.1.1",
-        FORMAT: this.format,
-        LAYERS: this.name,
-        STYLES: this.serverStyle ? this.serverStyle : "",
-        tiled: true,
-        tilesOrigin: 117000 + "," + 498000.00000000023,
-      },
-      projection: rdProjection,
-      tileLoadFunction: this.sendTokenWithRequest ? authenticatedTileLoader(this.user.token) : null,
     });
 
-    this.tileLayer = new TileLayer({
-      name: this.name,
-      visible: this.isVisible,
-      opacity: this.opacity,
-      source: this.source,
-      zIndex: this.zIndex,
-      minZoom: this.minZoom ? this.minZoom - 1 : undefined,
-      maxZoom: this.maxZoom ? this.maxZoom : undefined,
+    source.updateParams({
+      ...source.getParams(),
+      CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(" AND ") : null,
     });
 
-    this.map.addLayer(this.tileLayer);
+    source.refresh();
   },
-  unmounted() {
-    this.map.removeLayer(this.tileLayer);
-  },
-  computed: mapState(useGlobalStore, ["user"]),
-};
+  { deep: true },
+);
 </script>
-
-<style scoped></style>
