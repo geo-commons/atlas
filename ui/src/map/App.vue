@@ -10,6 +10,7 @@
       :features="map.features"
       :settings="map.settings"
       :config="config"
+      :map-id="map.title || 'primary'"
       @position-changed="positionChanged"
       @layers-changed="layersChanged"
     />

@@ -37,22 +37,30 @@
       </div>
       <DataPanelDetailView
         v-if="selectedLayer"
+        :map-id="mapId"
         :layer="selectedLayer"
         :position="position"
         :selected-area="selectedArea"
         :query="query"
         :user="user"
-        :filters="filter"
         @set-position="(position) => setPosition(position)"
         @on-fit="(position) => onFit(position)"
         @show-layers="() => resetSelectedLayer()"
-        @update-filters="(value) => updateFilters(value)"
       />
       <div v-else>
+        <Button
+          v-if="countOfActiveFilters > 0"
+          severity="secondary"
+          outlined
+          class="!tw-text-sm !tw-font-medium !tw-mb-4 !tw-mx-4 xl:!tw-mx-5"
+          @click="deleteAllFilters"
+          >Verwijder filters <TrashIcon class="icon __marker __smedium" />
+        </Button>
         <SelectButton
           v-for="layer in visibleLayers"
           :id="layer.id"
           :key="layer.id"
+          :map-id="mapId"
           :title="layer.title"
           class="select-border"
           @select-item="(layerId) => showSelectedLayer(layerId)"
@@ -68,6 +76,8 @@ import SidePanel from "./SidePanel";
 import SelectButton from "./SelectButton.vue";
 import ArrowLeftIcon from "../assets/icons/arrow-left-icon.svg";
 import CloseIcon from "../assets/icons/close-icon.svg";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import { useMapStore } from "@/stores/map_store";
 
 const visibleSourceTypes = ["WMS_WFS", "WFS"];
 
@@ -79,25 +89,29 @@ export default {
     SelectButton,
     ArrowLeftIcon,
     CloseIcon,
+    TrashIcon,
   },
   props: {
+    mapId: String,
     position: Object,
     layers: Array,
     showDataPanel: Boolean,
     selectedArea: Object,
     user: Object,
-    filters: Object,
     fullSizeWindow: Boolean,
   },
-  emits: ["toggle-data-panel", "set-position", "on-fit", "toggle-full-side-panel", "update-filters"],
+  emits: ["toggle-data-panel", "set-position", "on-fit", "toggle-full-side-panel"],
   data() {
     return {
       selectedLayerId: null,
+      store: null,
       query: "",
-      filter: this.filters,
     };
   },
   computed: {
+    countOfActiveFilters() {
+      return this.store.getActiveLayersWithFilterCount;
+    },
     visibleLayers() {
       return this.layers.filter(
         (layer) =>
@@ -128,11 +142,12 @@ export default {
       deep: true,
     },
   },
+  created() {
+    this.store = useMapStore(this.mapId);
+  },
   methods: {
     toggleDataPanel() {
       this.$emit("toggle-data-panel");
-      // Reset filters and search values on toggle DataPanel
-      this.updateFilters({});
     },
     setPosition(value) {
       this.$emit("set-position", value);
@@ -148,10 +163,9 @@ export default {
     },
     resetSelectedLayer() {
       this.selectedLayerId = null;
-      this.$emit("update-filters", {});
     },
-    updateFilters(value) {
-      this.$emit("update-filters", value);
+    deleteAllFilters() {
+      this.store.resetAllFilters();
     },
   },
 };

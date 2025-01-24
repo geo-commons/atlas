@@ -11,6 +11,7 @@
       :config="config"
       :is-embed="isEmbed"
       :alert="alert"
+      :map-id="'primary'"
       @position-changed="positionChanged"
       @layers-changed="layersChanged"
     />

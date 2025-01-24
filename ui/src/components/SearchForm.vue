@@ -4,6 +4,7 @@
       <DataPanelButton
         v-if="showDataPanelButton"
         :show-data-panel="showDataPanel"
+        :map-id="mapId"
         @show-data-panel="toggleDataPanel()"
       />
 
@@ -47,6 +48,7 @@ export default {
     features: Object,
     disableDataPanelButton: Boolean,
     showDataPanel: Boolean,
+    mapId: String,
   },
   computed: {
     ...mapState(useGlobalStore, ["isEmbed"]),

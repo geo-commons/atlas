@@ -26,12 +26,16 @@
 </template>
 
 <script>
+import { useMapStore } from "@/stores/map_store";
+
 export default {
   name: "FilterSelect",
   props: {
     filterOptions: Array,
     fieldFilters: Object,
     filterProperty: String,
+    mapId: String,
+    layerId: String,
     filterPropertyDisplayName: String,
     filterOnId: {
       type: Boolean,
@@ -42,6 +46,7 @@ export default {
   data() {
     return {
       selectedItems: [],
+      store: null,
       currentFilterOptions: this.filterOptions,
     };
   },
@@ -49,6 +54,21 @@ export default {
     filterOptions(value) {
       this.currentFilterOptions = value;
     },
+  },
+  created() {
+    this.store = useMapStore(this.mapId);
+
+    const filterProperties = this.store.layerFilters[this.layerId]?.filters?.[this.filterProperty]
+      ? this.store.layerFilters[this.layerId].filters[this.filterProperty]
+      : [];
+
+    this.selectedItems = filterProperties;
+
+    this.store.$subscribe((mutation, state) => {
+      const filterProperties = state.layerFilters[this.layerId]?.filters?.[this.filterProperty] || [];
+
+      this.selectedItems = filterProperties;
+    });
   },
   methods: {
     updateFieldFilters() {
@@ -60,8 +80,8 @@ export default {
         return;
       }
 
-      const newFieldFilter = { ...this.fieldFilters };
-      delete newFieldFilter[this.filterProperty];
+      const newFieldFilter = { ...this.fieldFilters, [this.filterProperty]: this.selectedItems };
+
       this.$emit("onFilterChange", newFieldFilter);
     },
   },

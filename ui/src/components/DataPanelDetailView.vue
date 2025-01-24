@@ -70,12 +70,11 @@
       :layer="layer"
       :position="position"
       :query="query"
+      :map-id="mapId"
       :selected-area="selectedArea"
-      :filters="filter"
       :user="user"
       @set-position="(value) => onSetPosition(value)"
       @on-fit="(value) => onFit(value)"
-      @update-filters="(value) => updateFilters(value)"
     />
   </div>
 </template>
@@ -91,24 +90,21 @@ export default {
   components: { Tippy, FeatureTable, SearchForm, DownloadIcon },
   props: {
     layer: Object,
+    mapId: String,
     selectedArea: Object,
     isOpen: Boolean,
-    overallFilter: Object,
     position: Object,
     user: Object,
-    filters: Object,
   },
   data() {
     return {
       features: [],
       displayProperties: [],
       searchProperties: [],
-      fieldFilters: {},
       loading: false,
       error: false,
       numberMatched: 0,
       query: "",
-      filter: this.filters,
       sortKey: "",
       sortAscending: true,
     };
@@ -124,9 +120,6 @@ export default {
     },
     onSearch() {
       this.query = this.$refs.queryInput.value;
-    },
-    updateFilters(value) {
-      this.$emit("update-filters", value);
     },
   },
 };

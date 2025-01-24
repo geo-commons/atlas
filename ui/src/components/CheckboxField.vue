@@ -13,6 +13,7 @@ export default {
     value: String,
     checked: Boolean,
   },
+  emits: ["click"],
 };
 </script>
 

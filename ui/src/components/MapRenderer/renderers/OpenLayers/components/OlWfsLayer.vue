@@ -2,7 +2,8 @@
   <div v-if="false"></div>
 </template>
 
-<script>
+<script setup>
+import { inject, onMounted, onUnmounted, watch } from "vue";
 import { toRaw } from "vue";
 import Select from "ol/interaction/Select";
 import VectorLayer from "ol/layer/Vector";
@@ -11,6 +12,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import OpenLayersParser from "geostyler-openlayers-parser";
+import { useMapStore } from "@/stores/map_store";
 
 const olParser = new OpenLayersParser();
 
@@ -34,178 +36,215 @@ const DEFAULT_STYLE = [
   }),
 ];
 
-export default {
-  name: "WfsLayer",
-  inject: ["map"],
-  props: {
-    id: String,
-    name: String,
-    url: String,
-    layer: String,
-    isVisible: Boolean,
-    isSelectable: Boolean,
-    selectedFeatures: Array,
-    opacity: Number,
-    clientStyle: Object,
-    zIndex: Number,
-    filters: Object,
-    minZoom: Number,
-    maxZoom: Number,
-  },
-  watch: {
-    url(value) {
-      this.source.set("url", value);
-    },
-    name(value) {
-      this.tileLayer.set("name", value);
-    },
-    isVisible(value) {
-      this.tileLayer.set("visible", value);
-    },
-    opacity(value) {
-      this.tileLayer.set("opacity", value);
-    },
-    clientStyle(value) {
-      this.applyStyle(value);
-    },
-    filters(value) {
-      // If filters object is empty, refresh source
-      if (!Object.keys(value).length) {
-        this.source.updateParams({
-          ...this.source.getParams(),
-          CQL_FILTER: null,
-        });
+const props = defineProps({
+  id: String,
+  mapId: String,
+  name: String,
+  url: String,
+  layer: String,
+  isVisible: Boolean,
+  isSelectable: Boolean,
+  selectedFeatures: Array,
+  opacity: Number,
+  clientStyle: Object,
+  zIndex: Number,
+  minZoom: Number,
+  maxZoom: Number,
+});
 
-        this.source.refresh();
-      }
+const emit = defineEmits(["features-selected"]);
 
-      // Don't filter if there are no filters specified for specific layer
-      if (!Object.keys(value).includes(this.id)) {
-        return;
-      }
+const map = inject("map");
+const mapStore = useMapStore(props.mapId);
 
-      if (!value[this.id]) {
-        return;
-      }
+let source;
+let tileLayer;
+let select;
 
-      const cqlFilters = [];
+const getStyle = async (inputStyle) => {
+  if (!inputStyle || Object.keys(inputStyle).length === 0) {
+    return DEFAULT_STYLE;
+  }
 
-      Object.keys(value[this.id]).forEach((key) => {
-        if (key === "search" && value[this.id]["search"] !== "") {
-          cqlFilters.push(value[this.id][key]);
-          return;
-        }
+  try {
+    const olStyle = await olParser.writeStyle(toRaw(inputStyle));
+    return olStyle.output;
+  } catch (e) {
+    console.error("Unable to parse style", props.name, e);
+  }
 
-        if (value[this.id][key].length == 0) {
-          return;
-        }
-
-        const values = value[this.id][key].map((value) => `'${value}'`).join(",");
-        cqlFilters.push(`${key} IN (${values})`);
-      });
-
-      this.source.updateParams({
-        ...this.source.getParams(),
-        CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(" AND ") : null,
-      });
-
-      this.source.refresh();
-    },
-    selectedFeatures: {
-      handler(features) {
-        if (this.select && features && features.length === 0) {
-          this.select.getFeatures().clear();
-        }
-      },
-      deep: true,
-    },
-  },
-  async created() {
-    this.source = new VectorSource({
-      format: new GeoJSON(),
-      strategy: bboxStrategy,
-      url: (extent) => {
-        const params = new URLSearchParams([
-          ["service", "WFS"],
-          ["version", "1.0.0"],
-          ["request", "GetFeature"],
-          ["typename", this.name],
-          ["outputFormat", "application/json"],
-          ["srsname", "EPSG:28992"],
-          ["bbox", extent.join(",")],
-        ]);
-
-        const url = new URL(this.url);
-        url.search = params.toString();
-
-        return url.toString();
-      },
-    });
-
-    this.tileLayer = new VectorLayer({
-      name: this.name,
-      visible: this.isVisible,
-      source: this.source,
-      opacity: this.opacity,
-      zIndex: this.zIndex,
-      selectable: this.isSelectable,
-      minZoom: this.minZoom ? this.minZoom - 1 : undefined,
-      maxZoom: this.maxZoom ? this.maxZoom : undefined,
-    });
-
-    this.map.addLayer(this.tileLayer);
-
-    const style = await this.getStyle(
-      this.clientStyle && this.clientStyle["default"] ? this.clientStyle["default"] : this.clientStyle,
-    );
-    this.tileLayer.setStyle(style);
-
-    if (this.isSelectable) {
-      const activeStyle = await this.getStyle(
-        this.clientStyle && this.clientStyle["active"] ? this.clientStyle["active"] : this.clientStyle,
-      );
-
-      this.select = new Select({
-        layers: [this.tileLayer],
-        style: activeStyle,
-      });
-
-      this.select.on("select", this.onSelectFeatures);
-      this.map.addInteraction(this.select);
-    }
-  },
-  unmounted() {
-    if (this.select) {
-      this.map.removeInteraction(this.select);
-    }
-
-    this.map.removeLayer(this.tileLayer);
-  },
-  methods: {
-    async getStyle(inputStyle) {
-      if (!inputStyle || Object.keys(inputStyle).length === 0) {
-        return DEFAULT_STYLE;
-      }
-
-      try {
-        const olStyle = await olParser.writeStyle(toRaw(inputStyle));
-        return olStyle.output;
-      } catch (e) {
-        console.error("Unable to parse style", this.name, e);
-      }
-
-      return DEFAULT_STYLE;
-    },
-    onSelectFeatures(e) {
-      const features = e.target.getFeatures().getArray();
-      if (features.length === 0) {
-        return;
-      }
-
-      this.$emit("features-selected", features);
-    },
-  },
+  return DEFAULT_STYLE;
 };
-</script>
 
-<style scoped></style>
+const onSelectFeatures = (e) => {
+  const features = e.target.getFeatures().getArray();
+  if (features.length === 0) {
+    return;
+  }
+
+  emit("features-selected", features);
+};
+
+onMounted(async () => {
+  source = new VectorSource({
+    format: new GeoJSON(),
+    strategy: bboxStrategy,
+    url: (extent) => {
+      const params = new URLSearchParams([
+        ["service", "WFS"],
+        ["version", "1.0.0"],
+        ["request", "GetFeature"],
+        ["typename", props.name],
+        ["outputFormat", "application/json"],
+        ["srsname", "EPSG:28992"],
+        ["bbox", extent.join(",")],
+      ]);
+
+      const url = new URL(props.url);
+      url.search = params.toString();
+
+      return url.toString();
+    },
+  });
+
+  tileLayer = new VectorLayer({
+    name: props.name,
+    visible: props.isVisible,
+    source: source,
+    opacity: props.opacity,
+    zIndex: props.zIndex,
+    selectable: props.isSelectable,
+    minZoom: props.minZoom ? props.minZoom - 1 : undefined,
+    maxZoom: props.maxZoom ? props.maxZoom : undefined,
+  });
+
+  map.addLayer(tileLayer);
+
+  const style = await getStyle(
+    props.clientStyle && props.clientStyle["default"] ? props.clientStyle["default"] : props.clientStyle,
+  );
+  tileLayer.setStyle(style);
+
+  if (props.isSelectable) {
+    const activeStyle = await getStyle(
+      props.clientStyle && props.clientStyle["active"] ? props.clientStyle["active"] : props.clientStyle,
+    );
+
+    select = new Select({
+      layers: [tileLayer],
+      style: activeStyle,
+    });
+
+    select.on("select", onSelectFeatures);
+    map.addInteraction(select);
+  }
+});
+
+onUnmounted(() => {
+  if (select) {
+    map.removeInteraction(select);
+  }
+  map.removeLayer(tileLayer);
+});
+
+// Watch for prop changes
+watch(
+  () => props.url,
+  (value) => {
+    source.set("url", value);
+  },
+);
+
+watch(
+  () => props.name,
+  (value) => {
+    tileLayer.set("name", value);
+  },
+);
+
+watch(
+  () => props.isVisible,
+  (value) => {
+    tileLayer.set("visible", value);
+  },
+);
+
+watch(
+  () => props.opacity,
+  (value) => {
+    tileLayer.set("opacity", value);
+  },
+);
+
+watch(
+  () => props.clientStyle,
+  async (value) => {
+    const style = await getStyle(value);
+    tileLayer.setStyle(style);
+  },
+);
+
+watch(
+  () => mapStore.layerFilters,
+  (value) => {
+    // If filters object is empty, refresh source
+    if (!Object.keys(value).length) {
+      source.updateParams({
+        ...source.getParams(),
+        CQL_FILTER: null,
+      });
+      source.refresh();
+      return;
+    }
+
+    // Don't filter if there are no filters specified for specific layer
+    if (!Object.keys(value).includes(props.id)) {
+      return;
+    }
+
+    if (!value[props.id]) {
+      return;
+    }
+
+    const cqlFilters = [];
+
+    Object.keys(value[props.id]).forEach((key) => {
+      if (key === "searchQuery" && value[props.id]["searchQuery"] !== "") {
+        cqlFilters.push(value[props.id][key]);
+        return;
+      }
+
+      if (value[props.id][key].length == 0) {
+        return;
+      }
+
+      Object.keys(value[props.id][key]).map((filterKey) => {
+        const values = value[props.id][key][filterKey].map((filterValue) => `'${filterValue}'`).join(",");
+
+        // Check to make sure filterKey has values
+        if (values.length) {
+          cqlFilters.push(`${filterKey} IN (${values})`);
+        }
+      });
+    });
+
+    source.updateParams({
+      ...source.getParams(),
+      CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(" AND ") : null,
+    });
+
+    source.refresh();
+  },
+  { deep: true },
+);
+
+watch(
+  () => props.selectedFeatures,
+  (features) => {
+    if (select && features && features.length === 0) {
+      select.getFeatures().clear();
+    }
+  },
+  { deep: true },
+);
+</script>

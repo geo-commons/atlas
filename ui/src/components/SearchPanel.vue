@@ -4,6 +4,7 @@
       :show-suggestions="showSuggestions ? true : null"
       :has-visible-layers="visibleLayers.length > 0"
       :features="features"
+      :map-id="mapId"
       :show-data-panel="showDataPanel"
       @show-data-panel="toggleDataPanel"
       @on-submit="onSearch"
@@ -57,6 +58,7 @@ export default {
   },
   props: {
     position: Object,
+    mapId: String,
     layers: Array,
     features: Object,
     showDataPanel: Boolean,

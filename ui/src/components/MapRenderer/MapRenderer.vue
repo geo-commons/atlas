@@ -28,6 +28,7 @@
             :position="position"
             :layers="layers"
             :tool="tool"
+            :map-id="mapId"
             :selected-area="selectedArea"
             :highlighted-features="highlightedFeatures"
             :selected-features="selectedFeatures"
@@ -36,7 +37,6 @@
             :config="config"
             :padding="mapPadding"
             :features="features"
-            :filters="filters"
             :draw-features="drawFeatures"
             :color="color"
             :stroke-width="strokeWidth"
@@ -56,6 +56,7 @@
         :position="position"
         :layers="layers"
         :tool="tool"
+        :map-id="mapId"
         :selected-area="selectedArea"
         :highlighted-features="highlightedFeatures"
         :selected-features="selectedFeatures"
@@ -64,7 +65,6 @@
         :config="config"
         :padding="mapPadding"
         :features="features"
-        :filters="filters"
         :draw-features="drawFeatures"
         :color="color"
         :stroke-width="strokeWidth"
@@ -79,10 +79,10 @@
     <ListPanel
       v-if="showList && layers.length > 0"
       ref="listPanel"
+      :map-id="mapId"
       :layer="getSelectedLayer(settings.listLayerId)"
       :title-template="settings.title"
       :short-description-template="settings.short_description"
-      :filters="filters"
       @hidePanel="toggleList"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19 })"
     />
@@ -91,10 +91,9 @@
       ref="filterPanel"
       :layer="getSelectedLayer(settings.filterLayerId)"
       :facets="settings.facets"
-      :filters="filters"
       :user="user"
+      :map-id="mapId"
       @hidePanel="toggleFilters"
-      @update-filters="(value) => (filters = value)"
     />
     <PointInfoPanel
       v-if="!showPanoramaPanel && features.markerOnClick"
@@ -120,13 +119,12 @@
       :selected-area="selectedAreaDataPanel"
       :show-data-panel="showDataPanel"
       :user="user"
-      :filters="filters"
+      :map-id="mapId"
       :full-size-window="showDataPanelFullScreen"
       @set-position="setPosition"
       @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19, duration: 1000 })"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
-      @update-filters="(value) => (filters = value)"
     />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
@@ -136,6 +134,7 @@
           :position="position"
           :layers="layers"
           :features="features"
+          :map-id="mapId"
           :show-data-panel="showDataPanel"
           @set-position="setPosition"
           @toggle-data-panel="toggleDataPanel"
@@ -145,6 +144,7 @@
             <DataPanelButton
               :is-subcomponent="false"
               :show-data-panel="showDataPanel"
+              :map-id="mapId"
               @show-data-panel="toggleDataPanel"
             />
           </div>
@@ -317,6 +317,7 @@ import EmbedModal from "@/components/EmbedModal.vue";
 import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
 import PanoramaPanel from "../PanoramaPanel.vue";
+import { useMapStore } from "@/stores/map_store";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -350,6 +351,7 @@ export default {
     ObliqueIcon,
   },
   props: {
+    mapId: String,
     initialLayers: Array,
     initialPosition: Object,
     initialDrawFeatures: Array,
@@ -407,7 +409,6 @@ export default {
       showPanoramaPanel: false,
       showList: false,
       showFilters: false,
-      filters: {},
       infoPanelExpanded: false,
       mapPadding: [0, 0, 0, 0],
       computedStyle: {},
@@ -530,6 +531,8 @@ export default {
   mounted() {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
+
+    const mapStore = useMapStore(this.mapId);
   },
   unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
