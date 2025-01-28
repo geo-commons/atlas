@@ -49,5 +49,15 @@ services:
       - ./filter-proxy.dev.yml:/config.yaml
     ports:
       - 8050:8050
+  geoserver:
+    image: ghcr.io/delta10/geoserver:2.25.5
+    ports:
+      - 8080:8080
+    environment:
+      - EXTRA_JAVA_OPTS=-Xms1G -Xmx2G
+    volumes:
+      - geoserver-data:/opt/geoserver_data
+      - ./data/scholen.gpkg:/opt/geoserver_data/data/scholen.gpkg
 volumes:
   postgres-data:
+  geoserver-data:
