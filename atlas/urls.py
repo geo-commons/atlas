@@ -50,6 +50,12 @@ if settings.DEBUG:
         )),
     ]
 
+    urlpatterns += [
+        re_path(r'^geoserver/(?P<path>.*)$', ProxyView.as_view(
+            upstream='http://localhost:8080/geoserver/'
+        )),
+    ]
+
 urlpatterns += [
     path('atlas/', include('homepage.urls'), name='homepage'),
     path('tables/', include('tables.urls'), name='tables'),
