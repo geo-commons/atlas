@@ -130,7 +130,7 @@ export default {
   props: {
     layer: Object,
     position: Object,
-    query: String,
+    searchValue: String,
     mapId: String,
     selectedArea: Object,
     user: Object,
@@ -150,6 +150,7 @@ export default {
       filterFeatures: {},
       numberMatched: null,
       sortStack: [],
+      searchProperties: [],
       pageState: {
         page: 0,
         first: 20,
@@ -161,11 +162,11 @@ export default {
     };
   },
   watch: {
-    query() {
+    searchValue() {
       this.fetchFeatures();
 
-      // If query gets deleted or removed, set searchValue to an empty string
-      if (!this.query) {
+      // If searchValue gets deleted or removed, set searchValue to an empty string
+      if (!this.searchValue) {
         this.store.updateSearchQueryForLayer(this.layer.id, "");
       }
     },
@@ -192,13 +193,11 @@ export default {
       });
     },
   },
-  mounted() {
-    this.fetchSearchProperties();
-  },
-  created() {
+  async created() {
     this.store = useMapStore(this.mapId);
 
-    this.fetchFilterProperties();
+    await this.fetchFilterProperties();
+    await this.fetchSearchProperties();
 
     const filters = this.store.getFiltersForLayer(this.layer.id);
 
@@ -209,12 +208,16 @@ export default {
     this.selectedFilterProperties = Object.keys(filters);
 
     this.store.$subscribe((mutation, state) => {
+      if (mutation.events.newValue?.searchQuery) {
+        return;
+      }
+
       this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
 
       this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
     });
 
-    this.fetchFeatures();
+    await this.fetchFeatures();
   },
   methods: {
     async fetchFeatures() {
@@ -232,8 +235,8 @@ export default {
 
       const filters = [];
 
-      if (this.query && this.searchProperties.length > 0) {
-        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(" OR ")})`;
+      if (this.searchValue && this.searchProperties.length > 0) {
+        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
 
         filters.push(searchQuery);
 
@@ -337,8 +340,6 @@ export default {
         this.displayProperties = [];
         this.searchProperties = [];
       }
-
-      this.loading = false;
     },
     async fetchSearchProperties() {
       if (this.layer.search_properties && this.layer.search_properties.length > 0) {
@@ -370,7 +371,6 @@ export default {
       } catch (e) {
         console.error(e);
       }
-      this.loading = false;
     },
     async fetchFeaturesForDownload() {
       this.error = false;
@@ -385,8 +385,8 @@ export default {
 
       const filters = [];
 
-      if (this.query && this.searchProperties.length > 0) {
-        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.query}%'`).join(" OR ")})`;
+      if (this.searchValue && this.searchProperties.length > 0) {
+        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
 
         filters.push(searchQuery);
 
@@ -581,10 +581,8 @@ export default {
 
       // Extract the unique values from the fetched features
       const filters = Array.from(new Set(fetchedFeatureFilters.map((feature) => feature.properties[property]))).filter(
-        (filter) => filter !== null && filter.trim() !== "",
+        (filter) => filter !== null && (typeof filter !== "string" || filter.trim() !== ""),
       );
-
-      console.log(filters);
 
       this.filterOptions[property] = filters;
     },
