@@ -69,7 +69,7 @@
       ref="featureTable"
       :layer="layer"
       :position="position"
-      :query="query"
+      :search-value="searchValue"
       :map-id="mapId"
       :selected-area="selectedArea"
       :user="user"
@@ -84,6 +84,7 @@ import DownloadIcon from "../assets/icons/download-icon.svg";
 import FeatureTable from "./FeatureTable.vue";
 import SearchForm from "./SearchForm.vue";
 import { Tippy } from "vue-tippy";
+import { useMapStore } from "@/stores/map_store";
 
 export default {
   name: "DataPanelDetailView",
@@ -102,15 +103,24 @@ export default {
       displayProperties: [],
       searchProperties: [],
       loading: false,
+      store: null,
+      searchValue: "",
       error: false,
       numberMatched: 0,
-      query: "",
       sortKey: "",
       sortAscending: true,
     };
   },
   computed: {},
-  mounted() {},
+  created() {
+    this.store = useMapStore(this.mapId);
+  },
+  mounted() {
+    const value = this.store.getSearchValueForLayer(this.layer.id);
+    this.searchValue = value;
+
+    this.$refs.queryInput.value = value;
+  },
   methods: {
     onSetPosition(value) {
       this.$emit("set-position", value);
@@ -119,7 +129,7 @@ export default {
       this.$emit("on-fit", value);
     },
     onSearch() {
-      this.query = this.$refs.queryInput.value;
+      this.searchValue = this.$refs.queryInput.value;
     },
   },
 };

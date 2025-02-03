@@ -41,7 +41,6 @@
         :layer="selectedLayer"
         :position="position"
         :selected-area="selectedArea"
-        :query="query"
         :user="user"
         @set-position="(position) => setPosition(position)"
         @on-fit="(position) => onFit(position)"
@@ -105,7 +104,6 @@ export default {
     return {
       selectedLayerId: null,
       store: null,
-      query: "",
     };
   },
   computed: {
