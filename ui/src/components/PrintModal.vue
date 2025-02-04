@@ -6,11 +6,11 @@
     :draggable="false"
     :header="'Kaart printen'"
     :dismissable-mask="true"
-    class="tw-w-[60%]"
+    class="tw-w-[90%] md:tw-w-[50%]"
     @update:visible="closeModal"
   >
     <form method="POST" class="tw-flex tw-flex-col tw-gap-4" @submit="onSubmit">
-      <div class="tw-flex tw-flex-col tw-gap-4 tw-w-[50%]">
+      <div class="tw-flex tw-flex-col tw-gap-4 ">
         <div class="tw-flex tw-flex-col">
           <label class="label" for="title">Titel</label>
           <InputText id="title" v-model="title" class="input" name="title" placeholder="Kies optioneel een titel" />
@@ -30,7 +30,8 @@
         </div>
       </div>
 
-      <div class="tw-flex tw-flex-col tw-gap-4 tw-w-full md:tw-w-56">
+      <div class="tw-flex tw-flex-col tw-gap-4 tw-w-full">
+        <div class="tw-flex tw-flex-col md:tw-grid md:tw-grid-cols-2 tw-gap-4">
         <div class="tw-flex tw-flex-col">
           <label class="label" for="format">Formaat</label>
           <Select
@@ -56,6 +57,7 @@
             option-value="value"
           />
         </div>
+      </div>
 
         <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full tw-mt-4">
           <label class="label" for="showLegend">Toon legenda</label>
@@ -73,8 +75,21 @@
         </div>
 
         <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full">
-          <label class="label" for="showLogo">Toon organisatielogo</label>
-          <ToggleSwitch id="showLogo" v-model="showLogo" name="showLogo" />
+          <div class="tw-flex tw-gap-2 tw-items-center">
+            <label class="label tw-flex tw-gap-2 tw-items-center" for="showLogo">
+              Toon organisatielogo
+              <Button
+                v-if="!config?.organization_logo"
+                type="button"
+                icon="pi pi-info-circle"
+                variant="text"
+                rounded
+                class="p-button-plain"
+                v-tooltip.top="'Deze optie is beschikbaar wanneer het organisatielogo ingesteld is.'"
+              />
+            </label>
+          </div>
+          <ToggleSwitch id="showLogo" class="tw-flex-shrink-0" v-model="showLogo" name="showLogo" :disabled="!config?.organization_logo" />
         </div>
 
         <div class="tw-flex tw-gap-2 tw-justify-between tw-w-full">
@@ -82,18 +97,21 @@
           <ToggleSwitch id="showNorth" v-model="showNorth" name="showNorth" />
         </div>
       </div>
-      <div class="tw-flex tw-gap-2 tw-mt-4">
-        <Button type="submit" class="!tw-font-medium" :disabled="loading">
+    </form>
+    <template #footer>
+      <Button type="button" outlined class="!tw-font-medium" @click="closeModal">Sluiten</Button>
+      <Button type="button" class="!tw-font-medium" :disabled="loading" @click="onSubmit">
           <i v-if="loading" class="pi pi-spin pi-spinner-dotted"></i>
           Afdrukken
-        </Button>
-        <Button type="button" outlined class="!tw-font-medium" @click="closeModal">Sluit</Button>
-      </div>
-    </form>
+      </Button>
+    </template>
   </Dialog>
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
+
 export default {
   name: "PrintModal",
   props: {
@@ -110,7 +128,7 @@ export default {
       showLegend: true,
       showDateTime: true,
       showScale: true,
-      showLogo: true,
+      showLogo: false,
       showNorth: true,
       availableFormats: [
         { label: "A4", value: "a4" },
@@ -120,10 +138,21 @@ export default {
         { label: "A0", value: "a0" },
       ],
       availableOrientations: [
-        { label: "Staand", value: "landscape" },
-        { label: "Liggend", value: "portrait" },
+        { label: "Liggend", value: "landscape" },
+        { label: "Staand", value: "portrait" },
       ],
     };
+  },
+  computed: {
+    ...mapState(useGlobalStore, ["config"])
+  },
+  watch: {
+    config: {
+      immediate: true,
+      handler(newConfig) {
+        this.showLogo = !!newConfig?.organization_logo;
+      }
+    }
   },
   methods: {
     closeModal() {
