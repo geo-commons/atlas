@@ -116,6 +116,7 @@ export default {
       gps: true,
       zoom: true,
       markerOnClick: true,
+      edit_layer_features: true,
       draw: true,
     };
 

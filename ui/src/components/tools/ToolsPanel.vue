@@ -40,6 +40,20 @@
       >
         <BrushIcon class="icon" />
       </button>
+
+      <button
+        v-if="config && config.features.edit_layer_features && features.edit_layer_features && user"
+        v-tippy="{ placement: 'bottom' }"
+        class="iconbutton __inverse"
+        :class="{
+          isActive: showAddFeatureMenu,
+        }"
+        content="Laag objecten bewerken"
+        aria-label="Laag objecten bewerken"
+        @click="toggleAddFeature"
+      >
+        <EditLocationIcon class="icon" />
+      </button>
     </div>
 
     <SelectMenu :show-select-menu="showSelectMenu" :set-tool="setTool" />
@@ -70,6 +84,7 @@
 import RulerIcon from "../../assets/icons/ruler-icon.svg";
 import AreaSelectIcon from "../../assets/icons/area-select-icon.svg";
 import BrushIcon from "../../assets/icons/brush-icon.svg";
+import EditLocationIcon from "../../assets/icons/edit-location-icon.svg";
 import draw from "@/utils/draw";
 import SelectMenu from "@/components/tools/SelectMenu.vue";
 import MeasureMenu from "@/components/tools/MeasureMenu.vue";
@@ -84,6 +99,7 @@ export default {
     RulerIcon,
     AreaSelectIcon,
     BrushIcon,
+    EditLocationIcon,
   },
   props: {
     tool: String,
@@ -102,6 +118,7 @@ export default {
           selectarea: true,
           measure: true,
           draw: true,
+          edit_layer_features: true,
         };
       },
     },
@@ -111,6 +128,7 @@ export default {
       showMeasureMenu: false,
       showDrawMenu: false,
       showSelectMenu: false,
+      showAddFeatureMenu: false,
       showLineWeightMenu: false,
       showFontSizeMenu: false,
       previousTool: "",
@@ -163,13 +181,9 @@ export default {
       });
     },
     toggleDraw() {
-      if (this.showSelectMenu) {
-        this.showSelectMenu = false;
-      }
-
-      if (this.showMeasureMenu) {
-        this.showMeasureMenu = false;
-      }
+      this.showSelectMenu = false;
+      this.showMeasureMenu = false;
+      this.showAddFeatureMenu = false;
 
       if (
         this.tool === "DRAW_POINT" ||
@@ -182,6 +196,12 @@ export default {
       } else {
         this.showDrawMenu = !this.showDrawMenu;
       }
+    },
+    toggleAddFeature() {
+      this.showSelectMenu = false;
+      this.showMeasureMenu = false;
+      this.showDrawMenu = false;
+      this.showAddFeatureMenu = !this.showAddFeatureMenu;
     },
     resetAreaSelect() {
       this.$emit("set-selected-area", null);
