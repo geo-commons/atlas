@@ -156,6 +156,7 @@
         <VisibleLayer
           v-for="(layer, i) in visibleLayers"
           :key="layer.id"
+          :map-id="mapId"
           :position="position"
           :layer="layer"
           :layer-is-closable="!isEmbed"
@@ -197,6 +198,7 @@ export default {
     layers: Array,
     position: Object,
     user: Object,
+    mapId: String,
     showSearchBar: Boolean,
     showSimpleLayerList: Boolean,
     isEmbed: Boolean,

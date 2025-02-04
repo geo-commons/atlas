@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input :checked="checked" type="checkbox" @change="() => $emit('toggleSwitch')" />
+    <input :checked="initialCheckedStatus" type="checkbox" @change="() => $emit('toggleSwitch')" />
     <span class="slider round"></span>
   </label>
 </template>
@@ -13,14 +13,6 @@ export default {
       default: false,
       type: Boolean,
     },
-  },
-  data() {
-    return {
-      checked: true,
-    };
-  },
-  created() {
-    this.checked = this.initialCheckedStatus;
   },
 };
 </script>

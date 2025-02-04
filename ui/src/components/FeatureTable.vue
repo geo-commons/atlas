@@ -172,7 +172,14 @@ export default {
     },
     selectedArea: "fetchFeatures",
     filter: "fetchFeatures",
-    fieldFilters: "fetchFeatures",
+    fieldFilters: {
+      handler() {
+        this.showFilters = !!Object.keys(this.fieldFilters).length;
+
+        this.fetchFeatures();
+      },
+      deep: true,
+    },
     pageState: "fetchFeatures",
     sortStack: {
       handler() {
@@ -201,9 +208,9 @@ export default {
 
     const filters = this.store.getFiltersForLayer(this.layer.id);
 
-    this.fieldFilters = filters;
+    this.showFilters = !!Object.keys(this.fieldFilters).length;
 
-    this.showFilters = Object.keys(this.fieldFilters).length ? true : false;
+    this.fieldFilters = filters;
 
     this.selectedFilterProperties = Object.keys(filters);
 

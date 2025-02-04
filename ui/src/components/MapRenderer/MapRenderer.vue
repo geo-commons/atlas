@@ -203,6 +203,7 @@
           :layers="regularLayers"
           :position="position"
           :user="user"
+          :map-id="mapId"
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
           :is-embed="features.legend && !features.layerlist"
@@ -410,6 +411,7 @@ export default {
       showList: false,
       showFilters: false,
       infoPanelExpanded: false,
+      mapStore: null,
       mapPadding: [0, 0, 0, 0],
       computedStyle: {},
       modal: "",
@@ -532,7 +534,7 @@ export default {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
 
-    const mapStore = useMapStore(this.mapId);
+    this.mapStore = useMapStore(this.mapId);
   },
   unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
@@ -743,6 +745,7 @@ export default {
       this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, is_visible: isVisible } : layer));
       this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], is_visible: isVisible };
       this.$emit("layers-changed", this.layers);
+      this.mapStore.resetFiltersForLayer(layerId);
     },
     setLayerOpacity([layerId, opacity]) {
       this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, opacity: opacity } : layer));
