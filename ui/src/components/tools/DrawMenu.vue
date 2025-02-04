@@ -475,7 +475,36 @@ const saveDrawing = async () => {
 };
 </script>
 
-<style>
+<style scoped>
+.iconbutton {
+  width: var(--width-button-large);
+  height: var(--width-button-large);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconbutton:not(:last-child),
+.menu-wrapper .iconbutton {
+  border-right: 1px solid var(--color-grey-50);
+}
+
+.menu-wrapper {
+  position: relative;
+}
+
+.menu-wrapper .iconbutton {
+  border-radius: 0px !important;
+}
+
+.iconbutton.isActive {
+  color: var(--color-primary);
+}
+
+.iconbutton:disabled {
+  color: var(--color-grey-80);
+}
+
 .draw-toolbar {
   display: flex;
   flex-direction: row;

@@ -212,7 +212,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .wrapper {
   position: relative;
 }
@@ -241,14 +241,6 @@ export default {
 .iconbutton:not(:last-child),
 .menu-wrapper .iconbutton {
   border-right: 1px solid var(--color-grey-50);
-}
-
-.menu-wrapper {
-  position: relative;
-}
-
-.menu-wrapper .iconbutton {
-  border-radius: 0px !important;
 }
 
 .iconbutton.isActive {
