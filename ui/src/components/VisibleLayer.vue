@@ -67,8 +67,37 @@
 
       <template #default>
         <div class="content">
-          <img v-if="layerHasLegend" :src="legendImage" class="legend" :alt="`Legenda voor laag ${layer.title}`" />
-          <span v-if="!layerHasLegend">Geen legenda beschikbaar</span>
+          <img
+            v-if="layerHasLegend && !legendJson"
+            :src="legendImage"
+            class="legend"
+            :alt="`Legenda voor laag ${layer.title}`"
+          />
+          <div v-if="layerHasLegend && legendJson" class="tw-flex tw-flex-col tw-gap-2">
+            <div v-for="legendField in legendJson" :key="legendField.name">
+              <div v-if="legendField.filter" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
+                <Checkbox
+                  v-model="checkboxFilters[getFilterParameter(legendField.filter)]"
+                  :input-id="legendField.name"
+                  :value="getFilterValue(legendField.filter)"
+                  @update:model-value="updateLegendFilters(getFilterParameter(legendField.filter))"
+                />
+                <label :for="legendField.name" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
+                  <img :src="getLegendFieldImage(legendField.name)" />{{
+                    legendField.title ? legendField.title : legendField.name
+                  }}
+                </label>
+              </div>
+              <div v-else>
+                <div class="tw-flex tw-flex-row tw-items-start tw-gap-2">
+                  <img :src="getLegendFieldImage(legendField.name)" />{{
+                    legendField.title ? legendField.title : legendField.name
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <span v-if="!layerHasLegend && !legendJson">Geen legenda beschikbaar</span>
           <span v-if="errorLoadingLegend">Kan de legenda niet laden</span>
         </div>
       </template>
@@ -83,7 +112,9 @@ import CloseCircleIcon from "../assets/icons/close-circle-icon.svg";
 import OpacityIcon from "../assets/icons/opacity-icon.svg";
 import SelectableIcon from "../assets/icons/selectable-icon.svg";
 import SelectableDisabledIcon from "../assets/icons/selectable-disabled-icon.svg";
+import { useMapStore } from "@/stores/map_store";
 import { fetchLegendImage } from "@/utils/legend-utils";
+import { getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
 
 export default {
   name: "VisibleLayer",
@@ -102,14 +133,18 @@ export default {
     position: Object,
     isOpen: Boolean,
     user: Object,
+    mapId: String,
   },
   data() {
     return {
       showSlider: false,
+      store: null,
       errorLoadingLegend: false,
       legendImage: null,
+      legendJson: null,
       isSelectable: null,
       initialIsSelectable: null,
+      checkboxFilters: [],
     };
   },
   computed: {
@@ -124,6 +159,14 @@ export default {
   watch: {
     async position(position, oldPosition) {
       if (position.zoom !== oldPosition.zoom) {
+        await this.fetchLegendAsJson().then((res) => {
+          this.legendJson = res;
+        });
+
+        if (this.legendJson) {
+          return;
+        }
+
         const { url, error } = await this.fetchLegendImage(this.layer, this.position, this.user);
         this.legendImage = url;
         this.errorLoadingLegend = error;
@@ -131,13 +174,41 @@ export default {
     },
   },
   async mounted() {
+    this.isSelectable = this.layer.is_selectable;
+    this.initialIsSelectable = this.layer.is_selectable;
+
     if (this.layerHasLegend) {
+      // First, we try to fetch the legend as a JSON response.
+      // If the GeoServer accepts this request and returns a valid JSON legend, we stop and do not proceed to fetch the legend image.
+      // However, if this request fails, we then fetch the legend as an image instead.
+      await this.fetchLegendAsJson().then((res) => {
+        this.legendJson = res;
+        this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
+      });
+
+      if (this.legendJson) {
+        return;
+      }
+
       const { url, error } = await this.fetchLegendImage(this.layer, this.position, this.user);
       this.legendImage = url;
       this.errorLoadingLegend = error;
     }
-    this.isSelectable = this.layer.is_selectable;
-    this.initialIsSelectable = this.layer.is_selectable;
+  },
+  created() {
+    this.store = useMapStore(this.mapId);
+
+    this.store.$subscribe((mutation, state) => {
+      if (mutation.events.key === this.layer.id) {
+        setTimeout(() => {
+          this.checkboxFilters = state.layerFilters[this.layer.id]?.filters;
+        }, 100);
+      }
+
+      if (mutation.events.key === "layerFilters") {
+        this.checkboxFilters = [];
+      }
+    });
   },
   methods: {
     fetchLegendImage,
@@ -158,6 +229,80 @@ export default {
     toggleLayerSelectable() {
       this.isSelectable = !this.isSelectable;
       this.$emit("toggle-is-selectable", [this.layer.id, this.isSelectable]);
+    },
+    async fetchLegendAsJson() {
+      const params = new URLSearchParams({
+        SERVICE: "WMS",
+        VERSION: "1.1.1",
+        REQUEST: "GetLegendGraphic",
+        FORMAT: "application/json",
+        LAYER: this.layer.name,
+        STYLE: this.layer.server_style || "",
+      });
+
+      const url = new URL(this.layer.url);
+
+      if (params) {
+        url.search = params.toString();
+      }
+
+      try {
+        const fetchParams = layerRequiresAuthentication(this.layer) ? getFetchParameters(this.layer, this.user) : {};
+
+        const response = await fetch(url, fetchParams);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch legend");
+        }
+
+        let legendJson;
+        try {
+          legendJson = await response.json();
+        } catch (jsonError) {
+          throw new Error("Failed to parse JSON response: " + jsonError.message);
+        }
+
+        return legendJson.Legend[0].rules;
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    },
+    getLegendFieldImage(rule) {
+      const params = new URLSearchParams({
+        SERVICE: "WMS",
+        VERSION: "1.1.1",
+        REQUEST: "GetLegendGraphic",
+        FORMAT: "image/png",
+        LAYER: this.layer.name,
+        RULE: rule,
+      });
+
+      const url = `${this.layer.url}?${params.toString()}`;
+
+      return url;
+    },
+    getFilterParameter(filterString) {
+      // Regex to extract the parameter name before '='
+      const match = filterString.match(/\[([a-zA-Z0-9_]+)\s*=/);
+
+      return match ? match[1] : null;
+    },
+    getFilterValue(filterString) {
+      // Regex to extract the filter value after '='
+      const match = filterString.match(/\b\w+\s*=\s*'((?:''|[^'])*)'/);
+
+      return match ? match[1] : null;
+    },
+    updateLegendFilters(filterParameter) {
+      const oldLayerFilters = this.store.getFiltersForLayer(this.layer.id);
+
+      const filters = {
+        ...oldLayerFilters,
+        [filterParameter]: this.checkboxFilters[filterParameter],
+      };
+
+      this.store.updateFiltersForLayer(this.layer.id, filters);
     },
   },
 };

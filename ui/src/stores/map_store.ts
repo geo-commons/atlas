@@ -25,6 +25,12 @@ export function useMapStore(mapName: string) {
       resetAllFilters() {
         this.layerFilters = {};
       },
+      resetFiltersForLayer(layerId: string) {
+        this.layerFilters[layerId] = {
+          filters: {},
+          searchQuery: "",
+        };
+      },
       updateFiltersForLayer(layerId: string, filters: any) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
