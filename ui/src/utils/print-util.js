@@ -84,8 +84,11 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position) 
             const IMAGE_SPACING = 5; // Space between images
             const PADDING = 2; // Padding space
 
-            const LOGO_WIDTH = 14;
-            const LOGO_SPACING = settings.showLogo ? 14 + IMAGE_SPACING : PADDING;
+            const LOGO_HEIGHT = 14; // Fixed logo height
+            const MAX_LOGO_WIDTH = 50; // Maximum logo width
+            let logoWidth = 0; // Will be calculated based on aspect ratio
+            const LOGO_SPACING = settings.showLogo ? PADDING : PADDING;
+
             const NORTH_IMAGE_DIMENSIONS = [62, 120];
 
             const url = window.URL || window.webkitURL;
@@ -115,16 +118,77 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position) 
             pdf.setFontSize(16);
             pdf.setTextColor(0, 0, 0);
 
-            // Add Title
-            if (settings.title) {
-              pdf.text("Titel: " + settings.title, boxX + LOGO_SPACING, boxY + IMAGE_SPACING + PADDING);
+            // Add logo
+            if (settings.showLogo && config?.organization_logo) {
+              try {
+                const calculateLogoDimensions = (width, height, shouldLimitWidth) => {
+                  const aspectRatio = width / height;
+                  let logoHeight = LOGO_HEIGHT;
+                  let logoWidth = logoHeight * aspectRatio;
+                  
+                  if (shouldLimitWidth && logoWidth > MAX_LOGO_WIDTH) {
+                    logoWidth = MAX_LOGO_WIDTH;
+                    logoHeight = logoWidth / aspectRatio;
+                  }
+                  
+                  return { width: logoWidth, height: logoHeight };
+                };
+
+                const tempImg = new Image();
+                tempImg.crossOrigin = "anonymous";
+                tempImg.src = config.organization_logo;
+
+                await new Promise((resolve, reject) => {
+                  tempImg.onload = () => {
+                    const { width, height } = calculateLogoDimensions(
+                      tempImg.width, 
+                      tempImg.height, 
+                      settings.title || settings.showDateTime
+                    );
+                    logoWidth = width;
+
+                    const canvas = document.createElement("canvas");
+                    canvas.width = tempImg.width;
+                    canvas.height = tempImg.height;
+                    
+                    const ctx = canvas.getContext("2d");
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = "high";
+                    ctx.drawImage(tempImg, 0, 0, canvas.width, canvas.height);
+                    
+                    pdf.addImage(
+                      canvas.toDataURL("image/png", 1.0), 
+                      "PNG", 
+                      boxX + PADDING,
+                      boxY + PADDING,
+                      width,
+                      height
+                    );
+                    resolve();
+                  };
+                  tempImg.onerror = () => reject(new Error("Failed to load SVG"));
+                });
+              } catch (err) {
+                console.error("Error processing logo:", err);
+                // Continue without logo rather than failing entire PDF generation
+              }
             }
 
-            // Add Date
-            if (settings.showDateTime) {
-              const date = new Date().toLocaleString();
-              const dateY = settings.title ? boxY + 15 : boxY + IMAGE_SPACING + PADDING;
-              pdf.text("Datum: " + date, boxX + LOGO_SPACING, dateY);
+            // Update title and date positioning
+            const titleOffset = settings.showLogo ? logoWidth + IMAGE_SPACING + PADDING : PADDING;
+            if (settings.title || settings.showDateTime) {
+              if (settings.title) {
+                const titleY = boxY + (settings.showLogo && !settings.showDateTime ? 10 : 8);
+                pdf.setFontSize(settings.showDateTime ? 10 : 14);
+                pdf.text("Titel: " + settings.title, boxX + titleOffset, titleY);
+              }
+
+              if (settings.showDateTime) {
+                const date = new Date().toLocaleString();
+                const dateY = settings.title ? boxY + 13 : settings.showLogo ? boxY + 10 : boxY + 8;
+                pdf.setFontSize(settings.title ? 10 : 14); 
+                pdf.text("Datum: " + date, boxX + titleOffset, dateY);
+              }
             }
 
             // Add Remark
@@ -205,11 +269,6 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position) 
                   maxWidthCurrentColumn = width;
                 }
               }
-            }
-
-            // Add logo
-            if (settings.showLogo && config?.organization_logo) {
-              pdf.addImage(config.organization_logo, "PNG", boxX + PADDING, boxY + PADDING, LOGO_WIDTH, LOGO_WIDTH);
             }
 
             // Add north arrow

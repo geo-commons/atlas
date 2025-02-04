@@ -85,6 +85,8 @@ declare module 'vue' {
     StackSortableTableHeaderItem: typeof import('./src/components/StackSortableTableHeaderItem.vue')['default']
     SwitchSlider: typeof import('./src/components/SwitchSlider.vue')['default']
     TableList: typeof import('./src/components/TableList.vue')['default']
+    Textarea: typeof import('primevue/textarea')['default']
+    ToggleSwitch: typeof import('primevue/toggleswitch')['default']
     ToolsPanel: typeof import('./src/components/ToolsPanel.vue')['default']
     VisibleLayer: typeof import('./src/components/VisibleLayer.vue')['default']
     ZoomPanel: typeof import('./src/components/ZoomPanel.vue')['default']
