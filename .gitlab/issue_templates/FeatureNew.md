@@ -1,8 +1,6 @@
 ### **📝 User Story**  
-**Als een** x
-
-**Wil ik** y
-
+**Als een** x\
+**Wil ik** y\
 **Zodat** z
 
 ### **📌 Takenlijst / Stappen**  
