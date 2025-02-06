@@ -158,18 +158,8 @@ export default {
   },
   watch: {
     async position(position, oldPosition) {
-      if (position.zoom !== oldPosition.zoom) {
-        await this.fetchLegendAsJson().then((res) => {
-          this.legendJson = res;
-        });
-
-        if (this.legendJson) {
-          return;
-        }
-
-        const { url, error } = await this.fetchLegendImage(this.layer, this.position, this.user);
-        this.legendImage = url;
-        this.errorLoadingLegend = error;
+      if (position.zoom !== oldPosition.zoom && this.layerHasLegend) {
+        await this.setLegend();
       }
     },
   },
@@ -178,21 +168,7 @@ export default {
     this.initialIsSelectable = this.layer.is_selectable;
 
     if (this.layerHasLegend) {
-      // First, we try to fetch the legend as a JSON response.
-      // If the GeoServer accepts this request and returns a valid JSON legend, we stop and do not proceed to fetch the legend image.
-      // However, if this request fails, we then fetch the legend as an image instead.
-      await this.fetchLegendAsJson().then((res) => {
-        this.legendJson = res;
-        this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
-      });
-
-      if (this.legendJson) {
-        return;
-      }
-
-      const { url, error } = await this.fetchLegendImage(this.layer, this.position, this.user);
-      this.legendImage = url;
-      this.errorLoadingLegend = error;
+      await this.setLegend();
     }
   },
   created() {
@@ -246,27 +222,19 @@ export default {
         url.search = params.toString();
       }
 
+      const fetchParams = layerRequiresAuthentication(this.layer) ? getFetchParameters(this.layer, this.user) : {};
+
       try {
-        const fetchParams = layerRequiresAuthentication(this.layer) ? getFetchParameters(this.layer, this.user) : {};
-
-        const response = await fetch(url, fetchParams);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch legend");
+        const result = await fetch(url, fetchParams);
+        if (result.ok) {
+          const data = await result.json();
+          return data?.Legend?.[0]?.rules || [];
         }
-
-        let legendJson;
-        try {
-          legendJson = await response.json();
-        } catch (jsonError) {
-          throw new Error("Failed to parse JSON response: " + jsonError.message);
-        }
-
-        return legendJson.Legend[0].rules;
       } catch (e) {
         console.error(e);
-        throw e;
       }
+
+      return false;
     },
     getLegendFieldImage(rule) {
       const params = new URLSearchParams({
@@ -281,6 +249,28 @@ export default {
       const url = `${this.layer.url}?${params.toString()}`;
 
       return url;
+    },
+    async setLegend() {
+      // First, we try to fetch the legend as a JSON response.
+      // If the GeoServer accepts this request and returns a valid JSON legend, we stop and do not proceed to fetch the legend image.
+      // However, if this request fails, we then fetch the legend as an image instead.
+      const result = await this.fetchLegendAsJson();
+
+      if (result) {
+        this.legendJson = result;
+        this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
+      } else {
+        try {
+          const legendImageResult = await this.fetchLegendImage(this.layer, this.position, this.user);
+
+          if (legendImageResult) {
+            this.legendImage = legendImageResult.url;
+            this.errorLoadingLegend = legendImageResult.error;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
     },
     getFilterParameter(filterString) {
       // Regex to extract the parameter name before '='
