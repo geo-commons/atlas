@@ -298,7 +298,7 @@ import PointInfoPanel from "../PointInfoPanel";
 import DetailPanel from "../DetailPanel";
 import SearchPanel from "../SearchPanel";
 import LayersPanel from "../LayersPanel";
-import ToolsPanel from "../ToolsPanel";
+import ToolsPanel from "../tools/ToolsPanel.vue";
 import ZoomPanel from "../ZoomPanel";
 import GeoLocationButton from "../GeoLocationButton";
 import FilterListIcon from "../../assets/icons/filter-list-icon.svg";
