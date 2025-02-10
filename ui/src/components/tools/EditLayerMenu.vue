@@ -162,10 +162,12 @@ const toggleEditLayerMenu = () => {
 const toggleAddEditFeatureMode = () => {
   if (editLayerStore.editLayerMode !== EEditLayerMode.ADD) {
     editLayerStore.setEditLayerMode(EEditLayerMode.ADD);
+    setTool("");
 
     return;
   }
 
   editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  setTool("");
 };
 </script>
