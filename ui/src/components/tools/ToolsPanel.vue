@@ -36,6 +36,14 @@
         :after-draw="afterDraw"
         :toggle-draw="toggleDraw"
       />
+
+      <EditLayerMenu
+        v-if="config && config.features.edit_layer_features && features.edit_layer_features && user"
+        :show-edit-feature-menu="showEditFeatureMenu"
+        :toggle-edit-layer="toggleEditLayer"
+        :tool="tool"
+        :set-tool="setTool"
+      />
     </div>
   </div>
 </template>
@@ -45,10 +53,12 @@ import draw from "@/utils/draw";
 import SelectMenu from "@/components/tools/SelectMenu.vue";
 import MeasureMenu from "@/components/tools/MeasureMenu.vue";
 import DrawMenu from "@/components/tools/DrawMenu.vue";
+import EditLayerMenu from "@/components/tools/EditLayerMenu.vue";
 
 export default {
   name: "ToolsPanel",
   components: {
+    EditLayerMenu,
     DrawMenu,
     MeasureMenu,
     SelectMenu,
@@ -79,9 +89,9 @@ export default {
       showMeasureMenu: false,
       showDrawMenu: false,
       showSelectMenu: false,
+      showEditFeatureMenu: false,
       showLineWeightMenu: false,
       showFontSizeMenu: false,
-      previousTool: "",
     };
   },
   methods: {
@@ -93,6 +103,10 @@ export default {
 
       if (this.showDrawMenu) {
         this.showDrawMenu = false;
+      }
+
+      if (this.showEditFeatureMenu) {
+        this.showEditFeatureMenu = false;
       }
 
       if (this.tool === "MEASURE_AREA" || this.tool === "MEASURE_LINE") {
@@ -109,6 +123,10 @@ export default {
 
       if (this.showDrawMenu) {
         this.showDrawMenu = false;
+      }
+
+      if (this.showEditFeatureMenu) {
+        this.showEditFeatureMenu = false;
       }
 
       if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE") {
@@ -139,6 +157,10 @@ export default {
         this.showMeasureMenu = false;
       }
 
+      if (this.showEditFeatureMenu) {
+        this.showEditFeatureMenu = false;
+      }
+
       if (
         this.tool === "DRAW_POINT" ||
         this.tool === "DRAW_LINE" ||
@@ -150,6 +172,13 @@ export default {
       } else {
         this.showDrawMenu = !this.showDrawMenu;
       }
+    },
+    toggleEditLayer() {
+      this.setTool("");
+      this.showSelectMenu = false;
+      this.showMeasureMenu = false;
+      this.showDrawMenu = false;
+      this.showEditFeatureMenu = !this.showEditFeatureMenu;
     },
     resetAreaSelect() {
       this.$emit("set-selected-area", null);
@@ -253,6 +282,26 @@ export default {
   }
 }
 
+.tools-panel__draw-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: absolute;
+  right: 0;
+  margin-top: 40px;
+  box-shadow: var(--shadow-normal);
+  border-radius: var(--radius-normal);
+}
+
+.tools-panel__draw-menu {
+  position: relative;
+}
+
+.tools-panel__button {
+  border-right: 1px solid var(--color-grey-50);
+  border-radius: 0 !important;
+}
+
 @media (max-width: 576px) {
   .tools-panel__button {
     &--large {
@@ -262,6 +311,16 @@ export default {
         display: none;
       }
     }
+  }
+
+  .tools-panel__draw-bar {
+    display: grid;
+    flex-basis: 20%;
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .tools-panel__draw-bar button:nth-child(-n + 5) {
+    border-bottom: 1px solid var(--color-grey-50);
   }
 }
 </style>

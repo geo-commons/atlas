@@ -500,26 +500,6 @@ const saveDrawing = async () => {
 </script>
 
 <style scoped lang="scss">
-.tools-panel__draw-bar {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  position: absolute;
-  right: 0;
-  margin-top: 40px;
-  box-shadow: var(--shadow-normal);
-  border-radius: var(--radius-normal);
-}
-
-.tools-panel__draw-menu {
-  position: relative;
-}
-
-.tools-panel__button {
-  border-right: 1px solid var(--color-grey-50);
-  border-radius: 0 !important;
-}
-
 .tools-panel__draw-options-menu {
   display: flex;
   flex-direction: row;
@@ -598,17 +578,5 @@ const saveDrawing = async () => {
   min-width: 16px;
   min-height: 16px;
   margin-right: 7px;
-}
-
-@media (max-width: 576px) {
-  .tools-panel__draw-bar {
-    display: grid;
-    flex-basis: 20%;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .tools-panel__draw-bar button:nth-child(-n + 5) {
-    border-bottom: 1px solid var(--color-grey-50);
-  }
 }
 </style>

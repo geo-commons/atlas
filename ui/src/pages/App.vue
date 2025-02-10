@@ -117,6 +117,7 @@ export default {
       zoom: true,
       markerOnClick: true,
       draw: true,
+      edit_layer_features: true,
     };
 
     if (this.drawing) {
