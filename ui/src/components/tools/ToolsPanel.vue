@@ -54,6 +54,11 @@ import SelectMenu from "@/components/tools/SelectMenu.vue";
 import MeasureMenu from "@/components/tools/MeasureMenu.vue";
 import DrawMenu from "@/components/tools/DrawMenu.vue";
 import EditLayerMenu from "@/components/tools/EditLayerMenu.vue";
+import {
+  DEFAULT_DRAWING_COLOR,
+  DEFAULT_DRAWING_FONT_SIZE,
+  DEFAULT_DRAWING_STROKE_WIDTH,
+} from "@/components/constants/defaults";
 
 export default {
   name: "ToolsPanel",
@@ -94,6 +99,19 @@ export default {
       showLineWeightMenu: false,
       showFontSizeMenu: false,
     };
+  },
+  // This code resets the color, stroke width, and font size to their default values whenever 'showDrawMenu' is turned off
+  watch: {
+    showDrawMenu: {
+      handler(value) {
+        if (!value) {
+          this.$emit("set-color", DEFAULT_DRAWING_COLOR);
+          this.$emit("set-tool", "");
+          this.$emit("set-stroke-width", DEFAULT_DRAWING_STROKE_WIDTH);
+          this.$emit("set-font-size", DEFAULT_DRAWING_FONT_SIZE);
+        }
+      },
+    },
   },
   methods: {
     draw,
@@ -162,17 +180,8 @@ export default {
         this.showEditFeatureMenu = false;
       }
 
-      if (
-        this.tool === "DRAW_POINT" ||
-        this.tool === "DRAW_LINE" ||
-        this.tool === "DRAW_POLYGON" ||
-        this.tool === "DRAW_LABEL"
-      ) {
-        this.$emit("set-tool", "");
-        this.showDrawMenu = !this.showDrawMenu;
-      } else {
-        this.showDrawMenu = !this.showDrawMenu;
-      }
+      this.$emit("set-tool", "");
+      this.showDrawMenu = !this.showDrawMenu;
     },
     toggleEditLayer() {
       this.setTool("");
@@ -180,6 +189,7 @@ export default {
       this.showMeasureMenu = false;
       this.showDrawMenu = false;
       this.showEditFeatureMenu = !this.showEditFeatureMenu;
+      this.clearDrawing();
     },
     resetAreaSelect() {
       this.$emit("set-selected-area", null);

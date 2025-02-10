@@ -182,7 +182,6 @@
           :stroke-width="strokeWidth"
           :font-size="fontSize"
           @set-tool="setTool"
-          @set-edit-feature-mode="setEditFeatureMode"
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
           @clear-draw="() => (drawFeatures = [])"
@@ -320,6 +319,11 @@ import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
 import PanoramaPanel from "../PanoramaPanel.vue";
 import { useMapStore } from "@/stores/map_store";
+import {
+  DEFAULT_DRAWING_COLOR,
+  DEFAULT_DRAWING_FONT_SIZE,
+  DEFAULT_DRAWING_STROKE_WIDTH,
+} from "@/components/constants/defaults";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -419,13 +423,9 @@ export default {
       interaction: "",
       userLayerSettings: {},
       undoRedoInteraction: null,
-      color: {
-        red: 0,
-        green: 102,
-        blue: 255,
-      },
-      strokeWidth: 5,
-      fontSize: 22,
+      color: DEFAULT_DRAWING_COLOR,
+      strokeWidth: DEFAULT_DRAWING_STROKE_WIDTH,
+      fontSize: DEFAULT_DRAWING_FONT_SIZE,
       showPanoramaPanelFullScreen: false,
       loadingPrint: false,
     };
@@ -724,6 +724,11 @@ export default {
         case "DRAW_LABEL":
           this.drawFeatures.push(result.sketch);
           this.removedDrawFeatures = [];
+          break;
+        case "EDIT_POINT":
+        case "EDIT_LINE":
+        case "EDIT_POLYGON":
+          console.log("damn");
           break;
       }
     },

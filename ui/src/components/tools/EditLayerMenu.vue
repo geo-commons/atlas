@@ -7,7 +7,7 @@
     }"
     content="Laag objecten bewerken"
     aria-label="Laag objecten bewerken"
-    @click="toggleEditLayer"
+    @click="toggleEditLayerMenu"
   >
     <EditLocationIcon class="icon" />
   </button>
@@ -83,14 +83,14 @@
         <div class="tools-panel__draw-menu">
           <button
             v-tippy="{ placement: 'bottom' }"
-            aria-label="Polygoon"
+            aria-label="Vlak"
             class="tools-panel__button"
             :class="{
               'tools-panel__button--active':
                 tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
             }"
             :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD"
-            content="Polygoon"
+            content="Vlak"
             @click="() => setTool('EDIT_POLYGON')"
           >
             <PolyGonIcon />
@@ -149,6 +149,14 @@ const emitKeyDown = () => {
   const keyDownEvent = new KeyboardEvent("keydown", { key: "Backspace" });
 
   document.dispatchEvent(keyDownEvent);
+};
+
+const toggleEditLayerMenu = () => {
+  if (editLayerStore.editLayerMode !== EEditLayerMode.NONE) {
+    editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  }
+
+  toggleEditLayer();
 };
 
 const toggleAddEditFeatureMode = () => {
