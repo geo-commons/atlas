@@ -81,11 +81,14 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
   draw.on("drawstart", (e) => {
     sketch = e.feature;
 
-    sketch.setProperties({
-      color: color,
-      strokeWidth: strokeWidth,
-      fontSize: fontSize,
-    });
+    // If tool is a EDIT tool, don't set those custom properties
+    if (!this.tool.startsWith("EDIT")) {
+      sketch.setProperties({
+        color: color,
+        strokeWidth: strokeWidth,
+        fontSize: fontSize,
+      });
+    }
 
     onDrawStart();
 
