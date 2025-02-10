@@ -38,6 +38,7 @@
             :padding="mapPadding"
             :features="features"
             :draw-features="drawFeatures"
+            :edit-layer-features="editLayerFeatures"
             :color="color"
             :stroke-width="strokeWidth"
             :font-size="fontSize"
@@ -66,6 +67,7 @@
         :padding="mapPadding"
         :features="features"
         :draw-features="drawFeatures"
+        :edit-layer-features="editLayerFeatures"
         :color="color"
         :stroke-width="strokeWidth"
         :font-size="fontSize"
@@ -185,6 +187,7 @@
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
           @clear-draw="() => (drawFeatures = [])"
+          @clear-edit-layer-features="() => (editLayerFeatures = [])"
           @setInteraction="setInteraction"
           @setColor="setColor"
           @setStrokeWidth="setStrokeWidth"
@@ -404,6 +407,7 @@ export default {
       layers: this.initialLayers,
       position: this.initialPosition,
       drawFeatures: [],
+      editLayerFeatures: [],
       removedDrawFeatures: [],
       highlightedFeatures: [],
       selectedFeatures: [],
@@ -728,7 +732,7 @@ export default {
         case "EDIT_POINT":
         case "EDIT_LINE":
         case "EDIT_POLYGON":
-          console.log("damn");
+          this.editLayerFeatures.push(result.sketch);
           break;
       }
     },

@@ -94,6 +94,15 @@
       :vector-style="DRAW_STYLE"
       :z-index="2"
     />
+    <ol-vector-layer
+      ref="editLayerFeatures"
+      name="editLayerFeatures"
+      :selectable="true"
+      :is-visible="true"
+      :features="editLayerFeatures"
+      :vector-style="DRAW_STYLE"
+      :z-index="2"
+    />
   </ol-map>
 </template>
 
@@ -178,6 +187,7 @@ export default {
     selectedFeatures: Array,
     highlightedFeatures: { type: Array, default: () => [] },
     drawFeatures: { type: Array, default: () => [] },
+    editLayerFeatures: { type: Array, default: () => [] },
     padding: { type: Array, default: () => [0, 0, 0, 0] },
     color: Object,
     strokeWidth: Number,

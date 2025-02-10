@@ -100,8 +100,8 @@ export default {
       showFontSizeMenu: false,
     };
   },
-  // This code resets the color, stroke width, and font size to their default values whenever 'showDrawMenu' is turned off
   watch: {
+    // This code resets the color, stroke width, and font size to their default values whenever 'showDrawMenu' is turned off
     showDrawMenu: {
       handler(value) {
         if (!value) {
@@ -109,6 +109,13 @@ export default {
           this.$emit("set-tool", "");
           this.$emit("set-stroke-width", DEFAULT_DRAWING_STROKE_WIDTH);
           this.$emit("set-font-size", DEFAULT_DRAWING_FONT_SIZE);
+        }
+      },
+    },
+    showEditFeatureMenu: {
+      handler(value) {
+        if (!value) {
+          this.clearEditLayerFeatures();
         }
       },
     },
@@ -209,6 +216,9 @@ export default {
     },
     clearDrawing() {
       this.$emit("clear-draw");
+    },
+    clearEditLayerFeatures() {
+      this.$emit("clear-edit-layer-features");
     },
     disableDrawMenu() {
       this.showDrawMenu = false;
