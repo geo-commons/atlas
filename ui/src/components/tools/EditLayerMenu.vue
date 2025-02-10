@@ -18,11 +18,27 @@
         <div class="tools-panel__draw-menu">
           <button
             v-tippy="{ placement: 'bottom' }"
+            aria-label="Object toevoegen"
+            class="tools-panel__button"
+            :class="{
+              'tools-panel__button--active': editLayerStore.editLayerMode === EEditLayerMode.ADD,
+            }"
+            content="Object toevoegen"
+            @click="() => toggleAddEditFeatureMode()"
+          >
+            <AddIcon />
+          </button>
+        </div>
+        <div class="tools-panel__draw-menu">
+          <button
+            v-tippy="{ placement: 'bottom' }"
             aria-label="Punt"
             class="tools-panel__button"
             :class="{
-              'tools-panel__button--active': tool === 'EDIT_POINT',
+              'tools-panel__button--active':
+                tool === 'EDIT_POINT' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
             }"
+            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD"
             content="Punt"
             @click="() => setTool('EDIT_POINT')"
           >
@@ -35,8 +51,10 @@
             aria-label="Lijn"
             class="tools-panel__button"
             :class="{
-              'tools-panel__button--active': tool === 'EDIT_LINE',
+              'tools-panel__button--active':
+                tool === 'EDIT_LINE' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
             }"
+            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD"
             content="Lijn"
             @click="() => setTool('EDIT_LINE')"
           >
@@ -68,10 +86,12 @@
             aria-label="Polygoon"
             class="tools-panel__button"
             :class="{
-              'tools-panel__button--active': tool === 'EDIT_POLYGON',
+              'tools-panel__button--active':
+                tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
             }"
+            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD"
             content="Polygoon"
-            @click="() => setTool('DRAW_POLYGON')"
+            @click="() => setTool('EDIT_POLYGON')"
           >
             <PolyGonIcon />
           </button>
@@ -106,7 +126,11 @@ import LineIcon from "@/assets/icons/line-icon.svg";
 import UndoIcon from "@/assets/icons/undo-icon.svg";
 import PolyGonIcon from "@/assets/icons/polygon-icon.svg";
 import DotIcon from "@/assets/icons/dot-icon.svg";
+import AddIcon from "@/assets/icons/add-icon.svg";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
+import { EEditLayerMode } from "@/types/map";
 
+// Props
 interface EditLayerMenuProps {
   tool: string;
   showEditFeatureMenu: boolean;
@@ -116,10 +140,24 @@ interface EditLayerMenuProps {
 
 const { tool, showEditFeatureMenu, toggleEditLayer, setTool } = defineProps<EditLayerMenuProps>();
 
+// Store
+const editLayerStore = useEditLayerStore();
+
+// Methods
 // TODO: Fix working of this
 const emitKeyDown = () => {
   const keyDownEvent = new KeyboardEvent("keydown", { key: "Backspace" });
 
   document.dispatchEvent(keyDownEvent);
+};
+
+const toggleAddEditFeatureMode = () => {
+  if (editLayerStore.editLayerMode !== EEditLayerMode.ADD) {
+    editLayerStore.setEditLayerMode(EEditLayerMode.ADD);
+
+    return;
+  }
+
+  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
 };
 </script>

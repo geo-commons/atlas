@@ -65,6 +65,7 @@ export default {
   },
   props: {
     tool: String,
+    editFeatureMode: String,
     color: Object,
     user: Object,
     map: Object,
@@ -300,6 +301,75 @@ export default {
 .tools-panel__button {
   border-right: 1px solid var(--color-grey-50);
   border-radius: 0 !important;
+}
+
+.tools-panel__draw-options-menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: absolute;
+  left: 0;
+  margin-top: -1px;
+  box-shadow: var(--shadow-normal);
+  border-radius: var(--radius-small);
+
+  ul {
+    border-radius: var(--radius-small);
+  }
+}
+
+.tools-panel__option {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  width: 72px;
+
+  &--rectangle {
+    width: var(--width-button-large) !important;
+    height: var(--width-button-large) !important;
+  }
+
+  &--block {
+    display: block;
+  }
+
+  &--small-text {
+    font-size: 14px !important;
+  }
+
+  &--middle-text {
+    font-size: 18px !important;
+  }
+
+  &--large-text {
+    font-size: 22px !important;
+  }
+
+  &--larger-text {
+    font-size: 26px !important;
+  }
+
+  &--active {
+    background-color: var(--color-grey-40);
+    color: var(--color-primary);
+  }
+
+  &:hover {
+    background: var(--color-grey-40);
+  }
+
+  &:active {
+    background: var(--color-grey-50);
+  }
+
+  &:last-child {
+    border-radius: 0 0 var(--radius-small) var(--radius-small) !important;
+  }
 }
 
 @media (max-width: 576px) {

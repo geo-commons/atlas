@@ -17,6 +17,9 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     DRAW_POLYGON: "Polygon",
     DRAW_LABEL: "Point",
     DRAW_COORDINATE: "Point",
+    EDIT_POINT: "Point",
+    EDIT_LINE: "LineString",
+    EDIT_POLYGON: "Polygon",
   };
 
   const draw = new Draw({

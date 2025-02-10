@@ -182,6 +182,7 @@
           :stroke-width="strokeWidth"
           :font-size="fontSize"
           @set-tool="setTool"
+          @set-edit-feature-mode="setEditFeatureMode"
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
           @clear-draw="() => (drawFeatures = [])"
