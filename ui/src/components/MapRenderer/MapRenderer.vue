@@ -126,7 +126,7 @@
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
-    <EditLayerPanel :layers="regularLayers" />
+    <EditLayerPanel :layers="regularLayers" @set-tool="setTool" @set-selected-area="setSelectedArea" />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">

@@ -197,6 +197,7 @@ export default {
     },
     toggleEditLayer() {
       this.setTool("");
+      this.resetAreaSelect();
       this.showSelectMenu = false;
       this.showMeasureMenu = false;
       this.showDrawMenu = false;

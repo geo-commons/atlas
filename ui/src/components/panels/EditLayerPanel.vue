@@ -66,6 +66,12 @@ interface EditLayerPanelProps {
 // Props
 const { layers } = defineProps<EditLayerPanelProps>();
 
+// Emits
+const emit = defineEmits<{
+  (e: "set-selected-area", area: null | string);
+  (e: "set-tool", tool: string);
+}>();
+
 // Store
 const editLayerStore = useEditLayerStore();
 
@@ -88,9 +94,11 @@ watch(
 // Methods
 const handleDrawerClose = (value: boolean) => {
   showEditLayerPanel.value = value;
-  // TODO: Explore why line and polygon additions don't get removed
   // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
+
+  emit("set-selected-area", null);
+  emit("set-tool", "");
 };
 
 const toggleShowEditLayerSaveModal = () => {
@@ -122,8 +130,7 @@ const cancelLayerSaveModal = () => {
 };
 
 const handleSaveFeature = () => {
-  showEditLayerPanel.value = false;
-  editLayerStore.resetFeature();
+  handleDrawerClose(false);
 };
 </script>
 
