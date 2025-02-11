@@ -1,12 +1,12 @@
 <template>
   <Drawer
-    v-model:visible="showEditLayerPanel"
+    :visible="showEditLayerPanel"
     header="Object toevoegen"
     :dismissable="false"
     :pt="{
       mask: '!tw-bg-black/0',
     }"
-    @update:visible="handleDrawerClose"
+    @update:visible="toggleShowEditLayerCancelModal"
   >
     <div class="tw-flex tw-flex-col tw-gap-2">
       <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
@@ -32,18 +32,32 @@
           icon="pi pi-times"
           class="tw-flex-auto"
           outlined
-          @click="handleDrawerClose(false)"
+          @click="toggleShowEditLayerCancelModal"
         ></Button>
-        <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="handleSaveFeature"></Button>
+        <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="toggleShowEditLayerSaveModal"></Button>
       </div>
     </template>
   </Drawer>
+
+  <EditLayerSaveModal
+    :visible="showEditLayerSaveModal"
+    :on-cancel="cancelLayerSaveModal"
+    :on-save="saveLayerSaveModal"
+  />
+
+  <EditLayerCancelModal
+    :visible="showEditLayerCancelModal"
+    :on-cancel="cancelLayerCancelModal"
+    :on-proceed="proceedLayerCancelModal"
+  />
 </template>
 
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { ref, watch } from "vue";
 import { ILayer } from "@/types/layer";
+import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
+import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
 
 interface EditLayerPanelProps {
   layers: Array<ILayer>;
@@ -57,7 +71,8 @@ const editLayerStore = useEditLayerStore();
 
 // References
 const showEditLayerPanel = ref<boolean>(false);
-const selectedLayer = ref(null);
+const showEditLayerSaveModal = ref<boolean>(false);
+const showEditLayerCancelModal = ref<boolean>(false);
 
 // Watch
 watch(
@@ -76,12 +91,42 @@ const handleDrawerClose = (value: boolean) => {
   // TODO: ADD prevention (modal to check if somebody actually wants to close modal and reset his work)
   // TODO: Explore why line and polygon additions don't get removed
   // TODO: Explore why enter always closes the drawer
+  // TODO: Don't close on escape, only close modal on escape
   editLayerStore.resetFeature();
+};
+
+const toggleShowEditLayerSaveModal = () => {
+  showEditLayerSaveModal.value = !showEditLayerSaveModal.value;
+};
+
+const toggleShowEditLayerCancelModal = () => {
+  showEditLayerCancelModal.value = !showEditLayerCancelModal.value;
+};
+
+const proceedLayerCancelModal = () => {
+  toggleShowEditLayerCancelModal();
+
+  handleDrawerClose(false);
+};
+
+const cancelLayerCancelModal = () => {
+  toggleShowEditLayerCancelModal();
+};
+
+const saveLayerSaveModal = () => {
+  toggleShowEditLayerSaveModal();
+
+  handleSaveFeature();
+};
+
+const cancelLayerSaveModal = () => {
+  toggleShowEditLayerSaveModal();
 };
 
 const handleSaveFeature = () => {
   // TODO: ADD prevention (modal to check if somebody actually wants to close modal and reset his work)
   // TODO: Explore why line and polygon additions don't get removed
+
   showEditLayerPanel.value = false;
   editLayerStore.resetFeature();
 };

@@ -130,6 +130,8 @@ import AddIcon from "@/assets/icons/add-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EEditLayerMode } from "@/types/map";
 
+// TODO: FIX CLICK ON MAP OPENS DETAILPANEL
+
 // Props
 interface EditLayerMenuProps {
   tool: string;
