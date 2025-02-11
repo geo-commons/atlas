@@ -68,7 +68,14 @@
               />
             </svg>
           </label>
-          <input id="layers-search" v-model="searchQuery" type="search" name="query" placeholder="Zoek laag" />
+          <input
+            ref="searchLayerInput"
+            id="layers-search"
+            v-model="searchQuery"
+            type="search"
+            name="query"
+            placeholder="Zoek laag"
+          />
         </div>
         <li v-if="!showSimpleLayerList">
           <ExpandButton
@@ -275,6 +282,12 @@ export default {
       }
 
       this.panel = selectedPanel;
+
+      if (selectedPanel === "layers" && !this.showSearchBar) {
+        this.$nextTick(() => {
+          this.$refs.searchLayerInput?.focus();
+        });
+      }
     },
     onSelectLayer(selectedLayer) {
       this.$emit("toggle-layer", [selectedLayer.id, !selectedLayer.is_visible]);
