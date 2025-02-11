@@ -41,6 +41,15 @@
                 </div>
               </template>
             </tippy>
+            <button
+              v-tippy="{ hideOnClick: false }"
+              class="iconbutton __round show-on-hover"
+              :content="copyButtonText"
+              aria-label="Kopieer coördinaten"
+              @click="copyCoordinates"
+            >
+              <i class="pi pi-copy"></i>
+            </button>
           </div>
         </div>
         <button
@@ -111,6 +120,7 @@ export default {
     return {
       resetSidePanel: null,
       selectedFeatureDetails: null,
+      copyButtonText: "Kopieer coördinaten",
     };
   },
   computed: {
@@ -173,6 +183,19 @@ export default {
     },
     closeFeatureInfoDetails() {
       this.selectedFeatureDetails = null;
+    },
+    copyCoordinates() {
+      navigator.clipboard
+        .writeText(this.searchQuery.coordinates)
+        .then(() => {
+          this.copyButtonText = "Gekopieerd";
+          setTimeout(() => {
+            this.copyButtonText = "Kopieer coördinaten";
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error("Failed to copy coordinates:", err);
+        });
     },
   },
 };
