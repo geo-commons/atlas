@@ -126,6 +126,7 @@
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
+    <EditLayerPanel :layers="regularLayers" />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
@@ -325,12 +326,14 @@ import {
   DEFAULT_DRAWING_STROKE_WIDTH,
 } from "@/components/constants/defaults";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
+import EditLayerPanel from "@/components/panels/EditLayerPanel.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
   components: {
+    EditLayerPanel,
     PanoramaPanel,
     EmbedModal,
     AlertMessage,
