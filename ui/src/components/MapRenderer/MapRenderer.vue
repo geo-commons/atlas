@@ -183,6 +183,7 @@
           :color="color"
           :stroke-width="strokeWidth"
           :font-size="fontSize"
+          :edit-layer-features="editLayerFeatures"
           @set-tool="setTool"
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
@@ -733,6 +734,7 @@ export default {
         case "EDIT_LINE":
         case "EDIT_POLYGON":
           this.editLayerFeatures.push(result.sketch);
+          this.tool = "";
           break;
       }
     },

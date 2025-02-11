@@ -41,6 +41,7 @@
         v-if="config && config.features.edit_layer_features && features.edit_layer_features && user"
         :show-edit-feature-menu="showEditFeatureMenu"
         :toggle-edit-layer="toggleEditLayer"
+        :edit-layer-features="editLayerFeatures"
         :tool="tool"
         :set-tool="setTool"
       />
@@ -78,6 +79,7 @@ export default {
     removedDrawFeatures: Array,
     config: Object,
     strokeWidth: Number,
+    editLayerFeatures: Array,
     fontSize: Number,
     features: {
       type: Object,
