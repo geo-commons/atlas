@@ -38,7 +38,6 @@
             :padding="mapPadding"
             :features="features"
             :draw-features="drawFeatures"
-            :edit-layer-features="editLayerFeatures"
             :color="color"
             :stroke-width="strokeWidth"
             :font-size="fontSize"
@@ -67,7 +66,6 @@
         :padding="mapPadding"
         :features="features"
         :draw-features="drawFeatures"
-        :edit-layer-features="editLayerFeatures"
         :color="color"
         :stroke-width="strokeWidth"
         :font-size="fontSize"
@@ -183,12 +181,10 @@
           :color="color"
           :stroke-width="strokeWidth"
           :font-size="fontSize"
-          :edit-layer-features="editLayerFeatures"
           @set-tool="setTool"
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
           @clear-draw="() => (drawFeatures = [])"
-          @clear-edit-layer-features="() => (editLayerFeatures = [])"
           @setInteraction="setInteraction"
           @setColor="setColor"
           @setStrokeWidth="setStrokeWidth"
@@ -328,6 +324,7 @@ import {
   DEFAULT_DRAWING_FONT_SIZE,
   DEFAULT_DRAWING_STROKE_WIDTH,
 } from "@/components/constants/defaults";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -408,7 +405,6 @@ export default {
       layers: this.initialLayers,
       position: this.initialPosition,
       drawFeatures: [],
-      editLayerFeatures: [],
       removedDrawFeatures: [],
       highlightedFeatures: [],
       selectedFeatures: [],
@@ -436,7 +432,7 @@ export default {
     };
   },
   computed: {
-    ...mapStores(useGlobalStore),
+    ...mapStores(useGlobalStore, useEditLayerStore),
     showInfoPanel() {
       return this.position.marker ? true : false;
     },
@@ -733,7 +729,7 @@ export default {
         case "EDIT_POINT":
         case "EDIT_LINE":
         case "EDIT_POLYGON":
-          this.editLayerFeatures.push(result.sketch);
+          this.editLayerStore.setFeature(result.sketch);
           this.tool = "";
           break;
       }

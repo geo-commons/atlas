@@ -38,7 +38,7 @@
               'tools-panel__button--active':
                 tool === 'EDIT_POINT' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
             }"
-            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerFeatures.length > 0"
+            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
             content="Punt"
             @click="() => setTool('EDIT_POINT')"
           >
@@ -54,7 +54,7 @@
               'tools-panel__button--active':
                 tool === 'EDIT_LINE' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
             }"
-            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerFeatures.length > 0"
+            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
             content="Lijn"
             @click="() => setTool('EDIT_LINE')"
           >
@@ -89,7 +89,7 @@
               'tools-panel__button--active':
                 tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
             }"
-            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerFeatures.length > 0"
+            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
             content="Vlak"
             @click="() => setTool('EDIT_POLYGON')"
           >
@@ -133,13 +133,12 @@ import { EEditLayerMode } from "@/types/map";
 // Props
 interface EditLayerMenuProps {
   tool: string;
-  editLayerFeatures: any[];
   showEditFeatureMenu: boolean;
   toggleEditLayer: () => void;
   setTool: (tool: string) => void;
 }
 
-const { tool, editLayerFeatures, showEditFeatureMenu, toggleEditLayer, setTool } = defineProps<EditLayerMenuProps>();
+const { tool, showEditFeatureMenu, toggleEditLayer, setTool } = defineProps<EditLayerMenuProps>();
 
 // Store
 const editLayerStore = useEditLayerStore();

@@ -99,7 +99,7 @@
       name="editLayerFeatures"
       :selectable="true"
       :is-visible="true"
-      :features="editLayerFeatures"
+      :features="editLayerStore.feature ? [editLayerStore.feature] : []"
       :vector-style="DRAW_STYLE"
       :z-index="2"
     />
@@ -127,6 +127,8 @@ import "ol/ol.css";
 import { getFeatureFontSize, getFeatureRgba, getFeatureStrokeWidth } from "@/utils/feature-utils";
 import { fetchLegendImage } from "@/utils/legend-utils";
 import { printMapToPdf } from "@/utils/print-util";
+import { mapStores } from "pinia";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
 
 const MARKER_STYLE = new Style({
   image: new Icon({
@@ -187,7 +189,6 @@ export default {
     selectedFeatures: Array,
     highlightedFeatures: { type: Array, default: () => [] },
     drawFeatures: { type: Array, default: () => [] },
-    editLayerFeatures: { type: Array, default: () => [] },
     padding: { type: Array, default: () => [0, 0, 0, 0] },
     color: Object,
     strokeWidth: Number,
@@ -200,6 +201,7 @@ export default {
     };
   },
   computed: {
+    ...mapStores(useEditLayerStore),
     DRAW_STYLE() {
       return (feature) =>
         new Style({

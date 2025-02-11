@@ -41,7 +41,6 @@
         v-if="config && config.features.edit_layer_features && features.edit_layer_features && user"
         :show-edit-feature-menu="showEditFeatureMenu"
         :toggle-edit-layer="toggleEditLayer"
-        :edit-layer-features="editLayerFeatures"
         :tool="tool"
         :set-tool="setTool"
       />
@@ -60,6 +59,8 @@ import {
   DEFAULT_DRAWING_FONT_SIZE,
   DEFAULT_DRAWING_STROKE_WIDTH,
 } from "@/components/constants/defaults";
+import { mapStores } from "pinia";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
 
 export default {
   name: "ToolsPanel",
@@ -79,7 +80,6 @@ export default {
     removedDrawFeatures: Array,
     config: Object,
     strokeWidth: Number,
-    editLayerFeatures: Array,
     fontSize: Number,
     features: {
       type: Object,
@@ -91,6 +91,9 @@ export default {
         };
       },
     },
+  },
+  computed: {
+    ...mapStores(useEditLayerStore),
   },
   data() {
     return {
@@ -117,7 +120,7 @@ export default {
     showEditFeatureMenu: {
       handler(value) {
         if (!value) {
-          this.clearEditLayerFeatures();
+          this.editLayerStore.resetFeature();
         }
       },
     },
@@ -218,9 +221,6 @@ export default {
     },
     clearDrawing() {
       this.$emit("clear-draw");
-    },
-    clearEditLayerFeatures() {
-      this.$emit("clear-edit-layer-features");
     },
     disableDrawMenu() {
       this.showDrawMenu = false;
