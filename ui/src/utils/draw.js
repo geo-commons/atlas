@@ -55,6 +55,8 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
   // Complete drawing on escape or enter touch
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" || event.key === "Enter") {
+      event.preventDefault();
+
       draw.finishDrawing();
     }
   });

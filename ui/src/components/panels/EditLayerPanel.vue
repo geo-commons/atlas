@@ -88,10 +88,8 @@ watch(
 // Methods
 const handleDrawerClose = (value: boolean) => {
   showEditLayerPanel.value = value;
-  // TODO: ADD prevention (modal to check if somebody actually wants to close modal and reset his work)
   // TODO: Explore why line and polygon additions don't get removed
-  // TODO: Explore why enter always closes the drawer
-  // TODO: Don't close on escape, only close modal on escape
+  // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
 };
 
@@ -124,9 +122,6 @@ const cancelLayerSaveModal = () => {
 };
 
 const handleSaveFeature = () => {
-  // TODO: ADD prevention (modal to check if somebody actually wants to close modal and reset his work)
-  // TODO: Explore why line and polygon additions don't get removed
-
   showEditLayerPanel.value = false;
   editLayerStore.resetFeature();
 };
