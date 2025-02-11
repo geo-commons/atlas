@@ -144,7 +144,6 @@ const { tool, showEditFeatureMenu, toggleEditLayer, setTool } = defineProps<Edit
 const editLayerStore = useEditLayerStore();
 
 // Methods
-// TODO: Fix working of this
 const emitKeyDown = () => {
   const keyDownEvent = new KeyboardEvent("keydown", { key: "Backspace" });
 

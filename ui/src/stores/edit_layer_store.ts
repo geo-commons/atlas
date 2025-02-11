@@ -6,7 +6,6 @@ export interface IEditLayerStore {
   editLayerMode: EEditLayerMode;
   // TODO: find correct type
   feature: any;
-  // TODO: find correct type
   selectedLayer: ILayer | null;
 }
 
