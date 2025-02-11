@@ -99,7 +99,7 @@
       v-if="!showPanoramaPanel && features.markerOnClick"
       :layers="layers"
       :position="position"
-      :show-panel="!showDataPanel && showInfoPanel"
+      :show-panel="!showDataPanel && showInfoPanel && editLayerStore.editLayerMode === ''"
       :user="user"
       @set-position="setPosition"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
@@ -107,7 +107,7 @@
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
-      :show-panel="selectedFeatures.length > 0"
+      :show-panel="selectedFeatures.length > 0 && editLayerStore.editLayerMode === ''"
       :features="selectedFeatures"
       @features-selected="featuresSelected"
     />

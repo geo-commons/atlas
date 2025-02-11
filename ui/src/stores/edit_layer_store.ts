@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { EEditLayerMode } from "@/types/map";
+import { ILayer } from "@/types/layer";
 
 export interface IEditLayerStore {
   editLayerMode: EEditLayerMode;
   // TODO: find correct type
   feature: any;
   // TODO: find correct type
-  selectedLayer: any;
+  selectedLayer: ILayer | null;
 }
 
 export const useEditLayerStore = defineStore("editLayer", {
@@ -22,7 +23,7 @@ export const useEditLayerStore = defineStore("editLayer", {
     setFeature(feature: any) {
       this.feature = feature;
     },
-    setSelectedLayer(selectedLayer: any) {
+    setSelectedLayer(selectedLayer: ILayer) {
       this.selectedLayer = selectedLayer;
     },
     resetFeature() {
