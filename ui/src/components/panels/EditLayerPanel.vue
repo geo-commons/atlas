@@ -30,8 +30,9 @@
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
         <p v-for="property in layerProperties" :key="property.name">{{ property.name }}</p>
       </div>
-      <!-- Write transactions are restricted to layers of type 'WFS' and 'WFS_WMS'.
-      Display an error message if the selected layer's source type is anything other than these two. -->
+      <!-- Write transactions are restricted to layers of type 'WFS' and 'WMS_WFS'.
+      Display an error message if the selected layer's source type is anything other than these two.
+      If layer is of type 'WFS' or 'WMS_WFS' but their is still an error, show this error-->
       <div v-else>
         <Message severity="error">{{
           layerTypeIsWFSOrWMSWFS
