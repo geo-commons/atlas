@@ -7,6 +7,7 @@
       v-if="!filterOnId"
       v-model="selectedItems"
       :options="currentFilterOptions"
+      :virtual-scroller-options="{ itemSize: 50 }"
       placeholder="Kies waarde"
       filter-placeholder="Zoek waarde"
       filter
@@ -17,6 +18,7 @@
       v-model="selectedItems"
       :option-label="optionLabel"
       :options="currentFilterOptions"
+      :virtual-scroller-options="{ itemSize: 50 }"
       placeholder="Kies waarde"
       filter-placeholder="Zoek waarde"
       filter
