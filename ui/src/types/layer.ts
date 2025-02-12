@@ -4,6 +4,7 @@ export interface ILayer {
   title: string;
   url: string;
   source_type: ELayerTypes;
+  is_visible: boolean;
 }
 
 export type ILayerProperties = Array<{

@@ -12,7 +12,7 @@
       <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
       <Select
         :model-value="editLayerStore.selectedLayer"
-        :options="layers"
+        :options="visibleLayers"
         filter
         name="edit-layer-panel-choose-layer"
         option-label="title"
@@ -113,6 +113,10 @@ const layerTypeIsWFSOrWMSWFS = computed(() => {
     ? editLayerStore.selectedLayer.source_type === ELayerTypes.WFS ||
         editLayerStore.selectedLayer.source_type === ELayerTypes.WMS_WFS
     : false;
+});
+
+const visibleLayers = computed(() => {
+  return layers.filter((layer) => layer.is_visible);
 });
 
 const isSaveButtonDisabled = computed(() => {
