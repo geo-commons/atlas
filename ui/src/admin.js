@@ -212,6 +212,20 @@ const routes = [
       },
     },
   },
+  {
+    path: "/preview/:id?",
+    name: "MapPreview",
+    component: () => import("@/components/MapPreview.vue"),
+    props: (route) => {
+      return {
+        features: JSON.parse(decodeURIComponent(route.query.features)),
+        layers: JSON.parse(decodeURIComponent(route.query.layers)),
+        position: JSON.parse(decodeURIComponent(route.query.position)),
+        settings: JSON.parse(decodeURIComponent(route.query.settings)),
+        user: JSON.parse(decodeURIComponent(route.query.user)),
+      };
+    },
+  },
   { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
 ];
 
