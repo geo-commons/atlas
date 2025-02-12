@@ -38,21 +38,25 @@
       @show-layerlist="() => showSidebar('LayerList')"
     />
     <div class="editor-map-wrapper">
-      <h2>
-        <ViewIcon class="icon __large" />
-        Voorbeeldweergave
-      </h2>
-      <MapRenderer
-        ref="map"
-        class="editor-map"
-        :features="data.features"
-        :initial-layers="configuredLayers"
-        :initial-position="position"
-        :settings="data.settings"
-        :user="user"
-        :admin-map="true"
-        @update-user-settings="updateUserSettings"
-      />
+      <div class="select-button-container flex __center">
+        <SelectButton
+          v-model="previewMode"
+          :options="previewModes"
+          option-label="value"
+          :class="'p-buttonset-sm'"
+          :model-value="previewModes[0]"
+        >
+          <template #option="slotProps">
+            <i :class="slotProps.option.icon"></i>
+            {{ slotProps.option.label }}
+          </template>
+        </SelectButton>
+      </div>
+      <iframe
+        class="preview-container mx-auto"
+        :class="`preview-container--${previewMode.value ? previewMode.value : 'desktop'}`"
+        :src="previewUrl"
+      ></iframe>
     </div>
   </div>
 </template>
@@ -61,7 +65,6 @@
 import Cookies from "js-cookie";
 import { mapState } from "pinia";
 
-import MapRenderer from "../../components/MapRenderer/MapRenderer";
 import MapForm from "../components/MapForm";
 import MapLayers from "../components/MapLayers";
 import ListPanelAdmin from "../components/ListPanelAdmin";
@@ -69,19 +72,15 @@ import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
 import MapLayer from "@/admin/components/MapLayer.vue";
 import LayerListPanel from "../components/LayerListPanel.vue";
 import { useGlobalStore } from "@/stores";
-import ViewIcon from "../../assets/icons/view-icon.svg";
-
 export default {
   name: "MapCreateUpdate",
   components: {
     MapLayer,
-    MapRenderer,
     MapForm,
     MapLayers,
     ListPanelAdmin,
     FiltersPanelAdmin,
     LayerListPanel,
-    ViewIcon,
   },
   data() {
     return {
@@ -91,19 +90,13 @@ export default {
       sidebar: "Form",
       selectedLayerData: null,
       userLayerSettings: null,
+      previewMode: "desktop",
+      previewModes: [
+        { value: "desktop", icon: "pi pi-desktop", label: "Desktop" },
+        { value: "tablet", icon: "pi pi-tablet", label: "Tablet" },
+        { value: "mobile", icon: "pi pi-mobile", label: "Mobiel" },
+      ],
     };
-  },
-  watch: {
-    "data.features.filters"(newValue) {
-      if (!newValue && this.$refs.map && this.$refs.map.showFilters) {
-        this.$refs.map.toggleFilters();
-      }
-    },
-    "data.features.list"(newValue) {
-      if (!newValue && this.$refs.map && this.$refs.map.showList) {
-        this.$refs.map.toggleList();
-      }
-    },
   },
   computed: {
     ...mapState(useGlobalStore, ["position", "layers", "config", "user"]),
@@ -159,6 +152,29 @@ export default {
       }
 
       return this.layers;
+    },
+    previewUrl() {
+      if (!this.data) return "/atlas/admin/#/preview";
+      const params = new URLSearchParams();
+      params.append("features", JSON.stringify(this.data.features || {}));
+      params.append("layers", JSON.stringify(this.configuredLayers || []));
+      params.append("position", JSON.stringify(this.position));
+      params.append("settings", JSON.stringify(this.data.settings || {}));
+      params.append("user", JSON.stringify(this.user || {}));
+
+      return `/atlas/admin/#/preview/${this.$route.params.id}?admin_env_indicator=hide&${params.toString()}`;
+    },
+  },
+  watch: {
+    "data.features.filters"(newValue) {
+      if (!newValue && this.$refs.map && this.$refs.map.showFilters) {
+        this.$refs.map.toggleFilters();
+      }
+    },
+    "data.features.list"(newValue) {
+      if (!newValue && this.$refs.map && this.$refs.map.showList) {
+        this.$refs.map.toggleList();
+      }
     },
   },
   created() {
@@ -289,7 +305,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .map-update {
   display: flex;
   height: 100%;
@@ -310,13 +326,35 @@ h2 {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin: 20px var(--padding-screen) var(--padding-screen) var(--padding-screen);
+  padding: 20px var(--padding-screen) var(--padding-screen) var(--padding-screen);
+  max-width: 100%;
+  overflow-x: auto;
 }
 
-.editor-map {
-  z-index: 0;
+.preview-container {
+  margin: 1rem auto;
+  height: 100%;
+  overflow: hidden;
+  border: none;
+  transition:
+    width 0.3s ease,
+    min-width 0.3s ease;
   outline: 1px solid var(--color-grey-60);
   border-radius: var(--radius-large);
-  overflow: hidden;
+  width: 100%;
+
+  &--desktop {
+    min-width: 1024px;
+  }
+
+  &--tablet {
+    width: 768px;
+    min-width: 0;
+  }
+
+  &--mobile {
+    width: 375px;
+    min-width: 0;
+  }
 }
 </style>

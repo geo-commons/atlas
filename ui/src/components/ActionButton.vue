@@ -21,7 +21,7 @@ import ChevronRightIcon from "../assets/icons/chevron-right-icon.svg";
 import { useMapStore } from "@/stores/map_store";
 
 export default {
-  name: "SelectButton",
+  name: "ActionButton",
   components: { ChevronRightIcon },
   props: {
     id: String,
