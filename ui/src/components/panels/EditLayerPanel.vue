@@ -28,14 +28,24 @@
     <div v-if="editLayerStore.selectedLayer" class="tw-py-4">
       <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col">
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
-        <div
-          v-for="property in layerProperties"
-          :key="property.name"
-          class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end"
-        >
-          <p>{{ property.name }}</p>
-          <InputText :placeholder="property.name" type="text" />
-        </div>
+        <vee-form ref="form" @submit="handleSubmit">
+          <div
+            v-for="property in layerProperties"
+            :key="property.name"
+            class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end"
+          >
+            <p>{{ property.name }}</p>
+            <vee-field
+              v-slot="{ field }"
+              :name="property.name"
+              type="text"
+              :rules="property.nillable ? '' : 'required'"
+            >
+              <!-- TODO: Check if this works, show error message if required (property.nillable) -->
+              <InputText v-bind="field" :placeholder="property.name" type="text" />
+            </vee-field>
+          </div>
+        </vee-form>
       </div>
       <!-- Write transactions are restricted to layers of type 'WFS' and 'WMS_WFS'.
       Display an error message if the selected layer's source type is anything other than these two.
@@ -63,7 +73,7 @@
           label="Opslaan"
           icon="pi pi-save"
           class="tw-flex-auto"
-          @click="toggleShowEditLayerSaveModal"
+          @click="submitFormManually"
         ></Button>
       </div>
     </template>
@@ -90,6 +100,8 @@ import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
 import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
 import { getWfsOrWFSWMSLayerProperties } from "@/services/layer";
 import { IUser } from "@/types/user";
+import { Form as VeeForm, Field as VeeField, defineRule } from "vee-validate";
+import { required } from "@vee-validate/rules";
 
 interface EditLayerPanelProps {
   layers: Array<ILayer>;
@@ -114,6 +126,7 @@ const showEditLayerSaveModal = ref<boolean>(false);
 const showEditLayerCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
+const form = ref(null);
 
 // Computes
 const layerTypeIsWFSOrWMSWFS = computed(() => {
@@ -161,6 +174,26 @@ watch(
   },
   { deep: true },
 );
+
+// Form logic
+defineRule("required", (value: string) => {
+  if (!required(value)) {
+    return "Dit veld is verplicht";
+  }
+  return true;
+});
+
+const handleSubmit = (values: any) => {
+  console.log(values);
+
+  toggleShowEditLayerSaveModal();
+};
+
+const submitFormManually = () => {
+  if (form.value) {
+    (form.value as any).$el.requestSubmit();
+  }
+};
 
 // Methods
 const handleDrawerClose = (value: boolean) => {
