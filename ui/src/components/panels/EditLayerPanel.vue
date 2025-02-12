@@ -25,6 +25,22 @@
       />
     </div>
 
+    <div v-if="editLayerStore.selectedLayer" class="tw-py-4">
+      <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError">
+        <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
+        <p v-for="property in layerProperties" :key="property.name">{{ property.name }}</p>
+      </div>
+      <!-- Write transactions are restricted to layers of type 'WFS' and 'WFS_WMS'.
+      Display an error message if the selected layer's source type is anything other than these two. -->
+      <div v-else>
+        <Message severity="error">{{
+          layerTypeIsWFSOrWMSWFS
+            ? drawerError
+            : "Atlas ondersteund enkel het toevoegen van objecten voor WFS en WMS_WFS kaartlagen"
+        }}</Message>
+      </div>
+    </div>
+
     <template #footer>
       <div class="tw-flex tw-items-center tw-gap-2 tw-p-4">
         <Button
@@ -34,7 +50,13 @@
           outlined
           @click="toggleShowEditLayerCancelModal"
         ></Button>
-        <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="toggleShowEditLayerSaveModal"></Button>
+        <Button
+          :disabled="isSaveButtonDisabled"
+          label="Opslaan"
+          icon="pi pi-save"
+          class="tw-flex-auto"
+          @click="toggleShowEditLayerSaveModal"
+        ></Button>
       </div>
     </template>
   </Drawer>
@@ -54,22 +76,25 @@
 
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import { ref, watch } from "vue";
-import { ILayer } from "@/types/layer";
+import { computed, ref, watch } from "vue";
+import { ELayerTypes, ILayer, ILayerProperties } from "@/types/layer";
 import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
 import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
+import { getWfsOrWFSWMSLayerProperties } from "@/services/layer";
+import { IUser } from "@/types/user";
 
 interface EditLayerPanelProps {
   layers: Array<ILayer>;
+  user: IUser;
 }
 
 // Props
-const { layers } = defineProps<EditLayerPanelProps>();
+const { layers, user } = defineProps<EditLayerPanelProps>();
 
 // Emits
 const emit = defineEmits<{
-  (e: "set-selected-area", area: null | string);
-  (e: "set-tool", tool: string);
+  (e: "set-selected-area", area: null | string): void;
+  (e: "set-tool", tool: string): void;
 }>();
 
 // Store
@@ -79,6 +104,20 @@ const editLayerStore = useEditLayerStore();
 const showEditLayerPanel = ref<boolean>(false);
 const showEditLayerSaveModal = ref<boolean>(false);
 const showEditLayerCancelModal = ref<boolean>(false);
+const drawerError = ref<string | null>(null);
+const layerProperties = ref<ILayerProperties>([]);
+
+// Computes
+const layerTypeIsWFSOrWMSWFS = computed(() => {
+  return editLayerStore.selectedLayer
+    ? editLayerStore.selectedLayer.source_type === ELayerTypes.WFS ||
+        editLayerStore.selectedLayer.source_type === ELayerTypes.WMS_WFS
+    : false;
+});
+
+const isSaveButtonDisabled = computed(() => {
+  return !layerTypeIsWFSOrWMSWFS.value || !editLayerStore.selectedLayer;
+});
 
 // Watch
 watch(
@@ -86,6 +125,25 @@ watch(
   (value, oldValue) => {
     if (oldValue === null && value !== null && !showEditLayerPanel.value) {
       showEditLayerPanel.value = true;
+    }
+  },
+  { deep: true },
+);
+
+// Watch
+watch(
+  () => editLayerStore.selectedLayer,
+  async (selectedLayer) => {
+    if (selectedLayer) {
+      try {
+        layerProperties.value = await getWfsOrWFSWMSLayerProperties(selectedLayer, user);
+        drawerError.value = null;
+      } catch (e: unknown) {
+        layerProperties.value = [];
+        drawerError.value = (e as Error).message;
+
+        console.error((e as Error).message);
+      }
     }
   },
   { deep: true },
