@@ -26,9 +26,16 @@
     </div>
 
     <div v-if="editLayerStore.selectedLayer" class="tw-py-4">
-      <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError">
+      <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col">
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
-        <p v-for="property in layerProperties" :key="property.name">{{ property.name }}</p>
+        <div
+          v-for="property in layerProperties"
+          :key="property.name"
+          class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end"
+        >
+          <p>{{ property.name }}</p>
+          <InputText :placeholder="property.name" type="text" />
+        </div>
       </div>
       <!-- Write transactions are restricted to layers of type 'WFS' and 'WMS_WFS'.
       Display an error message if the selected layer's source type is anything other than these two.
@@ -116,6 +123,7 @@ const layerTypeIsWFSOrWMSWFS = computed(() => {
     : false;
 });
 
+// TODO: explore why this sometimes doesnt get recalculated
 const visibleLayers = computed(() => {
   return layers.filter((layer) => layer.is_visible);
 });
