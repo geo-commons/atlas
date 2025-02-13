@@ -12,7 +12,7 @@
       <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
       <Select
         :model-value="editLayerStore.selectedLayer"
-        :options="visibleLayers"
+        :options="layers.filter((layer) => layer.is_visible)"
         filter
         name="edit-layer-panel-choose-layer"
         option-label="title"
@@ -28,22 +28,41 @@
     <div v-if="editLayerStore.selectedLayer" class="tw-py-4">
       <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col">
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
-        <vee-form ref="form" @submit="handleSubmit">
-          <div
-            v-for="property in layerProperties"
-            :key="property.name"
-            class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end"
-          >
-            <p>{{ property.name }}</p>
-            <vee-field
-              v-slot="{ field }"
-              :name="property.name"
-              type="text"
-              :rules="property.nillable ? '' : 'required'"
-            >
-              <!-- TODO: Check if this works, show error message if required (property.nillable) -->
-              <InputText v-bind="field" :placeholder="property.name" type="text" />
-            </vee-field>
+        <vee-form ref="form" v-slot="{ errors }" class="tw-flex tw-flex-col tw-gap-2 tw-py-2" @submit="handleSubmit">
+          <div v-for="property in layerProperties" :key="property.name">
+            <Message
+              :class="{
+                'tw-hidden': !errors[property.name],
+              }"
+              class="edit-layer-panel__error"
+              severity="error"
+              variant="simple"
+              >{{ errors[property.name] }}
+            </Message>
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-start">
+              <label
+                :for="property.name"
+                :class="{
+                  'edit-layer-panel__error': errors[property.name],
+                }"
+                >{{ property.name }}</label
+              >
+              <vee-field
+                v-slot="{ field }"
+                :name="property.name"
+                type="text"
+                :rules="property.nillable ? '' : 'required'"
+              >
+                <!-- TODO: Check if this works, show error message if required (property.nillable) -->
+                <InputText
+                  v-bind="field"
+                  :id="property.name"
+                  :placeholder="property.name"
+                  type="text"
+                  :invalid="Boolean(errors[property.name])"
+                />
+              </vee-field>
+            </div>
           </div>
         </vee-form>
       </div>
@@ -94,7 +113,7 @@
 
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import { computed, ref, toRaw, unref, watch } from "vue";
+import { computed, ref, unref, watch } from "vue";
 import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
 import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
 import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
@@ -140,16 +159,10 @@ const layerTypeIsWFSOrWMSWFS = computed(() => {
     : false;
 });
 
-// TODO: explore why this sometimes doesnt get recalculated
-const visibleLayers = computed(() => {
-  return layers.filter((layer) => layer.is_visible);
-});
-
 const isSaveButtonDisabled = computed(() => {
   return !layerTypeIsWFSOrWMSWFS.value || !editLayerStore.selectedLayer;
 });
 
-// Watch
 watch(
   () => editLayerStore.feature,
   (value, oldValue) => {
@@ -258,4 +271,8 @@ const handleSaveFeature = async () => {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.edit-layer-panel__error {
+  color: var(--color-alert) !important;
+}
+</style>
