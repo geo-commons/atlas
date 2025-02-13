@@ -21,7 +21,7 @@ export const useEditLayerStore = defineStore("editLayer", {
     setFeature(feature: any) {
       this.feature = feature;
     },
-    setSelectedLayer(selectedLayer: ILayer) {
+    setSelectedLayer(selectedLayer: ILayer | null) {
       this.selectedLayer = selectedLayer;
     },
     resetFeature() {

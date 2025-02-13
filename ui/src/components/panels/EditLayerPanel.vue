@@ -53,7 +53,6 @@
                 type="text"
                 :rules="property.nillable ? '' : 'required'"
               >
-                <!-- TODO: Check if this works, show error message if required (property.nillable) -->
                 <InputText
                   v-bind="field"
                   :id="property.name"
@@ -190,6 +189,10 @@ watch(
           targetNamespace: targetNamespace,
         };
         drawerError.value = null;
+
+        if (form.value) {
+          (form.value as any).resetForm();
+        }
       } catch (e: unknown) {
         layerProperties.value = [];
         drawerError.value = (e as Error).message;
@@ -226,6 +229,7 @@ const handleDrawerClose = (value: boolean) => {
   showEditLayerPanel.value = value;
   // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
+  editLayerStore.setSelectedLayer(null);
 
   emit("set-selected-area", null);
   emit("set-tool", "");
@@ -266,8 +270,7 @@ const handleSaveFeature = async () => {
     console.error((e as Error).message);
   }
 
-  // TODO: ENABLE THIS
-  // handleDrawerClose(true);
+  handleDrawerClose(false);
 };
 </script>
 
