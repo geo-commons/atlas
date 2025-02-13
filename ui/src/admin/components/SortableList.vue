@@ -1,34 +1,11 @@
 <template>
   <div>
-    <div class="sort-column-header-wrapper">
+    <div class="tw-flex tw-justify-between tw-items-center">
       <h3>{{ title }}</h3>
       <button class="button __secondary_admin __small" type="button" @click="sortItems">Sorteer alfabetisch</button>
     </div>
-
-    <div class="help-text-wrapper">
-      <button
-        type="button"
-        class="help-text-button"
-        @click="showKeyboardInstructions = !showKeyboardInstructions"
-        @keydown.enter.prevent="showKeyboardInstructions = !showKeyboardInstructions"
-        v-text="keyboardInstructionsButtonText"
-      />
-      <p
-        v-if="showKeyboardInstructions"
-        v-text="
-          'Selecteer en deselecteer een actief element met behulp van de spatiebalk. Verplaats met behulp van pijlen omhoog en omlaag het element naar de gewenste plek.'
-        "
-      />
-    </div>
-
-    <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
-
-    <table v-if="items?.length > 0" class="sort-table">
-      <thead>
-        <tr class="table-border">
-          <th class="sort-column-padding">Titel</th>
-        </tr>
-      </thead>
+    <table v-if="items?.length > 0" class="tw-w-full tw-border-collapse tw-bg-white">
+      <thead></thead>
       <draggable
         v-bind="dragOptions"
         v-model="items"
@@ -42,7 +19,11 @@
         <template #item="{ element }">
           <tr
             class="table-border"
-            :class="{ 'active-row': checkRow(element), [itemGroupClass]: true }"
+            :class="{
+              'active-row': checkRow(element),
+              [itemGroupClass]: true,
+              'hover:tw-bg-admin-primary-hover tw-cursor-grab': true,
+            }"
             role="option"
             draggable="true"
             tabindex="0"
@@ -53,7 +34,12 @@
             @keydown.up.prevent="moveItem(false)"
             @keydown.enter.prevent="selectRow(element)"
           >
-            <td class="sort-column-padding">{{ element.title }}</td>
+            <td class="tw-py-2">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <DragIcon class="tw-flex-shrink-0 tw-opacity-20 tw-cursor-grab drag-icon" />
+                <span>{{ element.title }}</span>
+              </div>
+            </td>
           </tr>
         </template>
       </draggable>
@@ -65,13 +51,14 @@
 </template>
 
 <script>
+import DragIcon from "@/assets/icons/drag.svg";
 import draggable from "vuedraggable";
 import { sortAlphabetically } from "@/utils/table-sort-helpers";
 import { debounce } from "@/utils/debouncer";
 
 export default {
   name: "SortableList",
-  components: { draggable },
+  components: { draggable, DragIcon },
   props: {
     currentItemList: Array,
     title: String,
@@ -89,8 +76,6 @@ export default {
       isGrabbed: false,
       grabbedItemIndex: null,
       grabbedItemElement: null,
-      assistiveText: "Selecteer een element met behulp van de spatiebalk",
-      showKeyboardInstructions: false,
     };
   },
   computed: {
@@ -101,9 +86,6 @@ export default {
         disabled: false,
         ghostClass: "ghost",
       };
-    },
-    keyboardInstructionsButtonText() {
-      return this.showKeyboardInstructions ? "Verberg toetsenbord instructies" : "Toon toetsenbord instructies";
     },
   },
   watch: {
@@ -226,28 +208,8 @@ export default {
 </script>
 
 <style scoped>
-.sort-column-header-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.help-text-wrapper {
-  padding-bottom: 16px;
-}
-
-.help-text-button {
-  font-size: var(--font-size-small);
-  background-color: transparent;
-}
-
-.help-text-button:hover {
-  text-decoration: underline;
-  color: var(--color-admin-primary);
-}
-
 .active-row {
-  background: var(--color-admin-primary-active);
+  background: var(--color-admin-primary-hover);
   box-shadow: 3px 0 0 var(--color-admin-primary) inset;
 }
 
@@ -259,7 +221,7 @@ export default {
 
 tbody > tr:hover {
   background-color: var(--color-admin-primary-hover);
-  cursor: move;
+  cursor: grab;
 }
 
 .sort-table thead tr th {
@@ -277,8 +239,7 @@ tbody > tr:hover {
   padding-bottom: 5px;
 }
 
-tr.table-border:not(:last-child) > td,
-th {
+tr.table-border:not(:last-child) > td {
   border-bottom: 1px solid var(--color-grey-60);
 }
 
@@ -286,7 +247,14 @@ tr > td:not(:nth-last-child(-n + 2)) {
   padding-right: 8px;
 }
 
-.sort-column-padding {
-  padding: 0 12px;
+.drag-icon {
+  transition: transform 0.15s ease-out;
+  transform: scale(1);
+}
+
+tr:hover .drag-icon {
+  opacity: 1;
+  color: var(--color-admin-primary);
+  transform: scale(0.9);
 }
 </style>
