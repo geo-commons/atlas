@@ -13,6 +13,28 @@
       </button>
     </div>
 
+    <Message severity="info" icon="pi pi-info-circle" :closable="false">
+      <p>Sleep de categorieën en kaartlagen naar de gewenste volgorde.</p>
+    </Message>
+
+    <div class="tw-pb-4 tw-my-4">
+      <button
+        type="button"
+        class="tw-text-sm tw-bg-transparent hover:tw-underline hover:tw-text-admin-primary"
+        @click="showKeyboardInstructions = !showKeyboardInstructions"
+        @keydown.enter.prevent="showKeyboardInstructions = !showKeyboardInstructions"
+        v-text="keyboardInstructionsButtonText"
+      />
+      <p
+        v-if="showKeyboardInstructions"
+        v-text="
+          'Selecteer en deselecteer een actief element met behulp van de spatiebalk. Verplaats met behulp van pijlen omhoog en omlaag het element naar de gewenste plek.'
+        "
+      />
+
+      <div id="reorder_instructions" aria-live="assertive" class="sr-only" v-text="assistiveText" />
+    </div>
+
     <div class="sort-container">
       <SortableList
         :current-item-list="categories"
@@ -58,7 +80,14 @@ export default {
       layerData: {},
       selectedCategory: null,
       selectedLayers: [],
+      showKeyboardInstructions: false,
+      assistiveText: "Selecteer een element met behulp van de spatiebalk",
     };
+  },
+  computed: {
+    keyboardInstructionsButtonText() {
+      return this.showKeyboardInstructions ? "Verberg toetsenbord instructies" : "Toon toetsenbord instructies";
+    },
   },
   watch: {
     selectedCategory() {

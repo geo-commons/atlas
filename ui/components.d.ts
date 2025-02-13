@@ -52,6 +52,7 @@ declare module 'vue' {
     MarkerIcon: typeof import('./src/components/MarkerIcon.vue')['default']
     MeasureMenu: typeof import('./src/components/tools/MeasureMenu.vue')['default']
     Menu: typeof import('primevue/menu')['default']
+    Message: typeof import('primevue/message')['default']
     MorePanel: typeof import('./src/components/MorePanel.vue')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
     OlDragZoom: typeof import('./src/components/MapRenderer/renderers/OpenLayers/components/OlDragZoom.vue')['default']
