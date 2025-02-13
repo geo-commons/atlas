@@ -5,6 +5,7 @@ export interface ILayer {
   url: string;
   source_type: ELayerTypes;
   is_visible: boolean;
+  projection: string;
 }
 
 export type ILayerProperties = Array<{
@@ -15,6 +16,11 @@ export type ILayerProperties = Array<{
   type: string;
   localType: string;
 }>;
+
+export type IFeatureProperties = {
+  targetNamespace: string;
+  targetPrefix: string;
+};
 
 export enum ELayerTypes {
   WFS = "WFS",

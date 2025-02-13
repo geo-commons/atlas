@@ -1,9 +1,14 @@
-import { ELayerTypes, ILayer, ILayerProperties } from "@/types/layer";
+import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
 import { getFetchParameters } from "@/utils/auth";
 import { IUser } from "@/types/user";
 import { IDescribeFeatureTypeResponse } from "@/types/geoserver";
+import Feature from "ol/Feature";
+import { WFS } from "ol/format";
 
-const getWfsOrWFSWMSLayerProperties = async (layer: ILayer, user: IUser): Promise<ILayerProperties> => {
+const getWfsOrWFSWMSLayerFeatureInformation = async (
+  layer: ILayer,
+  user: IUser,
+): Promise<IDescribeFeatureTypeResponse> => {
   if (layer.source_type !== ELayerTypes.WFS && layer.source_type !== ELayerTypes.WMS_WFS) {
     throw new Error(
       "We ondersteunen het ophalen van laag-eigenschappen alleen voor lagen met de bron_type WFS of WMS_WFS",
@@ -26,7 +31,7 @@ const getWfsOrWFSWMSLayerProperties = async (layer: ILayer, user: IUser): Promis
 
     const data: IDescribeFeatureTypeResponse = await result.json();
 
-    return data.featureTypes.length ? data.featureTypes[0].properties : [];
+    return data;
   } catch (e: unknown) {
     if (e instanceof Error) {
       switch (e.name) {
@@ -43,4 +48,34 @@ const getWfsOrWFSWMSLayerProperties = async (layer: ILayer, user: IUser): Promis
   }
 };
 
-export { getWfsOrWFSWMSLayerProperties };
+const addFeatureToLayer = async (layer: ILayer, feature: Feature, featureProperties: IFeatureProperties) => {
+  if (layer.source_type !== ELayerTypes.WFS && layer.source_type !== ELayerTypes.WMS_WFS) {
+    throw new Error(
+      "We ondersteunen het opslaan van een object op laag alleen voor lagen met bron_type WFS of WMS_WFS",
+    );
+  }
+
+  const transactionNode = new WFS().writeTransaction([feature], [], [], {
+    featureNS: featureProperties.targetNamespace,
+    featurePrefix: featureProperties.targetPrefix,
+    featureType: layer.name,
+    srsName: layer.projection,
+    nativeElements: [],
+  });
+
+  const serializer = new XMLSerializer();
+  const payload = serializer.serializeToString(transactionNode);
+
+  const result = await fetch(layer.url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/xml",
+    },
+    body: payload,
+  });
+
+  // TODO: ERROR HANDLING
+  console.log(result);
+};
+
+export { getWfsOrWFSWMSLayerFeatureInformation, addFeatureToLayer };

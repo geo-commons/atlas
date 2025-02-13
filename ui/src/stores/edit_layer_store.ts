@@ -4,7 +4,6 @@ import { ILayer } from "@/types/layer";
 
 export interface IEditLayerStore {
   editLayerMode: EEditLayerMode;
-  // TODO: find correct type
   feature: any;
   selectedLayer: ILayer | null;
 }

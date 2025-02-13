@@ -94,11 +94,11 @@
 
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import { computed, ref, watch } from "vue";
-import { ELayerTypes, ILayer, ILayerProperties } from "@/types/layer";
+import { computed, ref, toRaw, unref, watch } from "vue";
+import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
 import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
 import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
-import { getWfsOrWFSWMSLayerProperties } from "@/services/layer";
+import { addFeatureToLayer, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
 import { IUser } from "@/types/user";
 import { Form as VeeForm, Field as VeeField, defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
@@ -126,6 +126,10 @@ const showEditLayerSaveModal = ref<boolean>(false);
 const showEditLayerCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
+const featureProperties = ref<IFeatureProperties>({
+  targetNamespace: "",
+  targetPrefix: "",
+});
 const form = ref(null);
 
 // Computes
@@ -162,7 +166,16 @@ watch(
   async (selectedLayer) => {
     if (selectedLayer) {
       try {
-        layerProperties.value = await getWfsOrWFSWMSLayerProperties(selectedLayer, user);
+        const { targetPrefix, targetNamespace, featureTypes } = await getWfsOrWFSWMSLayerFeatureInformation(
+          selectedLayer,
+          user,
+        );
+
+        layerProperties.value = featureTypes[0].properties ? featureTypes[0].properties : [];
+        featureProperties.value = {
+          targetPrefix: targetPrefix,
+          targetNamespace: targetNamespace,
+        };
         drawerError.value = null;
       } catch (e: unknown) {
         layerProperties.value = [];
@@ -233,8 +246,15 @@ const cancelLayerSaveModal = () => {
   toggleShowEditLayerSaveModal();
 };
 
-const handleSaveFeature = () => {
-  handleDrawerClose(false);
+const handleSaveFeature = async () => {
+  try {
+    await addFeatureToLayer(editLayerStore.selectedLayer!, editLayerStore.feature, unref(featureProperties));
+  } catch (e) {
+    console.error((e as Error).message);
+  }
+
+  // TODO: ENABLE THIS
+  // handleDrawerClose(true);
 };
 </script>
 
