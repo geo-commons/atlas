@@ -188,9 +188,29 @@ export default {
 .tools-panel__buttons {
   display: flex;
   background: white;
-  overflow: hidden;
   border-radius: var(--radius-normal);
   box-shadow: var(--shadow-normal);
+
+  & > .tools-panel__button-container {
+    position: relative;
+
+    &:first-child,
+    &:first-child .tools-panel__button {
+      border-radius: var(--radius-normal) 0 0 var(--radius-normal);
+    }
+
+    &:last-child,
+    &:last-child .tools-panel__button {
+      border-radius: 0 var(--radius-normal) var(--radius-normal) 0;
+    }
+    &:last-child .tools-panel__button--active {
+      border-radius: 0 var(--radius-normal) 0 0;
+    }
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--color-grey-50);
+    }
+  }
 }
 
 .tools-panel__button {
@@ -219,13 +239,10 @@ export default {
   &:disabled {
     color: var(--color-grey-80);
   }
-
-  &:not(:last-child) {
-    border-right: 1px solid var(--color-grey-50);
-  }
 }
 
 .tools-panel__menu {
+  right: 0;
   position: absolute;
   top: var(--width-button-large);
   padding: 6px 0;
