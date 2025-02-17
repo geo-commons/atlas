@@ -120,6 +120,7 @@ import { addFeatureToLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformati
 import { IUser } from "@/types/user";
 import { Form as VeeForm, Field as VeeField, defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
+import Feature from "ol/Feature";
 
 interface EditLayerPanelProps {
   layers: Array<ILayer>;
@@ -145,6 +146,7 @@ const showEditLayerCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
 const geometryNameRef = ref<string>("geometry");
+const featureValues = ref<{ [key: string]: any }>({});
 const featureProperties = ref<IFeatureProperties>({
   targetNamespace: "",
   targetPrefix: "",
@@ -222,6 +224,8 @@ defineRule("required", (value: string) => {
 });
 
 const handleSubmit = (values: any) => {
+  featureValues.value = values;
+
   toggleShowEditLayerSaveModal();
 };
 
@@ -272,12 +276,14 @@ const cancelLayerSaveModal = () => {
 
 const handleSaveFeature = async () => {
   try {
-    await addFeatureToLayer(
-      editLayerStore.selectedLayer!,
-      editLayerStore.feature,
-      unref(featureProperties),
-      unref(geometryNameRef),
+    const feature = editLayerStore.feature as Feature;
+    const featureValuesToSubmit = Object.fromEntries(
+      Object.entries(unref(featureValues.value)).filter(([key, value]) => value != null),
     );
+
+    feature.setProperties(featureValuesToSubmit);
+
+    await addFeatureToLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef));
   } catch (e) {
     console.error((e as Error).message);
   }

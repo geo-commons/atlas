@@ -99,7 +99,6 @@ const addFeatureToLayer = async (
   });
 
   // TODO: ERROR HANDLING
-  console.log(result);
 };
 
 export { getWfsOrWFSWMSLayerFeatureInformation, getGeometryName, addFeatureToLayer };
