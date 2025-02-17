@@ -19,7 +19,7 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     DRAW_COORDINATE: "Point",
     EDIT_POINT: "Point",
     EDIT_LINE: "LineString",
-    EDIT_POLYGON: "Polygon",
+    EDIT_POLYGON: "MultiPolygon",
   };
 
   const draw = new Draw({
@@ -83,11 +83,13 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
   draw.on("drawstart", (e) => {
     sketch = e.feature;
 
-    sketch.setProperties({
-      color: color,
-      strokeWidth: strokeWidth,
-      fontSize: fontSize,
-    });
+    if (!measure.startsWith("EDIT")) {
+      sketch.setProperties({
+        color: color,
+        strokeWidth: strokeWidth,
+        fontSize: fontSize,
+      });
+    }
 
     onDrawStart();
 

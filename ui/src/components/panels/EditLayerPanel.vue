@@ -116,7 +116,7 @@ import { computed, ref, unref, watch } from "vue";
 import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
 import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
 import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
-import { addFeatureToLayer, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
+import { addFeatureToLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
 import { IUser } from "@/types/user";
 import { Form as VeeForm, Field as VeeField, defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
@@ -144,6 +144,7 @@ const showEditLayerSaveModal = ref<boolean>(false);
 const showEditLayerCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
+const geometryNameRef = ref<string>("geometry");
 const featureProperties = ref<IFeatureProperties>({
   targetNamespace: "",
   targetPrefix: "",
@@ -183,7 +184,15 @@ watch(
           user,
         );
 
-        layerProperties.value = featureTypes[0].properties ? featureTypes[0].properties : [];
+        const geometryName = await getGeometryName(featureTypes);
+
+        layerProperties.value = featureTypes[0].properties
+          ? featureTypes[0].properties.filter(
+              (properties) => properties.name !== geometryName && properties.name !== "id",
+            )
+          : [];
+
+        geometryNameRef.value = geometryName;
         featureProperties.value = {
           targetPrefix: targetPrefix,
           targetNamespace: targetNamespace,
@@ -213,8 +222,6 @@ defineRule("required", (value: string) => {
 });
 
 const handleSubmit = (values: any) => {
-  console.log(values);
-
   toggleShowEditLayerSaveModal();
 };
 
@@ -265,7 +272,12 @@ const cancelLayerSaveModal = () => {
 
 const handleSaveFeature = async () => {
   try {
-    await addFeatureToLayer(editLayerStore.selectedLayer!, editLayerStore.feature, unref(featureProperties));
+    await addFeatureToLayer(
+      editLayerStore.selectedLayer!,
+      editLayerStore.feature,
+      unref(featureProperties),
+      unref(geometryNameRef),
+    );
   } catch (e) {
     console.error((e as Error).message);
   }

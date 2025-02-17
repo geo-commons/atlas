@@ -1,7 +1,7 @@
 import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
 import { getFetchParameters } from "@/utils/auth";
 import { IUser } from "@/types/user";
-import { IDescribeFeatureTypeResponse } from "@/types/geoserver";
+import { IDescribeFeatureTypeResponse, IFeatureTypes } from "@/types/geoserver";
 import Feature from "ol/Feature";
 import { WFS } from "ol/format";
 
@@ -48,7 +48,31 @@ const getWfsOrWFSWMSLayerFeatureInformation = async (
   }
 };
 
-const addFeatureToLayer = async (layer: ILayer, feature: Feature, featureProperties: IFeatureProperties) => {
+/*
+This function retrieves the geometry field name based on the featureTypes returned
+from a DescribeFeatureType request to GeoServer.
+
+If any property in the featureType has a type attribute that starts with "gml",
+it indicates that the property is a geometry field.
+*/
+const getGeometryName = async (featureTypes: IFeatureTypes): Promise<string> => {
+  if (!featureTypes) {
+    throw new Error("Wij konden de geometry naam niet ophalen");
+  }
+
+  const geometryFeatureProperties = featureTypes[0].properties.filter((featureTypeProperty) =>
+    featureTypeProperty.type.startsWith("gml"),
+  );
+
+  return geometryFeatureProperties.length ? geometryFeatureProperties[0].name : "geometry";
+};
+
+const addFeatureToLayer = async (
+  layer: ILayer,
+  feature: Feature,
+  featureProperties: IFeatureProperties,
+  geometryName: string,
+) => {
   if (layer.source_type !== ELayerTypes.WFS && layer.source_type !== ELayerTypes.WMS_WFS) {
     throw new Error(
       "We ondersteunen het opslaan van een object op laag alleen voor lagen met bron_type WFS of WMS_WFS",
@@ -64,7 +88,7 @@ const addFeatureToLayer = async (layer: ILayer, feature: Feature, featurePropert
   });
 
   const serializer = new XMLSerializer();
-  const payload = serializer.serializeToString(transactionNode);
+  const payload = serializer.serializeToString(transactionNode).replaceAll("geometry", geometryName);
 
   const result = await fetch(layer.url, {
     method: "POST",
@@ -78,4 +102,4 @@ const addFeatureToLayer = async (layer: ILayer, feature: Feature, featurePropert
   console.log(result);
 };
 
-export { getWfsOrWFSWMSLayerFeatureInformation, addFeatureToLayer };
+export { getWfsOrWFSWMSLayerFeatureInformation, getGeometryName, addFeatureToLayer };

@@ -5,10 +5,12 @@ import { ILayerProperties } from "@/types/layer";
  */
 export interface IDescribeFeatureTypeResponse {
   elementFormDefault: string;
-  featureTypes: Array<{
-    properties: ILayerProperties;
-    typeName: string;
-  }>;
+  featureTypes: IFeatureTypes;
   targetNamespace: string;
   targetPrefix: string;
 }
+
+export type IFeatureTypes = Array<{
+  properties: ILayerProperties;
+  typeName: string;
+}>;
