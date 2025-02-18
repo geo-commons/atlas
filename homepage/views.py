@@ -199,6 +199,7 @@ def _get_config(request):
             'print': config.get('FEATURE_PRINT'),
             'draw': config.get('FEATURE_DRAW'),
             'portal': config.get('FEATURE_PORTAL'),
+            'filterable_legend': config.get('FEATURE_FILTERABLE_LEGEND')
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }

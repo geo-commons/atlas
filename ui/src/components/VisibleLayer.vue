@@ -134,6 +134,7 @@ export default {
     isOpen: Boolean,
     user: Object,
     mapId: String,
+    config: Object,
   },
   data() {
     return {
@@ -252,11 +253,11 @@ export default {
     },
     async setLegend() {
       // First, we try to fetch the legend as a JSON response.
-      // If the GeoServer accepts this request and returns a valid JSON legend, we stop and do not proceed to fetch the legend image.
+      // If the GeoServer accepts this request and returns a valid JSON legend and user did not decide to disable the filterable legend feature we stop and do not proceed to fetch the legend image.
       // However, if this request fails, we then fetch the legend as an image instead.
       const result = await this.fetchLegendAsJson();
 
-      if (result) {
+      if (result && this.config && this.config.features.filterable_legend) {
         this.legendJson = result;
         this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
       } else {
