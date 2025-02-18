@@ -17,6 +17,14 @@
       </h1>
     </template>
     <template #default>
+      <ConfirmPopup group="templating">
+        <template #message="slotProps">
+          <div class="tw-px-4">
+            <i :class="slotProps.message.icon" class=""></i>
+            <p>{{ slotProps.message.message }}</p>
+          </div>
+        </template>
+      </ConfirmPopup>
       <div>
         <div class="selected-layer-header-wrapper">
           <label class="setting-label">
@@ -51,7 +59,7 @@
               type="button"
               aria-label="Verwijder laag"
               content="Verwijder"
-              @click="deselectLayer(selectedLayer)"
+              @click="confirmDeselect($event, selectedLayer)"
             >
               <RemoveLayerIcon class="icon" />
             </button>
@@ -85,7 +93,7 @@
               type="button"
               aria-label="Verwijder laag"
               content="Verwijder"
-              @click="deselectLayer(selectedLayer)"
+              @click="confirmDeselect($event, selectedLayer)"
             >
               <RemoveLayerIcon class="icon" />
             </button>
@@ -130,6 +138,7 @@ import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import MapIcon from "@/assets/icons/map-icon.svg";
 import ViewIcon from "@/assets/icons/view-icon.svg";
 import { getAllObjects } from "@/utils/api-helpers";
+import { useConfirm } from "primevue";
 
 export default {
   name: "MapLayers",
@@ -153,6 +162,7 @@ export default {
       selectedMapLayerConfigs: [],
       searchQuery: "",
       loading: false,
+      confirm: null,
     };
   },
   computed: {
@@ -221,6 +231,9 @@ export default {
 
     this.selectedMapLayerConfigs = this.initialData.layers;
   },
+  mounted() {
+    this.confirm = useConfirm();
+  },
   methods: {
     async getLayers() {
       this.loading = true;
@@ -266,6 +279,26 @@ export default {
       }
 
       return layer.is_visible;
+    },
+    confirmDeselect(event, layer) {
+      this.confirm.require({
+        target: event.target,
+        group: "templating",
+        message: `Weet u zeker dat u de kaartlaag: "${layer.title}" wilt deselecteren?`,
+        rejectProps: {
+          icon: "pi pi-times",
+          label: "Annuleer",
+          outlined: true,
+        },
+        acceptProps: {
+          icon: "pi pi-check",
+          label: "Deselecteer",
+        },
+        accept: () => {
+          this.deselectLayer(layer);
+        },
+        reject: () => {},
+      });
     },
   },
 };
