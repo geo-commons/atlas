@@ -1,348 +1,351 @@
 <template>
-  <button
-    v-tippy="{ placement: 'bottom' }"
-    class="tools-panel__button"
-    :class="{
-      'tools-panel__button--active': showDrawMenu,
-    }"
-    content="Tekenen"
-    aria-label="Tekenen"
-    @click="toggleDraw"
-  >
-    <BrushIcon class="icon" />
-  </button>
+  <div class="select-menu tools-panel__button-container">
+    <button
+      v-tippy="{ placement: 'bottom' }"
+      class="tools-panel__button"
+      :class="{
+        'tools-panel__button--active': showDrawMenu,
+      }"
+      content="Tekenen"
+      aria-label="Tekenen"
+      @click="toggleDraw"
+    >
+      <BrushIcon class="icon" />
+    </button>
 
-  <div v-if="showDrawMenu">
-    <transition name="fade">
-      <div class="tools-panel__draw-bar">
-        <div class="tools-panel__draw-menu">
+    <div v-if="showDrawMenu">
+      <transition name="fade">
+        <div class="tools-panel__draw-bar">
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Teken punt"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active': tool === 'DRAW_POINT' || previousTool === 'DRAW_POINT',
+              }"
+              content="Teken punt"
+              @click="() => setTool('DRAW_POINT')"
+            >
+              <DotIcon />
+            </button>
+            <div
+              v-if="
+                showDrawMenu &&
+                (tool === 'DRAW_POINT' ||
+                  previousTool === 'DRAW_POINT' ||
+                  tool === 'DRAW_COORDINATE' ||
+                  previousTool === 'DRAW_COORDINATE')
+              "
+            >
+              <transition name="fade">
+                <div class="tools-panel__draw-options-menu">
+                  <ul>
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        aria-label="Teken punt met coordinaat"
+                        class="tools-panel__option tools-panel__option--rectangle"
+                        :class="{
+                          'tools-panel__button--active':
+                            tool === 'DRAW_COORDINATE' || previousTool === 'DRAW_COORDINATE',
+                        }"
+                        content="Teken punt met coordinaat"
+                        @click="() => setTool('DRAW_COORDINATE')"
+                      >
+                        <AddLocationIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Teken lijn"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active': tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE',
+              }"
+              content="Teken lijn"
+              @click="() => setTool('DRAW_LINE')"
+            >
+              <LineIcon />
+            </button>
+            <div v-if="showDrawMenu && (tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE')">
+              <transition name="fade">
+                <div class="tools-panel__draw-options-menu">
+                  <ul>
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        content="Verwijder laatste punt"
+                        aria-label="Verwijder laatste punt"
+                        class="tools-panel__option tools-panel__option--rectangle"
+                        @click="() => emitKeyDown()"
+                      >
+                        <UndoIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Teken polygoon"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active': tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON',
+              }"
+              content="Teken polygoon"
+              @click="() => setTool('DRAW_POLYGON')"
+            >
+              <PolyGonIcon />
+            </button>
+            <div v-if="showDrawMenu && (tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON')">
+              <transition name="fade">
+                <div class="tools-panel__draw-options-menu">
+                  <ul>
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        content="Verwijder laatste punt"
+                        aria-label="Verwijder laatste punt"
+                        class="tools-panel__option tools-panel__option--rectangle"
+                        @click="() => emitKeyDown()"
+                      >
+                        <UndoIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
           <button
             v-tippy="{ placement: 'bottom' }"
-            aria-label="Teken punt"
+            aria-label="Teken label"
             class="tools-panel__button"
             :class="{
-              'tools-panel__button--active': tool === 'DRAW_POINT' || previousTool === 'DRAW_POINT',
+              'tools-panel__button--active': tool === 'DRAW_LABEL' || previousTool === 'DRAW_LABEL',
             }"
-            content="Teken punt"
-            @click="() => setTool('DRAW_POINT')"
+            content="Teken label"
+            @click="() => setTool('DRAW_LABEL')"
           >
-            <DotIcon />
+            <TextIcon />
           </button>
-          <div
-            v-if="
-              showDrawMenu &&
-              (tool === 'DRAW_POINT' ||
-                previousTool === 'DRAW_POINT' ||
-                tool === 'DRAW_COORDINATE' ||
-                previousTool === 'DRAW_COORDINATE')
-            "
-          >
-            <transition name="fade">
-              <div class="tools-panel__draw-options-menu">
-                <ul>
-                  <li>
-                    <button
-                      v-tippy="{ placement: 'bottom' }"
-                      aria-label="Teken punt met coordinaat"
-                      class="tools-panel__option tools-panel__option--rectangle"
-                      :class="{
-                        'tools-panel__button--active': tool === 'DRAW_COORDINATE' || previousTool === 'DRAW_COORDINATE',
-                      }"
-                      content="Teken punt met coordinaat"
-                      @click="() => setTool('DRAW_COORDINATE')"
-                    >
-                      <AddLocationIcon />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </transition>
-          </div>
-        </div>
-        <div class="tools-panel__draw-menu">
           <button
             v-tippy="{ placement: 'bottom' }"
-            aria-label="Teken lijn"
+            aria-label="Kies een kleur"
             class="tools-panel__button"
-            :class="{
-              'tools-panel__button--active': tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE',
-            }"
-            content="Teken lijn"
-            @click="() => setTool('DRAW_LINE')"
+            content="Kies een kleur"
+            @click="() => triggerColorPicker()"
           >
-            <LineIcon />
+            <input ref="colorpicker" type="color" class="tools-panel__color-picker" @change="(e) => changeColor(e)" />
+            <DropIcon
+              class="tools-panel__color-picker-icon"
+              :style="{ color: `rgb(${color.red}, ${color.green}, ${color.blue})` }"
+            />
           </button>
-          <div v-if="showDrawMenu && (tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE')">
-            <transition name="fade">
-              <div class="tools-panel__draw-options-menu">
-                <ul>
-                  <li>
-                    <button
-                      v-tippy="{ placement: 'bottom' }"
-                      content="Verwijder laatste punt"
-                      aria-label="Verwijder laatste punt"
-                      class="tools-panel__option tools-panel__option--rectangle"
-                      @click="() => emitKeyDown()"
-                    >
-                      <UndoIcon />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </transition>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Kies een tekstgrootte"
+              class="tools-panel__button tools-panel__button--large"
+              content="Kies een tekstgrootte"
+              @click="toggleFontSizeMenu"
+            >
+              <FormatSizeIcon />
+              <p>{{ fontSize }}px</p>
+            </button>
+            <div v-if="showDrawMenu && showFontSizeMenu">
+              <transition name="fade">
+                <div class="tools-panel__draw-options-menu">
+                  <ul>
+                    <li>
+                      <button
+                        aria-label="Kies kleine tekst"
+                        class="tools-panel__option tools-panel__option--small-text tools-panel__option--block"
+                        :class="{
+                          'tools-panel__option--active': fontSize === 14,
+                        }"
+                        @click="() => changeFontSize(14)"
+                      >
+                        Klein
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        aria-label="Kies middel tekst"
+                        class="tools-panel__option tools-panel__option--middle-text tools-panel__option--block"
+                        :class="{
+                          'tools-panel__option--active': fontSize === 18,
+                        }"
+                        @click="() => changeFontSize(18)"
+                      >
+                        Middel
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        aria-label="Kies grote tekst"
+                        class="tools-panel__option tools-panel__option--large-text tools-panel__option--block"
+                        :class="{
+                          'tools-panel__option--active': fontSize === 22,
+                        }"
+                        @click="() => changeFontSize(22)"
+                      >
+                        Groot
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        aria-label="Kies extra grote tekst"
+                        class="tools-panel__option tools-panel__option--larger-text tools-panel__option--block"
+                        :class="{
+                          'tools-panel__option--active': fontSize === 26,
+                        }"
+                        @click="() => changeFontSize(26)"
+                      >
+                        Extra groot
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
           </div>
-        </div>
-        <div class="tools-panel__draw-menu">
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Kies een lijndikte"
+              class="tools-panel__button tools-panel__button--large"
+              content="Kies een lijndikte"
+              @click="toggleLineWeightMenu"
+            >
+              <LineWeightIcon />
+              <p>{{ strokeWidth }}px</p>
+            </button>
+            <div v-if="showDrawMenu && showLineWeightMenu">
+              <transition name="fade">
+                <div class="tools-panel__draw-options-menu">
+                  <ul>
+                    <li>
+                      <button
+                        class="tools-panel__option"
+                        aria-label="Kies lijndikte van 1px"
+                        :class="{
+                          'tools-panel__option--active': strokeWidth === 1,
+                        }"
+                        @click="() => changeStrokeWidth(1)"
+                      >
+                        <OnePxLineIcon />
+                        1px
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="tools-panel__option"
+                        aria-label="Kies lijndikte van 2px"
+                        :class="{
+                          'tools-panel__option--active': strokeWidth === 2,
+                        }"
+                        @click="() => changeStrokeWidth(2)"
+                      >
+                        <TwoPxLineIcon />
+                        2px
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="tools-panel__option"
+                        aria-label="Kies lijndikte van 3px"
+                        :class="{
+                          'tools-panel__option--active': strokeWidth === 3,
+                        }"
+                        @click="() => changeStrokeWidth(3)"
+                      >
+                        <ThreePxLineIcon />
+                        3px
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="tools-panel__option"
+                        aria-label="Kies lijndikte van 4px"
+                        :class="{
+                          'tools-panel__option--active': strokeWidth === 4,
+                        }"
+                        @click="() => changeStrokeWidth(4)"
+                      >
+                        <FourPxLineIcon />
+                        4px
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="tools-panel__option"
+                        aria-label="Kies lijndikte van 5px"
+                        :class="{
+                          'tools-panel__option--active': strokeWidth === 5,
+                        }"
+                        @click="() => changeStrokeWidth(5)"
+                      >
+                        <FivePxLineIcon />
+                        5px
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
           <button
             v-tippy="{ placement: 'bottom' }"
-            aria-label="Teken polygoon"
+            aria-label="Undo"
             class="tools-panel__button"
-            :class="{
-              'tools-panel__button--active': tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON',
-            }"
-            content="Teken polygoon"
-            @click="() => setTool('DRAW_POLYGON')"
+            :disabled="drawFeatures.length < 1"
+            content="Undo"
+            @click="() => changeInteraction('UNDO')"
           >
-            <PolyGonIcon />
+            <UndoIcon />
           </button>
-          <div v-if="showDrawMenu && (tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON')">
-            <transition name="fade">
-              <div class="tools-panel__draw-options-menu">
-                <ul>
-                  <li>
-                    <button
-                      v-tippy="{ placement: 'bottom' }"
-                      content="Verwijder laatste punt"
-                      aria-label="Verwijder laatste punt"
-                      class="tools-panel__option tools-panel__option--rectangle"
-                      @click="() => emitKeyDown()"
-                    >
-                      <UndoIcon />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </transition>
-          </div>
-        </div>
-        <button
-          v-tippy="{ placement: 'bottom' }"
-          aria-label="Teken label"
-          class="tools-panel__button"
-          :class="{
-            'tools-panel__button--active': tool === 'DRAW_LABEL' || previousTool === 'DRAW_LABEL',
-          }"
-          content="Teken label"
-          @click="() => setTool('DRAW_LABEL')"
-        >
-          <TextIcon />
-        </button>
-        <button
-          v-tippy="{ placement: 'bottom' }"
-          aria-label="Kies een kleur"
-          class="tools-panel__button"
-          content="Kies een kleur"
-          @click="() => triggerColorPicker()"
-        >
-          <input ref="colorpicker" type="color" class="tools-panel__color-picker" @change="(e) => changeColor(e)" />
-          <DropIcon
-            class="tools-panel__color-picker-icon"
-            :style="{ color: `rgb(${color.red}, ${color.green}, ${color.blue})` }"
-          />
-        </button>
-        <div class="tools-panel__draw-menu">
           <button
             v-tippy="{ placement: 'bottom' }"
-            aria-label="Kies een tekstgrootte"
-            class="tools-panel__button tools-panel__button--large"
-            content="Kies een tekstgrootte"
-            @click="toggleFontSizeMenu"
+            aria-label="Redo"
+            class="tools-panel__button"
+            :disabled="removedDrawFeatures.length < 1"
+            content="Redo"
+            @click="() => changeInteraction('REDO')"
           >
-            <FormatSizeIcon />
-            <p>{{ fontSize }}px</p>
+            <RedoIcon />
           </button>
-          <div v-if="showDrawMenu && showFontSizeMenu">
-            <transition name="fade">
-              <div class="tools-panel__draw-options-menu">
-                <ul>
-                  <li>
-                    <button
-                      aria-label="Kies kleine tekst"
-                      class="tools-panel__option tools-panel__option--small-text tools-panel__option--block"
-                      :class="{
-                        'tools-panel__option--active': fontSize === 14,
-                      }"
-                      @click="() => changeFontSize(14)"
-                    >
-                      Klein
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      aria-label="Kies middel tekst"
-                      class="tools-panel__option tools-panel__option--middle-text tools-panel__option--block"
-                      :class="{
-                        'tools-panel__option--active': fontSize === 18,
-                      }"
-                      @click="() => changeFontSize(18)"
-                    >
-                      Middel
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      aria-label="Kies grote tekst"
-                      class="tools-panel__option tools-panel__option--large-text tools-panel__option--block"
-                      :class="{
-                        'tools-panel__option--active': fontSize === 22,
-                      }"
-                      @click="() => changeFontSize(22)"
-                    >
-                      Groot
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      aria-label="Kies extra grote tekst"
-                      class="tools-panel__option tools-panel__option--larger-text tools-panel__option--block"
-                      :class="{
-                        'tools-panel__option--active': fontSize === 26,
-                      }"
-                      @click="() => changeFontSize(26)"
-                    >
-                      Extra groot
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </transition>
-          </div>
-        </div>
-        <div class="tools-panel__draw-menu">
           <button
             v-tippy="{ placement: 'bottom' }"
-            aria-label="Kies een lijndikte"
-            class="tools-panel__button tools-panel__button--large"
-            content="Kies een lijndikte"
-            @click="toggleLineWeightMenu"
+            aria-label="Verwijder tekening"
+            class="tools-panel__button"
+            content="Verwijder tekening"
+            @click="clearDraw"
           >
-            <LineWeightIcon />
-            <p>{{ strokeWidth }}px</p>
+            <DeleteIcon />
           </button>
-          <div v-if="showDrawMenu && showLineWeightMenu">
-            <transition name="fade">
-              <div class="tools-panel__draw-options-menu">
-                <ul>
-                  <li>
-                    <button
-                      class="tools-panel__option"
-                      aria-label="Kies lijndikte van 1px"
-                      :class="{
-                        'tools-panel__option--active': strokeWidth === 1,
-                      }"
-                      @click="() => changeStrokeWidth(1)"
-                    >
-                      <OnePxLineIcon />
-                      1px
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="tools-panel__option"
-                      aria-label="Kies lijndikte van 2px"
-                      :class="{
-                        'tools-panel__option--active': strokeWidth === 2,
-                      }"
-                      @click="() => changeStrokeWidth(2)"
-                    >
-                      <TwoPxLineIcon />
-                      2px
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="tools-panel__option"
-                      aria-label="Kies lijndikte van 3px"
-                      :class="{
-                        'tools-panel__option--active': strokeWidth === 3,
-                      }"
-                      @click="() => changeStrokeWidth(3)"
-                    >
-                      <ThreePxLineIcon />
-                      3px
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="tools-panel__option"
-                      aria-label="Kies lijndikte van 4px"
-                      :class="{
-                        'tools-panel__option--active': strokeWidth === 4,
-                      }"
-                      @click="() => changeStrokeWidth(4)"
-                    >
-                      <FourPxLineIcon />
-                      4px
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="tools-panel__option"
-                      aria-label="Kies lijndikte van 5px"
-                      :class="{
-                        'tools-panel__option--active': strokeWidth === 5,
-                      }"
-                      @click="() => changeStrokeWidth(5)"
-                    >
-                      <FivePxLineIcon />
-                      5px
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </transition>
-          </div>
+          <button
+            v-tippy="{ placement: 'bottom' }"
+            aria-label="Sla tekening op"
+            class="tools-panel__button"
+            content="Sla tekening op"
+            @click="saveDrawing"
+          >
+            <SaveIcon />
+          </button>
         </div>
-        <button
-          v-tippy="{ placement: 'bottom' }"
-          aria-label="Undo"
-          class="tools-panel__button"
-          :disabled="drawFeatures.length < 1"
-          content="Undo"
-          @click="() => changeInteraction('UNDO')"
-        >
-          <UndoIcon />
-        </button>
-        <button
-          v-tippy="{ placement: 'bottom' }"
-          aria-label="Redo"
-          class="tools-panel__button"
-          :disabled="removedDrawFeatures.length < 1"
-          content="Redo"
-          @click="() => changeInteraction('REDO')"
-        >
-          <RedoIcon />
-        </button>
-        <button
-          v-tippy="{ placement: 'bottom' }"
-          aria-label="Verwijder tekening"
-          class="tools-panel__button"
-          content="Verwijder tekening"
-          @click="clearDraw"
-        >
-          <DeleteIcon />
-        </button>
-        <button
-          v-tippy="{ placement: 'bottom' }"
-          aria-label="Sla tekening op"
-          class="tools-panel__button"
-          content="Sla tekening op"
-          @click="saveDrawing"
-        >
-          <SaveIcon />
-        </button>
-      </div>
-    </transition>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -500,6 +503,97 @@ const saveDrawing = async () => {
 </script>
 
 <style scoped lang="scss">
+.tools-panel__draw-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: absolute;
+  right: 0;
+  box-shadow: var(--shadow-normal);
+  border-radius: var(--radius-normal);
+
+  .tools-panel__button {
+    border-radius: 0 !important;
+  }
+}
+
+.tools-panel__draw-menu {
+  position: relative;
+}
+
+.tools-panel__button {
+  border-right: 1px solid var(--color-grey-50);
+}
+
+.tools-panel__draw-options-menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: absolute;
+  left: 0;
+  margin-top: -1px;
+  box-shadow: var(--shadow-normal);
+  border-radius: var(--radius-small);
+
+  ul {
+    border-radius: var(--radius-small);
+  }
+}
+
+.tools-panel__option {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  width: 72px;
+
+  &--rectangle {
+    width: var(--width-button-large) !important;
+    height: var(--width-button-large) !important;
+  }
+
+  &--block {
+    display: block;
+  }
+
+  &--small-text {
+    font-size: 14px !important;
+  }
+
+  &--middle-text {
+    font-size: 18px !important;
+  }
+
+  &--large-text {
+    font-size: 22px !important;
+  }
+
+  &--larger-text {
+    font-size: 26px !important;
+  }
+
+  &--active {
+    background-color: var(--color-grey-40);
+    color: var(--color-primary);
+  }
+
+  &:hover {
+    background: var(--color-grey-40);
+  }
+
+  &:active {
+    background: var(--color-grey-50);
+  }
+
+  &:last-child {
+    border-radius: 0 0 var(--radius-small) var(--radius-small) !important;
+  }
+}
+
 .tools-panel__color-picker {
   visibility: hidden;
 }

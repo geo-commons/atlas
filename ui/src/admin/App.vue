@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <AppMenu v-if="$route.meta.menu" />
-    <AdminEnvironmentIndicator v-if="config.application_environment !== 'production'" />
+    <AdminEnvironmentIndicator v-if="config.application_environment !== 'production' && (!$route.query.admin_env_indicator || $route.query.admin_env_indicator?.toLowerCase() !== 'hide')" />
     <admin-breadcrumb v-if="$route.meta.menu" />
     <router-view></router-view>
   </div>

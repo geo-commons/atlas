@@ -55,7 +55,7 @@
           @click="deleteAllFilters"
           >Verwijder filters <TrashIcon class="icon __marker __smedium" />
         </Button>
-        <SelectButton
+        <ActionButton
           v-for="layer in visibleLayers"
           :id="layer.id"
           :key="layer.id"
@@ -72,7 +72,7 @@
 <script>
 import DataPanelDetailView from "./DataPanelDetailView.vue";
 import SidePanel from "./SidePanel";
-import SelectButton from "./SelectButton.vue";
+import ActionButton from "./ActionButton.vue";
 import ArrowLeftIcon from "../assets/icons/arrow-left-icon.svg";
 import CloseIcon from "../assets/icons/close-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
@@ -85,7 +85,7 @@ export default {
   components: {
     DataPanelDetailView,
     SidePanel,
-    SelectButton,
+    ActionButton,
     ArrowLeftIcon,
     CloseIcon,
     TrashIcon,

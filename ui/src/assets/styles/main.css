@@ -594,3 +594,11 @@ hr {
     @apply tw-text-[28px] tw-font-medium;
   }
 }
+
+.p-confirmpopup::before {
+  left: 20px !important;
+}
+
+.p-confirmpopup::after {
+  left: 20px !important;
+}

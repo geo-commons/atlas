@@ -215,6 +215,7 @@
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
           :is-embed="features.legend && !features.layerlist"
+          :config="config"
           @toggle-layer="toggleLayer"
           @set-layer-opacity="setLayerOpacity"
           @on-fit="(layer) => $refs.map.fit(layer)"

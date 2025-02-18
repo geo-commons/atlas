@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
-from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.clickjacking import xframe_options_exempt, xframe_options_sameorigin
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from homepage.templatetags.app_version import app_version
@@ -86,6 +86,7 @@ def v3_login_failure(request):
 
 @login_required(login_url='admin:login')
 @ensure_csrf_cookie
+@xframe_options_sameorigin
 def v3_admin(request):
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
@@ -199,6 +200,7 @@ def _get_config(request):
             'draw': config.get('FEATURE_DRAW'),
             'portal': config.get('FEATURE_PORTAL'),
             'edit_layer_features': config.get('FEATURE_EDIT_LAYER_FEATURES'),
+            'filterable_legend': config.get('FEATURE_FILTERABLE_LEGEND')
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }
