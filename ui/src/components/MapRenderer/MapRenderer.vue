@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <div
     id="map-container"
     ref="mapContainer"

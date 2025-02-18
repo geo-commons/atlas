@@ -122,6 +122,7 @@ import { IUser } from "@/types/user";
 import { Form as VeeForm, Field as VeeField, defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
+import { useToast } from "primevue";
 
 interface EditLayerPanelProps {
   layers: Array<ILayer>;
@@ -137,6 +138,9 @@ const emit = defineEmits<{
   (e: "set-selected-area", area: null | string): void;
   (e: "set-tool", tool: string): void;
 }>();
+
+// Toast
+const toast = useToast();
 
 // Store
 const editLayerStore = useEditLayerStore();
@@ -291,6 +295,14 @@ const handleSaveFeature = async () => {
     await addFeatureToLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef));
 
     refreshLayer(editLayerStore.selectedLayer ? editLayerStore.selectedLayer.id : "");
+
+    toast.add({
+      severity: "success",
+      summary: "Object toevoegen gelukt",
+      detail: `Het toevoegen van een object op kaartlaag ${editLayerStore.selectedLayer?.name} is gelukt`,
+      life: 5000,
+    });
+
     handleDrawerClose(false);
   } catch (e) {
     geoServerError.value = (e as Error).message;

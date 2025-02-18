@@ -19,6 +19,7 @@ import PortalTablesPage from "@/portal/pages/PortalTablesPage.vue";
 import PortalSearchPage from "@/portal/pages/PortalSearchPage.vue";
 import PrimeVue from "primevue/config";
 import { AtlasPresetApp } from "@/utils/theme-preset";
+import { ToastService } from "primevue";
 
 const routes = [
   {
@@ -76,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       },
     })
+    .use(ToastService)
     .use(pinia)
     .use(router)
     .use(VueTippy, {

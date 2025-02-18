@@ -14,6 +14,7 @@ import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import PrimeVue from "primevue/config";
 import { AtlasPresetApp } from "@/utils/theme-preset";
+import { ToastService } from "primevue";
 
 const routes = [
   { path: "/:tableSlug", component: ListView },
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       },
     })
+    .use(ToastService)
     .use(pinia)
     .use(router)
     .use(VueTippy, {
