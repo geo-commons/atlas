@@ -44,6 +44,7 @@ import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
+import { ConfirmationService } from "primevue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -281,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
         emptyMessage: "Geen resultaten gevonden",
       },
     })
+    .use(ConfirmationService)
     .use(pinia)
     .use(router)
     .use(VueTippy, {
