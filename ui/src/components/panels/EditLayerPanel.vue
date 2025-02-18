@@ -178,6 +178,7 @@ watch(
     if (oldValue === null && value !== null && !showEditLayerPanel.value) {
       showEditLayerPanel.value = true;
 
+      // If visibleLayers length is only one and a new feature was drawn, you have to set selected layer by your self
       if (editLayerStore.visibleLayers.length === 1) {
         editLayerStore.setSelectedLayer(editLayerStore.visibleLayers[0]);
       }
