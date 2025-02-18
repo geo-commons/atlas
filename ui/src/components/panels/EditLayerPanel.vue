@@ -177,6 +177,10 @@ watch(
   (value, oldValue) => {
     if (oldValue === null && value !== null && !showEditLayerPanel.value) {
       showEditLayerPanel.value = true;
+
+      if (editLayerStore.visibleLayers.length === 1) {
+        editLayerStore.setSelectedLayer(editLayerStore.visibleLayers[0]);
+      }
     }
   },
   { deep: true },
