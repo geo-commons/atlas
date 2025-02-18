@@ -1,122 +1,124 @@
 <template>
-  <button
-    v-tippy="{ placement: 'bottom' }"
-    class="tools-panel__button"
-    :class="{
-      'tools-panel__button--active': showEditFeatureMenu,
-    }"
-    content="Laag objecten bewerken"
-    aria-label="Laag objecten bewerken"
-    @click="toggleEditLayerMenu"
-  >
-    <EditLocationIcon class="icon" />
-  </button>
+  <div class="tools-panel__button-container">
+    <button
+      v-tippy="{ placement: 'bottom' }"
+      class="tools-panel__button"
+      :class="{
+        'tools-panel__button--active': showEditFeatureMenu,
+      }"
+      content="Laag objecten bewerken"
+      aria-label="Laag objecten bewerken"
+      @click="toggleEditLayerMenu"
+    >
+      <EditLocationIcon class="icon" />
+    </button>
 
-  <div v-if="showEditFeatureMenu">
-    <transition name="fade">
-      <div class="tools-panel__draw-bar">
-        <div class="tools-panel__draw-menu">
-          <button
-            v-tippy="{ placement: 'bottom' }"
-            aria-label="Object toevoegen"
-            class="tools-panel__button"
-            :class="{
-              'tools-panel__button--active': editLayerStore.editLayerMode === EEditLayerMode.ADD,
-            }"
-            content="Object toevoegen"
-            @click="() => toggleAddEditFeatureMode()"
-          >
-            <AddIcon />
-          </button>
-        </div>
-        <div class="tools-panel__draw-menu">
-          <button
-            v-tippy="{ placement: 'bottom' }"
-            aria-label="Punt"
-            class="tools-panel__button"
-            :class="{
-              'tools-panel__button--active':
-                tool === 'EDIT_POINT' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
-            }"
-            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
-            content="Punt"
-            @click="() => setTool('EDIT_POINT')"
-          >
-            <DotIcon />
-          </button>
-        </div>
-        <div class="tools-panel__draw-menu">
-          <button
-            v-tippy="{ placement: 'bottom' }"
-            aria-label="Lijn"
-            class="tools-panel__button"
-            :class="{
-              'tools-panel__button--active':
-                tool === 'EDIT_LINE' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
-            }"
-            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
-            content="Lijn"
-            @click="() => setTool('EDIT_LINE')"
-          >
-            <LineIcon />
-          </button>
-          <div v-if="showEditFeatureMenu && tool === 'EDIT_LINE'">
-            <transition name="fade">
-              <div class="tools-panel__draw-options-menu">
-                <ul>
-                  <li>
-                    <button
-                      v-tippy="{ placement: 'bottom' }"
-                      content="Verwijder laatste punt"
-                      aria-label="Verwijder laatste punt"
-                      class="tools-panel__option tools-panel__option--rectangle"
-                      @click="() => emitKeyDown()"
-                    >
-                      <UndoIcon />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </transition>
+    <div v-if="showEditFeatureMenu">
+      <transition name="fade">
+        <div class="tools-panel__draw-bar">
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Object toevoegen"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active': editLayerStore.editLayerMode === EEditLayerMode.ADD,
+              }"
+              content="Object toevoegen"
+              @click="() => toggleAddEditFeatureMode()"
+            >
+              <AddIcon />
+            </button>
+          </div>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Punt"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active':
+                  tool === 'EDIT_POINT' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
+              }"
+              :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
+              content="Punt"
+              @click="() => setTool('EDIT_POINT')"
+            >
+              <DotIcon />
+            </button>
+          </div>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Lijn"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active':
+                  tool === 'EDIT_LINE' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
+              }"
+              :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
+              content="Lijn"
+              @click="() => setTool('EDIT_LINE')"
+            >
+              <LineIcon />
+            </button>
+            <div v-if="showEditFeatureMenu && tool === 'EDIT_LINE'">
+              <transition name="fade">
+                <div class="tools-panel__draw-options-menu">
+                  <ul>
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        content="Verwijder laatste punt"
+                        aria-label="Verwijder laatste punt"
+                        class="tools-panel__option tools-panel__option--rectangle"
+                        @click="() => emitKeyDown()"
+                      >
+                        <UndoIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
+          </div>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Vlak"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active':
+                  tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
+              }"
+              :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
+              content="Vlak"
+              @click="() => setTool('EDIT_POLYGON')"
+            >
+              <PolyGonIcon />
+            </button>
+            <div v-if="showEditFeatureMenu && tool === 'EDIT_POLYGON'">
+              <transition name="fade">
+                <div class="tools-panel__draw-options-menu">
+                  <ul>
+                    <li>
+                      <button
+                        v-tippy="{ placement: 'bottom' }"
+                        content="Verwijder laatste punt"
+                        aria-label="Verwijder laatste punt"
+                        class="tools-panel__option tools-panel__option--rectangle"
+                        @click="() => emitKeyDown()"
+                      >
+                        <UndoIcon />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
+            </div>
           </div>
         </div>
-        <div class="tools-panel__draw-menu">
-          <button
-            v-tippy="{ placement: 'bottom' }"
-            aria-label="Vlak"
-            class="tools-panel__button"
-            :class="{
-              'tools-panel__button--active':
-                tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
-            }"
-            :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
-            content="Vlak"
-            @click="() => setTool('EDIT_POLYGON')"
-          >
-            <PolyGonIcon />
-          </button>
-          <div v-if="showEditFeatureMenu && tool === 'EDIT_POLYGON'">
-            <transition name="fade">
-              <div class="tools-panel__draw-options-menu">
-                <ul>
-                  <li>
-                    <button
-                      v-tippy="{ placement: 'bottom' }"
-                      content="Verwijder laatste punt"
-                      aria-label="Verwijder laatste punt"
-                      class="tools-panel__option tools-panel__option--rectangle"
-                      @click="() => emitKeyDown()"
-                    >
-                      <UndoIcon />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </transition>
-          </div>
-        </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
   </div>
 </template>
 

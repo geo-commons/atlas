@@ -329,7 +329,6 @@ export default {
   flex-wrap: nowrap;
   position: absolute;
   right: 0;
-  margin-top: 40px;
   box-shadow: var(--shadow-normal);
   border-radius: var(--radius-normal);
 }
