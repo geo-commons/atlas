@@ -126,7 +126,13 @@
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
-    <EditLayerPanel :layers="regularLayers" :user="user" @set-tool="setTool" @set-selected-area="setSelectedArea" />
+    <EditLayerPanel
+      :layers="regularLayers"
+      :user="user"
+      :refresh-layer="refreshLayer"
+      @set-tool="setTool"
+      @set-selected-area="setSelectedArea"
+    />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
@@ -802,6 +808,9 @@ export default {
     },
     setLoadingPrint(loading) {
       this.loadingPrint = loading;
+    },
+    refreshLayer(id) {
+      this.$refs.map.refreshLayer(id);
     },
   },
 };

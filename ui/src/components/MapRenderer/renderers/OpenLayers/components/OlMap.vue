@@ -88,6 +88,19 @@ export default {
     toggleScaleType() {
       this.scaleType = this.scaleType === "LINE" ? "TEXT" : "LINE";
     },
+    // id is the slug of a layer, we update the params to refresh the layer
+    refreshLayer(id) {
+      const layer = this.map
+        .getLayers()
+        .getArray()
+        .find((layer) => layer.get("id") == id);
+
+      if (layer) {
+        layer.getSource().updateParams({ timestamp: Date.now() });
+      } else {
+        console.error("Could not retrieve layer with id", id);
+      }
+    },
   },
 };
 </script>

@@ -48,6 +48,7 @@ export default {
   name: "MvtLayer",
   inject: ["map"],
   props: {
+    id: String,
     name: String,
     url: String,
     layer: String,
@@ -78,6 +79,7 @@ export default {
   },
   created() {
     this.tileLayer = new VectorTileLayer({
+      id: this.id,
       name: this.name,
       visible: this.isVisible,
       opacity: this.opacity,
@@ -106,7 +108,7 @@ export default {
           layer: name,
           matrixSet: "EPSG:28992",
           format: "application/vnd.mapbox-vector-tile",
-        })
+        }),
       );
 
       this.tileLayer.setSource(
@@ -129,7 +131,7 @@ export default {
               });
             });
           },
-        })
+        }),
       );
     },
     async applyStyle(inputStyle) {

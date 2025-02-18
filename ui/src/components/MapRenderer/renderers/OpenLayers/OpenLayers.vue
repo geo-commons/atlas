@@ -342,6 +342,9 @@ export default {
         this.$emit("loading-print-to-pdf", false);
       }
     },
+    refreshLayer(id) {
+      this.$refs.map.refreshLayer(id);
+    },
   },
 };
 </script>

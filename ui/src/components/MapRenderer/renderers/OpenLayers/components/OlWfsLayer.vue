@@ -108,6 +108,7 @@ onMounted(async () => {
   });
 
   tileLayer = new VectorLayer({
+    id: props.id,
     name: props.name,
     visible: props.isVisible,
     source: source,

@@ -125,10 +125,11 @@ import Feature from "ol/Feature";
 interface EditLayerPanelProps {
   layers: Array<ILayer>;
   user: IUser;
+  refreshLayer: (id: string) => void;
 }
 
 // Props
-const { layers, user } = defineProps<EditLayerPanelProps>();
+const { layers, user, refreshLayer } = defineProps<EditLayerPanelProps>();
 
 // Emits
 const emit = defineEmits<{
@@ -284,6 +285,8 @@ const handleSaveFeature = async () => {
     feature.setProperties(featureValuesToSubmit);
 
     await addFeatureToLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef));
+
+    refreshLayer(editLayerStore.selectedLayer ? editLayerStore.selectedLayer.id : "");
   } catch (e) {
     console.error((e as Error).message);
   }
