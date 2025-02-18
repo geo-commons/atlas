@@ -1,9 +1,10 @@
-import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
+import { ELayerTypes, IFeatureProperties, ILayer } from "@/types/layer";
 import { getFetchParameters } from "@/utils/auth";
 import { IUser } from "@/types/user";
 import { IDescribeFeatureTypeResponse, IFeatureTypes } from "@/types/geoserver";
 import Feature from "ol/Feature";
 import { WFS } from "ol/format";
+import { parseGeoServerWfsTResponse } from "@/utils/parse-geoserver-responses";
 
 const getWfsOrWFSWMSLayerFeatureInformation = async (
   layer: ILayer,
@@ -90,7 +91,7 @@ const addFeatureToLayer = async (
   const serializer = new XMLSerializer();
   const payload = serializer.serializeToString(transactionNode).replaceAll("geometry", geometryName);
 
-  const result = await fetch(layer.url, {
+  const response = await fetch(layer.url, {
     method: "POST",
     headers: {
       "Content-Type": "text/xml",
@@ -98,7 +99,11 @@ const addFeatureToLayer = async (
     body: payload,
   });
 
-  // TODO: ERROR HANDLING
+  const { errorMessage, success } = await parseGeoServerWfsTResponse(response);
+
+  if (!success) {
+    throw new Error(errorMessage);
+  }
 };
 
 export { getWfsOrWFSWMSLayerFeatureInformation, getGeometryName, addFeatureToLayer };

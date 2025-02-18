@@ -26,7 +26,8 @@
     </div>
 
     <div v-if="editLayerStore.selectedLayer" class="tw-py-4">
-      <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col">
+      <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col tw-gap-4">
+        <Message v-if="geoServerError" :pt="{ text: '!tw-break-all' }" severity="error">{{ geoServerError }}</Message>
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
         <vee-form ref="form" v-slot="{ errors }" class="tw-flex tw-flex-col tw-gap-2 tw-py-2" @submit="handleSubmit">
           <div v-for="property in layerProperties" :key="property.name">
@@ -145,6 +146,7 @@ const showEditLayerPanel = ref<boolean>(false);
 const showEditLayerSaveModal = ref<boolean>(false);
 const showEditLayerCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
+const geoServerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
 const geometryNameRef = ref<string>("geometry");
 const featureValues = ref<{ [key: string]: any }>({});
@@ -201,6 +203,7 @@ watch(
           targetNamespace: targetNamespace,
         };
         drawerError.value = null;
+        geoServerError.value = null;
 
         if (form.value) {
           (form.value as any).resetForm();
@@ -239,6 +242,7 @@ const submitFormManually = () => {
 // Methods
 const handleDrawerClose = (value: boolean) => {
   showEditLayerPanel.value = value;
+  geoServerError.value = null;
   // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
   editLayerStore.setSelectedLayer(null);
@@ -287,11 +291,10 @@ const handleSaveFeature = async () => {
     await addFeatureToLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef));
 
     refreshLayer(editLayerStore.selectedLayer ? editLayerStore.selectedLayer.id : "");
+    handleDrawerClose(false);
   } catch (e) {
-    console.error((e as Error).message);
+    geoServerError.value = (e as Error).message;
   }
-
-  handleDrawerClose(false);
 };
 </script>
 
