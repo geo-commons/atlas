@@ -5,6 +5,7 @@ import { ILayer } from "@/types/layer";
 export interface IEditLayerStore {
   editLayerMode: EEditLayerMode;
   feature: any;
+  visibleLayers: ILayer[];
   selectedLayer: ILayer | null;
 }
 
@@ -13,6 +14,7 @@ export const useEditLayerStore = defineStore("editLayer", {
     editLayerMode: EEditLayerMode.NONE,
     feature: null,
     selectedLayer: null,
+    visibleLayers: [],
   }),
   actions: {
     setEditLayerMode(editLayerMode: EEditLayerMode) {
@@ -23,6 +25,9 @@ export const useEditLayerStore = defineStore("editLayer", {
     },
     setSelectedLayer(selectedLayer: ILayer | null) {
       this.selectedLayer = selectedLayer;
+    },
+    setVisibleLayers(visibleLayers: ILayer[]) {
+      this.visibleLayers = visibleLayers;
     },
     resetFeature() {
       this.feature = null;

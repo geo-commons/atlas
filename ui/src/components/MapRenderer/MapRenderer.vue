@@ -489,6 +489,9 @@ export default {
 
       return null;
     },
+    visibleLayers() {
+      return this.layers.filter((l) => !l.is_base && l.is_visible);
+    },
     regularLayers() {
       return this.layers.filter((l) => !l.is_base);
     },
@@ -502,6 +505,13 @@ export default {
         this.position = value;
       },
       deep: true,
+    },
+    visibleLayers: {
+      handler(value) {
+        this.editLayerStore.setVisibleLayers(value);
+      },
+      deep: true,
+      immediate: true,
     },
     initialLayers: {
       handler(value) {

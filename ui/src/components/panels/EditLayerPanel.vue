@@ -8,7 +8,7 @@
     }"
     @update:visible="toggleShowEditLayerCancelModal"
   >
-    <div class="tw-flex tw-flex-col tw-gap-2">
+    <div v-if="editLayerStore.visibleLayers.length > 1" class="tw-flex tw-flex-col tw-gap-2">
       <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
       <Select
         :model-value="editLayerStore.selectedLayer"
@@ -182,6 +182,16 @@ watch(
   { deep: true },
 );
 
+watch(
+  () => editLayerStore.visibleLayers,
+  (value) => {
+    if (value.length === 1) {
+      editLayerStore.setSelectedLayer(value[0]);
+    }
+  },
+  { deep: true, immediate: true },
+);
+
 // Watch
 watch(
   () => editLayerStore.selectedLayer,
@@ -220,7 +230,7 @@ watch(
       }
     }
   },
-  { deep: true },
+  { deep: true, immediate: true },
 );
 
 // Form logic
