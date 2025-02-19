@@ -16,5 +16,7 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "atlas.fullname" . }}
+            - configMapRef:
+                name: {{ include "atlas.fullname" . }}
       restartPolicy: Never
 {{- end }}
