@@ -12,13 +12,13 @@ Download Atlas from [GitLab](https://gitlab.com/purmerend/atlas) and unpack the 
 Start Atlas by running the following command in the root of the repository:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 If not existing yet, the above will also initialize a persistent Docker volume `atlas_postgres-data`, along with an empty database. To import some test data:
 
 ```bash
-docker-compose exec atlas python3 manage.py loaddata data/demo.json
+docker compose exec atlas python3 manage.py loaddata data/demo.json
 ```
 
 Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
@@ -28,7 +28,7 @@ Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
 You can easily load demo data into the local backend with:
 
 ```bash
-docker-compose exec atlas python3 manage.py loaddata data/demo.json
+docker compose exec atlas python3 manage.py loaddata data/demo.json
 ```
 
 This dump contains a demo user with the following credentials:
@@ -60,7 +60,7 @@ pip3 install -r requirements.txt
 Run a Postgres database server with:
 
 ```bash
-docker-compose up -d postgres dex filter-proxy
+docker compose up -d postgres dex filter-proxy
 ```
 
 The above uses the same persistent volume `atlas_postgres-data` as used in [Run Atlas locally](#run-atlas-locally) above. If it did not exist yet, run the database migrations with:

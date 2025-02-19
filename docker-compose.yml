@@ -12,7 +12,7 @@ services:
       - DB_USER=atlas
       - DB_PASSWORD=atlas
       - DB_NAME=atlas
-      - ENVIRONMENT=acceptance
+      - ENVIRONMENT=development
       - AUTHENTICATION_ENABLE_OIDC=True
       - AUTHENTICATION_ENABLE_CREDENTIALS=False
       - OIDC_ACTIVATE_ON_CREATE=True

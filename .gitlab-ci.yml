@@ -4,7 +4,7 @@ stages:
   - Deploy
 
 variables:
-  REVIEW_BASE_DOMAIN: delta10-review.nl
+  REVIEW_BASE_DOMAIN: review-scw.delta10-review.nl
   FF_NETWORK_PER_BUILD: "true"
 
 include:
