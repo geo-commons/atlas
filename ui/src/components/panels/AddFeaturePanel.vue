@@ -115,6 +115,7 @@ import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
+import { EEditLayerMode } from "@/types/map";
 
 interface AddFeaturePanelProps {
   layers: Array<ILayer>;
@@ -257,6 +258,7 @@ const handleDrawerClose = (value: boolean) => {
   // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
   editLayerStore.setSelectedLayer(null);
+  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
 
   emit("set-selected-area", null);
   emit("set-tool", "");
