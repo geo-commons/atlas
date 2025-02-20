@@ -119,7 +119,7 @@
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { computed, ref, unref, watch } from "vue";
 import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
-import { addFeatureToLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
+import { addFeatureOnLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
 import { IUser } from "@/types/user";
 import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { required } from "@vee-validate/rules";
@@ -313,7 +313,7 @@ const handleSaveFeature = async () => {
 
     feature.setProperties(featureValuesToSubmit);
 
-    await addFeatureToLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef));
+    await addFeatureOnLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef));
 
     refreshLayer(editLayerStore.selectedLayer ? editLayerStore.selectedLayer.id : "");
 
