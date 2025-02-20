@@ -63,6 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Then check if any specific settings are set by the URL settings.
   layers = layers.map((layer) => {
+    if (!layer) {
+      return {};
+    }
+
     if (layer.is_base) {
       return {
         ...layer,
