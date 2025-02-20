@@ -78,6 +78,9 @@ const performWfsTransaction = async (
     throw new Error("We ondersteunen alleen transacties voor lagen met bron_type WFS of WMS_WFS");
   }
 
+  // The writeTransaction() method in OpenLayers (https://openlayers.org/en/latest/apidoc/module-ol_format_WFS-WFS.html)
+  // supports multiple transactions at once. However, we have decided to limit it to performing only one operation at a time,
+  // whether it's an insert, update, or delete.
   const { toInsert = [], toUpdate = [], toDelete = [] } = features;
 
   const transactionNode = new WFS().writeTransaction(toInsert, toUpdate, toDelete, {
@@ -106,6 +109,7 @@ const performWfsTransaction = async (
   }
 };
 
+// Performs a WFS-Transaction request to create a specific feature on a layer
 const addFeatureOnLayer = async (
   layer: ILayer,
   feature: Feature,
@@ -115,6 +119,7 @@ const addFeatureOnLayer = async (
   await performWfsTransaction(layer, { toInsert: [feature] }, featureProperties, geometryName);
 };
 
+// Performs a WFS-Transaction request to update a specific feature on a layer
 const editFeatureOnLayer = async (
   layer: ILayer,
   feature: Feature,
@@ -124,6 +129,7 @@ const editFeatureOnLayer = async (
   await performWfsTransaction(layer, { toUpdate: [feature] }, featureProperties, geometryName);
 };
 
+// Performs a WFS-Transaction request to delete a specific feature on a layer
 const deleteFeatureOnLayer = async (
   layer: ILayer,
   feature: Feature,
