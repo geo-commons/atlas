@@ -648,6 +648,16 @@ export default {
           const features = data.features.map((feature) => new GeoJSON().readFeature(feature));
           this.highlightedFeatures = [...this.highlightedFeatures, ...features];
 
+          /*
+            If highlightedFeatureAndLayer is null and there is at least one highlighted feature,
+            set it to the first highlighted feature along with its corresponding layer.
+            This is necessary to enable edit and delete functionality for layers.
+
+            Currently, if multiple features are highlighted, the edit and delete functionality
+            only supports the first highlighted feature. If a user wants to edit a specific highlighted feature
+            but has selected multiple features simultaneously,
+            they will need to temporarily disable the layers containing other highlighted features.
+           */
           if (!this.editLayerStore.highlightedFeatureAndLayer && features.length) {
             this.editLayerStore.setHighlightedFeatureAndLayer({ feature: features[0], layer: layer });
           }
