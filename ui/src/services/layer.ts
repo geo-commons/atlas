@@ -106,4 +106,42 @@ const addFeatureToLayer = async (
   }
 };
 
-export { getWfsOrWFSWMSLayerFeatureInformation, getGeometryName, addFeatureToLayer };
+const editFeatureOnLayer = async (
+  layer: ILayer,
+  feature: Feature,
+  featureProperties: IFeatureProperties,
+  geometryName: string,
+) => {
+  if (layer.source_type !== ELayerTypes.WFS && layer.source_type !== ELayerTypes.WMS_WFS) {
+    throw new Error(
+      "We ondersteunen het bewerken van een object op laag alleen voor lagen met bron_type WFS of WMS_WFS",
+    );
+  }
+
+  const transactionNode = new WFS().writeTransaction([], [feature], [], {
+    featureNS: featureProperties.targetNamespace,
+    featurePrefix: featureProperties.targetPrefix,
+    featureType: layer.name,
+    srsName: layer.projection,
+    nativeElements: [],
+  });
+
+  const serializer = new XMLSerializer();
+  const payload = serializer.serializeToString(transactionNode).replaceAll("geometry", geometryName);
+
+  const response = await fetch(layer.url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/xml",
+    },
+    body: payload,
+  });
+
+  const { errorMessage, success } = await parseGeoServerWfsTResponse(response);
+
+  if (!success) {
+    throw new Error(errorMessage);
+  }
+};
+
+export { getWfsOrWFSWMSLayerFeatureInformation, getGeometryName, addFeatureToLayer, editFeatureOnLayer };

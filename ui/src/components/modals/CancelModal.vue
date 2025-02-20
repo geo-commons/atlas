@@ -8,8 +8,7 @@
     @update:visible="onCancel"
   >
     <p>
-      Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
-      binnen de geselecteerde laag in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.
+      {{ message }}
     </p>
     <div class="tw-flex tw-items-center tw-gap-2">
       <Button label="Doorgaan" class="tw-flex-auto" outlined @click="onCancel"></Button>
@@ -20,10 +19,11 @@
 
 <script setup lang="ts">
 interface EditLayerCancelModalProps {
+  message: string;
   visible: boolean;
   onCancel: () => void;
   onProceed: () => void;
 }
 
-const { visible, onCancel, onProceed } = defineProps<EditLayerCancelModalProps>();
+const { message, visible, onCancel, onProceed } = defineProps<EditLayerCancelModalProps>();
 </script>

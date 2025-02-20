@@ -134,7 +134,7 @@
       @set-tool="setTool"
       @set-selected-area="setSelectedArea"
     />
-    <EditFeaturePanel :user="user" />
+    <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">

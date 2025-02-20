@@ -98,17 +98,27 @@
     </template>
   </Drawer>
 
-  <EditLayerSaveModal :visible="showSaveModal" :on-cancel="cancelSaveModal" :on-save="save" />
+  <SaveModal
+    message="Wanneer u doorgaat met opslaan, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen,
+      opgeslagen binnen de geselecteerde laag in GeoServer."
+    :visible="showSaveModal"
+    :on-cancel="cancelSaveModal"
+    :on-save="save"
+  />
 
-  <EditLayerCancelModal :visible="showCancelModal" :on-cancel="cancelCancelModal" :on-proceed="proceed" />
+  <CancelModal
+    message="Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
+      binnen de geselecteerde laag in GeoServer. Alle onopgeslagen wijzigingen gaan verloren."
+    :visible="showCancelModal"
+    :on-cancel="cancelCancelModal"
+    :on-proceed="proceed"
+  />
 </template>
 
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { computed, ref, unref, watch } from "vue";
 import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
-import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
-import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
 import { addFeatureToLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
 import { IUser } from "@/types/user";
 import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
@@ -116,6 +126,8 @@ import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
 import { EEditLayerMode } from "@/types/map";
+import SaveModal from "@/components/modals/SaveModal.vue";
+import CancelModal from "@/components/modals/CancelModal.vue";
 
 interface AddFeaturePanelProps {
   layers: Array<ILayer>;
