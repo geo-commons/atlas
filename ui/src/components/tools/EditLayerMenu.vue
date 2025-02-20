@@ -33,6 +33,20 @@
           <div class="tools-panel__draw-menu">
             <button
               v-tippy="{ placement: 'bottom' }"
+              aria-label="Object bewerken"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active': editLayerStore.editLayerMode === EEditLayerMode.EDIT,
+              }"
+              content="Object bewerken"
+              @click="() => toggleEditFeatureMode()"
+            >
+              <EditIcon />
+            </button>
+          </div>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
               aria-label="Punt"
               class="tools-panel__button"
               :class="{
@@ -129,6 +143,7 @@ import UndoIcon from "@/assets/icons/undo-icon.svg";
 import PolyGonIcon from "@/assets/icons/polygon-icon.svg";
 import DotIcon from "@/assets/icons/dot-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
+import EditIcon from "@/assets/icons/edit-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EEditLayerMode } from "@/types/map";
 
@@ -163,6 +178,18 @@ const toggleEditLayerMenu = () => {
 const toggleAddEditFeatureMode = () => {
   if (editLayerStore.editLayerMode !== EEditLayerMode.ADD) {
     editLayerStore.setEditLayerMode(EEditLayerMode.ADD);
+    setTool("");
+
+    return;
+  }
+
+  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  setTool("");
+};
+
+const toggleEditFeatureMode = () => {
+  if (editLayerStore.editLayerMode !== EEditLayerMode.EDIT) {
+    editLayerStore.setEditLayerMode(EEditLayerMode.EDIT);
     setTool("");
 
     return;

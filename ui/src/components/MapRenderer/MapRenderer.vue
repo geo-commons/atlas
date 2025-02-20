@@ -127,13 +127,14 @@
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
-    <EditLayerPanel
+    <AddFeaturePanel
       :layers="regularLayers"
       :user="user"
       :refresh-layer="refreshLayer"
       @set-tool="setTool"
       @set-selected-area="setSelectedArea"
     />
+    <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
@@ -334,14 +335,16 @@ import {
   DEFAULT_DRAWING_STROKE_WIDTH,
 } from "@/components/constants/defaults";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import EditLayerPanel from "@/components/panels/EditLayerPanel.vue";
+import AddFeaturePanel from "@/components/panels/AddFeaturePanel.vue";
+import EditFeaturePanel from "@/components/panels/EditFeaturePanel.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
   components: {
-    EditLayerPanel,
+    EditFeaturePanel,
+    AddFeaturePanel,
     PanoramaPanel,
     EmbedModal,
     AlertMessage,
@@ -616,6 +619,7 @@ export default {
     },
     async getFeatureInfo(position) {
       this.highlightedFeatures = [];
+      this.editLayerStore.setHighlightedFeatureAndLayer(null);
 
       const visibleLayers = this.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible);
       visibleLayers.forEach(async (layer) => {
@@ -641,10 +645,12 @@ export default {
         try {
           const result = await fetch(url, getFetchParameters(layer, this.user));
           const data = await result.json();
-          this.highlightedFeatures = [
-            ...this.highlightedFeatures,
-            ...data.features.map((feature) => new GeoJSON().readFeature(feature)),
-          ];
+          const features = data.features.map((feature) => new GeoJSON().readFeature(feature));
+          this.highlightedFeatures = [...this.highlightedFeatures, ...features];
+
+          if (!this.editLayerStore.highlightedFeatureAndLayer && features.length) {
+            this.editLayerStore.setHighlightedFeatureAndLayer({ feature: features[0], layer: layer });
+          }
         } catch (e) {
           console.error(e);
         }

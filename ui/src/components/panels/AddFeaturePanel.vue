@@ -1,12 +1,12 @@
 <template>
   <Drawer
-    :visible="showEditLayerPanel"
+    :visible="showAddFeaturePanel"
     header="Object toevoegen"
     :dismissable="false"
     :pt="{
       mask: '!tw-bg-black/0',
     }"
-    @update:visible="toggleShowEditLayerCancelModal"
+    @update:visible="toggleShowCancelModal"
   >
     <div v-if="editLayerStore.visibleLayers.length > 1" class="tw-flex tw-flex-col tw-gap-2">
       <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
@@ -85,7 +85,7 @@
           icon="pi pi-times"
           class="tw-flex-auto"
           outlined
-          @click="toggleShowEditLayerCancelModal"
+          @click="toggleShowCancelModal"
         ></Button>
         <Button
           :disabled="isSaveButtonDisabled"
@@ -98,16 +98,20 @@
     </template>
   </Drawer>
 
-  <EditLayerSaveModal
-    :visible="showEditLayerSaveModal"
-    :on-cancel="cancelLayerSaveModal"
-    :on-save="saveLayerSaveModal"
+  <SaveModal
+    message="Wanneer u doorgaat met opslaan, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen,
+      opgeslagen binnen de geselecteerde laag in GeoServer."
+    :visible="showSaveModal"
+    :on-cancel="cancelSaveModal"
+    :on-save="save"
   />
 
-  <EditLayerCancelModal
-    :visible="showEditLayerCancelModal"
-    :on-cancel="cancelLayerCancelModal"
-    :on-proceed="proceedLayerCancelModal"
+  <CancelModal
+    message="Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
+      binnen de geselecteerde laag in GeoServer. Alle onopgeslagen wijzigingen gaan verloren."
+    :visible="showCancelModal"
+    :on-cancel="cancelCancelModal"
+    :on-proceed="proceed"
   />
 </template>
 
@@ -115,23 +119,24 @@
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { computed, ref, unref, watch } from "vue";
 import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
-import EditLayerSaveModal from "@/components/modals/EditLayerSaveModal.vue";
-import EditLayerCancelModal from "@/components/modals/EditLayerCancelModal.vue";
 import { addFeatureToLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
 import { IUser } from "@/types/user";
-import { Form as VeeForm, Field as VeeField, defineRule } from "vee-validate";
+import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
+import { EEditLayerMode } from "@/types/map";
+import SaveModal from "@/components/modals/SaveModal.vue";
+import CancelModal from "@/components/modals/CancelModal.vue";
 
-interface EditLayerPanelProps {
+interface AddFeaturePanelProps {
   layers: Array<ILayer>;
   user: IUser;
   refreshLayer: (id: string) => void;
 }
 
 // Props
-const { layers, user, refreshLayer } = defineProps<EditLayerPanelProps>();
+const { layers, user, refreshLayer } = defineProps<AddFeaturePanelProps>();
 
 // Emits
 const emit = defineEmits<{
@@ -146,9 +151,9 @@ const toast = useToast();
 const editLayerStore = useEditLayerStore();
 
 // References
-const showEditLayerPanel = ref<boolean>(false);
-const showEditLayerSaveModal = ref<boolean>(false);
-const showEditLayerCancelModal = ref<boolean>(false);
+const showAddFeaturePanel = ref<boolean>(false);
+const showSaveModal = ref<boolean>(false);
+const showCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const geoServerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
@@ -175,8 +180,8 @@ const isSaveButtonDisabled = computed(() => {
 watch(
   () => editLayerStore.feature,
   (value, oldValue) => {
-    if (oldValue === null && value !== null && !showEditLayerPanel.value) {
-      showEditLayerPanel.value = true;
+    if (oldValue === null && value !== null && !showAddFeaturePanel.value) {
+      showAddFeaturePanel.value = true;
 
       // If visibleLayers length is only one and a new feature was drawn, you have to set selected layer by your self
       if (editLayerStore.visibleLayers.length === 1) {
@@ -260,41 +265,42 @@ const submitFormManually = () => {
 
 // Methods
 const handleDrawerClose = (value: boolean) => {
-  showEditLayerPanel.value = value;
+  showAddFeaturePanel.value = value;
   geoServerError.value = null;
   // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
   editLayerStore.setSelectedLayer(null);
+  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
 
   emit("set-selected-area", null);
   emit("set-tool", "");
 };
 
 const toggleShowEditLayerSaveModal = () => {
-  showEditLayerSaveModal.value = !showEditLayerSaveModal.value;
+  showSaveModal.value = !showSaveModal.value;
 };
 
-const toggleShowEditLayerCancelModal = () => {
-  showEditLayerCancelModal.value = !showEditLayerCancelModal.value;
+const toggleShowCancelModal = () => {
+  showCancelModal.value = !showCancelModal.value;
 };
 
-const proceedLayerCancelModal = () => {
-  toggleShowEditLayerCancelModal();
+const proceed = () => {
+  toggleShowCancelModal();
 
   handleDrawerClose(false);
 };
 
-const cancelLayerCancelModal = () => {
-  toggleShowEditLayerCancelModal();
+const cancelCancelModal = () => {
+  toggleShowCancelModal();
 };
 
-const saveLayerSaveModal = () => {
+const save = () => {
   toggleShowEditLayerSaveModal();
 
   handleSaveFeature();
 };
 
-const cancelLayerSaveModal = () => {
+const cancelSaveModal = () => {
   toggleShowEditLayerSaveModal();
 };
 

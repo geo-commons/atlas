@@ -8,8 +8,7 @@
     @update:visible="onCancel"
   >
     <p>
-      Wanneer u doorgaat met opslaan, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen,
-      opgeslagen binnen de geselecteerde laag in GeoServer.
+      {{ message }}
     </p>
     <div class="tw-flex tw-items-center tw-gap-2">
       <Button label="Annuleren" icon="pi pi-times" class="tw-flex-auto" outlined @click="onCancel"></Button>
@@ -20,10 +19,11 @@
 
 <script setup lang="ts">
 interface EditLayerSaveModalProps {
+  message: string;
   visible: boolean;
   onCancel: () => void;
   onSave: () => void;
 }
 
-const { visible, onCancel, onSave } = defineProps<EditLayerSaveModalProps>();
+const { message, visible, onCancel, onSave } = defineProps<EditLayerSaveModalProps>();
 </script>
