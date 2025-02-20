@@ -114,7 +114,12 @@ Deploy acceptance:
       --set ingress.hosts[0].host=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set ingress.hosts[0].paths[0].path=/ \
       --set ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
+      --set persistence.media.enabled=false \
+      --set postgresql.persistence.enabled=false \
       --set persistence.media.storageClassName=standard-retain \
+      --set ingress.tls[0].secretName=atlas-tls \
+      --set ingress.annotations.kubernetes\\.io/ingress\\.class=nginx \
+      --set ingress.annotations.cert-manager\\.io/cluster-issuer=letsencrypt-prod \
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
