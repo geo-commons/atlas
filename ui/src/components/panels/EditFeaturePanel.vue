@@ -63,7 +63,7 @@
           class="tw-flex-auto"
           outlined
           severity="danger"
-          @click="toggleShowCancelModal"
+          @click="toggleShowDeleteModal"
         ></Button>
         <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="submitFormManually"></Button>
       </div>
@@ -76,6 +76,13 @@
     :visible="showSaveModal"
     :on-cancel="cancelSaveModal"
     :on-save="save"
+  />
+
+  <DeleteModal
+    message="Wanneer u verwijderd, gaan alle onopgeslagen wijzigingen verloren."
+    :visible="showDeleteModal"
+    :on-cancel="cancelDeleteModal"
+    :on-delete="onDelete"
   />
 
   <CancelModal
@@ -95,10 +102,16 @@ import { useToast } from "primevue";
 import { EEditLayerMode } from "@/types/map";
 import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { required } from "@vee-validate/rules";
-import { editFeatureOnLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
+import {
+  deleteFeatureOnLayer,
+  editFeatureOnLayer,
+  getGeometryName,
+  getWfsOrWFSWMSLayerFeatureInformation,
+} from "@/services/layer";
 import SaveModal from "@/components/modals/SaveModal.vue";
 import CancelModal from "@/components/modals/CancelModal.vue";
 import Feature from "ol/Feature";
+import DeleteModal from "@/components/modals/DeleteModal.vue";
 
 interface AddFeaturePanelProps {
   user: IUser;
@@ -117,6 +130,7 @@ const editLayerStore = useEditLayerStore();
 // References
 const showEditFeaturePanel = ref<boolean>(false);
 const showSaveModal = ref<boolean>(false);
+const showDeleteModal = ref<boolean>(false);
 const showCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const geoServerError = ref<string | null>(null);
@@ -218,10 +232,24 @@ const toggleShowCancelModal = () => {
   showCancelModal.value = !showCancelModal.value;
 };
 
+const toggleShowDeleteModal = () => {
+  showDeleteModal.value = !showDeleteModal.value;
+};
+
 const proceed = () => {
   toggleShowCancelModal();
 
   handleDrawerClose(false);
+};
+
+const onDelete = () => {
+  toggleShowDeleteModal();
+
+  handleDeleteFeature();
+};
+
+const cancelDeleteModal = () => {
+  toggleShowDeleteModal();
 };
 
 const cancelCancelModal = () => {
@@ -236,6 +264,32 @@ const save = () => {
 
 const cancelSaveModal = () => {
   toggleShowEditLayerSaveModal();
+};
+
+const handleDeleteFeature = async () => {
+  try {
+    const feature = editLayerStore.highlightedFeatureAndLayer!.feature as Feature;
+
+    await deleteFeatureOnLayer(
+      editLayerStore.highlightedFeatureAndLayer!.layer,
+      feature,
+      unref(featureProperties),
+      unref(geometryNameRef),
+    );
+
+    refreshLayer(editLayerStore.highlightedFeatureAndLayer ? editLayerStore.highlightedFeatureAndLayer.layer.id : "");
+
+    toast.add({
+      severity: "success",
+      summary: "Object verwijderen gelukt",
+      detail: `Het verwijderen van een object op kaartlaag is gelukt`,
+      life: 5000,
+    });
+
+    handleDrawerClose(false);
+  } catch (e) {
+    geoServerError.value = (e as Error).message;
+  }
 };
 
 const handleSaveFeature = async () => {
