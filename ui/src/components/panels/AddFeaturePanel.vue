@@ -29,42 +29,7 @@
       <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col tw-gap-4">
         <Message v-if="geoServerError" :pt="{ text: '!tw-break-all' }" severity="error">{{ geoServerError }}</Message>
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
-        <vee-form ref="form" v-slot="{ errors }" class="tw-flex tw-flex-col tw-gap-2 tw-py-2" @submit="handleSubmit">
-          <div v-for="property in layerProperties" :key="property.name">
-            <Message
-              :class="{
-                'tw-hidden': !errors[property.name],
-              }"
-              class="edit-layer-panel__error"
-              severity="error"
-              variant="simple"
-              >{{ errors[property.name] }}
-            </Message>
-            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-start">
-              <label
-                :for="property.name"
-                :class="{
-                  'edit-layer-panel__error': errors[property.name],
-                }"
-                >{{ property.name }}</label
-              >
-              <vee-field
-                v-slot="{ field }"
-                :name="property.name"
-                type="text"
-                :rules="property.nillable ? '' : 'required'"
-              >
-                <InputText
-                  v-bind="field"
-                  :id="property.name"
-                  :placeholder="property.name"
-                  type="text"
-                  :invalid="Boolean(errors[property.name])"
-                />
-              </vee-field>
-            </div>
-          </div>
-        </vee-form>
+        <LayerCrudForm ref="form" :layer-properties="layerProperties" :handle-submit="handleSubmit" />
       </div>
       <!-- Write transactions are restricted to layers of type 'WFS' and 'WMS_WFS'.
       Display an error message if the selected layer's source type is anything other than these two.
@@ -128,6 +93,7 @@ import { useToast } from "primevue";
 import { EEditLayerMode } from "@/types/map";
 import SaveModal from "@/components/modals/SaveModal.vue";
 import CancelModal from "@/components/modals/CancelModal.vue";
+import LayerCrudForm from "@/components/panels/parts/layer-crud-form.vue";
 
 interface AddFeaturePanelProps {
   layers: Array<ILayer>;
@@ -229,8 +195,8 @@ watch(
         drawerError.value = null;
         geoServerError.value = null;
 
-        if (form.value) {
-          (form.value as any).resetForm();
+        if (form.value && (form.value as any).form) {
+          (form.value as any).form.resetForm();
         }
       } catch (e: unknown) {
         layerProperties.value = [];
@@ -258,8 +224,8 @@ const handleSubmit = (values: any) => {
 };
 
 const submitFormManually = () => {
-  if (form.value) {
-    (form.value as any).$el.requestSubmit();
+  if (form.value && (form.value as any).form) {
+    (form.value as any).form.$el.requestSubmit();
   }
 };
 
@@ -330,9 +296,3 @@ const handleSaveFeature = async () => {
   }
 };
 </script>
-
-<style scoped lang="scss">
-.edit-layer-panel__error {
-  color: var(--color-alert) !important;
-}
-</style>

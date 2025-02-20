@@ -11,48 +11,12 @@
     <div class="tw-flex tw-flex-col tw-gap-4">
       <Message v-if="geoServerError" :pt="{ text: '!tw-break-all' }" severity="error">{{ geoServerError }}</Message>
       <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
-      <vee-form
+      <LayerCrudForm
         ref="form"
-        v-slot="{ errors }"
-        class="tw-flex tw-flex-col tw-gap-2 tw-py-2"
+        :layer-properties="layerProperties"
+        :handle-submit="handleSubmit"
         :initial-values="featureValues"
-        @submit="handleSubmit"
-      >
-        <div v-for="property in layerProperties" :key="property.name">
-          <Message
-            :class="{
-              'tw-hidden': !errors[property.name],
-            }"
-            class="edit-layer-panel__error"
-            severity="error"
-            variant="simple"
-            >{{ errors[property.name] }}
-          </Message>
-          <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-start">
-            <label
-              :for="property.name"
-              :class="{
-                'edit-layer-panel__error': errors[property.name],
-              }"
-              >{{ property.name }}</label
-            >
-            <vee-field
-              v-slot="{ field }"
-              :name="property.name"
-              type="text"
-              :rules="property.nillable ? '' : 'required'"
-            >
-              <InputText
-                v-bind="field"
-                :id="property.name"
-                :placeholder="property.name"
-                type="text"
-                :invalid="Boolean(errors[property.name])"
-              />
-            </vee-field>
-          </div>
-        </div>
-      </vee-form>
+      />
     </div>
 
     <template #footer>
@@ -100,7 +64,7 @@ import { IFeatureProperties, ILayerProperties } from "@/types/layer";
 import { IUser } from "@/types/user";
 import { useToast } from "primevue";
 import { EEditLayerMode } from "@/types/map";
-import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
+import { defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import {
   deleteFeatureOnLayer,
@@ -112,6 +76,7 @@ import SaveModal from "@/components/modals/SaveModal.vue";
 import CancelModal from "@/components/modals/CancelModal.vue";
 import Feature from "ol/Feature";
 import DeleteModal from "@/components/modals/DeleteModal.vue";
+import LayerCrudForm from "@/components/panels/parts/layer-crud-form.vue";
 
 interface AddFeaturePanelProps {
   user: IUser;
@@ -180,8 +145,8 @@ watch(
         drawerError.value = null;
         geoServerError.value = null;
 
-        if (form.value) {
-          (form.value as any).resetForm();
+        if (form.value && (form.value as any).form) {
+          (form.value as any).form.resetForm();
         }
       } catch (e: unknown) {
         layerProperties.value = [];
@@ -209,8 +174,8 @@ const handleSubmit = (values: any) => {
 };
 
 const submitFormManually = () => {
-  if (form.value) {
-    (form.value as any).$el.requestSubmit();
+  if (form.value && (form.value as any).form) {
+    (form.value as any).form.$el.requestSubmit();
   }
 };
 
@@ -323,9 +288,3 @@ const handleSaveFeature = async () => {
   }
 };
 </script>
-
-<style scoped lang="scss">
-.edit-layer-panel__error {
-  color: var(--color-alert) !important;
-}
-</style>
