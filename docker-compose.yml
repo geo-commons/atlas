@@ -55,10 +55,9 @@ services:
       - 8080:8080
     environment:
       - EXTRA_JAVA_OPTS=-Xms1G -Xmx2G
-      - SKIP_DEMO_DATA=true
     volumes:
       - geoserver-data:/opt/geoserver_data
-      - ./data/workspaces:/opt/geoserver_data/workspaces
+      - ./data/workspaces/custom:/opt/apache-tomcat-9.0.75/webapps/geoserver/data/workspaces/custom
 volumes:
   postgres-data:
   geoserver-data:
