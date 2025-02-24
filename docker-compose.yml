@@ -55,9 +55,10 @@ services:
       - 8080:8080
     environment:
       - EXTRA_JAVA_OPTS=-Xms1G -Xmx2G
+      - SKIP_DEMO_DATA=true
     volumes:
       - geoserver-data:/opt/geoserver_data
-      - ./data/scholen.gpkg:/opt/geoserver_data/data/scholen.gpkg
+      - ./data/workspaces:/opt/geoserver_data/workspaces
 volumes:
   postgres-data:
   geoserver-data:
