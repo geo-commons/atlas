@@ -107,6 +107,17 @@ This dump contains a demo user with the following credentials:
 
 The default setup runs a proxy in the background called [filter-proxy](https://github.com/delta10/filter-proxy). The proxy can be used to authorize requests on OWS and REST services. When a request hits filter-proxy, it calls the authorization endpoint of Atlas to see of the request is authorized. Atlas will look up the specific permissions of the user and returns the decision. Based on the authorization, filter-proxy grants or denies access. Atlas also keeps an audit log of successful authorization responses.
 
+
+## Conventional Commits / [Commitizen](https://commitizen-tools.github.io/commitizen/)
+
+To commit use `cz commit` or use the commit conventions
+
+Run `cz --help` for usage
+
+To install:
+
+pip3 install -r requirements.txt
+
 ## Settings
 
 The default settings can be used for testing purposes, but are not suitable for production usage. Atlas can be configured with the following settings:
