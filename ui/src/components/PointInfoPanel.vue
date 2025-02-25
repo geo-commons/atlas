@@ -165,7 +165,7 @@ export default {
         ...this.position,
         marker: center,
         center: center,
-        flyTo: true,
+        zoom: 19,
       });
     },
     onFit(value) {
