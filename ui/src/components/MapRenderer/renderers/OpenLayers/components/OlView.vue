@@ -28,15 +28,11 @@ export default {
     position(value, oldValue) {
       const view = this.map.getView();
 
-      if (value.flyTo) {
-        this.centerOn(value.center);
-      }
-
-      if (value.center != oldValue.center && !value.flyTo) {
+      if (value.center !== oldValue.center) {
         view.setCenter(value.center);
       }
 
-      if (value.zoom != oldValue.zoom && !value.flyTo) {
+      if (value.zoom !== oldValue.zoom) {
         view.animate({
           zoom: value.zoom,
           duration: 1500,
