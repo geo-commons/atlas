@@ -248,7 +248,7 @@ export default {
       currentValues.metadata.lineage = currentValues.metadata_lineage;
       currentValues.metadata.contact = currentValues.metadata_contact;
       currentValues.metadata.link = currentValues.metadata_link;
-      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
+      currentValues.read_groups = currentValues.read_groups[1].map((group) => group.id);
 
       currentValues.display_properties = currentValues.display_properties
         .split("\n")
@@ -351,9 +351,9 @@ export default {
       return response;
     },
     setAtlasGroups() {
-      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
-      this.initialValues.atlas_groups = [availableGroups, selectedGroups];
+      const selectedGroups = this.groups.filter((group) => this.initialValues.read_groups.includes(group.id));
+      const availableGroups = this.groups.filter((group) => !this.initialValues.read_groups.includes(group.id));
+      this.initialValues.read_groups = [availableGroups, selectedGroups];
     },
     validateAndParseJsonString(text) {
       if (!text || text.trim() === "") {
@@ -829,7 +829,7 @@ export default {
             {
               label: "Groepen",
               objectDisplayName: "groepen",
-              id: "atlas_groups",
+              id: "read_groups",
               name: "atlasGroups",
               type: "picklist",
             },

@@ -76,7 +76,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     list_editable = ('ordering',)
     list_filter = ('layer_type', 'closed_dataset', 'login_required')
 
-    filter_horizontal = ('atlas_groups',)
+    filter_horizontal = ('read_groups',)
     prepopulated_fields = {'slug': ('title',)}
 
     actions = [duplicate_layer]
@@ -134,7 +134,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
             )
         }),
         ('Toegang', {
-            'fields': ('closed_dataset', 'login_required', 'atlas_groups')
+            'fields': ('closed_dataset', 'login_required', 'read_groups')
         })
     )
 

@@ -345,7 +345,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -385,7 +385,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -425,7 +425,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -465,7 +465,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -505,7 +505,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -545,7 +545,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -585,7 +585,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -625,7 +625,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -665,7 +665,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -705,7 +705,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -745,7 +745,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -785,7 +785,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -825,7 +825,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -865,7 +865,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -905,7 +905,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -945,7 +945,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -985,7 +985,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1025,7 +1025,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1065,7 +1065,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1105,7 +1105,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1145,7 +1145,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1185,7 +1185,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1225,7 +1225,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1265,7 +1265,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1305,7 +1305,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1345,7 +1345,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1385,7 +1385,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1425,7 +1425,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1465,7 +1465,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1505,7 +1505,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1545,7 +1545,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1585,7 +1585,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1625,7 +1625,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1665,7 +1665,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1705,7 +1705,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1745,7 +1745,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1785,7 +1785,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": [],
+            "read_groups": [],
             "dataset": 3
         }
     },
@@ -1826,7 +1826,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1866,7 +1866,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": [],
+            "read_groups": [],
             "dataset": 3
         }
     },
@@ -1907,7 +1907,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {
@@ -1947,7 +1947,7 @@
             "extent_max_y": null,
             "zoom_min": null,
             "zoom_max": null,
-            "atlas_groups": []
+            "read_groups": []
         }
     },
     {

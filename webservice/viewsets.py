@@ -64,7 +64,7 @@ class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
         return LayerSerializer
 
     def get_queryset(self):
-        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups')
+        return Layer.authorized.for_request(self.request).prefetch_related('read_groups')
 
 
 class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

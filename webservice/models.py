@@ -29,10 +29,10 @@ class LayerManager(models.Manager):
             query &= Q(closed_dataset=False)
 
         if request.user.is_authenticated:
-            query &= Q(atlas_groups__in=request.user.atlas_groups.all()) | Q(
-                atlas_groups=None)
+            query &= Q(read_groups__in=request.user.atlas_groups.all()) | Q(
+                read_groups=None)
         else:
-            query &= Q(atlas_groups=None)
+            query &= Q(read_groups=None)
 
         return self.filter(query).distinct()
 
@@ -324,9 +324,15 @@ class Layer(models.Model):
         default=False,
         help_text='De laag wordt niet getoond in de standaardkaart')
 
-    atlas_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen',
-        help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
+    read_groups = models.ManyToManyField(
+        AtlasGroup, blank=True, verbose_name='Groepen met leesrecht',
+        help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.',
+        related_name='read_groups')
+
+    write_groups = models.ManyToManyField(
+        AtlasGroup, blank=True, verbose_name='Groepen met schrijfrecht',
+        help_text='De inhoud van deze dataset kan alleen bewerkt worden als de gebruiker lid is van een van deze groepen.',
+        related_name='write_groups')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
     updated_at = models.DateTimeField('updated_at', auto_now=True)
@@ -491,16 +497,16 @@ source: new ol.source.TileWMS({{
                 return False
 
         if not user.is_authenticated:
-            if not self.login_required and not self.atlas_groups.exists():
+            if not self.login_required and not self.read_groups.exists():
                 return True
 
             return False
 
-        if not self.atlas_groups.exists():
+        if not self.read_groups.exists():
             return True
 
         user_groups = list(user.atlas_groups.all())
-        return any(group for group in self.atlas_groups.all() if group in user_groups)
+        return any(group for group in self.read_groups.all() if group in user_groups)
 
     class Meta:
         verbose_name = 'Kaartlaag'

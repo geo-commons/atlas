@@ -236,7 +236,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'metadata',
             'linked_data',
             'templates',
-            'atlas_groups',
+            'read_groups',
             'published',
             'templated_properties',
             'dataset'
@@ -273,10 +273,10 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         linked_data, templates = (validated_data.pop(key, None)
                                   for key in ('linked_data', 'templates'))
 
-        # Handling many-to-many field 'atlas_groups'
-        if 'atlas_groups' in validated_data:
-            atlas_groups_data = validated_data.pop('atlas_groups')
-            instance.atlas_groups.set(atlas_groups_data)
+        # Handling many-to-many field 'read_groups'
+        if 'read_groups' in validated_data:
+            read_groups_data = validated_data.pop('read_groups')
+            instance.read_groups.set(read_groups_data)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -361,7 +361,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'login_required',
             'closed_dataset',
             'ordering',
-            'atlas_groups',
+            'read_groups',
             'published',
             'linked_data',
             'templates',

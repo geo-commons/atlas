@@ -44,12 +44,14 @@ def authorize_ows_request(source, request, data):
             'message': f'user {user} does not have access to layer {resource}'
         }, status=403 if user.is_authenticated else 401)
 
-    layer_rules = Layer.objects.filter(
+    print(data.get('request'), "test-request")
+
+    layer_read_rules = Layer.objects.filter(
         layer_source=source,
         layer_name=data.get('resource')
-    ).prefetch_related('atlas_groups')
+    ).prefetch_related('read_groups')
 
-    for layer in layer_rules:
+    for layer in layer_read_rules:
         if layer.is_accessible_by(user, request):
             return JsonResponse({'result': True, 'status': 200})
 
@@ -87,7 +89,7 @@ def authorize_wmts_request(source, request, data):
     layer_rules = Layer.objects.filter(
         layer_source=source,
         layer_name=data.get('resource')
-    ).prefetch_related('atlas_groups')
+    ).prefetch_related('read_groups')
 
     for layer in layer_rules:
         if layer.is_accessible_by(user, request):
@@ -180,20 +182,20 @@ def can_request_access_layer(request, layer):
     if layer.login_required and user.is_anonymous:
         return False
 
-    layer_only_accessible_by_groups = layer.atlas_groups.exists()
+    layer_only_accessible_by_read_groups = layer.read_groups.exists()
 
-    if user.is_anonymous and not layer_only_accessible_by_groups:
+    if user.is_anonymous and not layer_only_accessible_by_read_groups:
         return True
 
-    if user.is_anonymous and layer_only_accessible_by_groups:
+    if user.is_anonymous and layer_only_accessible_by_read_groups:
         return False
 
-    if not user.is_anonymous and not layer_only_accessible_by_groups:
+    if not user.is_anonymous and not layer_only_accessible_by_read_groups:
         return True
 
     user_groups = user.atlas_groups.all()
     user_has_access_to_layer_via_group = any(
-        g for g in layer.atlas_groups.all() if g in user_groups
+        g for g in layer.read_groups.all() if g in user_groups
     )
 
     if not user.is_anonymous and user_has_access_to_layer_via_group:

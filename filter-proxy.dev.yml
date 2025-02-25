@@ -17,10 +17,16 @@ cors:
 paths:
   - path: /api/ows
     backend:
-      slug: geoserver
+      slug: filter-proxy-lokaal
       path: /ows
+    allowedMethods:
+      - GET
+      - POST
 
 backends:
   geoserver:
     type: OWS
     baseUrl: https://dpt.purmerend.nl/geoserver
+  filter-proxy-lokaal:
+    type: OWS
+    baseUrl: http://geoserver:8080/geoserver

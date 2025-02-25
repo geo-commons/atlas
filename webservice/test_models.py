@@ -30,7 +30,7 @@ class TestLayerManager(TestCase):
             closed_dataset=True, login_required=True, published=True)
         self.layer_only_for_group = Layer.objects.create(
             closed_dataset=False, published=True)
-        self.layer_only_for_group.atlas_groups.add(self.group)
+        self.layer_only_for_group.read_groups.add(self.group)
 
     def test_for_request_authenticated_superuser(self):
         request = self.factory.get('/')
