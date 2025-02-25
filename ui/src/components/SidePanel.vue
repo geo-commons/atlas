@@ -116,7 +116,7 @@ export default {
   }
 }
 
-@media (max-width: 932px) {
+@media (max-width: 1024px) {
   .wrapper {
     height: calc(40 * var(--vh));
     width: 100%;
@@ -164,7 +164,7 @@ export default {
   pointer-events: none;
 }
 
-@media (max-width: 932px) {
+@media (max-width: 1024px) {
   .resize-button {
     display: none;
   }
