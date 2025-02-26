@@ -825,7 +825,7 @@ export default {
   background: var(--color-white);
 }
 
-@media (max-width: 932px) {
+@media (max-width: 1024px) {
   .map-container {
     flex-direction: column;
   }
