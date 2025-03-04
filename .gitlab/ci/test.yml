@@ -20,7 +20,7 @@ Test:
     - python manage.py collectstatic --noinput
   script:
     - python -m prospector -X
-    - python -m coverage run manage.py test
+    - DJANGO_DEBUG=False python -m coverage run manage.py test
     - python -m coverage report && python -m coverage html
   coverage: "/TOTAL.+ ([0-9]{1,3}%)/"
   artifacts:
