@@ -242,7 +242,10 @@ export default {
       }
 
       if (result.ok) {
+        // @TODO: add toast with success message
         this.$router.push(`/maps`);
+      } else {
+        // @TODO: add toast with error message
       }
     },
     async deleteMap(e) {
