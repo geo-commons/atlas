@@ -19,7 +19,7 @@ class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
         fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description', 'published',
-                  'show_in_overview']
+                  'show_in_overview', 'about', 'about_title']
 
     def create(self, validated_data):
         try:

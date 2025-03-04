@@ -224,6 +224,9 @@ const routes = [
         position: JSON.parse(decodeURIComponent(route.query.position)),
         settings: JSON.parse(decodeURIComponent(route.query.settings)),
         user: JSON.parse(decodeURIComponent(route.query.user)),
+        about: route.query.about ? JSON.parse(decodeURIComponent(route.query.about)) : null,
+        aboutTitle: route.query.aboutTitle ? JSON.parse(decodeURIComponent(route.query.aboutTitle)) : null,
+        thumbnail: route.query.thumbnail ? JSON.parse(decodeURIComponent(route.query.thumbnail)) : null,
       };
     },
   },

@@ -1,5 +1,4 @@
 <template>
-  <Toast position="bottom-center" />
   <div v-if="data" class="map-update" :class="{ environmentIndicator: showEnvironmentIndicator }">
     <MapLayers
       v-if="sidebar === 'layers'"
@@ -13,6 +12,12 @@
       :initial-data="selectedLayerData"
       :initial-configured-layers="data.layers"
       @show-layers="() => showSidebar('layers')"
+    />
+    <MapAbout
+      v-if="sidebar === 'about'"
+      :initial-data="data"
+      @show-form="() => showSidebar('form')"
+      @update-about="handleAboutUpdate"
     />
     <LayerListPanel v-if="sidebar === 'layerList'" :initial-data="data" @show-form="() => showSidebar('form')" />
     <ListPanelAdmin
@@ -75,8 +80,10 @@ import ListPanelAdmin from "../components/ListPanelAdmin";
 import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
 import MapLayer from "@/admin/components/MapLayer.vue";
 import LayerListPanel from "../components/LayerListPanel.vue";
+import MapAbout from "../components/MapAbout.vue";
 import { useGlobalStore } from "@/stores";
 import ThumbnailPanelAdmin from "@/admin/components/ThumbnailPanelAdmin.vue";
+import { useToast } from "primevue";
 
 export default {
   name: "MapCreateUpdate",
@@ -88,16 +95,19 @@ export default {
     ListPanelAdmin,
     FiltersPanelAdmin,
     LayerListPanel,
+    MapAbout,
   },
   data() {
     return {
       data: null,
+      toast: useToast(),
       mapPadding: [0, 0, 0, 0],
       selectedArea: null,
       sidebar: "form",
       selectedLayerData: null,
       userLayerSettings: null,
       previewMode: "desktop",
+      aboutPreview: null,
       previewModes: [
         { value: "desktop", icon: "pi pi-desktop", label: "Desktop" },
         { value: "tablet", icon: "pi pi-tablet", label: "Tablet" },
@@ -168,7 +178,9 @@ export default {
       params.append("position", JSON.stringify(this.position));
       params.append("settings", JSON.stringify(this.data.settings || {}));
       params.append("user", JSON.stringify(this.user || {}));
-
+      params.append("about", JSON.stringify(this.data.about || null));
+      params.append("aboutTitle", JSON.stringify(this.data.about_title || null));
+      params.append("thumbnail", JSON.stringify(this.data.thumbnail || null));
       return `/atlas/admin/#/preview/${this.$route.params.id}?admin_env_indicator=hide&${params.toString()}`;
     },
   },
@@ -255,10 +267,22 @@ export default {
       }
 
       if (result.ok) {
-        // @TODO: add toast with success message
+        this.toast.add({
+          severity: "success",
+          summary: "Kaart succesvol opgeslagen",
+          detail: "Alle instellingen zijn succesvol opgeslagen",
+          life: 5000,
+        });
+
         this.$router.push(`/maps`);
       } else {
-        // @TODO: add toast with error message
+        // @TODO: Duidelijkere error
+        this.toast.add({
+          severity: "error",
+          summary: "Er is iets misgegaan",
+          detail: "Het opslaan is niet gelukt, probeer het later opnieuw",
+          life: 5000,
+        });
       }
     },
     async deleteMap(e) {
@@ -316,6 +340,11 @@ export default {
     },
     updateLayers(layers) {
       this.data.layers = layers;
+    },
+    handleAboutUpdate(aboutData) {
+      this.data.about = aboutData?.about;
+      this.data.about_title = aboutData?.about_title;
+      this.data.thumbnail = aboutData?.thumbnail;
     },
   },
 };
