@@ -1,41 +1,45 @@
 <template>
+  <Toast position="bottom-center" />
   <div v-if="data" class="map-update" :class="{ environmentIndicator: showEnvironmentIndicator }">
     <MapLayers
-      v-if="sidebar === 'Layers'"
+      v-if="sidebar === 'layers'"
       :initial-data="data"
-      @show-form="() => showSidebar('Form')"
+      @show-form="() => showSidebar('form')"
       @show-layer="showLayerSettings"
       @update-layers="updateLayers"
     />
     <MapLayer
-      v-if="sidebar === 'Layer'"
+      v-if="sidebar === 'layer'"
       :initial-data="selectedLayerData"
       :initial-configured-layers="data.layers"
-      @show-layers="() => showSidebar('Layers')"
+      @show-layers="() => showSidebar('layers')"
     />
-    <LayerListPanel v-if="sidebar === 'LayerList'" :initial-data="data" @show-form="() => showSidebar('Form')" />
+    <LayerListPanel v-if="sidebar === 'layerList'" :initial-data="data" @show-form="() => showSidebar('form')" />
     <ListPanelAdmin
-      v-if="sidebar === 'List'"
+      v-if="sidebar === 'list'"
       :initial-data="data"
       :layers="configuredLayers"
-      @show-form="() => showSidebar('Form')"
+      @show-form="() => showSidebar('form')"
     />
     <FiltersPanelAdmin
-      v-if="sidebar === 'Filters'"
+      v-if="sidebar === 'filters'"
       :initial-data="data"
       :layers="configuredLayers"
       :user="user"
-      @show-form="() => showSidebar('Form')"
+      @show-form="() => showSidebar('form')"
+    />
+    <ThumbnailPanelAdmin
+      v-if="sidebar === 'thumbnail'"
+      :initial-thumbnail="data.thumbnail"
+      @show-form="() => showSidebar('form')"
+      @update-map="getMap"
     />
     <MapForm
-      v-if="sidebar === 'Form'"
+      v-if="sidebar === 'form'"
       :initial-data="data"
       @delete="deleteMap"
       @submit="saveMap"
-      @show-layers="() => showSidebar('Layers')"
-      @show-list="() => showSidebar('List')"
-      @show-filters="() => showSidebar('Filters')"
-      @show-layerlist="() => showSidebar('LayerList')"
+      @show-panel="showSidebar"
     />
     <div class="editor-map-wrapper">
       <div class="select-button-container flex __center">
@@ -72,9 +76,12 @@ import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
 import MapLayer from "@/admin/components/MapLayer.vue";
 import LayerListPanel from "../components/LayerListPanel.vue";
 import { useGlobalStore } from "@/stores";
+import ThumbnailPanelAdmin from "@/admin/components/ThumbnailPanelAdmin.vue";
+
 export default {
   name: "MapCreateUpdate",
   components: {
+    ThumbnailPanelAdmin,
     MapLayer,
     MapForm,
     MapLayers,
@@ -87,7 +94,7 @@ export default {
       data: null,
       mapPadding: [0, 0, 0, 0],
       selectedArea: null,
-      sidebar: "Form",
+      sidebar: "form",
       selectedLayerData: null,
       userLayerSettings: null,
       previewMode: "desktop",
@@ -219,6 +226,12 @@ export default {
         data.settings.facets = [];
       }
 
+      if (data.thumbnail) {
+        // Remove thumbnail from data object to make sure it is not posted with
+        // the rest of the map data since a file is not stringify-able.
+        delete data.thumbnail;
+      }
+
       if (this.$route.params.id) {
         result = await fetch(`/atlas/api/v1/maps/${this.$route.params.id}/`, {
           method: "PATCH",
@@ -296,7 +309,7 @@ export default {
     },
     showLayerSettings(selectedLayerId) {
       this.selectedLayerData = this.data.layers.find((layer) => layer.layer === selectedLayerId);
-      this.showSidebar("Layer");
+      this.showSidebar("layer");
     },
     updateUserSettings(value) {
       this.userLayerSettings = value;

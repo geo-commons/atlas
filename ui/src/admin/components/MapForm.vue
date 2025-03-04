@@ -40,9 +40,14 @@
               :info-text="'Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.'"
             />
           </div>
-          <button type="button" class="button __chevron setting" @click="() => $emit('show-layers')">
+          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'layers')">
             <LayerIcon class="icon setting-icon" />
             Lagen
+            <ChevronRightIcon class="icon setting-chevron" />
+          </button>
+          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'thumbnail')">
+            <ImageIcon class="icon setting-icon" />
+            Thumbnail
             <ChevronRightIcon class="icon setting-chevron" />
           </button>
         </div>
@@ -141,7 +146,7 @@
               v-if="data.features.layerlist"
               type="button"
               class="button __transparent-bg __no-hover __chevron"
-              @click="() => $emit('show-layerlist')"
+              @click="() => $emit('show-panel', 'layerList')"
             >
               <ChevronRightIcon class="icon setting-chevron" />
             </button>
@@ -160,7 +165,7 @@
               v-if="data.features.list"
               type="button"
               class="button __transparent-bg __no-hover __chevron"
-              @click="() => $emit('show-list')"
+              @click="() => $emit('show-panel', 'list')"
             >
               <ChevronRightIcon class="icon setting-chevron" />
             </button>
@@ -174,7 +179,7 @@
               v-if="data.features.filters"
               type="button"
               class="button __transparent-bg __no-hover __chevron"
-              @click="() => $emit('show-filters')"
+              @click="() => $emit('show-panel', 'filters')"
             >
               <ChevronRightIcon class="icon setting-chevron" />
             </button>
@@ -192,6 +197,7 @@
 
 <script>
 import LayerIcon from "../../assets/icons/layer-icon.svg";
+import ImageIcon from "../../assets/icons/image-icon.svg";
 import ChevronRightIcon from "../../assets/icons/chevron-right-icon.svg";
 import MapIcon from "../../assets/icons/map-icon.svg";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
@@ -202,6 +208,7 @@ export default {
   components: {
     AdminFormInfoText,
     LayerIcon,
+    ImageIcon,
     ChevronRightIcon,
     MapIcon,
     AdminSidePanel,
@@ -209,7 +216,7 @@ export default {
   props: {
     initialData: Object,
   },
-  emits: ["submit", "show-filters", "show-list", "show-layerlist", "show-layers"],
+  emits: ["submit", "show-panel"],
   data() {
     return {
       data: this.initialData || { features: {} },

@@ -17,7 +17,7 @@ from authz.models import Log
 from tables.models import Table
 from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
-from webservice.mixins import DataExportImportMixin
+from webservice.mixins import DataExportImportMixin, FileUploadMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
 from .models import Category, Drawing, Source, Layer, Theme, Viewer, Map, Dataset
@@ -27,7 +27,7 @@ from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer,
     UserCreateUpdateSerializer
 
 
-class MapViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class MapViewSet(DataExportImportMixin, FileUploadMixin, viewsets.ModelViewSet):
     serializer_class = MapSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['published', 'show_in_overview']
