@@ -7,6 +7,7 @@
       placeholder="Kies een laag"
       filter-placeholder="Zoek laag"
       :options="availableLayers"
+      :loading="isLoading"
       filter
       fluid
       @update:modelValue="(value) => emit('update:modelValue', value)"
@@ -39,6 +40,7 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 const availableLayers = ref([]);
+const isLoading = ref(true);
 
 const selectedSource = computed(() => {
   return props.sources.find((arr) => arr.id === props.currentSourceId);
@@ -55,6 +57,7 @@ watch(
 
 const getLayers = async () => {
   availableLayers.value = [];
+  isLoading.value = true;
 
   if (!selectedSource.value) {
     return;
@@ -87,12 +90,16 @@ const getLayers = async () => {
     const layers = caps?.Capability?.Layer?.Layer.map((layer) => layer.Name);
 
     availableLayers.value = layers ? layers : [];
+
+    isLoading.value = false;
   } catch (e) {
     console.error("failed to fetch source capabilities: ", e);
+
+    isLoading.value = false;
   }
 };
 
-onMounted(() => {
-  getLayers();
+onMounted(async () => {
+  await getLayers();
 });
 </script>
