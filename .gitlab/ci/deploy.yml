@@ -27,6 +27,7 @@ Deploy Review App:
       --set persistence.media.storageClassName=standard-retain \
       --set postgresql.persistence.enabled=false \
       --set loadDemoData=true \
+      --set debug=true \
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
