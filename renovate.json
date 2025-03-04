@@ -1,7 +1,9 @@
 {
   "extends": [
-    "config:base",
-    "group:allNonMajor",
-    ":disableDependencyDashboard"
+    "config:recommended",
+    "docker:pinDigests",
+    "helpers:pinGitHubActionDigests",
+    ":configMigration",
+    ":pinDevDependencies"
   ]
 }
