@@ -43,7 +43,7 @@ Lint ui:
 
 Test unit:
   stage: Test
-  image: node:v20.18.3
+  image: node:20.18.3
   cache:
     paths:
       - ui/node_modules/
