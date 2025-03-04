@@ -39,3 +39,29 @@ Lint ui:
     - npm install
   script:
     - npm run lint
+    - npm run test:unit
+
+Test unit:
+  stage: Test
+  image: mcr.microsoft.com/playwright:v1.47.2-noble
+  cache:
+    paths:
+      - ui/node_modules/
+  before_script:
+    - cd ui/
+    - npm install
+  script:
+    - npm run test:browser
+
+Test browser:
+  stage: Test
+  image: mcr.microsoft.com/playwright:v1.47.2-noble
+  cache:
+    paths:
+      - ui/node_modules/
+  before_script:
+    - cd ui/
+    - npm install
+  script:
+    - npm run test:browser
+
