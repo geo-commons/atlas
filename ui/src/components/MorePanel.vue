@@ -20,6 +20,7 @@
             <a :href="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`">Log uit</a>
           </li>
           <li><button @click="() => toggleModal('embed')">Embed</button></li>
+          <li v-if="map?.features?.showAbout"><button @click="toggleAbout">Informatie</button></li>
           <li v-if="config.features.print">
             <button @click="() => toggleModal('print')">Print</button>
           </li>
@@ -56,7 +57,7 @@ export default {
     nextUrl() {
       return window.location.pathname;
     },
-    ...mapState(useGlobalStore, ["config"]),
+    ...mapState(useGlobalStore, ["config", "map"]),
   },
   methods: {
     toggle() {
@@ -64,6 +65,11 @@ export default {
     },
     toggleModal(modal) {
       this.$emit("toggle-modal", modal);
+      this.isOpen = false;
+    },
+    toggleAbout() {
+      this.$emit("toggle-about");
+      this.isOpen = false;
     },
   },
 };

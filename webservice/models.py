@@ -701,6 +701,14 @@ class Map(models.Model):
         'Beschrijving van de kaart', null=True,
         help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
 
+    about = models.TextField(
+        'Beschrijving van de kaart voor de zijbalk', null=True,
+        help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+
+    about_title = models.CharField(
+        'Titel van de zijbalk', null=True, max_length=128,
+        help_text="De titel van de zijbalk die gebruikt wordt in de zijbalkinformatie", blank=True)
+
     published = models.BooleanField('Gepubliceerd',
                                     help_text="Markeer dit veld als Gepubliceerd om de kaart te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de kaart te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.",
                                     default=False)
@@ -725,7 +733,10 @@ class Map(models.Model):
             'slug': self.slug,
             'layers': [layer.to_dict() for layer in self.map_layers.all()],
             'features': self.features,
-            'settings': self.settings
+            'settings': self.settings,
+            'about': self.about,
+            'about_title': self.about_title,
+            'thumbnail': self.thumbnail.url if self.thumbnail else None
         }
 
 

@@ -50,6 +50,11 @@
             Thumbnail
             <ChevronRightIcon class="icon setting-chevron" />
           </button>
+          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'about')">
+            <i class="pi pi-file-edit icon setting-icon"></i>
+            Kaartomschrijving
+            <ChevronRightIcon class="icon setting-chevron" />
+          </button>
         </div>
 
         <div class="settings">
@@ -185,12 +190,14 @@
             </button>
           </div>
         </div>
-
-        <div class="admin-button-wrapper">
-          <router-link to="/maps" class="button __tertiary">Annuleer</router-link>
-          <button type="submit" class="button __primary_admin">Opslaan</button>
-        </div>
       </form>
+    </template>
+
+    <template #footer>
+      <div class="tw-flex tw-gap-2 tw-justify-end tw-w-full">
+        <router-link to="/maps" class="button __tertiary">Annuleren</router-link>
+        <button type="button" class="button __primary_admin" @click="submitForm">Opslaan</button>
+      </div>
     </template>
   </AdminSidePanel>
 </template>
@@ -265,11 +272,13 @@ export default {
   align-items: flex-end;
   gap: 12px;
   margin-top: auto;
-  padding-bottom: 32px;
 }
 
 .setting-icon {
   margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .setting-chevron {

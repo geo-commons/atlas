@@ -8,6 +8,10 @@
       <slot v-if="!loading"></slot>
       <Spinner v-else style-type="'admin'" />
     </div>
+
+    <footer v-if="$slots.footer" class="tw-sticky tw-bottom-0 tw-left-0 tw-right-0 tw-p-4 tw-w-full">
+      <slot name="footer"></slot>
+    </footer>
   </aside>
 </template>
 

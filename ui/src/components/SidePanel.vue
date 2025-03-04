@@ -1,49 +1,65 @@
 <template>
-  <aside v-if="showPanel" class="wrapper" :class="{ large, medium, fullScreen }">
-    <button
-      v-if="(large || medium) && !fullScreen"
-      v-tippy="{ placement: 'right' }"
-      :content="large && medium ? 'Verklein paneel' : 'Vergroot paneel'"
-      :aria-label="large && medium ? 'Verklein paneel' : 'Vergroot paneel'"
-      class="iconbutton resize-button"
-      @click="toggleSidePanel"
-    >
-      <ChevronLeftIcon v-if="large && medium" />
-      <ChevronRightIcon v-else />
-    </button>
-    <button
-      v-tippy="{ placement: 'bottom' }"
-      :content="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'"
-      :aria-label="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'"
-      class="iconbutton expand-mobile-button"
-      @click="toggleFullScreen"
-    >
-      <ChevronUpIcon />
-    </button>
-    <button
-      v-if="large && fullScreen"
-      v-tippy="{ placement: 'left' }"
-      content="Verklein paneel"
-      aria-label="Verklein paneel"
-      class="iconbutton resize-button exit-fullscreen"
-      @click="toggleSidePanel"
-    >
-      <ChevronLeftIcon />
-    </button>
+  <Transition name="slide">
+    <aside v-if="showPanel" class="wrapper" :class="{ large, medium, fullScreen }">
+      <div class="wrapper-content tw-max-h-full">
+        <template v-if="$slots.header">
+          <slot name="header"></slot>
+        </template>
 
-    <div class="header">
-      <slot name="search"></slot>
-    </div>
+        <div v-if="$slots.search" class="header tw-mb-4">
+          <slot name="search"></slot>
+        </div>
 
-    <div class="content">
-      <slot></slot>
-    </div>
-  </aside>
+        <div class="content">
+          <slot></slot>
+        </div>
+
+        <footer v-if="$slots.footer" class="tw-w-full tw-bg-white">
+          <div class="tw-px-3">
+            <hr class="tw-my-0 tw-border-t tw-border-gray-200" />
+          </div>
+          <slot name="footer"></slot>
+        </footer>
+      </div>
+
+      <button
+        v-if="(large || medium) && !fullScreen && expandable"
+        v-tippy="{ placement: 'right' }"
+        :content="large && medium ? 'Verklein paneel' : 'Vergroot paneel'"
+        :aria-label="large && medium ? 'Verklein paneel' : 'Vergroot paneel'"
+        class="iconbutton resize-button"
+        @click="toggleSidePanel"
+      >
+        <ChevronLeftIcon v-if="large && medium" />
+        <ChevronRightIcon v-else />
+      </button>
+      <button
+        v-tippy="{ placement: 'bottom' }"
+        :content="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'"
+        :aria-label="fullScreen ? 'Verklein paneel' : 'Vergroot paneel'"
+        class="iconbutton expand-mobile-button"
+        :class="{ 'expand-mobile-button--expanded': fullScreen }"
+        @click="toggleFullScreen"
+      >
+        <ChevronUpIcon />
+      </button>
+      <button
+        v-if="large && fullScreen && expandable"
+        v-tippy="{ placement: 'left' }"
+        content="Verklein paneel"
+        aria-label="Verklein paneel"
+        class="iconbutton resize-button exit-fullscreen"
+        @click="toggleSidePanel"
+      >
+        <ChevronLeftIcon />
+      </button>
+    </aside>
+  </Transition>
 </template>
 
 <script>
-import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
 import ChevronLeftIcon from "@/assets/icons/chevron-left-icon.svg";
+import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
 import ChevronUpIcon from "@/assets/icons/chevron-up-icon.svg";
 
 export default {
@@ -53,6 +69,10 @@ export default {
     initialSizeLarge: Boolean,
     initialSizeMedium: Boolean,
     showPanel: Boolean,
+    expandable: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -89,37 +109,70 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .wrapper {
   position: relative;
   flex-shrink: 0;
   z-index: 2;
-  width: 100%;
+  overflow: unset;
   background: white;
   box-shadow: var(--shadow-normal);
   display: flex;
   flex-direction: column;
+  transition:
+    max-width 0.3s ease,
+    height 0.3s ease,
+    width 0.3s ease;
 }
 
-@media (min-width: 1024px) {
+.wrapper-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: var(--width-detail);
+  transition: width 0.3s ease;
+
+  @media (max-width: 932px) {
+    &:has(.about-panel__content) {
+      display: unset;
+      height: calc(40 * var(--vh));
+      overflow-y: auto;
+    }
+  }
+}
+
+@media (min-width: 1025px) {
   .wrapper {
     height: 100%;
     max-width: var(--width-detail);
+    width: var(--width-detail);
   }
 
   .wrapper.large {
-    max-width: 50%;
+    width: 50%;
+    max-width: 50vw;
+
+    .wrapper-content {
+      width: 100%;
+    }
   }
 
   .wrapper.fullScreen {
     max-width: 100%;
+    width: 100%;
   }
 }
 
 @media (max-width: 1024px) {
   .wrapper {
     height: calc(40 * var(--vh));
-    width: 100%;
+    max-width: 100%;
+
+    .wrapper-content {
+      width: 100%;
+    }
   }
 
   .wrapper.fullScreen {
@@ -128,17 +181,18 @@ export default {
 }
 
 .header {
+  background-color: var(--color-white);
   display: flex;
   width: 100%;
   padding: var(--padding-screen);
   padding-bottom: 0;
+  z-index: 2;
 }
 
 .content {
   position: relative;
   flex-grow: 1;
   overflow-y: auto;
-  padding: 16px 0;
 }
 
 .resize-button {
@@ -151,17 +205,7 @@ export default {
   border-bottom-right-radius: var(--radius-small);
   background: white;
   box-shadow: var(--shadow-normal);
-}
-
-.resize-button:before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  bottom: -8px;
-  width: 8px;
-  left: -8px;
-  background: white;
-  pointer-events: none;
+  z-index: 1;
 }
 
 @media (max-width: 1024px) {
@@ -187,6 +231,10 @@ export default {
   border-top-left-radius: var(--radius-small);
   border-top-right-radius: var(--radius-small);
   z-index: 1;
+
+  &--expanded {
+    z-index: 3;
+  }
 }
 
 .wrapper.fullScreen .expand-mobile-button {
@@ -207,21 +255,10 @@ export default {
   content: none;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .expand-mobile-button {
     display: none;
   }
-}
-
-.expand-mobile-button:before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  right: -8px;
-  height: 8px;
-  bottom: -8px;
-  background: white;
-  pointer-events: none;
 }
 
 .exit-fullscreen {
@@ -232,7 +269,40 @@ export default {
   box-shadow: none;
 }
 
-.exit-fullscreen:before {
-  content: none;
+.slide-enter-active,
+.slide-leave-active {
+  overflow: hidden;
+  transition:
+    opacity 0.3s ease-out,
+    max-width 0.3s ease-out;
+
+  @media (max-width: 932px) {
+    transition:
+      opacity 0.3s ease-out,
+      max-height 0.3s ease-out;
+  }
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  max-width: 0;
+}
+
+@media (min-width: 1025px) {
+  .slide-enter-from,
+  .slide-leave-to {
+    opacity: 0;
+    max-width: 0;
+  }
+}
+
+@media (max-width: 932px) {
+  .slide-enter-from,
+  .slide-leave-to {
+    opacity: 0;
+    max-height: 0;
+    max-width: 100%;
+  }
 }
 </style>

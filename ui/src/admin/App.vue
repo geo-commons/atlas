@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <Toast position="bottom-center" />
     <AppMenu v-if="$route.meta.menu" />
     <AdminEnvironmentIndicator
       v-if="

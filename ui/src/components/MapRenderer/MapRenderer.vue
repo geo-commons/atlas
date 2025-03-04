@@ -76,6 +76,18 @@
         @loading-print-to-pdf="setLoadingPrint"
       />
     </div>
+    <AboutPanel
+      v-if="!isEmbed && !showPanoramaPanel"
+      :features="features"
+      :about="about"
+      :about-title="aboutTitle"
+      :thumbnail="thumbnail"
+      :show-panel="showAbout"
+      @close-side-panel="closeAbout"
+      @hidePanel="closeAbout"
+      @toggle-modal="toggleModal"
+      @toggle-about="toggleAbout"
+    />
     <ListPanel
       v-if="showList && layers.length > 0"
       ref="listPanel"
@@ -195,6 +207,7 @@
           :user="user"
           :show-disclaimer="config.show_disclaimer"
           @toggle-modal="toggleModal"
+          @toggle-about="toggleAbout"
         />
       </div>
       <div class="bottom-left-panels">
@@ -296,6 +309,7 @@ import ListPanel from "../ListPanel";
 import FilterPanel from "../FilterPanel";
 import DataPanel from "../DataPanel";
 import PointInfoPanel from "../PointInfoPanel";
+import AboutPanel from "../AboutPanel";
 import DetailPanel from "../DetailPanel";
 import SearchPanel from "../SearchPanel";
 import LayersPanel from "../LayersPanel";
@@ -340,6 +354,7 @@ export default {
     LayersPanel,
     DataPanel,
     PointInfoPanel,
+    AboutPanel,
     DetailPanel,
     ListPanel,
     FilterPanel,
@@ -354,6 +369,21 @@ export default {
   },
   props: {
     mapId: String,
+    about: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    aboutTitle: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    thumbnail: {
+      type: String,
+      required: false,
+      default: "",
+    },
     initialLayers: Array,
     initialPosition: Object,
     initialDrawFeatures: Array,
@@ -409,6 +439,7 @@ export default {
       showDataPanelFullScreen: false,
       showBaseLayersPanel: false,
       showPanoramaPanel: false,
+      showAbout: false,
       showList: false,
       showFilters: false,
       infoPanelExpanded: false,
@@ -530,10 +561,17 @@ export default {
       },
       deep: true,
     },
+    features: {
+      handler(value) {
+        this.showAbout = value?.showAbout;
+      },
+      deep: true,
+    },
   },
   mounted() {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
+    this.showAbout = this.features?.showAbout;
 
     this.mapStore = useMapStore(this.mapId);
   },
@@ -667,6 +705,10 @@ export default {
       this.infoPanelExpanded = expandInfoPanel;
       this.setWindowInnerWidth();
     },
+    closeAbout() {
+      this.showAbout = false;
+      this.setWindowInnerWidth();
+    },
     setWindowInnerWidth() {
       // Do not adjust the inner window padding for mobile screens.
       if (isMobile()) {
@@ -697,6 +739,9 @@ export default {
     },
     toggleFilters() {
       this.showFilters = !this.showFilters;
+    },
+    toggleAbout() {
+      this.showAbout = !this.showAbout;
     },
     setTool(tool) {
       this.tool = tool;
