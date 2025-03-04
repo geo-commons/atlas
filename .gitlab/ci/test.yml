@@ -51,7 +51,7 @@ Test unit:
     - cd ui/
     - npm install
   script:
-    - npm run test:browser
+    - npm run test:unit
 
 Test browser:
   stage: Test
