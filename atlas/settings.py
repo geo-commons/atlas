@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -11,11 +12,6 @@ ALLOWED_HOSTS_DEFAULT = 'localhost,127.0.0.1,[::1]'
 DEFAULT_SESSION_COOKIE_SECURE = 'False'
 DEFAULT_SESSION_EXPIRE_AT_BROWSER_CLOSE = 'False'
 DEFAULT_SESSION_COOKIE_AGE = '1909600'  # 2 weeks
-
-if "test" in sys.argv:
-    DEBUG = False
-    INSTALLED_APPS = [app for app in INSTALLED_APPS if app != "debug_toolbar"]
-    MIDDLEWARE = [mw for mw in MIDDLEWARE if mw != "debug_toolbar.middleware.DebugToolbarMiddleware"]
 
 if os.getenv('USE_SAFE_SETTINGS'):
     DEBUG_DEFAULT = 'False'
@@ -361,3 +357,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STATICFILES_DIRS = [
     BASE_DIR / "homepage/static/dist"
 ]
+
+if "test" in sys.argv:
+    DEBUG = False
+    INSTALLED_APPS = [app for app in INSTALLED_APPS if app != "debug_toolbar"]
+    MIDDLEWARE = [mw for mw in MIDDLEWARE if mw != "debug_toolbar.middleware.DebugToolbarMiddleware"]
+
+
