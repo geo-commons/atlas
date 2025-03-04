@@ -16,7 +16,7 @@ import MapCreateUpdate from "./admin/pages/MapCreateUpdate";
 import SourceList from "./admin/pages/SourceList";
 import SourceCreateUpdate from "./admin/pages/SourceCreateUpdate";
 import UserList from "./admin/pages/UserList";
-import NotFound from "./admin/pages/NotFound";
+import AdminNotFound from "./admin/AdminNotFound.vue";
 import detectKeyboard from "@/utils/detect-keyboard";
 import CategoryList from "@/admin/pages/CategoryList.vue";
 import CategoryCreateUpdate from "@/admin/pages/CategoryCreateUpdate.vue";
@@ -227,7 +227,7 @@ const routes = [
       };
     },
   },
-  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
+  { path: "/:pathMatch(.*)*", name: "not-found", component: AdminNotFound },
 ];
 
 const router = createRouter({

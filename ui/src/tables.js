@@ -9,7 +9,7 @@ import VueTippy from "vue-tippy";
 
 import App from "./tables/App";
 import ListView from "./tables/pages/ListView";
-import NotFound from "./tables/pages/NotFound";
+import TableNotFound from "./tables/TableNotFound.vue";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import PrimeVue from "primevue/config";
@@ -17,7 +17,7 @@ import { AtlasPresetApp } from "@/utils/theme-preset";
 
 const routes = [
   { path: "/:tableSlug", component: ListView },
-  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
+  { path: "/:pathMatch(.*)*", name: "not-found", component: TableNotFound },
 ];
 
 const router = createRouter({
