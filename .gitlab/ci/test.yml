@@ -43,7 +43,7 @@ Lint ui:
 
 Test unit:
   stage: Test
-  image: mcr.microsoft.com/playwright:v1.47.2-noble
+  image: node:v20.18.3
   cache:
     paths:
       - ui/node_modules/
@@ -55,7 +55,7 @@ Test unit:
 
 Test browser:
   stage: Test
-  image: mcr.microsoft.com/playwright:v1.47.2-noble
+  image: mcr.microsoft.com/playwright:v1.50.1-jammy
   cache:
     paths:
       - ui/node_modules/
