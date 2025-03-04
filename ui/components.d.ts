@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AboutPanel: typeof import('./src/components/AboutPanel.vue')['default']
     ActionButton: typeof import('./src/components/ActionButton.vue')['default']
     AlertMessage: typeof import('./src/components/AlertMessage.vue')['default']
     BaseLayersPanel: typeof import('./src/components/BaseLayersPanel.vue')['default']
@@ -19,10 +20,12 @@ declare module 'vue' {
     DataPanelButton: typeof import('./src/components/DataPanelButton.vue')['default']
     DataPanelDetailView: typeof import('./src/components/DataPanelDetailView.vue')['default']
     DataTable: typeof import("primevue/datatable")["default"]
+    DescriptionPanel: typeof import('./src/components/DescriptionPanel.vue')['default']
     DetailPanel: typeof import('./src/components/DetailPanel.vue')['default']
     Dialog: typeof import('primevue/dialog')['default']
     DrawingModal: typeof import('./src/components/DrawingModal.vue')['default']
     DrawMenu: typeof import('./src/components/tools/DrawMenu.vue')['default']
+    Editor: typeof import('primevue/editor')['default']
     EmbedAtlasFrame: typeof import('./src/components/EmbedAtlasFrame.vue')['default']
     EmbedCode: typeof import('./src/components/EmbedCode.vue')['default']
     EmbedModal: typeof import('./src/components/EmbedModal.vue')['default']
@@ -56,6 +59,7 @@ declare module 'vue' {
     Message: typeof import('primevue/message')['default']
     MorePanel: typeof import('./src/components/MorePanel.vue')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
+    NotFound: typeof import('./src/components/NotFound.vue')['default']
     OlDragZoom: typeof import('./src/components/MapRenderer/renderers/OpenLayers/components/OlDragZoom.vue')['default']
     OlDrawInteraction: typeof import('./src/components/MapRenderer/renderers/OpenLayers/components/OlDrawInteraction.vue')['default']
     OlMap: typeof import('./src/components/MapRenderer/renderers/OpenLayers/components/OlMap.vue')['default']
@@ -82,7 +86,8 @@ declare module 'vue' {
     SearchForm: typeof import('./src/components/SearchForm.vue')['default']
     SearchPanel: typeof import('./src/components/SearchPanel.vue')['default']
     Select: typeof import('primevue/select')['default']
-    SelectButton: typeof import('./src/components/SelectButton.vue')['default']
+    SelectButton: typeof import('primevue/selectbutton')['default']
+    SelectMenu: typeof import('./src/components/tools/SelectMenu.vue')['default']
     SidePanel: typeof import('./src/components/SidePanel.vue')['default']
     SortableTableHeaderItem: typeof import('./src/components/SortableTableHeaderItem.vue')['default']
     Spinner: typeof import('./src/components/Spinner.vue')['default']

@@ -1,17 +1,15 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import svgLoader from "vite-svg-loader";
-import Components from 'unplugin-vue-components/vite';
-import {PrimeVueResolver} from '@primevue/auto-import-resolver';
+import Components from "unplugin-vue-components/vite";
+import { PrimeVueResolver } from "@primevue/auto-import-resolver";
 import path from "path";
 
 export default defineConfig({
   plugins: [
     vue(),
     Components({
-      resolvers: [
-        PrimeVueResolver()
-      ]
+      resolvers: [PrimeVueResolver()],
     }),
     svgLoader({ defaultImport: "component" }),
   ],
@@ -27,6 +25,7 @@ export default defineConfig({
         map: path.resolve(__dirname, "src/map.js"),
         tables: path.resolve(__dirname, "src/tables.js"),
         portal: path.resolve(__dirname, "src/portal.js"),
+        notFound: path.resolve(__dirname, "src/not_found.js"),
       },
     },
   },
@@ -37,12 +36,12 @@ export default defineConfig({
     extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],
   },
   server: {
-    origin: 'http://localhost:5173',
+    origin: "http://localhost:5173",
     port: 5173,
     strictPort: true,
     hmr: {
-      protocol: 'ws',
-      host: 'localhost',
+      protocol: "ws",
+      host: "localhost",
     },
   },
 });

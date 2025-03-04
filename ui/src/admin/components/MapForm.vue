@@ -10,9 +10,18 @@
     <template #default>
       <form method="POST" class="map-form" @submit="submitForm">
         <div class="margin-content">
-          <div class="title-wrapper">
+          <div class="input-wrapper">
             <label for="title" class="setting-label">Titel</label>
             <input v-model="data.title" type="text" name="title" placeholder="Titel van de kaart" required />
+          </div>
+          <div class="input-wrapper">
+            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2">
+              Kort kenmerk
+              <AdminFormInfoText
+                :info-text="'Dit is een korte, unieke naam voor de kaart die in de URL zal worden gebruikt. Het mag geen spaties en speciale tekens bevatten.'"
+              />
+            </label>
+            <input v-model="data.slug" type="text" name="slug" placeholder="Kort kenmerk van de kaart" required />
           </div>
         </div>
 
@@ -31,9 +40,19 @@
               :info-text="'Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.'"
             />
           </div>
-          <button type="button" class="button __chevron setting" @click="() => $emit('show-layers')">
+          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'layers')">
             <LayerIcon class="icon setting-icon" />
             Lagen
+            <ChevronRightIcon class="icon setting-chevron" />
+          </button>
+          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'thumbnail')">
+            <ImageIcon class="icon setting-icon" />
+            Thumbnail
+            <ChevronRightIcon class="icon setting-chevron" />
+          </button>
+          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'about')">
+            <i class="pi pi-file-edit icon setting-icon"></i>
+            Kaartomschrijving
             <ChevronRightIcon class="icon setting-chevron" />
           </button>
         </div>
@@ -132,7 +151,7 @@
               v-if="data.features.layerlist"
               type="button"
               class="button __transparent-bg __no-hover __chevron"
-              @click="() => $emit('show-layerlist')"
+              @click="() => $emit('show-panel', 'layerList')"
             >
               <ChevronRightIcon class="icon setting-chevron" />
             </button>
@@ -151,7 +170,7 @@
               v-if="data.features.list"
               type="button"
               class="button __transparent-bg __no-hover __chevron"
-              @click="() => $emit('show-list')"
+              @click="() => $emit('show-panel', 'list')"
             >
               <ChevronRightIcon class="icon setting-chevron" />
             </button>
@@ -165,24 +184,27 @@
               v-if="data.features.filters"
               type="button"
               class="button __transparent-bg __no-hover __chevron"
-              @click="() => $emit('show-filters')"
+              @click="() => $emit('show-panel', 'filters')"
             >
               <ChevronRightIcon class="icon setting-chevron" />
             </button>
           </div>
         </div>
-
-        <div class="admin-button-wrapper">
-          <router-link to="/maps" class="button __tertiary">Annuleer</router-link>
-          <button type="submit" class="button __primary_admin">Opslaan</button>
-        </div>
       </form>
+    </template>
+
+    <template #footer>
+      <div class="tw-flex tw-gap-2 tw-justify-end tw-w-full">
+        <router-link to="/maps" class="button __tertiary">Annuleren</router-link>
+        <button type="button" class="button __primary_admin" @click="submitForm">Opslaan</button>
+      </div>
     </template>
   </AdminSidePanel>
 </template>
 
 <script>
 import LayerIcon from "../../assets/icons/layer-icon.svg";
+import ImageIcon from "../../assets/icons/image-icon.svg";
 import ChevronRightIcon from "../../assets/icons/chevron-right-icon.svg";
 import MapIcon from "../../assets/icons/map-icon.svg";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
@@ -193,6 +215,7 @@ export default {
   components: {
     AdminFormInfoText,
     LayerIcon,
+    ImageIcon,
     ChevronRightIcon,
     MapIcon,
     AdminSidePanel,
@@ -200,7 +223,7 @@ export default {
   props: {
     initialData: Object,
   },
-  emits: ["submit", "show-filters", "show-list", "show-layerlist", "show-layers"],
+  emits: ["submit", "show-panel"],
   data() {
     return {
       data: this.initialData || { features: {} },
@@ -227,7 +250,7 @@ export default {
   font-weight: var(--font-weight-bold);
 }
 
-.title-wrapper {
+.input-wrapper {
   margin-top: 16px;
   display: flex;
   flex-direction: column;
@@ -249,11 +272,13 @@ export default {
   align-items: flex-end;
   gap: 12px;
   margin-top: auto;
-  padding-bottom: 32px;
 }
 
 .setting-icon {
   margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .setting-chevron {
