@@ -10,9 +10,18 @@
     <template #default>
       <form method="POST" class="map-form" @submit="submitForm">
         <div class="margin-content">
-          <div class="title-wrapper">
+          <div class="input-wrapper">
             <label for="title" class="setting-label">Titel</label>
             <input v-model="data.title" type="text" name="title" placeholder="Titel van de kaart" required />
+          </div>
+          <div class="input-wrapper">
+            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2">
+              Kort kenmerk
+              <AdminFormInfoText
+                :info-text="'Dit is een korte, unieke naam voor de kaart die in de URL zal worden gebruikt. Het mag geen spaties en speciale tekens bevatten.'"
+              />
+            </label>
+            <input v-model="data.slug" type="text" name="slug" placeholder="Kort kenmerk van de kaart" required />
           </div>
         </div>
 
@@ -227,7 +236,7 @@ export default {
   font-weight: var(--font-weight-bold);
 }
 
-.title-wrapper {
+.input-wrapper {
   margin-top: 16px;
   display: flex;
   flex-direction: column;
