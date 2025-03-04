@@ -31,6 +31,7 @@ export default {
 </style>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
 @import "../assets/styles/main.css";
 :root {
   --color-primary: #0066ff;
@@ -94,7 +95,6 @@ export default {
   }
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
 
 html {
   font-family: "Roboto", sans-serif;
