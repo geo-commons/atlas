@@ -1,7 +1,12 @@
 <template>
   <div class="app">
     <AppMenu v-if="$route.meta.menu" />
-    <AdminEnvironmentIndicator v-if="config.application_environment !== 'production' && (!$route.query.admin_env_indicator || $route.query.admin_env_indicator?.toLowerCase() !== 'hide')" />
+    <AdminEnvironmentIndicator
+      v-if="
+        config.application_environment !== 'production' &&
+        (!$route.query.admin_env_indicator || $route.query.admin_env_indicator?.toLowerCase() !== 'hide')
+      "
+    />
     <admin-breadcrumb v-if="$route.meta.menu" />
     <router-view></router-view>
   </div>
@@ -30,6 +35,7 @@ export default {
 
 <style>
 @import "../assets/styles/main.css";
+@import "vue-advanced-cropper/dist/style.css";
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
 
