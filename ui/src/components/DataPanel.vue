@@ -49,7 +49,7 @@
       <div v-else>
         <Button
           v-if="countOfActiveFilters > 0"
-          severity="secondary"
+          severity="danger"
           outlined
           class="!tw-text-sm !tw-font-medium !tw-mb-4 !tw-mx-4 xl:!tw-mx-5"
           @click="deleteAllFilters"
