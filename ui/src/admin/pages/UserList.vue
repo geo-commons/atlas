@@ -116,7 +116,6 @@ const getTableFilters = (): Array<TableFilter> => {
     api-name="users"
     :enable-sort="false"
     :enable-create-object="false"
-    :enable-import-export="false"
     :block-delete="[store?.user?.id]"
     :get-objects="getUsers"
     :table-headers="tableHeaders"

@@ -123,6 +123,8 @@ onMounted(() => {
     :initial-create-object-dialog-data="initialCreateDatasetData"
     :save-create-object-dialog-data="saveDataset"
     :get-objects="getDatasets"
+    :enable-import-export="true"
+    :enable-delete-multiple="true"
     :table-headers="tableHeaders"
   />
 </template>

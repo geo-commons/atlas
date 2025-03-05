@@ -91,7 +91,6 @@ const getTableFilters = (): Array<TableFilter> => {
     api-name="logs"
     :enable-sort="false"
     :enable-create-object="false"
-    :enable-import-export="false"
     :get-objects="getLogs"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"

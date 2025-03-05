@@ -2,21 +2,24 @@
 import CogIcon from "@/assets/icons/cog-icon.svg";
 import SortIcon from "@/assets/icons/sort-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { EDialogTypes } from "@/types/dialog";
 
 // Properties
 type AdminListViewHeaderProps = {
-  enableImportExport?: boolean;
+  enableImportExport: boolean;
+  enableActions: boolean;
   enableCreateObject?: boolean;
   enableSort?: boolean;
   name: string;
   singularName: string;
   apiName: string;
+  enableDuplicate: boolean;
+  enableDeleteMultiple: boolean;
+  hasSelectedItems: boolean;
 };
 
 const props = withDefaults(defineProps<AdminListViewHeaderProps>(), {
-  enableImportExport: true,
   enableCreateObject: true,
   enableSort: false,
 });
@@ -28,33 +31,65 @@ const toggle = (event: any) => {
   menu.value.toggle(event);
 };
 
-const items = ref([
-  {
-    label: "Importeren",
-    icon: "pi pi-file-import",
-    command: () => {
-      emit("update-dialog", EDialogTypes.Import);
-    },
-  },
-  {
-    label: "Exporteren",
-    icon: "pi pi-file-export",
-    command: () => {
-      emit("update-dialog", EDialogTypes.Export);
-    },
-  },
-  {
-    label: "Alle rijen exporteren",
-    icon: "pi pi-file-export",
-    command: () => {
-      emit("update-dialog", EDialogTypes.ExportAll);
-    },
-  },
-]);
+const items = computed(() => {
+  const menuItems = [];
+
+  if (props.enableImportExport) {
+    menuItems.push(
+      {
+        label: "Importeren",
+        icon: "pi pi-file-import",
+        command: () => {
+          emit("update-dialog", EDialogTypes.Import);
+        },
+      },
+      {
+        label: "Exporteren",
+        icon: "pi pi-file-export",
+        command: () => {
+          emit("update-dialog", EDialogTypes.Export);
+        },
+        disabled: !props.hasSelectedItems,
+      },
+      {
+        label: "Alle rijen exporteren",
+        icon: "pi pi-file-export",
+        command: () => {
+          emit("update-dialog", EDialogTypes.ExportAll);
+        },
+      },
+    );
+  }
+
+  if (props.enableDuplicate) {
+    menuItems.push({
+      label: "Dupliceren",
+      icon: "pi pi-copy",
+      command: () => {
+        emit("duplicate");
+      },
+      disabled: !props.hasSelectedItems,
+    });
+  }
+
+  if (props.enableDeleteMultiple) {
+    menuItems.push({
+      label: "Verwijderen",
+      icon: "pi pi-trash",
+      command: () => {
+        emit("update-dialog", EDialogTypes.Delete);
+      },
+      disabled: !props.hasSelectedItems,
+    });
+  }
+
+  return menuItems;
+});
 
 // Emits
 const emit = defineEmits<{
   (e: "update-dialog", type: EDialogTypes): void;
+  (e: "duplicate"): void;
 }>();
 </script>
 
@@ -63,14 +98,14 @@ const emit = defineEmits<{
     <h1>{{ props.name }}</h1>
     <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
       <Button
-        v-if="props.enableImportExport"
+        v-if="props.enableActions"
         outlined
         class="!tw-text-sm !tw-font-medium"
         aria-haspopup="true"
         aria-controls="overlay_menu"
         @click="toggle"
       >
-        <CogIcon class="tw-w-4 tw-h-4" />
+        <CogIcon class="tw-w-5 tw-h-5" />
         Acties
       </Button>
       <Menu id="overlay_menu" ref="menu" :model="items" :popup="true" class="!tw-text-sm" />
@@ -93,7 +128,7 @@ const emit = defineEmits<{
       <Button
         v-if="props.enableCreateObject"
         class="!tw-text-sm !tw-font-medium"
-        @click="$emit('update-dialog', EDialogTypes.Create)"
+        @click="emit('update-dialog', EDialogTypes.Create)"
       >
         <AddIcon class="tw-w-4 tw-h-4" />
         Nieuwe {{ props.singularName.toLowerCase() }}

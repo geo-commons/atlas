@@ -5,8 +5,9 @@ from PIL import Image
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
-from rest_framework import permissions, status
+from django.utils.text import slugify
 from rest_framework.decorators import action
+from rest_framework import permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from tablib import Dataset
@@ -18,7 +19,7 @@ from tables.resources import TableResource
 from webservice.models import Category, Layer, Map, Source, Theme, Viewer, Dataset as Datasets
 from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ThemeResource, ViewerResource, \
     DatasetResource
-from .serializers import DataExportSettingsSerializer
+from .serializers import DataExportSettingsSerializer, DuplicateSettingsSerializer, DeleteSettingsSerializer
 
 
 class ResourceMappingMixin:
@@ -46,7 +47,6 @@ class ResourceMappingMixin:
 
 
 class DataExportImportMixin(ResourceMappingMixin):
-
     @action(methods=['post'], url_path='export', detail=False, permission_classes=[permissions.IsAdminUser])
     def data_export(self, request):
         serializer = DataExportSettingsSerializer(data=request.data)
@@ -231,3 +231,52 @@ class FileUploadMixin(ResourceMappingMixin):
             sys.getsizeof(output),
             None
         )
+
+
+class DuplicateMixin:
+    @action(methods=['post'], url_path='duplicate', detail=False, permission_classes=[permissions.IsAdminUser])
+    def data_duplicate(self, request):
+        serializer = DuplicateSettingsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        model_class = self.get_queryset().model
+        ids_to_duplicate = serializer.data.get('ids', [])
+        queryset = self.get_queryset().filter(pk__in=ids_to_duplicate)
+
+        for obj in queryset:
+            duplicate = model_class.objects.get(pk=obj.pk)
+            duplicate.pk = None
+
+            # Handle title and slug uniqueness if the model has a title field
+            if hasattr(duplicate, 'title'):
+                i = 2
+                while model_class.objects.filter(title=f'{duplicate.title} ({i})').count() > 0:
+                    i += 1
+
+                new_title = f'{duplicate.title} ({i})'
+                duplicate.title = new_title
+
+                if hasattr(duplicate, 'slug'):
+                    duplicate.slug = slugify(new_title)
+
+            duplicate.save()
+
+        return Response({
+            'message': 'Successfully duplicated objects',
+        }, status=status.HTTP_201_CREATED)
+
+
+class DeleteMixin:
+    @action(methods=['post'], url_path='delete', detail=False, permission_classes=[permissions.IsAdminUser])
+    def data_delete(self, request):
+        serializer = DeleteSettingsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        ids_to_delete = serializer.data.get('ids', [])
+        model_class = self.get_queryset().model
+
+        model_class.objects.filter(id__in=ids_to_delete).delete()
+
+        return Response({
+            'message': 'Successfully deleted objects',
+        }, status=status.HTTP_200_OK)

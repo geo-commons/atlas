@@ -4,6 +4,7 @@ import AdminFileExport from "@/admin/components/AdminFileExport.vue";
 import AdminFileImport from "@/admin/components/AdminFileImport.vue";
 import { computed, onMounted, Ref, ref } from "vue";
 import { EDialogTypes, ShowDialogType } from "@/types/dialog";
+import AdminDeleteDialogContent from "@/admin/components/AdminDeleteDialogContent.vue";
 
 // Properties
 type AdminListViewDialogProps = {
@@ -28,6 +29,7 @@ const props = withDefaults(defineProps<AdminListViewDialogProps>(), {});
 // Emits
 const emit = defineEmits<{
   (e: "update-dialog", type: EDialogTypes): void;
+  (e: "delete"): void;
   (e: "reset-selection"): void;
 }>();
 
@@ -35,14 +37,19 @@ const emit = defineEmits<{
 const sections = ref({});
 const adminFormSectionsRef: Ref<{ resetForm: () => void } | null> = ref(null);
 
+const headerMap = {
+  [EDialogTypes.Create]: (singularName: string) => `Configureer nieuwe ${singularName.toLowerCase()}`,
+  [EDialogTypes.Import]: (pluralName: string) => `Importeer bestaande ${pluralName.toLowerCase()}`,
+  [EDialogTypes.Export]: (pluralName: string) => `Exporteer bestaande ${pluralName.toLowerCase()}`,
+  [EDialogTypes.ExportAll]: (pluralName: string) => `Exporteer bestaande ${pluralName.toLowerCase()}`,
+  [EDialogTypes.Delete]: (pluralName: string) => `Verwijder geselecteerde ${pluralName.toLowerCase()}`,
+};
+
 const header = computed(() => {
-  return props.showDialog.type === EDialogTypes.Create
-    ? `Configureer nieuwe ${props.singularName.toLowerCase()}`
-    : props.showDialog.type === EDialogTypes.Import
-      ? `Importeer bestaande ${props.pluralName.toLowerCase()}`
-      : props.showDialog.type === EDialogTypes.Export || props.showDialog.type === EDialogTypes.ExportAll
-        ? `Exporteer bestaande ${props.pluralName.toLowerCase()}`
-        : "";
+  const headerGenerator = headerMap[props.showDialog.type];
+  return headerGenerator
+    ? headerGenerator(props.showDialog.type === EDialogTypes.Create ? props.singularName : props.pluralName)
+    : "";
 });
 
 const updateDialog = () => {
@@ -69,7 +76,10 @@ onMounted(async () => {
     :draggable="false"
     :header="header"
     :dismissable-mask="true"
-    class="tw-w-[80%]"
+    class="xl:tw-w-[1216px] tw-w-[calc(100%-32px)] md:tw-w-[calc(100%-64px)]"
+    :pt="{
+      header: '!tw-pb-0',
+    }"
     @update:visible="updateDialog"
   >
     <AdminFormSections
@@ -103,6 +113,16 @@ onMounted(async () => {
         :export-type="props.showDialog.type"
         @close="emit('update-dialog', props.showDialog.type)"
         @export-successful="emit('reset-selection')"
+      />
+    </div>
+    <div v-else-if="props.showDialog.type === EDialogTypes.Delete">
+      <AdminDeleteDialogContent
+        :selected-items="props.selectedItems"
+        :singular-name="props.singularName"
+        :plural-name="props.pluralName"
+        :show-dialog="showDialog"
+        @update-dialog="(dialogType: ShowDialogType) => emit('update-dialog', dialogType)"
+        @delete="emit('delete')"
       />
     </div>
   </Dialog>
