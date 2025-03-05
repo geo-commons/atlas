@@ -35,7 +35,6 @@ export default {
 
 <style>
 @import "../assets/styles/main.css";
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 
 :root {
   /* Set default color for organization primary color. Otherwise IDE does not acknowledge its existence. */
@@ -48,7 +47,7 @@ export default {
 }
 
 html {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family);
   font-size: var(--font-size-normal);
   font-weight: var(--font-weight-normal);
   line-height: 1.5;
@@ -61,7 +60,7 @@ html {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  font-family: var(--font-family-portal), sans-serif;
+  font-family: var(--font-family);
   padding-bottom: 20px;
 }
 

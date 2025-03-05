@@ -38,8 +38,6 @@ export default {
 @import "../assets/styles/main.css";
 @import "vue-advanced-cropper/dist/style.css";
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
-
 body {
   background-color: var(--color-backdrop);
 }

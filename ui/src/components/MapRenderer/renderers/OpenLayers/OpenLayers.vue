@@ -119,9 +119,12 @@ import { getFeatureFontSize, getFeatureRgba, getFeatureStrokeWidth } from "@/uti
 import { fetchLegendImage } from "@/utils/legend-utils";
 import { printMapToPdf } from "@/utils/print-util";
 
+const appPrimaryColor = getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim();
+const appWhiteColor = getComputedStyle(document.documentElement).getPropertyValue("--color-white").trim();
+
 const MARKER_STYLE = new Style({
   image: new Icon({
-    src: getMarkerIconUrl("#0066FF", "#FFFFFF"),
+    src: getMarkerIconUrl(appPrimaryColor, appWhiteColor),
     anchor: [0.55, 42],
     anchorXUnits: "fraction",
     anchorYUnits: "pixels",
@@ -130,7 +133,7 @@ const MARKER_STYLE = new Style({
 
 const GEOLOCATION_STYLE = new Style({
   image: new Icon({
-    src: getLocationIconUrl("#0066FF", "#FFFFFF"),
+    src: getLocationIconUrl(appPrimaryColor, appWhiteColor),
     anchor: [0.55, 42],
     anchorXUnits: "fraction",
     anchorYUnits: "pixels",

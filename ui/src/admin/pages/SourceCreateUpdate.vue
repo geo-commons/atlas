@@ -135,20 +135,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.admin-list > li {
-  display: flex;
-  align-items: center;
-  background: var(--color-white);
-  padding: 4px 12px;
-}
-
-.admin-list > li:not(:last-child) {
-  border-bottom: 1px solid var(--color-grey-60);
-}
-
-.admin-list-buttons button:hover {
-  background-color: var(--color-backdrop);
-}
-</style>

@@ -30,9 +30,9 @@ export default {
     getColor(styleType) {
       switch (styleType) {
         case "admin":
-          return "#424bff";
+          return getComputedStyle(document.documentElement).getPropertyValue("--color-admin-primary").trim();
         default:
-          return "#0066ff";
+          return getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim();
       }
     },
   },
