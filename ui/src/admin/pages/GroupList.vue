@@ -102,7 +102,6 @@ onMounted(() => {
     singular-name="Groep"
     plural-name="Groepen"
     api-name="groups"
-    :enable-import-export="false"
     :get-create-object-dialog-sections="getCreateGroupSections"
     :initial-create-object-dialog-data="initialCreateGroupData"
     :save-create-object-dialog-data="saveGroup"

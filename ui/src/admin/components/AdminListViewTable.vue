@@ -24,7 +24,7 @@ type AdminListViewProps = {
   tableHeaders: Array<TableHeader>;
   sort: TableHeaderRef;
   pagination: PaginationRef;
-  enableImportExport: boolean;
+  enableActions: boolean;
   viewBaseUrl?: string;
   blockDelete: Array<number>;
 };
@@ -123,7 +123,7 @@ defineExpose({ resetSelection });
     <table class="admin-table tw-rounded-md">
       <thead>
         <tr class="table-border">
-          <th v-if="items.length && props.enableImportExport" class="tw-w-8 tw-p-2">
+          <th v-if="items.length && props.enableActions" class="tw-w-8 tw-p-2">
             <Checkbox v-model="selectAllRows" :binary="true" @update:modelValue="onSelectAllRows" />
           </th>
           <th v-for="header in props.tableHeaders" :key="header.key" class="first:tw-pl-4">
@@ -140,7 +140,7 @@ defineExpose({ resetSelection });
       </thead>
       <tbody v-if="items.length">
         <tr v-for="row in items" :key="row.id" class="table-border">
-          <td v-if="props.enableImportExport" class="tw-w-8 tw-p-2">
+          <td v-if="props.enableActions" class="tw-w-8 tw-p-2">
             <Checkbox
               :model-value="selectedRowsCheckedValue[row.id]"
               :binary="true"

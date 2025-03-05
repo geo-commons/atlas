@@ -17,7 +17,7 @@ from authz.models import Log
 from tables.models import Table
 from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
-from webservice.mixins import DataExportImportMixin, FileUploadMixin
+from webservice.mixins import DataExportImportMixin, DuplicateMixin, DeleteMixin, FileUploadMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
 from .models import Category, Drawing, Source, Layer, Theme, Viewer, Map, Dataset
@@ -27,7 +27,7 @@ from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer,
     UserCreateUpdateSerializer
 
 
-class MapViewSet(DataExportImportMixin, FileUploadMixin, viewsets.ModelViewSet):
+class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = MapSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['published', 'show_in_overview']
@@ -38,7 +38,7 @@ class MapViewSet(DataExportImportMixin, FileUploadMixin, viewsets.ModelViewSet):
         return Map.authorized.for_request(self.request)
 
 
-class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class SourceViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
@@ -47,7 +47,7 @@ class SourceViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     search_fields = ['title']
 
 
-class LayerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class LayerViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = LayerSerializer
 
     search_fields = ['title']
@@ -73,7 +73,7 @@ class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewset
     serializer_class = DrawingSerializer
 
 
-class CategoriesViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class CategoriesViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -110,7 +110,7 @@ class GroupsViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
 
 
-class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class DatasetViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['themes', 'published', 'show_in_overview']
@@ -143,7 +143,7 @@ class DatasetViewSet(DataExportImportMixin, viewsets.ModelViewSet):
         return obj
 
 
-class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class ThemeViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Theme.objects.all()
@@ -158,7 +158,7 @@ class ThemeViewSet(DataExportImportMixin, viewsets.ModelViewSet):
         return ThemeSerializer
 
 
-class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class ViewerViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Viewer.objects.all()
@@ -169,7 +169,7 @@ class ViewerViewSet(DataExportImportMixin, viewsets.ModelViewSet):
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
 
 
-class TableViewSet(DataExportImportMixin, viewsets.ModelViewSet):
+class TableViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Table.objects.all()

@@ -426,6 +426,14 @@ class DataExportSettingsSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField())
 
 
+class DuplicateSettingsSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField())
+
+
+class DeleteSettingsSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField())
+
+
 class BasicThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme

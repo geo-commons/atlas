@@ -95,17 +95,6 @@ export const AtlasPresetAdmin = definePreset(Aura, {
               },
             },
           },
-          outlined: {
-            primary: {
-              color: "{primary.500}",
-              border: {
-                color: "{primary.500}",
-              },
-              hover: {
-                background: "{primary.50}",
-              },
-            },
-          },
         },
       },
     },

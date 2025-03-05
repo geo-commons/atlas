@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AdminListViewHeader from "@/admin/components/AdminListViewHeader.vue";
 import AdminListViewDialog from "@/admin/components/AdminListViewDialog.vue";
-import { onMounted, Ref, ref } from "vue";
+import { computed, onMounted, Ref, ref } from "vue";
 import AdminListViewTable, { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import AdminListViewFilter, { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -11,11 +11,14 @@ import { PageState } from "primevue/paginator";
 import Cookies from "js-cookie";
 import SpinnerComponent from "@/components/Spinner.vue";
 import { EDialogTypes, ShowDialogType } from "@/types/dialog";
+import { useToast } from "primevue";
 
 // Properties
 type AdminListViewProps = {
   enableImportExport?: boolean;
   enableCreateObject?: boolean;
+  enableDuplicate?: boolean;
+  enableDeleteMultiple?: boolean;
   enableSort?: boolean;
   singularName: string;
   pluralName: string;
@@ -37,11 +40,16 @@ type AdminListViewProps = {
 };
 
 const props = withDefaults(defineProps<AdminListViewProps>(), {
-  enableImportExport: true,
+  enableImportExport: false,
   enableCreateObject: true,
+  enableDuplicate: false,
+  enableDeleteMultiple: false,
   enableSort: false,
   blockDelete: () => [],
 });
+
+const router = useRouter();
+const toast = useToast();
 
 // Dialog logic
 const showDialog: Ref<ShowDialogType> = ref({
@@ -56,6 +64,101 @@ const toggleDialog = (type: EDialogTypes) => {
   };
 };
 
+// Action logic
+const enableActions = computed(() => {
+  return props.enableDuplicate || props.enableImportExport || props.enableDeleteMultiple;
+});
+
+// Duplicate logic
+const duplicateSelectedItems = async () => {
+  if (selectedItems.value.length) {
+    const data = {
+      ids: selectedItems.value.map((selectedItem) => selectedItem.id),
+    };
+
+    try {
+      const result = await fetch(`/atlas/api/v1/${props.apiName}/duplicate/`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": Cookies.get("csrftoken"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!result.ok) {
+        throw new Error("something went wrong");
+      }
+
+      toast.add({
+        severity: "success",
+        summary: `Dupliceren gelukt`,
+        detail: `Het dupliceren van ${props.pluralName.toLowerCase()} is gelukt`,
+        life: 5000,
+      });
+
+      await refreshAndResetItems();
+    } catch (e) {
+      toast.add({
+        severity: "error",
+        summary: `Dupliceren niet gelukt`,
+        detail: `Het dupliceren van ${props.pluralName.toLowerCase()} is niet gelukt`,
+        life: 5000,
+      });
+
+      console.error(e);
+    }
+  }
+};
+
+// Delete logic
+const deleteSelectedItems = async () => {
+  if (selectedItems.value.length) {
+    const data = {
+      ids: selectedItems.value.map((selectedItem) => selectedItem.id),
+    };
+
+    try {
+      const result = await fetch(`/atlas/api/v1/${props.apiName}/delete/`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": Cookies.get("csrftoken"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!result.ok) {
+        throw new Error("something went wrong");
+      }
+
+      toast.add({
+        severity: "success",
+        summary: `Verwijderen gelukt`,
+        detail: `Het verwijderen van ${props.pluralName.toLowerCase()} is gelukt`,
+        life: 5000,
+      });
+
+      toggleDialog(showDialog.value.type);
+
+      await refreshAndResetItems();
+    } catch (e) {
+      toast.add({
+        severity: "error",
+        summary: `Verwijderen mislukt`,
+        detail: `Het verwijderen van ${props.pluralName.toLowerCase()} is niet gelukt`,
+        life: 5000,
+      });
+
+      toggleDialog(showDialog.value.type);
+
+      console.error(e);
+    }
+  }
+};
+
 // Table logic
 let params: URLSearchParams = new URLSearchParams();
 const items: Ref<{ results: Array<object>; count: number }> = ref({
@@ -65,7 +168,6 @@ const items: Ref<{ results: Array<object>; count: number }> = ref({
 const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
 const pagination: Ref<PaginationRef> = ref({ page: 0, rows: 20 });
 const selectedItems: Ref<Array<{ id: number; title: string }>> = ref([]);
-const router = useRouter();
 const route = useRoute();
 
 const doRequestAndUpdateRouter = async (params: URLSearchParams) => {
@@ -248,9 +350,15 @@ defineExpose({ toggleDialog });
       :singular-name="props.singularName"
       :enable-sort="props.enableSort"
       :enable-create-object="props.enableCreateObject"
+      :enable-duplicate="props.enableDuplicate"
       :enable-import-export="props.enableImportExport"
+      :enable-delete-multiple="props.enableDeleteMultiple"
+      :enable-actions="enableActions"
       :api-name="props.apiName"
+      :has-selected-items="selectedItems.length > 0"
       @update-dialog="toggleDialog"
+      @duplicate="duplicateSelectedItems"
+      @delete="deleteSelectedItems"
     />
     <div v-if="loading">
       <SpinnerComponent />
@@ -270,7 +378,7 @@ defineExpose({ toggleDialog });
         :pagination="pagination"
         :table-headers="props.tableHeaders"
         :sort="sort"
-        :enable-import-export="props.enableImportExport"
+        :enable-actions="enableActions"
         :view-base-url="props.viewBaseUrl"
         :block-delete="props.blockDelete"
         @update-list-sort="updateListSort"
@@ -295,6 +403,7 @@ defineExpose({ toggleDialog });
         :selected-items="selectedItems"
         @update-dialog="toggleDialog"
         @reset-selection="refreshAndResetItems"
+        @delete="deleteSelectedItems"
       />
     </div>
   </div>

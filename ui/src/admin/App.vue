@@ -159,7 +159,6 @@ input:disabled {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding: 30px 0;
 }
 
 .admin-search-wrapper {
