@@ -87,5 +87,7 @@ export default {
   position: absolute;
   left: 30px;
   top: 2px;
+  height: 18px !important;
+  width: 18px !important;
 }
 </style>

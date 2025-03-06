@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useGlobalStore = defineStore({
-  id: "global",
+export const useGlobalStore = defineStore("global", {
   state: () => ({
     position: null,
     layers: [],
