@@ -1,4 +1,4 @@
-Test:
+Unit test backend:
   stage: Test
   image: python:3.11
   services:
@@ -41,7 +41,7 @@ Lint ui:
     - npm run lint
     - npm run test:unit
 
-Test unit:
+Unit test frontend:
   stage: Test
   image: mcr.microsoft.com/playwright:v1.47.2-noble
   cache:
@@ -53,7 +53,7 @@ Test unit:
   script:
     - npm run test:browser
 
-Test browser:
+Browser test frontend:
   stage: Test
   image: mcr.microsoft.com/playwright:v1.47.2-noble
   cache:
