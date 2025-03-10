@@ -38,8 +38,6 @@ Deploy Review App:
     url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
     on_stop: Remove Review App
     auto_stop_in: 1 week
-  only:
-    - /^feat\/.*$/
   except:
     - master@purmerend/atlas
 
