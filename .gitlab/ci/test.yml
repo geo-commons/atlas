@@ -1,4 +1,4 @@
-Unit test backend:
+Lint and unit test backend:
   stage: Test
   image: python:3.11
   services:
@@ -27,6 +27,30 @@ Unit test backend:
     expire_in: 1 month
     paths:
       - htmlcov
+
+Test migrations backend:
+  stage: Test
+  image: python:3.11
+  services:
+    - postgres:15.3-alpine
+  variables:
+    DB_HOST: postgres
+    DB_NAME: postgres
+    DB_PASSWORD: postgres
+    DB_USER: postgres
+    DJANGO_SETTINGS_MODULE: atlas.settings
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+    POSTGRES_PASSWORD: postgres
+    SECRET_KEY: somethingverysecret
+  cache:
+    paths:
+      - $CI_PROJECT_DIR/.cache/pip
+  before_script:
+    - pip install -r requirements.txt
+    - python manage.py collectstatic --noinput
+  script:
+    - python manage.py makemigrations --check --dry-run
+    - python manage.py migrate
 
 Lint ui:
   stage: Test
@@ -64,4 +88,3 @@ Browser test frontend:
     - npm install
   script:
     - npm run test:browser
-
