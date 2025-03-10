@@ -5,7 +5,12 @@
         <ChevronUpIcon v-if="!expand" class="expand-icon" />
         <ChevronDownIcon v-else class="expand-icon" />
 
-        <h3>{{ title }}</h3>
+        <h3>
+          {{ title }}
+        </h3>
+        <div v-if="badge" class="counter tw-me-3">
+          {{ badge }}
+        </div>
         <PrimaryButton class="close-btn" size="large" @on-button-click="hidePanel">
           <close-icon class="icon __black" />
         </PrimaryButton>
@@ -39,6 +44,7 @@ export default {
     title: String,
     goBack: Function,
     loading: Boolean,
+    badge: Number,
   },
   emits: ["hidePanel"],
   data() {
@@ -68,6 +74,10 @@ export default {
 </script>
 
 <style scoped>
+.p-badge {
+  background-color: var(--color-primary);
+}
+
 .panel {
   z-index: 2;
   background: white;

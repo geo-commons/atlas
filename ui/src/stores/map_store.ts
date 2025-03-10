@@ -93,6 +93,27 @@ export function useMapStore(mapName: string) {
           return filterCount;
         };
       },
+      // Returns the total count of selected items in each filter passed in the selectFilters array
+      getActiveSelectedItemCountPerFilterForLayer(state) {
+        return (layerId: string, selectedFilters: string[]) => {
+          let count: number = 0;
+          const layerFilter = state.layerFilters[layerId];
+
+          if (layerFilter) {
+            const filtersWithItemsToCount = Object.fromEntries(
+              Object.entries(layerFilter.filters).filter(([key]) => selectedFilters.includes(key)),
+            );
+
+            const filterItems = Object.values(filtersWithItemsToCount);
+
+            filterItems.map((item) => {
+              count += item.length;
+            });
+          }
+
+          return count;
+        };
+      },
     },
   })();
 }

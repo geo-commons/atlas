@@ -11,6 +11,7 @@ import App from "./map/App";
 import { useGlobalStore } from "@/stores";
 import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
+import { ConfirmationService } from "primevue";
 import { AtlasPresetApp } from "@/utils/theme-preset";
 
 // Atlas v3
@@ -108,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       },
     })
+    .use(ConfirmationService)
     .use(pinia)
     .use(VueTippy, {
       directive: "tippy",
