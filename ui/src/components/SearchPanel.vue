@@ -24,6 +24,15 @@
           @keyup="onSearch"
           @keydown.enter.prevent="selectFirstAvailable"
         />
+        <button
+          v-tippy="{ placement: 'bottom', theme: 'primary' }"
+          content="Wis zoekopdracht"
+          aria-label="Wis zoekopdracht"
+          v-if="query"
+          @click="clearSearch"
+        >
+          <i class="pi pi-times-circle"></i>
+        </button>
       </template>
 
       <template #suggestions>
@@ -228,6 +237,11 @@ export default {
         return true;
       }
       return false;
+    },
+    clearSearch() {
+      this.query = "";
+      this.results = [];
+      this.showSuggestions = false;
     },
   },
 };

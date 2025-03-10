@@ -149,16 +149,6 @@
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
-        <SearchPanel
-          v-if="features.searchbar"
-          :position="position"
-          :layers="layers"
-          :features="features"
-          :map-id="mapId"
-          :show-data-panel="showDataPanel"
-          @set-position="setPosition"
-          @toggle-data-panel="toggleDataPanel"
-        />
         <div class="toggle-buttons" :class="{ 'position-top': !features.searchbar }">
           <div v-if="features.datapanel && !features.searchbar" class="datapanel-btn-wrapper">
             <DataPanelButton
@@ -205,6 +195,16 @@
             <i class="pi pi-refresh"></i>
           </PrimaryButton>
         </div>
+        <SearchPanel
+          v-if="features.searchbar"
+          :position="position"
+          :layers="layers"
+          :features="features"
+          :map-id="mapId"
+          :show-data-panel="showDataPanel"
+          @set-position="setPosition"
+          @toggle-data-panel="toggleDataPanel"
+        />
       </div>
 
       <div class="top-right-panels">
