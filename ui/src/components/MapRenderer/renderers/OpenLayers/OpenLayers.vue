@@ -119,27 +119,6 @@ import { getFeatureFontSize, getFeatureRgba, getFeatureStrokeWidth } from "@/uti
 import { fetchLegendImage } from "@/utils/legend-utils";
 import { printMapToPdf } from "@/utils/print-util";
 
-const appPrimaryColor = getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim();
-const appWhiteColor = getComputedStyle(document.documentElement).getPropertyValue("--color-white").trim();
-
-const MARKER_STYLE = new Style({
-  image: new Icon({
-    src: getMarkerIconUrl(appPrimaryColor, appWhiteColor),
-    anchor: [0.55, 42],
-    anchorXUnits: "fraction",
-    anchorYUnits: "pixels",
-  }),
-});
-
-const GEOLOCATION_STYLE = new Style({
-  image: new Icon({
-    src: getLocationIconUrl(appPrimaryColor, appWhiteColor),
-    anchor: [0.55, 42],
-    anchorXUnits: "fraction",
-    anchorYUnits: "pixels",
-  }),
-});
-
 const MAP_AREA_STYLE = new Style({
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 2 }),
 });
@@ -275,6 +254,27 @@ export default {
     },
   },
   created() {
+    const appPrimaryColor = getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim();
+    const appWhiteColor = getComputedStyle(document.documentElement).getPropertyValue("--color-white").trim();
+
+    const MARKER_STYLE = new Style({
+      image: new Icon({
+        src: getMarkerIconUrl(appPrimaryColor, appWhiteColor),
+        anchor: [0.55, 42],
+        anchorXUnits: "fraction",
+        anchorYUnits: "pixels",
+      }),
+    });
+
+    const GEOLOCATION_STYLE = new Style({
+      image: new Icon({
+        src: getLocationIconUrl(appPrimaryColor, appWhiteColor),
+        anchor: [0.55, 42],
+        anchorXUnits: "fraction",
+        anchorYUnits: "pixels",
+      }),
+    });
+
     this.MAP_AREA_STYLE = MAP_AREA_STYLE;
     this.MARKER_STYLE = MARKER_STYLE;
     this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
