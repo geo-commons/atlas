@@ -11,6 +11,7 @@
     :about="about"
     :about-title="aboutTitle"
     :thumbnail="thumbnail"
+    :hide-reset-button="true"
     @update-user-settings="updateUserSettings"
   />
 </template>

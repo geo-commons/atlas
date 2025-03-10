@@ -4,10 +4,13 @@
     class="button"
     :data-size="size"
     :class="{ dropShadow, hasLabel: !!label }"
-    @click="() => $emit('on-button-click')"
+    @click="(event) => $emit('on-button-click', event)"
   >
     <slot></slot>
     <span v-if="label" class="label">{{ label }}</span>
+    <div v-if="badge" class="counter">
+      {{ badge }}
+    </div>
   </button>
 </template>
 
@@ -21,11 +24,16 @@ export default {
     },
     dropShadow: Boolean,
     label: String,
+    badge: Number,
   },
 };
 </script>
 
 <style scoped>
+.p-badge {
+  background-color: var(--color-primary);
+}
+
 .button {
   position: relative;
   flex-shrink: 0;

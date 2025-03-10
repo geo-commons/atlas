@@ -14,16 +14,16 @@ export interface AboutFeatures {
 
 // Map data interfaces
 export interface MapAboutData {
-  about: string;
-  about_title: string;
+  about: string | null;
+  about_title: string | null;
   thumbnail?: string;
   features: AboutFeatures;
 }
 
 export interface AboutPanelData {
   features: AboutFeatures;
-  about: string;
-  aboutTitle: string;
+  about: string | null;
+  aboutTitle: string | null;
   showPanel: boolean;
   thumbnail?: string;
 }

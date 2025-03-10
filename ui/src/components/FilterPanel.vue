@@ -1,5 +1,10 @@
 <template>
-  <PanelDisplay title="Verfijn resultaten" :loading="loading" @hidePanel="hidePanel">
+  <PanelDisplay
+    title="Verfijn resultaten"
+    :loading="loading"
+    :badge="countOfActiveSelectedFiltersForLayer"
+    @hidePanel="hidePanel"
+  >
     <p v-if="facets.length <= 0 || !layer" class="info-text">Er zijn nog geen filters geconfigureerd.</p>
     <div v-if="layer">
       <ExpandButton v-for="facet in facets" :key="facet" :title="getTitle(facet)" is-open>
@@ -24,11 +29,11 @@
 </template>
 
 <script>
-import PanelDisplay from "./PanelDisplay";
-import ExpandButton from "./ExpandButton";
-import CheckboxField from "./CheckboxField";
-import { formatRawString } from "@/utils/string-helpers";
 import { useMapStore } from "@/stores/map_store";
+import { formatRawString } from "@/utils/string-helpers";
+import CheckboxField from "./CheckboxField";
+import ExpandButton from "./ExpandButton";
+import PanelDisplay from "./PanelDisplay";
 
 export default {
   name: "FilterPanel",
@@ -50,6 +55,13 @@ export default {
       loading: false,
       store: null,
     };
+  },
+  computed: {
+    countOfActiveSelectedFiltersForLayer() {
+      return this.store && this.facets
+        ? this.store.getActiveSelectedItemCountPerFilterForLayer(this.layer.id, this.facets)
+        : 0;
+    },
   },
   watch: {
     facets: {
