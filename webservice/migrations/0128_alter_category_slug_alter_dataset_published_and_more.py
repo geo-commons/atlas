@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('webservice', '0126_map_about_map_about_title_alter_category_slug_and_more'),
+        ('webservice', '0127_alter_category_slug_alter_dataset_published_and_more'),
     ]
 
     operations = [
