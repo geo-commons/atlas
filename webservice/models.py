@@ -46,7 +46,7 @@ class Category(models.Model):
 
     slug = AutoSlugField('Kort kenmerk', default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
-                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.', max_length=255)
 
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
@@ -74,7 +74,7 @@ class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          editable=True,
-                         help_text='Een uniek kort kenmerk voor de bron in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de bron in Atlas.', max_length=255)
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_OWS, max_length=20,
                                    help_text='Selecteer het type bron')
@@ -224,7 +224,8 @@ class Layer(models.Model):
     # so inform them when changing.
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
-                         help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)')
+                         help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)',
+                         max_length=255)
 
     title = models.CharField('Titel', max_length=128, null=True)
 
@@ -613,7 +614,7 @@ class Selection(models.Model):
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.', max_length=255)
 
     layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
 
@@ -674,7 +675,7 @@ class Map(models.Model):
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaart in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de kaart in Atlas.', max_length=255)
 
     old_layers = models.ManyToManyField(
         Layer, verbose_name='Lagen', blank=True, related_name='old_layers')

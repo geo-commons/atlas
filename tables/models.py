@@ -31,7 +31,7 @@ class Table(models.Model):
 
     title = models.CharField('Titel', max_length=128)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor tabel.')
+                         help_text='Een uniek kort kenmerk voor tabel.', max_length=255)
 
     source = models.ForeignKey('webservice.Source', on_delete=models.CASCADE)
     endpoint = models.CharField('Endpoint', max_length=500)
@@ -53,7 +53,8 @@ class Table(models.Model):
         'Velden waarop gezocht kan worden', blank=True, default=list)
 
     login_required = models.BooleanField(
-        'Vereis inlog voor deze tabel', default=False, help_text='De tabel is alleen zichtbaar voor ingelogde gebruikers.')
+        'Vereis inlog voor deze tabel', default=False,
+        help_text='De tabel is alleen zichtbaar voor ingelogde gebruikers.')
     only_internal = models.BooleanField(
         'Alleen intern zichtbaar', default=True, help_text='Alleen zichtbaar binnen interne omgeving.')
 
@@ -64,11 +65,12 @@ class Table(models.Model):
     updated_at = models.DateTimeField('updated_at', auto_now=True)
 
     description = models.TextField(
-        'Beschrijving van de tabel', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+        'Beschrijving van de tabel', null=True,
+        help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
 
     thumbnail = models.ImageField(
-        upload_to='thumbnails/', 
-        blank=True, 
+        upload_to='thumbnails/',
+        blank=True,
         null=True,
         help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
     )
