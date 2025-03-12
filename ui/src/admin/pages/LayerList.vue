@@ -36,6 +36,16 @@ const tableHeaders: Array<TableHeader> = [
     enableLink: false,
   },
   {
+    header: "Inlog vereist",
+    key: "login_required",
+    enableLink: false,
+  },
+  {
+    header: "Alleen intern zichtbaar",
+    key: "closed_dataset",
+    enableLink: false,
+  },
+  {
     header: "Status",
     key: "published",
     enableLink: false,
@@ -110,6 +120,7 @@ onMounted(() => {
   Promise.all([getSources(), getLayers(), getCategories()]).then((result) => {
     sources.value = result[0];
     layers.value = result[1].results;
+
     categories.value = result[2];
     loading.value = false;
   });

@@ -391,6 +391,8 @@ class LayerListSerializer(serializers.ModelSerializer):
             'ordering',
             'is_base',
             'is_visible',
+            'login_required',
+            'closed_dataset'
         ]
 
 
