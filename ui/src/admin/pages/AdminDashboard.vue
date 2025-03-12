@@ -23,6 +23,16 @@
             <InformationCircleIcon class="icon __medium" />
             Algemene gegevens
           </router-link>
+          <a
+            href="/atlas/admin/docs/"
+            target="_blank"
+            class="button __tertiary __large"
+            type="button"
+            aria-label="Naar admin documentatie pagina"
+          >
+            <BookIcon class="icon __medium" />
+            Admin documentatie
+          </a>
         </div>
       </div>
       <div>
