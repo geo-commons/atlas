@@ -3,8 +3,7 @@
 </template>
 
 <script setup>
-import { inject, onMounted, onUnmounted, watch } from "vue";
-import { toRaw } from "vue";
+import { inject, onMounted, onUnmounted, toRaw, watch } from "vue";
 import Select from "ol/interaction/Select";
 import VectorLayer from "ol/layer/Vector";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";

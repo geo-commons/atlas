@@ -49,6 +49,7 @@
             :color="color"
             :stroke-width="strokeWidth"
             :font-size="fontSize"
+            :show-compare-slider="compareLayers"
             @position-changed="setPosition"
             @tool-used="toolUsed"
             @features-selected="featuresSelected"
@@ -68,6 +69,7 @@
         :selected-area="selectedArea"
         :highlighted-features="highlightedFeatures"
         :selected-features="selectedFeatures"
+        :show-compare-slider="compareLayers"
         :map-area="mapArea"
         :user="user"
         :config="config"
@@ -85,7 +87,7 @@
       />
     </div>
     <AboutPanel
-      v-if="!isEmbed && !showPanoramaPanel"
+      v-if="!isEmbed && !showPanoramaPanel && showAbout"
       :features="features"
       :about="about"
       :about-title="aboutTitle"
@@ -145,6 +147,15 @@
       @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19, duration: 1000 })"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
+    />
+
+    <CompareLayersPanel
+      :map-id="mapId"
+      :show-compare-layer-panel="showCompareLayerPanel"
+      :layers="wmsWfsLayers"
+      @close-panel="closeCompareLayerPanel"
+      @stop-compare="stopCompareLayers"
+      @toggle-layer="toggleLayer"
     />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
@@ -236,7 +247,7 @@
           @toggle-about="toggleAbout"
         />
       </div>
-      <div class="bottom-left-panels">
+      <div class="bottom-left-panels" :class="{ 'bottom-panels-padding': compareLayers }">
         <LayersPanel
           v-if="features.layerlist || features.legend"
           :layers="regularLayers"
@@ -245,6 +256,7 @@
           :map-id="mapId"
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
+          :show-compare-slider="compareLayers"
           :is-embed="features.legend && !features.layerlist"
           @toggle-layer="toggleLayer"
           @set-layer-opacity="setLayerOpacity"
@@ -253,7 +265,10 @@
           @toggle-is-selectable="onToggleIsSelectable"
         />
       </div>
-      <div class="bottom-right-panels">
+      <div class="bottom-center-panels">
+        <CompareLayersSlider :map-id="mapId" :show-compare-layer-panel="compareLayers" />
+      </div>
+      <div class="bottom-right-panels" :class="{ 'bottom-panels-padding': compareLayers }">
         <div v-if="features.baselayer" class="bottom-right-buttons">
           <div class="ui-button-wrapper">
             <button
@@ -272,6 +287,20 @@
           <transition name="fade">
             <BaseLayersPanel v-if="showBaseLayersPanel" :layers="baseLayers" @toggle-layer="toggleLayer" />
           </transition>
+        </div>
+        <div v-if="features.compareLayers" class="bottom-right-buttons">
+          <div class="ui-button-wrapper">
+            <button
+              v-tippy="{ placement: 'left' }"
+              class="iconbutton __inverse"
+              :class="{ isActive: compareLayers }"
+              content="Vergelijk kaartlagen"
+              aria-label="Vergelijk kaartlagen"
+              @click="toggleCompareLayerPanel"
+            >
+              <CompareLayersIcon />
+            </button>
+          </div>
         </div>
         <div v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)" class="bottom-right-buttons">
           <div class="ui-button-wrapper">
@@ -343,6 +372,7 @@ import ListIcon from "../../assets/icons/list-icon.svg";
 import MapIcon from "../../assets/icons/map-icon.svg";
 import ObliqueIcon from "../../assets/icons/oblique-icon.svg";
 import PanoramaIcon from "../../assets/icons/panorama-icon.svg";
+import CompareLayersIcon from "../../assets/icons/compare-layers-icon.svg";
 import { getFetchParameters } from "../../utils/auth";
 import AboutPanel from "../AboutPanel";
 import DataPanel from "../DataPanel";
@@ -359,12 +389,16 @@ import SearchPanel from "../SearchPanel";
 import ToolsPanel from "../tools/ToolsPanel.vue";
 import ZoomPanel from "../ZoomPanel";
 import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
+import CompareLayersPanel from "@/components/compare-layers/CompareLayersPanel.vue";
+import CompareLayersSlider from "@/components/compare-layers/CompareLayersSlider.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
   components: {
+    CompareLayersSlider,
+    CompareLayersPanel,
     PanoramaPanel,
     EmbedModal,
     AlertMessage,
@@ -389,6 +423,7 @@ export default {
     GeoLocationButton,
     DataPanelButton,
     MapIcon,
+    CompareLayersIcon,
     PanoramaIcon,
     ObliqueIcon,
   },
@@ -490,6 +525,8 @@ export default {
       fontSize: 22,
       showPanoramaPanelFullScreen: false,
       loadingPrint: false,
+      showCompareLayerPanel: false,
+      compareLayers: false,
       filterCheckedCount: 0,
       visibleLayers: [],
       baseLayerChanged: false,
@@ -551,6 +588,9 @@ export default {
     },
     regularLayers() {
       return this.layers.filter((l) => !l.is_base);
+    },
+    wmsWfsLayers() {
+      return this.layers.filter((l) => !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS"));
     },
     baseLayers() {
       return this.layers.filter((l) => l.is_base);
@@ -949,6 +989,20 @@ export default {
         reject: () => {},
       });
     },
+    toggleCompareLayerPanel() {
+      if (!this.compareLayers) {
+        this.compareLayers = true;
+      }
+
+      this.showCompareLayerPanel = !this.showCompareLayerPanel;
+    },
+    closeCompareLayerPanel() {
+      this.showCompareLayerPanel = false;
+    },
+    stopCompareLayers() {
+      this.showCompareLayerPanel = false;
+      this.compareLayers = false;
+    },
   },
 };
 </script>
@@ -1010,6 +1064,16 @@ export default {
   left: var(--padding-screen);
 }
 
+.bottom-center-panels {
+  z-index: 1;
+  position: absolute;
+  bottom: var(--padding-screen);
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
+}
+
 .top-right-panels {
   position: absolute;
   top: calc((var(--padding-screen) * 2) + var(--width-button-large));
@@ -1055,6 +1119,17 @@ export default {
     top: 0;
     padding: var(--padding-screen);
     width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .bottom-center-panels {
+    width: 100%;
+    padding: 0 var(--padding-screen);
+  }
+
+  .bottom-panels-padding {
+    padding-bottom: 60px;
   }
 }
 

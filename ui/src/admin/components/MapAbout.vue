@@ -18,11 +18,17 @@
     </template>
     <template #default>
       <div class="tw-px-3">
-        <Message severity="info" :closable="false" class="tw-my-4">
-          De kaartomschrijving biedt extra context en details over de kaart in een zijbalk. Voeg hier extra uitleg toe
-          om gebruikers beter te informeren over het thema of de inhoud van de kaart.
-        </Message>
-
+        <ExplainerMessage class="tw-pt-4">
+          <template #icon>
+            <InformationCircleIcon />
+          </template>
+          <template #explainer>
+            De kaartomschrijving biedt extra context en details over de kaart in een zijbalk.
+            <br />
+            <br />
+            Voeg hier extra uitleg toe om gebruikers beter te informeren over het thema of de inhoud van de kaart.
+          </template>
+        </ExplainerMessage>
         <div class="layer-setting-toggle tw-flex tw-items-center tw-justify-between tw-gap-2 tw-my-4">
           <label for="show-about">Toon kaartomschrijving</label>
           <ToggleSwitch v-model="data.features.showAbout" input-id="show-about" />
@@ -81,10 +87,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
-import { MapEvents, MapAboutEmits, MapAboutData } from "@/types/models";
+import { MapAboutData, MapAboutEmits, MapEvents } from "@/types/models";
+import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
+import ExplainerMessage from "@/components/ExplainerMessage.vue";
 
 const props = defineProps<{
   initialData: MapAboutData;
@@ -142,6 +150,7 @@ label {
       margin: 1rem 0;
       font-size: 1rem;
     }
+
     a {
       color: var(--color-primary);
       text-decoration: none;
@@ -150,6 +159,7 @@ label {
         text-decoration: underline;
       }
     }
+
     .content__link-icon {
       font-size: 0.8rem;
     }

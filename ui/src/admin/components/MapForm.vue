@@ -189,6 +189,16 @@
               <ChevronRightIcon class="icon setting-chevron" />
             </button>
           </div>
+
+          <div class="setting __hover">
+            <input
+              id="features.compareLayers"
+              v-model="data.features.compareLayers"
+              type="checkbox"
+              name="features.compareLayers"
+            />
+            <label for="features.compareLayers">Kaartlagen vergelijken</label>
+          </div>
         </div>
       </form>
     </template>

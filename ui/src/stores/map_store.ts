@@ -1,25 +1,13 @@
 import { defineStore } from "pinia";
-
-export interface ILayerFilter {
-  filters: {
-    [key: string]: Array<string>;
-  };
-  searchQuery: string;
-}
-
-export interface ILayerFilters {
-  // key is layer id
-  [key: string]: ILayerFilter;
-}
-
-interface IMapStore {
-  layerFilters: ILayerFilters;
-}
+import { IMapStore } from "@/types/mapStore";
 
 export function useMapStore(mapName: string) {
   return defineStore(`map-${mapName}`, {
     state: (): IMapStore => ({
       layerFilters: {},
+      leftSelectedCompareLayerId: null,
+      rightSelectedCompareLayerId: null,
+      comparePercentage: 50,
     }),
     actions: {
       resetAllFilters() {
@@ -42,6 +30,15 @@ export function useMapStore(mapName: string) {
           ...this.layerFilters[layerId],
           searchQuery: searchQuery,
         };
+      },
+      setLeftSelectedCompareLayerId(selectedLayers: string | null) {
+        this.leftSelectedCompareLayerId = selectedLayers;
+      },
+      setRightSelectedCompareLayerId(selectedLayers: string | null) {
+        this.rightSelectedCompareLayerId = selectedLayers;
+      },
+      setComparePercentage(swipe: number) {
+        this.comparePercentage = swipe;
       },
     },
     getters: {
