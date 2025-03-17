@@ -400,25 +400,6 @@ import ZoomPanel from "../ZoomPanel";
 import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
 import CompareLayersPanel from "@/components/compare-layers/CompareLayersPanel.vue";
 import CompareLayersSlider from "@/components/compare-layers/CompareLayersSlider.vue";
-import GeoLocationButton from "../GeoLocationButton";
-import FilterListIcon from "../../assets/icons/filter-list-icon.svg";
-import DataPanelButton from "../DataPanelButton.vue";
-import { isMobile } from "@/utils/helpers";
-import { transform } from "ol/proj";
-import BaseLayersPanel from "@/components/BaseLayersPanel.vue";
-import MapIcon from "../../assets/icons/map-icon.svg";
-import PanoramaIcon from "../../assets/icons/panorama-icon.svg";
-import ObliqueIcon from "../../assets/icons/oblique-icon.svg";
-import MorePanel from "@/components/MorePanel.vue";
-import nunjucks from "nunjucks";
-import PrintModal from "@/components/PrintModal.vue";
-import DrawingModal from "@/components/DrawingModal.vue";
-import AlertMessage from "@/components/AlertMessage.vue";
-import EmbedModal from "@/components/EmbedModal.vue";
-import { useGlobalStore } from "@/stores";
-import { mapStores } from "pinia";
-import PanoramaPanel from "../PanoramaPanel.vue";
-import { useMapStore } from "@/stores/map_store";
 import {
   DEFAULT_DRAWING_COLOR,
   DEFAULT_DRAWING_FONT_SIZE,
@@ -562,7 +543,6 @@ export default {
       showCompareLayerPanel: false,
       compareLayers: false,
       filterCheckedCount: 0,
-      visibleLayers: [],
       baseLayerChanged: false,
       initialBaseLayerId: null,
       initialDrawing: null,
@@ -716,9 +696,8 @@ export default {
     if (initialBaseLayer) {
       this.initialBaseLayerId = initialBaseLayer.id;
     }
-
-    this.visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
   },
+  emits: ["position-changed", "layers-changed", "update-user-settings"],
   unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
   },
@@ -957,8 +936,6 @@ export default {
 
       this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, is_visible: isVisible } : layer));
       this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], is_visible: isVisible };
-
-      this.visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
 
       this.$emit("layers-changed", this.layers);
       this.mapStore.resetFiltersForLayer(layerId);
