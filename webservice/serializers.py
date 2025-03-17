@@ -5,6 +5,7 @@ from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
 from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer
+from .util import safe_float_or_null
 
 
 class MapLayerSerializer(serializers.ModelSerializer):
@@ -172,6 +173,8 @@ class LayerSerializer(serializers.ModelSerializer):
     category = CategorySerializer(source='layer_type')
     source = SourceSerializer(source='layer_source')
     opacity = serializers.SerializerMethodField('get_opacity')
+    zoom_min = serializers.SerializerMethodField('get_zoom_min')
+    zoom_max = serializers.SerializerMethodField('get_zoom_max')
     display_properties = serializers.SerializerMethodField(
         'get_display_properties')
     search_properties = serializers.SerializerMethodField(
@@ -186,6 +189,12 @@ class LayerSerializer(serializers.ModelSerializer):
 
     def get_opacity(self, obj):
         return float(obj.opacity)
+
+    def get_zoom_min(self, obj):
+        return safe_float_or_null(obj.zoom_min)
+
+    def get_zoom_max(self, obj):
+        return safe_float_or_null(obj.zoom_max)
 
     def get_display_properties(self, obj):
         return obj.popup_attributes
