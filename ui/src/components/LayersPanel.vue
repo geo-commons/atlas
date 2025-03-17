@@ -125,7 +125,7 @@
                   >
                     <ZoomOutIcon />
                   </button>
-                  <LayerFit v-if="!layer.is_disabled && layer.extent" :layer="layer" @click="() => onFit(layer)" />
+                  <LayerFit v-if="layer.extent" :layer="layer" @click="() => onFit(layer)" />
                   <LayerInfo :layer="layer" />
                 </li>
               </ul>
@@ -149,7 +149,7 @@
                   {{ layer.title }}
                   <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
                 </label>
-                <LayerFit v-if="!layer.is_disabled && layer.extent" :layer="layer" @click="() => onFit(layer)" />
+                <LayerFit v-if="layer.extent" :layer="layer" @click="() => onFit(layer)" />
                 <LayerInfo :layer="layer" />
               </li>
             </ul>
@@ -454,5 +454,13 @@ export default {
 
 .zoom-button {
   margin-left: 5px;
+  opacity: 0;
+}
+
+.layer:hover .zoom-button,
+.sublayer:hover .zoom-button,
+.tippy-active > .zoom-button,
+.keyboard-user .zoom-button:focus {
+  opacity: 1;
 }
 </style>

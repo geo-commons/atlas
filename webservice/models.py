@@ -13,6 +13,7 @@ from django_extensions.db.fields import AutoSlugField
 
 from user_management.models import AtlasGroup
 from utils.tools import is_internal
+from webservice.util import safe_float_or_null
 
 
 class LayerManager(models.Manager):
@@ -336,21 +337,21 @@ class Layer(models.Model):
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 
-    extent_min_x = models.FloatField(
-        'Bereik minimum x', blank=True, default=None, null=True,
+    extent_min_x = models.DecimalField(
+        'Bereik minimum x', blank=True, default=None, null=True, max_digits=10, decimal_places=2,
         help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.')
-    extent_min_y = models.FloatField(
-        'Bereik minimum y', blank=True, default=None, null=True)
-    extent_max_x = models.FloatField(
-        'Bereik maximum x', blank=True, default=None, null=True)
-    extent_max_y = models.FloatField(
-        'Bereik maximum y', blank=True, default=None, null=True)
+    extent_min_y = models.DecimalField(
+        'Bereik minimum y', blank=True, default=None, null=True, max_digits=10, decimal_places=2)
+    extent_max_x = models.DecimalField(
+        'Bereik maximum x', blank=True, default=None, null=True, max_digits=10, decimal_places=2)
+    extent_max_y = models.DecimalField(
+        'Bereik maximum y', blank=True, default=None, null=True, max_digits=10, decimal_places=2)
 
-    zoom_min = models.IntegerField(
-        'Zoomniveau minimum', blank=True, default=None, null=True,
+    zoom_min = models.DecimalField(
+        'Zoomniveau minimum', blank=True, default=None, null=True, max_digits=5, decimal_places=2,
         help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.')
-    zoom_max = models.IntegerField(
-        'Zoomniveau maximum', blank=True, default=None, null=True)
+    zoom_max = models.DecimalField(
+        'Zoomniveau maximum', blank=True, default=None, null=True , max_digits=5, decimal_places=2)
 
     dataset = models.ForeignKey(
         Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
@@ -463,8 +464,8 @@ source: new ol.source.TileWMS({{
             'projection': self.projection,
             'extent': self.extent,
             'format': self.format,
-            'zoom_min': self.zoom_min,
-            'zoom_max': self.zoom_max,
+            'zoom_min': safe_float_or_null(self.zoom_min),
+            'zoom_max': safe_float_or_null(self.zoom_max),
             'source': {
                 'authenticate': self.layer_source.authenticate if self.layer_source else False
             },
