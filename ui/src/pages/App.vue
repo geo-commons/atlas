@@ -117,6 +117,7 @@ export default {
       zoom: true,
       markerOnClick: true,
       draw: true,
+      compareLayers: true,
     };
 
     if (this.drawing) {

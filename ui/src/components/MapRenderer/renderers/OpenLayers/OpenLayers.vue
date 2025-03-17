@@ -1,5 +1,5 @@
 <template>
-  <ol-map ref="map" :features="features">
+  <ol-map ref="map" :features="features" :show-compare-slider="showCompareSlider">
     <ol-view
       ref="view"
       :position="position"
@@ -164,6 +164,7 @@ export default {
     color: Object,
     strokeWidth: Number,
     fontSize: Number,
+    showCompareSlider: Boolean,
   },
   emits: ["position-changed", "tool-used", "on-fit", "features-selected", "loading-print-to-pdf"],
   data() {

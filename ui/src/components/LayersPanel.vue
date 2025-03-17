@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'show-compare-slider': showCompareSlider }">
     <div class="buttons-wrapper">
       <div
         class="buttons"
@@ -208,6 +208,7 @@ export default {
     mapId: String,
     showSearchBar: Boolean,
     showSimpleLayerList: Boolean,
+    showCompareSlider: Boolean,
     isEmbed: Boolean,
     initiallyShowLayerList: Boolean,
   },
@@ -462,5 +463,13 @@ export default {
 .tippy-active > .zoom-button,
 .keyboard-user .zoom-button:focus {
   opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .show-compare-slider .layers,
+  .show-compare-slider .visible-layers {
+    bottom: calc(var(--width-button-large) + 60px);
+    max-height: calc((100 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)) - 60px);
+  }
 }
 </style>
