@@ -517,3 +517,17 @@ hr {
 .p-confirmpopup {
   max-width: 500px;
 }
+
+/* codemirror */
+.cm-activeLine, .cm-activeLineGutter {
+  background-color: transparent !important;
+}
+
+.cm-editor {
+  border-radius: var(--radius-normal);
+  border: 1px solid var(--color-grey-60);
+}
+
+.cm-gutters {
+  border-radius: var(--radius-normal) 0px 0px var(--radius-normal);
+}
