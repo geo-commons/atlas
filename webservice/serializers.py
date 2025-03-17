@@ -239,7 +239,8 @@ class LayerSerializer(serializers.ModelSerializer):
             'atlas_groups',
             'published',
             'templated_properties',
-            'dataset'
+            'dataset',
+            'is_filterable_in_legend'
         ]
 
 
@@ -365,7 +366,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'published',
             'linked_data',
             'templates',
-            'dataset'
+            'dataset',
+            'is_filterable_in_legend'
         ]
 
 

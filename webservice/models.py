@@ -319,6 +319,7 @@ class Layer(models.Model):
         'Haal detailinformatie als HTML op bij de bron', default=False)
     show_in_detail_panel = models.BooleanField(
         'Toon laag in detail- en dataweergave', default=True)
+    is_filterable_in_legend = models.BooleanField('Laag is filterbaar in legenda', default=False)
 
     not_in_atlas = models.BooleanField(
         'Toon laag alleen in een themakaart',
@@ -483,7 +484,8 @@ source: new ol.source.TileWMS({{
             },
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
             'templates': [item.to_dict() for item in self.templates.all()],
-            'legend_url': self.legend_url
+            'legend_url': self.legend_url,
+            'is_filterable_in_legend': self.is_filterable_in_legend
         }
 
     def is_accessible_by(self, user, request):
