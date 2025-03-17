@@ -60,7 +60,7 @@ export default {
       }
 
       this.initialValues = await result.json();
-      this.initialValues.search_fields = JSON.stringify(this.initialValues.search_fields);
+      this.initialValues.search_fields = JSON.stringify(this.initialValues.search_fields, null, 2);
       return result;
     },
     async getSources() {
@@ -190,7 +190,7 @@ export default {
               id: "search_fields",
               name: "SearchFields",
               type: "text",
-              multiLine: true,
+              json: true,
               required: false,
               isNested: true,
             },

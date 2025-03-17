@@ -60,6 +60,19 @@ defineRule("email", (value) => {
   return true;
 });
 
+defineRule("json", (value) => {
+  if (typeof value !== "string") {
+    return "Ongeldige JSON, de ingevoerde waarde is geen string";
+  }
+
+  try {
+    JSON.parse(value);
+    return true;
+  } catch {
+    return "Ongeldige JSON, controleer of de ingevoerde waarde correct is.";
+  }
+});
+
 defineRule("max", (value, [max]) => {
   if (value.length > max) {
     return "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.";
