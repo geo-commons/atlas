@@ -1,21 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
-
-:root {
-    --color-primary: #0066ff;
-    --color-alert: #eb0000;
-    --color-succesful: #14a34a;
-
-    --font-family: "PT Sans", sans-serif;
-}
-
-/* Example for the municipality of Utrecht. Uncomment this section and comment out the previous code to use it. */
-/*@import url('https://fonts.cdnfonts.com/css/lucida-sans');*/
+/*@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");*/
+/*@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");*/
 
 /*:root {*/
-/*    --color-primary: #2a5587;*/
-/*    --color-alert: #c00;*/
+/*    --color-primary: #0066ff;*/
+/*    --color-alert: #eb0000;*/
 /*    --color-succesful: #14a34a;*/
 
-/*    --font-family: "Lucida Sans", sans-serif;*/
+/*    --font-family: "PT Sans", sans-serif;*/
 /*}*/
+
+ /*Example for the municipality of Utrecht. Uncomment this section and comment out the previous code to use it.*/
+@import url('https://fonts.cdnfonts.com/css/lucida-sans');
+
+:root {
+    --color-primary: #2a5587;
+    --color-alert: #c00;
+    --color-succesful: #14a34a;
+
+    --font-family: "Lucida Sans", sans-serif;
+}
