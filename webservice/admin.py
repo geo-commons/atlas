@@ -106,6 +106,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
                 'use_html_info_format',
                 'show_in_detail_panel',
                 'not_in_atlas',
+                'is_filterable_in_legend',
                 '_popup_attributes',
                 '_search_fields',
                 'extent_min_x',

@@ -623,6 +623,15 @@ export default {
               required: false,
             },
             {
+              label: "Maak laag filterbaar in legenda",
+              id: "is_filterable_in_legend",
+              name: "IsFilterableInLegend",
+              type: "checkbox",
+              required: false,
+              infoText:
+                "Hiermee zijn specifieke legenda-items te filteren. Let op: Deze functie werkt enkel met WMS, WMS-WFS en WFS bronnen die een JSON response ondersteunen.",
+            },
+            {
               label: "Toon deze velden",
               id: "display_properties",
               name: "DisplayProperties",

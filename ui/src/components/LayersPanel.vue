@@ -170,7 +170,6 @@
           :layer-opacity-is-changable="!isEmbed"
           :is-open="i === 0"
           :user="user"
-          :config="config"
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
           @toggle-is-selectable="onToggleIsSelectable"
@@ -208,7 +207,6 @@ export default {
     user: Object,
     mapId: String,
     showSearchBar: Boolean,
-    config: Object,
     showSimpleLayerList: Boolean,
     isEmbed: Boolean,
     initiallyShowLayerList: Boolean,
