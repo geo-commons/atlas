@@ -300,6 +300,15 @@
       }
     },
     {
+      "model": "webservice.source",
+      "pk": 15,
+      "fields": {
+          "title": "http://localhost:8000/geoserver/custom/wms",
+          "slug": "lokale-geoserver",
+          "url": "http://localhost:8000/geoserver/custom/wms"
+      }
+    },
+    {
         "model": "webservice.layer",
         "pk": 3,
         "fields": {
@@ -8741,6 +8750,46 @@
           "zoom_max": null,
           "atlas_groups": []
       }
+    },
+    {
+        "model": "webservice.layer",
+        "pk": 294,
+        "fields": {
+            "slug": "scholen-crud",
+            "title": "scholen-crud",
+            "layer_name": "custom:scholen",
+            "layer_source": 15,
+            "format": "image/png",
+            "meta_name": "Alle type onderwijs",
+            "meta_description": "Kaart is nog in bewerking",
+            "meta_org": "Gemeente",
+            "meta_updated": "23-07-2019",
+            "opacity": "0.9",
+            "visible": false,
+            "client_style": {},
+            "layer_type": 15,
+            "_popup_attributes": "",
+            "_search_fields": "straatnaam\r\npostcode\r\nhuisnummer\r\ntoevoeging\r\nplaatsnaam\r\nnaam_vesti\r\nsoort_inst",
+            "projection": "EPSG:28992",
+            "server_type": "geoserver",
+            "closed_dataset": false,
+            "login_required": false,
+            "published": true,
+            "source_type": "WMS_WFS",
+            "is_base": false,
+            "is_visible": false,
+            "not_in_atlas": false,
+            "created_at": "2019-07-23T11:56:48.321Z",
+            "updated_at": "2022-07-11T09:22:25.231Z",
+            "ordering": 20900,
+            "extent_min_x": null,
+            "extent_min_y": null,
+            "extent_max_x": null,
+            "extent_max_y": null,
+            "zoom_min": null,
+            "zoom_max": null,
+            "atlas_groups": []
+        }
     },
     {
         "model": "webservice.linkeddata",

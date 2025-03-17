@@ -11,6 +11,7 @@ export default {
   name: "VectorLayer",
   inject: ["map"],
   props: {
+    id: String,
     name: String,
     vectorStyle: [Object, Function],
     features: Array,
@@ -32,6 +33,7 @@ export default {
     this.vectorSource = new VectorSource();
 
     this.vectorLayer = new VectorLayer({
+      id: this.id,
       name: this.name,
       source: this.vectorSource,
       style: toRaw(this.vectorStyle),

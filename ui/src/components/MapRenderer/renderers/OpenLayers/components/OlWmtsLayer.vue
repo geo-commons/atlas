@@ -17,6 +17,7 @@ export default {
   name: "WmtsLayer",
   inject: ["map"],
   props: {
+    id: String,
     name: String,
     url: String,
     layer: String,
@@ -48,6 +49,7 @@ export default {
   },
   created() {
     this.tileLayer = new TileLayer({
+      id: this.id,
       name: this.name,
       visible: this.isVisible,
       opacity: this.opacity,
@@ -79,7 +81,7 @@ export default {
           format: this.format,
           crossOrigin: "anonymous",
           style: this.serverStyle ? this.serverStyle : null,
-        })
+        }),
       );
 
       this.tileLayer.setSource(wmtsSource);

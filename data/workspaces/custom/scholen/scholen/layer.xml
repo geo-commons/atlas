@@ -1,0 +1,17 @@
+<layer>
+  <name>scholen</name>
+  <id>LayerInfoImpl--2ba3e498:195378d8346:-7fdf</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--2ba3e498:195378d8346:-7fd8</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--2ba3e498:195378d8346:-7fe0</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2025-02-24 10:44:36.499 UTC</dateCreated>
+  <dateModified>2025-02-24 11:46:44.910 UTC</dateModified>
+</layer>

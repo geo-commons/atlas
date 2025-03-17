@@ -604,16 +604,4 @@ const saveDrawing = async () => {
   min-height: 16px;
   margin-right: 7px;
 }
-
-@media (max-width: 576px) {
-  .tools-panel__draw-bar {
-    display: grid;
-    flex-basis: 20%;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .tools-panel__draw-bar button:nth-child(-n + 5) {
-    border-bottom: 1px solid var(--color-grey-50);
-  }
-}
 </style>

@@ -91,6 +91,7 @@ onMounted(() => {
   });
 
   tileLayer = new TileLayer({
+    id: props.id,
     name: props.name,
     visible: props.isVisible,
     opacity: props.opacity,
