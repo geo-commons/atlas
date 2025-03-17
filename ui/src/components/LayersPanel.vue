@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'show-compare-slider': showCompareSlider }">
     <div class="buttons-wrapper">
       <div
         class="buttons"
@@ -125,7 +125,7 @@
                   >
                     <ZoomOutIcon />
                   </button>
-                  <LayerFit v-if="!layer.is_disabled && layer.extent" :layer="layer" @click="() => onFit(layer)" />
+                  <LayerFit v-if="layer.extent" :layer="layer" @click="() => onFit(layer)" />
                   <LayerInfo :layer="layer" />
                 </li>
               </ul>
@@ -149,7 +149,7 @@
                   {{ layer.title }}
                   <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
                 </label>
-                <LayerFit v-if="!layer.is_disabled && layer.extent" :layer="layer" @click="() => onFit(layer)" />
+                <LayerFit v-if="layer.extent" :layer="layer" @click="() => onFit(layer)" />
                 <LayerInfo :layer="layer" />
               </li>
             </ul>
@@ -170,7 +170,6 @@
           :layer-opacity-is-changable="!isEmbed"
           :is-open="i === 0"
           :user="user"
-          :config="config"
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
           @toggle-is-selectable="onToggleIsSelectable"
@@ -208,8 +207,8 @@ export default {
     user: Object,
     mapId: String,
     showSearchBar: Boolean,
-    config: Object,
     showSimpleLayerList: Boolean,
+    showCompareSlider: Boolean,
     isEmbed: Boolean,
     initiallyShowLayerList: Boolean,
   },
@@ -356,23 +355,6 @@ export default {
   border-right: 1px solid var(--color-grey-50);
 }
 
-.counter {
-  flex-shrink: 0;
-  height: 18px;
-  min-width: 18px;
-  border-radius: 9px;
-  border: 2px solid var(--color-primary);
-  padding: 0 3px;
-  background: white;
-  color: var(--color-primary);
-  font-size: 11px;
-  font-weight: var(--font-weight-bold);
-  line-height: 14px;
-  text-align: center;
-  white-space: nowrap;
-  user-select: none;
-}
-
 .visible-layer-counter {
   position: absolute;
   top: 2px;
@@ -473,5 +455,21 @@ export default {
 
 .zoom-button {
   margin-left: 5px;
+  opacity: 0;
+}
+
+.layer:hover .zoom-button,
+.sublayer:hover .zoom-button,
+.tippy-active > .zoom-button,
+.keyboard-user .zoom-button:focus {
+  opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .show-compare-slider .layers,
+  .show-compare-slider .visible-layers {
+    bottom: calc(var(--width-button-large) + 60px);
+    max-height: calc((100 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)) - 60px);
+  }
 }
 </style>

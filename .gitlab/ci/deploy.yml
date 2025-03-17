@@ -27,6 +27,7 @@ Deploy Review App:
       --set persistence.media.storageClassName=standard-retain \
       --set postgresql.persistence.enabled=false \
       --set loadDemoData=true \
+      --set debug=true \
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
@@ -37,8 +38,6 @@ Deploy Review App:
     url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
     on_stop: Remove Review App
     auto_stop_in: 1 week
-  only:
-    - /^feat\/.*$/
   except:
     - master@purmerend/atlas
 
@@ -118,12 +117,14 @@ Deploy acceptance:
       --set postgresql.persistence.enabled=false \
       --set persistence.media.storageClassName=standard-retain \
       --set ingress.tls[0].secretName=atlas-tls \
+      --set ingress.tls[0].hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set ingress.annotations.kubernetes\\.io/ingress\\.class=nginx \
       --set ingress.annotations.cert-manager\\.io/cluster-issuer=letsencrypt-prod \
       --set smartstreetUser=$SMARTSTREET_USER \
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
       --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY \
+      --set loadDemoData=true \
       --set environment=acceptance
   environment:
     name: review/acc
@@ -135,7 +136,7 @@ Upload helm chart:
   stage: Deploy
   image:
     name: alpine/k8s:1.29.7
-    entrypoint: [ "" ]
+    entrypoint: [""]
 
   script:
     - cd helm

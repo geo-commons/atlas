@@ -8,6 +8,10 @@
     :settings="settings"
     :user="user"
     :admin-map="true"
+    :about="about"
+    :about-title="aboutTitle"
+    :thumbnail="thumbnail"
+    :hide-reset-button="true"
     @update-user-settings="updateUserSettings"
   />
 </template>
@@ -37,6 +41,21 @@ export default {
     },
     user: {
       type: Object,
+      required: false,
+      default: null,
+    },
+    about: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    aboutTitle: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    thumbnail: {
+      type: String,
       required: false,
       default: null,
     },

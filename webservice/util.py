@@ -30,3 +30,6 @@ def process_value(value):
     if is_float(value):
         return float(value)
     return value
+
+def safe_float_or_null(value):
+    return float(value) if value is not None else value

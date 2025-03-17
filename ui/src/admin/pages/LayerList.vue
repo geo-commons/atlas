@@ -36,6 +36,16 @@ const tableHeaders: Array<TableHeader> = [
     enableLink: false,
   },
   {
+    header: "Inlog vereist",
+    key: "login_required",
+    enableLink: false,
+  },
+  {
+    header: "Alleen intern zichtbaar",
+    key: "closed_dataset",
+    enableLink: false,
+  },
+  {
     header: "Status",
     key: "published",
     enableLink: false,
@@ -110,6 +120,7 @@ onMounted(() => {
   Promise.all([getSources(), getLayers(), getCategories()]).then((result) => {
     sources.value = result[0];
     layers.value = result[1].results;
+
     categories.value = result[2];
     loading.value = false;
   });
@@ -208,6 +219,9 @@ const getTableFilters = (): Array<TableFilter> => {
     :get-create-object-dialog-sections="getCreateLayerSections"
     :initial-create-object-dialog-data="initialCreateLayerData"
     :save-create-object-dialog-data="saveLayer"
+    :enable-duplicate="true"
+    :enable-import-export="true"
+    :enable-delete-multiple="true"
     :get-objects="getLayers"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"

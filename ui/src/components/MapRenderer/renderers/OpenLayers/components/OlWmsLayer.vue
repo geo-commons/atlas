@@ -3,13 +3,14 @@
 </template>
 
 <script setup>
-import { inject, onMounted, onUnmounted, watch } from "vue";
+import { inject, onMounted, onUnmounted, ref, watch } from "vue";
 import Projection from "ol/proj/Projection";
 import TileLayer from "ol/layer/Tile";
 import TileWMSSource from "ol/source/TileWMS";
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "@/stores";
 import { useMapStore } from "@/stores/map_store";
+import { useCompareLayers } from "@/composables/useCompareLayers";
 
 const props = defineProps({
   id: String,
@@ -31,6 +32,11 @@ const map = inject("map");
 const globalStore = useGlobalStore();
 const mapStore = useMapStore(props.mapId);
 const { user } = storeToRefs(globalStore);
+
+const setupSwipeEffect = ref(null);
+const handlePrerender = ref(null);
+const handlePostrender = ref(null);
+const compareLayerSettings = ref({ active: false, id: null });
 
 const rdProjection = new Projection({
   code: "EPSG:28992",
@@ -96,11 +102,19 @@ onMounted(() => {
   });
 
   map.addLayer(tileLayer);
+  const compareLayers = useCompareLayers(map, mapStore, tileLayer, props.id);
+  setupSwipeEffect.value = compareLayers.setupSwipeEffect;
+  handlePrerender.value = compareLayers.handlePrerender;
+  handlePostrender.value = compareLayers.handlePostrender;
 });
 
 // Clean up on unmount
 onUnmounted(() => {
   map.removeLayer(tileLayer);
+
+  // Remove event listeners
+  tileLayer.un("prerender", handlePrerender.value);
+  tileLayer.un("postrender", handlePostrender.value);
 });
 
 // Watch for prop changes
@@ -184,5 +198,82 @@ watch(
     source.refresh();
   },
   { deep: true },
+);
+
+watch(
+  () => [mapStore.leftSelectedCompareLayerId],
+  (value, oldValue) => {
+    // Check if this layer is newly selected to compare
+    if (mapStore.leftSelectedCompareLayerId === props.id && !compareLayerSettings.value.active) {
+      setupSwipeEffect.value();
+
+      compareLayerSettings.value = {
+        active: true,
+        id: mapStore.leftSelectedCompareLayerId,
+      };
+
+      return;
+    }
+
+    // Check if there is no longer a left layer selected to compare
+    if (
+      compareLayerSettings.value.active &&
+      compareLayerSettings.value.id === props.id &&
+      mapStore.rightSelectedCompareLayerId !== props.id &&
+      (!mapStore.leftSelectedCompareLayerId || value !== oldValue)
+    ) {
+      compareLayerSettings.value = {
+        active: false,
+        id: null,
+      };
+
+      tileLayer.un("prerender", handlePrerender.value);
+      tileLayer.un("postrender", handlePostrender.value);
+      map.render();
+    }
+  },
+);
+//
+watch(
+  () => [mapStore.rightSelectedCompareLayerId],
+  (value, oldValue) => {
+    // not active register this layer as compare layer
+    if (mapStore.rightSelectedCompareLayerId === props.id && !compareLayerSettings.value.active) {
+      setupSwipeEffect.value();
+
+      compareLayerSettings.value = {
+        active: true,
+        id: mapStore.rightSelectedCompareLayerId,
+      };
+
+      return;
+    }
+
+    // Check if there is no longer a left layer selected to compare
+    if (
+      compareLayerSettings.value.active &&
+      compareLayerSettings.value.id === props.id &&
+      mapStore.leftSelectedCompareLayerId !== props.id &&
+      (!mapStore.rightSelectedCompareLayerId || value !== oldValue)
+    ) {
+      compareLayerSettings.value = {
+        active: false,
+        id: null,
+      };
+
+      tileLayer.un("prerender", handlePrerender.value);
+      tileLayer.un("postrender", handlePostrender.value);
+      map.render();
+    }
+  },
+);
+
+watch(
+  () => mapStore.comparePercentage,
+  () => {
+    if (compareLayerSettings.value.active) {
+      map.render();
+    }
+  },
 );
 </script>

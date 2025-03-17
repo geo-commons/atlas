@@ -7,7 +7,7 @@ import { createApp } from "vue";
 import VueTippy from "vue-tippy";
 
 import App from "./portal/App";
-import NotFound from "./portal/pages/NotFound";
+import PortalNotFound from "./portal/PortalNotFound.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
@@ -48,7 +48,7 @@ const routes = [
       parentName: "Datasets",
     },
   },
-  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
+  { path: "/:pathMatch(.*)*", name: "not-found", component: PortalNotFound },
 ];
 
 const router = createRouter({

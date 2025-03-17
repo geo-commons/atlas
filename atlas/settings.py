@@ -304,7 +304,6 @@ CONSTANCE_CONFIG = {
     'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
     'FEATURE_EDIT_LAYER_FEATURES': (False, ('Bewerkfunctionaliteit')),
     'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
-    'FEATURE_FILTERABLE_LEGEND': (False, ('Zet filterbare legenda aan')),
     'ORGANIZATION_IMAGE': (
         '', 'Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
     'ORGANIZATION_PRIMARY_COLOR': (
@@ -335,7 +334,6 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'FEATURE_PORTAL',
         'FEATURE_PRINT',
         'FEATURE_DRAW',
-        'FEATURE_FILTERABLE_LEGEND',
         "FEATURE_EDIT_LAYER_FEATURES",
         "FEATURE_DISABLE_ADMIN1"
     ),

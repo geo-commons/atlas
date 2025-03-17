@@ -211,12 +211,6 @@ export default {
               name: "featureDisableAdmin1",
               type: "checkbox",
             },
-            {
-              label: "Zet filterbare legenda aan",
-              id: "FEATURE_FILTERABLE_LEGEND",
-              name: "featureFilterableLegend",
-              type: "checkbox",
-            },
           ],
         },
         portalConfiguration: {

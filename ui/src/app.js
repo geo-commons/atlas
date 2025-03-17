@@ -14,8 +14,8 @@ import detectKeyboard from "./utils/detect-keyboard";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import PrimeVue from "primevue/config";
+import { ConfirmationService, ToastService } from "primevue";
 import { AtlasPresetApp } from "@/utils/theme-preset";
-import { ToastService } from "primevue";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     })
     .use(ToastService)
+    .use(ConfirmationService)
     .use(pinia)
     .use(VueTippy, {
       directive: "tippy",

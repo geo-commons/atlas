@@ -134,7 +134,6 @@ export default {
     isOpen: Boolean,
     user: Object,
     mapId: String,
-    config: Object,
   },
   data() {
     return {
@@ -257,7 +256,7 @@ export default {
       // However, if this request fails, we then fetch the legend as an image instead.
       const result = await this.fetchLegendAsJson();
 
-      if (result && this.config && this.config.features.filterable_legend) {
+      if (result && this.layer.is_filterable_in_legend) {
         this.legendJson = result;
         this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
       } else {

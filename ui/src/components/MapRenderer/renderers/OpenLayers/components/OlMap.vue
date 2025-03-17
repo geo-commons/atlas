@@ -1,7 +1,12 @@
 <template>
   <div ref="map" class="map">
     <slot></slot>
-    <div class="scale" :style="{ display: features.scale ? 'block' : 'none' }" @click="toggleScaleType">
+    <div
+      class="scale"
+      :style="{ display: features.scale ? 'block' : 'none' }"
+      :class="{ 'bottom-panels-padding': showCompareSlider }"
+      @click="toggleScaleType"
+    >
       <div ref="scale-line-container" :style="{ display: scaleType === 'LINE' ? 'block' : 'none' }" />
       <div class="scale-text" :style="{ display: scaleType === 'TEXT' ? 'block' : 'none' }">
         1 : {{ Math.round(scale).toLocaleString() }}
@@ -29,6 +34,7 @@ export default {
   },
   props: {
     features: Object,
+    showCompareSlider: Boolean,
   },
   setup() {
     register(getDefinitions());
@@ -173,5 +179,11 @@ export default {
   text-align: center;
   will-change: contents, width;
   transition: all 0.25s ease;
+}
+
+@media (max-width: 640px) {
+  .bottom-panels-padding {
+    margin-bottom: 60px;
+  }
 }
 </style>

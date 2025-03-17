@@ -200,7 +200,6 @@ def _get_config(request):
             'draw': config.get('FEATURE_DRAW'),
             'portal': config.get('FEATURE_PORTAL'),
             'edit_layer_features': config.get('FEATURE_EDIT_LAYER_FEATURES'),
-            'filterable_legend': config.get('FEATURE_FILTERABLE_LEGEND')
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }

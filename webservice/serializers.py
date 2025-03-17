@@ -5,6 +5,7 @@ from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
 from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer
+from .util import safe_float_or_null
 
 
 class MapLayerSerializer(serializers.ModelSerializer):
@@ -19,7 +20,7 @@ class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
         fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description', 'published',
-                  'show_in_overview']
+                  'show_in_overview', 'about', 'about_title']
 
     def create(self, validated_data):
         try:
@@ -172,6 +173,8 @@ class LayerSerializer(serializers.ModelSerializer):
     category = CategorySerializer(source='layer_type')
     source = SourceSerializer(source='layer_source')
     opacity = serializers.SerializerMethodField('get_opacity')
+    zoom_min = serializers.SerializerMethodField('get_zoom_min')
+    zoom_max = serializers.SerializerMethodField('get_zoom_max')
     display_properties = serializers.SerializerMethodField(
         'get_display_properties')
     search_properties = serializers.SerializerMethodField(
@@ -186,6 +189,12 @@ class LayerSerializer(serializers.ModelSerializer):
 
     def get_opacity(self, obj):
         return float(obj.opacity)
+
+    def get_zoom_min(self, obj):
+        return safe_float_or_null(obj.zoom_min)
+
+    def get_zoom_max(self, obj):
+        return safe_float_or_null(obj.zoom_max)
 
     def get_display_properties(self, obj):
         return obj.popup_attributes
@@ -239,7 +248,8 @@ class LayerSerializer(serializers.ModelSerializer):
             'atlas_groups',
             'published',
             'templated_properties',
-            'dataset'
+            'dataset',
+            'is_filterable_in_legend'
         ]
 
 
@@ -365,7 +375,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'published',
             'linked_data',
             'templates',
-            'dataset'
+            'dataset',
+            'is_filterable_in_legend'
         ]
 
 
@@ -391,6 +402,8 @@ class LayerListSerializer(serializers.ModelSerializer):
             'ordering',
             'is_base',
             'is_visible',
+            'login_required',
+            'closed_dataset'
         ]
 
 
@@ -423,6 +436,14 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class DataExportSettingsSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField())
+
+
+class DuplicateSettingsSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField())
+
+
+class DeleteSettingsSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField())
 
 

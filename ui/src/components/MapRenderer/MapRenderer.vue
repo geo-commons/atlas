@@ -8,6 +8,14 @@
     :style="computedStyle"
   >
     <div class="renderer-container">
+      <ConfirmPopup group="templating">
+        <template #message="slotProps">
+          <div class="tw-px-4">
+            <i :class="slotProps.message.icon" class=""></i>
+            <p>{{ slotProps.message.message }}</p>
+          </div>
+        </template>
+      </ConfirmPopup>
       <Splitter
         v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)"
         ref="splitter"
@@ -42,6 +50,7 @@
             :color="color"
             :stroke-width="strokeWidth"
             :font-size="fontSize"
+            :show-compare-slider="compareLayers"
             @position-changed="setPosition"
             @tool-used="toolUsed"
             @features-selected="featuresSelected"
@@ -61,6 +70,7 @@
         :selected-area="selectedArea"
         :highlighted-features="highlightedFeatures"
         :selected-features="selectedFeatures"
+        :show-compare-slider="compareLayers"
         :map-area="mapArea"
         :user="user"
         :config="config"
@@ -77,6 +87,18 @@
         @loading-print-to-pdf="setLoadingPrint"
       />
     </div>
+    <AboutPanel
+      v-if="!isEmbed && !showPanoramaPanel && showAbout"
+      :features="features"
+      :about="about"
+      :about-title="aboutTitle"
+      :thumbnail="thumbnail"
+      :show-panel="showAbout"
+      @close-side-panel="closeAbout"
+      @hidePanel="closeAbout"
+      @toggle-modal="toggleModal"
+      @toggle-about="toggleAbout"
+    />
     <ListPanel
       v-if="showList && layers.length > 0"
       ref="listPanel"
@@ -136,18 +158,17 @@
     />
     <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" />
 
+    <CompareLayersPanel
+      :map-id="mapId"
+      :show-compare-layer-panel="showCompareLayerPanel"
+      :layers="wmsWfsLayers"
+      @close-panel="closeCompareLayerPanel"
+      @stop-compare="stopCompareLayers"
+      @toggle-layer="toggleLayer"
+    />
+
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
-        <SearchPanel
-          v-if="features.searchbar"
-          :position="position"
-          :layers="layers"
-          :features="features"
-          :map-id="mapId"
-          :show-data-panel="showDataPanel"
-          @set-position="setPosition"
-          @toggle-data-panel="toggleDataPanel"
-        />
         <div class="toggle-buttons" :class="{ 'position-top': !features.searchbar }">
           <div v-if="features.datapanel && !features.searchbar" class="datapanel-btn-wrapper">
             <DataPanelButton
@@ -171,11 +192,39 @@
             size="large"
             label="Verfijn"
             drop-shadow
+            :badge="countOfActiveSelectedFiltersForLayer"
             @on-button-click="toggleFilters"
           >
             <FilterListIcon />
           </PrimaryButton>
+          <PrimaryButton
+            v-if="
+              !hideResetButton &&
+              (countOfLayersWithActiveFilters > 0 ||
+                visibleLayers.length > 0 ||
+                baseLayerChanged ||
+                newDrawing ||
+                selectedArea)
+            "
+            v-tooltip="'Wis alle filters, lagen, getekende objecten, geselecteerde gebieden en instellingen'"
+            size="large"
+            label="Herstel"
+            drop-shadow
+            @on-button-click="confirmResetMap($event)"
+          >
+            <i class="pi pi-refresh"></i>
+          </PrimaryButton>
         </div>
+        <SearchPanel
+          v-if="features.searchbar"
+          :position="position"
+          :layers="layers"
+          :features="features"
+          :map-id="mapId"
+          :show-data-panel="showDataPanel"
+          @set-position="setPosition"
+          @toggle-data-panel="toggleDataPanel"
+        />
       </div>
 
       <div class="top-right-panels">
@@ -204,9 +253,10 @@
           :user="user"
           :show-disclaimer="config.show_disclaimer"
           @toggle-modal="toggleModal"
+          @toggle-about="toggleAbout"
         />
       </div>
-      <div class="bottom-left-panels">
+      <div class="bottom-left-panels" :class="{ 'bottom-panels-padding': compareLayers }">
         <LayersPanel
           v-if="features.layerlist || features.legend"
           :layers="regularLayers"
@@ -215,8 +265,8 @@
           :map-id="mapId"
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
+          :show-compare-slider="compareLayers"
           :is-embed="features.legend && !features.layerlist"
-          :config="config"
           @toggle-layer="toggleLayer"
           @set-layer-opacity="setLayerOpacity"
           @on-fit="(layer) => $refs.map.fit(layer)"
@@ -224,7 +274,10 @@
           @toggle-is-selectable="onToggleIsSelectable"
         />
       </div>
-      <div class="bottom-right-panels">
+      <div class="bottom-center-panels">
+        <CompareLayersSlider :map-id="mapId" :show-compare-layer-panel="compareLayers" />
+      </div>
+      <div class="bottom-right-panels" :class="{ 'bottom-panels-padding': compareLayers }">
         <div v-if="features.baselayer" class="bottom-right-buttons">
           <div class="ui-button-wrapper">
             <button
@@ -243,6 +296,20 @@
           <transition name="fade">
             <BaseLayersPanel v-if="showBaseLayersPanel" :layers="baseLayers" @toggle-layer="toggleLayer" />
           </transition>
+        </div>
+        <div v-if="features.compareLayers" class="bottom-right-buttons">
+          <div class="ui-button-wrapper">
+            <button
+              v-tippy="{ placement: 'left' }"
+              class="iconbutton __inverse"
+              :class="{ isActive: compareLayers }"
+              content="Vergelijk kaartlagen"
+              aria-label="Vergelijk kaartlagen"
+              @click="toggleCompareLayerPanel"
+            >
+              <CompareLayersIcon />
+            </button>
+          </div>
         </div>
         <div v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)" class="bottom-right-buttons">
           <div class="ui-button-wrapper">
@@ -293,23 +360,46 @@
 </template>
 
 <script>
-import ListIcon from "../../assets/icons/list-icon.svg";
+import AlertMessage from "@/components/AlertMessage.vue";
+import BaseLayersPanel from "@/components/BaseLayersPanel.vue";
+import DrawingModal from "@/components/DrawingModal.vue";
+import EmbedModal from "@/components/EmbedModal.vue";
+import MorePanel from "@/components/MorePanel.vue";
+import PrintModal from "@/components/PrintModal.vue";
+import { useGlobalStore } from "@/stores";
+import { useMapStore } from "@/stores/map_store";
+import { isMobile } from "@/utils/helpers";
+import nunjucks from "nunjucks";
 import GeoJSON from "ol/format/GeoJSON";
+import { transform } from "ol/proj";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
-import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
+import { mapStores } from "pinia";
+import { useConfirm } from "primevue";
+import FilterListIcon from "../../assets/icons/filter-list-icon.svg";
+import ListIcon from "../../assets/icons/list-icon.svg";
+import MapIcon from "../../assets/icons/map-icon.svg";
+import ObliqueIcon from "../../assets/icons/oblique-icon.svg";
+import PanoramaIcon from "../../assets/icons/panorama-icon.svg";
+import CompareLayersIcon from "../../assets/icons/compare-layers-icon.svg";
 import { getFetchParameters } from "../../utils/auth";
-
-import PrimaryButton from "../PrimaryButton";
-import ListPanel from "../ListPanel";
-import FilterPanel from "../FilterPanel";
+import AboutPanel from "../AboutPanel";
 import DataPanel from "../DataPanel";
-import PointInfoPanel from "../PointInfoPanel";
+import DataPanelButton from "../DataPanelButton.vue";
 import DetailPanel from "../DetailPanel";
-import SearchPanel from "../SearchPanel";
+import FilterPanel from "../FilterPanel";
+import GeoLocationButton from "../GeoLocationButton";
 import LayersPanel from "../LayersPanel";
+import ListPanel from "../ListPanel";
+import PanoramaPanel from "../PanoramaPanel.vue";
+import PointInfoPanel from "../PointInfoPanel";
+import PrimaryButton from "../PrimaryButton";
+import SearchPanel from "../SearchPanel";
 import ToolsPanel from "../tools/ToolsPanel.vue";
 import ZoomPanel from "../ZoomPanel";
+import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
+import CompareLayersPanel from "@/components/compare-layers/CompareLayersPanel.vue";
+import CompareLayersSlider from "@/components/compare-layers/CompareLayersSlider.vue";
 import GeoLocationButton from "../GeoLocationButton";
 import FilterListIcon from "../../assets/icons/filter-list-icon.svg";
 import DataPanelButton from "../DataPanelButton.vue";
@@ -343,6 +433,8 @@ const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v
 export default {
   name: "MapRenderer",
   components: {
+    CompareLayersSlider,
+    CompareLayersPanel,
     EditFeaturePanel,
     AddFeaturePanel,
     PanoramaPanel,
@@ -359,6 +451,7 @@ export default {
     LayersPanel,
     DataPanel,
     PointInfoPanel,
+    AboutPanel,
     DetailPanel,
     ListPanel,
     FilterPanel,
@@ -368,11 +461,27 @@ export default {
     GeoLocationButton,
     DataPanelButton,
     MapIcon,
+    CompareLayersIcon,
     PanoramaIcon,
     ObliqueIcon,
   },
   props: {
     mapId: String,
+    about: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    aboutTitle: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    thumbnail: {
+      type: String,
+      required: false,
+      default: "",
+    },
     initialLayers: Array,
     initialPosition: Object,
     initialDrawFeatures: Array,
@@ -413,6 +522,12 @@ export default {
         return false;
       },
     },
+    hideResetButton: {
+      type: Boolean,
+      default: () => {
+        return false;
+      },
+    },
   },
   data() {
     return {
@@ -428,6 +543,7 @@ export default {
       showDataPanelFullScreen: false,
       showBaseLayersPanel: false,
       showPanoramaPanel: false,
+      showAbout: false,
       showList: false,
       showFilters: false,
       infoPanelExpanded: false,
@@ -443,6 +559,17 @@ export default {
       fontSize: DEFAULT_DRAWING_FONT_SIZE,
       showPanoramaPanelFullScreen: false,
       loadingPrint: false,
+      showCompareLayerPanel: false,
+      compareLayers: false,
+      filterCheckedCount: 0,
+      visibleLayers: [],
+      baseLayerChanged: false,
+      initialBaseLayerId: null,
+      initialDrawing: null,
+      confirm: useConfirm(),
+      newDrawing:
+        JSON.stringify(this.initialDrawing) !== JSON.stringify(this.drawFeatures) ||
+        (!this.initialDrawing && this.drawFeatures?.length > 0),
     };
   },
   computed: {
@@ -499,8 +626,19 @@ export default {
     regularLayers() {
       return this.layers.filter((l) => !l.is_base);
     },
+    wmsWfsLayers() {
+      return this.layers.filter((l) => !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS"));
+    },
     baseLayers() {
       return this.layers.filter((l) => l.is_base);
+    },
+    countOfLayersWithActiveFilters() {
+      return this.mapStore ? this.mapStore.getActiveLayersWithFilterCount : 0;
+    },
+    countOfActiveSelectedFiltersForLayer() {
+      return this.mapStore && this.settings.facets
+        ? this.mapStore.getActiveSelectedItemCountPerFilterForLayer(this.settings.filterLayerId, this.settings.facets)
+        : 0;
     },
   },
   watch: {
@@ -545,6 +683,10 @@ export default {
     initialDrawFeatures: {
       handler(value) {
         this.drawFeatures = value;
+        // Store initial drawing features only once when they first load
+        if (value && value.length > 0 && !this.initialDrawing) {
+          this.initialDrawing = [...value];
+        }
       },
       deep: true,
       immediate: true,
@@ -555,12 +697,27 @@ export default {
       },
       deep: true,
     },
+    features: {
+      handler(value) {
+        this.showAbout = value.showAbout ? value.showAbout : false;
+      },
+      deep: true,
+    },
   },
   mounted() {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
+    this.showAbout = this.features.showAbout ? this.features.showAbout : false;
 
     this.mapStore = useMapStore(this.mapId);
+
+    // Store initial base layer ID
+    const initialBaseLayer = this.layers.find((l) => l.is_base && l.is_visible);
+    if (initialBaseLayer) {
+      this.initialBaseLayerId = initialBaseLayer.id;
+    }
+
+    this.visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
   },
   unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
@@ -705,6 +862,10 @@ export default {
       this.infoPanelExpanded = expandInfoPanel;
       this.setWindowInnerWidth();
     },
+    closeAbout() {
+      this.showAbout = false;
+      this.setWindowInnerWidth();
+    },
     setWindowInnerWidth() {
       // Do not adjust the inner window padding for mobile screens.
       if (isMobile()) {
@@ -735,6 +896,9 @@ export default {
     },
     toggleFilters() {
       this.showFilters = !this.showFilters;
+    },
+    toggleAbout() {
+      this.showAbout = !this.showAbout;
     },
     setTool(tool) {
       this.tool = tool;
@@ -787,8 +951,15 @@ export default {
       this.selectedArea = selectedArea;
     },
     toggleLayer([layerId, isVisible]) {
+      if (layerId === this.initialBaseLayerId) {
+        this.baseLayerChanged = !isVisible;
+      }
+
       this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, is_visible: isVisible } : layer));
       this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], is_visible: isVisible };
+
+      this.visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
+
       this.$emit("layers-changed", this.layers);
       this.mapStore.resetFiltersForLayer(layerId);
     },
@@ -837,6 +1008,64 @@ export default {
     setLoadingPrint(loading) {
       this.loadingPrint = loading;
     },
+    resetMap() {
+      this.mapStore.resetAllFilters();
+
+      // Check for /atlas/maps/ID pattern
+      const mapsMatch = window.location.pathname.match(/\/atlas\/maps\/([^/]+)/);
+      // Check for /atlas/@ pattern (direct coordinates)
+      const coordsMatch = window.location.pathname.match(/\/atlas\/@([^/]+)/);
+      // Check for drawing= in url
+      const drawingMatch = window.location.pathname.match(/\/drawing=([^/]+)(?:\/|$)/);
+
+      if (mapsMatch) {
+        // Navigate to the new URL with just the position
+        window.location.href = `${window.location.origin}/atlas/maps/${mapsMatch[1]}/${drawingMatch ? `drawing=${drawingMatch[1]}` : ""}`;
+      } else if (coordsMatch) {
+        // Navigate to the new URL with just the coordinates
+        window.location.href = `${window.location.origin}/atlas/@${coordsMatch[1]}/${drawingMatch ? `drawing=${drawingMatch[1]}` : ""}`;
+      } else {
+        window.location.href = `${window.location.origin}/atlas/`;
+      }
+    },
+    confirmResetMap(event) {
+      if (!event) {
+        return;
+      }
+
+      this.confirm.require({
+        target: event.target,
+        group: "templating",
+        message: `Weet u zeker dat u alles wilt herstellen naar de standaard instellingen? Alle filters, lagen, getekende objecten, geselecteerde gebieden en instellingen worden verwijderd.`,
+        rejectProps: {
+          icon: "pi pi-times",
+          label: "Annuleer",
+          outlined: true,
+        },
+        acceptProps: {
+          icon: "pi pi-refresh",
+          label: "Herstel",
+        },
+        accept: () => {
+          this.resetMap();
+        },
+        reject: () => {},
+      });
+    },
+    toggleCompareLayerPanel() {
+      if (!this.compareLayers) {
+        this.compareLayers = true;
+      }
+
+      this.showCompareLayerPanel = !this.showCompareLayerPanel;
+    },
+    closeCompareLayerPanel() {
+      this.showCompareLayerPanel = false;
+    },
+    stopCompareLayers() {
+      this.showCompareLayerPanel = false;
+      this.compareLayers = false;
+    },
     refreshLayer(id) {
       this.$refs.map.refreshLayer(id);
     },
@@ -872,7 +1101,7 @@ export default {
   background: var(--color-white);
 }
 
-@media (max-width: 932px) {
+@media (max-width: 1024px) {
   .map-container {
     flex-direction: column;
   }
@@ -899,6 +1128,16 @@ export default {
   position: absolute;
   bottom: var(--padding-screen);
   left: var(--padding-screen);
+}
+
+.bottom-center-panels {
+  z-index: 1;
+  position: absolute;
+  bottom: var(--padding-screen);
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
 }
 
 .top-right-panels {
@@ -949,6 +1188,17 @@ export default {
   }
 }
 
+@media (max-width: 640px) {
+  .bottom-center-panels {
+    width: 100%;
+    padding: 0 var(--padding-screen);
+  }
+
+  .bottom-panels-padding {
+    padding-bottom: 60px;
+  }
+}
+
 .bottom-right-panels {
   z-index: 1;
   position: absolute;
@@ -975,6 +1225,8 @@ export default {
 
 @media (max-width: 576px) {
   .toggle-buttons {
+    width: 60vw;
+    flex-wrap: wrap;
     top: calc(var(--padding-screen) * 2 + var(--width-button-large));
     left: var(--padding-screen);
   }
@@ -986,6 +1238,7 @@ export default {
 
 .toggle-buttons > *:not(:last-child) {
   margin-right: 8px;
+  margin-bottom: 8px;
 }
 
 .datapanel-btn-wrapper {

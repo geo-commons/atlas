@@ -209,7 +209,7 @@ export default {
 
 <style scoped>
 .active-row {
-  background: var(--color-admin-primary-hover);
+  background: var(--color-admin-primary-active);
   box-shadow: 3px 0 0 var(--color-admin-primary) inset;
 }
 

@@ -8793,80 +8793,34 @@
     },
     {
         "model": "webservice.linkeddata",
-        "pk": 4,
+        "pk": 23,
         "fields": {
             "source": 10,
-            "title": "bag adressen",
+            "title": "Adressen (via gerelateerde data)",
             "layer_name": "topp:bag_vbo_pand",
             "url": "https://datalab.purmerend.nl/geoserver/topp/wms?",
             "source_key": "gebouwnummer",
             "target_key": "gebouwnummer",
-            "popup_attributes": "straatnaam\r\nhuisnummer\r\nhuisletter\r\nhuisnummertoevoeging\r\npostcode\r\nwoonplaats\r\ntype_object\r\ngebruiksdoel\r\nvbostatus\r\nindhoofdadres"
+            "headers": "Straatnaam\r\nHuisnummer\r\nHuisletter\r\nHuisnummertoevoeging\r\nPostcode\r\nWoonplaats",
+            "popup_attributes": "straatnaam\r\nhuisnummer\r\nhuisletter\r\nhuisnummertoevoeging\r\npostcode\r\nwoonplaats",
+            "use_detail_view": false,
+            "detail_view_fields": ""
         }
     },
     {
-        "model": "webservice.linkeddata",
-        "pk": 5,
+        "model": "webservice.template",
+        "pk": 10,
         "fields": {
-            "source": 8,
-            "title": "bag pand",
-            "layer_name": "topp:bag_pand",
-            "url": "https://datalab.purmerend.nl/geoserver/topp/wms?",
-            "source_key": "gebouwnummer",
-            "target_key": "gebouwnummer",
-            "popup_attributes": "gebouwnummer\r\nstatus\r\nbouwjaar"
-        }
-    },
-    {
-        "model": "webservice.linkeddata",
-        "pk": 6,
-        "fields": {
-            "source": 8,
-            "title": "bag ligplaats",
-            "layer_name": "topp:bag_ligplaats",
-            "url": "https://datalab.purmerend.nl/geoserver/topp/wms?",
-            "source_key": "ligplaatsnummer",
-            "target_key": "ligplaatsnummer",
-            "popup_attributes": ""
-        }
-    },
-    {
-        "model": "webservice.linkeddata",
-        "pk": 7,
-        "fields": {
-            "source": 8,
-            "title": "bag standplaats",
-            "layer_name": "topp:bag_standplaats",
-            "url": "https://datalab.purmerend.nl/geoserver/topp/wms?",
-            "source_key": "standplaatsnummer",
-            "target_key": "standplaatsnummer",
-            "popup_attributes": ""
-        }
-    },
-    {
-        "model": "webservice.linkeddata",
-        "pk": 8,
-        "fields": {
-            "source": 10,
-            "title": "bag adressen",
-            "layer_name": "topp:bag_adressen",
-            "url": "https://datalab.purmerend.nl/geoserver/topp/wms?",
-            "source_key": "standplaatsnummer",
-            "target_key": "standplaatsnummer",
-            "popup_attributes": ""
-        }
-    },
-    {
-        "model": "webservice.linkeddata",
-        "pk": 9,
-        "fields": {
-            "source": 10,
-            "title": "bag adressen",
-            "layer_name": "topp:bag_adressen",
-            "url": "https://datalab.purmerend.nl/geoserver/topp/wms?",
-            "source_key": "ligplaatsnummer",
-            "target_key": "ligplaatsnummer",
-            "popup_attributes": ""
+            "layer": 10,
+            "source": 1,
+            "endpoint": "?service=WFS&version=1.0.0&request=GetFeature&typename=topp:bag_vbo_pand&outputFormat=application%2Fjson&maxFeatures=5000&cql_filter=gebouwnummer+%3D+%27{{ gebouwnummer }}%27",
+            "method": "GET",
+            "title": "Adressen (via templates)",
+            "list": "features",
+            "headers": "Straatnaam\r\nHuisnummer\r\nHuisletter\r\nHuisnummertoevoeging\r\nPostcode\r\nWoonplaats",
+            "fields": "{{ properties.straatnaam }}\r\n{{ properties.huisnummer }}\r\n{{ properties.huisletter }}\r\n{{ properties.huisnummertoevoeging }}\r\n{{ properties.postcode }}\r\n{{ properties.woonplaats }}",
+            "template": "",
+            "ordering": 0
         }
     },
     {

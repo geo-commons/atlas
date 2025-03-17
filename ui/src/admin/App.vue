@@ -1,7 +1,13 @@
 <template>
   <div class="app">
+    <Toast position="bottom-center" />
     <AppMenu v-if="$route.meta.menu" />
-    <AdminEnvironmentIndicator v-if="config.application_environment !== 'production' && (!$route.query.admin_env_indicator || $route.query.admin_env_indicator?.toLowerCase() !== 'hide')" />
+    <AdminEnvironmentIndicator
+      v-if="
+        config.application_environment !== 'production' &&
+        (!$route.query.admin_env_indicator || $route.query.admin_env_indicator?.toLowerCase() !== 'hide')
+      "
+    />
     <admin-breadcrumb v-if="$route.meta.menu" />
     <router-view></router-view>
   </div>
@@ -30,8 +36,7 @@ export default {
 
 <style>
 @import "../assets/styles/main.css";
-
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
+@import "vue-advanced-cropper/dist/style.css";
 
 body {
   background-color: var(--color-backdrop);
@@ -152,7 +157,6 @@ input:disabled {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding: 30px 0;
 }
 
 .admin-search-wrapper {

@@ -217,9 +217,9 @@ export default {
       this.initialValues.metadata_lineage = response.metadata.lineage;
       this.initialValues.metadata_contact = response.metadata.contact;
       this.initialValues.metadata_link = response.metadata.link;
-      this.initialValues.client_style = JSON.stringify(response.client_style);
-      this.initialValues.friendly_fields = JSON.stringify(response.friendly_fields);
-      this.initialValues.templated_properties = JSON.stringify(response.templated_properties);
+      this.initialValues.client_style = JSON.stringify(response.client_style, null, 2);
+      this.initialValues.friendly_fields = JSON.stringify(response.friendly_fields, null, 2);
+      this.initialValues.templated_properties = JSON.stringify(response.templated_properties, null, 2);
       this.initialValues.linked_data = response.linked_data;
       this.initialValues.templates = response.templates;
       this.initialValues.search_properties = response.search_properties.join("\n");
@@ -623,6 +623,15 @@ export default {
               required: false,
             },
             {
+              label: "Maak laag filterbaar in legenda",
+              id: "is_filterable_in_legend",
+              name: "IsFilterableInLegend",
+              type: "checkbox",
+              required: false,
+              infoText:
+                "Hiermee zijn specifieke legenda-items te filteren. Let op: Deze functie werkt enkel met WMS, WMS-WFS en WFS bronnen die een JSON response ondersteunen.",
+            },
+            {
               label: "Toon deze velden",
               id: "display_properties",
               name: "DisplayProperties",
@@ -706,8 +715,7 @@ export default {
               label: "Stijl voor WFS / MVT laag",
               id: "client_style",
               name: "ClientStyle",
-              type: "text",
-              multiLine: true,
+              type: "json",
               required: false,
               isNested: true,
               infoText: "Stijl in GeoStyler formaat.",
@@ -716,8 +724,7 @@ export default {
               label: "Vriendelijke veldnamen",
               id: "friendly_fields",
               name: "FriendlyFields",
-              type: "text",
-              multiLine: true,
+              type: "json",
               required: false,
               isNested: true,
               infoText: "Maak veldnamen vriendelijk.",
@@ -726,8 +733,7 @@ export default {
               label: "Templatevelden",
               id: "templated_properties",
               name: "TemplatedProperties",
-              type: "text",
-              multiLine: true,
+              type: "json",
               required: false,
               isNested: true,
               infoText: "Velden die samengesteld worden vanuit een template.",

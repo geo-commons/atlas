@@ -13,6 +13,7 @@ from django_extensions.db.fields import AutoSlugField
 
 from user_management.models import AtlasGroup
 from utils.tools import is_internal
+from webservice.util import safe_float_or_null
 
 
 class LayerManager(models.Manager):
@@ -46,7 +47,7 @@ class Category(models.Model):
 
     slug = AutoSlugField('Kort kenmerk', default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
-                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.', max_length=255)
 
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
@@ -74,7 +75,7 @@ class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          editable=True,
-                         help_text='Een uniek kort kenmerk voor de bron in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de bron in Atlas.', max_length=255)
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_OWS, max_length=20,
                                    help_text='Selecteer het type bron')
@@ -224,7 +225,8 @@ class Layer(models.Model):
     # so inform them when changing.
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
-                         help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)')
+                         help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)',
+                         max_length=255)
 
     title = models.CharField('Titel', max_length=128, null=True)
 
@@ -318,6 +320,7 @@ class Layer(models.Model):
         'Haal detailinformatie als HTML op bij de bron', default=False)
     show_in_detail_panel = models.BooleanField(
         'Toon laag in detail- en dataweergave', default=True)
+    is_filterable_in_legend = models.BooleanField('Laag is filterbaar in legenda', default=False)
 
     not_in_atlas = models.BooleanField(
         'Toon laag alleen in een themakaart',
@@ -334,21 +337,21 @@ class Layer(models.Model):
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 
-    extent_min_x = models.FloatField(
-        'Bereik minimum x', blank=True, default=None, null=True,
+    extent_min_x = models.DecimalField(
+        'Bereik minimum x', blank=True, default=None, null=True, max_digits=10, decimal_places=2,
         help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.')
-    extent_min_y = models.FloatField(
-        'Bereik minimum y', blank=True, default=None, null=True)
-    extent_max_x = models.FloatField(
-        'Bereik maximum x', blank=True, default=None, null=True)
-    extent_max_y = models.FloatField(
-        'Bereik maximum y', blank=True, default=None, null=True)
+    extent_min_y = models.DecimalField(
+        'Bereik minimum y', blank=True, default=None, null=True, max_digits=10, decimal_places=2)
+    extent_max_x = models.DecimalField(
+        'Bereik maximum x', blank=True, default=None, null=True, max_digits=10, decimal_places=2)
+    extent_max_y = models.DecimalField(
+        'Bereik maximum y', blank=True, default=None, null=True, max_digits=10, decimal_places=2)
 
-    zoom_min = models.IntegerField(
-        'Zoomniveau minimum', blank=True, default=None, null=True,
+    zoom_min = models.DecimalField(
+        'Zoomniveau minimum', blank=True, default=None, null=True, max_digits=5, decimal_places=2,
         help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.')
-    zoom_max = models.IntegerField(
-        'Zoomniveau maximum', blank=True, default=None, null=True)
+    zoom_max = models.DecimalField(
+        'Zoomniveau maximum', blank=True, default=None, null=True , max_digits=5, decimal_places=2)
 
     dataset = models.ForeignKey(
         Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
@@ -461,8 +464,8 @@ source: new ol.source.TileWMS({{
             'projection': self.projection,
             'extent': self.extent,
             'format': self.format,
-            'zoom_min': self.zoom_min,
-            'zoom_max': self.zoom_max,
+            'zoom_min': safe_float_or_null(self.zoom_min),
+            'zoom_max': safe_float_or_null(self.zoom_max),
             'source': {
                 'authenticate': self.layer_source.authenticate if self.layer_source else False
             },
@@ -482,7 +485,8 @@ source: new ol.source.TileWMS({{
             },
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
             'templates': [item.to_dict() for item in self.templates.all()],
-            'legend_url': self.legend_url
+            'legend_url': self.legend_url,
+            'is_filterable_in_legend': self.is_filterable_in_legend
         }
 
     def is_accessible_by(self, user, request):
@@ -613,7 +617,7 @@ class Selection(models.Model):
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.', max_length=255)
 
     layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
 
@@ -674,7 +678,7 @@ class Map(models.Model):
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaart in Atlas.')
+                         help_text='Een uniek kort kenmerk voor de kaart in Atlas.', max_length=255)
 
     old_layers = models.ManyToManyField(
         Layer, verbose_name='Lagen', blank=True, related_name='old_layers')
@@ -701,6 +705,14 @@ class Map(models.Model):
         'Beschrijving van de kaart', null=True,
         help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
 
+    about = models.TextField(
+        'Beschrijving van de kaart voor de zijbalk', null=True,
+        help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+
+    about_title = models.CharField(
+        'Titel van de zijbalk', null=True, max_length=128,
+        help_text="De titel van de zijbalk die gebruikt wordt in de zijbalkinformatie", blank=True)
+
     published = models.BooleanField('Gepubliceerd',
                                     help_text="Markeer dit veld als Gepubliceerd om de kaart te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de kaart te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.",
                                     default=False)
@@ -725,7 +737,10 @@ class Map(models.Model):
             'slug': self.slug,
             'layers': [layer.to_dict() for layer in self.map_layers.all()],
             'features': self.features,
-            'settings': self.settings
+            'settings': self.settings,
+            'about': self.about,
+            'about_title': self.about_title,
+            'thumbnail': self.thumbnail.url if self.thumbnail else None
         }
 
 

@@ -16,7 +16,7 @@ import MapCreateUpdate from "./admin/pages/MapCreateUpdate";
 import SourceList from "./admin/pages/SourceList";
 import SourceCreateUpdate from "./admin/pages/SourceCreateUpdate";
 import UserList from "./admin/pages/UserList";
-import NotFound from "./admin/pages/NotFound";
+import AdminNotFound from "./admin/AdminNotFound.vue";
 import detectKeyboard from "@/utils/detect-keyboard";
 import CategoryList from "@/admin/pages/CategoryList.vue";
 import CategoryCreateUpdate from "@/admin/pages/CategoryCreateUpdate.vue";
@@ -44,8 +44,7 @@ import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
-import { ConfirmationService } from "primevue";
-import { ToastService } from "primevue";
+import { ConfirmationService, ToastService } from "primevue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -59,6 +58,19 @@ defineRule("email", (value) => {
     return "Voer een geldig e-mailadres in";
   }
   return true;
+});
+
+defineRule("json", (value) => {
+  if (typeof value !== "string") {
+    return "Ongeldige JSON, de ingevoerde waarde is geen string";
+  }
+
+  try {
+    JSON.parse(value);
+    return true;
+  } catch {
+    return "Ongeldige JSON, controleer of de ingevoerde waarde correct is.";
+  }
 });
 
 defineRule("max", (value, [max]) => {
@@ -225,10 +237,13 @@ const routes = [
         position: JSON.parse(decodeURIComponent(route.query.position)),
         settings: JSON.parse(decodeURIComponent(route.query.settings)),
         user: JSON.parse(decodeURIComponent(route.query.user)),
+        about: route.query.about ? JSON.parse(decodeURIComponent(route.query.about)) : null,
+        aboutTitle: route.query.aboutTitle ? JSON.parse(decodeURIComponent(route.query.aboutTitle)) : null,
+        thumbnail: route.query.thumbnail ? JSON.parse(decodeURIComponent(route.query.thumbnail)) : null,
       };
     },
   },
-  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
+  { path: "/:pathMatch(.*)*", name: "not-found", component: AdminNotFound },
 ];
 
 const router = createRouter({

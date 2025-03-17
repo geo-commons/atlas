@@ -221,6 +221,7 @@ export default {
       this.$emit("set-position", {
         ...this.position,
         marker: center,
+        zoom: 19,
       });
 
       this.$emit("on-fit", geometry.getExtent());

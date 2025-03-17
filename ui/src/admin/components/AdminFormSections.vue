@@ -1,6 +1,13 @@
 <template>
   <div v-if="loading">laden...</div>
-  <vee-form v-else v-slot="{ values }" ref="formRef" :initial-values="currentValues" @submit="save">
+  <vee-form
+    v-else
+    v-slot="{ values }"
+    ref="formRef"
+    :initial-values="currentValues"
+    @submit="save"
+    @invalid-submit="invalidSubmit"
+  >
     <div :class="{ 'create-view-container': createView || compactLayout }">
       <p v-if="unexpectedError" class="warning-text">{{ unexpectedError }}</p>
       <div v-for="section in sections" :key="section.label">
@@ -217,8 +224,34 @@
                   :disabled="question.disabled"
                   class="width"
                 />
+                <vee-field
+                  v-else-if="question.type === 'json'"
+                  v-model="currentValues[question.id]"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                  :disabled="question.disabled"
+                  class="width"
+                >
+                  <CodeMirror
+                    :id="question.id"
+                    v-model="currentValues[question.id]"
+                    :lang="json()"
+                    :linter="jsonParseLinter()"
+                    :extensions="[clouds]"
+                    basic
+                    gutter
+                    :wrap="true"
+                    class="!tw-text-sm"
+                  ></CodeMirror>
+                </vee-field>
                 <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id">
-                  <InputText v-model="currentValues[question.id]" class="!tw-mb-2" placeholder="Laagnaam" type="text" />
+                  <InputText
+                    :id="question.id"
+                    v-model="currentValues[question.id]"
+                    class="!tw-mb-2"
+                    placeholder="Laagnaam"
+                    type="text"
+                  />
                   <span>Of selecteer een laagnaam</span>
                   <layer-field
                     :model-value="currentValues[question.id]"
@@ -307,6 +340,9 @@ import Cookies from "js-cookie";
 import LayerField from "@/admin/components/LayerField.vue";
 import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
 import ThemeField from "@/admin/components/ThemeField.vue";
+import { json, jsonParseLinter } from "@codemirror/lang-json";
+import CodeMirror from "vue-codemirror6";
+import { clouds } from "thememirror";
 
 export default {
   name: "AdminFormSections",
@@ -315,6 +351,7 @@ export default {
     ThemeField,
     LayerField,
     CloseIcon,
+    CodeMirror,
     AdminFormInfoText,
     VeeForm,
     VeeField,
@@ -350,6 +387,7 @@ export default {
       continueEditing: false,
       imageFieldValues: {},
       loading: false,
+      clouds: clouds,
     };
   },
   watch: {
@@ -371,6 +409,8 @@ export default {
   },
   methods: {
     formatDateValue,
+    json,
+    jsonParseLinter,
     getRules(question) {
       let rules = [];
 
@@ -382,6 +422,9 @@ export default {
       }
       if (question.maxLength) {
         rules.push(`max:${question.maxLength}`);
+      }
+      if (question.type === "json") {
+        rules.push("json");
       }
 
       return rules.join("|");
@@ -443,13 +486,17 @@ export default {
         this.unexpectedError = "Er is een onverwachte fout opgetreden, probeer het later nog eens.";
       }
     },
+    invalidSubmit() {
+      const errors = this.$refs.formRef.getErrors();
+      const firstErrorKey = Object.keys(errors)[0];
+      this.scrollToElementById(firstErrorKey);
+    },
     scrollToElementById(elementRefId) {
-      const errorRef = this.$refs.form.$children.find((child) => child.id === elementRefId);
-      const errorElement = errorRef?.$el;
+      const errorElement = document.getElementById(elementRefId);
 
       if (errorElement) {
         this.$nextTick(() => {
-          errorElement.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+          errorElement.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
           errorElement.focus({ preventScroll: true });
         });
       }

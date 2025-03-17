@@ -30,23 +30,10 @@
     </div>
 
     <div class="admin-btn-wrapper">
-      <button
-        class="button"
-        :class="importSuccessful ? '__primary_admin' : '__secondary_admin'"
-        type="button"
-        @click="closeFormModal"
-      >
+      <Button severity="secondary" outlined type="button" @click="closeFormModal">
         {{ importSuccessful ? "Sluit" : "Annuleer" }}
-      </button>
-      <button
-        v-if="!importSuccessful"
-        :disabled="!uploadedFile"
-        class="button __primary_admin"
-        type="button"
-        @click="importFile"
-      >
-        Importeer
-      </button>
+      </Button>
+      <Button v-if="!importSuccessful" :disabled="!uploadedFile" type="button" @click="importFile"> Importeer </Button>
     </div>
   </div>
 </template>
