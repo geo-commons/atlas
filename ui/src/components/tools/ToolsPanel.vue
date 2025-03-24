@@ -61,6 +61,7 @@ import {
 } from "@/components/constants/defaults";
 import { mapStores } from "pinia";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
+import { EEditLayerMode } from "@/types/map";
 
 export default {
   name: "ToolsPanel",
@@ -121,6 +122,13 @@ export default {
       handler(value) {
         if (!value) {
           this.editLayerStore.resetFeature();
+        }
+      },
+    },
+    "editLayerStore.editLayerMode": {
+      handler(value) {
+        if (value === EEditLayerMode.EDIT) {
+          this.showEditFeatureMenu = true;
         }
       },
     },

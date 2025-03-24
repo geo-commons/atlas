@@ -124,6 +124,8 @@
       :position="position"
       :show-panel="!showDataPanel && showInfoPanel && editLayerStore.editLayerMode === ''"
       :user="user"
+      :config="config"
+      :features="features"
       @set-position="setPosition"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
       @expanded-info-panel="toggleInfoPanel"

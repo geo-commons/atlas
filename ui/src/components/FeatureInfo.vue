@@ -30,6 +30,24 @@
 
       <div class="tw-flex tw-px-5 tw-py-2 tw-gap-3">
         <Button
+          v-if="
+            config &&
+            config.features.edit_layer_features &&
+            atlasFeatures.edit_layer_features &&
+            user &&
+            (layer.source_type === 'WMS_WFS' || layer.source_type === 'WFS')
+          "
+          outlined
+          severity="secondary"
+          class="!tw-text-sm !tw-font-medium"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+          @click="toggleEditLayerMode(feature)"
+        >
+          Bewerk
+          <EditIcon />
+        </Button>
+        <Button
           outlined
           severity="secondary"
           class="!tw-text-sm !tw-font-medium"
@@ -89,12 +107,17 @@ import { useGlobalStore } from "@/stores";
 import { formatRawString } from "@/utils/string-helpers";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import CopyIcon from "@/assets/icons/copy-icon.svg";
+import EditIcon from "@/assets/icons/edit-icon.svg";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
+import { EEditLayerMode } from "@/types/map";
+import GeoJSON from "ol/format/GeoJSON";
 
 nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "FeatureInfo",
   components: {
+    EditIcon,
     MarkerIcon,
     CopyIcon,
     TableList,
@@ -107,9 +130,11 @@ export default {
   props: {
     layer: Object,
     position: Object,
+    config: Object,
+    atlasFeatures: Object,
     isOpen: Boolean,
   },
-  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature"],
+  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature", "toggle-edit-feature-mode"],
   data() {
     return {
       features: [],
@@ -118,6 +143,7 @@ export default {
     };
   },
   computed: {
+    ...mapStores(useEditLayerStore),
     ...mapStores(useGlobalStore),
     ...mapState(useGlobalStore, ["user"]),
     featureInfoTitle() {
@@ -275,6 +301,22 @@ export default {
     },
     checkCopyStatus(featureId) {
       return this.onCopy[featureId];
+    },
+    toggleEditLayerMode(feature) {
+      const geoFeature = new GeoJSON().readFeature(feature);
+
+      if (this.editLayerStore.editLayerMode !== EEditLayerMode.EDIT) {
+        this.editLayerStore.setEditLayerMode(EEditLayerMode.EDIT);
+        this.editLayerStore.setHighlightedFeatureAndLayer({
+          feature: geoFeature,
+          layer: this.layer,
+        });
+
+        return;
+      }
+
+      this.editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+      this.editLayerStore.setHighlightedFeatureAndLayer(null);
     },
   },
 };
