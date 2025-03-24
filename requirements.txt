@@ -13,10 +13,9 @@ mistune==3.0.2
 mozilla-django-oidc==4.0.1
 Pillow==11.1.0
 django-vite==3.0.4
-prospector==1.12.1
+ruff==0.3.4
 psycopg2-binary==2.9.9
-pycodestyle==2.11.1
-pylint==3.3.1
+pylint==3.3.6
 requests==2.31.0
 uwsgi==2.0.23
 mkdocs-material==9.5.31

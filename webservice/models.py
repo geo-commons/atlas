@@ -320,7 +320,8 @@ class Layer(models.Model):
         'Haal detailinformatie als HTML op bij de bron', default=False)
     show_in_detail_panel = models.BooleanField(
         'Toon laag in detail- en dataweergave', default=True)
-    is_filterable_in_legend = models.BooleanField('Laag is filterbaar in legenda', default=False)
+    is_filterable_in_legend = models.BooleanField(
+        'Laag is filterbaar in legenda', default=False)
 
     not_in_atlas = models.BooleanField(
         'Toon laag alleen in een themakaart',
@@ -351,7 +352,7 @@ class Layer(models.Model):
         'Zoomniveau minimum', blank=True, default=None, null=True, max_digits=5, decimal_places=2,
         help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.')
     zoom_max = models.DecimalField(
-        'Zoomniveau maximum', blank=True, default=None, null=True , max_digits=5, decimal_places=2)
+        'Zoomniveau maximum', blank=True, default=None, null=True, max_digits=5, decimal_places=2)
 
     dataset = models.ForeignKey(
         Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
@@ -747,7 +748,7 @@ class Map(models.Model):
 def validate_file_extension(value):
     ext = path.splitext(value.name)[1]  # [0] returns path+filename
     valid_extensions = ['.svg']
-    if not ext.lower() in valid_extensions:
+    if ext.lower() not in valid_extensions:
         raise ValidationError('Unsupported file extension.')
 
 
