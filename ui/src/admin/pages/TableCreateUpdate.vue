@@ -159,6 +159,27 @@ export default {
               required: false,
             },
             {
+              label: "Veldnaam van pagina",
+              id: "page_attribute",
+              name: "PageAttribute",
+              type: "text",
+              required: false,
+            },
+            {
+              label: "Veldnaam van items per pagina",
+              id: "items_per_page_attribute",
+              name: "ItemsPerPageAttribute",
+              type: "text",
+              required: false,
+            },
+            {
+              label: "Veldnaam van totaal aantal items",
+              id: "total_items_page_attribute",
+              name: "TotalItemsPageAttribute",
+              type: "text",
+              required: false,
+            },
+            {
               label: "Template van foutmelding",
               id: "error_template",
               name: "ErrorTemplate",
