@@ -1,5 +1,6 @@
 from import_export import resources, fields, widgets
-from .models import Category, Source, Layer, Selection, Map, Theme, Viewer, Dataset
+from .models import Category, Source, Layer, Selection, Map, Theme, Viewer, Dataset, MapLayer
+from .widgets import MapLayerManyToManyWidget
 
 
 class CategoryResource(resources.ModelResource):
@@ -41,6 +42,12 @@ class LayerResource(resources.ModelResource):
         attribute='layer_type',
         widget=widgets.ForeignKeyWidget(Category, field='slug'))
 
+    dataset = fields.Field(
+        column_name='dataset',
+        attribute='dataset',
+        widget=widgets.ForeignKeyWidget(Dataset, field='slug')
+    )
+
     class Meta:
         model = Layer
         exclude = ('id', 'users', 'atlas_groups')
@@ -70,7 +77,15 @@ class MapResource(resources.ModelResource):
     layers = fields.Field(
         column_name='layers',
         attribute='layers',
-        widget=widgets.ManyToManyWidget(Layer, field='slug', separator='|'))
+        widget=MapLayerManyToManyWidget(
+            model=Layer,
+            through_model=MapLayer,
+            map_field='map',
+            layer_field='layer',
+            field='slug',
+            separator='|'
+        )
+    )
 
     class Meta:
         model = Map
