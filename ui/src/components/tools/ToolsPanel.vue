@@ -111,7 +111,7 @@ export default {
         this.showDrawMenu = false;
       }
 
-      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE") {
+      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE" || this.tool === "SELECT_FEATURE") {
         this.resetAreaSelect();
         return;
       }
