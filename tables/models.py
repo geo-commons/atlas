@@ -40,6 +40,13 @@ class Table(models.Model):
     list_query = models.CharField('Veldnaam van lijst',
                                   max_length=128, blank=True, null=True)
 
+    page_attribute = models.CharField('Veldnaam van pagina',
+                                  max_length=128, blank=True, null=True)
+    items_per_page_attribute = models.CharField('Veldnaam van items per pagina',
+                                  max_length=128, blank=True, null=True)
+    total_items_page_attribute = models.CharField('Veldnaam van totaal aantal items',
+                                  max_length=128, blank=True, null=True)
+
     error_template = models.CharField(
         'Template van foutmelding', max_length=128, blank=True, null=True)
 
@@ -95,6 +102,9 @@ class Table(models.Model):
             'endpoint': self.endpoint,
             'method': self.method,
             'list_query': self.list_query,
+            'page_attribute': self.page_attribute,
+            'items_per_page_attribute': self.items_per_page_attribute,
+            'total_items_page_attribute': self.total_items_page_attribute,
             'list_headings': self.list_headings.split('\r\n') if self.list_headings else [],
             'list_fields': self.list_fields.split('\r\n') if self.list_fields else [],
             'search_fields': self.search_fields,
