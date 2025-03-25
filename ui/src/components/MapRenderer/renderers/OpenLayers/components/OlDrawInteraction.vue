@@ -17,29 +17,41 @@ export default {
     fontSize: Number,
   },
   created() {
-    const onDrawStart = () => {
-      this.$emit("draw-start");
-    };
+    if (this.tool !== "SELECT_FEATURE") {
+      const onDrawStart = () => {
+        this.$emit("draw-start");
+      };
 
-    const onDrawEnd = (sketch) => {
-      const geometry = sketch.getGeometry();
-      if (this.tool === "SELECT_CIRCLE") {
-        sketch.setGeometry(fromCircle(geometry));
-      }
+      const onDrawEnd = (sketch) => {
+        const geometry = sketch.getGeometry();
+        if (this.tool === "SELECT_CIRCLE") {
+          sketch.setGeometry(fromCircle(geometry));
+        }
 
-      this.$emit("draw-end", { tool: this.tool, sketch });
+        this.$emit("draw-end", { tool: this.tool, sketch });
 
-      if (this.tool === "SELECT_CIRCLE" || this.tool === "SELECT_AREA") {
-        this.$emit("on-fit", geometry.getExtent());
-      }
-    };
+        if (this.tool === "SELECT_CIRCLE" || this.tool === "SELECT_AREA") {
+          this.$emit("on-fit", geometry.getExtent());
+        }
+      };
 
-    this.draw = constructDraw(this.tool, this.map, onDrawStart, onDrawEnd, this.color, this.strokeWidth, this.fontSize);
-    this.map.addInteraction(this.draw);
+      this.draw = constructDraw(
+        this.tool,
+        this.map,
+        onDrawStart,
+        onDrawEnd,
+        this.color,
+        this.strokeWidth,
+        this.fontSize,
+      );
+      this.map.addInteraction(this.draw);
+    }
   },
   unmounted() {
-    this.map.removeOverlay(this.draw.measureTooltip);
-    this.map.removeInteraction(this.draw);
+    if (this.tool !== "SELECT_FEATURE") {
+      this.map.removeOverlay(this.draw.measureTooltip);
+      this.map.removeInteraction(this.draw);
+    }
   },
 };
 </script>

@@ -259,12 +259,11 @@ export default {
       }
 
       if (this.selectedArea) {
-        filters.push(
-          `INTERSECTS(geom,POLYGON((${this.selectedArea
-            .getCoordinates()[0]
-            .map((c) => `${c[0]} ${c[1]}`)
-            .join(",")})))`,
-        );
+        const geometry = this.getFilterGeometry();
+
+        if (geometry) {
+          filters.push(`INTERSECTS(geom,${geometry})`);
+        }
       }
 
       if (filters.length > 0) {
@@ -283,8 +282,18 @@ export default {
 
       try {
         const url = new URL(this.layer.url);
-        url.search = params.toString();
-        const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
+
+        const fetchParams = getFetchParameters(this.layer, this.user);
+
+        const result = await fetch(url.toString(), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            ...fetchParams.headers, // Include Authorization if present
+          },
+          body: params.toString(),
+        });
+
         const data = await result.json();
 
         this.featureCollection = data;
@@ -409,12 +418,11 @@ export default {
       }
 
       if (this.selectedArea) {
-        filters.push(
-          `INTERSECTS(geom,POLYGON((${this.selectedArea
-            .getCoordinates()[0]
-            .map((c) => `${c[0]} ${c[1]}`)
-            .join(",")})))`,
-        );
+        const geometry = this.getFilterGeometry();
+
+        if (geometry) {
+          filters.push(`INTERSECTS(geom,${geometry})`);
+        }
       }
 
       if (filters.length > 0) {
@@ -433,8 +441,18 @@ export default {
 
       try {
         const url = new URL(this.layer.url);
-        url.search = params.toString();
-        const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
+
+        const fetchParams = getFetchParameters(this.layer, this.user);
+
+        const result = await fetch(url.toString(), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            ...fetchParams.headers, // Include Authorization if present
+          },
+          body: params.toString(),
+        });
+
         const data = await result.json();
 
         // this.featureCollection = data;
@@ -624,6 +642,21 @@ export default {
     },
     updatePageState(updatedPageState) {
       this.pageState = updatedPageState;
+    },
+    getFilterGeometry() {
+      const coordinates = this.selectedArea.getCoordinates();
+
+      let geometry;
+
+      if (this.selectedArea.getType() === "Polygon") {
+        geometry = `POLYGON((${coordinates[0].map((c) => `${c[0]} ${c[1]}`).join(",")}))`;
+      } else if (this.selectedArea.getType() === "MultiPolygon") {
+        geometry = `MULTIPOLYGON(${coordinates
+          .map((polygon) => `((${polygon[0].map((c) => `${c[0]} ${c[1]}`).join(",")}))`)
+          .join(",")})`;
+      }
+
+      return geometry;
     },
   },
 };

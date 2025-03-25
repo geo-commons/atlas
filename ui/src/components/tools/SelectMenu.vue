@@ -1,9 +1,11 @@
 <template>
-  <div class="select-menu tools-panel__button-container ">
+  <div class="select-menu tools-panel__button-container">
     <button
       v-tippy="{ placement: 'bottom' }"
       class="tools-panel__button"
-      :class="{ 'tools-panel__button--active': tool === 'SELECT_AREA' || tool === 'SELECT_CIRCLE' }"
+      :class="{
+        'tools-panel__button--active': tool === 'SELECT_AREA' || tool === 'SELECT_CIRCLE' || tool === 'SELECT_FEATURE',
+      }"
       content="Selecteer gebied"
       aria-label="Selecteer gebied"
       @click="toggleSelectArea"
