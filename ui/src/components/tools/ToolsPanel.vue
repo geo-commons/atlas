@@ -343,11 +343,14 @@ export default {
 
 .tools-panel__draw-menu {
   position: relative;
+
+  .tools-panel__button {
+    border-radius: 0px !important;
+  }
 }
 
 .tools-panel__button {
   border-right: 1px solid var(--color-grey-50);
-  border-radius: 0 !important;
 }
 
 .tools-panel__draw-options-menu {

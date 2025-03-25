@@ -20,9 +20,9 @@
     </div>
 
     <template #footer>
-      <div class="tw-flex tw-items-center tw-gap-2 tw-p-4">
+      <div class="tw-flex tw-items-center tw-gap-2">
         <Button
-          label="Verwijderen"
+          label="Verwijder object"
           icon="pi pi-times"
           class="tw-flex-auto"
           outlined
@@ -35,22 +35,21 @@
   </Drawer>
 
   <SaveModal
-    message="Wanneer u doorgaat met opslaan, wordt het door u bewerkte object, inclusief alle bijbehorende eigenschappen,
-      opgeslagen."
+    :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
     :visible="showSaveModal"
     :on-cancel="cancelSaveModal"
     :on-save="save"
   />
 
   <DeleteModal
-    message="Wanneer u verwijderd, gaan alle onopgeslagen wijzigingen verloren."
+    :message="`Wanneer u verwijdert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
     :visible="showDeleteModal"
     :on-cancel="cancelDeleteModal"
     :on-delete="onDelete"
   />
 
   <CancelModal
-    message="Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren."
+    :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
     :visible="showCancelModal"
     :on-cancel="cancelCancelModal"
     :on-proceed="proceed"

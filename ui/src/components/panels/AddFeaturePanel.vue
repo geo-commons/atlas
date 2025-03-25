@@ -44,7 +44,7 @@
     </div>
 
     <template #footer>
-      <div class="tw-flex tw-items-center tw-gap-2 tw-p-4">
+      <div class="tw-flex tw-items-center tw-gap-2">
         <Button
           label="Annuleren"
           icon="pi pi-times"
@@ -64,16 +64,15 @@
   </Drawer>
 
   <SaveModal
-    message="Wanneer u doorgaat met opslaan, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen,
-      opgeslagen binnen de geselecteerde laag in GeoServer."
+    :message="`Wanneer u doorgaat met opslaan, worden alle eigenschappen en uw getekende object opgeslagen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer.`"
     :visible="showSaveModal"
     :on-cancel="cancelSaveModal"
     :on-save="save"
   />
 
   <CancelModal
-    message="Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
-      binnen de geselecteerde laag in GeoServer. Alle onopgeslagen wijzigingen gaan verloren."
+    :message="`Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
+      binnen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.`"
     :visible="showCancelModal"
     :on-cancel="cancelCancelModal"
     :on-proceed="proceed"

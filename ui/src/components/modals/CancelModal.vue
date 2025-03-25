@@ -11,8 +11,8 @@
       {{ message }}
     </p>
     <div class="tw-flex tw-items-center tw-gap-2">
-      <Button label="Doorgaan" class="tw-flex-auto" outlined @click="onCancel"></Button>
-      <Button label="Wijzigingen annuleren" icon="pi pi-times" class="tw-flex-auto" @click="onProceed"></Button>
+      <Button label="Verder met bewerken" class="tw-flex-auto" outlined @click="onCancel"></Button>
+      <Button label="Bewerken sluiten" icon="pi pi-times" class="tw-flex-auto" @click="onProceed"></Button>
     </div>
   </Dialog>
 </template>
