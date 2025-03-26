@@ -53,7 +53,7 @@ interface LayerCrudFormProps {
 const { initialValues = {}, layerProperties, handleSubmit } = defineProps<LayerCrudFormProps>();
 
 // Refs
-const form = ref(null);
+const form = ref<InstanceType<typeof VeeForm> | null>(null);
 
 // Expose
 defineExpose({

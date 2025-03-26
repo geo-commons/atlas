@@ -3,9 +3,6 @@
     :visible="showEditFeaturePanel"
     header="Object bewerken"
     :dismissable="false"
-    :pt="{
-      mask: '!tw-bg-black/0',
-    }"
     @update:visible="toggleShowCancelModal"
   >
     <div class="tw-flex tw-flex-col tw-gap-4">
@@ -22,14 +19,13 @@
     <template #footer>
       <div class="tw-flex tw-items-center tw-gap-2">
         <Button
-          label="Verwijder object"
+          label="Annuleren"
           icon="pi pi-times"
           class="tw-flex-auto"
           outlined
-          severity="danger"
-          @click="toggleShowDeleteModal"
+          @click="toggleShowCancelModal"
         ></Button>
-        <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="submitFormManually"></Button>
+        <SplitButton label="Opslaan" :model="splitButtonItems" @click="submitFormManually"></SplitButton>
       </div>
     </template>
   </Drawer>
@@ -62,7 +58,7 @@ import { ref, unref, watch } from "vue";
 import { IFeatureProperties, ILayerProperties } from "@/types/layer";
 import { IUser } from "@/types/user";
 import { useToast } from "primevue";
-import { EEditLayerMode } from "@/types/map";
+import { EditLayerMode } from "@/types/map";
 import { defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import {
@@ -110,7 +106,7 @@ const form = ref(null);
 watch(
   () => editLayerStore.highlightedFeatureAndLayer?.feature,
   (value) => {
-    if (value && !showEditFeaturePanel.value && editLayerStore.editLayerMode === EEditLayerMode.EDIT) {
+    if (value && !showEditFeaturePanel.value && editLayerStore.editLayerMode === EditLayerMode.EDIT) {
       showEditFeaturePanel.value = true;
       featureValues.value = value.getProperties();
     }
@@ -159,6 +155,15 @@ watch(
 );
 
 // Form logic
+const splitButtonItems = [
+  {
+    label: "Verwijder object",
+    command: () => {
+      toggleShowDeleteModal();
+    },
+  },
+];
+
 defineRule("required", (value: string) => {
   if (!required(value)) {
     return "Dit veld is verplicht";
@@ -182,9 +187,9 @@ const submitFormManually = () => {
 const handleDrawerClose = (value: boolean) => {
   showEditFeaturePanel.value = value;
   geoServerError.value = null;
-  // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
+  // TODO: Drawer is not closing on escape, only modal is now closing on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
-  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
   editLayerStore.setSelectedLayer(null);
 };
 

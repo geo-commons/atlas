@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
-import { EEditLayerMode } from "@/types/map";
+import { EditLayerMode } from "@/types/map";
 import { ILayer } from "@/types/layer";
 import Feature from "ol/Feature";
 
 export interface IEditLayerStore {
-  editLayerMode: EEditLayerMode;
+  editLayerMode: EditLayerMode;
   feature: any;
   visibleLayers: ILayer[];
   selectedLayer: ILayer | null;
@@ -16,14 +16,14 @@ export interface IEditLayerStore {
 
 export const useEditLayerStore = defineStore("editLayer", {
   state: (): IEditLayerStore => ({
-    editLayerMode: EEditLayerMode.NONE,
+    editLayerMode: EditLayerMode.NONE,
     feature: null,
     selectedLayer: null,
     visibleLayers: [],
     highlightedFeatureAndLayer: null,
   }),
   actions: {
-    setEditLayerMode(editLayerMode: EEditLayerMode) {
+    setEditLayerMode(editLayerMode: EditLayerMode) {
       this.editLayerMode = editLayerMode;
     },
     setFeature(feature: any) {

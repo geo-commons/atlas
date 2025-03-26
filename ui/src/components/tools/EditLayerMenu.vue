@@ -22,7 +22,7 @@
               aria-label="Object toevoegen"
               class="tools-panel__button"
               :class="{
-                'tools-panel__button--active': editLayerStore.editLayerMode === EEditLayerMode.ADD,
+                'tools-panel__button--active': editLayerStore.editLayerMode === EditLayerMode.ADD,
               }"
               content="Object toevoegen"
               @click="() => toggleAddEditFeatureMode()"
@@ -36,7 +36,7 @@
               aria-label="Object bewerken"
               class="tools-panel__button"
               :class="{
-                'tools-panel__button--active': editLayerStore.editLayerMode === EEditLayerMode.EDIT,
+                'tools-panel__button--active': editLayerStore.editLayerMode === EditLayerMode.EDIT,
               }"
               content="Object bewerken"
               @click="() => toggleEditFeatureMode()"
@@ -51,9 +51,9 @@
               class="tools-panel__button"
               :class="{
                 'tools-panel__button--active':
-                  tool === 'EDIT_POINT' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
+                  tool === 'EDIT_POINT' && editLayerStore.editLayerMode === EditLayerMode.ADD,
               }"
-              :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
+              :disabled="editLayerStore.editLayerMode !== EditLayerMode.ADD || editLayerStore.feature"
               content="Punt"
               @click="() => setTool('EDIT_POINT')"
             >
@@ -67,9 +67,9 @@
               class="tools-panel__button"
               :class="{
                 'tools-panel__button--active':
-                  tool === 'EDIT_LINE' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
+                  tool === 'EDIT_LINE' && editLayerStore.editLayerMode === EditLayerMode.ADD,
               }"
-              :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
+              :disabled="editLayerStore.editLayerMode !== EditLayerMode.ADD || editLayerStore.feature"
               content="Lijn"
               @click="() => setTool('EDIT_LINE')"
             >
@@ -102,9 +102,9 @@
               class="tools-panel__button"
               :class="{
                 'tools-panel__button--active':
-                  tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EEditLayerMode.ADD,
+                  tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EditLayerMode.ADD,
               }"
-              :disabled="editLayerStore.editLayerMode !== EEditLayerMode.ADD || editLayerStore.feature"
+              :disabled="editLayerStore.editLayerMode !== EditLayerMode.ADD || editLayerStore.feature"
               content="Vlak"
               @click="() => setTool('EDIT_POLYGON')"
             >
@@ -145,7 +145,7 @@ import DotIcon from "@/assets/icons/dot-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import { EEditLayerMode } from "@/types/map";
+import { EditLayerMode } from "@/types/map";
 
 // Props
 interface EditLayerMenuProps {
@@ -168,34 +168,34 @@ const emitKeyDown = () => {
 };
 
 const toggleEditLayerMenu = () => {
-  if (editLayerStore.editLayerMode !== EEditLayerMode.NONE) {
-    editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  if (editLayerStore.editLayerMode !== EditLayerMode.NONE) {
+    editLayerStore.setEditLayerMode(EditLayerMode.NONE);
   }
 
   toggleEditLayer();
 };
 
 const toggleAddEditFeatureMode = () => {
-  if (editLayerStore.editLayerMode !== EEditLayerMode.ADD) {
-    editLayerStore.setEditLayerMode(EEditLayerMode.ADD);
+  if (editLayerStore.editLayerMode !== EditLayerMode.ADD) {
+    editLayerStore.setEditLayerMode(EditLayerMode.ADD);
     setTool("");
 
     return;
   }
 
-  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
   setTool("");
 };
 
 const toggleEditFeatureMode = () => {
-  if (editLayerStore.editLayerMode !== EEditLayerMode.EDIT) {
-    editLayerStore.setEditLayerMode(EEditLayerMode.EDIT);
+  if (editLayerStore.editLayerMode !== EditLayerMode.EDIT) {
+    editLayerStore.setEditLayerMode(EditLayerMode.EDIT);
     setTool("");
 
     return;
   }
 
-  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
   setTool("");
 };
 </script>

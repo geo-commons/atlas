@@ -1,5 +1,5 @@
 <template>
-  <Toast />
+  <Toast position="bottom-center" />
   <div
     id="map-container"
     ref="mapContainer"

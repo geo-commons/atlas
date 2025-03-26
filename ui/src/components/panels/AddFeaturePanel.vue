@@ -3,9 +3,6 @@
     :visible="showAddFeaturePanel"
     header="Object toevoegen"
     :dismissable="false"
-    :pt="{
-      mask: '!tw-bg-black/0',
-    }"
     @update:visible="toggleShowCancelModal"
   >
     <div v-if="editLayerStore.visibleLayers.length > 1" class="tw-flex tw-flex-col tw-gap-2">
@@ -89,7 +86,7 @@ import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
-import { EEditLayerMode } from "@/types/map";
+import { EditLayerMode } from "@/types/map";
 import SaveModal from "@/components/modals/SaveModal.vue";
 import CancelModal from "@/components/modals/CancelModal.vue";
 import LayerCrudForm from "@/components/panels/parts/layer-crud-form.vue";
@@ -232,10 +229,10 @@ const submitFormManually = () => {
 const handleDrawerClose = (value: boolean) => {
   showAddFeaturePanel.value = value;
   geoServerError.value = null;
-  // TODO: Don't close on escape, only close modal on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
+  // TODO: Drawer is not closing on escape, only modal is now closing on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
   editLayerStore.resetFeature();
   editLayerStore.setSelectedLayer(null);
-  editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
 
   emit("set-selected-area", null);
   emit("set-tool", "");

@@ -109,7 +109,7 @@ import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import CopyIcon from "@/assets/icons/copy-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import { EEditLayerMode } from "@/types/map";
+import { EditLayerMode } from "@/types/map";
 import GeoJSON from "ol/format/GeoJSON";
 
 nunjucks.configure({ autoescaping: true });
@@ -305,8 +305,8 @@ export default {
     toggleEditLayerMode(feature) {
       const geoFeature = new GeoJSON().readFeature(feature);
 
-      if (this.editLayerStore.editLayerMode !== EEditLayerMode.EDIT) {
-        this.editLayerStore.setEditLayerMode(EEditLayerMode.EDIT);
+      if (this.editLayerStore.editLayerMode !== EditLayerMode.EDIT) {
+        this.editLayerStore.setEditLayerMode(EditLayerMode.EDIT);
         this.editLayerStore.setHighlightedFeatureAndLayer({
           feature: geoFeature,
           layer: this.layer,
@@ -315,7 +315,7 @@ export default {
         return;
       }
 
-      this.editLayerStore.setEditLayerMode(EEditLayerMode.NONE);
+      this.editLayerStore.setEditLayerMode(EditLayerMode.NONE);
       this.editLayerStore.setHighlightedFeatureAndLayer(null);
     },
   },

@@ -1,4 +1,4 @@
-export enum EEditLayerMode {
+export enum EditLayerMode {
   ADD = "ADD",
   EDIT = "EDIT",
   NONE = "",
