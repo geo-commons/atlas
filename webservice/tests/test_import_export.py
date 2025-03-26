@@ -92,5 +92,5 @@ class ImportExportMapTest(TestCase):
 
     def test_render_method_with_empty_value(self):
         """Test render (export) method with empty input"""
-        result = self.widget.render("", self.map);
+        result = self.widget.render("", self.map)
         self.assertEqual(result, '')
