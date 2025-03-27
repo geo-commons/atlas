@@ -17,9 +17,14 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     DRAW_POLYGON: "Polygon",
     DRAW_LABEL: "Point",
     DRAW_COORDINATE: "Point",
-    EDIT_POINT: "Point",
-    EDIT_LINE: "LineString",
-    EDIT_POLYGON: "MultiPolygon",
+    Point: "Point",
+    LineString: "LineString",
+    LinearRing: "LinearRing",
+    Polygon: "Polygon",
+    MultiPoint: "MultiPoint",
+    MultiLineString: "MultiLineString",
+    MultiPolygon: "MultiPolygon",
+    Circle: "Circle",
   };
 
   const draw = new Draw({

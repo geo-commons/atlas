@@ -5,23 +5,6 @@
     :dismissable="false"
     @update:visible="toggleShowCancelModal"
   >
-    <div v-if="editLayerStore.visibleLayers.length > 1" class="tw-flex tw-flex-col tw-gap-2">
-      <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
-      <Select
-        :model-value="editLayerStore.selectedLayer"
-        :options="layers.filter((layer) => layer.is_visible)"
-        filter
-        name="edit-layer-panel-choose-layer"
-        option-label="title"
-        placeholder="Selecteer kaartlaag"
-        fluid
-        :pt="{
-          overlay: '!tw-max-w-48',
-        }"
-        @update:model-value="(layer) => editLayerStore.setSelectedLayer(layer)"
-      />
-    </div>
-
     <div v-if="editLayerStore.selectedLayer" class="tw-py-4">
       <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col tw-gap-4">
         <Message v-if="geoServerError" :pt="{ text: '!tw-break-all' }" severity="error">{{ geoServerError }}</Message>
@@ -144,11 +127,6 @@ watch(
   (value, oldValue) => {
     if (oldValue === null && value !== null && !showAddFeaturePanel.value) {
       showAddFeaturePanel.value = true;
-
-      // If visibleLayers length is only one and a new feature was drawn, you have to set selected layer by your self
-      if (editLayerStore.visibleLayers.length === 1) {
-        editLayerStore.setSelectedLayer(editLayerStore.visibleLayers[0]);
-      }
     }
   },
   { deep: true },

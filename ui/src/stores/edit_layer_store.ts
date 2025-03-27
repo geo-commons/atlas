@@ -3,12 +3,14 @@ import { EditLayerMode } from "@/types/map";
 import { ILayer } from "@/types/layer";
 import Feature from "ol/Feature";
 import { IEditLayerStore } from "@/types/edit_layer_store";
+import { GeometryType } from "ol/render/webgl/MixedGeometryBatch";
 
 export const useEditLayerStore = defineStore("editLayer", {
   state: (): IEditLayerStore => ({
     editLayerMode: EditLayerMode.NONE,
     feature: null,
     selectedLayer: null,
+    geometryType: null,
     visibleLayers: [],
     highlightedFeatureAndLayer: null,
   }),
@@ -21,6 +23,9 @@ export const useEditLayerStore = defineStore("editLayer", {
     },
     setSelectedLayer(selectedLayer: ILayer | null) {
       this.selectedLayer = selectedLayer;
+    },
+    setGeometryType(geometryType: GeometryType | null) {
+      this.geometryType = geometryType;
     },
     setVisibleLayers(visibleLayers: ILayer[]) {
       this.visibleLayers = visibleLayers;

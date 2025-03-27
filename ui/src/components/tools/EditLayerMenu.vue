@@ -44,96 +44,45 @@
               <EditIcon />
             </button>
           </div>
-          <div class="tools-panel__draw-menu">
-            <button
-              v-tippy="{ placement: 'bottom' }"
-              aria-label="Punt"
-              class="tools-panel__button"
-              :class="{
-                'tools-panel__button--active':
-                  tool === 'EDIT_POINT' && editLayerStore.editLayerMode === EditLayerMode.ADD,
-              }"
-              :disabled="editLayerStore.editLayerMode !== EditLayerMode.ADD || editLayerStore.feature"
-              content="Punt"
-              @click="() => setTool('EDIT_POINT')"
-            >
-              <DotIcon />
-            </button>
-          </div>
-          <div class="tools-panel__draw-menu">
-            <button
-              v-tippy="{ placement: 'bottom' }"
-              aria-label="Lijn"
-              class="tools-panel__button"
-              :class="{
-                'tools-panel__button--active':
-                  tool === 'EDIT_LINE' && editLayerStore.editLayerMode === EditLayerMode.ADD,
-              }"
-              :disabled="editLayerStore.editLayerMode !== EditLayerMode.ADD || editLayerStore.feature"
-              content="Lijn"
-              @click="() => setTool('EDIT_LINE')"
-            >
-              <LineIcon />
-            </button>
-            <div v-if="showEditFeatureMenu && tool === 'EDIT_LINE'">
-              <transition name="fade">
-                <div class="tools-panel__draw-options-menu">
-                  <ul>
-                    <li>
-                      <button
-                        v-tippy="{ placement: 'bottom' }"
-                        content="Verwijder laatste punt"
-                        aria-label="Verwijder laatste punt"
-                        class="tools-panel__option tools-panel__option--rectangle"
-                        @click="() => emitKeyDown()"
-                      >
-                        <UndoIcon />
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </transition>
-            </div>
-          </div>
-          <div class="tools-panel__draw-menu">
-            <button
-              v-tippy="{ placement: 'bottom' }"
-              aria-label="Vlak"
-              class="tools-panel__button"
-              :class="{
-                'tools-panel__button--active':
-                  tool === 'EDIT_POLYGON' && editLayerStore.editLayerMode === EditLayerMode.ADD,
-              }"
-              :disabled="editLayerStore.editLayerMode !== EditLayerMode.ADD || editLayerStore.feature"
-              content="Vlak"
-              @click="() => setTool('EDIT_POLYGON')"
-            >
-              <PolyGonIcon />
-            </button>
-            <div v-if="showEditFeatureMenu && tool === 'EDIT_POLYGON'">
-              <transition name="fade">
-                <div class="tools-panel__draw-options-menu">
-                  <ul>
-                    <li>
-                      <button
-                        v-tippy="{ placement: 'bottom' }"
-                        content="Verwijder laatste punt"
-                        aria-label="Verwijder laatste punt"
-                        class="tools-panel__option tools-panel__option--rectangle"
-                        @click="() => emitKeyDown()"
-                      >
-                        <UndoIcon />
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </transition>
-            </div>
+          <div v-for="geometryTool in availableGeometryTools" :key="geometryTool.name" class="tools-panel__draw-menu">
+            <EditLayerTool
+              v-if="geometryTool.name === editLayerStore.geometryType"
+              :tool="geometryTool"
+              :tool-in-use="tool"
+              :set-tool="setTool"
+            />
           </div>
         </div>
       </transition>
     </div>
   </div>
+
+  <Dialog
+    v-model:visible="showSelectLayerDialog"
+    modal
+    header="Kies een kaartlaag"
+    class="tw-w-[calc(100%-16px)] sm:tw-w-[25rem]"
+  >
+    <div v-if="editLayerStore.visibleLayers.length > 1" class="tw-flex tw-flex-col tw-gap-2 tw-items-start">
+      <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
+      <Select
+        :model-value="editLayerStore.selectedLayer"
+        :options="editLayerStore.visibleLayers.filter((layer) => layer.is_visible)"
+        filter
+        name="edit-layer-panel-choose-layer"
+        option-label="title"
+        placeholder="Selecteer kaartlaag"
+        fluid
+        :pt="{
+          overlay: '!tw-max-w-48',
+        }"
+        @update:model-value="(layer) => editLayerStore.setSelectedLayer(layer)"
+      />
+      <div class="tw-flex tw-flex-col tw-items-end tw-w-full">
+        <Button label="Kies laag" @click="showSelectLayerDialog = false" />
+      </div>
+    </div>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -146,6 +95,10 @@ import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EditLayerMode } from "@/types/map";
+import { ref, watch } from "vue";
+import { getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
+import { useGlobalStore } from "@/stores";
+import EditLayerTool from "@/components/tools/EditLayerTool.vue";
 
 // Props
 interface EditLayerMenuProps {
@@ -159,14 +112,53 @@ const { tool, showEditFeatureMenu, toggleEditLayer, setTool } = defineProps<Edit
 
 // Store
 const editLayerStore = useEditLayerStore();
+const globalStore = useGlobalStore();
 
-// Methods
-const emitKeyDown = () => {
-  const keyDownEvent = new KeyboardEvent("keydown", { key: "Backspace" });
+// Select Layer Dialog logic
+const showSelectLayerDialog = ref<boolean>(false);
 
-  document.dispatchEvent(keyDownEvent);
+const showDialogOrProceed = () => {
+  if (editLayerStore.visibleLayers.length > 1) {
+    showSelectLayerDialog.value = true;
+  }
+
+  // If visibleLayers length is only one and a new feature was drawn, you have to set selected layer by your self
+  if (editLayerStore.visibleLayers.length === 1) {
+    editLayerStore.setSelectedLayer(editLayerStore.visibleLayers[0]);
+  }
 };
 
+watch(
+  () => editLayerStore.selectedLayer,
+  async (selectedLayer) => {
+    if (selectedLayer && globalStore.user) {
+      const { featureTypes } = await getWfsOrWFSWMSLayerFeatureInformation(selectedLayer, globalStore.user);
+
+      const geometryName = await getGeometryName(featureTypes);
+      const geometryType = featureTypes[0].properties.filter(
+        (featureProperty) => featureProperty.name === geometryName,
+      )[0].localType;
+
+      console.log(geometryType, featureTypes);
+
+      editLayerStore.setGeometryType(geometryType);
+    }
+  },
+);
+
+// Draw tool logic
+const availableGeometryTools = [
+  { name: "Point", icon: DotIcon, translation: "Punt", enableUndo: false },
+  { name: "LineString", icon: LineIcon, translation: "Lijn", enableUndo: true },
+  { name: "LinearRing", icon: DotIcon, translation: "Ring", enableUndo: false },
+  { name: "Polygon", icon: PolyGonIcon, translation: "Polygoon", enableUndo: true },
+  { name: "MultiPoint", icon: DotIcon, translation: "Punt", enableUndo: false },
+  { name: "MultiLineString", icon: LineIcon, translation: "Lijn", enableUndo: true },
+  { name: "MultiPolygon", icon: PolyGonIcon, translation: "Polygoon", enableUndo: true },
+  { name: "Circle", icon: DotIcon, translation: "Cirkel", enableUndo: false },
+];
+
+// Methods
 const toggleEditLayerMenu = () => {
   if (editLayerStore.editLayerMode !== EditLayerMode.NONE) {
     editLayerStore.setEditLayerMode(EditLayerMode.NONE);
@@ -178,6 +170,8 @@ const toggleEditLayerMenu = () => {
 const toggleAddEditFeatureMode = () => {
   if (editLayerStore.editLayerMode !== EditLayerMode.ADD) {
     editLayerStore.setEditLayerMode(EditLayerMode.ADD);
+    editLayerStore.setSelectedLayer(null);
+    showDialogOrProceed();
     setTool("");
 
     return;

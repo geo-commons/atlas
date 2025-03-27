@@ -912,9 +912,13 @@ export default {
           this.drawFeatures.push(result.sketch);
           this.removedDrawFeatures = [];
           break;
-        case "EDIT_POINT":
-        case "EDIT_LINE":
-        case "EDIT_POLYGON":
+        case "Point":
+        case "LineString":
+        case "LinearRing":
+        case "MultiPoint":
+        case "MultiLineString":
+        case "MultiPolygon":
+        case "Circle":
           this.editLayerStore.setFeature(result.sketch);
           this.tool = "";
           break;

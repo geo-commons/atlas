@@ -1,3 +1,5 @@
+import { GeometryType } from "ol/render/webgl/MixedGeometryBatch";
+
 export interface ILayer {
   id: string;
   name: string;
@@ -14,7 +16,7 @@ export type ILayerProperties = Array<{
   minOccurs: number;
   nillable: boolean;
   type: string;
-  localType: string;
+  localType: GeometryType;
 }>;
 
 export type IFeatureProperties = {
