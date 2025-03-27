@@ -2,17 +2,7 @@ import { defineStore } from "pinia";
 import { EditLayerMode } from "@/types/map";
 import { ILayer } from "@/types/layer";
 import Feature from "ol/Feature";
-
-export interface IEditLayerStore {
-  editLayerMode: EditLayerMode;
-  feature: any;
-  visibleLayers: ILayer[];
-  selectedLayer: ILayer | null;
-  highlightedFeatureAndLayer: {
-    feature: Feature;
-    layer: ILayer;
-  } | null;
-}
+import { IEditLayerStore } from "@/types/edit_layer_store";
 
 export const useEditLayerStore = defineStore("editLayer", {
   state: (): IEditLayerStore => ({
@@ -26,7 +16,7 @@ export const useEditLayerStore = defineStore("editLayer", {
     setEditLayerMode(editLayerMode: EditLayerMode) {
       this.editLayerMode = editLayerMode;
     },
-    setFeature(feature: any) {
+    setFeature(feature: Feature) {
       this.feature = feature;
     },
     setSelectedLayer(selectedLayer: ILayer | null) {

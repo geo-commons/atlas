@@ -122,7 +122,7 @@
       v-if="!showPanoramaPanel && features.markerOnClick"
       :layers="layers"
       :position="position"
-      :show-panel="!showDataPanel && showInfoPanel && editLayerStore.editLayerMode === ''"
+      :show-panel="!showDataPanel && showInfoPanel && editLayerStore.editLayerMode === EditLayerMode.NONE"
       :user="user"
       :config="config"
       :features="features"
@@ -132,7 +132,7 @@
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
-      :show-panel="selectedFeatures.length > 0 && editLayerStore.editLayerMode === ''"
+      :show-panel="selectedFeatures.length > 0 && editLayerStore.editLayerMode === EditLayerMode.NONE"
       :features="selectedFeatures"
       @features-selected="featuresSelected"
     />
@@ -410,6 +410,7 @@ import {
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import AddFeaturePanel from "@/components/panels/AddFeaturePanel.vue";
 import EditFeaturePanel from "@/components/panels/EditFeaturePanel.vue";
+import { EditLayerMode } from "@/types/map";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -555,6 +556,9 @@ export default {
     };
   },
   computed: {
+    EditLayerMode() {
+      return EditLayerMode;
+    },
     ...mapStores(useGlobalStore, useEditLayerStore),
     showInfoPanel() {
       return this.position.marker ? true : false;
