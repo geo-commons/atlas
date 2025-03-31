@@ -5,8 +5,14 @@
     :dismissable="false"
     @update:visible="toggleShowCancelModal"
   >
-    <div class="tw-flex tw-flex-col tw-gap-4">
-      <Message v-if="geoServerError" :pt="{ text: '!tw-break-all' }" severity="error">{{ geoServerError }}</Message>
+    <div class="tw-flex tw-flex-col tw-gap-0">
+      <span class="tw-font-[var(--font-weight-bold)]">Actieve laag</span>
+      <p class="tw-mt-0">{{ editLayerStore.highlightedFeatureAndLayer?.layer.name }}</p>
+    </div>
+    <div class="tw-flex tw-flex-col">
+      <Message v-if="geoServerError" class="tw-mb-4" :pt="{ text: '!tw-break-all' }" severity="error">{{
+        geoServerError
+      }}</Message>
       <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
       <LayerCrudForm
         ref="form"
