@@ -19,7 +19,7 @@ In de hoeken van het kaartscherm bevinden zich de bedieningsfuncties
 *Rechtsboven*  
 Afhankelijk van de instellingen van Atlas, zijn de volgende functies te zien:  
 
-- Selecteer objecten door middel van een  [selectievenster](./help.md#objecten-selecteren-op-de-kaart-binnen-een-polygoon).
+- Selecteer objecten door middel van een  [selectievenster](./help.md#objecten-selecteren-op-de-kaart-binnen-een-polygoon-of-cirkel).
 - [Meet afstanden of oppervlakten](./help.md#meten) 
 - [Teken in de kaartlaag](./help.md#tekenen) en sla de tekening op als url.
 - [Extra instellingen](./help.md#extra-instellingen-menu) menu. [Log in](./help.md#inloggen-binnen-atlas-intern-en-extern), Embed een  deel van het scherm, [Print het huidige kaartscherm](./help.md#printen-naar-pdf), Helpfunctie en Disclaimer.  
