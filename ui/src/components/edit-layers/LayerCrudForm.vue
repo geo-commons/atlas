@@ -16,7 +16,7 @@
         variant="simple"
         >{{ errors[property.name] }}
       </Message>
-      <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-start">
+      <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
         <label
           :for="property.name"
           :class="{
