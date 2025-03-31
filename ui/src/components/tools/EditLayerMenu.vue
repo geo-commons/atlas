@@ -72,7 +72,11 @@
       <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
       <Select
         :model-value="editLayerStore.selectedLayer"
-        :options="editLayerStore.visibleLayers.filter((layer) => layer.is_visible)"
+        :options="
+          editLayerStore.visibleLayers.filter(
+            (layer) => layer.is_visible && (layer.source_type === 'WMS_WFS' || layer.source_type === 'WFS'),
+          )
+        "
         filter
         name="edit-layer-panel-choose-layer"
         option-label="title"
