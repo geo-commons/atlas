@@ -122,7 +122,7 @@
       v-if="!showPanoramaPanel && features.markerOnClick"
       :layers="layers"
       :position="position"
-      :show-panel="!showDataPanel && showInfoPanel && editLayerStore.editLayerMode === EditLayerMode.NONE"
+      :show-panel="!showDataPanel && showInfoPanel && editLayerStore.isEditLayerModeNone"
       :user="user"
       :config="config"
       :features="features"
@@ -133,7 +133,7 @@
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
-      :show-panel="selectedFeatures.length > 0 && editLayerStore.editLayerMode === EditLayerMode.NONE"
+      :show-panel="selectedFeatures.length > 0 && editLayerStore.isEditLayerModeNone"
       :features="selectedFeatures"
       @features-selected="featuresSelected"
     />

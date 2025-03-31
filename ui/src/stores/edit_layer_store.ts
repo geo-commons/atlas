@@ -37,4 +37,9 @@ export const useEditLayerStore = defineStore("editLayer", {
       this.feature = null;
     },
   },
+  getters: {
+    isEditLayerModeNone(state) {
+      return state.editLayerMode === EditLayerMode.NONE;
+    },
+  },
 });
