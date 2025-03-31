@@ -1,0 +1,17 @@
+<layer>
+  <name>sonderingsgebied</name>
+  <id>LayerInfoImpl--15c40c61:195ec49490b:-7ffa</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--570ae188:124761b8d78:-7fe3</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--15c40c61:195ec49490b:-7ffb</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2025-03-31 13:15:49.55 UTC</dateCreated>
+  <dateModified>2025-03-31 13:15:54.240 UTC</dateModified>
+</layer>
