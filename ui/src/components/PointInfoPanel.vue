@@ -85,6 +85,7 @@
           @set-position="(position) => setPosition(position)"
           @on-fit="onFit"
           @select-feature-details="onSelectFeatureDetails"
+          @select-feature="selectFeature"
         />
       </div>
     </template>
@@ -120,7 +121,7 @@ export default {
     layers: Array,
     showPanel: Boolean,
   },
-  emits: ["expanded-info-panel", "set-position", "on-fit"],
+  emits: ["expanded-info-panel", "set-position", "on-fit", "select-feature"],
   data() {
     return {
       resetSidePanel: null,
@@ -201,6 +202,9 @@ export default {
         .catch((err) => {
           console.error("Failed to copy coordinates:", err);
         });
+    },
+    selectFeature(geometry) {
+      this.$emit("select-feature", geometry);
     },
   },
 };

@@ -193,6 +193,7 @@ export default {
   position: relative;
   flex-grow: 1;
   overflow-y: auto;
+  overflow-wrap: break-word;
 }
 
 .resize-button {

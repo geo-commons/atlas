@@ -28,6 +28,15 @@
             </tr>
           </tbody>
         </table>
+        <div v-if="rows && rows.length > 0 && visiblePagination">
+          <Paginator
+            :first="page * items_per_page - 1"
+            :rows="items_per_page"
+            :total-records="total_items"
+            :rows-per-page-options="[10, 20, 30, 40, 50]"
+            @page="updatePageState"
+          ></Paginator>
+        </div>
         <div v-if="!loading && !error && rows && rows.length == 0">Er zijn geen resultaten gevonden.</div>
       </div>
     </div>
@@ -50,39 +59,38 @@ export default {
     return {
       error: null,
       rows: null,
+      page: 1,
+      items_per_page: 10,
+      total_items: null,
+      searchFields: {},
       loading: false,
+      url: null,
     };
   },
   computed: {
     ...mapState(useGlobalStore, ["tables"]),
     table() {
-      const results = this.tables.filter((table) => table.slug == this.$route.params.tableSlug);
+      const results = this.tables.filter((table) => table.slug === this.$route.params.tableSlug);
 
       return results.length > 0 ? results[0] : null;
     },
+    visiblePagination() {
+      return !!this.page && this.total_items > this.items_per_page;
+    },
+  },
+  mounted() {
+    const fullUrl = this.table.source.url + this.table.endpoint;
+    this.url = new URL(fullUrl);
   },
   methods: {
-    async onSearch(searchFields) {
+    async getTableItems(url, searchFields) {
       this.rows = [];
       this.error = null;
       this.loading = true;
 
-      const fullUrl = this.table.source.url + this.table.endpoint;
-      const renderedUrl = nunjucks.renderString(fullUrl, searchFields);
-      const url = new URL(renderedUrl);
-
-      if (this.table.method == "GET") {
-        const searchFieldsWithoutUndefinedValues = Object.entries(searchFields)
-          .filter(([, value]) => value !== undefined)
-          .reduce((obj, [key, value]) => {
-            obj[key] = value;
-            return obj;
-          }, {});
-
-        const params = new URLSearchParams(searchFieldsWithoutUndefinedValues);
-        if (!fullUrl.includes("?")) {
-          url.search = params.toString();
-        }
+      if (this.table.page_attribute && this.table.items_per_page_attribute) {
+        this.url.searchParams.set(this.table.items_per_page_attribute, this.items_per_page ? this.items_per_page : 10);
+        this.url.searchParams.set(this.table.page_attribute, this.page ? this.page : 1);
       }
 
       const result = await fetch(url.toString(), {
@@ -111,14 +119,42 @@ export default {
         }
 
         this.rows = fetchDot(this.table.list_query, data);
+        this.total_items = this.table.total_items_page_attribute
+          ? fetchDot(this.table.total_items_page_attribute, data)
+          : null;
       } catch (e) {
         this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
       }
 
       this.loading = false;
     },
+    async onSearch(searchFields) {
+      if (!this.table || this.table.method !== "GET") return;
+
+      this.searchFields = searchFields;
+      // Reset the page on search to prevent issues, such as navigating from page 4 to a new search with fewer results, which could lead to a 404 error.
+      this.page = 1;
+
+      const searchFieldsWithoutUndefinedValues = Object.entries(searchFields)
+        .filter(([, value]) => value !== undefined)
+        .reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        }, {});
+
+      const params = new URLSearchParams(searchFieldsWithoutUndefinedValues);
+      this.url.search = params.toString();
+
+      await this.getTableItems(this.url, searchFields);
+    },
     renderString(template, context) {
       return nunjucks.renderString(template, context);
+    },
+    async updatePageState(pageState) {
+      this.page = pageState.page + 1;
+      this.items_per_page = pageState.rows;
+
+      await this.getTableItems(this.url, this.searchFields);
     },
   },
 };

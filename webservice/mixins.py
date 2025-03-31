@@ -61,7 +61,7 @@ class DataExportImportMixin(ResourceMappingMixin):
         dataset = resource.export(queryset=queryset)
 
         # We cannot use JSONResponse, as the output of dataset.export is already serialized to JSON
-        response = HttpResponse(  # pylint: disable=http-response-with-content-type-json
+        response = HttpResponse(
             dataset.export('json'),
             content_type='application/json'
         )
@@ -190,7 +190,8 @@ class FileUploadMixin(ResourceMappingMixin):
         # Convert to RGB if the image has an alpha channel (for JPEG format)
         if img.mode in ('RGBA', 'LA') and image_format == 'JPEG':
             background = Image.new('RGB', img.size, (255, 255, 255))
-            background.paste(img, mask=img.split()[3])  # 3 is the alpha channel
+            # 3 is the alpha channel
+            background.paste(img, mask=img.split()[3])
             img = background
 
         # Check aspect ratio (with small tolerance)
@@ -216,7 +217,8 @@ class FileUploadMixin(ResourceMappingMixin):
 
         # Save with appropriate format
         if image_format.upper() == 'JPEG':
-            img.save(output, format=image_format, quality=quality, optimize=True)
+            img.save(output, format=image_format,
+                     quality=quality, optimize=True)
         else:
             img.save(output, format=image_format, optimize=True)
 

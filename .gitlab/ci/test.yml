@@ -1,6 +1,6 @@
 Lint and unit test backend:
   stage: Test
-  image: python:3.11
+  image: python:3.12
   services:
     - postgres:15.3-alpine
   variables:
@@ -19,7 +19,7 @@ Lint and unit test backend:
     - pip install -r requirements.txt
     - python manage.py collectstatic --noinput
   script:
-    - python -m prospector -X
+    - ruff check
     - python -m coverage run manage.py test
     - python -m coverage report && python -m coverage html
   coverage: "/TOTAL.+ ([0-9]{1,3}%)/"
@@ -30,7 +30,7 @@ Lint and unit test backend:
 
 Test migrations backend:
   stage: Test
-  image: python:3.11
+  image: python:3.12
   services:
     - postgres:15.3-alpine
   variables:

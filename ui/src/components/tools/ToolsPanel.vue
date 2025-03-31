@@ -104,6 +104,7 @@ export default {
       showEditFeatureMenu: false,
       showLineWeightMenu: false,
       showFontSizeMenu: false,
+      previousTool: "",
     };
   },
   watch: {
@@ -168,7 +169,7 @@ export default {
         this.showEditFeatureMenu = false;
       }
 
-      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE") {
+      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE" || this.tool === "SELECT_FEATURE") {
         this.resetAreaSelect();
         return;
       }

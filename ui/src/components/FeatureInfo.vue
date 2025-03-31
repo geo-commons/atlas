@@ -28,7 +28,22 @@
         </table-list>
       </div>
 
-      <div class="tw-flex tw-px-5 tw-py-2 tw-gap-3">
+      <div class="tw-flex tw-px-5 tw-py-2 tw-gap-3 tw-flex-wrap">
+        <Button
+          v-if="!shouldHideSelectButton(feature)"
+          v-tippy
+          aria-label="Maak selectie"
+          content="Maak selectie"
+          outlined
+          severity="secondary"
+          class="!tw-text-sm !tw-font-medium"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+          @click="selectFeature(feature)"
+        >
+          Maak selectie
+          <AreaSelectIcon class="icon __smedium" />
+        </Button>
         <Button
           v-if="
             config &&
@@ -48,6 +63,9 @@
           <EditIcon />
         </Button>
         <Button
+          v-tippy
+          aria-label="Bekijk object"
+          content="Bekijk object"
           outlined
           severity="secondary"
           class="!tw-text-sm !tw-font-medium"
@@ -59,6 +77,9 @@
           <MarkerIcon class="icon __marker __smedium" />
         </Button>
         <Button
+          v-tippy
+          aria-label="Kopieer object"
+          content="Kopieer object"
           outlined
           severity="secondary"
           class="!tw-text-sm !tw-font-medium"
@@ -107,6 +128,7 @@ import { useGlobalStore } from "@/stores";
 import { formatRawString } from "@/utils/string-helpers";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import CopyIcon from "@/assets/icons/copy-icon.svg";
+import AreaSelectIcon from "@/assets/icons/area-select-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EditLayerMode } from "@/types/map";
@@ -120,6 +142,7 @@ export default {
     EditIcon,
     MarkerIcon,
     CopyIcon,
+    AreaSelectIcon,
     TableList,
     LinkedDataTable,
     ExpandButton,
@@ -134,7 +157,7 @@ export default {
     atlasFeatures: Object,
     isOpen: Boolean,
   },
-  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature", "toggle-edit-feature-mode"],
+  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature", "select-feature", "toggle-edit-feature-mode"],
   data() {
     return {
       features: [],
@@ -302,6 +325,22 @@ export default {
     checkCopyStatus(featureId) {
       return this.onCopy[featureId];
     },
+    async selectFeature(feature) {
+      const geoFeature = new GeoJSON().readFeature(feature);
+
+      this.$emit("select-feature", geoFeature.getGeometry());
+    },
+    shouldHideSelectButton(feature) {
+      if (
+        feature &&
+        feature.geometry &&
+        (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon")
+      ) {
+        return false;
+      }
+
+      return true;
+    },
     toggleEditLayerMode(feature) {
       const geoFeature = new GeoJSON().readFeature(feature);
 
@@ -378,12 +417,4 @@ export default {
   margin-left: 20px;
   margin-right: 20px;
 }
-
-/*
-.feature-select:hover {
-  background: var(--color-grey-40);
-  border-radius: var(--radius-normal);
-  cursor: pointer;
-}
-*/
 </style>

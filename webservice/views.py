@@ -39,7 +39,7 @@ def v3_convert(request, output_format):
 
     file_name = f'output{formats[output_format]}'
 
-    temp_dir = TemporaryDirectory()  # pylint: disable=consider-using-with
+    temp_dir = TemporaryDirectory()
     output_file = path.join(temp_dir.name, file_name)
 
     with fiona.open(BytesIO(request.body), driver='GeoJSON') as inputCollection:

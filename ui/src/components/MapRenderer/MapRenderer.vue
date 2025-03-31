@@ -129,6 +129,7 @@
       @set-position="setPosition"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
       @expanded-info-panel="toggleInfoPanel"
+      @select-feature="selectFeature"
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
@@ -545,6 +546,7 @@ export default {
       loadingPrint: false,
       showCompareLayerPanel: false,
       compareLayers: false,
+      selectGeometry: false,
       filterCheckedCount: 0,
       baseLayerChanged: false,
       initialBaseLayerId: null,
@@ -600,7 +602,7 @@ export default {
       return geojsonFormat.readFeatures(this.config.map_area);
     },
     selectedAreaDataPanel() {
-      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE") {
+      if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE" || this.selectGeometry) {
         return this.selectedArea;
       }
 
@@ -834,6 +836,7 @@ export default {
       if (!this.showDataPanel) {
         // Reset selected area and make sure tool is no longer set to measure.
         this.selectedArea = null;
+        this.selectGeometry = false;
         this.setTool("");
       }
 
@@ -1055,6 +1058,13 @@ export default {
     },
     refreshLayer(id) {
       this.$refs.map.refreshLayer(id);
+    },
+    selectFeature(geometry) {
+      this.selectedArea = geometry;
+      this.selectGeometry = true;
+      this.showDataPanel = true;
+      this.$refs.map.fit(geometry, { maxZoom: 19, duration: 1000 });
+      this.tool = "SELECT_FEATURE";
     },
   },
 };
