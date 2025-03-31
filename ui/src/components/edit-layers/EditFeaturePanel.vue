@@ -30,25 +30,38 @@
     </template>
   </Drawer>
 
-  <EditLayerSaveModal
-    :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+  <EditLayerActionModal
     :visible="showSaveModal"
+    header="Opslaan"
+    :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+    cancel-label="Annuleren"
+    cancel-icon="pi pi-times"
+    confirm-label="Opslaan"
+    confirm-icon="pi pi-save"
     :on-cancel="cancelSaveModal"
-    :on-save="save"
+    :on-confirm="save"
   />
 
-  <EditLayerDeleteModal
-    :message="`Wanneer u verwijdert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+  <EditLayerActionModal
     :visible="showDeleteModal"
+    header="Verwijderen"
+    :message="`Wanneer u verwijdert, gaan dit object verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+    cancel-label="Annuleren"
+    confirm-label="Verwijderen"
+    confirm-icon="pi pi-times"
     :on-cancel="cancelDeleteModal"
-    :on-delete="onDelete"
+    :on-confirm="onDelete"
   />
 
-  <EditLayerCancelModal
-    :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+  <EditLayerActionModal
     :visible="showCancelModal"
+    header="Annuleren"
+    :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+    cancel-label="Verder met bewerken"
+    confirm-label="Bewerken sluiten"
+    confirm-icon="pi pi-times"
     :on-cancel="cancelCancelModal"
-    :on-proceed="proceed"
+    :on-confirm="proceed"
   />
 </template>
 
@@ -67,11 +80,9 @@ import {
   getGeometryName,
   getWfsOrWFSWMSLayerFeatureInformation,
 } from "@/services/layer";
-import EditLayerSaveModal from "@/components/edit-layers/EditLayerSaveModal.vue";
-import EditLayerCancelModal from "@/components/edit-layers/EditLayerCancelModal.vue";
 import Feature from "ol/Feature";
-import EditLayerDeleteModal from "@/components/edit-layers/EditLayerDeleteModal.vue";
 import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
+import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 
 interface AddFeaturePanelProps {
   user: IUser;

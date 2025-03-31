@@ -43,19 +43,28 @@
     </template>
   </Drawer>
 
-  <EditLayerSaveModal
-    :message="`Wanneer u doorgaat met opslaan, worden alle eigenschappen en uw getekende object opgeslagen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer.`"
+  <EditLayerActionModal
     :visible="showSaveModal"
+    header="Opslaan"
+    :message="`Wanneer u doorgaat met opslaan, worden alle eigenschappen en uw getekende object opgeslagen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer.`"
+    cancel-label="Annuleren"
+    cancel-icon="pi pi-times"
+    confirm-label="Opslaan"
+    confirm-icon="pi pi-save"
     :on-cancel="cancelSaveModal"
-    :on-save="save"
+    :on-confirm="save"
   />
 
-  <EditLayerCancelModal
-    :message="`Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
-      binnen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.`"
+  <EditLayerActionModal
     :visible="showCancelModal"
+    header="Annuleren"
+    :message="`Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
+      op de laag ${editLayerStore.selectedLayer?.name} in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.`"
+    cancel-label="Verder met bewerken"
+    confirm-label="Bewerken sluiten"
+    confirm-icon="pi pi-times"
     :on-cancel="cancelCancelModal"
-    :on-proceed="proceed"
+    :on-confirm="proceed"
   />
 </template>
 
@@ -65,14 +74,13 @@ import { computed, ref, unref, watch } from "vue";
 import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
 import { addFeatureOnLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
 import { IUser } from "@/types/user";
-import { defineRule, Field as VeeField, Form as VeeForm } from "vee-validate";
+import { defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
 import { EditLayerMode } from "@/types/map";
-import EditLayerSaveModal from "@/components/edit-layers/EditLayerSaveModal.vue";
-import EditLayerCancelModal from "@/components/edit-layers/EditLayerCancelModal.vue";
 import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
+import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 
 interface AddFeaturePanelProps {
   layers: Array<ILayer>;

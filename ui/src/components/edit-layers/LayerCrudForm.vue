@@ -2,7 +2,7 @@
   <vee-form
     ref="form"
     v-slot="{ errors }"
-    class="tw-flex tw-flex-col tw-gap-2 tw-py-2"
+    class="tw-flex tw-flex-col tw-gap-2"
     :initial-values="initialValues"
     @submit="handleSubmit"
   >
