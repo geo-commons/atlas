@@ -36,6 +36,13 @@ export const useEditLayerStore = defineStore("editLayer", {
     resetFeature() {
       this.feature = null;
     },
+    resetEditLayerProperties() {
+      this.editLayerMode = EditLayerMode.NONE;
+      this.feature = null;
+      this.geometryType = null;
+      this.selectedLayer = null;
+      this.highlightedFeatureAndLayer = null;
+    },
   },
   getters: {
     isEditLayerModeNone(state) {

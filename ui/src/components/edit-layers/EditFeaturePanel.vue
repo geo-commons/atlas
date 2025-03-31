@@ -199,9 +199,7 @@ const handleDrawerClose = (value: boolean) => {
   showEditFeaturePanel.value = value;
   geoServerError.value = null;
   // TODO: Drawer is not closing on escape, only modal is now closing on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
-  editLayerStore.resetFeature();
-  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
-  editLayerStore.setSelectedLayer(null);
+  editLayerStore.resetEditLayerProperties();
 };
 
 const toggleShowEditLayerSaveModal = () => {

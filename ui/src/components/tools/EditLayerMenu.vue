@@ -44,6 +44,11 @@
               <EditIcon />
             </button>
           </div>
+        </div>
+      </transition>
+
+      <transition name="fade">
+        <div class="tools-panel__draw-bar tools-panel__draw-bar--secondary">
           <div v-for="geometryTool in availableGeometryTools" :key="geometryTool.name" class="tools-panel__draw-menu">
             <EditLayerTool
               v-if="geometryTool.name === editLayerStore.geometryType"
@@ -139,11 +144,10 @@ watch(
         (featureProperty) => featureProperty.name === geometryName,
       )[0].localType;
 
-      console.log(geometryType, featureTypes);
-
       editLayerStore.setGeometryType(geometryType);
     }
   },
+  { deep: true },
 );
 
 // Draw tool logic
@@ -161,7 +165,7 @@ const availableGeometryTools = [
 // Methods
 const toggleEditLayerMenu = () => {
   if (editLayerStore.editLayerMode !== EditLayerMode.NONE) {
-    editLayerStore.setEditLayerMode(EditLayerMode.NONE);
+    editLayerStore.resetEditLayerProperties();
   }
 
   toggleEditLayer();
@@ -177,19 +181,20 @@ const toggleAddEditFeatureMode = () => {
     return;
   }
 
-  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
+  editLayerStore.resetEditLayerProperties();
   setTool("");
 };
 
 const toggleEditFeatureMode = () => {
   if (editLayerStore.editLayerMode !== EditLayerMode.EDIT) {
     editLayerStore.setEditLayerMode(EditLayerMode.EDIT);
+    editLayerStore.setGeometryType(null);
     setTool("");
 
     return;
   }
 
-  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
+  editLayerStore.resetEditLayerProperties();
   setTool("");
 };
 </script>

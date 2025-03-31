@@ -140,16 +140,6 @@ watch(
   { deep: true },
 );
 
-watch(
-  () => editLayerStore.visibleLayers,
-  (value) => {
-    if (value.length === 1) {
-      editLayerStore.setSelectedLayer(value[0]);
-    }
-  },
-  { deep: true, immediate: true },
-);
-
 // Watch
 watch(
   () => editLayerStore.selectedLayer,
@@ -216,9 +206,7 @@ const handleDrawerClose = (value: boolean) => {
   showAddFeaturePanel.value = value;
   geoServerError.value = null;
   // TODO: Drawer is not closing on escape, only modal is now closing on escape. This is a known bug in PrimeVue: https://github.com/primefaces/primevue/issues/5138
-  editLayerStore.resetFeature();
-  editLayerStore.setSelectedLayer(null);
-  editLayerStore.setEditLayerMode(EditLayerMode.NONE);
+  editLayerStore.resetEditLayerProperties();
 
   emit("set-selected-area", null);
   emit("set-tool", "");

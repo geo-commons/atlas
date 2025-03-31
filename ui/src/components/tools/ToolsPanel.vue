@@ -336,6 +336,10 @@ export default {
   right: 0;
   box-shadow: var(--shadow-normal);
   border-radius: var(--radius-normal);
+
+  &--secondary {
+    margin-top: 40px;
+  }
 }
 
 .tools-panel__draw-menu {
