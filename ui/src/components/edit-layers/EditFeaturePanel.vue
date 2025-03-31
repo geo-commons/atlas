@@ -145,7 +145,7 @@ watch(
         }
       } catch (e: unknown) {
         layerProperties.value = [];
-        drawerError.value = (e as Error).message;
+        drawerError.value = "Er is iets fout gegaan bij het ophalen van de data";
 
         console.error((e as Error).message);
       }
@@ -257,7 +257,8 @@ const handleDeleteFeature = async () => {
 
     handleDrawerClose(false);
   } catch (e) {
-    geoServerError.value = (e as Error).message;
+    geoServerError.value = "Er is iets fout gegaan bij het verwijderen";
+    console.error((e as Error).message);
   }
 };
 
@@ -288,7 +289,8 @@ const handleSaveFeature = async () => {
 
     handleDrawerClose(false);
   } catch (e) {
-    geoServerError.value = (e as Error).message;
+    geoServerError.value = "Er is iets fout gegaan bij het opslaan";
+    console.error((e as Error).message);
   }
 };
 </script>
