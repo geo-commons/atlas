@@ -30,21 +30,21 @@
     </template>
   </Drawer>
 
-  <SaveModal
+  <EditLayerSaveModal
     :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
     :visible="showSaveModal"
     :on-cancel="cancelSaveModal"
     :on-save="save"
   />
 
-  <DeleteModal
+  <EditLayerDeleteModal
     :message="`Wanneer u verwijdert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
     :visible="showDeleteModal"
     :on-cancel="cancelDeleteModal"
     :on-delete="onDelete"
   />
 
-  <CancelModal
+  <EditLayerCancelModal
     :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
     :visible="showCancelModal"
     :on-cancel="cancelCancelModal"
@@ -67,11 +67,11 @@ import {
   getGeometryName,
   getWfsOrWFSWMSLayerFeatureInformation,
 } from "@/services/layer";
-import SaveModal from "@/components/modals/SaveModal.vue";
-import CancelModal from "@/components/modals/CancelModal.vue";
+import EditLayerSaveModal from "@/components/edit-layers/EditLayerSaveModal.vue";
+import EditLayerCancelModal from "@/components/edit-layers/EditLayerCancelModal.vue";
 import Feature from "ol/Feature";
-import DeleteModal from "@/components/modals/DeleteModal.vue";
-import LayerCrudForm from "@/components/panels/parts/layer-crud-form.vue";
+import EditLayerDeleteModal from "@/components/edit-layers/EditLayerDeleteModal.vue";
+import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
 
 interface AddFeaturePanelProps {
   user: IUser;

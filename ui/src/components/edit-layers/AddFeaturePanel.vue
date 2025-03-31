@@ -43,14 +43,14 @@
     </template>
   </Drawer>
 
-  <SaveModal
+  <EditLayerSaveModal
     :message="`Wanneer u doorgaat met opslaan, worden alle eigenschappen en uw getekende object opgeslagen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer.`"
     :visible="showSaveModal"
     :on-cancel="cancelSaveModal"
     :on-save="save"
   />
 
-  <CancelModal
+  <EditLayerCancelModal
     :message="`Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
       binnen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.`"
     :visible="showCancelModal"
@@ -70,9 +70,9 @@ import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
 import { EditLayerMode } from "@/types/map";
-import SaveModal from "@/components/modals/SaveModal.vue";
-import CancelModal from "@/components/modals/CancelModal.vue";
-import LayerCrudForm from "@/components/panels/parts/layer-crud-form.vue";
+import EditLayerSaveModal from "@/components/edit-layers/EditLayerSaveModal.vue";
+import EditLayerCancelModal from "@/components/edit-layers/EditLayerCancelModal.vue";
+import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
 
 interface AddFeaturePanelProps {
   layers: Array<ILayer>;

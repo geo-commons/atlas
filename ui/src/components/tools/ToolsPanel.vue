@@ -54,11 +54,7 @@ import SelectMenu from "@/components/tools/SelectMenu.vue";
 import MeasureMenu from "@/components/tools/MeasureMenu.vue";
 import DrawMenu from "@/components/tools/DrawMenu.vue";
 import EditLayerMenu from "@/components/tools/EditLayerMenu.vue";
-import {
-  DEFAULT_DRAWING_COLOR,
-  DEFAULT_DRAWING_FONT_SIZE,
-  DEFAULT_DRAWING_STROKE_WIDTH,
-} from "@/components/constants/defaults";
+import { DEFAULT_DRAWING_COLOR, DEFAULT_DRAWING_FONT_SIZE, DEFAULT_DRAWING_STROKE_WIDTH } from "@/constants/defaults";
 import { mapStores } from "pinia";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EditLayerMode } from "@/types/map";

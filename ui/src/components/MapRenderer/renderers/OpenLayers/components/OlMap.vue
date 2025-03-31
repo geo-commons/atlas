@@ -99,7 +99,7 @@ export default {
       const layer = this.map
         .getLayers()
         .getArray()
-        .find((layer) => layer.get("id") == id);
+        .find((layer) => layer.get("id") === id);
 
       if (layer) {
         layer.getSource().updateParams({ timestamp: Date.now() });

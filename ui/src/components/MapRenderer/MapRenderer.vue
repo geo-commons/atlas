@@ -403,14 +403,10 @@ import ZoomPanel from "../ZoomPanel";
 import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
 import CompareLayersPanel from "@/components/compare-layers/CompareLayersPanel.vue";
 import CompareLayersSlider from "@/components/compare-layers/CompareLayersSlider.vue";
-import {
-  DEFAULT_DRAWING_COLOR,
-  DEFAULT_DRAWING_FONT_SIZE,
-  DEFAULT_DRAWING_STROKE_WIDTH,
-} from "@/components/constants/defaults";
+import { DEFAULT_DRAWING_COLOR, DEFAULT_DRAWING_FONT_SIZE, DEFAULT_DRAWING_STROKE_WIDTH } from "@/constants/defaults";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import AddFeaturePanel from "@/components/panels/AddFeaturePanel.vue";
-import EditFeaturePanel from "@/components/panels/EditFeaturePanel.vue";
+import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
+import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
 import { EditLayerMode } from "@/types/map";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";

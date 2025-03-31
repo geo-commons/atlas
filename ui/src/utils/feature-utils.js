@@ -1,8 +1,4 @@
-import {
-  DEFAULT_DRAWING_COLOR,
-  DEFAULT_DRAWING_FONT_SIZE,
-  DEFAULT_DRAWING_STROKE_WIDTH,
-} from "@/components/constants/defaults";
+import { DEFAULT_DRAWING_COLOR, DEFAULT_DRAWING_FONT_SIZE, DEFAULT_DRAWING_STROKE_WIDTH } from "@/constants/defaults";
 
 export const getFeatureRgba = (feature, alpha) => {
   const red = feature.get("color")?.red !== undefined ? feature.get("color").red : DEFAULT_DRAWING_COLOR.red;
