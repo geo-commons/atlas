@@ -687,9 +687,16 @@ export default {
     setViewportHeight() {
       this.computedStyle["--vh"] = this.$refs.mapContainer.clientHeight / 100 + "px";
     },
-    async setPosition(position) {
-      this.position = position;
-      this.$emit("position-changed", position);
+    async setPosition(position, animateFast = false) {
+      this.position = {
+        ...position,
+        animateFast: animateFast,
+      };
+
+      this.$emit("position-changed", {
+        ...position,
+        animateFast: animateFast,
+      });
 
       if (!position.marker) {
         this.highlightedFeatures = [];
