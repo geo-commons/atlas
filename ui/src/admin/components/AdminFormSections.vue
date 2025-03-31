@@ -271,7 +271,7 @@
                 <vee-field
                   v-else-if="question.type === 'date'"
                   :id="question.id"
-                  :value="currentValues[question.id] ? formatDateValue(currentValues[question.id]) : ''"
+                  :value="currentValues[question.id] ? currentValues[question.id] : ''"
                   :name="question.id"
                   :disabled="question.disabled"
                   :rules="getRules(question)"
