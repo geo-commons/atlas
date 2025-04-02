@@ -45,16 +45,24 @@ export default {
   },
   methods: {
     zoomIn() {
-      this.$emit("set-position", {
-        ...this.position,
-        zoom: this.position.zoom + 1,
-      });
+      this.$emit(
+        "set-position",
+        {
+          ...this.position,
+          zoom: this.position.zoom + 1,
+        },
+        true,
+      );
     },
     zoomOut() {
-      this.$emit("set-position", {
-        ...this.position,
-        zoom: this.position.zoom - 1,
-      });
+      this.$emit(
+        "set-position",
+        {
+          ...this.position,
+          zoom: this.position.zoom - 1,
+        },
+        true,
+      );
     },
   },
 };
