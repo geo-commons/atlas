@@ -1,17 +1,18 @@
 <template>
-  <div class="container __admin">
-    <h1>Atlas beheerpagina</h1>
+  <div class="container __admin __dashboard">
     <div>
-      <div>
+      <div class="tw-mt-12">
         <h3>Algemene instellingen</h3>
-        <div class="buttons">
+        <div class="buttons tw-mb-12">
           <router-link
             to="/configuration"
             class="button __tertiary __large"
             type="button"
             aria-label="Naar configuratie"
           >
-            <CogIcon class="icon" />
+            <span class="button-icon tw-bg-orange-100">
+              <CogIcon class="icon tw-text-orange-800" />
+            </span>
             Configuratie
           </router-link>
           <router-link
@@ -20,7 +21,9 @@
             type="button"
             aria-label="Naar algemene informatie"
           >
-            <InformationCircleIcon class="icon __medium" />
+            <span class="button-icon tw-bg-orange-100">
+              <InformationCircleIcon class="icon tw-text-orange-800" />
+            </span>
             Algemene gegevens
           </router-link>
           <a
@@ -30,80 +33,106 @@
             type="button"
             aria-label="Naar admin documentatie pagina"
           >
-            <BookIcon class="icon __medium" />
+            <span class="button-icon tw-bg-orange-100">
+              <BookIcon class="icon tw-text-orange-800" />
+            </span>
             Admin documentatie
           </a>
         </div>
       </div>
       <div>
         <h3>Kaarten</h3>
-        <div class="buttons">
+        <div class="buttons tw-mb-12">
           <router-link to="/sources" class="button __tertiary __large" type="button" aria-label="Naar bronnen">
-            <SourceIcon class="icon" />
+            <span class="button-icon tw-bg-amber-100">
+              <SourceIcon class="icon tw-text-amber-800" />
+            </span>
             Bronnen
           </router-link>
           <router-link to="/categories" class="button __tertiary __large" type="button" aria-label="Naar categorieën">
-            <CategoryIcon class="icon" />
+            <span class="button-icon tw-bg-amber-100">
+              <CategoryIcon class="icon tw-text-amber-800" />
+            </span>
             Categorieën
           </router-link>
           <router-link to="/datasets" class="button __tertiary __large" type="button" aria-label="Naar datasets">
-            <DatabaseIcon class="icon" />
+            <span class="button-icon tw-bg-amber-100">
+              <DatabaseIcon class="icon tw-text-amber-800" />
+            </span>
             Datasets
           </router-link>
           <router-link to="/maps" class="button __tertiary __large" type="button" aria-label="Naar kaarten">
-            <MapIcon class="icon" />
+            <span class="button-icon tw-bg-amber-100">
+              <MapIcon class="icon tw-text-amber-800" />
+            </span>
             Kaarten
           </router-link>
           <router-link to="/layers" class="button __tertiary __large" type="button" aria-label="Naar kaartlagen">
-            <LayerIcon class="icon" />
+            <span class="button-icon tw-bg-amber-100">
+              <LayerIcon class="icon tw-text-amber-800" />
+            </span>
             Kaartlagen
           </router-link>
           <router-link to="/themes" class="button __tertiary __large" type="button" aria-label="Naar thema's">
-            <BookIcon class="icon" />
+            <span class="button-icon tw-bg-amber-100">
+              <BookIcon class="icon tw-text-amber-800" />
+            </span>
             Thema's
           </router-link>
           <router-link to="/viewers" class="button __tertiary __large" type="button" aria-label="Naar viewers">
-            <ViewIcon class="icon" />
+            <span class="button-icon tw-bg-amber-100">
+              <ViewIcon class="icon tw-text-amber-800" />
+            </span>
             Viewers
           </router-link>
         </div>
       </div>
       <div>
         <h3>Gebruikersbeheer</h3>
-        <div class="buttons">
+        <div class="buttons tw-mb-12">
           <router-link to="/users" class="button __tertiary __large" type="button" aria-label="Naar gebruikers">
-            <UserIcon class="icon" />
+            <span class="button-icon tw-bg-lime-100">
+              <UserIcon class="icon tw-text-lime-800" />
+            </span>
             Gebruikers
           </router-link>
           <router-link to="/groups" class="button __tertiary __large" type="button" aria-label="Naar groepen">
-            <GroupIcon class="icon" />
+            <span class="button-icon tw-bg-lime-100">
+              <GroupIcon class="icon tw-text-lime-800" />
+            </span>
             Groepen
           </router-link>
         </div>
       </div>
       <div>
         <h3>Autorisatie</h3>
-        <div class="buttons">
+        <div class="buttons tw-mb-12">
           <router-link
             to="/authorizations"
             class="button __tertiary __large"
             type="button"
             aria-label="Naar autorisaties"
           >
-            <ShieldIcon class="icon" />
+            <span class="button-icon tw-bg-emerald-100">
+              <ShieldIcon class="icon tw-text-emerald-800" />
+            </span>
             Autorisaties
           </router-link>
           <router-link to="/logs" class="button __tertiary __large" type="button" aria-label="Naar logs">
-            <LogIcon class="icon" />
+            <span class="button-icon tw-bg-emerald-100">
+              <LogIcon class="icon tw-text-emerald-800" />
+            </span>
             Logs
           </router-link>
         </div>
       </div>
       <div>
         <h3>Tabellen</h3>
-        <div class="buttons">
+        <div class="buttons tw-mb-12">
           <router-link to="/tables" class="button __tertiary __large" type="button" aria-label="Naar tabellen">
-            <TableIcon class="icon" />
+            <span class="button-icon tw-bg-cyan-100">
+              <TableIcon class="icon tw-text-cyan-800" />
+            </span>
             Tabellen
           </router-link>
         </div>
@@ -113,20 +142,20 @@
 </template>
 
 <script>
-import MapIcon from "../../assets/icons/map-icon.svg";
-import SourceIcon from "../../assets/icons/source-icon.svg";
-import LayerIcon from "../../assets/icons/layer-icon.svg";
-import CategoryIcon from "../../assets/icons/category-icon.svg";
-import UserIcon from "../../assets/icons/user-icon.svg";
-import GroupIcon from "../../assets/icons/group-icon.svg";
-import ViewIcon from "../../assets/icons/view-icon.svg";
-import TableIcon from "../../assets/icons/table-icon.svg";
-import BookIcon from "../../assets/icons/book-icon.svg";
-import DatabaseIcon from "../../assets/icons/database-icon.svg";
 import CogIcon from "@/assets/icons/cog-icon.svg";
-import LogIcon from "../../assets/icons/terminal-icon.svg";
-import ShieldIcon from "../../assets/icons/shield-icon.svg";
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
+import BookIcon from "../../assets/icons/book-icon.svg";
+import CategoryIcon from "../../assets/icons/category-icon.svg";
+import DatabaseIcon from "../../assets/icons/database-icon.svg";
+import GroupIcon from "../../assets/icons/group-icon.svg";
+import LayerIcon from "../../assets/icons/layer-icon.svg";
+import MapIcon from "../../assets/icons/map-icon.svg";
+import ShieldIcon from "../../assets/icons/shield-icon.svg";
+import SourceIcon from "../../assets/icons/source-icon.svg";
+import TableIcon from "../../assets/icons/table-icon.svg";
+import LogIcon from "../../assets/icons/terminal-icon.svg";
+import UserIcon from "../../assets/icons/user-icon.svg";
+import ViewIcon from "../../assets/icons/view-icon.svg";
 
 export default {
   name: "AdminDashboard",
@@ -159,15 +188,43 @@ h3 {
 }
 
 .buttons {
+  gap: 14px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
   row-gap: 14px;
   column-gap: 14px;
 }
 
-@media (max-width: 576px) {
+@media (min-width: 1200px) {
   .buttons {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, minmax(240px, 1fr));
   }
+}
+
+@media (max-width: 862px) {
+  .buttons {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .buttons {
+    grid-template-columns: repeat(1, minmax(240px, 1fr));
+  }
+}
+
+.container.__dashboard .button {
+  justify-content: flex-start;
+  padding: 14px;
+  height: auto;
+  gap: 14px;
+}
+
+.container.__dashboard .button-icon {
+  border-radius: 100%;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
