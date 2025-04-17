@@ -14,7 +14,7 @@ export interface AboutFeatures {
 
 // Map data interfaces
 export interface MapAboutData {
-  about: string | null;
+  about?: string;
   about_title: string | null;
   thumbnail?: string;
   features: AboutFeatures;

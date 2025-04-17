@@ -147,7 +147,7 @@ label {
   .p-editor-content .ql-editor {
     p {
       line-height: 1.5;
-      margin: 1rem 0;
+      margin: 0 0;
       font-size: 1rem;
     }
 

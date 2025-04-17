@@ -136,7 +136,7 @@ const processedAbout = computed(() => {
       anchor.parentNode?.replaceChild(newAnchor, anchor);
     });
 
-  return div.innerHTML;
+  return div.innerHTML.replaceAll("<p></p>", "<p><br /></p>");
 });
 </script>
 
@@ -154,6 +154,7 @@ const processedAbout = computed(() => {
 .about-panel__content {
   p {
     line-height: 1.5;
+    margin: 0 0;
   }
   a {
     color: var(--color-primary);
@@ -165,6 +166,11 @@ const processedAbout = computed(() => {
   }
   .content__link-icon {
     font-size: 0.8rem;
+  }
+
+  h2 {
+    line-height: 1.5;
+    margin: 0 0;
   }
 
   img {
