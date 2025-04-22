@@ -153,7 +153,6 @@
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
     <AddFeaturePanel
-      :layers="regularLayers"
       :user="user"
       :refresh-layer="refreshLayer"
       @set-tool="setTool"

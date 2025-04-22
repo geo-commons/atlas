@@ -78,25 +78,23 @@
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { computed, ref, unref, watch } from "vue";
-import { ELayerTypes, IFeatureProperties, ILayer, ILayerProperties } from "@/types/layer";
+import { ELayerTypes, IFeatureProperties, ILayerProperties } from "@/types/layer";
 import { addFeatureOnLayer, getGeometryName, getWfsOrWFSWMSLayerFeatureInformation } from "@/services/layer";
 import { IUser } from "@/types/user";
 import { defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
-import { EditLayerMode } from "@/types/map";
 import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 
 interface AddFeaturePanelProps {
-  layers: Array<ILayer>;
   user: IUser;
   refreshLayer: (id: string) => void;
 }
 
 // Props
-const { layers, user, refreshLayer } = defineProps<AddFeaturePanelProps>();
+const { user, refreshLayer } = defineProps<AddFeaturePanelProps>();
 
 // Emits
 const emit = defineEmits<{
