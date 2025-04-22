@@ -149,6 +149,7 @@ watch(
       )[0].localType;
 
       editLayerStore.setGeometryType(geometryType);
+      setTool(geometryType)
     }
   },
   { deep: true },
