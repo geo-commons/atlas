@@ -32,7 +32,12 @@
       </header>
     </template>
     <template #default>
-      <article v-if="about || map?.about" class="about-panel__content tw-p-4" v-html="processedAbout"></article>
+      <markdown
+        v-if="about || map?.about"
+        class="about-panel__content tw-p-4"
+        :source="processedAbout"
+        :inline="false"
+      />
     </template>
 
     <template v-if="features?.showAboutButton" #footer>
@@ -56,6 +61,7 @@ import { useGlobalStore } from "@/stores";
 import { AboutPanelData, AboutPanelEmits, MapEvents } from "@/types/models";
 import { computed, defineEmits, defineProps, ref } from "vue";
 import SidePanel from "./SidePanel.vue";
+import Markdown from "./Markdown";
 
 const props = defineProps<AboutPanelData>();
 
@@ -100,43 +106,11 @@ const closeAbout = () => {
 const processedAbout = computed(() => {
   if (!props.about && !map.value?.about) return "";
 
-  // Create a temporary div to parse the HTML
-  const div = document.createElement("div");
-  div.innerHTML = props.about || map.value?.about || "";
+  if (props.about) return props.about;
 
-  // Find all anchor tags
-  const anchors = div.getElementsByTagName("a");
+  if (map.value && map.value.about) return map.value.about;
 
-  // Convert HTMLCollection to Array and iterate in reverse to safely modify
-  Array.from(anchors)
-    .reverse()
-    .forEach((anchor) => {
-      let href = anchor.getAttribute("href");
-      const text = anchor.textContent;
-
-      // Ensure href has proper protocol
-      if (
-        href &&
-        !href.startsWith("http://") &&
-        !href.startsWith("https://") &&
-        !href.startsWith("/") &&
-        !href.startsWith("#")
-      ) {
-        href = "https://" + href;
-      }
-
-      // Create new anchor with desired template
-      const newAnchor = document.createElement("a");
-      newAnchor.href = href || "";
-      newAnchor.target = "_blank";
-      newAnchor.rel = "noopener noreferrer";
-      newAnchor.innerHTML = `${text}<i class="pi pi-external-link tw-ml-1 content__link-icon"></i>`;
-
-      // Replace old anchor with new one
-      anchor.parentNode?.replaceChild(newAnchor, anchor);
-    });
-
-  return div.innerHTML.replaceAll("<p></p>", "<p><br /></p>");
+  return "";
 });
 </script>
 
@@ -154,7 +128,7 @@ const processedAbout = computed(() => {
 .about-panel__content {
   p {
     line-height: 1.5;
-    margin: 0 0;
+    margin: 0 0 1rem 0;
   }
   a {
     color: var(--color-primary);
@@ -167,10 +141,31 @@ const processedAbout = computed(() => {
   .content__link-icon {
     font-size: 0.8rem;
   }
+  strong {
+    font-weight: 700;
+  }
+  ul, ol {
+    @apply tw-list-disc tw-pl-4;
+  }
 
-  h2 {
+  h1:not(:first-child),
+  h2:not(:first-child),
+  h3:not(:first-child),
+  h4:not(:first-child),
+  h5:not(:first-child),
+  h6:not(:first-child) {
     line-height: 1.5;
-    margin: 0 0;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  h1:is(:first-child),
+  h2:is(:first-child),
+  h3:is(:first-child),
+  h4:is(:first-child),
+  h5:is(:first-child),
+  h6:is(:first-child) {
+    line-height: 1.5;
+    margin: 0 0 0.5rem 0;
   }
 
   img {
