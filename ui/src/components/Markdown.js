@@ -7,6 +7,7 @@ const Markdown = defineComponent({
   props: {
     source: {
       required: true,
+      type: String,
       default: function () {
         return "";
       },
@@ -19,6 +20,7 @@ const Markdown = defineComponent({
     },
     inline: {
       required: false,
+      type: Boolean,
       default: function () {
         return true;
       },

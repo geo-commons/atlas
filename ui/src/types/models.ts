@@ -6,10 +6,11 @@ export enum MapEvents {
 }
 
 // Common interfaces
-export interface AboutFeatures {
+export interface MapFeatures {
   showAbout: boolean;
   showAboutButton: boolean;
   showAboutThumbnail: boolean;
+  morepanel: boolean;
 }
 
 // Map data interfaces
@@ -17,11 +18,11 @@ export interface MapAboutData {
   about?: string;
   about_title: string | null;
   thumbnail?: string;
-  features: AboutFeatures;
+  features: MapFeatures;
 }
 
 export interface AboutPanelData {
-  features: AboutFeatures;
+  features: MapFeatures;
   about: string | null;
   aboutTitle: string | null;
   showPanel: boolean;
