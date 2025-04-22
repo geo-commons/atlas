@@ -251,25 +251,25 @@ export default {
       return url;
     },
     async setLegend() {
-      // First, we try to fetch the legend as a JSON response.
-      // If the GeoServer accepts this request and returns a valid JSON legend and user did not decide to disable the filterable legend feature we stop and do not proceed to fetch the legend image.
-      // However, if this request fails, we then fetch the legend as an image instead.
-      const result = await this.fetchLegendAsJson();
+      if (this.layer.is_filterable_in_legend) {
+        const result = await this.fetchLegendAsJson();
 
-      if (result && this.layer.is_filterable_in_legend) {
-        this.legendJson = result;
-        this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
-      } else {
-        try {
-          const legendImageResult = await this.fetchLegendImage(this.layer, this.position, this.user);
-
-          if (legendImageResult) {
-            this.legendImage = legendImageResult.url;
-            this.errorLoadingLegend = legendImageResult.error;
-          }
-        } catch (e) {
-          console.error(e);
+        if (result) {
+          this.legendJson = result;
+          this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
+          return;
         }
+      }
+
+      try {
+        const legendImageResult = await this.fetchLegendImage(this.layer, this.position, this.user);
+
+        if (legendImageResult) {
+          this.legendImage = legendImageResult.url;
+          this.errorLoadingLegend = legendImageResult.error;
+        }
+      } catch (e) {
+        console.error(e);
       }
     },
     getFilterParameter(filterString) {
