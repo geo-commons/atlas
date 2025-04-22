@@ -54,7 +54,7 @@
 import CloseIcon from "@/assets/icons/close-icon.svg";
 import { useGlobalStore } from "@/stores";
 import { AboutPanelData, AboutPanelEmits, MapEvents } from "@/types/models";
-import { computed, defineEmits, defineProps, ref } from "vue";
+import { computed, ref } from "vue";
 import SidePanel from "./SidePanel.vue";
 
 const props = defineProps<AboutPanelData>();
