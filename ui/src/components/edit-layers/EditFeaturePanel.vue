@@ -39,7 +39,7 @@
   <EditLayerActionModal
     :visible="showSaveModal"
     header="Opslaan"
-    :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+    :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
     cancel-label="Annuleren"
     cancel-icon="pi pi-times"
     confirm-label="Opslaan"
@@ -51,7 +51,7 @@
   <EditLayerActionModal
     :visible="showDeleteModal"
     header="Verwijderen"
-    :message="`Wanneer u verwijdert, gaan dit object verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+    :message="`Wanneer u verwijdert, gaan dit object verloren op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
     cancel-label="Annuleren"
     confirm-label="Verwijderen"
     confirm-icon="pi pi-times"
@@ -62,7 +62,7 @@
   <EditLayerActionModal
     :visible="showCancelModal"
     header="Annuleren"
-    :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag ${editLayerStore.highlightedFeatureAndLayer?.layer.name}.`"
+    :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
     cancel-label="Verder met bewerken"
     confirm-label="Bewerken sluiten"
     confirm-icon="pi pi-times"

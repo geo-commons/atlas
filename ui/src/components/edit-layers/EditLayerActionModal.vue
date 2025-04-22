@@ -7,7 +7,7 @@
     :pt="{ header: '!tw-pb-0' }"
     @update:visible="onCancel"
   >
-    <p>{{ message }}</p>
+    <VueMarkdown class="modal__markdown-content" :source="message" />
     <div class="tw-flex tw-items-center tw-gap-2">
       <Button :label="cancelLabel" :icon="cancelIcon" class="tw-flex-auto" outlined @click="onCancel" />
       <Button :label="confirmLabel" :icon="confirmIcon" class="tw-flex-auto" @click="onConfirm" />
@@ -16,6 +16,8 @@
 </template>
 
 <script setup lang="ts">
+import VueMarkdown from "@/components/Markdown";
+
 interface EditLayerActionModalProps {
   visible: boolean;
   message: string;
@@ -31,3 +33,14 @@ interface EditLayerActionModalProps {
 const { visible, message, header, cancelLabel, cancelIcon, confirmLabel, confirmIcon, onCancel, onConfirm } =
   defineProps<EditLayerActionModalProps>();
 </script>
+
+
+<style lang="scss">
+.modal__markdown-content {
+  margin-bottom: 1rem;
+
+  strong {
+    font-weight: 700;
+  }
+}
+</style>

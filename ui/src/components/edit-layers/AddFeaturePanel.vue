@@ -53,7 +53,7 @@
   <EditLayerActionModal
     :visible="showSaveModal"
     header="Opslaan"
-    :message="`Wanneer u doorgaat met opslaan, worden alle eigenschappen en uw getekende object opgeslagen op de laag ${editLayerStore.selectedLayer?.name} in GeoServer.`"
+    :message="`Wanneer u doorgaat met opslaan, worden alle eigenschappen en uw getekende object opgeslagen op de laag **${editLayerStore.selectedLayer?.name}** in GeoServer.`"
     cancel-label="Annuleren"
     cancel-icon="pi pi-times"
     confirm-label="Opslaan"
@@ -66,7 +66,7 @@
     :visible="showCancelModal"
     header="Annuleren"
     :message="`Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
-      op de laag ${editLayerStore.selectedLayer?.name} in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.`"
+      op de laag **${editLayerStore.selectedLayer?.name}** in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.`"
     cancel-label="Verder met bewerken"
     confirm-label="Bewerken sluiten"
     confirm-icon="pi pi-times"
