@@ -139,6 +139,7 @@ watch(
   () => editLayerStore.feature,
   (value, oldValue) => {
     if (oldValue === null && value !== null && !showAddFeaturePanel.value) {
+      editLayerStore.toggleHideOtherPanels()
       showAddFeaturePanel.value = true;
     }
   },

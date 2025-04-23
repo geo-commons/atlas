@@ -137,6 +137,7 @@ watch(
   () => editLayerStore.highlightedFeatureAndLayer?.feature,
   (value) => {
     if (value && !showEditFeaturePanel.value && editLayerStore.editLayerMode === EditLayerMode.EDIT) {
+      editLayerStore.toggleHideOtherPanels()
       showEditFeaturePanel.value = true;
       featureValues.value = value.getProperties();
     }

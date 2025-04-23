@@ -9,6 +9,7 @@ export interface IEditLayerStore {
   geometryType: GeometryType | null;
   visibleLayers: ILayer[];
   selectedLayer: ILayer | null;
+  hideOtherPanels: boolean;
   highlightedFeatureAndLayer: {
     feature: Feature;
     layer: ILayer;
