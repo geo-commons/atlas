@@ -340,6 +340,14 @@ export default {
   &--secondary {
     margin-top: 40px;
   }
+
+  .tools-panel__draw-menu:not(:last-child) .tools-panel__button {
+    border-right: 1px solid var(--color-grey-50);
+
+    &--active {
+      border-right: 1px solid var(--color-primary);
+    }
+  }
 }
 
 .tools-panel__draw-menu {
@@ -348,10 +356,6 @@ export default {
   .tools-panel__button {
     border-radius: 0px !important;
   }
-}
-
-.tools-panel__button {
-  border-right: 1px solid var(--color-grey-50);
 }
 
 .tools-panel__draw-options-menu {
