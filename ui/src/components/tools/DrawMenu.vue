@@ -1,5 +1,5 @@
 <template>
-  <div class="select-menu tools-panel__button-container">
+  <div class="select-menu tools-panel__button-container !tw-border-r-0">
     <button
       v-tippy="{ placement: 'bottom' }"
       class="tools-panel__button"

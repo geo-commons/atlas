@@ -439,7 +439,7 @@ export default {
   }
 
   .tools-panel__draw-bar {
-    display: grid;
+    display: grid !important;
     flex-basis: 20%;
     grid-template-columns: repeat(5, 1fr);
   }
