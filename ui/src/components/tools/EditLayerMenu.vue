@@ -19,20 +19,6 @@
           <div class="tools-panel__draw-menu">
             <button
               v-tippy="{ placement: 'bottom' }"
-              aria-label="Object toevoegen"
-              class="tools-panel__button"
-              :class="{
-                'tools-panel__button--active': editLayerStore.editLayerMode === EditLayerMode.ADD,
-              }"
-              content="Object toevoegen"
-              @click="() => toggleAddEditFeatureMode()"
-            >
-              <AddIcon />
-            </button>
-          </div>
-          <div class="tools-panel__draw-menu">
-            <button
-              v-tippy="{ placement: 'bottom' }"
               aria-label="Object bewerken"
               class="tools-panel__button"
               :class="{
@@ -42,6 +28,20 @@
               @click="() => toggleEditFeatureMode()"
             >
               <EditIcon />
+            </button>
+          </div>
+          <div class="tools-panel__draw-menu">
+            <button
+              v-tippy="{ placement: 'bottom' }"
+              aria-label="Object toevoegen"
+              class="tools-panel__button"
+              :class="{
+                'tools-panel__button--active': editLayerStore.editLayerMode === EditLayerMode.ADD,
+              }"
+              content="Object toevoegen"
+              @click="() => toggleAddEditFeatureMode()"
+            >
+              <AddIcon />
             </button>
           </div>
         </div>
