@@ -23,7 +23,7 @@
     </div>
 
     <template #footer>
-      <div class="tw-flex tw-items-center tw-gap-2">
+      <div class="tw-flex tw-flex-col tw-items-stretch tw-gap-2">
         <Button
           label="Annuleren"
           icon="pi pi-times"
@@ -31,7 +31,20 @@
           outlined
           @click="toggleShowCancelModal"
         ></Button>
-        <SplitButton label="Opslaan" :model="splitButtonItems" @click="submitFormManually"></SplitButton>
+        <Button
+          label="Verwijder object"
+          severity="danger"
+          icon="pi pi-times"
+          class="tw-flex-auto"
+          outlined
+          @click="toggleShowDeleteModal"
+        ></Button>
+        <Button
+          label="Opslaan"
+          icon="pi pi-save"
+          class="tw-flex-auto"
+          @click="submitFormManually"
+        ></Button>
       </div>
     </template>
   </Drawer>
@@ -172,15 +185,6 @@ watch(
 );
 
 // Form logic
-const splitButtonItems = [
-  {
-    label: "Verwijder object",
-    command: () => {
-      toggleShowDeleteModal();
-    },
-  },
-];
-
 defineRule("required", (value: string) => {
   if (!required(value)) {
     return "Dit veld is verplicht";

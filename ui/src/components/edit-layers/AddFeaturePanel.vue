@@ -31,7 +31,7 @@
     </div>
 
     <template #footer>
-      <div class="tw-flex tw-items-center tw-gap-2">
+      <div class="tw-flex tw-flex-col tw-items-stretch tw-gap-2">
         <Button
           label="Annuleren"
           icon="pi pi-times"
