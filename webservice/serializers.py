@@ -246,10 +246,12 @@ class LayerSerializer(serializers.ModelSerializer):
             'linked_data',
             'templates',
             'atlas_groups',
+            'atlas_write_groups',
             'published',
             'templated_properties',
             'dataset',
-            'is_filterable_in_legend'
+            'is_filterable_in_legend',
+            'authenticated_can_mutate',
         ]
 
 
@@ -287,6 +289,10 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         if 'atlas_groups' in validated_data:
             atlas_groups_data = validated_data.pop('atlas_groups')
             instance.atlas_groups.set(atlas_groups_data)
+
+        if 'atlas_write_groups' in validated_data:
+            atlas_write_groups_data = validated_data.pop('atlas_write_groups')
+            instance.atlas_write_groups.set(atlas_write_groups_data)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -372,11 +378,13 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'closed_dataset',
             'ordering',
             'atlas_groups',
+            'atlas_write_groups',
             'published',
             'linked_data',
             'templates',
             'dataset',
-            'is_filterable_in_legend'
+            'is_filterable_in_legend',
+            'authenticated_can_mutate'
         ]
 
 

@@ -63,6 +63,7 @@ export default {
     },
     async saveAuthorization(currentValues) {
       currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
+      currentValues.atlas_write_groups = currentValues.atlas_write_groups[1].map((group) => group.id);
 
       const url = `/atlas/api/v1/authorizations/${this.$route.params.id}/`;
 
@@ -112,7 +113,14 @@ export default {
     setAtlasGroups() {
       const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
       const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      const selectedWritableGroups = this.groups.filter((group) =>
+        this.initialValues.atlas_write_groups.includes(group.id),
+      );
+      const availableWritableGroups = this.groups.filter(
+        (group) => !this.initialValues.atlas_write_groups.includes(group.id),
+      );
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
+      this.initialValues.atlas_write_groups = [availableWritableGroups, selectedWritableGroups];
     },
     getSections() {
       return {
@@ -182,6 +190,14 @@ export default {
               infoText: "Voeg verzoeken toe aan de audit log",
             },
             {
+              label: "Ingelogde gebruikers kunnen resource of laag bewerken",
+              id: "authenticated_can_mutate",
+              name: "AuthenticatedCanMutate",
+              type: "checkbox",
+              required: false,
+              infoText: "Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat de resource of laag muteren",
+            },
+            {
               type: "custom",
             },
             {
@@ -195,10 +211,17 @@ export default {
               infoText: "Maak veldnamen vriendelijk.",
             },
             {
-              label: "Groepen",
-              objectDisplayName: "groepen",
+              label: "Lees groepen",
+              objectDisplayName: "lees groepen",
               id: "atlas_groups",
               name: "atlasGroups",
+              type: "picklist",
+            },
+            {
+              label: "Schrijf groepen",
+              objectDisplayName: "schrijf groepen",
+              id: "atlas_write_groups",
+              name: "atlasWriteGroups",
               type: "picklist",
             },
           ],

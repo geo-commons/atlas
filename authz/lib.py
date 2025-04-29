@@ -20,8 +20,15 @@ def authorize_ows_request(source, request, data):
 
     if len(authorization_rules) > 0:
         for authorization in authorization_rules:
-            if authorization.is_accessible_by(user, request):
-                if authorization.audit_log and data.get('request') in ['GetFeatureInfo', 'GetFeature']:
+            is_transaction = data.get('request') == 'Transaction'
+
+            authorized = ((is_transaction and authorization.is_mutable_by(user, request) and authorization.is_accessible_by(user, request)) or
+                          (not is_transaction and authorization.is_accessible_by(user, request)))
+
+            if authorized:
+                should_log = authorization.audit_log and (is_transaction or data.get('request') in ['GetFeatureInfo', 'GetFeature'])
+
+                if should_log:
                     Log.objects.create(
                         username=user.username if user.is_authenticated else 'anonymous',
                         email=user.email if user.is_authenticated else '',
@@ -50,7 +57,16 @@ def authorize_ows_request(source, request, data):
     ).prefetch_related('atlas_groups')
 
     for layer in layer_rules:
-        if layer.is_accessible_by(user, request):
+        if layer.is_accessible_by(user, request) and data.get('request') not in ['Transaction']:
+            return JsonResponse({'result': True, 'status': 200})
+
+    write_layer_rules = Layer.objects.filter(
+        layer_source=source,
+        layer_name=data.get('resource')
+    ).prefetch_related('atlas_write_groups')
+
+    for layer in write_layer_rules:
+        if layer.is_mutable_by(user, request) and layer.is_accessible_by(user, request) and data.get('request') in ['Transaction']:
             return JsonResponse({'result': True, 'status': 200})
 
     return JsonResponse({
