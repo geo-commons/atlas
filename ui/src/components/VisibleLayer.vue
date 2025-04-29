@@ -2,7 +2,7 @@
   <li class="layer-wrapper">
     <ExpandButton :title="layer.title" :is-open="isOpen">
       <template #header>
-        <div class="buttons">
+        <div v-if="!sortLayers" class="tw-flex tw-items-center">
           <div v-if="layerOpacityIsChangable" class="opacity-wrapper">
             <input
               v-if="showSlider"
@@ -63,6 +63,28 @@
             <CloseCircleIcon />
           </button>
         </div>
+        <div v-else class="tw-flex tw-items-center">
+          <button
+            v-if="layerIsClosable"
+            v-tippy="{ placement: 'right' }"
+            class="iconbutton __round"
+            content="todo"
+            aria-label="todo"
+            @click="toggleLayer"
+          >
+            <ArrowUpIcon class="icon __smedium" />
+          </button>
+          <button
+            v-if="layerIsClosable"
+            v-tippy="{ placement: 'right' }"
+            class="iconbutton __round"
+            content="todo"
+            aria-label="todo laag"
+            @click="toggleLayer"
+          >
+            <ArrowDownIcon class="icon __smedium" />
+          </button>
+        </div>
       </template>
 
       <template #default>
@@ -108,6 +130,8 @@
 <script>
 import ExpandButton from "./ExpandButton";
 import LayerInfo from "./LayerInfo";
+import ArrowUpIcon from "../assets/icons/arrow-up-icon.svg";
+import ArrowDownIcon from "../assets/icons/arrow-down-icon.svg";
 import CloseCircleIcon from "../assets/icons/close-circle-icon.svg";
 import OpacityIcon from "../assets/icons/opacity-icon.svg";
 import SelectableIcon from "../assets/icons/selectable-icon.svg";
@@ -121,6 +145,8 @@ export default {
   components: {
     ExpandButton,
     LayerInfo,
+    ArrowUpIcon,
+    ArrowDownIcon,
     CloseCircleIcon,
     OpacityIcon,
     SelectableIcon,
@@ -134,6 +160,7 @@ export default {
     isOpen: Boolean,
     user: Object,
     mapId: String,
+    sortLayers: Boolean,
   },
   data() {
     return {
@@ -339,11 +366,6 @@ export default {
 .content {
   padding: 4px 8px 4px;
   overflow-x: auto;
-}
-
-.buttons {
-  display: flex;
-  align-items: center;
 }
 
 input[type="number"] {

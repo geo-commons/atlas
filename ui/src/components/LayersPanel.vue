@@ -170,10 +170,19 @@
           :layer-opacity-is-changable="!isEmbed"
           :is-open="i === 0"
           :user="user"
+          :sort-layers="sortLayers"
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
           @toggle-is-selectable="onToggleIsSelectable"
         />
+        <li class="layer-wrapper">
+          <div class="tw-flex tw-justify-center tw-p-3">
+            <Button outlined class="tw-w-full" @click="onToggleSortLayers"
+              >Pas kaartlaag volgorde aan
+              <SortIcon class="icon __smedium" />
+            </Button>
+          </div>
+        </li>
       </ul>
     </transition>
   </div>
@@ -189,10 +198,12 @@ import LayerFit from "./LayerFit";
 import LayerInfo from "./LayerInfo";
 import ZoomInIcon from "../assets/icons/zoom-in-icon.svg";
 import ZoomOutIcon from "../assets/icons/zoom-out-icon.svg";
+import SortIcon from "@/assets/icons/sort-icon.svg";
 
 export default {
   name: "LayersPanel",
   components: {
+    SortIcon,
     ExpandButton,
     VisibleLayer,
     LayerAuthentication,
@@ -218,6 +229,7 @@ export default {
     return {
       panel: visibleLayers.length > 0 ? "activeLayers" : this.initiallyShowLayerList ? "layers" : "",
       searchQuery: "",
+      sortLayers: false,
     };
   },
   computed: {
@@ -313,6 +325,9 @@ export default {
       if (!selectedLayer.is_visible) {
         this.$emit("toggle-layer", [selectedLayer.id, true]);
       }
+    },
+    onToggleSortLayers() {
+      this.sortLayers = !this.sortLayers;
     },
   },
 };
