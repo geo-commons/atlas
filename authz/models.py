@@ -18,11 +18,15 @@ class Authorization(models.Model):
         'Vereis inlog van gebruiker', default=True)
     only_internal = models.BooleanField(
         'Alleen intern zichtbaar', default=True, help_text='Alleen zichtbaar binnen interne omgeving.')
+    authenticated_can_mutate = models.BooleanField('Ingelogde gebruikers kunnen de laag of resource muteren', default=False,
+        help_text="Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat de laag of resource muteren")
 
     audit_log = models.BooleanField(
         default=True, help_text='Voeg verzoeken toe aan de audit log')
     atlas_groups = models.ManyToManyField('user_management.AtlasGroup', blank=True, verbose_name='Groepen',
                                           help_text='De inhoud van dit endpoint kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
+    atlas_write_groups = models.ManyToManyField('user_management.AtlasGroup', blank=True, verbose_name='Groepen', related_name='atlas_authz_write_groups',
+                                          help_text="De inhoud van dit endpoint kan alleen bewerkt worden als de gebruiker lid is van een van deze groepen.")
     response_filter = models.TextField(
         null=True, blank=True, help_text='Voeg een jq filter toe om een data response te filteren, in het geval van WMS GetFeatureInfo, WFS GetFeature en REST')
 
@@ -51,6 +55,21 @@ class Authorization(models.Model):
         user_groups = list(user.atlas_groups.all())
         return any(group for group in self.atlas_groups.all() if group in user_groups)
 
+    def is_mutable_by(self, user, request):
+        if not is_internal(request) and self.only_internal:
+            return False
+
+        if not user.is_authenticated:
+            return False
+
+        if self.authenticated_can_mutate:
+            return True
+
+        if not self.atlas_write_groups.exists():
+            return False
+
+        user_groups = list(user.atlas_groups.all())
+        return any(group for group in self.atlas_write_groups.all() if group in user_groups)
 
 class Log(models.Model):
     username = models.CharField(max_length=255)
