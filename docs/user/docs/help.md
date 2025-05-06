@@ -76,7 +76,13 @@ Wanneer op een locatie zonder adres is geklikt, verschijnt het coördinaat in he
 
 Als (WFS) kaartlagen actief zijn, kunt je van bevraagbare objecten de details opvragen. Klik hiervoor in de kaart om een locatie te selecteren. Links wordt een paneel geopend met daarin de details van alle objecten die op de aangeklikte locatie zijn gevonden.
 
-![toondetails1](images/toondetails1.png)
+Per object kan de mogelijkheid bestaan om één van de volgende opties te gebruiken:
+
+* **Maak selectie**: Met de knop *"Maak selectie"* is het mogelijk om de geometrie die bij het object hoort te gebruiken als geometrisch filter. In de dataweergave wordt dan alleen de data getoond die zich specifiek binnen deze geometrie bevindt.
+* **Bekijk**: Met de knop *"Bekijk"* kun je inzoomen op de geometrie die bij het object hoort. Dit helpt om snel het betreffende object op de kaart te lokaliseren.
+* **Kopieer**: Met de knop *"Kopieer"* kun je alle data die bij het object hoort kopiëren in een net en gestructureerd formaat, zodat je deze eenvoudig kunt hergebruiken of delen.
+
+![toondetails1](images/detail-paneel-atlas.png)
 
 Met de Toon details knop kan het detail paneel ingeklapt en uitgeklapt worden.
 
@@ -128,11 +134,8 @@ Wanneer meerdere externe viewers zijn geconfigureerd kan hier gekozen worden voo
 
 <img src="../images/externe_viewer.png" alt="Externe viewer selecteren" title="Externe viewer selecteren" width="200" />
 
-Gemeente Purmerend heeft binnen de interne organisatie de beschikking over de obliek en panoramabeelden van
-<a href="https://kavel10.nl/" target="_blank" rel="noopener noreferrer">Kavel-10</a> en
-<a href="https://www.cyclomedia.com/nl/" target="_blank" rel="noopener noreferrer">Cyclomedia</a> en Street View van Google. Extern wordt alleen Google Streetview getoond.
-
 ![panorama-groot-sluit](images/panorama-groot-sluit.png)
+
 Het panorama scherm kan vergroot worden en gesloten worden met de getoonde knoppen. De functionaliteiten van de externe viewers worden hier verder niet toegelicht. Het openen van de obliekfoto kan met de meest rechtse knop.
 
 ![rondkijkfoto2](images/rondkijkfoto2.png)
@@ -146,7 +149,9 @@ Met de meetknop kunnen afstanden en oppervlaktes in de kaart gemeten worden. Kie
 
 ##Tekenen
 
-<img src="../images/tekenfunctie.png" alt="tekenfunctie" title="het tekensymbool" width="400" /> Na [inloggen](./help.md#inloggen-binnen-atlas-intern-en-extern) binnen Atlas is, afhankelijk van de configuratie, de tekenfunctie zichtbaar in het extra-instellingen menu.
+<img src="../images/tekenfunctie.png" alt="tekenfunctie" title="het tekensymbool" width="400" />
+
+Na [inloggen](./help.md#inloggen-binnen-atlas-intern-en-extern) binnen Atlas is, afhankelijk van de configuratie, de tekenfunctie zichtbaar in het extra-instellingen menu.
 Met de tekenfunctie kunnen punten, lijnen en polygonen getekend worden.
 Daarnaast is het mogelijk met tekst labels te plaatsen.
 De tekenfunctie is bedoeld om "notities" in een kaartlaag te maken ter verduidelijking.
@@ -170,6 +175,7 @@ Het klikken op een van de keuzes activeert deze keuze.
 ##Toon data
 
 ![zoekenopdata](images/zoekenopdata.png)
+
 Wanneer binnen Atlas een WFS kaartlaag geladen is (een kaartlaag met aanklikbare objecten), verschijnt linksboven in het scherm, naast het [zoek adres](./help.md#zoek-adres) veld, de knop Toon data.
 Bij het openen van het zoek-op-data paneel worden de tabellen met gegevens van alle zichtbare lagen geopend. Klik op een laagnaam om de tabel open te klappen.
 Binnen de tabel kan gezocht worden op een aantal, door de beheerder ingestelde, zoekvelden. Na intypen van een zoekterm worden de resultaten per kaartlaag in het scherm weergegeven. Via het symbool Bekijk op kaart kan per gevonden resultaat naar het desbetreffende object in de kaart ingezoomd worden.
@@ -223,12 +229,30 @@ Bij het aanmaken van het PDF bestand kan een aantal opties meegegeven worden:
 *Toon schaal*: Wanneer dit JA is dan wodt de schaal linksonder in het PDF document weergegeven. 
 
 
+##Kaartlagen vergelijken
+<img src="../images/kaartlaag-vergelijken-knop.png" alt="Kaartlaag vergelijken knop" title="Kaartlaag vergelijken knop" width="200" />
+
+Binnen Atlas is het mogelijk om kaartlagen met elkaar te vergelijken. Zo kun je bijvoorbeeld een luchtfoto uit 1990 naast een luchtfoto uit 2022 leggen. Deze functionaliteit activeer je via de knop "Vergelijk kaartlagen" (zie afbeelding hierboven).
+
+Wanneer je op deze knop klikt, opent er een menu aan de zijkant van je scherm (zie afbeelding hieronder). Hier kun je twee kaartlagen selecteren om te vergelijken: één voor de linkerhelft en één voor de rechterhelft van het kaartbeeld.
+
+Zodra je de kaartlagen hebt gekozen, kun je direct beginnen met vergelijken. Wil je het instellingspaneel tijdelijk verbergen, klik dan op "Sluit". Wil je stoppen met het vergelijken van kaartlagen, klik dan op "Stop vergelijken".
+
+Onderaan in het midden van het scherm bevindt zich een slider. Met deze slider bepaal je welk deel van de kaartlaag zichtbaar is aan de linker- of rechterkant. Zo kun je heel precies en gedetailleerd kaartlagen met elkaar vergelijken.
+
+<img src="../images/kaartlaag-vergelijken-menu.png" alt="Kaartlaag vergelijken menu" title="Kaartlaag vergelijken menu" width="800" />
+
+## Herstel knop
+<img src="../images/herstel-knop-atlas.png" alt="Herstel knop" title="Herstel knop" width="400" />
+
+In Atlas is het mogelijk om snel terug te keren naar het basis kaartscherm, bijvoorbeeld vanuit een samengesteld kaartbeeld met geselecteerde kaartlagen, actieve filters, tekeningen en/of selecties. Dit voorkomt dat je al je eerdere handelingen handmatig moet terugdraaien.
+
+Hiervoor gebruik je de knop "Herstel" (zie screenshot hierboven). Met één klik zet je alle wijzigingen terug naar de oorspronkelijke instellingen, zodat je weer met een schoon kaartbeeld kunt beginnen.
+
 ##Huidige kaartscherm embedden in een andere webpagina
 
 In het \"Knoppen/Tools\" gedeelte van het scherm (rechtsboven) vind je de functie Insluiten. Door hierop te klikken verschijnt het
 huidige scherm met de HTML code om deze op te vragen. Gebruik de code om deze kaartweergave met alle geselecteerde lagen weer te geven in een andere webpagina.
-
-
 
 ##Huidige kaartscherm delen met een collega
 

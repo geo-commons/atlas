@@ -10,5 +10,8 @@
 2. Mention any required setup, dependencies, or test data.
 3. Highlight expected outcomes.
 
+## Checks
+- [ ] Updated documentation when implementing new features or modifying existing ones. 
+
 ## Additional Notes (Optional)
 - Include any relevant notes, edge cases, or potential impacts.
