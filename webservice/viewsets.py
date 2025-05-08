@@ -181,7 +181,7 @@ class TableViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
 
 
 class LogViewSet(viewsets.ModelViewSet):
-    http_method_names = ['get', 'delete']
+    http_method_names = ['get']
     permission_classes = [permissions.IsAdminUser]
     queryset = Log.objects.all()
     serializer_class = LogSerializer

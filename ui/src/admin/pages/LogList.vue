@@ -90,9 +90,12 @@ const getTableFilters = (): Array<TableFilter> => {
     plural-name="Logs"
     api-name="logs"
     :enable-sort="false"
+    :enable-delete="false"
+    :enable-edit="false"
     :enable-create-object="false"
     :get-objects="getLogs"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"
+    :view-base-url="'/atlas/admin/#/logs/update'"
   />
 </template>
