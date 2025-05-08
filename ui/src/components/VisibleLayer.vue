@@ -65,24 +65,22 @@
         </div>
         <div v-else class="tw-flex tw-items-center">
           <button
-            v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
             class="iconbutton __round"
-            content="omhoog"
-            aria-label="todo"
+            content="Verplaats kaartlaag naar boven"
+            aria-label="Verplaats kaartlaag naar boven"
             @click="changeLayerOrder('up')"
           >
-            <ArrowUpIcon class="icon __smedium" />
+            <ArrowUpIcon class="icon __small" />
           </button>
           <button
-            v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
             class="iconbutton __round"
-            content="omlaag"
-            aria-label="todo laag"
+            content="Verplaats kaartlaag naar beneden"
+            aria-label="Verplaats kaartlaag naar beneden"
             @click="changeLayerOrder('down')"
           >
-            <ArrowDownIcon class="icon __smedium" />
+            <ArrowDownIcon class="icon __small" />
           </button>
         </div>
       </template>

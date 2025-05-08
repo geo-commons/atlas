@@ -178,8 +178,8 @@
         />
         <li class="layer-wrapper">
           <div class="tw-flex tw-justify-center tw-p-3">
-            <Button outlined class="tw-w-full" @click="onToggleSortLayers"
-              >Pas kaartlaag volgorde aan
+            <Button :outlined="!sortLayers" class="tw-w-full" @click="onToggleSortLayers">
+              {{ sortLayers ? "Stop met volgorde aanpassen" : "Pas kaartlaag volgorde aan" }}
               <SortIcon class="icon __smedium" />
             </Button>
           </div>

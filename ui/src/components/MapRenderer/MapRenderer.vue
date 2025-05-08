@@ -1022,7 +1022,47 @@ export default {
       this.tool = "SELECT_FEATURE";
     },
     onChangeLayerOrder(layerOrderDetails) {
-      console.log(layerOrderDetails);
+      const layerId = layerOrderDetails.layer;
+      const direction = layerOrderDetails.direction;
+
+      const index = this.layers.findIndex((layer) => layer.id === layerId);
+      const visibleLayerIndex = this.visibleLayers.findIndex((layer) => layer.id === layerId);
+
+      if (index === -1 || visibleLayerIndex === -1) {
+        console.warn(`Layer with ID ${layerId} not found`);
+        return;
+      }
+
+      // Boundary check - don't move if already at top/bottom --> ook afvangen in frontend
+      if (
+        (direction === "down" && visibleLayerIndex >= this.visibleLayers.length - 1) ||
+        (direction === "up" && visibleLayerIndex <= 0)
+      ) {
+        console.warn("Layer already at the edge, can't move further");
+        return;
+      }
+
+      // Calculate new index, ensuring it stays within bounds
+      const newVisibleLayerIndex = direction === "down" ? visibleLayerIndex + 1 : visibleLayerIndex - 1;
+
+      const layerToReplace = this.visibleLayers[newVisibleLayerIndex];
+
+      const layerToReplaceIndex = this.layers.findIndex((layer) => layer.id === layerToReplace.id);
+
+      const newerIndex = direction === "down" ? layerToReplaceIndex + 1 : layerToReplaceIndex - 1;
+
+      const layerToMove = this.layers[index];
+
+      // Create a new array with the reordered layers to maintain reactivity
+      // We need to create a completely new array for Vue to detect the change properly
+      const newLayers = [...this.layers];
+      newLayers.splice(index, 1);
+      newLayers.splice(newerIndex, 0, layerToMove);
+      this.layers = newLayers;
+
+      this.visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
+
+      this.$emit("layers-changed", this.layers);
     },
   },
 };
