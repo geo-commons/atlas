@@ -264,6 +264,7 @@
           @on-fit="(layer) => $refs.map.fit(layer)"
           @set-position="setPosition"
           @toggle-is-selectable="onToggleIsSelectable"
+          @change-layer-order="onChangeLayerOrder"
         />
       </div>
       <div class="bottom-center-panels">
@@ -1019,6 +1020,9 @@ export default {
       this.showDataPanel = true;
       this.$refs.map.fit(geometry, { maxZoom: 19, duration: 1000 });
       this.tool = "SELECT_FEATURE";
+    },
+    onChangeLayerOrder(layerOrderDetails) {
+      console.log(layerOrderDetails);
     },
   },
 };

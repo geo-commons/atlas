@@ -68,9 +68,9 @@
             v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
             class="iconbutton __round"
-            content="todo"
+            content="omhoog"
             aria-label="todo"
-            @click="toggleLayer"
+            @click="changeLayerOrder('up')"
           >
             <ArrowUpIcon class="icon __smedium" />
           </button>
@@ -78,9 +78,9 @@
             v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
             class="iconbutton __round"
-            content="todo"
+            content="omlaag"
             aria-label="todo laag"
-            @click="toggleLayer"
+            @click="changeLayerOrder('down')"
           >
             <ArrowDownIcon class="icon __smedium" />
           </button>
@@ -320,6 +320,9 @@ export default {
       };
 
       this.store.updateFiltersForLayer(this.layer.id, filters);
+    },
+    changeLayerOrder(direction) {
+      this.$emit("change-layer-order", { layer: this.layer.id, direction: direction });
     },
   },
 };

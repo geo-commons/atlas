@@ -174,6 +174,7 @@
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
           @toggle-is-selectable="onToggleIsSelectable"
+          @change-layer-order="onChangeLayerOrder"
         />
         <li class="layer-wrapper">
           <div class="tw-flex tw-justify-center tw-p-3">
@@ -328,6 +329,9 @@ export default {
     },
     onToggleSortLayers() {
       this.sortLayers = !this.sortLayers;
+    },
+    onChangeLayerOrder(layerOrderDetails) {
+      this.$emit("change-layer-order", layerOrderDetails);
     },
   },
 };
