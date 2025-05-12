@@ -19,7 +19,7 @@
             />
             <button
               v-tippy
-              class="iconbutton __round"
+              class="iconbutton __xs __round"
               :class="{ isActive: showSlider }"
               content="Transparantie"
               aria-label="Toon transparantie schuifregelaar"
@@ -43,7 +43,7 @@
           <button
             v-if="initialIsSelectable"
             v-tippy="{ placement: 'right' }"
-            class="iconbutton __round"
+            class="iconbutton __xs __round"
             :content="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"
             :aria-label="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"
             @click="toggleLayerSelectable"
@@ -55,7 +55,7 @@
           <button
             v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
-            class="iconbutton __round"
+            class="iconbutton __xs __round"
             content="Sluit"
             aria-label="Sluit laag"
             @click="toggleLayer"
@@ -66,7 +66,7 @@
         <div v-else class="tw-flex tw-items-center">
           <button
             v-tippy="{ placement: 'right' }"
-            class="iconbutton __round"
+            class="iconbutton __xs __round"
             content="Verplaats kaartlaag naar boven"
             aria-label="Verplaats kaartlaag naar boven"
             @click="changeLayerOrder('up')"
@@ -75,7 +75,7 @@
           </button>
           <button
             v-tippy="{ placement: 'right' }"
-            class="iconbutton __round"
+            class="iconbutton __xs __round"
             content="Verplaats kaartlaag naar beneden"
             aria-label="Verplaats kaartlaag naar beneden"
             @click="changeLayerOrder('down')"
@@ -357,11 +357,6 @@ export default {
   flex-shrink: 0;
   width: 80px;
   margin: 0;
-}
-
-.iconbutton {
-  width: 24px;
-  height: 24px;
 }
 
 .content {

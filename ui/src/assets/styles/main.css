@@ -104,6 +104,11 @@ svg {
   height: 28px;
 }
 
+.iconbutton.__xs {
+  width: 24px;
+  height: 24px;
+}
+
 .iconbutton.__normal {
   width: 40px;
   height: 40px;

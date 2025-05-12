@@ -160,6 +160,20 @@
 
     <transition name="fade">
       <ul v-if="visibleLayers.length > 0 && panel === 'activeLayers'" id="visibleLayers" class="visible-layers">
+        <li class="tool-bar">
+          <div class="tw-flex tw-justify-end">
+            <button
+              v-tippy="{ placement: 'right' }"
+              class="iconbutton __xs __round"
+              :class="{ isActive: sortLayers }"
+              :content="sortLayers ? 'Stop met volgorde aanpassen' : 'Pas kaartlaag volgorde aan'"
+              :aria-label="sortLayers ? 'Stop met volgorde aanpassen' : 'Pas kaartlaag volgorde aan'"
+              @click="onToggleSortLayers"
+            >
+              <SortIcon class="icon __smedium" />
+            </button>
+          </div>
+        </li>
         <VisibleLayer
           v-for="(layer, i) in visibleLayers"
           :key="layer.id"
@@ -176,14 +190,6 @@
           @toggle-is-selectable="onToggleIsSelectable"
           @change-layer-order="onChangeLayerOrder"
         />
-        <li class="layer-wrapper">
-          <div class="tw-flex tw-justify-center tw-p-3">
-            <Button :outlined="!sortLayers" class="tw-w-full" @click="onToggleSortLayers">
-              {{ sortLayers ? "Stop met volgorde aanpassen" : "Pas kaartlaag volgorde aan" }}
-              <SortIcon class="icon __smedium" />
-            </Button>
-          </div>
-        </li>
       </ul>
     </transition>
   </div>
@@ -490,5 +496,10 @@ export default {
     bottom: calc(var(--width-button-large) + 60px);
     max-height: calc((100 * var(--vh)) - ((var(--width-button-large) * 2) + (var(--padding-screen) * 3)) - 60px);
   }
+}
+
+.tool-bar {
+  border-bottom: 1px solid var(--color-grey-50);
+  padding: 6px 0 6px 0;
 }
 </style>
