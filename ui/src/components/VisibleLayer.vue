@@ -1,6 +1,6 @@
 <template>
   <li class="layer-wrapper">
-    <ExpandButton :title="layer.title" :is-open="isOpen">
+    <ExpandButton :title="layer.title" :is-open="isOpen" @show-content="onToggleOpen">
       <template #header>
         <div v-if="!sortLayers" class="tw-flex tw-items-center">
           <div v-if="layerOpacityIsChangable" class="opacity-wrapper">
@@ -321,6 +321,9 @@ export default {
     },
     changeLayerOrder(direction) {
       this.$emit("change-layer-order", { layer: this.layer.id, direction: direction });
+    },
+    onToggleOpen(isOpen) {
+      this.$emit("toggle-is-open", { layerId: this.layer.id, isOpen });
     },
   },
 };

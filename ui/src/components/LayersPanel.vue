@@ -11,7 +11,7 @@
         <button
           v-if="!isEmbed"
           v-tippy
-          class="iconbutton"
+          class="iconbutton __map"
           :class="{ isActive: panel === 'layers' }"
           content="Alle lagen"
           aria-label="Toon alle lagen"
@@ -31,7 +31,7 @@
         <button
           v-if="visibleLayers.length > 0"
           v-tippy
-          class="iconbutton"
+          class="iconbutton __map"
           :tabindex="visibleLayers.length > 0 ? 0 : -1"
           :class="{ isActive: panel === 'activeLayers' }"
           content="Zichtbare lagen"
@@ -160,8 +160,29 @@
 
     <transition name="fade">
       <ul v-if="visibleLayers.length > 0 && panel === 'activeLayers'" id="visibleLayers" class="visible-layers">
-        <li class="tool-bar">
-          <div class="tw-flex tw-justify-end">
+        <li v-if="config.features.sortLayer" class="tool-bar">
+          <div class="tw-flex tw-justify-between tw-gap-1">
+            <div class="tw-flex">
+              <button
+                v-tippy="{ placement: 'right' }"
+                class="iconbutton __xs __round"
+                content="Klap alle legenda's uit"
+                aria-label="Klap alle legenda's uit"
+                @click="openAllLayers"
+              >
+                <OpenAllIcon class="icon __smedium" />
+              </button>
+              <button
+                v-tippy="{ placement: 'right' }"
+                class="iconbutton __xs __round"
+                content="Klap alle legenda's in"
+                aria-label="Klap alle legenda's in"
+                @click="closeAllLayers"
+              >
+                <CollapseAllIcon class="icon __smedium" />
+              </button>
+            </div>
+
             <button
               v-tippy="{ placement: 'right' }"
               class="iconbutton __xs __round"
@@ -182,13 +203,14 @@
           :layer="layer"
           :layer-is-closable="!isEmbed"
           :layer-opacity-is-changable="!isEmbed"
-          :is-open="i === 0"
+          :is-open="layersOpen[layer.id] !== undefined ? layersOpen[layer.id] : i === 0"
           :user="user"
           :sort-layers="sortLayers"
           @set-layer-opacity="setLayerOpacity"
           @toggle-layer="onSelectLayer"
           @toggle-is-selectable="onToggleIsSelectable"
           @change-layer-order="onChangeLayerOrder"
+          @toggle-is-open="onToggleLayerOpen"
         />
       </ul>
     </transition>
@@ -205,11 +227,17 @@ import LayerFit from "./LayerFit";
 import LayerInfo from "./LayerInfo";
 import ZoomInIcon from "../assets/icons/zoom-in-icon.svg";
 import ZoomOutIcon from "../assets/icons/zoom-out-icon.svg";
+import CollapseAllIcon from "@/assets/icons/collapse-all-icon.svg";
+import OpenAllIcon from "@/assets/icons/open-all-icon.svg";
 import SortIcon from "@/assets/icons/sort-icon.svg";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "LayersPanel",
   components: {
+    CollapseAllIcon,
+    OpenAllIcon,
     SortIcon,
     ExpandButton,
     VisibleLayer,
@@ -237,9 +265,11 @@ export default {
       panel: visibleLayers.length > 0 ? "activeLayers" : this.initiallyShowLayerList ? "layers" : "",
       searchQuery: "",
       sortLayers: false,
+      layersOpen: {},
     };
   },
   computed: {
+    ...mapState(useGlobalStore, ["config"]),
     categories() {
       let categories = [];
 
@@ -294,6 +324,12 @@ export default {
       return this.layers.filter((layer) => layer.category && layer.is_visible);
     },
   },
+  mounted() {
+    // Initialize layersOpen with the first layer open
+    if (this.visibleLayers.length > 0) {
+      this.layersOpen[this.visibleLayers[0].id] = true;
+    }
+  },
   methods: {
     togglePanel(selectedPanel) {
       if (this.panel === selectedPanel) {
@@ -339,6 +375,21 @@ export default {
     onChangeLayerOrder(layerOrderDetails) {
       this.$emit("change-layer-order", layerOrderDetails);
     },
+    openAllLayers() {
+      this.visibleLayers.forEach((layer) => {
+        this.layersOpen[layer.id] = true;
+      });
+      this.$forceUpdate();
+    },
+    closeAllLayers() {
+      this.visibleLayers.forEach((layer) => {
+        this.layersOpen[layer.id] = false;
+      });
+      this.$forceUpdate();
+    },
+    onToggleLayerOpen({ layerId, isOpen }) {
+      this.layersOpen[layerId] = isOpen;
+    },
   },
 };
 </script>
@@ -369,13 +420,13 @@ export default {
   width: calc(var(--width-button-large) * 2 + 1px);
 }
 
-.iconbutton {
+.iconbutton.__map {
   position: relative;
   width: var(--width-button-large);
   height: var(--width-button-large);
 }
 
-.iconbutton:not(:last-child) {
+.iconbutton.__map:not(:last-child) {
   box-sizing: content-box;
   border-right: 1px solid var(--color-grey-50);
 }

@@ -200,6 +200,12 @@ export default {
               type: "checkbox",
             },
             {
+              label: "Sorteer kaartlagen in de viewer",
+              id: "FEATURE_SORT_LAYER",
+              name: "featureSortLayer",
+              type: "checkbox",
+            },
+            {
               label: "Zet oude beheerpaneel uit",
               id: "FEATURE_DISABLE_ADMIN1",
               name: "featureDisableAdmin1",

@@ -295,14 +295,15 @@ CONSTANCE_CONFIG = {
     'POSITION_CENTER_Y': (505834, 'Het centrum Y-coordinaat van de opstartpositie'),
     'SUGGEST_MUNICIPALITIES': ('purmerend,beemster',
                                'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
-    'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico')),
-    'MATOMO_URL': ('', ('Configureer de URL van Matomo om statistieken bij te houden')),
-    'MATOMO_SITE_ID': ('', ('Configureer het site ID van Matomo om statistieken bij te houden')),
-    'MAP_AREA': ('', ('Configureer een gebied dat standaard uitgelicht wordt op de kaart')),
-    'FEATURE_PORTAL': (False, ('Portaalfunctionaliteit')),
-    'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
-    'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
-    'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
+    'FAVICON_URL': ('', 'Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico'),
+    'MATOMO_URL': ('', 'Configureer de URL van Matomo om statistieken bij te houden'),
+    'MATOMO_SITE_ID': ('', 'Configureer het site ID van Matomo om statistieken bij te houden'),
+    'MAP_AREA': ('', 'Configureer een gebied dat standaard uitgelicht wordt op de kaart'),
+    'FEATURE_PORTAL': (False, 'Portaalfunctionaliteit'),
+    'FEATURE_PRINT': (False, 'Printfunctionaliteit'),
+    'FEATURE_DRAW': (False, 'Tekenfunctionaliteit'),
+    'FEATURE_SORT_LAYER': (False, 'Sorteer kaartlagen in de viewer'),
+    'FEATURE_DISABLE_ADMIN1': (False, 'Zet admin1 uit'),
     'ORGANIZATION_IMAGE': (
         '', 'Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
     'ORGANIZATION_PRIMARY_COLOR': (
@@ -333,6 +334,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'FEATURE_PORTAL',
         'FEATURE_PRINT',
         'FEATURE_DRAW',
+        'FEATURE_SORT_LAYER',
+        'FEATURE_LAYER_TOOLBAR',
         "FEATURE_DISABLE_ADMIN1"
     ),
     '5. Portaal configuratie': (
