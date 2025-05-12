@@ -535,11 +535,11 @@ export default {
               id: "layer_name",
               name: "LayerName",
               type: "layer-select",
-              required: true,
               placeholder: "laag",
               sourceField: "source_id",
               options: this.sources,
               infoText: "De naam van de laag op de geoserver.",
+              contains_colon: true
             },
             {
               label: "Brontype",
