@@ -26,22 +26,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const data = JSON.parse(document.querySelector("#app-data").innerHTML);
   const settings = getSettingsFromPath(data.config);
-  console.log("settings.visibleLayers", settings.visibleLayers);
-  const layers = data.layers.map((layer) => {
-    if (layer.is_base) {
-      return {
-        ...layer,
-        is_visible: settings.visibleBase ? settings.visibleBase === layer.id : layer.is_visible,
-      };
-    }
+  const layers = data.layers
+    .map((layer) => {
+      if (layer.is_base) {
+        return {
+          ...layer,
+          is_visible: settings.visibleBase ? settings.visibleBase === layer.id : layer.is_visible,
+        };
+      }
 
-    if (!layer.is_base) {
-      return {
-        ...layer,
-        is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
-      };
-    }
-  });
+      if (!layer.is_base) {
+        return {
+          ...layer,
+          is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
+        };
+      }
+    })
+    .sort((a, b) => {
+      if (!settings.visibleLayers) return 0;
+
+      // Get indices in visibleLayers, defaulting to a high number if not found
+      const indexA = settings.visibleLayers.indexOf(a.id);
+      const indexB = settings.visibleLayers.indexOf(b.id);
+
+      // If both layers are in visibleLayers, sort by their order
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+
+      // If only one layer is in visibleLayers, prioritize that one
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+
+      // If neither layer is in visibleLayers, maintain original order
+      return 0;
+    });
 
   const initialState = {
     isEmbed: data.is_embed,
