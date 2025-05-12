@@ -143,6 +143,7 @@ export default {
               type: "text",
               required: true,
               infoText: "Naam van de laag of de resource",
+              contains_colon: true
             },
             {
               label: "Beschrijving",
