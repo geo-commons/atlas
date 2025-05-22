@@ -1,5 +1,6 @@
 <template>
   <Spinner v-if="loading" />
+  <div v-else-if="error && errorMessage">{{ errorMessage }}</div>
   <div v-else-if="error">Er is iets fout gegaan bij het ophalen van de data...</div>
   <div v-else class="filter-table-container">
     <div class="filter-container">
@@ -115,6 +116,7 @@ import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useMapStore } from "@/stores/map_store";
+import { WKT } from "ol/format";
 
 export default {
   name: "FeatureTable",
@@ -158,6 +160,7 @@ export default {
         pageCount: 4,
       },
       error: false,
+      errorMessage: null,
       loading: true,
     };
   },
@@ -229,6 +232,7 @@ export default {
   methods: {
     async fetchFeatures() {
       this.error = false;
+      this.errorMessage = null;
 
       const params = new URLSearchParams([
         ["service", "WFS"],
@@ -259,10 +263,19 @@ export default {
       }
 
       if (this.selectedArea) {
-        const geometry = this.getFilterGeometry();
+        const wkt = new WKT();
+        const geom = wkt.writeGeometry(this.selectedArea);
 
-        if (geometry) {
-          filters.push(`INTERSECTS(geom,${geometry})`);
+        const fullFilter = `WITHIN(geom,${geom})`;
+        const encodedLength = encodeURIComponent(fullFilter).length;
+        if (encodedLength <= 32000) {
+          filters.push(fullFilter);
+        } else {
+          this.error = true;
+          this.errorMessage =
+            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.";
+          this.loading = false;
+          return;
         }
       }
 
@@ -282,17 +295,10 @@ export default {
 
       try {
         const url = new URL(this.layer.url);
+        url.search = params.toString();
 
         const fetchParams = getFetchParameters(this.layer, this.user);
-
-        const result = await fetch(url.toString(), {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            ...fetchParams.headers, // Include Authorization if present
-          },
-          body: params.toString(),
-        });
+        const result = await fetch(url.toString(), fetchParams);
 
         const data = await result.json();
 
@@ -418,10 +424,19 @@ export default {
       }
 
       if (this.selectedArea) {
-        const geometry = this.getFilterGeometry();
+        const wkt = new WKT();
+        const geom = wkt.writeGeometry(this.selectedArea);
 
-        if (geometry) {
-          filters.push(`INTERSECTS(geom,${geometry})`);
+        const fullFilter = `WITHIN(geom,${geom})`;
+        const encodedLength = encodeURIComponent(fullFilter).length;
+        if (encodedLength <= 32000) {
+          filters.push(fullFilter);
+        } else {
+          this.error = true;
+          this.errorMessage =
+            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.";
+          this.loading = false;
+          return;
         }
       }
 
@@ -441,22 +456,13 @@ export default {
 
       try {
         const url = new URL(this.layer.url);
+        url.search = params.toString();
 
         const fetchParams = getFetchParameters(this.layer, this.user);
 
-        const result = await fetch(url.toString(), {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            ...fetchParams.headers, // Include Authorization if present
-          },
-          body: params.toString(),
-        });
+        const result = await fetch(url.toString(), fetchParams);
 
-        const data = await result.json();
-
-        // this.featureCollection = data;
-        return data;
+        return await result.json();
       } catch (e) {
         console.error("Er is iets fout gegaan bij het ophalen van de data voor de download", e);
       }
@@ -642,21 +648,6 @@ export default {
     },
     updatePageState(updatedPageState) {
       this.pageState = updatedPageState;
-    },
-    getFilterGeometry() {
-      const coordinates = this.selectedArea.getCoordinates();
-
-      let geometry;
-
-      if (this.selectedArea.getType() === "Polygon") {
-        geometry = `POLYGON((${coordinates[0].map((c) => `${c[0]} ${c[1]}`).join(",")}))`;
-      } else if (this.selectedArea.getType() === "MultiPolygon") {
-        geometry = `MULTIPOLYGON(${coordinates
-          .map((polygon) => `((${polygon[0].map((c) => `${c[0]} ${c[1]}`).join(",")}))`)
-          .join(",")})`;
-      }
-
-      return geometry;
     },
   },
 };
