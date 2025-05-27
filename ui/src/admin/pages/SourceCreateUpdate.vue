@@ -47,7 +47,7 @@ export default {
 
       this.initialValues = await result.json();
     },
-    async saveSource(currentValues) {
+    async saveSource(currentValues, continueEditing = false) {
       const url = `/atlas/api/v1/sources/${this.$route.params.id}/`;
 
       currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
@@ -56,7 +56,16 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/sources`);
+          if (!continueEditing) {
+            this.$router.push(`/sources`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Bron opgeslagen",
+            detail: "De bron is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

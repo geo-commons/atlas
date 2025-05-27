@@ -127,12 +127,12 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import FormModal from "@/components/FormModal.vue";
 import LinkedDataForm from "@/admin/components/LinkedDataForm.vue";
 import TemplateForm from "@/admin/components/TemplateForm.vue";
-import TrashIcon from "@/assets/icons/trash-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import FormModal from "@/components/FormModal.vue";
 import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
 
@@ -235,7 +235,7 @@ export default {
 
       return result;
     },
-    async saveLayer(currentValues) {
+    async saveLayer(currentValues, continueEditing = false) {
       currentValues.layer_name =
         typeof currentValues.layer_name === "string" ? currentValues.layer_name : currentValues.layer_name.value;
 
@@ -273,9 +273,17 @@ export default {
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
-
         if (result.ok) {
-          this.$router.push(`/layers`);
+          if (!continueEditing) {
+            this.$router.push(`/layers`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Laag opgeslagen",
+            detail: "De laag is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

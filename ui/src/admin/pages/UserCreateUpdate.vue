@@ -79,7 +79,7 @@ export default {
       const availableGroups = this.groups.filter((group) => !groups.includes(group.id));
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
-    async saveUser(currentValues) {
+    async saveUser(currentValues, continueEditing = false) {
       currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
       currentValues.is_staff = currentValues.is_admin;
       currentValues.is_superuser = currentValues.is_admin;
@@ -90,7 +90,16 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/users`);
+          if (!continueEditing) {
+            this.$router.push(`/users`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Gebruiker opgeslagen",
+            detail: "De gebruiker is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

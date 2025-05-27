@@ -46,14 +46,23 @@ export default {
 
       this.initialValues = await result.json();
     },
-    async saveTheme(currentValues) {
+    async saveTheme(currentValues, continueEditing = false) {
       const url = `/atlas/api/v1/themes/${this.$route.params.id}/`;
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/themes`);
+          if (!continueEditing) {
+            this.$router.push(`/themes`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Thema opgeslagen",
+            detail: "Het thema is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);
