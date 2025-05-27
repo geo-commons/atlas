@@ -233,10 +233,15 @@ export default {
         }
 
         if (this.searchQuery) {
-          const searchFor = this.searchQuery.toLowerCase();
-          const searchIn = layer.title.toLowerCase();
+          const searchTerm = this.searchQuery.toLowerCase();
 
-          if (searchIn.search(searchFor) === -1) {
+          // Check if layer matches search criteria in title, meta description or search terms
+          const matchesTitle = layer.title.toLowerCase().includes(searchTerm);
+          const matchesDescription = layer.metadata?.description?.toLowerCase().includes(searchTerm) || false;
+          const matchesSearchTerms =
+            layer.search_terms?.some((term) => term.toLowerCase().includes(searchTerm)) || false;
+
+          if (!matchesTitle && !matchesDescription && !matchesSearchTerms) {
             return;
           }
         }

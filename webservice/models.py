@@ -288,6 +288,10 @@ class Layer(models.Model):
 
     _search_fields = models.CharField(
         'Zoek in deze velden', max_length=500, blank=True, null=True)
+    
+    _search_terms = models.CharField(
+        'Zoektermen', max_length=500, blank=True, null=True,
+        help_text='Deze worden gebruikt om de laag beter vindbaar te maken in het lagenpaneel. Voer één zoekterm per regel in.')
 
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
     # so inform them when changing.
@@ -312,7 +316,7 @@ class Layer(models.Model):
 
     legend_url = models.URLField(
         'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True, max_length=1000)
-
+    
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
@@ -367,6 +371,10 @@ class Layer(models.Model):
     @property
     def search_fields(self):
         return self._search_fields.split('\r\n') if self._search_fields else []
+
+    @property
+    def search_terms(self):
+        return self._search_terms.split('\r\n') if self._search_terms else []
 
     @property
     def slddiv(self):
@@ -476,6 +484,7 @@ source: new ol.source.TileWMS({{
             } if self.layer_type else None,
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
+            'search_terms': self._search_terms.split('\r\n') if self._search_terms else [],
             'metadata': {
                 'description': self.meta_description,
                 'lineage': self.meta_lineage,

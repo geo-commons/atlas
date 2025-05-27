@@ -224,6 +224,7 @@ export default {
       this.initialValues.templates = response.templates;
       this.initialValues.search_properties = response.search_properties.join("\n");
       this.initialValues.display_properties = response.display_properties.join("\n");
+      this.initialValues.search_terms = response.search_terms ? response.search_terms.join("\n") : "";
 
       // Set selectedSource
       this.selectedSource = {
@@ -254,6 +255,9 @@ export default {
         .split("\n")
         .filter((value) => value.trim() !== "");
       currentValues.search_properties = currentValues.search_properties
+        .split("\n")
+        .filter((value) => value.trim() !== "");
+      currentValues.search_terms = currentValues.search_terms
         .split("\n")
         .filter((value) => value.trim() !== "");
 
@@ -745,6 +749,16 @@ export default {
               type: "text",
               required: false,
               infoText: "Overschrijf link naar legenda",
+            },
+            {
+              label: "Zoektermen",
+              id: "search_terms",
+              name: "SearchTerms",
+              type: "text",
+              required: false,
+              multiLine: true,
+              infoText:
+                "Deze worden gebruikt om de laag beter vindbaar te maken in het lagenpaneel. Voer één zoekterm per regel in.",
             },
           ],
         },
