@@ -114,6 +114,8 @@ Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de i
 
 - **Legenda:** Met het "legenda" veld kan je de legenda link die gebruikt wordt binnen Atlas om de uiteindelijke legenda afbeelding voor de kaartlaag op te halen overschrijven. Bijvoorbeeld: https://example.com/picture.jpg, zorgt ervoor dat de legenda afbeelding voor bijbehorende kaartlaag voortaan vanaf deze URL wordt opgehaald. _Veld eisen_: De link moet altijd een link naar een afbeelding zijn, example.com/image kan niet, example.com/image.png kan wel.
 
+- **Zoektermen:** Via het veld "Zoektermen" kun je extra termen opgeven waarop een kaartlaag gevonden kan worden bij gebruik van de zoekfunctie binnen Atlas. Dit is vooral handig wanneer gebruikers verschillende woorden gebruiken voor hetzelfde concept. Bijvoorbeeld: bij een kaartlaag met als titel Scholen kun je de zoektermen onderwijs, educatie en basisschool toevoegen, zodat gebruikers deze kaartlaag ook vinden wanneer ze op die alternatieve termen zoeken. Voeg één zoekterm per regel in.
+
 ### Metadata:
 
 Onder metadata kunnen alle metadata gerelateerde velden worden geconfigureerd. Veel van deze metadata is zichtbaar in Atlas wanneer je via het "Zichtbare lagen" menu naar de kaartlaag zelf navigeert en hier op het ⓘ icoon klikt.
