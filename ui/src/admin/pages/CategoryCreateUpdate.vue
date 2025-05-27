@@ -46,14 +46,23 @@ export default {
 
       this.initialValues = await result.json();
     },
-    async saveCategory(currentValues) {
+    async saveCategory(currentValues, continueEditing = false) {
       const url = `/atlas/api/v1/categories/${this.$route.params.id}/`;
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/categories`);
+          if (!continueEditing) {
+            this.$router.push(`/categories`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Categorie opgeslagen",
+            detail: "De categorie is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

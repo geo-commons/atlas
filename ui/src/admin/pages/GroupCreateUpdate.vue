@@ -44,14 +44,23 @@ export default {
 
       this.initialValues = await result.json();
     },
-    async saveGroup(currentValues) {
+    async saveGroup(currentValues, continueEditing = false) {
       const url = `/atlas/api/v1/groups/${this.$route.params.id}/`;
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/groups`);
+          if (!continueEditing) {
+            this.$router.push(`/groups`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Groep opgeslagen",
+            detail: "De groep is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);
