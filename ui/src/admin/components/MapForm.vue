@@ -206,7 +206,7 @@
     <template #footer>
       <div class="tw-flex tw-gap-2 tw-justify-end tw-w-full">
         <router-link to="/maps" class="button __tertiary">Annuleren</router-link>
-        <button type="button" class="button __primary_admin" @click="submitForm">Opslaan</button>
+        <SplitButton label="Opslaan" :model="items" @click="submitForm(true)" />
       </div>
     </template>
   </AdminSidePanel>
@@ -237,12 +237,17 @@ export default {
   data() {
     return {
       data: this.initialData || { features: {} },
+      items: [
+        {
+          label: "Opslaan en sluiten",
+          command: () => this.submitForm(false),
+        },
+      ],
     };
   },
   methods: {
-    submitForm(e) {
-      e.preventDefault();
-      this.$emit("submit", this.data);
+    submitForm(continueEditing = false) {
+      this.$emit("submit", this.data, continueEditing);
     },
   },
 };
