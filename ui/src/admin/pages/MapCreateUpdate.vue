@@ -226,7 +226,7 @@ export default {
         },
       };
     },
-    async saveMap(data) {
+    async saveMap(data, continueEditing = false) {
       let result;
 
       if (!data.features.list) {
@@ -274,7 +274,9 @@ export default {
           life: 5000,
         });
 
-        this.$router.push(`/maps`);
+        if (!continueEditing) {
+          this.$router.push(`/maps`);
+        }
       } else {
         // @TODO: Duidelijkere error
         this.toast.add({
