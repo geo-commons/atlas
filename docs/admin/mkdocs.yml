@@ -58,3 +58,4 @@ nav:
   - "logs": "logs.md"
   - "Tabellen": "tabellen.md"
   - "Beveiliging": "layer_security.md"
+  - "CRUD functionaliteit": "crud_functionaliteit.md"
