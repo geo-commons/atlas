@@ -1,0 +1,17 @@
+<layer>
+  <name>supermarkten</name>
+  <id>LayerInfoImpl--70ea44d8:195d6f2e0cf:-7ffb</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--570ae188:124761b8d78:-7fdf</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--70ea44d8:195d6f2e0cf:-7ffc</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2025-03-27 09:41:50.106 UTC</dateCreated>
+  <dateModified>2025-03-31 13:01:35.144 UTC</dateModified>
+</layer>

@@ -172,6 +172,28 @@ Na het klikken op het tekensymbool, verschijnt een aantal keuzes:
 
 Het klikken op een van de keuzes activeert deze keuze.
 
+##Objecten toevoegen, verwijderen en bewerken op een kaartlaag
+<img src="../images/bewerk-menu.png" alt="tekenfunctie" title="het tekensymbool" width="200" />
+<br />
+Na [inloggen](./help.md#inloggen-binnen-atlas-intern-en-extern) binnen Atlas is, afhankelijk van de configuratie, de functionaliteit om objecten toe te voegen, te bewerken en/of te verwijderen (hierna: CRUD-functionaliteit) op een kaartlaag wel of niet beschikbaar.
+
+### Configuratie
+Om de CRUD-functionaliteit binnen Atlas te (de)activeren, ga je in de Atlas-adminomgeving naar **Configuratie** en zet je de optie **Bewerkfunctionaliteit** aan of uit. Daarnaast is een kaartlaag pas bewerkbaar wanneer er binnen Geoserver op laagniveau schrijfrechten zijn toegekend. Deze functionaliteit werkt uitsluitend op WMS_WFS- of WFS-kaartlagen, waarbij WFS-transacties alleen door deze protocollen worden ondersteund.
+
+## Toevoegen
+Gebruik de optie **Toevoegen** in het CRUD-menu (zie bovenstaande afbeelding) om een object toe te voegen. Na het activeren van deze knop kun je een punt, lijn of polygoon tekenen. Afhankelijk van het verwachte objecttype binnen de kaartlaag kies je de juiste optie. Vervolgens teken je het object op het kaartcanvas.
+
+Wanneer het tekenen is voltooid, rond je het af door te dubbelklikken of op de **Enter-toets** te drukken. Op dat moment opent een menu waarin je de eigenschappen van het object kunt invullen. Als alles correct is ingevuld, druk je op **Opslaan**. Het object wordt dan, mits alles goed is gegaan, opgeslagen in Geoserver. Mocht er iets misgaan, dan verschijnt de bijbehorende foutmelding.
+
+## Bewerken & Verwijderen
+Gebruik de optie **Bewerken** in het CRUD-menu (zie bovenstaande afbeelding) om een object te bewerken. Na activering van deze optie kun je een object aanklikken. Let op: deze functionaliteit werkt momenteel alleen goed wanneer er geen overlappende objecten zijn geselecteerd.
+
+Als alles goed is gegaan, opent een menu met een formulier waarin je de eigenschappen van het object kunt aanpassen. Ben je tevreden met de wijzigingen, dan druk je op **Opslaan**.
+
+Daarnaast is er de optie om het object te verwijderen. In dat geval verdwijnt het permanent uit Geoserver en de bijbehorende datastore.
+
+
+
 ##Toon data
 
 ![zoekenopdata](images/zoekenopdata.png)

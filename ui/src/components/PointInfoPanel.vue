@@ -79,6 +79,8 @@
           :is-open="true"
           :layer="visibleLayer"
           :position="position"
+          :config="config"
+          :atlas-features="features"
           @show-selected-feature="onFeatureSelect"
           @set-position="(position) => setPosition(position)"
           @on-fit="onFit"
@@ -114,10 +116,12 @@ export default {
   },
   props: {
     position: Object,
+    config: Object,
+    features: Object,
     layers: Array,
     showPanel: Boolean,
   },
-  emits: ["select-feature"],
+  emits: ["expanded-info-panel", "set-position", "on-fit", "select-feature"],
   data() {
     return {
       resetSidePanel: null,

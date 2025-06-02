@@ -129,6 +129,7 @@
                     </template>
                   </PickList>
                 </vee-field>
+                <span class="warning-text"><vee-error-message :name="question.id" /></span>
               </div>
               <div v-else>
                 <span class="label-info-text-wrapper">
@@ -244,10 +245,10 @@
                     class="!tw-text-sm"
                   ></CodeMirror>
                 </vee-field>
-                <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id">
+                <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id" :rules="getRules(question)">
                   <InputText
                     :id="question.id"
-                    v-model="currentValues[question.id]"
+                    v-bind="field"
                     class="!tw-mb-2"
                     placeholder="Laagnaam"
                     type="text"
@@ -422,6 +423,20 @@ export default {
     jsonParseLinter,
     getRules(question) {
       let rules = [];
+
+      // Check if we should apply the contains-colon validation
+      // Only apply if atlas_write_groups has items selected or authenticated_can_mutate is true
+      let atlasWriteGroupsHasItems = Array.isArray(this.currentValues.atlas_write_groups) && this.currentValues.atlas_write_groups[1].length > 0;
+      const authenticatedCanMutate = this.currentValues.authenticated_can_mutate === true;
+
+      const shouldApplyColonValidation = atlasWriteGroupsHasItems || authenticatedCanMutate;
+
+      // Check if any field has specified this field in its contains_colon property
+      const hasColonValidation = !!question.contains_colon;
+
+      if (hasColonValidation && shouldApplyColonValidation) {
+        rules.push("contains-colon");
+      }
 
       if (question.required) {
         rules.push("required");

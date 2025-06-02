@@ -308,6 +308,9 @@ class Layer(models.Model):
         'Vereis inlog voor deze dataset', default=False,
         help_text='De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.')
 
+    authenticated_can_mutate = models.BooleanField('Ingelogde gebruikers kunnen kaartlaag muteren', default=False,
+        help_text="Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren")
+
     published = models.BooleanField('Gepubliceerd', default=False)
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS_WFS, max_length=20,
@@ -335,6 +338,10 @@ class Layer(models.Model):
     atlas_groups = models.ManyToManyField(
         AtlasGroup, blank=True, verbose_name='Groepen',
         help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
+
+    atlas_write_groups = models.ManyToManyField(
+        AtlasGroup, blank=True, verbose_name='Groepen', related_name='atlas_write_groups',
+        help_text='De inhoud van deze dataset kan alleen gemuteerd worden als de gebruiker lid is van een van deze groepen.')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
     updated_at = models.DateTimeField('updated_at', auto_now=True)
@@ -515,6 +522,22 @@ source: new ol.source.TileWMS({{
 
         user_groups = list(user.atlas_groups.all())
         return any(group for group in self.atlas_groups.all() if group in user_groups)
+
+    def is_mutable_by(self, user, request):
+        if not is_internal(request) and self.closed_dataset:
+            return False
+
+        if not user.is_authenticated:
+            return False
+
+        if self.authenticated_can_mutate:
+            return True
+
+        if not self.atlas_write_groups.exists():
+            return False
+
+        user_groups = list(user.atlas_groups.all())
+        return any(group for group in self.atlas_write_groups.all() if group in user_groups)
 
     class Meta:
         verbose_name = 'Kaartlaag'

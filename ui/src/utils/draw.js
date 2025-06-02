@@ -17,6 +17,14 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     DRAW_POLYGON: "Polygon",
     DRAW_LABEL: "Point",
     DRAW_COORDINATE: "Point",
+    Point: "Point",
+    LineString: "LineString",
+    LinearRing: "LinearRing",
+    Polygon: "Polygon",
+    MultiPoint: "MultiPoint",
+    MultiLineString: "MultiLineString",
+    MultiPolygon: "MultiPolygon",
+    Circle: "Circle",
   };
 
   const draw = new Draw({
@@ -52,6 +60,8 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
   // Complete drawing on escape or enter touch
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" || event.key === "Enter") {
+      event.preventDefault();
+
       draw.finishDrawing();
     }
   });
@@ -78,11 +88,13 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
   draw.on("drawstart", (e) => {
     sketch = e.feature;
 
-    sketch.setProperties({
-      color: color,
-      strokeWidth: strokeWidth,
-      fontSize: fontSize,
-    });
+    if (!measure.startsWith("EDIT")) {
+      sketch.setProperties({
+        color: color,
+        strokeWidth: strokeWidth,
+        fontSize: fontSize,
+      });
+    }
 
     onDrawStart();
 

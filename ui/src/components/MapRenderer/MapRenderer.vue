@@ -1,4 +1,5 @@
 <template>
+  <Toast position="bottom-center" />
   <div
     id="map-container"
     ref="mapContainer"
@@ -121,8 +122,10 @@
       v-if="!showPanoramaPanel && features.markerOnClick"
       :layers="layers"
       :position="position"
-      :show-panel="!showDataPanel && showInfoPanel"
+      :show-panel="!showDataPanel && showInfoPanel && !editLayerStore.hideOtherPanels"
       :user="user"
+      :config="config"
+      :features="features"
       @set-position="setPosition"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
       @expanded-info-panel="toggleInfoPanel"
@@ -130,7 +133,7 @@
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
-      :show-panel="selectedFeatures.length > 0"
+      :show-panel="selectedFeatures.length > 0 && !editLayerStore.hideOtherPanels"
       :features="selectedFeatures"
       @features-selected="featuresSelected"
     />
@@ -149,6 +152,13 @@
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
+    <AddFeaturePanel
+      :user="user"
+      :refresh-layer="refreshLayer"
+      @set-tool="setTool"
+      @set-selected-area="setSelectedArea"
+    />
+    <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" />
 
     <CompareLayersPanel
       :map-id="mapId"
@@ -392,6 +402,11 @@ import ZoomPanel from "../ZoomPanel";
 import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
 import CompareLayersPanel from "@/components/compare-layers/CompareLayersPanel.vue";
 import CompareLayersSlider from "@/components/compare-layers/CompareLayersSlider.vue";
+import { DEFAULT_DRAWING_COLOR, DEFAULT_DRAWING_FONT_SIZE, DEFAULT_DRAWING_STROKE_WIDTH } from "@/constants/defaults";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
+import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
+import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
+import { EditLayerMode } from "@/types/map";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -400,6 +415,8 @@ export default {
   components: {
     CompareLayersSlider,
     CompareLayersPanel,
+    EditFeaturePanel,
+    AddFeaturePanel,
     PanoramaPanel,
     EmbedModal,
     AlertMessage,
@@ -517,20 +534,15 @@ export default {
       interaction: "",
       userLayerSettings: {},
       undoRedoInteraction: null,
-      color: {
-        red: 0,
-        green: 102,
-        blue: 255,
-      },
-      strokeWidth: 5,
-      fontSize: 22,
+      color: DEFAULT_DRAWING_COLOR,
+      strokeWidth: DEFAULT_DRAWING_STROKE_WIDTH,
+      fontSize: DEFAULT_DRAWING_FONT_SIZE,
       showPanoramaPanelFullScreen: false,
       loadingPrint: false,
       showCompareLayerPanel: false,
       compareLayers: false,
       selectGeometry: false,
       filterCheckedCount: 0,
-      visibleLayers: [],
       baseLayerChanged: false,
       initialBaseLayerId: null,
       initialDrawing: null,
@@ -541,7 +553,10 @@ export default {
     };
   },
   computed: {
-    ...mapStores(useGlobalStore),
+    EditLayerMode() {
+      return EditLayerMode;
+    },
+    ...mapStores(useGlobalStore, useEditLayerStore),
     showInfoPanel() {
       return this.position.marker ? true : false;
     },
@@ -588,6 +603,9 @@ export default {
 
       return null;
     },
+    visibleLayers() {
+      return this.layers.filter((l) => !l.is_base && l.is_visible);
+    },
     regularLayers() {
       return this.layers.filter((l) => !l.is_base);
     },
@@ -612,6 +630,13 @@ export default {
         this.position = value;
       },
       deep: true,
+    },
+    visibleLayers: {
+      handler(value) {
+        this.editLayerStore.setVisibleLayers(value);
+      },
+      deep: true,
+      immediate: true,
     },
     initialLayers: {
       handler(value) {
@@ -674,9 +699,8 @@ export default {
     if (initialBaseLayer) {
       this.initialBaseLayerId = initialBaseLayer.id;
     }
-
-    this.visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
   },
+  emits: ["position-changed", "layers-changed", "update-user-settings"],
   unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
   },
@@ -741,6 +765,7 @@ export default {
     },
     async getFeatureInfo(position) {
       this.highlightedFeatures = [];
+      this.editLayerStore.setHighlightedFeatureAndLayer(null);
 
       const visibleLayers = this.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible);
       visibleLayers.forEach(async (layer) => {
@@ -766,10 +791,22 @@ export default {
         try {
           const result = await fetch(url, getFetchParameters(layer, this.user));
           const data = await result.json();
-          this.highlightedFeatures = [
-            ...this.highlightedFeatures,
-            ...data.features.map((feature) => new GeoJSON().readFeature(feature)),
-          ];
+          const features = data.features.map((feature) => new GeoJSON().readFeature(feature));
+          this.highlightedFeatures = [...this.highlightedFeatures, ...features];
+
+          /*
+            If highlightedFeatureAndLayer is null and there is at least one highlighted feature,
+            set it to the first highlighted feature along with its corresponding layer.
+            This is necessary to enable edit and delete functionality for layers.
+
+            Currently, if multiple features are highlighted, the edit and delete functionality
+            only supports the first highlighted feature. If a user wants to edit a specific highlighted feature
+            but has selected multiple features simultaneously,
+            they will need to temporarily disable the layers containing other highlighted features.
+           */
+          if (!this.editLayerStore.highlightedFeatureAndLayer && features.length) {
+            this.editLayerStore.setHighlightedFeatureAndLayer({ feature: features[0], layer: layer });
+          }
         } catch (e) {
           console.error(e);
         }
@@ -880,6 +917,16 @@ export default {
           this.drawFeatures.push(result.sketch);
           this.removedDrawFeatures = [];
           break;
+        case "Point":
+        case "LineString":
+        case "LinearRing":
+        case "MultiPoint":
+        case "MultiLineString":
+        case "MultiPolygon":
+        case "Circle":
+          this.editLayerStore.setFeature(result.sketch);
+          this.tool = "";
+          break;
       }
     },
     setInteraction(interaction) {
@@ -904,8 +951,6 @@ export default {
 
       this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, is_visible: isVisible } : layer));
       this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], is_visible: isVisible };
-
-      this.visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
 
       this.$emit("layers-changed", this.layers);
       this.mapStore.resetFiltersForLayer(layerId);
@@ -1012,6 +1057,9 @@ export default {
     stopCompareLayers() {
       this.showCompareLayerPanel = false;
       this.compareLayers = false;
+    },
+    refreshLayer(id) {
+      this.$refs.map.refreshLayer(id);
     },
     selectFeature(geometry) {
       this.selectedArea = geometry;
