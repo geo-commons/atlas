@@ -179,6 +179,8 @@ class LayerSerializer(serializers.ModelSerializer):
         'get_display_properties')
     search_properties = serializers.SerializerMethodField(
         'get_search_properties')
+    search_terms = serializers.SerializerMethodField(
+        'get_search_terms')
     metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True)
     templates = TemplateSerializer(many=True)
@@ -201,6 +203,9 @@ class LayerSerializer(serializers.ModelSerializer):
 
     def get_search_properties(self, obj):
         return obj.search_fields
+
+    def get_search_terms(self, obj):
+        return obj.search_terms
 
     class Meta:
         model = Layer
@@ -242,6 +247,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'legend_url',
             'display_properties',
             'search_properties',
+            'search_terms',
             'metadata',
             'linked_data',
             'templates',
@@ -267,28 +273,34 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         child=serializers.CharField(), required=False)
     search_properties = serializers.ListField(
         child=serializers.CharField(), required=False)
+    search_terms = serializers.ListField(
+        child=serializers.CharField(), required=False)
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['display_properties'] = instance.popup_attributes
         ret['search_properties'] = instance.search_fields
+        ret['search_terms'] = instance.search_terms
         return ret
 
     def to_internal_value(self, data):
         ret = super().to_internal_value(data)
-        ret['_popup_attributes'] = '\r\n'.join(
-            data.get('display_properties', []))
+        ret['_popup_attributes'] = '\r\n'.join(data.get('display_properties', []))
         ret['_search_fields'] = '\r\n'.join(data.get('search_properties', []))
+        ret['_search_terms'] = '\r\n'.join(data.get('search_terms', []))
         return ret
 
     def update(self, instance, validated_data):
         linked_data, templates = (validated_data.pop(key, None)
-                                  for key in ('linked_data', 'templates'))
+                                for key in ('linked_data', 'templates'))
 
         # Handling many-to-many field 'atlas_groups'
         if 'atlas_groups' in validated_data:
             atlas_groups_data = validated_data.pop('atlas_groups')
             instance.atlas_groups.set(atlas_groups_data)
+
+        # Remove search_terms from validated_data if it exists since we handle it separately
+        validated_data.pop('search_terms', None)
 
         if 'atlas_write_groups' in validated_data:
             atlas_write_groups_data = validated_data.pop('atlas_write_groups')
@@ -373,6 +385,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'friendly_fields',
             'templated_properties',
             'legend_url',
+            'search_terms',
             'metadata',
             'login_required',
             'closed_dataset',

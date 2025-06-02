@@ -56,16 +56,37 @@ Een geldig RD coördinaat is bijvoorbeeld: _128981.03_
 - **Bereik maximum x:** Dit is de X waarde van het coördinaat rechtsboven. _Veld eisen_: Is een geldig RD coordinaat.
 - **Bereik maximum y:** Dit is de Y waarde van het coördinaat rechtsboven. _Veld eisen_: Is een geldig RD coordinaat.
 
-Wanneer het zoomniveau wordt ingevuld zal de kaartlaag greyed-out worden wanneer te ver uitgezoomd (minimum) of te ver inzoomd (maximum) is. Wanneer de kaartlaaggreyed-out is verschijnt een vergrootglas-icoon naast de kaartlaagnaam. Klikken hierop laat de kaartlaag in- of uitzoomen naar het niveau waar de objecten getoond worden.
+- **Zoomniveau minimum:** Wanneer in het stijlbestand (SLD) [MinScaleDenominator](https://docs.geoserver.org/main/en/user/styling/sld/reference/rules.html)  en/of [MaxScaleDenominator](https://docs.geoserver.org/main/en/user/styling/sld/reference/rules.html) geconfigureerd is voor een object, dan is het raadzaam zoomniveau minimum en/of zoomniveau maximum in te vullen.
+Wanneer het zoomniveau wordt ingevuld zal de kaartlaag greyed-out worden wanneer te ver uitgezoomd (minimum) of te ver inzoomd (maximum) is. Wanneer de kaartlaag greyed-out is verschijnt een vergrootglas-icoon naast de kaartlaagnaam. Klikken hierop laat de kaartlaag in- of uitzoomen naar het niveau waar de objecten getoond worden.
 
-- **Zoomniveau minimum:** Via het "zoomniveau minimum" veld bepaal je hoe laag het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. Bijvoorbeeld: een minimaal zoomniveau van 10, zorgt ervoor dat bij een zoomniveau van 9 de laag niet meer zichtbaar is. _Veld eisen_: Is een heel getal, bijvoorbeeld: 1 of 10, geen 10.5.
-- **Zoomniveau maximum:** Via het "zoomniveau maximum" veld bepaal je hoe hoog het zoomniveau mag zijn voordat de laag niet meer zichtbaar wordt. Bijvoorbeeld: een maximaal zoomniveau van 20, zorgt ervoor dat bij een zoomniveau van 21 de laag niet meer zichtbaar is. _Veld eisen_: Is een heel getal, bijvoorbeeld: 1 of 10, geen 10.5.
+Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarbij de objecten binnen de laag niet meer zichtbaar zijn (Hoe verder uitgezoomd wordt, hoe kleiner het zoomniveau). Bijvoorbeeld: een minimaal zoomniveau van 10, zorgt ervoor dat bij een zoomniveau van 9 de objecten niet meer zichtbaar zijn. _Veld eisen_: Numeriek. Nauwkeurigheid: 2 cijfers achter de komma, bijvoorbeeld: 10,55. Wanneer een punt wordt ingegeven, wordt dez automatisch omgezet naar een komma.
 
-Om verschillende stijlen met één kaartlaag te kunnen gebruiken, kan hier een stijlbestand worden ingevuld. Het stijlbestand waarmee de kaartlaag in Geoserver is geconfigureerd wordt hiermee overruled. Het stijlbestand dat hier wordt ingevuld moet net als het originele stijlbestand op de Geoserver staan.
+- **Zoomniveau maximum:** Via het "zoomniveau maximum" veld bepaal je wat het maximale zoomniveau is waarbij de objecten binnen de laag nog zichtbaar zijn (Hoe verder ingezoomd wordt, hoe groter het zoomniveau). Bijvoorbeeld: een maximaal zoomniveau van 21, zorgt ervoor dat bij een zoomniveau van 22 de objecten niet meer zichtbaar zijn. _Veld eisen_: Numeriek. Nauwkeurigheid: 2 cijfers achter de komma, bijvoorbeeld: 20,55. Wanneer een punt wordt ingegeven, wordt dez automatisch omgezet naar een komma.
 
-- **Stijlnaam voor WMS / WMTS laag:** Via het veld "Stijlnaam voor WMS / WMTS laag" is het mogelijk om gebruik te maken van een stijl aanwezig op de GeoServer door exact die naam in dit veld op te nemen. _Veld eisen_: Is de stijlnaam zoals op de GeoServer. Hiermee wordt de WFS stijl in Geoserver overruled.
+!!! info
 
-- **Stijl voor WFS / MVT laag:** Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de inhoud van dit veld moet opgesteld zijn in het GeoStyler formaat. Via [de GeoStyler website](https://geostyler.github.io/geostyler-demo/) kan je zelf gemakkelijk stijlen maken.
+    Het zoomniveau is dus omgekeerd aan de schaalwaarde. Bij inzoomen wordt de schaal kleiner maar het zoomniveau groter. Dit kan verwarrend zijn bij het configureren van bovenstaande waardes.
+    Een handvat:
+
+    Zoomniveau MaxScaleDenominator Niveau
+ 
+    12,96      70000               Regio-overzicht
+    14,48      24000               Stadsniveau
+    19,5       1000                Straatniveau
+    22,34      100                 Huis/perceelniveau
+
+!!! tip
+
+    De MinScaleDenominator en MaxScaleDenominator waardes komen overeen met de schaallat rechtsonderin het Atlas kaartscherm. Klik eventueel 1x op de schaallat om in de schaalmodus te komen.
+    Het zoomniveau kan uit de url gehaald worden:
+    https://hostnaam.nl/atlas/@126647.71,501835.21,16.02z/layers=id_mijn_layer/base=achtergrondkaart
+    Het zoomniveau staat hier achter de coordinaten, dus 16.02. 
+
+- **Stijlnaam voor WMS / WMTS laag:** m verschillende stijlen met één kaartlaag te kunnen gebruiken, kan hier een stijlbestand worden ingevuld. Het stijlbestand waarmee de kaartlaag in Geoserver is geconfigureerd wordt hiermee overruled. Het stijlbestand dat hier wordt ingevuld moet net als het originele stijlbestand op de Geoserver staan.
+Via het veld "Stijlnaam voor WMS / WMTS laag" is het mogelijk om gebruik te maken van een stijl aanwezig op de GeoServer door exact die naam in dit veld op te nemen. _Veld eisen_: Is de stijlnaam zoals op de GeoServer. Hiermee wordt de WFS stijl in Geoserver overruled.
+
+- **Stijl voor WFS / MVT laag:** m verschillende stijlen met één kaartlaag te kunnen gebruiken, kan hier een stijlbestand worden ingevuld. Het stijlbestand waarmee de kaartlaag in Geoserver is geconfigureerd wordt hiermee overruled. Het stijlbestand dat hier wordt ingevuld moet net als het originele stijlbestand op de Geoserver staan.
+Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de inhoud van dit veld moet opgesteld zijn in het GeoStyler formaat. Via [de GeoStyler website](https://geostyler.github.io/geostyler-demo/) kan je zelf gemakkelijk stijlen maken.
 
 - **Vriendelijke veldnamen:** Met het vriendelijke veldnamen veld kan je ervoor zorgen dat de uiteindelijke veldnamen die in Atlas worden laten zien een andere naam krijgen dan hoe ze binnen GeoServer gedefinieerd staan. Bijvoorbeeld:
 
@@ -92,6 +113,8 @@ Om verschillende stijlen met één kaartlaag te kunnen gebruiken, kan hier een s
 ```
 
 - **Legenda:** Met het "legenda" veld kan je de legenda link die gebruikt wordt binnen Atlas om de uiteindelijke legenda afbeelding voor de kaartlaag op te halen overschrijven. Bijvoorbeeld: https://example.com/picture.jpg, zorgt ervoor dat de legenda afbeelding voor bijbehorende kaartlaag voortaan vanaf deze URL wordt opgehaald. _Veld eisen_: De link moet altijd een link naar een afbeelding zijn, example.com/image kan niet, example.com/image.png kan wel.
+
+- **Zoektermen:** Via het veld "Zoektermen" kun je extra termen opgeven waarop een kaartlaag gevonden kan worden bij gebruik van de zoekfunctie binnen Atlas. Dit is vooral handig wanneer gebruikers verschillende woorden gebruiken voor hetzelfde concept. Bijvoorbeeld: bij een kaartlaag met als titel Scholen kun je de zoektermen onderwijs, educatie en basisschool toevoegen, zodat gebruikers deze kaartlaag ook vinden wanneer ze op die alternatieve termen zoeken. Voeg één zoekterm per regel in.
 
 ### Metadata:
 

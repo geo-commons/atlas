@@ -2,7 +2,7 @@
   <main class="tw-mx-auto tw-max-w-7xl tw-px-4 md:tw-pt-6 tw-my-4 tw-w-full">
     <h1 class="tw-text-4xl tw-my-0 tw-mb-2">Kaarten</h1>
     <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-    <section class="">
+    <section>
       <div class="tw-w-full md:tw-w-2/6 tw-my-5">
         <PortalSearchField
           :initial-search-query="searchQuery"
@@ -11,8 +11,9 @@
         />
       </div>
       <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
+        <p class="!tw-mt-0" v-if="!maps.length > 0">Geen resultaten gevonden.</p>
         <PortalCard
-          v-for="map in visibleMaps"
+          v-for="map in maps"
           :key="map.id"
           :object-type="'map'"
           :title="map.title"
@@ -21,6 +22,20 @@
           :show-thumbnail="true"
           :object-url="`/atlas/maps/${map.slug}`"
         />
+      </div>
+      <div class="tw-flex tw-flex-row tw-items-start tw-py-8">
+        <Paginator
+          :first="page * items_per_page - 1"
+          :rows="items_per_page"
+          :total-records="total_items"
+          :rows-per-page-options="[10, 20, 30]"
+          :pt="{
+            root: {
+              class: '!tw-p-0',
+            },
+          }"
+          @page="updatePageState"
+        ></Paginator>
       </div>
     </section>
   </main>
@@ -40,21 +55,14 @@ export default {
       loading: false,
       maps: [],
       searchQuery: "",
+      items_per_page: 20,
+      page: 1,
+      total_items: 20,
     };
   },
   computed: {
     config() {
       return useGlobalStore().config;
-    },
-    visibleMaps() {
-      if (!this.searchQuery) {
-        return this.maps;
-      }
-
-      // todo: check if this is the way we want to perform a search
-      return Object.values(this.maps).filter(
-        (map) => map.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
-      );
     },
   },
   created() {
@@ -64,10 +72,13 @@ export default {
     async getMaps() {
       this.loading = true;
 
-      const result = await fetch("/atlas/api/v1/maps/?published=True&show_in_overview=True", {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
+      const result = await fetch(
+        `/atlas/api/v1/maps/?published=True&show_in_overview=True&search=${this.searchQuery}&page=${this.page}&page_size=${this.items_per_page}`,
+        {
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+        },
+      );
 
       if (!result.ok) {
         console.error("Could not fetch maps");
@@ -76,9 +87,18 @@ export default {
       const response = await result.json();
       this.maps = response.results;
       this.loading = false;
+      this.total_items = response.count;
     },
-    setSearchQuery(newSearchQuery) {
+    async setSearchQuery(newSearchQuery) {
       this.searchQuery = newSearchQuery;
+      this.page = 1;
+      await this.getMaps();
+    },
+    async updatePageState(pageState) {
+      this.page = pageState.page + 1;
+      this.items_per_page = pageState.rows;
+
+      await this.getMaps();
     },
   },
 };

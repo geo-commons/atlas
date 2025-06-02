@@ -20,6 +20,7 @@ const Markdown = defineComponent({
     },
     inline: {
       required: false,
+      type: Boolean,
       default: function () {
         return true;
       },

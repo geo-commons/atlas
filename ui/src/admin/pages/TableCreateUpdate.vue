@@ -82,7 +82,7 @@ export default {
 
       return response;
     },
-    async saveTable(currentValues) {
+    async saveTable(currentValues, continueEditing = false) {
       const url = `/atlas/api/v1/tables/${this.$route.params.id}/`;
 
       currentValues.search_fields = JSON.parse(currentValues.search_fields);
@@ -91,7 +91,16 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/tables`);
+          if (!continueEditing) {
+            this.$router.push(`/tables`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Tabel opgeslagen",
+            detail: "De tabel is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

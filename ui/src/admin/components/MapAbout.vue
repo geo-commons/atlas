@@ -27,6 +27,9 @@
             <br />
             <br />
             Voeg hier extra uitleg toe om gebruikers beter te informeren over het thema of de inhoud van de kaart.
+            <br />
+            <br />
+            De kaartomschrijving is sluitbaar. Hij is weer toonbaar te maken via de meer opties knop.
           </template>
         </ExplainerMessage>
         <div class="layer-setting-toggle tw-flex tw-items-center tw-justify-between tw-gap-2 tw-my-4">
@@ -60,26 +63,12 @@
           <input v-model="data.about_title" type="text" name="title" placeholder="Titel" maxlength="128" />
         </div>
 
-        <div class="tw-my-3">
-          <label for="editor" class="setting-label">Zijbalk tekst</label>
-          <Editor id="editor" v-model="data.about" editor-style="height: 420px">
-            <template #toolbar>
-              <span class="ql-formats">
-                <select class="ql-header" defaultValue="0">
-                  <option value="2">Titel</option>
-                  <option value="">Normaal</option>
-                </select>
-              </span>
-              <span class="ql-formats">
-                <button v-tooltip.bottom="'Bold'" class="ql-bold"></button>
-                <button v-tooltip.bottom="'Nummerlijst'" class="ql-list" value="ordered"></button>
-              </span>
-              <span class="ql-formats">
-                <button v-tooltip.bottom="'Link'" class="ql-link"></button>
-                <button v-tooltip.bottom="'Image'" class="ql-image"></button>
-              </span>
-            </template>
-          </Editor>
+        <div class="tw-my-3 tw-flex tw-flex-col">
+          <label for="editor" class="setting-label tw-flex tw-items-center tw-gap-2"
+            >Zijbalk tekst
+            <AdminFormInfoText :info-text="'Het is mogelijk om tekst op te maken met Markdown in dit veld.'"
+          /></label>
+          <textarea v-model="data.about" name="editor" rows="12" />
         </div>
       </div>
     </template>
@@ -87,12 +76,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
 import { MapAboutData, MapAboutEmits, MapEvents } from "@/types/models";
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
 import ExplainerMessage from "@/components/ExplainerMessage.vue";
+import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 
 const props = defineProps<{
   initialData: MapAboutData;
@@ -113,6 +103,15 @@ const thumbnailEnabled = computed({
     emitUpdate();
   },
 });
+
+watch(
+  () => data.value.features.showAbout,
+  (value) => {
+    if (value) {
+      data.value.features.morepanel = true;
+    }
+  },
+);
 
 const back = () => {
   emit(MapEvents.SHOW_FORM);
@@ -147,7 +146,7 @@ label {
   .p-editor-content .ql-editor {
     p {
       line-height: 1.5;
-      margin: 1rem 0;
+      margin: 0 0;
       font-size: 1rem;
     }
 

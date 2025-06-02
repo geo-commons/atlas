@@ -25,11 +25,13 @@ type AdminListViewProps = {
   sort: TableHeaderRef;
   pagination: PaginationRef;
   enableActions: boolean;
+  enableDelete: boolean;
+  enableEdit: boolean;
   viewBaseUrl?: string;
   blockDelete: Array<number>;
 };
 
-const props = withDefaults(defineProps<AdminListViewProps>(), {});
+const props = withDefaults(defineProps<AdminListViewProps>(), { enableDelete: true });
 
 // Emits
 const emit = defineEmits<{
@@ -133,9 +135,9 @@ defineExpose({ resetSelection });
               @update-list-sort="(key: string) => $emit('update-list-sort', key)"
             />
           </th>
-          <th></th>
+          <th v-if="props.enableEdit"></th>
           <th v-if="props.viewBaseUrl"></th>
-          <th></th>
+          <th v-if="props.enableDelete"></th>
         </tr>
       </thead>
       <tbody v-if="items.length">
@@ -162,7 +164,7 @@ defineExpose({ resetSelection });
               <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
             </router-link>
           </td>
-          <td class="btn-col">
+          <td class="btn-col" v-if="props.enableEdit">
             <button
               v-tippy="{ placement: 'bottom' }"
               class="iconbutton __normal __round __admin_hover tw-my-1"
@@ -182,12 +184,12 @@ defineExpose({ resetSelection });
               content="Bekijk"
               type="button"
               target="_blank"
-              :href="`${props.viewBaseUrl}/${row.slug}`"
+              :href="`${props.viewBaseUrl}/${row.slug ? row.slug : row.id}`"
             >
               <ViewIcon class="icon" />
             </a>
           </td>
-          <td class="btn-col">
+          <td class="btn-col" v-if="enableDelete">
             <button
               v-tippy="{ placement: 'bottom' }"
               :disabled="blockDelete(row)"

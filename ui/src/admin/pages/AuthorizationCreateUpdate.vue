@@ -61,7 +61,7 @@ export default {
       this.initialValues = response;
       return response;
     },
-    async saveAuthorization(currentValues) {
+    async saveAuthorization(currentValues, continueEditing = false) {
       currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
       currentValues.atlas_write_groups = currentValues.atlas_write_groups[1].map((group) => group.id);
 
@@ -71,7 +71,16 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/authorizations`);
+          if (!continueEditing) {
+            this.$router.push(`/authorizations`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Autorisatie opgeslagen",
+            detail: "De autorisatie is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

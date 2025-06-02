@@ -35,7 +35,7 @@ export default {
       if (value.zoom !== oldValue.zoom) {
         view.animate({
           zoom: value.zoom,
-          duration: 1500,
+          duration: value.animateFast ? 300 : 1500,
         });
       }
     },
@@ -96,12 +96,6 @@ export default {
   methods: {
     fit(geometryOrExtent, options) {
       this.view.fit(geometryOrExtent, options);
-    },
-    centerOn(coordinates, zoom) {
-      this.view.animate({ center: coordinates, zoom: zoom, duration: 1000 });
-    },
-    adjustZoom(delta) {
-      this.view.animate({ zoom: this.view.getZoom() + delta, duration: 100 });
     },
   },
 };

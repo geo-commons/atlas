@@ -65,6 +65,7 @@ export default {
               zoom_min: selectedLayer.settings.zoom_min,
               zoom_max: selectedLayer.settings.zoom_max,
               display_properties: selectedLayer.settings.display_properties,
+              search_terms: selectedLayer.settings.search_terms,
               search_fields: selectedLayer.settings.search_fields,
               server_style: selectedLayer.settings.server_style,
               client_style: selectedLayer.settings.client_style,

@@ -264,6 +264,7 @@ export default {
 
 .exit-fullscreen {
   right: 1px;
+  z-index: 10;
   border-radius: var(--radius-small) 0 0 var(--radius-small);
   border: 1px solid var(--color-grey-60);
   border-right: none;

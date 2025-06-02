@@ -1,8 +1,8 @@
-from django.urls import re_path
+from django.urls import path
 from . import views
 
 app_name = 'portal'
 
 urlpatterns = [
-    re_path('', views.index, name='portal_index'),
+    path('', views.index, name='portal_index'),
 ]
