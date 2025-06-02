@@ -157,7 +157,7 @@ export default {
     atlasFeatures: Object,
     isOpen: Boolean,
   },
-  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature", "select-feature", "toggle-edit-feature-mode"],
+  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature", "select-feature"],
   data() {
     return {
       features: [],
@@ -342,20 +342,24 @@ export default {
       return true;
     },
     toggleEditLayerMode(feature) {
-      const geoFeature = new GeoJSON().readFeature(feature);
+      try {
+        const geoFeature = new GeoJSON().readFeature(feature);
 
-      if (this.editLayerStore.editLayerMode !== EditLayerMode.EDIT) {
-        this.editLayerStore.setEditLayerMode(EditLayerMode.EDIT);
-        this.editLayerStore.setHighlightedFeatureAndLayer({
-          feature: geoFeature,
-          layer: this.layer,
-        });
+        if (this.editLayerStore.editLayerMode !== EditLayerMode.EDIT) {
+          this.editLayerStore.setEditLayerMode(EditLayerMode.EDIT);
+          this.editLayerStore.setHighlightedFeatureAndLayer({
+            feature: geoFeature,
+            layer: this.layer,
+          });
 
-        return;
+          return;
+        }
+
+        this.editLayerStore.setEditLayerMode(EditLayerMode.NONE);
+        this.editLayerStore.setHighlightedFeatureAndLayer(null);
+      } catch (e) {
+        console.error(e);
       }
-
-      this.editLayerStore.setEditLayerMode(EditLayerMode.NONE);
-      this.editLayerStore.setHighlightedFeatureAndLayer(null);
     },
   },
 };

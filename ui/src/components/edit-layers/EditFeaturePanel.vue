@@ -264,6 +264,7 @@ const handleDeleteFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
+      user
     );
 
     refreshLayer(editLayerStore.highlightedFeatureAndLayer ? editLayerStore.highlightedFeatureAndLayer.layer.id : "");
@@ -296,6 +297,7 @@ const handleSaveFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
+      user
     );
 
     refreshLayer(editLayerStore.highlightedFeatureAndLayer ? editLayerStore.highlightedFeatureAndLayer.layer.id : "");

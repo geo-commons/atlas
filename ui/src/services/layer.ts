@@ -57,7 +57,7 @@ If any property in the featureType has a type attribute that starts with "gml",
 it indicates that the property is a geometry field.
 */
 const getGeometryName = async (featureTypes: IFeatureTypes): Promise<string> => {
-  if (!featureTypes) {
+  if (!featureTypes || !featureTypes.length) {
     throw new Error("Wij konden de geometry naam niet ophalen");
   }
 
@@ -73,6 +73,7 @@ const performWfsTransaction = async (
   features: { toInsert?: Feature[]; toUpdate?: Feature[]; toDelete?: Feature[] },
   featureProperties: IFeatureProperties,
   geometryName: string,
+  user: IUser,
 ) => {
   if (layer.source_type !== ELayerTypes.WFS && layer.source_type !== ELayerTypes.WMS_WFS) {
     throw new Error("We ondersteunen alleen transacties voor lagen met bron_type WFS of WMS_WFS");
@@ -93,11 +94,13 @@ const performWfsTransaction = async (
 
   const serializer = new XMLSerializer();
   const payload = serializer.serializeToString(transactionNode).replaceAll("geometry", geometryName);
+  const { headers: authHeaders } = getFetchParameters(layer, user);
 
   const response = await fetch(layer.url, {
     method: "POST",
     headers: {
       "Content-Type": "text/xml",
+      ...authHeaders,
     },
     body: payload,
   });
@@ -115,8 +118,9 @@ const addFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
+  user: IUser
 ) => {
-  await performWfsTransaction(layer, { toInsert: [feature] }, featureProperties, geometryName);
+  await performWfsTransaction(layer, { toInsert: [feature] }, featureProperties, geometryName, user);
 };
 
 // Performs a WFS-Transaction request to update a specific feature on a layer
@@ -125,8 +129,9 @@ const editFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
+  user: IUser
 ) => {
-  await performWfsTransaction(layer, { toUpdate: [feature] }, featureProperties, geometryName);
+  await performWfsTransaction(layer, { toUpdate: [feature] }, featureProperties, geometryName, user);
 };
 
 // Performs a WFS-Transaction request to delete a specific feature on a layer
@@ -135,8 +140,9 @@ const deleteFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
+  user: IUser
 ) => {
-  await performWfsTransaction(layer, { toDelete: [feature] }, featureProperties, geometryName);
+  await performWfsTransaction(layer, { toDelete: [feature] }, featureProperties, geometryName, user);
 };
 
 export {

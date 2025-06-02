@@ -255,7 +255,7 @@ const handleSaveFeature = async () => {
 
     feature.setProperties(featureValuesToSubmit);
 
-    await addFeatureOnLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef));
+    await addFeatureOnLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef), user);
 
     refreshLayer(editLayerStore.selectedLayer ? editLayerStore.selectedLayer.id : "");
 
