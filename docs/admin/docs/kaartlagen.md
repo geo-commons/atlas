@@ -116,7 +116,7 @@ Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de i
 
 - **Zoektermen:** Via het veld "Zoektermen" kun je extra termen opgeven waarop een kaartlaag gevonden kan worden bij gebruik van de zoekfunctie binnen Atlas. Dit is vooral handig wanneer gebruikers verschillende woorden gebruiken voor hetzelfde concept. Bijvoorbeeld: bij een kaartlaag met als titel Scholen kun je de zoektermen onderwijs, educatie en basisschool toevoegen, zodat gebruikers deze kaartlaag ook vinden wanneer ze op die alternatieve termen zoeken. Voeg één zoekterm per regel in.
 
-### Metadata:
+### Metadata
 
 Onder metadata kunnen alle metadata gerelateerde velden worden geconfigureerd. Veel van deze metadata is zichtbaar in Atlas wanneer je via het "Zichtbare lagen" menu naar de kaartlaag zelf navigeert en hier op het ⓘ icoon klikt.
 
@@ -142,7 +142,23 @@ Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een 
 
 - **Alleen intern zichtbaar:** Wanneer "alleen intern zichtbaar" aan staat, is betreffende kaartlaag alleen beschikbaar binnen de interne omgeving. _Standaard_: aan.
 - **Vereis inlog voor deze dataset:** Wanneer "vereis inlog voor deze dataset" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. Indien je niet ingelogd bent, verschijnt de kaartlaag wel in het overzicht van lagen, maar krijg je de kaartlaag niet te zien en zie je enkel een slotje bij de kaartlaag staan om aan te wijzen dat je moet inloggen.
-- **Groepen:** Onder "beschikbare groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot de kaartlaag.
+  - **Ingelogde gebruikers kunnen kaartlaag bewerken:**
+    Wanneer deze optie is ingeschakeld, kunnen alle ingelogde gebruikers binnen Atlas objecten op de kaartlaag muteren, dat wil zeggen: **toevoegen**, **bewerken** en/of **verwijderen**. Dit kan via zowel de kaartlaag module als de autorisatie module geregeld worden.
+
+    Wil je dat gebruikers deze acties kunnen uitvoeren, dan zijn er twee mogelijkheden:
+
+    1. **Schakel deze optie in**  
+    Hiermee krijgen alle ingelogde gebruikers bewerkingsrechten op de kaartlaag.
+
+    2. **Gebruik schrijfgroepen**  
+    In plaats van algemene toegang kun je specifieke gebruikers of groepen schrijfrechten geven via:
+       - De instellingen van de **kaartlaag**
+       - De instellingen binnen de **autorisatie**-module
+
+    >   💡 Tip: Gebruik schrijfgroepen als je meer controle wilt over wie wijzigingen mag aanbrengen.
+
+- **Lees groepen:** Onder "beschikbare groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot de kaartlaag.
+- **Schrijf groepen:** Onder "schrijf groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot het muteren van objecten op de kaartlaag (toevoegen, bewerken en/of verwijderen van objecten). 
 
 ### Gekoppelde Data
 

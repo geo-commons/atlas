@@ -250,6 +250,7 @@ export default {
       currentValues.metadata.contact = currentValues.metadata_contact;
       currentValues.metadata.link = currentValues.metadata_link;
       currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
+      currentValues.atlas_write_groups = currentValues.atlas_write_groups[1].map((group) => group.id);
 
       currentValues.display_properties = currentValues.display_properties
         .split("\n")
@@ -365,7 +366,14 @@ export default {
     setAtlasGroups() {
       const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
       const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      const selectedWritableGroups = this.groups.filter((group) =>
+        this.initialValues.atlas_write_groups.includes(group.id),
+      );
+      const availableWritableGroups = this.groups.filter(
+        (group) => !this.initialValues.atlas_write_groups.includes(group.id),
+      );
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
+      this.initialValues.atlas_write_groups = [availableWritableGroups, selectedWritableGroups];
     },
     validateAndParseJsonString(text) {
       if (!text || text.trim() === "") {
@@ -539,11 +547,11 @@ export default {
               id: "layer_name",
               name: "LayerName",
               type: "layer-select",
-              required: true,
               placeholder: "laag",
               sourceField: "source_id",
               options: this.sources,
               infoText: "De naam van de laag op de geoserver.",
+              contains_colon: true
             },
             {
               label: "Brontype",
@@ -855,10 +863,25 @@ export default {
               infoText: "De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.",
             },
             {
-              label: "Groepen",
-              objectDisplayName: "groepen",
+              label: "Ingelogde gebruikers kunnen kaartlaag bewerken",
+              id: "authenticated_can_mutate",
+              name: "AuthenticatedCanMutate",
+              type: "checkbox",
+              required: false,
+              infoText: "Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren",
+            },
+            {
+              label: "Lees groepen",
+              objectDisplayName: "lees groepen",
               id: "atlas_groups",
               name: "atlasGroups",
+              type: "picklist",
+            },
+            {
+              label: "Schrijf groepen",
+              objectDisplayName: "schrijf groepen",
+              id: "atlas_write_groups",
+              name: "atlasWriteGroups",
               type: "picklist",
             },
           ],

@@ -6,7 +6,7 @@ Wanneer het gaat om (privacy)gevoelige data, moet dat echter wel goed beveiligd 
 
 Atlas maakt als databron gebruik van [Geoserver](https://geoserver.org). Zowel Atlas als Geoserver zijn goed te beveiligen tegen ongeoorloofde toegang tot data. De beveiligingsopties van Atlas en Geoserver zijn ook te combineren om zo specifieke toegangsregels te kunnen toepassen. Met behulp van [Filter-Proxy](https://github.com/delta10/filter-proxy) kunnen de beveiligingsopties van Atlas en Geoserver gecombineerd worden
 
-Toegang tot Atlas is op meerdere niveaus te beveiligen. Kaartlagen kunnen zo ingesteld worden dat ze door iedereen bekeken kunnen worden of alleen binnen het lokale netwerk. Binnen het lokale netwerk kan worden aangegeven dat een kaartlaag door alle of alleen door een specifieke groep medewerkers bekeken mag worden
+Toegang tot Atlas is op meerdere niveaus te beveiligen. Kaartlagen kunnen zo ingesteld worden dat ze door iedereen bekeken kunnen worden of alleen binnen het lokale netwerk. Binnen het lokale netwerk kan worden aangegeven dat een kaartlaag door alle of alleen door een specifieke groep medewerkers bekeken mag worden. Daarnaast is het mogelijk om voor kaartlagen te bepalen of ze ook bewerkt mogen worden; dit houdt in dat objecten op kaartlaag niveau toegevoegd, bewerkt en/of verwijderd kunnen worden. Dit recht kan je per kaartlaag of autorisatie toekennen aan een losse groep met gebruikers of voor iedereen die ingelogd is.
 
 Atlas kan zowel met een externe Geoserver als met een interne Geoserver werken. Met extern wordt bedoelt ‘in de cloud’, met intern wordt bedoelt ‘binnen het lokale netwerk’.
 
@@ -41,8 +41,7 @@ Installeer Filter-Proxy op de server waar Geoserver draait (Windows of Linux). P
   Maak eventueel een aparte workspace aan waar alleen de Filter-proxy user toegang toe heeft. In dit voorbeeld: protected  
   <img src="../images/workspaces.png" alt="rechtsboven" title="config.yaml" width="350" />
 
-Stel bij het aanmaken van de kaartlaag in het tabblad beveiliging in welke groep welke rechten heeft op deze kaartlaag.
-Andersom is het ook mogelijk om via het menu Security / Data / Data Security de rechten in te stellen per groep of kaartlaag of de rechten voor meerdere kaartlagen via wildcards in te stellen.
+Stel bij het aanmaken van de kaartlaag in het tabblad beveiliging in welke groep welke rechten heeft op deze kaartlaag, wil je objecten op de kaartlaag kunnen bewerken, verwijderen en/of toevoegen dan moet de schrijf rechten voor betreffende gebruiker ook toegekend worden. Andersom is het ook mogelijk om via het menu Security / Data / Data Security de rechten in te stellen per groep of kaartlaag of de rechten voor meerdere kaartlagen via wildcards in te stellen.
 
 <img src="../images/data_security.png" alt="rechtsboven" title="config.yaml" width="650" />
 
@@ -54,8 +53,10 @@ Binnen Atlas moet een bron aangemaakt zijn die via Filter-proxy de data binnenha
 <img src="../images/bron-wijzigen.png" alt="rechtsboven" title="config.yaml" width="350" />  
 De te beveiligen kaartlaag moet deze bron gebruiken.
 Onder Toegang: ‘Alleen intern zichtbaar’ en ‘vereis inlog’ aanzetten.
-Selecteer de gebruikersgroep die deze kaartlaag mag zien. De gebruikersgroep moet in Geoserver en Atlas bestaan. Geef in Atlas de gebruikers toegang tot de groep.  
+Selecteer de gebruikersgroep die deze kaartlaag mag zien. De gebruikersgroep moet in Geoserver en Atlas bestaan. Geef in Atlas de gebruikers toegang tot de groep.
 <img src="../images/toegang.png" alt="rechtsboven" title="config.yaml" width="850" />  
+Wil je een bepaalde groep en/of alle ingelogde gebruikers toegang geven tot het bewerken, verwijderen en/of toevoegen van objecten op de kaartlaag dan kan dit via schrijf groepen bij kaartlagen en/of de optie "Ingelogde gebruikers kunnen kaartlaag bewerken".
+
 Wanneer binnen de kaartlaaginstellingen filter-proxy als bron is geselecteerd dan kan de laag niet uit de lijst geselecteerd worden. De laagnaam moet dan handmatig bij Laagnaam worden ingevuld. Formaat: _Omgeving:laagnaam_. Dus bijvoorbeeld: _protected:mijnvertrouwelijkekaartlaag_.
 
 <img src="../images/filter-proxy-kaartlaag.png" alt="rechtsboven" title="config.yaml" width="850" />

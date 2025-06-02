@@ -12,4 +12,4 @@ class AuthorizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Authorization
-        fields = ['id', 'title', 'source', 'ordering', 'resource', 'description', 'login_required', 'only_internal', 'audit_log', 'response_filter', 'atlas_groups']
+        fields = ['id', 'title', 'source', 'ordering', 'resource', 'description', 'login_required', 'only_internal', 'audit_log', 'response_filter', 'atlas_groups', 'authenticated_can_mutate', 'atlas_write_groups']

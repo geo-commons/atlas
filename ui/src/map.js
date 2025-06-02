@@ -13,6 +13,7 @@ import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
 import { ConfirmationService } from "primevue";
 import { AtlasPresetApp } from "@/utils/theme-preset";
+import { ToastService } from "primevue";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -111,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     })
     .use(ConfirmationService)
+    .use(ToastService)
     .use(pinia)
     .use(VueTippy, {
       directive: "tippy",

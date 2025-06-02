@@ -80,6 +80,14 @@ defineRule("max", (value, [max]) => {
   return true;
 });
 
+defineRule("contains-colon", (value) => {
+  if (!value.includes(':')) {
+    return 'Dit veld is verplicht en moet een GeoServer workspace bevatten, bijv. custom:scholen.';
+  }
+
+  return true;
+});
+
 const routes = [
   {
     path: "/",
