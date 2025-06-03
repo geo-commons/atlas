@@ -26,7 +26,7 @@ Onder algemene gegevens van de kaartlaag kent Atlas diverse velden, dat zijn de 
 Onder bron valt de bron informatie van de kaartlaag te configureren, ook hier vallen er weer diverse velden te configureren, dat zijn de volgende:
 
 - **Bron:** Selecteer er één zoals die bij 'Bronnen' zijn geconfigureerd .Onder het veld bron kan je een keuze maken uit een van de geconfigureerde bronnen binnen Atlas, vanaf deze bron worden de beschikbare laagnamen opgehaald.
-- **Laagnaam:** De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver.
+- **Laagnaam:** De naam van de kaartlaag zoals die in Geoserver geconfigureerd is, bv: topp:BAG_Verblijfseenheid. Topp is hier de naam van de omgeving binnen Geoserver. Indien je de CRUD functionaliteit wil gebruiken voor de kaartlaag is het van belang altijd de GeoServer omgeving in de naam op te nemen.
 - **Brontype:** Onder het veld bron specifieer je wat voor brontype (WMS en WFS, WMS, WFS, WMTS, XYZ of MVT) de laag gebruikt. _De laag types_: Een WMS en WFS, of WFS laag is zowel zichtbaar op de kaart als in het datapaneel. WMS, WMTS, MVT en XYZ lagen worden alleen getoond in de kaart.
 - **Projectie:** De projectie waarin de kaartlaag bevraagd wordt. Default: EPSG:28992
 - **Server type:** _standaard:_ geoserver
