@@ -918,6 +918,7 @@ export default {
           this.removedDrawFeatures = [];
           break;
         case "Point":
+        case "Polygon":
         case "LineString":
         case "LinearRing":
         case "MultiPoint":

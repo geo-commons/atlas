@@ -18,7 +18,7 @@ De CRUD-functionaliteit (Create, Read, Update, Delete) is alleen beschikbaar als
 
 ### 2.2 Configuratie op kaartlaagniveau
 
-Op kaartlaagniveau moeten toegangsregels worden ingesteld om de mutatiefunctie te kunnen gebruiken. Hoe je dit instelt, lees je in [deze handleiding](/kaartlagen/#toegang).
+Op kaartlaagniveau moeten toegangsregels worden ingesteld om de mutatiefunctie te kunnen gebruiken. Hoe je dit instelt, lees je in [deze handleiding](/kaartlagen/#toegang). Daarnaast is het van belang om te weten dat de kaartlaag naam altijd de GeoServer omgeving in de naam moet hebben op het moment dat je CRUD functionaliteit wil gebruiken. Zo wordt bijvoorbeeld een kaartlaag met naam "scholen" "topp:scholen" als de GeoServer omgeving de topp omgeving is.
 
 ### 2.3 Configuratie via autorisaties
 
