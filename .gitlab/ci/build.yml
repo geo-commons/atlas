@@ -9,5 +9,9 @@ Build:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
     - export ATLAS_VERSION=$(git describe --tags)
-    - docker build --build-arg ATLAS_VERSION=$ATLAS_VERSION -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker build \
+      --cache-from "$CI_REGISTRY_IMAGE:latest" \
+      --build-arg ATLAS_VERSION="$ATLAS_VERSION" \
+      -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" \
+      .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
