@@ -26,7 +26,7 @@
     <div v-if="tables.length > 0" class="section">
       <h2>Tabellen</h2>
       <div class="grid">
-        <a v-for="table in tables" :key="table.id" :href="`/tables/#/${table.slug}`">
+        <a v-for="table in tables" :key="table.id" :href="`/tables/${table.slug}`">
           <div class="item">
             {{ table.title }}
           </div>

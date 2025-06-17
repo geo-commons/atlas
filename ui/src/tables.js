@@ -22,7 +22,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory("/tables/#"),
+  history: createWebHistory("/tables/"),
   routes: routes,
 });
 
