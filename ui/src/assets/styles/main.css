@@ -504,6 +504,10 @@ hr {
   font-weight: var(--font-weight-bold);
 }
 
+.form__label {
+  font-weight: var(--font-weight-bold);
+}
+
 /* admin tailwind styling */
 .__admin {
   h1 {

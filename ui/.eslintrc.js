@@ -23,6 +23,7 @@ module.exports = {
     // override/add rules settings here, such as:
     // 'vue/no-unused-vars': 'error'
     "vue/require-default-prop": "off",
+    "vue/no-v-model-argument": "off",
     "vue/no-multiple-template-root": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/no-explicit-any": "off",

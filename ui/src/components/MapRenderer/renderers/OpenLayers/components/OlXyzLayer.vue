@@ -16,6 +16,7 @@ export default {
   name: "OlXyzLayer",
   inject: ["map"],
   props: {
+    id: String,
     name: String,
     url: String,
     layer: String,
@@ -41,6 +42,7 @@ export default {
   },
   created() {
     this.tileLayer = new TileLayer({
+      id: this.id,
       name: this.name,
       visible: this.isVisible,
       opacity: this.opacity,

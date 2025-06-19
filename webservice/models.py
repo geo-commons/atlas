@@ -288,6 +288,10 @@ class Layer(models.Model):
 
     _search_fields = models.CharField(
         'Zoek in deze velden', max_length=500, blank=True, null=True)
+    
+    _search_terms = models.CharField(
+        'Zoektermen', max_length=500, blank=True, null=True,
+        help_text='Deze worden gebruikt om de laag beter vindbaar te maken in het lagenpaneel. Voer één zoekterm per regel in.')
 
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
     # so inform them when changing.
@@ -304,6 +308,9 @@ class Layer(models.Model):
         'Vereis inlog voor deze dataset', default=False,
         help_text='De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.')
 
+    authenticated_can_mutate = models.BooleanField('Ingelogde gebruikers kunnen kaartlaag muteren', default=False,
+        help_text="Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren")
+
     published = models.BooleanField('Gepubliceerd', default=False)
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS_WFS, max_length=20,
@@ -312,7 +319,7 @@ class Layer(models.Model):
 
     legend_url = models.URLField(
         'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True, max_length=1000)
-
+    
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
@@ -331,6 +338,10 @@ class Layer(models.Model):
     atlas_groups = models.ManyToManyField(
         AtlasGroup, blank=True, verbose_name='Groepen',
         help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
+
+    atlas_write_groups = models.ManyToManyField(
+        AtlasGroup, blank=True, verbose_name='Groepen', related_name='atlas_write_groups',
+        help_text='De inhoud van deze dataset kan alleen gemuteerd worden als de gebruiker lid is van een van deze groepen.')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
     updated_at = models.DateTimeField('updated_at', auto_now=True)
@@ -367,6 +378,10 @@ class Layer(models.Model):
     @property
     def search_fields(self):
         return self._search_fields.split('\r\n') if self._search_fields else []
+
+    @property
+    def search_terms(self):
+        return self._search_terms.split('\r\n') if self._search_terms else []
 
     @property
     def slddiv(self):
@@ -476,6 +491,7 @@ source: new ol.source.TileWMS({{
             } if self.layer_type else None,
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
+            'search_terms': self._search_terms.split('\r\n') if self._search_terms else [],
             'metadata': {
                 'description': self.meta_description,
                 'lineage': self.meta_lineage,
@@ -506,6 +522,22 @@ source: new ol.source.TileWMS({{
 
         user_groups = list(user.atlas_groups.all())
         return any(group for group in self.atlas_groups.all() if group in user_groups)
+
+    def is_mutable_by(self, user, request):
+        if not is_internal(request) and self.closed_dataset:
+            return False
+
+        if not user.is_authenticated:
+            return False
+
+        if self.authenticated_can_mutate:
+            return True
+
+        if not self.atlas_write_groups.exists():
+            return False
+
+        user_groups = list(user.atlas_groups.all())
+        return any(group for group in self.atlas_write_groups.all() if group in user_groups)
 
     class Meta:
         verbose_name = 'Kaartlaag'

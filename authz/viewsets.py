@@ -60,7 +60,7 @@ class AuthorizeViewSet(viewsets.ViewSet):
             'result': False,
             'status': 500,
             'message': 'there is no authorizer for this source type provided'
-        })
+        }, status=500)
 
 
 class AuthorizationViewSet(DataExportImportMixin, viewsets.ModelViewSet):

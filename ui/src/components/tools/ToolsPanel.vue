@@ -36,6 +36,14 @@
         :after-draw="afterDraw"
         :toggle-draw="toggleDraw"
       />
+
+      <EditLayerMenu
+        v-if="config && config.features.edit_layer_features && features.edit_layer_features && user"
+        :show-edit-feature-menu="showEditFeatureMenu"
+        :toggle-edit-layer="toggleEditLayer"
+        :tool="tool"
+        :set-tool="setTool"
+      />
     </div>
   </div>
 </template>
@@ -45,16 +53,23 @@ import draw from "@/utils/draw";
 import SelectMenu from "@/components/tools/SelectMenu.vue";
 import MeasureMenu from "@/components/tools/MeasureMenu.vue";
 import DrawMenu from "@/components/tools/DrawMenu.vue";
+import EditLayerMenu from "@/components/tools/EditLayerMenu.vue";
+import { DEFAULT_DRAWING_COLOR, DEFAULT_DRAWING_FONT_SIZE, DEFAULT_DRAWING_STROKE_WIDTH } from "@/constants/defaults";
+import { mapStores } from "pinia";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
+import { EditLayerMode } from "@/types/map";
 
 export default {
   name: "ToolsPanel",
   components: {
+    EditLayerMenu,
     DrawMenu,
     MeasureMenu,
     SelectMenu,
   },
   props: {
     tool: String,
+    editFeatureMode: String,
     color: Object,
     user: Object,
     map: Object,
@@ -74,15 +89,46 @@ export default {
       },
     },
   },
+  computed: {
+    ...mapStores(useEditLayerStore),
+  },
   data() {
     return {
       showMeasureMenu: false,
       showDrawMenu: false,
       showSelectMenu: false,
+      showEditFeatureMenu: false,
       showLineWeightMenu: false,
       showFontSizeMenu: false,
       previousTool: "",
     };
+  },
+  watch: {
+    // This code resets the color, stroke width, and font size to their default values whenever 'showDrawMenu' is turned off
+    showDrawMenu: {
+      handler(value) {
+        if (!value) {
+          this.$emit("set-color", DEFAULT_DRAWING_COLOR);
+          this.$emit("set-tool", "");
+          this.$emit("set-stroke-width", DEFAULT_DRAWING_STROKE_WIDTH);
+          this.$emit("set-font-size", DEFAULT_DRAWING_FONT_SIZE);
+        }
+      },
+    },
+    showEditFeatureMenu: {
+      handler(value) {
+        if (!value) {
+          this.editLayerStore.resetFeature();
+        }
+      },
+    },
+    "editLayerStore.editLayerMode": {
+      handler(value) {
+        if (value === EditLayerMode.EDIT) {
+          this.showEditFeatureMenu = true;
+        }
+      },
+    },
   },
   methods: {
     draw,
@@ -93,6 +139,10 @@ export default {
 
       if (this.showDrawMenu) {
         this.showDrawMenu = false;
+      }
+
+      if (this.showEditFeatureMenu) {
+        this.showEditFeatureMenu = false;
       }
 
       if (this.tool === "MEASURE_AREA" || this.tool === "MEASURE_LINE") {
@@ -109,6 +159,10 @@ export default {
 
       if (this.showDrawMenu) {
         this.showDrawMenu = false;
+      }
+
+      if (this.showEditFeatureMenu) {
+        this.showEditFeatureMenu = false;
       }
 
       if (this.tool === "SELECT_AREA" || this.tool === "SELECT_CIRCLE" || this.tool === "SELECT_FEATURE") {
@@ -139,17 +193,21 @@ export default {
         this.showMeasureMenu = false;
       }
 
-      if (
-        this.tool === "DRAW_POINT" ||
-        this.tool === "DRAW_LINE" ||
-        this.tool === "DRAW_POLYGON" ||
-        this.tool === "DRAW_LABEL"
-      ) {
-        this.$emit("set-tool", "");
-        this.showDrawMenu = !this.showDrawMenu;
-      } else {
-        this.showDrawMenu = !this.showDrawMenu;
+      if (this.showEditFeatureMenu) {
+        this.showEditFeatureMenu = false;
       }
+
+      this.$emit("set-tool", "");
+      this.showDrawMenu = !this.showDrawMenu;
+    },
+    toggleEditLayer() {
+      this.setTool("");
+      this.resetAreaSelect();
+      this.showSelectMenu = false;
+      this.showMeasureMenu = false;
+      this.showDrawMenu = false;
+      this.showEditFeatureMenu = !this.showEditFeatureMenu;
+      this.clearDrawing();
     },
     resetAreaSelect() {
       this.$emit("set-selected-area", null);
@@ -270,6 +328,105 @@ export default {
   }
 }
 
+.tools-panel__draw-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: absolute;
+  right: 0;
+  box-shadow: var(--shadow-normal);
+  border-radius: var(--radius-normal);
+
+  &--secondary {
+    margin-top: 40px;
+  }
+
+  .tools-panel__draw-menu:not(:last-child) .tools-panel__button {
+    border-right: 1px solid var(--color-grey-50);
+
+    &--active {
+      border-right: 1px solid var(--color-primary);
+    }
+  }
+}
+
+.tools-panel__draw-menu {
+  position: relative;
+
+  .tools-panel__button {
+    border-radius: 0px !important;
+  }
+}
+
+.tools-panel__draw-options-menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: absolute;
+  left: 0;
+  margin-top: -1px;
+  box-shadow: var(--shadow-normal);
+  border-radius: var(--radius-small);
+
+  ul {
+    border-radius: var(--radius-small);
+  }
+}
+
+.tools-panel__option {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  width: 72px;
+
+  &--rectangle {
+    width: var(--width-button-large) !important;
+    height: var(--width-button-large) !important;
+  }
+
+  &--block {
+    display: block;
+  }
+
+  &--small-text {
+    font-size: 14px !important;
+  }
+
+  &--middle-text {
+    font-size: 18px !important;
+  }
+
+  &--large-text {
+    font-size: 22px !important;
+  }
+
+  &--larger-text {
+    font-size: 26px !important;
+  }
+
+  &--active {
+    background-color: var(--color-grey-40);
+    color: var(--color-primary);
+  }
+
+  &:hover {
+    background: var(--color-grey-40);
+  }
+
+  &:active {
+    background: var(--color-grey-50);
+  }
+
+  &:last-child {
+    border-radius: 0 0 var(--radius-small) var(--radius-small) !important;
+  }
+}
+
 @media (max-width: 576px) {
   .tools-panel__button {
     &--large {
@@ -279,6 +436,16 @@ export default {
         display: none;
       }
     }
+  }
+
+  .tools-panel__draw-bar {
+    display: grid !important;
+    flex-basis: 20%;
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .tools-panel__draw-bar button:nth-child(-n + 5) {
+    border-bottom: 1px solid var(--color-grey-50);
   }
 }
 </style>

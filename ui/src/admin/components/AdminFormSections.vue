@@ -5,7 +5,7 @@
     v-slot="{ values }"
     ref="formRef"
     :initial-values="currentValues"
-    @submit="save"
+    @submit="onSubmit"
     @invalid-submit="invalidSubmit"
   >
     <div :class="{ 'create-view-container': createView || compactLayout }">
@@ -21,7 +21,7 @@
             <slot name="linkedData"></slot>
           </div>
 
-          <div v-if="section.label === 'Templates'" class="section-questions" style="z-index: 1000">
+          <div v-if="section.label === 'Templates'" class="section-questions" style="z-index: 1">
             <slot name="templates"></slot>
           </div>
 
@@ -129,6 +129,7 @@
                     </template>
                   </PickList>
                 </vee-field>
+                <span class="warning-text"><vee-error-message :name="question.id" /></span>
               </div>
               <div v-else>
                 <span class="label-info-text-wrapper">
@@ -244,10 +245,10 @@
                     class="!tw-text-sm"
                   ></CodeMirror>
                 </vee-field>
-                <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id">
+                <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id" :rules="getRules(question)">
                   <InputText
                     :id="question.id"
-                    v-model="currentValues[question.id]"
+                    v-bind="field"
                     class="!tw-mb-2"
                     placeholder="Laagnaam"
                     type="text"
@@ -314,15 +315,24 @@
         type="button"
         @click="cancel()"
       >
-        Annuleer
+        Annuleren
       </button>
       <button
         v-if="!disableCreateAndUpdate"
+        class="button __secondary_admin"
+        type="submit"
+        @click="setContinueEditing(true)"
+      >
+        Opslaan
+      </button>
+      <button
+        v-if="!disableCreateAndUpdate && !createView"
         class="button"
         :class="createView ? '__secondary_admin' : '__primary_admin'"
         type="submit"
+        @click="setContinueEditing(false)"
       >
-        Opslaan
+        Opslaan en sluiten
       </button>
       <button v-if="createView" class="button __primary_admin" type="submit" @click="continueEditing = true">
         Opslaan en openen
@@ -332,17 +342,17 @@
 </template>
 
 <script>
-import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
-import { formatDateValue } from "@/utils/date-formatter";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
-import CloseIcon from "@/assets/icons/close-icon.svg";
-import Cookies from "js-cookie";
 import LayerField from "@/admin/components/LayerField.vue";
-import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
 import ThemeField from "@/admin/components/ThemeField.vue";
+import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
+import CloseIcon from "@/assets/icons/close-icon.svg";
+import { formatDateValue } from "@/utils/date-formatter";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
-import CodeMirror from "vue-codemirror6";
+import Cookies from "js-cookie";
 import { clouds } from "thememirror";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
+import CodeMirror from "vue-codemirror6";
 
 export default {
   name: "AdminFormSections",
@@ -414,6 +424,20 @@ export default {
     getRules(question) {
       let rules = [];
 
+      // Check if we should apply the contains-colon validation
+      // Only apply if atlas_write_groups has items selected or authenticated_can_mutate is true
+      let atlasWriteGroupsHasItems = Array.isArray(this.currentValues.atlas_write_groups) && this.currentValues.atlas_write_groups[1].length > 0;
+      const authenticatedCanMutate = this.currentValues.authenticated_can_mutate === true;
+
+      const shouldApplyColonValidation = atlasWriteGroupsHasItems || authenticatedCanMutate;
+
+      // Check if any field has specified this field in its contains_colon property
+      const hasColonValidation = !!question.contains_colon;
+
+      if (hasColonValidation && shouldApplyColonValidation) {
+        rules.push("contains-colon");
+      }
+
       if (question.required) {
         rules.push("required");
       }
@@ -446,6 +470,14 @@ export default {
         this.$router.push(`/${this.formObject}`);
       }
     },
+    setContinueEditing(val) {
+      if (!this.createView) {
+        this.continueEditing = val;
+      }
+    },
+    onSubmit(values) {
+      this.save(values);
+    },
     save(values) {
       if (this.createView) {
         this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
@@ -455,9 +487,9 @@ export default {
           values[key] = this.currentValues[key];
         });
 
-        this.objectSpecificSave(values, false, this.sendSaveRequest);
+        this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
       } else {
-        this.objectSpecificSave(values, false, this.sendSaveRequest);
+        this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
       }
     },
     async sendSaveRequest(apiUrl, method, currentValues) {
@@ -608,8 +640,20 @@ h3 {
 .config-btn-wrapper {
   display: flex;
   justify-content: flex-end;
-  gap: 20px;
-  padding: 30px 0;
+  gap: 1rem;
+  padding: 1rem 0;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-backdrop);
+  z-index: 2;
+  border-top: 1px solid var(--color-grey-60);
+}
+
+.p-dialog .config-btn-wrapper {
+  position: relative;
+  background-color: transparent;
+  border-top: 0;
+  padding-bottom: 0;
 }
 
 .width {

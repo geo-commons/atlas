@@ -65,7 +65,7 @@ export default {
         : "";
     },
 
-    async saveDataset(currentValues) {
+    async saveDataset(currentValues, continueEditing = false) {
       const url = `/atlas/api/v1/datasets/${this.$route.params.id}/`;
 
       currentValues.themes = currentValues.themes.map((theme) => theme.id);
@@ -75,7 +75,16 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
-          this.$router.push(`/datasets`);
+          if (!continueEditing) {
+            this.$router.push(`/datasets`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Dataset opgeslagen",
+            detail: "De dataset is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

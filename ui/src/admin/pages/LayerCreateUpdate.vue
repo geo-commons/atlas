@@ -127,12 +127,12 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import FormModal from "@/components/FormModal.vue";
 import LinkedDataForm from "@/admin/components/LinkedDataForm.vue";
 import TemplateForm from "@/admin/components/TemplateForm.vue";
-import TrashIcon from "@/assets/icons/trash-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import FormModal from "@/components/FormModal.vue";
 import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
 
@@ -224,6 +224,7 @@ export default {
       this.initialValues.templates = response.templates;
       this.initialValues.search_properties = response.search_properties.join("\n");
       this.initialValues.display_properties = response.display_properties.join("\n");
+      this.initialValues.search_terms = response.search_terms ? response.search_terms.join("\n") : "";
 
       // Set selectedSource
       this.selectedSource = {
@@ -235,7 +236,7 @@ export default {
 
       return result;
     },
-    async saveLayer(currentValues) {
+    async saveLayer(currentValues, continueEditing = false) {
       currentValues.layer_name =
         typeof currentValues.layer_name === "string" ? currentValues.layer_name : currentValues.layer_name.value;
 
@@ -249,11 +250,15 @@ export default {
       currentValues.metadata.contact = currentValues.metadata_contact;
       currentValues.metadata.link = currentValues.metadata_link;
       currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
+      currentValues.atlas_write_groups = currentValues.atlas_write_groups[1].map((group) => group.id);
 
       currentValues.display_properties = currentValues.display_properties
         .split("\n")
         .filter((value) => value.trim() !== "");
       currentValues.search_properties = currentValues.search_properties
+        .split("\n")
+        .filter((value) => value.trim() !== "");
+      currentValues.search_terms = currentValues.search_terms
         .split("\n")
         .filter((value) => value.trim() !== "");
 
@@ -273,9 +278,17 @@ export default {
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
-
         if (result.ok) {
-          this.$router.push(`/layers`);
+          if (!continueEditing) {
+            this.$router.push(`/layers`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Laag opgeslagen",
+            detail: "De laag is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);
@@ -353,7 +366,14 @@ export default {
     setAtlasGroups() {
       const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
       const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      const selectedWritableGroups = this.groups.filter((group) =>
+        this.initialValues.atlas_write_groups.includes(group.id),
+      );
+      const availableWritableGroups = this.groups.filter(
+        (group) => !this.initialValues.atlas_write_groups.includes(group.id),
+      );
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
+      this.initialValues.atlas_write_groups = [availableWritableGroups, selectedWritableGroups];
     },
     validateAndParseJsonString(text) {
       if (!text || text.trim() === "") {
@@ -527,11 +547,11 @@ export default {
               id: "layer_name",
               name: "LayerName",
               type: "layer-select",
-              required: true,
               placeholder: "laag",
               sourceField: "source_id",
               options: this.sources,
               infoText: "De naam van de laag op de geoserver.",
+              contains_colon: true
             },
             {
               label: "Brontype",
@@ -746,6 +766,16 @@ export default {
               required: false,
               infoText: "Overschrijf link naar legenda",
             },
+            {
+              label: "Zoektermen",
+              id: "search_terms",
+              name: "SearchTerms",
+              type: "text",
+              required: false,
+              multiLine: true,
+              infoText:
+                "Deze worden gebruikt om de laag beter vindbaar te maken in het lagenpaneel. Voer één zoekterm per regel in.",
+            },
           ],
         },
         metadata: {
@@ -833,10 +863,25 @@ export default {
               infoText: "De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.",
             },
             {
-              label: "Groepen",
-              objectDisplayName: "groepen",
+              label: "Ingelogde gebruikers kunnen kaartlaag bewerken",
+              id: "authenticated_can_mutate",
+              name: "AuthenticatedCanMutate",
+              type: "checkbox",
+              required: false,
+              infoText: "Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren",
+            },
+            {
+              label: "Lees groepen",
+              objectDisplayName: "lees groepen",
               id: "atlas_groups",
               name: "atlasGroups",
+              type: "picklist",
+            },
+            {
+              label: "Schrijf groepen",
+              objectDisplayName: "schrijf groepen",
+              id: "atlas_write_groups",
+              name: "atlasWriteGroups",
               type: "picklist",
             },
           ],

@@ -57,7 +57,7 @@ services:
       - EXTRA_JAVA_OPTS=-Xms1G -Xmx2G
     volumes:
       - geoserver-data:/opt/geoserver_data
-      - ./data/scholen.gpkg:/opt/geoserver_data/data/scholen.gpkg
+      - ./data/workspaces/custom:/opt/apache-tomcat-9.0.75/webapps/geoserver/data/workspaces/custom
 volumes:
   postgres-data:
   geoserver-data:

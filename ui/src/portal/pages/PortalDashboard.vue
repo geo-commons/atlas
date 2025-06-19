@@ -93,7 +93,7 @@
               :summary="table.description"
               :thumbnail="table.thumbnail"
               :show-thumbnail="true"
-              :object-url="`/tables/#/${table.slug}`"
+              :object-url="`/tables/${table.slug}`"
             />
           </div>
         </section>

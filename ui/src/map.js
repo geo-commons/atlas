@@ -13,6 +13,7 @@ import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
 import { ConfirmationService } from "primevue";
 import { AtlasPresetApp } from "@/utils/theme-preset";
+import { ToastService } from "primevue";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom_min: configuredLayer.settings.zoom_min,
         zoom_max: configuredLayer.settings.zoom_max,
         display_properties: configuredLayer.settings.display_properties,
+        search_terms: configuredLayer.settings.search_terms,
         search_fields: configuredLayer.settings.search_fields,
         server_style: configuredLayer.settings.server_style,
         client_style: configuredLayer.settings.client_style,
@@ -125,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     })
     .use(ConfirmationService)
+    .use(ToastService)
     .use(pinia)
     .use(VueTippy, {
       directive: "tippy",

@@ -94,6 +94,15 @@
       :vector-style="DRAW_STYLE"
       :z-index="2"
     />
+    <ol-vector-layer
+      ref="editLayerFeatures"
+      name="editLayerFeatures"
+      :selectable="true"
+      :is-visible="true"
+      :features="editLayerStore.feature ? [editLayerStore.feature] : []"
+      :vector-style="DRAW_STYLE"
+      :z-index="2"
+    />
   </ol-map>
 </template>
 
@@ -118,6 +127,8 @@ import "ol/ol.css";
 import { getFeatureFontSize, getFeatureRgba, getFeatureStrokeWidth } from "@/utils/feature-utils";
 import { fetchLegendImage } from "@/utils/legend-utils";
 import { printMapToPdf } from "@/utils/print-util";
+import { mapStores } from "pinia";
+import { useEditLayerStore } from "@/stores/edit_layer_store";
 
 const MAP_AREA_STYLE = new Style({
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 2 }),
@@ -173,6 +184,7 @@ export default {
     };
   },
   computed: {
+    ...mapStores(useEditLayerStore),
     DRAW_STYLE() {
       return (feature) =>
         new Style({
@@ -333,6 +345,9 @@ export default {
       } finally {
         this.$emit("loading-print-to-pdf", false);
       }
+    },
+    refreshLayer(id) {
+      this.$refs.map.refreshLayer(id);
     },
     getZIndex(layer, index) {
       if (layer.is_base) {

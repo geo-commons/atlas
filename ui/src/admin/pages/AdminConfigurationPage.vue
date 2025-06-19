@@ -206,6 +206,12 @@ export default {
               type: "checkbox",
             },
             {
+              label: "Bewerkfunctionaliteit",
+              id: "FEATURE_EDIT_LAYER_FEATURES",
+              name: "featureAddFeature",
+              type: "checkbox",
+            },
+            {
               label: "Zet oude beheerpaneel uit",
               id: "FEATURE_DISABLE_ADMIN1",
               name: "featureDisableAdmin1",

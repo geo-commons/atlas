@@ -1,8 +1,10 @@
-from django.urls import re_path
+from django.urls import re_path, path
 from . import views
+from portal import views as portal_views
 
 app_name = 'tables'
 
 urlpatterns = [
-    re_path('', views.index, name='tables_index'),
+    path('', portal_views.index, name='tables_root'),
+    re_path(r'^.+', views.index, name='tables_index'),
 ]
