@@ -13,7 +13,7 @@
         <tbody>
           <tr v-for="(record, key) in fetchedData" :key="key">
             <td v-for="(field, key) in template.fields" :key="key" class="template-table-cell">
-              {{ renderString(field, record) }}
+              <RichValue :data-key="field" :data-value="renderString(field, record)" />
             </td>
           </tr>
         </tbody>
@@ -36,12 +36,14 @@ import ExpandButton from "./ExpandButton";
 import Markdown from "./Markdown";
 import { useGlobalStore } from "@/stores";
 import { mapState } from "pinia";
+import RichValue from "@/components/RichValue.vue";
 
 nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "FeatureInfoTemplate",
   components: {
+    RichValue,
     ExpandButton,
     Markdown,
   },
