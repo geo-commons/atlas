@@ -4,7 +4,7 @@ authorizationServiceUrl: http://host.docker.internal:8000/atlas/api/v1/authorize
 
 cors:
   allowedOrigins:
-    - http://localhost:8000
+    - http://host.docker.internal:8000
   allowedHeaders:
     - Accept
     - Authorization
@@ -19,6 +19,9 @@ paths:
     backend:
       slug: geoserver
       path: /ows
+    allowedMethods:
+      - GET
+      - POST
   - path: /api/kvk/zoeken
     backend:
       slug: kvk
@@ -27,7 +30,7 @@ paths:
 backends:
   geoserver:
     type: OWS
-    baseUrl: https://dpt.purmerend.nl/geoserver
+    baseUrl: http://host.docker.internal:8080/geoserver
   kvk:
     type: REST
     baseUrl: https://api.kvk.nl/test/api/v2
