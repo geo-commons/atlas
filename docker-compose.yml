@@ -44,7 +44,7 @@ services:
     ports:
       - 6556:6556
   filter-proxy:
-    image: ghcr.io/delta10/filter-proxy:0.7.3
+    image: ghcr.io/delta10/filter-proxy:0.8.0
     volumes:
       - ./filter-proxy.dev.yml:/config.yaml
     ports:
