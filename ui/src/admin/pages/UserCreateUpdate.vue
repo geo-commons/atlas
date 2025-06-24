@@ -15,6 +15,7 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
+import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "UserCreateUpdateComponent",
@@ -59,7 +60,9 @@ export default {
       return result;
     },
     async getGroups() {
-      const result = await fetch("/atlas/api/v1/groups/", {
+      const url = getAllObjects("/atlas/api/v1/groups/");
+
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
