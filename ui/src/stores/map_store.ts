@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { IMapStore } from "@/types/mapStore";
+import { ICycloView, IMapStore } from "@/types/mapStore";
 
 export function useMapStore(mapName: string) {
   return defineStore(`map-${mapName}`, {
@@ -8,6 +8,7 @@ export function useMapStore(mapName: string) {
       leftSelectedCompareLayerId: null,
       rightSelectedCompareLayerId: null,
       comparePercentage: 50,
+      cycloView: null,
     }),
     actions: {
       resetAllFilters() {
@@ -39,6 +40,9 @@ export function useMapStore(mapName: string) {
       },
       setComparePercentage(swipe: number) {
         this.comparePercentage = swipe;
+      },
+      setCycloView(cycloView: ICycloView | null) {
+        this.cycloView = cycloView;
       },
     },
     getters: {
