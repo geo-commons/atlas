@@ -683,6 +683,7 @@ class MapLayer(models.Model):
     class Meta:
         verbose_name = 'Kaartlaag'
         verbose_name_plural = 'Kaartlagen'
+        ordering = ['layer__layer_type__ordering', 'layer__ordering', 'layer__title']
 
     def __str__(self):
         return f"{self.map} - {self.layer}"
