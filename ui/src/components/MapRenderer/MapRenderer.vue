@@ -25,6 +25,7 @@
         <SplitterPanel v-if="showPanoramaPanel" class="flex items-center justify-center panorama-splitter">
           <PanoramaPanel
             class="panorama-panel"
+            :map-id="mapId"
             :position="position"
             @toggle="togglePanoramaPanel"
             @toggle-full-screen="togglePanoramaPanelFullScreen"

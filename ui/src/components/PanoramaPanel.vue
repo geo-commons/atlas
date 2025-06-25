@@ -37,6 +37,7 @@
         :username="selectedViewer.username"
         :password="selectedViewer.password"
         :api-key="selectedViewer.api_key"
+        :map-id="mapId"
       />
       <iframe-viewer
         v-if="position.marker && selectedViewer.type == 'IFRAME'"
@@ -80,6 +81,7 @@ export default {
   },
   props: {
     position: Object,
+    mapId: String,
   },
   emits: ["toggle-full-screen", "toggle"],
   data() {

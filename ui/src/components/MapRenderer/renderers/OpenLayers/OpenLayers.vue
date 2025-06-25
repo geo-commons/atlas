@@ -60,6 +60,15 @@
       :z-index="3"
     />
     <ol-vector-layer
+      v-if="store.cycloView"
+      name="streetview"
+      :z-index="3"
+      :is-visible="true"
+      :selectable="false"
+      :features="cycloFeatures"
+      :vector-style="SELECTED_AREA_STYLE"
+    />
+    <ol-vector-layer
       name="geolocation"
       :selectable="false"
       :is-visible="true"
@@ -109,7 +118,7 @@
 <script>
 import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import Feature from "ol/Feature";
-import { Point } from "ol/geom";
+import { Point, Polygon } from "ol/geom";
 
 import OlMap from "./components/OlMap";
 import OlView from "./components/OlView";
@@ -129,6 +138,7 @@ import { fetchLegendImage } from "@/utils/legend-utils";
 import { printMapToPdf } from "@/utils/print-util";
 import { mapStores } from "pinia";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
+import { useMapStore } from "@/stores/map_store";
 
 const MAP_AREA_STYLE = new Style({
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 2 }),
@@ -181,6 +191,7 @@ export default {
   data() {
     return {
       undoRedoInteraction: null,
+      store: null,
     };
   },
   computed: {
@@ -256,6 +267,51 @@ export default {
 
       return [new Feature({ geometry: this.selectedArea })];
     },
+    cycloFeatures() {
+      if (!this.store.cycloView) {
+        return [];
+      }
+
+      const { yaw, hFov } = this.store.cycloView.detail;
+      const radius = 150;
+
+      // Convert center to map projection
+      const centerProjected = [this.position.marker[0], this.position.marker[1]];
+
+      // Calculate half angle in radians
+      const halfAngle = ((hFov / 2) * Math.PI) / 180;
+
+      // Convert yaw to radians (OpenLayers uses mathematical angle convention)
+      // Subtract from 90° to convert from compass bearing to mathematical angle
+      const yawRad = ((90 - yaw) * Math.PI) / 180;
+
+      // Create sector coordinates
+      const coordinates = [centerProjected]; // Start from center
+
+      // Number of points to create smooth arc
+      const numPoints = Math.max(16, Math.floor(hFov / 5));
+
+      // Generate arc points
+      for (let i = 0; i <= numPoints; i++) {
+        const angle = yawRad + halfAngle - (2 * halfAngle * i) / numPoints;
+        const x = centerProjected[0] + radius * Math.cos(angle);
+        const y = centerProjected[1] + radius * Math.sin(angle);
+        coordinates.push([x, y]);
+      }
+
+      // Close the polygon back to center
+      coordinates.push(centerProjected);
+
+      // Create the feature
+      const feature = new Feature({
+        geometry: new Polygon([coordinates]),
+        type: "fov-sector",
+        yaw: yaw,
+        hFov: hFov,
+      });
+
+      return [feature];
+    },
   },
   watch: {
     tool(tool) {
@@ -293,6 +349,8 @@ export default {
     this.GEOLOCATION_STYLE = GEOLOCATION_STYLE;
     this.SELECTED_AREA_STYLE = SELECTED_AREA_STYLE;
     this.HIGHLIGHTED_SELECTION_STYLE = HIGHLIGHTED_SELECTION_STYLE;
+
+    this.store = useMapStore(this.mapId);
   },
   methods: {
     fetchLegendImage,
