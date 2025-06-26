@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ICycloView, IMapStore } from "@/types/mapStore";
+import { Geometry } from "ol/geom";
 
 export function useMapStore(mapName: string) {
   return defineStore(`map-${mapName}`, {
@@ -9,6 +10,7 @@ export function useMapStore(mapName: string) {
       rightSelectedCompareLayerId: null,
       comparePercentage: 50,
       cycloView: null,
+      measuredAreas: [],
     }),
     actions: {
       resetAllFilters() {
@@ -43,6 +45,12 @@ export function useMapStore(mapName: string) {
       },
       setCycloView(cycloView: ICycloView | null) {
         this.cycloView = cycloView;
+      },
+      addMeasuredArea(area: Geometry) {
+        this.measuredAreas.push(area);
+      },
+      clearMeasuredAreas() {
+        this.measuredAreas = [];
       },
     },
     getters: {

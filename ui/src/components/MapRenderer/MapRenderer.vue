@@ -40,6 +40,7 @@
             :tool="tool"
             :map-id="mapId"
             :selected-area="selectedArea"
+            :measured-areas="measuredAreas"
             :highlighted-features="highlightedFeatures"
             :selected-features="selectedFeatures"
             :map-area="mapArea"
@@ -69,6 +70,7 @@
         :tool="tool"
         :map-id="mapId"
         :selected-area="selectedArea"
+        :measured-areas="measuredAreas"
         :highlighted-features="highlightedFeatures"
         :selected-features="selectedFeatures"
         :show-compare-slider="compareLayers"
@@ -242,6 +244,8 @@
           :color="color"
           :stroke-width="strokeWidth"
           :font-size="fontSize"
+          :map-ref="$refs.map"
+          :map-id="mapId"
           @set-tool="setTool"
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
@@ -408,6 +412,7 @@ import { useEditLayerStore } from "@/stores/edit_layer_store";
 import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
 import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
 import { EditLayerMode } from "@/types/map";
+import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -558,6 +563,9 @@ export default {
       return EditLayerMode;
     },
     ...mapStores(useGlobalStore, useEditLayerStore),
+    measuredAreas() {
+      return this.mapStore.measuredAreas;
+    },
     showInfoPanel() {
       return this.position.marker ? true : false;
     },
@@ -688,12 +696,13 @@ export default {
       deep: true,
     },
   },
+  created() {
+    this.mapStore = useMapStore(this.mapId);
+  },
   mounted() {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
     this.showAbout = this.features.showAbout ? this.features.showAbout : false;
-
-    this.mapStore = useMapStore(this.mapId);
 
     // Store initial base layer ID
     const initialBaseLayer = this.layers.find((l) => l.is_base && l.is_visible);
@@ -808,6 +817,13 @@ export default {
           if (!this.editLayerStore.highlightedFeatureAndLayer && features.length) {
             this.editLayerStore.setHighlightedFeatureAndLayer({ feature: features[0], layer: layer });
           }
+
+          if (this.$refs.map && this.$refs.map.map) {
+            const tooltip = createMeasurementTooltip(features[0], this.$refs.map.map, { isStatic: true });
+            if (tooltip) {
+              this.$refs.map.measuredAreaTooltips.push(tooltip);
+            }
+          }
         } catch (e) {
           console.error(e);
         }
@@ -895,14 +911,14 @@ export default {
       this.tool = tool;
     },
     toolUsed(result) {
-      if (result && result.sketch) {
+      if (result && result.sketch && (result.tool === "SELECT_AREA" || result.tool === "SELECT_CIRCLE")) {
         this.selectedArea = result.sketch.getGeometry();
       }
 
       switch (result.tool) {
         case "MEASURE_AREA":
         case "MEASURE_LINE":
-          this.globalStore.setSelectedArea(result.sketch.getGeometry());
+          this.mapStore.addMeasuredArea(result.sketch.getGeometry());
           break;
         case "SELECT_AREA":
         case "SELECT_CIRCLE":
