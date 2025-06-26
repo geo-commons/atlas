@@ -1,8 +1,7 @@
 import Draw from "ol/interaction/Draw";
 import VectorSource from "ol/source/Vector";
-import Overlay from "ol/Overlay";
-import { getArea, getLength } from "ol/sphere";
 import { Circle, Fill, Stroke, Style } from "ol/style";
+import { createMeasurementTooltip } from "./measure-tooltip";
 
 const source = new VectorSource();
 
@@ -73,15 +72,6 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     }
   });
 
-  let currentCoord;
-
-  if (measure === "SELECT_CIRCLE") {
-    map.on("pointermove", (e) => {
-      currentCoord = e.coordinate;
-    });
-  }
-
-  let measureTooltipElement;
   let measureTooltip;
 
   let sketch;
@@ -106,53 +96,22 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
       measure === "SELECT_CIRCLE" ||
       measure === "SELECT_AREA"
     ) {
-      sketch.getGeometry().on("change", (e) => {
-        const geom = e.target;
-
-        let tooltipCoord;
-        if (measure === "MEASURE_LINE") {
-          tooltipCoord = geom.getLastCoordinate();
-        } else if (measure === "MEASURE_AREA") {
-          tooltipCoord = geom.getInteriorPoint().getCoordinates();
-        } else if (measure === "SELECT_CIRCLE") {
-          tooltipCoord = currentCoord;
-        } else if (measure === "SELECT_AREA") {
-          tooltipCoord = geom.getInteriorPoint().getCoordinates();
+      sketch.getGeometry().on("change", () => {
+        // Remove the old overlay from the map
+        if (measureTooltip) {
+          map.removeOverlay(measureTooltip);
         }
 
-        if (measureTooltipElement) {
-          measureTooltipElement.parentNode.removeChild(measureTooltipElement);
-        }
-
-        measureTooltipElement = document.createElement("div");
-        measureTooltipElement.className = "ol-tooltip ol-tooltip-measure";
-        measureTooltip = new Overlay({
-          element: measureTooltipElement,
+        // Create a new overlay
+        measureTooltip = createMeasurementTooltip(sketch.getGeometry(), map, {
+          isStatic: false,
           offset: [0, -15],
-          positioning: "bottom-center",
-          stopEvent: false,
-          insertFirst: false,
+          className: "ol-tooltip-measure",
         });
 
-        map.addOverlay(measureTooltip);
-        draw.measureTooltip = measureTooltip;
-
-        let measureResult;
-        if (measure === "MEASURE_LINE") {
-          measureResult = getLength(sketch.getGeometry());
-          measureTooltipElement.innerHTML = `${Math.round(measureResult * 100) / 100} m`;
-        } else if (measure === "MEASURE_AREA") {
-          measureResult = getArea(sketch.getGeometry());
-          measureTooltipElement.innerHTML = `${Math.round(measureResult * 100) / 100} m2`;
-        } else if (measure === "SELECT_CIRCLE") {
-          measureResult = sketch.getGeometry().getRadius();
-          measureTooltipElement.innerHTML = `Straal: ${Math.round(measureResult * 100) / 100} m`;
-        } else if (measure === "SELECT_AREA") {
-          measureResult = getArea(sketch.getGeometry());
-          measureTooltipElement.innerHTML = `${Math.round(measureResult * 100) / 100} m2`;
+        if (measureTooltip) {
+          draw.measureTooltip = measureTooltip;
         }
-
-        measureTooltip.setPosition(tooltipCoord);
       });
     }
   });
@@ -173,9 +132,27 @@ const constructDraw = (measure, map, onDrawStart, onDrawEnd, color, strokeWidth,
     }
 
     if (measure === "MEASURE_LINE" || measure === "MEASURE_AREA") {
-      measureTooltipElement.className = "ol-tooltip ol-tooltip-static";
-      measureTooltip.setOffset([0, -7]);
-      measureTooltipElement = null;
+      // Remove the old overlay from the map
+      if (draw.measureTooltip) {
+        map.removeOverlay(draw.measureTooltip);
+      }
+
+      // Create static tooltip and track it
+      const staticTooltip = createMeasurementTooltip(sketch.getGeometry(), map, {
+        isStatic: true,
+        offset: [0, -7],
+        className: "ol-tooltip-static",
+      });
+
+      // Store the static tooltip for later cleanup
+      if (staticTooltip && !map.measuredAreaTooltips) {
+        map.measuredAreaTooltips = [];
+      }
+      if (staticTooltip) {
+        map.measuredAreaTooltips.push(staticTooltip);
+      }
+
+      measureTooltip = null;
     }
 
     onDrawEnd(sketch);

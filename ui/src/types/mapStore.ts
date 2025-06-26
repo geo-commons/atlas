@@ -1,3 +1,5 @@
+import { Geometry } from "ol/geom";
+
 export interface ILayerFilter {
   filters: {
     [key: string]: Array<string>;
@@ -24,4 +26,5 @@ export interface IMapStore {
   rightSelectedCompareLayerId: string | null;
   comparePercentage: number;
   cycloView: ICycloView | null;
+  measuredAreas: Geometry[]
 }

@@ -15,6 +15,8 @@
         :set-tool="setTool"
         :tool="tool"
         :toggle-measure="toggleMeasure"
+        :map-ref="mapRef"
+        :map-id="mapId"
       />
 
       <DrawMenu
@@ -73,6 +75,7 @@ export default {
     color: Object,
     user: Object,
     map: Object,
+    mapRef: Object,
     drawFeatures: Array,
     removedDrawFeatures: Array,
     config: Object,
@@ -88,6 +91,7 @@ export default {
         };
       },
     },
+    mapId: String,
   },
   computed: {
     ...mapStores(useEditLayerStore),

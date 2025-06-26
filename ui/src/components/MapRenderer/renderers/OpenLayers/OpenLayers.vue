@@ -112,6 +112,15 @@
       :vector-style="DRAW_STYLE"
       :z-index="2"
     />
+    <ol-vector-layer
+      ref="measuredAreas"
+      name="measuredAreas"
+      :selectable="false"
+      :is-visible="true"
+      :vector-style="SELECTED_AREA_STYLE"
+      :features="measuredAreasFeatures"
+      :z-index="2"
+    />
   </ol-map>
 </template>
 
@@ -119,7 +128,6 @@
 import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import Feature from "ol/Feature";
 import { Point, Polygon } from "ol/geom";
-
 import OlMap from "./components/OlMap";
 import OlView from "./components/OlView";
 import OlDrawInteraction from "./components/OlDrawInteraction";
@@ -139,6 +147,7 @@ import { printMapToPdf } from "@/utils/print-util";
 import { mapStores } from "pinia";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { useMapStore } from "@/stores/map_store";
+import { clearMeasurementTooltips } from "@/utils/measure-tooltip";
 
 const MAP_AREA_STYLE = new Style({
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 2 }),
@@ -175,6 +184,7 @@ export default {
     mapId: String,
     mapArea: Array,
     selectedArea: Object,
+    measuredAreas: { type: Array, default: () => [] },
     user: Object,
     config: Object,
     features: Object,
@@ -312,6 +322,12 @@ export default {
 
       return [feature];
     },
+    measuredAreasFeatures() {
+      if (!this.measuredAreas || this.measuredAreas.length === 0) {
+        return [];
+      }
+      return this.measuredAreas.map((geom) => new Feature({ geometry: geom }));
+    },
   },
   watch: {
     tool(tool) {
@@ -320,6 +336,12 @@ export default {
       }
 
       this.$refs.selectedArea.clear();
+    },
+    // Clear the measured areas tooltips when the measured areas are cleared
+    measuredAreas(newVal) {
+      if (!newVal || newVal.length === 0) {
+        clearMeasurementTooltips(this.$refs.map.map);
+      }
     },
   },
   created() {
