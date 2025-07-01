@@ -4,6 +4,7 @@ import { onMounted, Ref, ref, unref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { useGlobalStore } from "@/stores";
+import { getAllObjects } from "@/utils/api-helpers";
 
 const loading: Ref<boolean> = ref(true);
 const users: Ref<Array<object>> = ref([]);
@@ -76,7 +77,9 @@ const getUsers = async (params?: URLSearchParams): Promise<{ results: Array<obje
 };
 
 const getGroups = async (): Promise<Array<object>> => {
-  const result = await fetch("/atlas/api/v1/groups/", {
+  const url = getAllObjects("/atlas/api/v1/groups/");
+
+  const result = await fetch(url, {
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
   });

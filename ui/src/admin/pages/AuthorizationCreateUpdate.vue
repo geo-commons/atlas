@@ -105,7 +105,9 @@ export default {
       return response;
     },
     async getGroups() {
-      const result = await fetch("/atlas/api/v1/groups/", {
+      const url = getAllObjects("/atlas/api/v1/groups/");
+
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -152,7 +154,7 @@ export default {
               type: "text",
               required: true,
               infoText: "Naam van de laag of de resource",
-              contains_colon: true
+              contains_colon: true,
             },
             {
               label: "Beschrijving",

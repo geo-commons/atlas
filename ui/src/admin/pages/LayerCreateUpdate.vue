@@ -258,9 +258,7 @@ export default {
       currentValues.search_properties = currentValues.search_properties
         .split("\n")
         .filter((value) => value.trim() !== "");
-      currentValues.search_terms = currentValues.search_terms
-        .split("\n")
-        .filter((value) => value.trim() !== "");
+      currentValues.search_terms = currentValues.search_terms.split("\n").filter((value) => value.trim() !== "");
 
       currentValues.extent_min_x = currentValues.extent_min_x === "" ? null : currentValues.extent_min_x;
       currentValues.extent_min_y = currentValues.extent_min_y === "" ? null : currentValues.extent_min_y;
@@ -350,7 +348,9 @@ export default {
       return response;
     },
     async getGroups() {
-      const result = await fetch("/atlas/api/v1/groups/", {
+      const url = getAllObjects("/atlas/api/v1/groups/");
+
+      const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
@@ -551,7 +551,7 @@ export default {
               sourceField: "source_id",
               options: this.sources,
               infoText: "De naam van de laag op de geoserver.",
-              contains_colon: true
+              contains_colon: true,
             },
             {
               label: "Brontype",
