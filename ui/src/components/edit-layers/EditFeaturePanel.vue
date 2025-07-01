@@ -39,12 +39,7 @@
           outlined
           @click="toggleShowDeleteModal"
         ></Button>
-        <Button
-          label="Opslaan"
-          icon="pi pi-save"
-          class="tw-flex-auto"
-          @click="submitFormManually"
-        ></Button>
+        <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="submitFormManually"></Button>
       </div>
     </template>
   </Drawer>
@@ -137,7 +132,7 @@ watch(
   () => editLayerStore.highlightedFeatureAndLayer?.feature,
   (value) => {
     if (value && !showEditFeaturePanel.value && editLayerStore.editLayerMode === EditLayerMode.EDIT) {
-      editLayerStore.toggleHideOtherPanels()
+      editLayerStore.toggleHideOtherPanels();
       showEditFeaturePanel.value = true;
       featureValues.value = value.getProperties();
     }
@@ -264,7 +259,7 @@ const handleDeleteFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
-      user
+      user,
     );
 
     refreshLayer(editLayerStore.highlightedFeatureAndLayer ? editLayerStore.highlightedFeatureAndLayer.layer.id : "");
@@ -297,7 +292,7 @@ const handleSaveFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
-      user
+      user,
     );
 
     refreshLayer(editLayerStore.highlightedFeatureAndLayer ? editLayerStore.highlightedFeatureAndLayer.layer.id : "");

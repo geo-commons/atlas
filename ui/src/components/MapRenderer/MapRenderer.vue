@@ -363,6 +363,15 @@
       </div>
     </transition>
     <AlertMessage :alert="alert" />
+
+    <EditLayerActionModal
+      :visible="showNotAllowedToEditLayerModal"
+      header="Bewerken niet toegestaan"
+      :message="`Je kan geen aanpassingen maken op de **${editLayerName}** laag.`"
+      confirm-label="Sluit"
+      confirm-icon="pi pi-check"
+      :on-confirm="toggleShowNotAllowedtoEditLayerModal"
+    />
   </div>
 </template>
 
@@ -413,12 +422,14 @@ import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
 import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
 import { EditLayerMode } from "@/types/map";
 import { createMeasurementTooltip } from "@/utils/measure-tooltip";
+import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
 export default {
   name: "MapRenderer",
   components: {
+    EditLayerActionModal,
     CompareLayersSlider,
     CompareLayersPanel,
     EditFeaturePanel,
@@ -556,6 +567,8 @@ export default {
       newDrawing:
         JSON.stringify(this.initialDrawing) !== JSON.stringify(this.drawFeatures) ||
         (!this.initialDrawing && this.drawFeatures?.length > 0),
+      showNotAllowedToEditLayerModal: false,
+      editLayerName: null,
     };
   },
   computed: {
@@ -642,7 +655,12 @@ export default {
     },
     visibleLayers: {
       handler(value) {
-        this.editLayerStore.setVisibleLayers(value);
+        const editableLayers = value.filter(
+          (layer) =>
+            layer.is_visible && layer.can_write && (layer.source_type === "WMS_WFS" || layer.source_type === "WFS"),
+        );
+
+        this.editLayerStore.setEditableLayers(editableLayers);
       },
       deep: true,
       immediate: true,
@@ -814,8 +832,21 @@ export default {
             but has selected multiple features simultaneously,
             they will need to temporarily disable the layers containing other highlighted features.
            */
-          if (!this.editLayerStore.highlightedFeatureAndLayer && features.length) {
+          if (
+            !this.editLayerStore.highlightedFeatureAndLayer &&
+            features.length &&
+            layer.can_write &&
+            this.editLayerStore.editLayerMode === EditLayerMode.EDIT
+          ) {
             this.editLayerStore.setHighlightedFeatureAndLayer({ feature: features[0], layer: layer });
+          } else if (
+            !this.editLayerStore.highlightedFeatureAndLayer &&
+            features.length &&
+            !layer.can_write &&
+            this.editLayerStore.editLayerMode === EditLayerMode.EDIT
+          ) {
+            this.editLayerName = layer.name;
+            this.showNotAllowedToEditLayerModal = true;
           }
 
           if (this.$refs.map && this.$refs.map.map) {
@@ -838,6 +869,10 @@ export default {
     },
     toggleModal(modal) {
       this.modal = modal;
+    },
+    toggleShowNotAllowedtoEditLayerModal() {
+      this.showNotAllowedToEditLayerModal = false;
+      this.editLayerName = null;
     },
     togglePanoramaPanel() {
       this.showBaseLayersPanel = false;

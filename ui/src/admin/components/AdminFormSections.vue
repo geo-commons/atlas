@@ -245,14 +245,13 @@
                     class="!tw-text-sm"
                   ></CodeMirror>
                 </vee-field>
-                <vee-field v-else-if="question.type === 'layer-select'" v-slot="{ field }" :name="question.id" :rules="getRules(question)">
-                  <InputText
-                    :id="question.id"
-                    v-bind="field"
-                    class="!tw-mb-2"
-                    placeholder="Laagnaam"
-                    type="text"
-                  />
+                <vee-field
+                  v-else-if="question.type === 'layer-select'"
+                  v-slot="{ field }"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                >
+                  <InputText :id="question.id" v-bind="field" class="!tw-mb-2" placeholder="Laagnaam" type="text" />
                   <span>Of selecteer een laagnaam</span>
                   <layer-field
                     :model-value="currentValues[question.id]"
@@ -400,6 +399,45 @@ export default {
       clouds: clouds,
     };
   },
+  computed: {
+    getRules() {
+      return (question) => {
+        let rules = [];
+
+        // Check if we should apply the contains-colon validation
+        // Only apply if atlas_write_groups has items selected or authenticated_can_mutate is true
+        let atlasWriteGroupsHasItems =
+          Array.isArray(this.currentValues.atlas_write_groups) && this.currentValues.atlas_write_groups[1].length > 0;
+        const authenticatedCanMutate = document.getElementById("authenticated_can_mutate")
+          ? document.getElementById("authenticated_can_mutate").checked
+          : false;
+
+        const shouldApplyColonValidation = atlasWriteGroupsHasItems || authenticatedCanMutate;
+
+        // Check if any field has specified this field in its contains_colon property
+        const hasColonValidation = !!question.contains_colon;
+
+        if (hasColonValidation && shouldApplyColonValidation) {
+          rules.push("contains-colon");
+        }
+
+        if (question.required) {
+          rules.push("required");
+        }
+        if (question.type === "email") {
+          rules.push("email");
+        }
+        if (question.maxLength) {
+          rules.push(`max:${question.maxLength}`);
+        }
+        if (question.type === "json") {
+          rules.push("json");
+        }
+
+        return rules.join("|");
+      };
+    },
+  },
   watch: {
     initialValues(newValues) {
       this.currentValues = newValues;
@@ -421,38 +459,6 @@ export default {
     formatDateValue,
     json,
     jsonParseLinter,
-    getRules(question) {
-      let rules = [];
-
-      // Check if we should apply the contains-colon validation
-      // Only apply if atlas_write_groups has items selected or authenticated_can_mutate is true
-      let atlasWriteGroupsHasItems = Array.isArray(this.currentValues.atlas_write_groups) && this.currentValues.atlas_write_groups[1].length > 0;
-      const authenticatedCanMutate = this.currentValues.authenticated_can_mutate === true;
-
-      const shouldApplyColonValidation = atlasWriteGroupsHasItems || authenticatedCanMutate;
-
-      // Check if any field has specified this field in its contains_colon property
-      const hasColonValidation = !!question.contains_colon;
-
-      if (hasColonValidation && shouldApplyColonValidation) {
-        rules.push("contains-colon");
-      }
-
-      if (question.required) {
-        rules.push("required");
-      }
-      if (question.type === "email") {
-        rules.push("email");
-      }
-      if (question.maxLength) {
-        rules.push(`max:${question.maxLength}`);
-      }
-      if (question.type === "json") {
-        rules.push("json");
-      }
-
-      return rules.join("|");
-    },
     reset(question) {
       this.currentValues[question.id] = "";
       const dropdownElement = document.getElementById(question.id);

@@ -9,7 +9,14 @@
   >
     <VueMarkdown class="modal__markdown-content" :source="message" />
     <div class="tw-flex tw-items-center tw-gap-2">
-      <Button :label="cancelLabel" :icon="cancelIcon" class="tw-flex-auto" outlined @click="onCancel" />
+      <Button
+        v-if="cancelLabel && onCancel"
+        :label="cancelLabel"
+        :icon="cancelIcon"
+        class="tw-flex-auto"
+        outlined
+        @click="onCancel"
+      />
       <Button :label="confirmLabel" :icon="confirmIcon" class="tw-flex-auto" @click="onConfirm" />
     </div>
   </Dialog>
@@ -22,18 +29,17 @@ interface EditLayerActionModalProps {
   visible: boolean;
   message: string;
   header: string;
-  cancelLabel: string;
+  cancelLabel?: string;
   cancelIcon?: string;
   confirmLabel: string;
   confirmIcon?: string;
-  onCancel: () => void;
+  onCancel?: () => void;
   onConfirm: () => void;
 }
 
 const { visible, message, header, cancelLabel, cancelIcon, confirmLabel, confirmIcon, onCancel, onConfirm } =
   defineProps<EditLayerActionModalProps>();
 </script>
-
 
 <style lang="scss">
 .modal__markdown-content {

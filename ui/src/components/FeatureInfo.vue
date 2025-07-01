@@ -45,13 +45,7 @@
           <AreaSelectIcon class="icon __smedium" />
         </Button>
         <Button
-          v-if="
-            config &&
-            config.features.edit_layer_features &&
-            atlasFeatures.edit_layer_features &&
-            user &&
-            (layer.source_type === 'WMS_WFS' || layer.source_type === 'WFS')
-          "
+          v-if="showEditLayerButton(layer)"
           outlined
           severity="secondary"
           class="!tw-text-sm !tw-font-medium"
@@ -360,6 +354,16 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+    showEditLayerButton(layer) {
+      return (
+        this.config &&
+        this.config.features.edit_layer_features &&
+        this.atlasFeatures.edit_layer_features &&
+        this.user &&
+        layer.can_write &&
+        (layer.source_type === "WMS_WFS" || layer.source_type === "WFS")
+      );
     },
   },
 };

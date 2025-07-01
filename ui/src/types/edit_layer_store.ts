@@ -7,7 +7,7 @@ export interface IEditLayerStore {
   editLayerMode: EditLayerMode;
   feature: Feature | null;
   geometryType: GeometryType | null;
-  visibleLayers: ILayer[];
+  editableLayers: ILayer[];
   selectedLayer: ILayer | null;
   hideOtherPanels: boolean;
   highlightedFeatureAndLayer: {

@@ -8,6 +8,7 @@ export interface ILayer {
   source_type: ELayerTypes;
   is_visible: boolean;
   projection: string;
+  can_write: boolean;
 }
 
 export type ILayerProperties = Array<{

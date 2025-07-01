@@ -183,7 +183,7 @@ def can_access_source(request, source):
 
     return False
 
-
+# TODO: We should check if we can combine this function with the is_accesible_by method on a Layer model. Issue: https://gitlab.com/purmerend/atlas/-/issues/805
 def can_request_access_layer(request, layer):
     user = request.user
 

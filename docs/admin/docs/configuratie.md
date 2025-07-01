@@ -45,6 +45,6 @@ Geef de mogelijkheid om een PDF bestand van het zichtbare scherm te maken in ver
 - **Tekenfunctionaliteit**  
 Geef de mogelijkheid om in de zichtbare kaart te tekenen en dit op te slaan als URL.    
 - **Bewerkfunctionaliteit**
-Geef de mogelijkheid om in Atlas de CRUD functionaliteit te gebruiken. Meer informatie vind je [hier](/crud_functionaliteit).
+Geef de mogelijkheid om in Atlas de CRUD functionaliteit te gebruiken. Meer informatie vind je [hier](crud_functionaliteit.md).
 - **Zet oude beheerpaneel uit**  
 Tijdelijke feature in de overgangsperiode van de oude naar de nieuwe admin module.  

@@ -6,6 +6,7 @@
       :class="{
         'tools-panel__button--active': showEditFeatureMenu,
       }"
+      :disabled="editLayerStore.editableLayers.length < 1"
       content="Laag objecten bewerken"
       aria-label="Laag objecten bewerken"
       @click="toggleEditLayerMenu"
@@ -68,13 +69,14 @@
     header="Kies een kaartlaag"
     class="tw-w-[calc(100%-16px)] sm:tw-w-[25rem]"
   >
-    <div v-if="editLayerStore.visibleLayers.length > 1" class="tw-flex tw-flex-col tw-gap-2 tw-items-start">
+    <div v-if="editLayerStore.editableLayers.length > 1" class="tw-flex tw-flex-col tw-gap-2 tw-items-start">
       <label class="form__label" for="edit-layer-panel-choose-layer">Selecteer een kaartlaag</label>
       <Select
         :model-value="editLayerStore.selectedLayer"
         :options="
-          editLayerStore.visibleLayers.filter(
-            (layer) => layer.is_visible && (layer.source_type === 'WMS_WFS' || layer.source_type === 'WFS'),
+          editLayerStore.editableLayers.filter(
+            (layer) =>
+              layer.is_visible && layer.can_write && (layer.source_type === 'WMS_WFS' || layer.source_type === 'WFS'),
           )
         "
         filter
@@ -127,13 +129,13 @@ const globalStore = useGlobalStore();
 const showSelectLayerDialog = ref<boolean>(false);
 
 const showDialogOrProceed = () => {
-  if (editLayerStore.visibleLayers.length > 1) {
+  if (editLayerStore.editableLayers.length > 1) {
     showSelectLayerDialog.value = true;
   }
 
-  // If visibleLayers length is only one and a new feature was drawn, you have to set selected layer by your self
-  if (editLayerStore.visibleLayers.length === 1) {
-    editLayerStore.setSelectedLayer(editLayerStore.visibleLayers[0]);
+  // If editableLayers length is only one and a new feature was drawn, you have to set selected layer by your self
+  if (editLayerStore.editableLayers.length === 1) {
+    editLayerStore.setSelectedLayer(editLayerStore.editableLayers[0]);
   }
 };
 
@@ -149,7 +151,7 @@ watch(
       )[0].localType;
 
       editLayerStore.setGeometryType(geometryType);
-      setTool(geometryType)
+      setTool(geometryType);
     }
   },
   { deep: true },
