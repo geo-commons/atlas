@@ -6,7 +6,7 @@ In Atlas is het mogelijk om direct vanuit de kaartinterface objecten op een kaar
 
 Voordat je objecten op een kaartlaag kunt muteren, moet GeoServer correct geconfigureerd zijn. Op kaartlaag-niveau kun je in GeoServer toegangsrechten toewijzen aan gebruikers.
 
-Om mutaties mogelijk te maken, is het essentieel dat de gebruiker **FILTER_PROXY** schrijfrechten heeft op de betreffende kaartlaag. In dit [artikel](/layer_security) wordt uitgelegd hoe je dit instelt.
+Om mutaties mogelijk te maken, is het essentieel dat de gebruiker **FILTER_PROXY** schrijfrechten heeft op de betreffende kaartlaag. In dit [artikel](layer_security.md) wordt uitgelegd hoe je dit instelt.
 
 ## 2. Atlas-configuratie
 
@@ -18,11 +18,11 @@ De CRUD-functionaliteit (Create, Read, Update, Delete) is alleen beschikbaar als
 
 ### 2.2 Configuratie op kaartlaagniveau
 
-Op kaartlaagniveau moeten toegangsregels worden ingesteld om de mutatiefunctie te kunnen gebruiken. Hoe je dit instelt, lees je in [deze handleiding](/kaartlagen/#toegang). Daarnaast is het van belang om te weten dat de kaartlaag naam altijd de GeoServer omgeving in de naam moet hebben op het moment dat je CRUD functionaliteit wil gebruiken. Zo wordt bijvoorbeeld een kaartlaag met naam "scholen" "topp:scholen" als de GeoServer omgeving de topp omgeving is.
+Op kaartlaagniveau moeten toegangsregels worden ingesteld om de mutatiefunctie te kunnen gebruiken. Hoe je dit instelt, lees je in [deze handleiding](kaartlagen.md/#toegang). Daarnaast is het van belang om te weten dat de kaartlaag naam altijd de GeoServer omgeving in de naam moet hebben op het moment dat je CRUD functionaliteit wil gebruiken. Zo wordt bijvoorbeeld een kaartlaag met naam "scholen" "topp:scholen" als de GeoServer omgeving de topp omgeving is.
 
 ### 2.3 Configuratie via autorisaties
 
-Als je geen toegangsregels op kaartlaagniveau wilt instellen, kun je de CRUD-functionaliteit ook beschikbaar maken via toegangsregels in een gekoppelde **autorisatieregel**. Meer informatie hierover vind je [hier](/autorisaties/#toegang).
+Als je geen toegangsregels op kaartlaagniveau wilt instellen, kun je de CRUD-functionaliteit ook beschikbaar maken via toegangsregels in een gekoppelde **autorisatieregel**. Meer informatie hierover vind je [hier](autorisaties.md/#toegang).
 
 ### 2.4 Samenvatting
 

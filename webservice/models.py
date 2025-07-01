@@ -457,7 +457,40 @@ source: new ol.source.TileWMS({{
     def url(self):
         return self.layer_source.url if self.layer_source else ''
 
-    def to_dict(self):
+    def is_accessible_by(self, user, request):
+        if not is_internal(request):
+            if self.closed_dataset:
+                return False
+
+        if not user.is_authenticated:
+            if not self.login_required and not self.atlas_groups.exists():
+                return True
+
+            return False
+
+        if not self.atlas_groups.exists():
+            return True
+
+        user_groups = list(user.atlas_groups.all())
+        return any(group for group in self.atlas_groups.all() if group in user_groups)
+
+    def is_mutable_by(self, user, request):
+        if not is_internal(request) and self.closed_dataset:
+            return False
+
+        if not user.is_authenticated:
+            return False
+
+        if self.authenticated_can_mutate:
+            return True
+
+        if not self.atlas_write_groups.exists():
+            return False
+
+        user_groups = list(user.atlas_groups.all())
+        return any(group for group in self.atlas_write_groups.all() if group in user_groups)
+
+    def to_dict(self, user, request):
         return {
             'id': self.slug,
             'internal_id': self.id,
@@ -503,41 +536,9 @@ source: new ol.source.TileWMS({{
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
             'templates': [item.to_dict() for item in self.templates.all()],
             'legend_url': self.legend_url,
-            'is_filterable_in_legend': self.is_filterable_in_legend
+            'is_filterable_in_legend': self.is_filterable_in_legend,
+            'can_write': self.is_mutable_by(user, request),
         }
-
-    def is_accessible_by(self, user, request):
-        if not is_internal(request):
-            if self.closed_dataset:
-                return False
-
-        if not user.is_authenticated:
-            if not self.login_required and not self.atlas_groups.exists():
-                return True
-
-            return False
-
-        if not self.atlas_groups.exists():
-            return True
-
-        user_groups = list(user.atlas_groups.all())
-        return any(group for group in self.atlas_groups.all() if group in user_groups)
-
-    def is_mutable_by(self, user, request):
-        if not is_internal(request) and self.closed_dataset:
-            return False
-
-        if not user.is_authenticated:
-            return False
-
-        if self.authenticated_can_mutate:
-            return True
-
-        if not self.atlas_write_groups.exists():
-            return False
-
-        user_groups = list(user.atlas_groups.all())
-        return any(group for group in self.atlas_write_groups.all() if group in user_groups)
 
     class Meta:
         verbose_name = 'Kaartlaag'
@@ -643,7 +644,7 @@ class SelectionManager(models.Manager):
 
         return self.all()
 
-
+# TODO: Remove Selections, this is not used anymore in Atlas
 class Selection(models.Model):
     objects = models.Manager()
     authorized = SelectionManager()
@@ -664,13 +665,6 @@ class Selection(models.Model):
 
     def __str__(self):
         return self.title
-
-    def to_dict(self):
-        return {
-            'title': self.title,
-            'slug': self.slug,
-            'layers': [layer.to_dict() for layer in self.layers.all()]
-        }
 
 
 class MapLayer(models.Model):

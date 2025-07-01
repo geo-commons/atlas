@@ -21,13 +21,14 @@ logger = logging.getLogger(__name__)
 def embed(request):
     authorized_layers = Layer.authorized.for_request(request)
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
+    user = _get_user(request)
 
     context = {
         'data': {
             'is_embed': True,
             'config': _get_config(request),
-            'user': _get_user(request),
-            'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
+            'user': user,
+            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
         }
     }
 
@@ -40,6 +41,7 @@ def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.for_request(request).prefetch_related(
         'layer_source', 'layer_type', 'linked_data', 'templates'
     )
+    user = _get_user(request)
 
     context = {}
 
@@ -53,8 +55,8 @@ def v3(request, theme_slug=''):
     context['data'] = {
         'is_embed': False,
         'config': _get_config(request),
-        'user': _get_user(request),
-        'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
+        'user': user,
+        'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
     }
 
     return render(request, 'v3/app.html', context)
@@ -88,6 +90,8 @@ def v3_login_failure(request):
 @ensure_csrf_cookie
 @xframe_options_sameorigin
 def v3_admin(request):
+    user = _get_user(request)
+
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
 
@@ -105,8 +109,8 @@ def v3_admin(request):
     context = {
         'data': {
             'config': config,
-            'user': _get_user(request),
-            'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
+            'user': user,
+            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
         }
     }
 
@@ -120,13 +124,14 @@ def v3_map(request, slug):
     )
     visible_map = get_object_or_404(
         Map.authorized.for_request(request), slug=slug)
+    user = _get_user(request)
 
     context = {
         'data': {
             'config': _get_config(request),
-            'user': _get_user(request),
+            'user': user,
             'map': visible_map.to_dict(),
-            'layers': _default_layers() + [layer.to_dict() for layer in visible_layers]
+            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
         }
     }
 
@@ -215,4 +220,5 @@ def _get_user(request):
         'id': user.id,
         'username': user.username,
         'name': user.name,
+        'is_authenticated': user.is_authenticated,
     }
