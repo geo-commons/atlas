@@ -17,6 +17,8 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "AuthorizationCreateUpdate",
@@ -35,6 +37,9 @@ export default {
       selectedGroups: [],
       loading: false,
     };
+  },
+  computed: {
+    ...mapState(useGlobalStore, ["config"]),
   },
   created() {
     this.loading = true;
@@ -208,6 +213,7 @@ export default {
               type: "checkbox",
               required: false,
               infoText: "Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat de resource of laag muteren",
+              showIf: this.config?.features?.edit_layer_features || false,
             },
             {
               type: "custom",
@@ -235,6 +241,7 @@ export default {
               id: "atlas_write_groups",
               name: "atlasWriteGroups",
               type: "picklist",
+              showIf: this.config?.features?.edit_layer_features || false,
             },
           ],
         },

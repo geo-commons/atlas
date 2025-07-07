@@ -135,6 +135,8 @@ import TrashIcon from "@/assets/icons/trash-icon.svg";
 import FormModal from "@/components/FormModal.vue";
 import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "LayerCreateUpdate",
@@ -166,6 +168,9 @@ export default {
       selectedTemplate: null,
       loading: false,
     };
+  },
+  computed: {
+    ...mapState(useGlobalStore, ["config"]),
   },
   created() {
     this.loading = true;
@@ -869,6 +874,7 @@ export default {
               type: "checkbox",
               required: false,
               infoText: "Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren",
+              showIf: this.config?.features?.edit_layer_features || false,
             },
             {
               label: "Lees groepen",
@@ -883,6 +889,7 @@ export default {
               id: "atlas_write_groups",
               name: "atlasWriteGroups",
               type: "picklist",
+              showIf: this.config?.features?.edit_layer_features || false,
             },
           ],
         },

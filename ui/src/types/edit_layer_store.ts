@@ -1,13 +1,12 @@
 import { EditLayerMode } from "@/types/map";
 import Feature from "ol/Feature";
-import { ILayer } from "@/types/layer";
-import { GeometryType } from "ol/render/webgl/MixedGeometryBatch";
+import { IGeometryType, ILayer } from "@/types/layer";
 
 export interface IEditLayerStore {
   editLayerMode: EditLayerMode;
   feature: Feature | null;
-  geometryType: GeometryType | null;
   editableLayers: ILayer[];
+  geometryType: IGeometryType | null;
   selectedLayer: ILayer | null;
   hideOtherPanels: boolean;
   highlightedFeatureAndLayer: {

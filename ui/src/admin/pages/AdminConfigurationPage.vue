@@ -65,7 +65,7 @@ export default {
           body: data,
         });
         if (result.ok) {
-          this.$router.push(`/`);
+          window.location.href = "/atlas/admin/";
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

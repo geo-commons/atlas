@@ -12,9 +12,7 @@
       </div>
 
       <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col">
-        <Message v-if="geoServerError" class="tw-mb-4" :pt="{ text: '!tw-break-all' }" severity="error">{{
-          geoServerError
-        }}</Message>
+        <ErrorAccordion :error="geoServerError" />
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
         <LayerCrudForm ref="form" :layer-properties="layerProperties" :handle-submit="handleSubmit" />
       </div>
@@ -87,6 +85,7 @@ import Feature from "ol/Feature";
 import { useToast } from "primevue";
 import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
+import ErrorAccordion from "@/components/ErrorAccordion.vue";
 
 interface AddFeaturePanelProps {
   user: IUser;
@@ -139,7 +138,7 @@ watch(
   () => editLayerStore.feature,
   (value, oldValue) => {
     if (oldValue === null && value !== null && !showAddFeaturePanel.value) {
-      editLayerStore.toggleHideOtherPanels()
+      editLayerStore.toggleHideOtherPanels();
       showAddFeaturePanel.value = true;
     }
   },
@@ -255,7 +254,13 @@ const handleSaveFeature = async () => {
 
     feature.setProperties(featureValuesToSubmit);
 
-    await addFeatureOnLayer(editLayerStore.selectedLayer!, feature, unref(featureProperties), unref(geometryNameRef), user);
+    await addFeatureOnLayer(
+      editLayerStore.selectedLayer!,
+      feature,
+      unref(featureProperties),
+      unref(geometryNameRef),
+      user,
+    );
 
     refreshLayer(editLayerStore.selectedLayer ? editLayerStore.selectedLayer.id : "");
 
@@ -268,8 +273,9 @@ const handleSaveFeature = async () => {
 
     handleDrawerClose(false);
   } catch (e) {
-    geoServerError.value = "Er is iets fout gegaan bij het opslaan";
-    console.error((e as Error).message);
+    const error = e instanceof Error ? e.message : String(e);
+    geoServerError.value = error;
+    console.error(error);
   }
 };
 </script>

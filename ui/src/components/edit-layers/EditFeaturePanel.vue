@@ -10,9 +10,7 @@
       <p class="tw-mt-0">{{ editLayerStore.highlightedFeatureAndLayer?.layer.name }}</p>
     </div>
     <div class="tw-flex tw-flex-col">
-      <Message v-if="geoServerError" class="tw-mb-4" :pt="{ text: '!tw-break-all' }" severity="error">{{
-        geoServerError
-      }}</Message>
+      <ErrorAccordion :error="geoServerError" />
       <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
       <LayerCrudForm
         ref="form"
@@ -97,6 +95,7 @@ import {
 import Feature from "ol/Feature";
 import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
+import ErrorAccordion from "@/components/ErrorAccordion.vue";
 
 interface AddFeaturePanelProps {
   user: IUser;
@@ -273,8 +272,9 @@ const handleDeleteFeature = async () => {
 
     handleDrawerClose(false);
   } catch (e) {
-    geoServerError.value = "Er is iets fout gegaan bij het verwijderen";
-    console.error((e as Error).message);
+    const error = e instanceof Error ? e.message : String(e);
+    geoServerError.value = error;
+    console.error(error);
   }
 };
 
@@ -306,8 +306,9 @@ const handleSaveFeature = async () => {
 
     handleDrawerClose(false);
   } catch (e) {
-    geoServerError.value = "Er is iets fout gegaan bij het opslaan";
-    console.error((e as Error).message);
+    const error = e instanceof Error ? e.message : String(e);
+    geoServerError.value = error;
+    console.error(error);
   }
 };
 </script>
