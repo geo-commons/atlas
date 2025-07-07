@@ -52,7 +52,7 @@
         <div class="tools-panel__draw-bar tools-panel__draw-bar--secondary">
           <div v-for="geometryTool in availableGeometryTools" :key="geometryTool.name" class="tools-panel__draw-menu">
             <EditLayerTool
-              v-if="geometryTool.name === editLayerStore.geometryType"
+              v-if="geometryTool.name === editLayerStore.geometryType || editLayerStore.geometryType === 'Geometry'"
               :tool="geometryTool"
               :tool-in-use="tool"
               :set-tool="setTool"
@@ -99,11 +99,11 @@
 <script setup lang="ts">
 import EditLocationIcon from "@/assets/icons/edit-location.icon.svg";
 import LineIcon from "@/assets/icons/line-icon.svg";
-import UndoIcon from "@/assets/icons/undo-icon.svg";
 import PolyGonIcon from "@/assets/icons/polygon-icon.svg";
 import DotIcon from "@/assets/icons/dot-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
+import MultiPointIcon from "@/assets/icons/multipoint-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EditLayerMode } from "@/types/map";
 import { ref, watch } from "vue";
@@ -151,7 +151,10 @@ watch(
       )[0].localType;
 
       editLayerStore.setGeometryType(geometryType);
-      setTool(geometryType);
+
+      if (geometryType !== "Geometry") {
+        setTool(geometryType);
+      }
     }
   },
   { deep: true },
@@ -161,12 +164,10 @@ watch(
 const availableGeometryTools = [
   { name: "Point", icon: DotIcon, translation: "Punt", enableUndo: false },
   { name: "LineString", icon: LineIcon, translation: "Lijn", enableUndo: true },
-  { name: "LinearRing", icon: DotIcon, translation: "Ring", enableUndo: false },
   { name: "Polygon", icon: PolyGonIcon, translation: "Polygoon", enableUndo: true },
-  { name: "MultiPoint", icon: DotIcon, translation: "Punt", enableUndo: false },
-  { name: "MultiLineString", icon: LineIcon, translation: "Lijn", enableUndo: true },
-  { name: "MultiPolygon", icon: PolyGonIcon, translation: "Polygoon", enableUndo: true },
-  { name: "Circle", icon: DotIcon, translation: "Cirkel", enableUndo: false },
+  { name: "MultiPoint", icon: MultiPointIcon, translation: "MultiPunt", enableUndo: false },
+  { name: "MultiLineString", icon: LineIcon, translation: "MultiLijn", enableUndo: true },
+  { name: "MultiPolygon", icon: PolyGonIcon, translation: "MultiPolygoon", enableUndo: true },
 ];
 
 // Methods

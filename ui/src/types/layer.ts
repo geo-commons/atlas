@@ -11,13 +11,15 @@ export interface ILayer {
   can_write: boolean;
 }
 
+export type IGeometryType = GeometryType | "Geometry";
+
 export type ILayerProperties = Array<{
   name: string;
   maxOccurs: number;
   minOccurs: number;
   nillable: boolean;
   type: string;
-  localType: GeometryType;
+  localType: IGeometryType;
 }>;
 
 export type IFeatureProperties = {

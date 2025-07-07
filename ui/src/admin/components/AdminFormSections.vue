@@ -31,32 +31,34 @@
                             If this is no longer sufficient in the future take a look at how ol-view and ol-layer
                             are decomposed in the OpenLayers.vue component -->
               <slot v-if="question.type === 'custom'" name="custom"></slot>
-              <div v-else-if="question.type === 'checkbox'" class="checkbox-wrapper">
-                <vee-field
-                  v-slot="{ field }"
-                  :name="question.id"
-                  type="checkbox"
-                  :value="true"
-                  :unchecked-value="false"
-                  :rules="getRules(question)"
-                >
-                  <input
-                    v-bind="field"
-                    :id="question.id"
-                    type="checkbox"
+              <div v-else-if="question.type === 'checkbox'">
+                <div v-if="question.showIf !== undefined ? question.showIf : true" class="checkbox-wrapper">
+                  <vee-field
+                    v-slot="{ field }"
                     :name="question.id"
+                    type="checkbox"
                     :value="true"
-                    :disabled="question.disabled"
-                  />
-                </vee-field>
-                <span class="label-info-text-wrapper">
-                  <label :for="question.id">{{ question.label }}</label>
-                  <AdminFormInfoText
-                    v-if="question.infoText && question.infoText !== ''"
-                    :info-text="question.infoText"
-                  />
-                </span>
-                <span class="warning-text"><vee-error-message :name="question.id" /></span>
+                    :unchecked-value="false"
+                    :rules="getRules(question)"
+                  >
+                    <input
+                      v-bind="field"
+                      :id="question.id"
+                      type="checkbox"
+                      :name="question.id"
+                      :value="true"
+                      :disabled="question.disabled"
+                    />
+                  </vee-field>
+                  <span class="label-info-text-wrapper">
+                    <label :for="question.id">{{ question.label }}</label>
+                    <AdminFormInfoText
+                      v-if="question.infoText && question.infoText !== ''"
+                      :info-text="question.infoText"
+                    />
+                  </span>
+                  <span class="warning-text"><vee-error-message :name="question.id" /></span>
+                </div>
               </div>
               <div v-else-if="question.type === 'image'" class="image-wrapper">
                 <div
@@ -101,35 +103,37 @@
                   </div>
                 </div>
               </div>
-              <div v-else-if="question.type === 'picklist'" class="picklist-wrapper">
-                <label class="question-label" :for="question.id">{{ question.label }}</label>
-                <vee-field
-                  :id="question.id"
-                  :name="question.id"
-                  :rules="getRules(question)"
-                  class="__admin config-select-wrapper"
-                  :disabled="question.disabled"
-                >
-                  <PickList
-                    v-model="currentValues[question.id]"
-                    data-key="id"
-                    breakpoint="900px"
+              <div v-else-if="question.type === 'picklist'">
+                <div v-if="question.showIf !== undefined ? question.showIf : true" class="picklist-wrapper">
+                  <label class="question-label" :for="question.id">{{ question.label }}</label>
+                  <vee-field
+                    :id="question.id"
+                    :name="question.id"
+                    :rules="getRules(question)"
+                    class="__admin config-select-wrapper"
                     :disabled="question.disabled"
-                    :show-source-controls="false"
-                    :show-target-controls="false"
                   >
-                    <template #option="{ option }">
-                      {{ option.name }}
-                    </template>
-                    <template #sourceheader>
-                      <span class="picklist-header">Beschikbare {{ question.objectDisplayName }}</span>
-                    </template>
-                    <template #targetheader>
-                      <span class="picklist-header">Geselecteerde {{ question.objectDisplayName }}</span>
-                    </template>
-                  </PickList>
-                </vee-field>
-                <span class="warning-text"><vee-error-message :name="question.id" /></span>
+                    <PickList
+                      v-model="currentValues[question.id]"
+                      data-key="id"
+                      breakpoint="900px"
+                      :disabled="question.disabled"
+                      :show-source-controls="false"
+                      :show-target-controls="false"
+                    >
+                      <template #option="{ option }">
+                        {{ option.name }}
+                      </template>
+                      <template #sourceheader>
+                        <span class="picklist-header">Beschikbare {{ question.objectDisplayName }}</span>
+                      </template>
+                      <template #targetheader>
+                        <span class="picklist-header">Geselecteerde {{ question.objectDisplayName }}</span>
+                      </template>
+                    </PickList>
+                  </vee-field>
+                  <span class="warning-text"><vee-error-message :name="question.id" /></span>
+                </div>
               </div>
               <div v-else>
                 <span class="label-info-text-wrapper">
@@ -352,6 +356,8 @@ import Cookies from "js-cookie";
 import { clouds } from "thememirror";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import CodeMirror from "vue-codemirror6";
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
 
 export default {
   name: "AdminFormSections",
@@ -400,6 +406,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(useGlobalStore, ["config"]),
     getRules() {
       return (question) => {
         let rules = [];
@@ -417,7 +424,7 @@ export default {
         // Check if any field has specified this field in its contains_colon property
         const hasColonValidation = !!question.contains_colon;
 
-        if (hasColonValidation && shouldApplyColonValidation) {
+        if (hasColonValidation && shouldApplyColonValidation && this.config?.features?.edit_layer_features) {
           rules.push("contains-colon");
         }
 
