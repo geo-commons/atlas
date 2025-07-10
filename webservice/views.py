@@ -1,13 +1,13 @@
+import json
 from io import BytesIO
 from os import path
 from tempfile import TemporaryDirectory
 
+import fiona
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import HttpResponse
 from django.views.decorators.http import require_http_methods
-
-import fiona
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -42,9 +42,18 @@ def v3_convert(request, output_format):
     temp_dir = TemporaryDirectory()
     output_file = path.join(temp_dir.name, file_name)
 
-    with fiona.open(BytesIO(request.body), driver='GeoJSON') as inputCollection:
+    try:
+        request_data = json.loads(request.body.decode('utf-8'))
+        geojson_data = request_data.get('featureCollection', request_data)
+        geojson_bytes = json.dumps(geojson_data).encode('utf-8')
+
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        raise ValidationError(f"Invalid JSON data: {str(e)}") from e
+
+    with fiona.open(BytesIO(geojson_bytes), driver='GeoJSON') as inputCollection:
         # GeoJSON, ESRI Shapefile, GPKG, SQLite, GML
-        with fiona.open(output_file, 'w', driver=output_format, schema=inputCollection.schema, crs=inputCollection.crs) as outputCollection:
+        with fiona.open(output_file, 'w', driver=output_format, schema=inputCollection.schema,
+                        crs=inputCollection.crs) as outputCollection:
             for feature in inputCollection:
                 outputCollection.write(feature)
 
