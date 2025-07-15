@@ -120,7 +120,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
                 'friendly_fields',
                 'templated_properties',
                 'legend_url',
-                'search_terms',
+                '_search_terms',
             )
         }),
         ('Metadata', {
