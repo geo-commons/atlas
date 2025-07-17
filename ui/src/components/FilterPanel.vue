@@ -59,7 +59,7 @@ export default {
   computed: {
     countOfActiveSelectedFiltersForLayer() {
       return this.store && this.facets
-        ? this.store.getActiveSelectedItemCountPerFilterForLayer(this.layer.id, this.facets)
+        ? this.store.getActiveSelectedItemCountPerFilterForLayer(this.layer?.id, this.facets)
         : 0;
     },
   },

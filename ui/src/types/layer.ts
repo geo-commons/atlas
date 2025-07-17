@@ -9,6 +9,11 @@ export interface ILayer {
   is_visible: boolean;
   projection: string;
   can_write: boolean;
+  opacity: number;
+  is_selectable: boolean;
+  is_base: boolean;
+  category: string;
+  show_in_detail_panel: boolean;
 }
 
 export type IGeometryType = GeometryType | "Geometry";
@@ -31,4 +36,11 @@ export enum ELayerTypes {
   WFS = "WFS",
   WMS = "WMS",
   WMS_WFS = "WMS_WFS",
+}
+
+export interface ISelectedLayerProps {
+  selectedLayerId: string;
+  is_visible: boolean;
+  opacity: number;
+  is_selectable: boolean;
 }

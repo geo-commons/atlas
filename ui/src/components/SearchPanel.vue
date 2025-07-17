@@ -25,10 +25,10 @@
           @keydown.enter.prevent="selectFirstAvailable"
         />
         <button
+          v-if="query"
           v-tippy="{ placement: 'bottom', theme: 'primary' }"
           content="Wis zoekopdracht"
           aria-label="Wis zoekopdracht"
-          v-if="query"
           @click="clearSearch"
         >
           <i class="pi pi-times-circle"></i>
@@ -55,6 +55,7 @@ import SearchForm from "./SearchForm";
 import { EPSG28992Bounds } from "@/utils/projections";
 import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
+import { useMapStore } from "@/stores/map_store";
 
 const suggestEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
 
@@ -77,6 +78,7 @@ export default {
     return {
       showSuggestions: false,
       results: [],
+      mapStore: null,
     };
   },
   computed: {
@@ -92,18 +94,18 @@ export default {
       },
     },
     visibleLayers() {
-      return this.layers.filter(
-        (layer) => layer.is_visible && !layer.is_base && visibleSourceTypes.includes(layer.source_type),
-      );
+      return this.mapStore ? this.mapStore.visibleLayersForDataPanel : [];
     },
   },
-  // TODO: check if this works
   watch: {
     "this.globalStore.searchQuery"(newValue, oldValue) {
       if (newValue.coordinates !== oldValue.coordinates) {
         this.results = [];
       }
     },
+  },
+  mounted() {
+    this.mapStore = useMapStore(this.mapId);
   },
   methods: {
     toggleDataPanel() {

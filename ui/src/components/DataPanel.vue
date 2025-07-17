@@ -53,7 +53,8 @@
           outlined
           class="!tw-text-sm !tw-font-medium !tw-mb-4 !tw-mx-4 xl:!tw-mx-5"
           @click="deleteAllFilters"
-          >Verwijder filters <TrashIcon class="icon __marker __smedium" />
+          >Verwijder filters
+          <TrashIcon class="icon __marker __smedium" />
         </Button>
         <ActionButton
           v-for="layer in visibleLayers"
@@ -77,8 +78,6 @@ import ArrowLeftIcon from "../assets/icons/arrow-left-icon.svg";
 import CloseIcon from "../assets/icons/close-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import { useMapStore } from "@/stores/map_store";
-
-const visibleSourceTypes = ["WMS_WFS", "WFS"];
 
 export default {
   name: "DataPanel",
@@ -111,13 +110,7 @@ export default {
       return this.store.getActiveLayersWithFilterCount;
     },
     visibleLayers() {
-      return this.layers.filter(
-        (layer) =>
-          layer.is_visible &&
-          !layer.is_base &&
-          layer.show_in_detail_panel &&
-          visibleSourceTypes.includes(layer.source_type),
-      );
+      return this.store ? this.store.visibleLayersForDataPanel : [];
     },
     selectedLayer() {
       if (this.selectedLayerId != null) {

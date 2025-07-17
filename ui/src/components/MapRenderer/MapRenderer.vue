@@ -129,6 +129,7 @@
       :user="user"
       :config="config"
       :features="features"
+      :map-id="mapId"
       @set-position="setPosition"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
       @expanded-info-panel="toggleInfoPanel"
@@ -169,19 +170,13 @@
       :layers="wmsWfsLayers"
       @close-panel="closeCompareLayerPanel"
       @stop-compare="stopCompareLayers"
-      @toggle-layer="toggleLayer"
     />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
         <div class="toggle-buttons" :class="{ 'position-top': !features.searchbar }">
           <div v-if="features.datapanel && !features.searchbar" class="datapanel-btn-wrapper">
-            <DataPanelButton
-              :is-subcomponent="false"
-              :show-data-panel="showDataPanel"
-              :map-id="mapId"
-              @show-data-panel="toggleDataPanel"
-            />
+            <DataPanelButton :show-data-panel="showDataPanel" :map-id="mapId" @show-data-panel="toggleDataPanel" />
           </div>
           <PrimaryButton
             v-if="features.list && !showList"
@@ -206,7 +201,7 @@
             v-if="
               !hideResetButton &&
               (countOfLayersWithActiveFilters > 0 ||
-                visibleLayers.length > 0 ||
+                mapStore?.visibleLayers?.length > 0 ||
                 baseLayerChanged ||
                 newDrawing ||
                 selectedArea)
@@ -249,7 +244,7 @@
           @set-tool="setTool"
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
-          @clear-draw="() => (drawFeatures = [])"
+          @clear-draw="clearDrawing"
           @setInteraction="setInteraction"
           @setColor="setColor"
           @setStrokeWidth="setStrokeWidth"
@@ -274,11 +269,8 @@
           :show-simple-layer-list="features.layerlistsimple"
           :show-compare-slider="compareLayers"
           :is-embed="features.legend && !features.layerlist"
-          @toggle-layer="toggleLayer"
-          @set-layer-opacity="setLayerOpacity"
           @on-fit="(layer) => $refs.map.fit(layer)"
           @set-position="setPosition"
-          @toggle-is-selectable="onToggleIsSelectable"
         />
       </div>
       <div class="bottom-center-panels">
@@ -301,7 +293,7 @@
             </button>
           </div>
           <transition name="fade">
-            <BaseLayersPanel v-if="showBaseLayersPanel" :layers="baseLayers" @toggle-layer="toggleLayer" />
+            <BaseLayersPanel v-if="showBaseLayersPanel" :map-id="mapId" />
           </transition>
         </div>
         <div v-if="features.compareLayers" class="bottom-right-buttons">
@@ -420,9 +412,10 @@ import { DEFAULT_DRAWING_COLOR, DEFAULT_DRAWING_FONT_SIZE, DEFAULT_DRAWING_STROK
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
 import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
-import { EditLayerMode } from "@/types/map";
 import { createMeasurementTooltip } from "@/utils/measure-tooltip";
+import { pushHistoryState } from "@/utils/map-url-utils";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
+import { EditLayerMode } from "@/types/map";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 
@@ -481,7 +474,6 @@ export default {
     },
     initialLayers: Array,
     initialPosition: Object,
-    initialDrawFeatures: Array,
     user: Object,
     features: {
       type: Object,
@@ -528,7 +520,6 @@ export default {
   },
   data() {
     return {
-      layers: this.initialLayers,
       position: this.initialPosition,
       drawFeatures: [],
       removedDrawFeatures: [],
@@ -549,7 +540,6 @@ export default {
       computedStyle: {},
       modal: "",
       interaction: "",
-      userLayerSettings: {},
       undoRedoInteraction: null,
       color: DEFAULT_DRAWING_COLOR,
       strokeWidth: DEFAULT_DRAWING_STROKE_WIDTH,
@@ -572,10 +562,10 @@ export default {
     };
   },
   computed: {
-    EditLayerMode() {
-      return EditLayerMode;
+    ...mapStores(useGlobalStore, useEditLayerStore, useMapStore),
+    layers() {
+      return this.mapStore ? this.mapStore.layers : [];
     },
-    ...mapStores(useGlobalStore, useEditLayerStore),
     measuredAreas() {
       return this.mapStore.measuredAreas;
     },
@@ -625,17 +615,11 @@ export default {
 
       return null;
     },
-    visibleLayers() {
-      return this.layers.filter((l) => !l.is_base && l.is_visible);
-    },
     regularLayers() {
-      return this.layers.filter((l) => !l.is_base);
+      return this.mapStore ? this.mapStore.regularLayers : [];
     },
     wmsWfsLayers() {
-      return this.layers.filter((l) => !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS"));
-    },
-    baseLayers() {
-      return this.layers.filter((l) => l.is_base);
+      return this.mapStore ? this.mapStore.wmsWfsLayers : [];
     },
     countOfLayersWithActiveFilters() {
       return this.mapStore ? this.mapStore.getActiveLayersWithFilterCount : 0;
@@ -645,6 +629,9 @@ export default {
         ? this.mapStore.getActiveSelectedItemCountPerFilterForLayer(this.settings.filterLayerId, this.settings.facets)
         : 0;
     },
+    drawingId() {
+      return this.mapStore ? this.mapStore.drawingId : null;
+    },
   },
   watch: {
     initialPosition: {
@@ -653,8 +640,12 @@ export default {
       },
       deep: true,
     },
-    visibleLayers: {
+    "mapStore.layers": {
       handler(value) {
+        if (!this.adminMap) {
+          pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, this.drawingId);
+        }
+
         const editableLayers = value.filter(
           (layer) =>
             layer.is_visible && layer.can_write && (layer.source_type === "WMS_WFS" || layer.source_type === "WFS"),
@@ -663,47 +654,13 @@ export default {
         this.editLayerStore.setEditableLayers(editableLayers);
       },
       deep: true,
-      immediate: true,
     },
     initialLayers: {
       handler(value) {
-        this.layers = value;
+        const layersCopy = value.map((layer) => ({ ...layer }));
 
-        if (this.adminMap) {
-          // Update the objects in user layer settings according to available layers.
-          const newLayerIds = new Set(this.layers.map((layer) => layer.id));
-
-          // Remove userLayerSettings entries that are not in the new layers
-          Object.keys(this.userLayerSettings).forEach((layerId) => {
-            if (!newLayerIds.has(layerId)) {
-              delete this.userLayerSettings[layerId];
-            }
-          });
-
-          // Add missing userLayerSettings entries for new layers
-          this.layers.forEach((layer) => {
-            if (!(layer.id in this.userLayerSettings)) {
-              this.userLayerSettings[layer.id] = {};
-            }
-          });
-        }
-      },
-      deep: true,
-    },
-    initialDrawFeatures: {
-      handler(value) {
-        this.drawFeatures = value;
-        // Store initial drawing features only once when they first load
-        if (value && value.length > 0 && !this.initialDrawing) {
-          this.initialDrawing = [...value];
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-    userLayerSettings: {
-      handler(value) {
-        this.$emit("update-user-settings", value);
+        this.mapStore.setLayers(layersCopy);
+        this.mapStore.setBaseLayer(layersCopy.find((l) => l.is_base && l.is_visible));
       },
       deep: true,
     },
@@ -716,19 +673,28 @@ export default {
   },
   created() {
     this.mapStore = useMapStore(this.mapId);
+
+    const layersCopy = this.initialLayers.map((layer) => ({ ...layer }));
+
+    // Store initial base layer ID
+    const initialBaseLayer = layersCopy.find((l) => l.is_base && l.is_visible);
+    if (initialBaseLayer) {
+      this.initialBaseLayerId = initialBaseLayer.id;
+    }
+
+    this.mapStore.setLayers(layersCopy);
+    this.mapStore.setBaseLayer(initialBaseLayer);
+
+    if (this.globalStore.drawing) {
+      this.mapStore.setDrawingId(this.globalStore.drawing);
+      this.fetchDrawing();
+    }
   },
   mounted() {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
     this.showAbout = this.features.showAbout ? this.features.showAbout : false;
-
-    // Store initial base layer ID
-    const initialBaseLayer = this.layers.find((l) => l.is_base && l.is_visible);
-    if (initialBaseLayer) {
-      this.initialBaseLayerId = initialBaseLayer.id;
-    }
   },
-  emits: ["position-changed", "layers-changed", "update-user-settings"],
   unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
   },
@@ -745,10 +711,9 @@ export default {
         animateFast: animateFast,
       };
 
-      this.$emit("position-changed", {
-        ...position,
-        animateFast: animateFast,
-      });
+      if (!this.adminMap) {
+        pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, this.drawingId);
+      }
 
       if (!position.marker) {
         this.highlightedFeatures = [];
@@ -795,8 +760,7 @@ export default {
       this.highlightedFeatures = [];
       this.editLayerStore.setHighlightedFeatureAndLayer(null);
 
-      const visibleLayers = this.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible);
-      visibleLayers.forEach(async (layer) => {
+      this.mapStore.visibleLayersForFeatures.forEach(async (layer) => {
         const wmsSource = new TileWMS({
           url: layer.url,
           servertype: layer.server_type,
@@ -863,9 +827,31 @@ export default {
     printMapToPdf(settings) {
       this.$refs.map.printToPdf(settings);
     },
+    async fetchDrawing() {
+      const response = await fetch(`/atlas/api/v1/drawings/${this.drawingId}/`);
+      if (!response.ok) {
+        return false;
+      }
+
+      const data = await response.json();
+
+      const geojsonFormat = new GeoJSON();
+      this.drawFeatures = data.features.map((feature) => geojsonFormat.readFeature(feature));
+    },
     drawingSaved(id) {
-      this.globalStore.setDrawing(id);
+      if (!this.adminMap) {
+        pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, id);
+      }
+
+      this.mapStore.setDrawingId(id);
       this.modal = "drawing";
+    },
+    clearDrawing() {
+      this.drawFeatures = [];
+      this.mapStore.setDrawingId(null);
+      if (!this.adminMap) {
+        pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, null);
+      }
     },
     toggleModal(modal) {
       this.modal = modal;
@@ -996,29 +982,6 @@ export default {
     },
     setSelectedArea(selectedArea) {
       this.selectedArea = selectedArea;
-    },
-    toggleLayer([layerId, isVisible]) {
-      if (layerId === this.initialBaseLayerId) {
-        this.baseLayerChanged = !isVisible;
-      }
-
-      this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, is_visible: isVisible } : layer));
-      this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], is_visible: isVisible };
-
-      this.$emit("layers-changed", this.layers);
-      this.mapStore.resetFiltersForLayer(layerId);
-    },
-    setLayerOpacity([layerId, opacity]) {
-      this.layers = this.layers.map((layer) => (layer.id === layerId ? { ...layer, opacity: opacity } : layer));
-      this.userLayerSettings[layerId] = { ...this.userLayerSettings[layerId], opacity: opacity };
-      this.$emit("layers-changed", this.layers);
-    },
-    onToggleIsSelectable([layerId, isSelectable]) {
-      this.layers = this.layers.map((layer) =>
-        layer.id === layerId ? { ...layer, is_selectable: isSelectable } : layer,
-      );
-      this.setPosition(this.position);
-      this.$emit("layers-changed", this.layers);
     },
     getSelectedLayer(layerId) {
       if (layerId) {

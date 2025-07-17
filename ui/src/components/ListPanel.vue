@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     filteredFeatures() {
-      const filters = this.store.getFiltersForLayer(this.layer.id);
+      const filters = this.store.getFiltersForLayer(this.layer?.id);
 
       if (!filters || Object.keys(filters).length === 0) {
         return this.features;
@@ -124,13 +124,6 @@ export default {
 
       this.loading = false;
     },
-    formatLength(length) {
-      if (length > 1000) {
-        return Math.round(length / 1000) + " " + "km";
-      }
-
-      return Math.round(length) + " " + "m";
-    },
   },
 };
 </script>
@@ -170,23 +163,8 @@ export default {
   color: var(--color-primary);
 }
 
-.type {
-  display: flex;
-  align-content: center;
-  font-size: var(--font-size-small);
-  color: var(--color-text-grey);
-  margin-top: 2px;
-}
-
 .type img {
   margin-left: 5px;
-}
-
-.distance {
-  margin-left: auto;
-  flex-shrink: 0;
-  color: var(--color-text-grey);
-  font-size: var(--font-size-small);
 }
 
 .address {

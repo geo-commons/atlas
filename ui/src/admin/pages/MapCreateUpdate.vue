@@ -47,25 +47,18 @@
       @show-panel="showSidebar"
     />
     <div class="editor-map-wrapper">
-      <div class="select-button-container flex __center">
-        <SelectButton
-          v-model="previewMode"
-          :options="previewModes"
-          option-label="value"
-          :class="'p-buttonset-sm'"
-          :model-value="previewModes[0]"
-        >
-          <template #option="slotProps">
-            <i :class="slotProps.option.icon"></i>
-            {{ slotProps.option.label }}
-          </template>
-        </SelectButton>
-      </div>
-      <iframe
-        class="preview-container mx-auto"
-        :class="`preview-container--${previewMode.value ? previewMode.value : 'desktop'}`"
-        :src="previewUrl"
-      ></iframe>
+      <map-renderer
+        ref="map"
+        :initial-position="position"
+        :initial-layers="configuredLayers"
+        :user="user"
+        :features="data.features"
+        :settings="data.settings"
+        :config="config"
+        :map-id="data.title || 'primary'"
+        :admin-map="true"
+        :hide-reset-button="true"
+      />
     </div>
   </div>
 </template>
@@ -84,10 +77,12 @@ import MapAbout from "../components/MapAbout.vue";
 import { useGlobalStore } from "@/stores";
 import ThumbnailPanelAdmin from "@/admin/components/ThumbnailPanelAdmin.vue";
 import { useToast } from "primevue";
+import MapRenderer from "@/components/MapRenderer/MapRenderer.vue";
 
 export default {
   name: "MapCreateUpdate",
   components: {
+    MapRenderer,
     ThumbnailPanelAdmin,
     MapLayer,
     MapForm,
@@ -106,17 +101,10 @@ export default {
       sidebar: "form",
       selectedLayerData: null,
       userLayerSettings: null,
-      previewMode: "desktop",
-      aboutPreview: null,
-      previewModes: [
-        { value: "desktop", icon: "pi pi-desktop", label: "Desktop" },
-        { value: "tablet", icon: "pi pi-tablet", label: "Tablet" },
-        { value: "mobile", icon: "pi pi-mobile", label: "Mobiel" },
-      ],
     };
   },
   computed: {
-    ...mapState(useGlobalStore, ["position", "layers", "config", "user"]),
+    ...mapState(useGlobalStore, ["position", "layers", "config", "map", "user"]),
     showEnvironmentIndicator() {
       return this.config.application_environment !== "production";
     },
@@ -135,22 +123,11 @@ export default {
           if (!selectedLayer.settings?.customSettings) {
             configuredLayers.push({ ...layer });
           } else {
-            let isVisibleUserSetting;
-            let opacityUserSetting;
-
-            // Make sure user settings from the map take precedence over admin config settings.
-            if (this.userLayerSettings !== null && layer.id in this.userLayerSettings) {
-              const userSettings = this.userLayerSettings[layer.id];
-              isVisibleUserSetting = userSettings.is_visible;
-              opacityUserSetting = userSettings.opacity;
-            }
-
             configuredLayers.push({
               ...layer,
-              is_visible:
-                typeof isVisibleUserSetting === "boolean" ? isVisibleUserSetting : selectedLayer.settings.is_visible,
+              is_visible: selectedLayer.settings.is_visible,
               is_base: selectedLayer.settings.is_base,
-              opacity: opacityUserSetting ? opacityUserSetting : selectedLayer.settings.opacity,
+              opacity: selectedLayer.settings.opacity,
               zoom_min: selectedLayer.settings.zoom_min,
               zoom_max: selectedLayer.settings.zoom_max,
               display_properties: selectedLayer.settings.display_properties,
@@ -169,19 +146,6 @@ export default {
       }
 
       return this.layers;
-    },
-    previewUrl() {
-      if (!this.data) return "/atlas/admin/#/preview";
-      const params = new URLSearchParams();
-      params.append("features", JSON.stringify(this.data.features || {}));
-      params.append("layers", JSON.stringify(this.configuredLayers || []));
-      params.append("position", JSON.stringify(this.position));
-      params.append("settings", JSON.stringify(this.data.settings || {}));
-      params.append("user", JSON.stringify(this.user || {}));
-      params.append("about", JSON.stringify(this.data.about || null));
-      params.append("aboutTitle", JSON.stringify(this.data.about_title || null));
-      params.append("thumbnail", JSON.stringify(this.data.thumbnail || null));
-      return `/atlas/admin/#/preview/${this.$route.params.id}?admin_env_indicator=hide&${params.toString()}`;
     },
   },
   watch: {
@@ -337,9 +301,6 @@ export default {
       this.selectedLayerData = this.data.layers.find((layer) => layer.layer === selectedLayerId);
       this.showSidebar("layer");
     },
-    updateUserSettings(value) {
-      this.userLayerSettings = value;
-    },
     updateLayers(layers) {
       this.data.layers = layers;
     },
@@ -376,32 +337,5 @@ h2 {
   padding: 20px var(--padding-screen) var(--padding-screen) var(--padding-screen);
   max-width: 100%;
   overflow-x: auto;
-}
-
-.preview-container {
-  margin: 1rem auto;
-  height: 100%;
-  overflow: hidden;
-  border: none;
-  transition:
-    width 0.3s ease,
-    min-width 0.3s ease;
-  outline: 1px solid var(--color-grey-60);
-  border-radius: var(--radius-large);
-  width: 100%;
-
-  &--desktop {
-    min-width: 1024px;
-  }
-
-  &--tablet {
-    width: 768px;
-    min-width: 0;
-  }
-
-  &--mobile {
-    width: 375px;
-    min-width: 0;
-  }
 }
 </style>

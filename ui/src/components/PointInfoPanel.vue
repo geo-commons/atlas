@@ -103,6 +103,7 @@ import { Tippy } from "vue-tippy";
 import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
 import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
+import { useMapStore } from "@/stores/map_store";
 
 export default {
   name: "PointInfoPanel",
@@ -120,6 +121,7 @@ export default {
     features: Object,
     layers: Array,
     showPanel: Boolean,
+    mapId: String,
   },
   emits: ["expanded-info-panel", "set-position", "on-fit", "select-feature"],
   data() {
@@ -127,12 +129,13 @@ export default {
       resetSidePanel: null,
       selectedFeatureDetails: null,
       copyButtonText: "Kopieer coördinaten",
+      mapStore: null,
     };
   },
   computed: {
     ...mapStores(useGlobalStore),
     visibleLayers() {
-      return this.layers.filter((layer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base);
+      return this.mapStore ? this.mapStore.visibleLayersForDetailPanel : [];
     },
     searchQuery: {
       get() {
@@ -152,6 +155,9 @@ export default {
         this.selectedFeatureDetails = null;
       }
     },
+  },
+  mounted() {
+    this.mapStore = useMapStore(this.mapId);
   },
   methods: {
     closeInfoPanel() {
