@@ -17,7 +17,7 @@
           id="baseLayer_null"
           type="radio"
           name="baseLayer"
-          :checked="allBaseLayersUnvisible"
+          :checked="noSelectedBaseLayer"
           @click="() => onSelect(null)"
         />
         <label for="baseLayer_null">Geen</label>
@@ -28,6 +28,7 @@
 
 <script>
 import LayerInfo from "./LayerInfo";
+import { useMapStore } from "@/stores/map_store";
 
 export default {
   name: "BaseLayersPanel",
@@ -35,25 +36,36 @@ export default {
     LayerInfo,
   },
   props: {
-    layers: Array,
+    mapId: String,
+  },
+  data() {
+    return {
+      mapStore: null,
+    };
   },
   computed: {
     baseLayers() {
-      return this.layers.filter((layer) => layer.is_base);
+      return this.mapStore ? this.mapStore.baseLayers : [];
     },
-    allBaseLayersUnvisible() {
-      return this.baseLayers.every((layer) => !layer.is_visible);
+    noSelectedBaseLayer() {
+      return this.mapStore ? this.mapStore.selectedBaseLayer === null : true;
     },
+  },
+  mounted() {
+    this.mapStore = useMapStore(this.mapId);
   },
   methods: {
     onSelect(selectedLayer) {
-      this.baseLayers.map((layer) => {
-        if (selectedLayer && selectedLayer.id === layer.id) {
-          this.$emit("toggle-layer", [layer.id, true]);
-        } else {
-          this.$emit("toggle-layer", [layer.id, false]);
-        }
-      });
+      if (!selectedLayer) {
+        this.mapStore.deselectBaseLayer();
+        return;
+      }
+
+      if (selectedLayer.is_visible) {
+        return;
+      }
+
+      this.mapStore.toggleBaseLayer({ selectedLayerId: selectedLayer.id, is_visible: !selectedLayer.is_visible });
     },
   },
 };

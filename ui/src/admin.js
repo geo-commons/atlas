@@ -81,8 +81,8 @@ defineRule("max", (value, [max]) => {
 });
 
 defineRule("contains-colon", (value) => {
-  if (!value.includes(':')) {
-    return 'Dit veld is verplicht en moet een GeoServer workspace bevatten, bijv. custom:scholen.';
+  if (!value.includes(":")) {
+    return "Dit veld is verplicht en moet een GeoServer workspace bevatten, bijv. custom:scholen.";
   }
 
   return true;
@@ -234,23 +234,6 @@ const routes = [
       },
     },
   },
-  {
-    path: "/preview/:id?",
-    name: "MapPreview",
-    component: () => import("@/components/MapPreview.vue"),
-    props: (route) => {
-      return {
-        features: JSON.parse(decodeURIComponent(route.query.features)),
-        layers: JSON.parse(decodeURIComponent(route.query.layers)),
-        position: JSON.parse(decodeURIComponent(route.query.position)),
-        settings: JSON.parse(decodeURIComponent(route.query.settings)),
-        user: JSON.parse(decodeURIComponent(route.query.user)),
-        about: route.query.about ? JSON.parse(decodeURIComponent(route.query.about)) : null,
-        aboutTitle: route.query.aboutTitle ? JSON.parse(decodeURIComponent(route.query.aboutTitle)) : null,
-        thumbnail: route.query.thumbnail ? JSON.parse(decodeURIComponent(route.query.thumbnail)) : null,
-      };
-    },
-  },
   { path: "/:pathMatch(.*)*", name: "not-found", component: AdminNotFound },
 ];
 
@@ -269,15 +252,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = JSON.parse(document.querySelector("#app-data").innerHTML);
   const settings = getSettingsFromPath(data.config);
 
-  const layers = data.layers.map((layer) =>
-    settings.visibleLayers && settings.visibleLayers.includes(layer.id) ? { ...layer, is_visible: true } : layer,
-  );
-
   const initialState = {
     isEmbed: data.is_embed,
     config: data.config,
     position: settings.position,
-    layers,
+    layers: data.layers,
     tool: "",
     selectedArea: null,
     searchQuery: "",

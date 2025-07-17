@@ -63,8 +63,5 @@ export const useGlobalStore = defineStore("global", {
     setUser(user) {
       this.user = user;
     },
-    setDrawing(drawing) {
-      this.drawing = drawing;
-    },
   },
 });

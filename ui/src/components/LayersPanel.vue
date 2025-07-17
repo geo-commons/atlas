@@ -170,9 +170,6 @@
           :layer-opacity-is-changable="!isEmbed"
           :is-open="i === 0"
           :user="user"
-          @set-layer-opacity="setLayerOpacity"
-          @toggle-layer="onSelectLayer"
-          @toggle-is-selectable="onToggleIsSelectable"
         />
       </ul>
     </transition>
@@ -189,6 +186,7 @@ import LayerFit from "./LayerFit";
 import LayerInfo from "./LayerInfo";
 import ZoomInIcon from "../assets/icons/zoom-in-icon.svg";
 import ZoomOutIcon from "../assets/icons/zoom-out-icon.svg";
+import { useMapStore } from "@/stores/map_store";
 
 export default {
   name: "LayersPanel",
@@ -210,14 +208,12 @@ export default {
     showSimpleLayerList: Boolean,
     showCompareSlider: Boolean,
     isEmbed: Boolean,
-    initiallyShowLayerList: Boolean,
   },
   data() {
-    const visibleLayers = this.layers.filter((layer) => layer.category && layer.is_visible);
-
     return {
-      panel: visibleLayers.length > 0 ? "activeLayers" : this.initiallyShowLayerList ? "layers" : "",
+      panel: null,
       searchQuery: "",
+      mapStore: null,
     };
   },
   computed: {
@@ -277,8 +273,12 @@ export default {
       return categories;
     },
     visibleLayers() {
-      return this.layers.filter((layer) => layer.category && layer.is_visible);
+      return this.mapStore ? this.mapStore.visibleLayers : [];
     },
+  },
+  created() {
+    this.mapStore = useMapStore(this.mapId);
+    this.panel = this.mapStore.visibleLayers.length > 0 ? "activeLayers" : "layers";
   },
   methods: {
     togglePanel(selectedPanel) {
@@ -296,13 +296,7 @@ export default {
       }
     },
     onSelectLayer(selectedLayer) {
-      this.$emit("toggle-layer", [selectedLayer.id, !selectedLayer.is_visible]);
-    },
-    setLayerOpacity(values) {
-      this.$emit("set-layer-opacity", values);
-    },
-    onToggleIsSelectable(values) {
-      this.$emit("toggle-is-selectable", values);
+      this.mapStore.toggleLayer({ selectedLayerId: selectedLayer.id, is_visible: !selectedLayer.is_visible });
     },
     onFit(selectedLayer) {
       this.$emit("on-fit", selectedLayer.extent);
@@ -316,7 +310,7 @@ export default {
       });
 
       if (!selectedLayer.is_visible) {
-        this.$emit("toggle-layer", [selectedLayer.id, true]);
+        this.mapStore.toggleLayer({ selectedLayerId: selectedLayer.id, is_visible: true });
       }
     },
   },

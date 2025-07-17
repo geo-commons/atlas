@@ -91,7 +91,6 @@ const { mapId, layers, showCompareLayerPanel } = defineProps<CompareLayerProps>(
 const emit = defineEmits<{
   (e: "close-panel"): void;
   (e: "stop-compare"): void;
-  (e: "toggle-layer", updatedLayer: any): void;
 }>();
 
 // Store
@@ -125,19 +124,19 @@ const rightSelectableLayers = computed(() => {
 
 const onSelectLeftLayer = (layerId: string) => {
   if (mapStore.leftSelectedCompareLayerId !== null) {
-    emit("toggle-layer", [mapStore.leftSelectedCompareLayerId, false]);
+    mapStore.toggleLayer({ selectedLayerId: mapStore.leftSelectedCompareLayerId, is_visible: false });
   }
 
   mapStore.setLeftSelectedCompareLayerId(layerId);
-  emit("toggle-layer", [layerId, true]);
+  mapStore.toggleLayer({ selectedLayerId: layerId, is_visible: true });
 };
 
 const onSelectRightLayer = (layerId: string) => {
   if (mapStore.rightSelectedCompareLayerId !== null) {
-    emit("toggle-layer", [mapStore.rightSelectedCompareLayerId, false]);
+    mapStore.toggleLayer({ selectedLayerId: mapStore.rightSelectedCompareLayerId, is_visible: false });
   }
 
   mapStore.setRightSelectedCompareLayerId(layerId);
-  emit("toggle-layer", [layerId, true]);
+  mapStore.toggleLayer({ selectedLayerId: layerId, is_visible: true });
 };
 </script>

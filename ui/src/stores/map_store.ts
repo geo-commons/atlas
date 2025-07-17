@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
+import { ELayerTypes, ILayer, ISelectedLayerProps } from "@/types/layer";
 import { ICycloView, IMapStore } from "@/types/mapStore";
 import { Geometry } from "ol/geom";
+
+const visibleSourceTypes = [ELayerTypes.WMS_WFS, ELayerTypes.WFS];
 
 export function useMapStore(mapName: string) {
   return defineStore(`map-${mapName}`, {
@@ -11,6 +14,9 @@ export function useMapStore(mapName: string) {
       comparePercentage: 50,
       cycloView: null,
       measuredAreas: [],
+      layers: [],
+      selectedBaseLayer: null,
+      drawingId: null,
     }),
     actions: {
       resetAllFilters() {
@@ -51,6 +57,56 @@ export function useMapStore(mapName: string) {
       },
       clearMeasuredAreas() {
         this.measuredAreas = [];
+      },
+      setLayers(layers: ILayer[]) {
+        this.layers = layers;
+      },
+      setBaseLayer(layer: ILayer) {
+        this.selectedBaseLayer = layer;
+      },
+      deselectBaseLayer() {
+        if (this.selectedBaseLayer) {
+          this.selectedBaseLayer.is_visible = false;
+          this.selectedBaseLayer = null;
+        }
+      },
+      updateLayer(id: string, updater: (layer: ILayer) => void) {
+        const layer = this.layers.find((l) => l.id === id);
+        if (layer) {
+          updater(layer);
+        }
+      },
+      toggleBaseLayer(selectedLayerProps: ISelectedLayerProps) {
+        const layer = this.layers.find((l) => l.id === selectedLayerProps.selectedLayerId);
+
+        if (layer) {
+          layer.is_visible = selectedLayerProps.is_visible;
+
+          if (this.selectedBaseLayer) {
+            this.selectedBaseLayer.is_visible = false;
+          }
+          this.selectedBaseLayer = layer;
+        }
+      },
+      toggleLayer(selectedLayerProps: ISelectedLayerProps) {
+        this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
+          layer.is_visible = selectedLayerProps.is_visible;
+        });
+
+        this.resetFiltersForLayer(selectedLayerProps.selectedLayerId);
+      },
+      setLayerOpacity(selectedLayerProps: ISelectedLayerProps) {
+        this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
+          layer.opacity = selectedLayerProps.opacity;
+        });
+      },
+      toggleLayerisSelectable(selectedLayerProps: ISelectedLayerProps) {
+        this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
+          layer.is_selectable = selectedLayerProps.is_selectable;
+        });
+      },
+      setDrawingId(drawingId: string) {
+        this.drawingId = drawingId;
       },
     },
     getters: {
@@ -122,6 +178,33 @@ export function useMapStore(mapName: string) {
 
           return count;
         };
+      },
+      baseLayers: (state) => {
+        return state.layers.filter((layer) => layer.is_base);
+      },
+      regularLayers: (state) => {
+        return state.layers.filter((layer) => !layer.is_base);
+      },
+      wmsWfsLayers: (state) => {
+        return state.layers.filter((l) => !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS"));
+      },
+      visibleLayers: (state) => {
+        return state.layers.filter((layer) => layer.category && layer.is_visible && !layer.is_base);
+      },
+      visibleLayersForFeatures: (state) => {
+        return state.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible);
+      },
+      visibleLayersForDataPanel: (state) => {
+        return state.layers.filter(
+          (layer) =>
+            layer.is_visible &&
+            !layer.is_base &&
+            layer.show_in_detail_panel &&
+            visibleSourceTypes.includes(layer.source_type),
+        );
+      },
+      visibleLayersForDetailPanel: (state) => {
+        return state.layers.filter((layer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base);
       },
     },
   })();

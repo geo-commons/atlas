@@ -218,7 +218,7 @@ export default {
     this.selectedFilterProperties = Object.keys(filters);
 
     this.store.$subscribe((mutation, state) => {
-      if (mutation.events.newValue?.searchQuery) {
+      if (mutation?.events.newValue?.searchQuery) {
         return;
       }
 

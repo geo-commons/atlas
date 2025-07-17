@@ -175,13 +175,15 @@ export default {
     this.store = useMapStore(this.mapId);
 
     this.store.$subscribe((mutation, state) => {
-      if (mutation.events.key === this.layer.id) {
+      const key = mutation?.events?.key;
+
+      if (key === this.layer.id) {
         setTimeout(() => {
           this.checkboxFilters = state.layerFilters[this.layer.id]?.filters;
         }, 100);
       }
 
-      if (mutation.events.key === "layerFilters") {
+      if (key === "layerFilters") {
         this.checkboxFilters = [];
       }
     });
@@ -192,19 +194,18 @@ export default {
       this.showSlider = !this.showSlider;
     },
     changeLayerOpacity(layerId, opacity) {
-      this.$emit("set-layer-opacity", [layerId, opacity]);
+      this.store.setLayerOpacity({ selectedLayerId: layerId, opacity: opacity });
     },
     toggleLayer() {
       // Make sure to restore is_selectable to its initial value.
       if (this.initialIsSelectable && this.layer.is_selectable !== this.initialIsSelectable) {
         this.toggleLayerSelectable();
       }
-
-      this.$emit("toggle-layer", this.layer);
+      this.store.toggleLayer({ selectedLayerId: this.layer.id, is_visible: false });
     },
     toggleLayerSelectable() {
       this.isSelectable = !this.isSelectable;
-      this.$emit("toggle-is-selectable", [this.layer.id, this.isSelectable]);
+      this.store.toggleLayerisSelectable({ selectedLayerId: this.layer.id, is_selectable: this.isSelectable });
     },
     async fetchLegendAsJson() {
       const params = new URLSearchParams({
