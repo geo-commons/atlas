@@ -200,6 +200,12 @@ export default {
               type: "checkbox",
             },
             {
+              label: "Sorteer kaartlagen in de viewer",
+              id: "FEATURE_SORT_LAYER",
+              name: "featureSortLayer",
+              type: "checkbox",
+            },
+            {
               label: "Bewerkfunctionaliteit",
               id: "FEATURE_EDIT_LAYER_FEATURES",
               name: "featureAddFeature",

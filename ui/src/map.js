@@ -11,9 +11,8 @@ import App from "./map/App";
 import { useGlobalStore } from "@/stores";
 import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
-import { ConfirmationService } from "primevue";
+import { ConfirmationService, ToastService } from "primevue";
 import { AtlasPresetApp } from "@/utils/theme-preset";
-import { ToastService } from "primevue";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -58,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const hasBaseLayer = layers.some((layer) => layer.is_base);
 
   if (!hasBaseLayer) {
-    // If there is no base layer configured get the first available and add is to layers.
+    // If there is no base layer configured, get the first available and add it to layers.
     const baseLayer = allAvailableLayers.find((layer) => layer.is_base);
     layers.push(baseLayer);
   }
@@ -79,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!layer.is_base) {
       return {
         ...layer,
-        is_visible: settings.visibleLayers.length ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
+        is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
       };
     }
   });
