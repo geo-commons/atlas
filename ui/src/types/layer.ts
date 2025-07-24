@@ -44,3 +44,8 @@ export interface ISelectedLayerProps {
   opacity: number;
   is_selectable: boolean;
 }
+
+export interface ILayerOrderDetails {
+  selectedLayerId: string;
+  direction: string;
+}

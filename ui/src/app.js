@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const data = JSON.parse(document.querySelector("#app-data").innerHTML);
   const settings = getSettingsFromPath(data.config);
-
   const layers = data.layers.map((layer) => {
     if (layer.is_base) {
       return {

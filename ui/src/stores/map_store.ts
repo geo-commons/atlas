@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ELayerTypes, ILayer, ISelectedLayerProps } from "@/types/layer";
+import { ELayerTypes, ILayer, ILayerOrderDetails, ISelectedLayerProps } from "@/types/layer";
 import { ICycloView, IMapStore } from "@/types/mapStore";
 import { Geometry } from "ol/geom";
 
@@ -107,6 +107,39 @@ export function useMapStore(mapName: string) {
       },
       setDrawingId(drawingId: string) {
         this.drawingId = drawingId;
+      },
+      changeLayerOrder(layerOrderDetails: ILayerOrderDetails) {
+        const layerId = layerOrderDetails.selectedLayerId;
+        const direction = layerOrderDetails.direction;
+
+        const index = this.layers.findIndex((layer) => layer.id === layerId);
+        const visibleLayerIndex = this.visibleLayers.findIndex((layer) => layer.id === layerId);
+
+        if (index === -1 || visibleLayerIndex === -1) {
+          console.warn(`Layer with ID ${layerId} not found`);
+          return;
+        }
+
+        if (
+          (direction === "down" && visibleLayerIndex >= this.visibleLayers.length - 1) ||
+          (direction === "up" && visibleLayerIndex <= 0)
+        ) {
+          return;
+        }
+
+        // Target the adjacent visible layer
+        const newVisibleLayerIndex = direction === "down" ? visibleLayerIndex + 1 : visibleLayerIndex - 1;
+
+        const layerToSwapWith = this.visibleLayers[newVisibleLayerIndex];
+        const swapWithIndex = this.layers.findIndex((layer) => layer.id === layerToSwapWith.id);
+        const layerToMove = this.layers[index];
+
+        // Copy layers and perform reorder
+        const newLayers = [...this.layers];
+        newLayers.splice(index, 1);
+        newLayers.splice(swapWithIndex, 0, layerToMove);
+
+        this.setLayers(newLayers);
       },
     },
     getters: {

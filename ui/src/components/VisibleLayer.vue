@@ -1,8 +1,8 @@
 <template>
   <li class="layer-wrapper">
-    <ExpandButton :title="layer.title" :is-open="isOpen">
+    <ExpandButton :title="layer.title" :is-open="isOpen" @show-content="onToggleOpen">
       <template #header>
-        <div class="buttons">
+        <div v-if="!sortLayers" class="tw-flex tw-items-center">
           <div v-if="layerOpacityIsChangable" class="opacity-wrapper">
             <input
               v-if="showSlider"
@@ -19,7 +19,7 @@
             />
             <button
               v-tippy
-              class="iconbutton __round"
+              class="iconbutton __xs __round"
               :class="{ isActive: showSlider }"
               content="Transparantie"
               aria-label="Toon transparantie schuifregelaar"
@@ -43,7 +43,7 @@
           <button
             v-if="initialIsSelectable"
             v-tippy="{ placement: 'right' }"
-            class="iconbutton __round"
+            class="iconbutton __xs __round"
             :content="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"
             :aria-label="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"
             @click="toggleLayerSelectable"
@@ -55,12 +55,38 @@
           <button
             v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
-            class="iconbutton __round"
+            class="iconbutton __xs __round"
             content="Sluit"
             aria-label="Sluit laag"
             @click="toggleLayer"
           >
             <CloseCircleIcon />
+          </button>
+        </div>
+        <div
+          v-else
+          class="tw-flex tw-items-center"
+          :class="index === visibleLayers.length - 1 ? 'extra-padding-right' : ''"
+        >
+          <button
+            v-show="index > 0"
+            v-tippy="{ placement: 'right' }"
+            class="iconbutton __xs __round"
+            content="Verplaats kaartlaag naar boven"
+            aria-label="Verplaats kaartlaag naar boven"
+            @click="changeLayerOrder('up')"
+          >
+            <ArrowUpIcon class="icon __small" />
+          </button>
+          <button
+            v-show="index < visibleLayers.length - 1"
+            v-tippy="{ placement: 'right' }"
+            class="iconbutton __xs __round"
+            content="Verplaats kaartlaag naar beneden"
+            aria-label="Verplaats kaartlaag naar beneden"
+            @click="changeLayerOrder('down')"
+          >
+            <ArrowDownIcon class="icon __small" />
           </button>
         </div>
       </template>
@@ -108,6 +134,8 @@
 <script>
 import ExpandButton from "./ExpandButton";
 import LayerInfo from "./LayerInfo";
+import ArrowUpIcon from "../assets/icons/arrow-up-icon.svg";
+import ArrowDownIcon from "../assets/icons/arrow-down-icon.svg";
 import CloseCircleIcon from "../assets/icons/close-circle-icon.svg";
 import OpacityIcon from "../assets/icons/opacity-icon.svg";
 import SelectableIcon from "../assets/icons/selectable-icon.svg";
@@ -121,6 +149,8 @@ export default {
   components: {
     ExpandButton,
     LayerInfo,
+    ArrowUpIcon,
+    ArrowDownIcon,
     CloseCircleIcon,
     OpacityIcon,
     SelectableIcon,
@@ -134,6 +164,8 @@ export default {
     isOpen: Boolean,
     user: Object,
     mapId: String,
+    sortLayers: Boolean,
+    index: Number,
   },
   data() {
     return {
@@ -154,6 +186,9 @@ export default {
         this.layer.source_type === "WMS_WFS" ||
         (this.layer.source_type === "WMTS" && this.layer.legend_url)
       );
+    },
+    visibleLayers() {
+      return this.store ? this.store.visibleLayers : [];
     },
   },
   watch: {
@@ -295,6 +330,12 @@ export default {
 
       this.store.updateFiltersForLayer(this.layer.id, filters);
     },
+    changeLayerOrder(direction) {
+      this.store.changeLayerOrder({ selectedLayerId: this.layer.id, direction: direction });
+    },
+    onToggleOpen(isOpen) {
+      this.$emit("toggle-is-open", { layerId: this.layer.id, isOpen });
+    },
   },
 };
 </script>
@@ -332,22 +373,16 @@ export default {
   margin: 0;
 }
 
-.iconbutton {
-  width: 24px;
-  height: 24px;
-}
-
 .content {
   padding: 4px 8px 4px;
   overflow-x: auto;
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-}
-
 input[type="number"] {
   border: none;
+}
+
+.extra-padding-right {
+  padding-right: 24px;
 }
 </style>

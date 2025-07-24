@@ -22,9 +22,9 @@
     <ol-drag-zoom />
     <component
       :is="getComponent(layer.source_type)"
-      v-for="layer in layers"
+      v-for="(layer, index) in layers"
       :id="layer.id"
-      :key="layer.id"
+      :key="`${layer.id}-${index}`"
       :name="layer.name"
       :url="layer.url"
       :format="layer.format"
@@ -32,7 +32,7 @@
       :is-selectable="layer.is_selectable === true"
       :send-token-with-request="layer.login_required && layer.source.authenticate && user && user.token ? true : false"
       :selected-features="selectedFeatures"
-      :z-index="layer.is_base ? 0 : 1"
+      :z-index="getZIndex(layer, index)"
       :min-zoom="layer.zoom_min"
       :max-zoom="layer.zoom_max"
       :map-id="mapId"
@@ -428,6 +428,15 @@ export default {
     },
     refreshLayer(id) {
       this.$refs.map.refreshLayer(id);
+    },
+    getZIndex(layer, index) {
+      if (layer.is_base) {
+        return 0;
+      }
+      // Non-base layers get z-index based on position (higher = shown on top)
+      // We use layers.length - index so layers at the beginning of the array
+      // (lower indices) have higher z-indices
+      return this.layers.length - index;
     },
   },
 };
