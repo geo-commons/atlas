@@ -58,6 +58,9 @@
         :map-id="data.title || 'primary'"
         :admin-map="true"
         :hide-reset-button="true"
+        :about="data.about"
+        :about-title="data.about_title"
+        :thumbnail="data.thumbnail"
       />
     </div>
   </div>
@@ -157,6 +160,11 @@ export default {
     "data.features.list"(newValue) {
       if (!newValue && this.$refs.map && this.$refs.map.showList) {
         this.$refs.map.toggleList();
+      }
+    },
+    "data.features.showAbout"(newValue) {
+      if (this.$refs.map) {
+        this.$refs.map.showAbout = newValue || false;
       }
     },
   },
@@ -308,6 +316,7 @@ export default {
       this.data.about = aboutData?.about;
       this.data.about_title = aboutData?.about_title;
       this.data.thumbnail = aboutData?.thumbnail;
+      this.data.features = { ...this.data.features, ...aboutData.features };
     },
   },
 };
