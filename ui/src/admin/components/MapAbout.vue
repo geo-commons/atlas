@@ -110,6 +110,28 @@ watch(
     if (value) {
       data.value.features.morepanel = true;
     }
+    emitUpdate();
+  },
+);
+
+watch(
+  () => data.value.about,
+  () => {
+    emitUpdate();
+  },
+);
+
+watch(
+  () => data.value.about_title,
+  () => {
+    emitUpdate();
+  },
+);
+
+watch(
+  () => data.value.features.showAboutButton,
+  () => {
+    emitUpdate();
   },
 );
 
