@@ -2,7 +2,6 @@
   <div class="layer-field">
     <Select
       class="!tw-mt-2"
-      v-bind="props.field"
       :model-value="props.modelValue"
       placeholder="Kies een laag"
       filter-placeholder="Zoek laag"
@@ -30,10 +29,6 @@ const props = defineProps({
   modelValue: {
     type: String,
     default: () => "",
-  },
-  field: {
-    type: Object,
-    default: () => ({}),
   },
 });
 
