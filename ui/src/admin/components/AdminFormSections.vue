@@ -249,17 +249,17 @@
                     class="!tw-text-sm"
                   ></CodeMirror>
                 </vee-field>
-                <vee-field
-                  v-else-if="question.type === 'layer-select'"
-                  v-slot="{ field }"
-                  :name="question.id"
-                  :rules="getRules(question)"
-                >
-                  <InputText :id="question.id" v-bind="field" class="!tw-mb-2" placeholder="Laagnaam" type="text" />
+                <vee-field v-else-if="question.type === 'layer-select'" :name="question.id" :rules="getRules(question)">
+                  <InputText
+                    :id="question.id"
+                    v-model="currentValues[question.id]"
+                    class="!tw-mb-2"
+                    placeholder="Laagnaam"
+                    type="text"
+                  />
                   <span>Of selecteer een laagnaam</span>
                   <layer-field
                     :model-value="currentValues[question.id]"
-                    :field="field"
                     :current-source-id="values[question.sourceField]"
                     :sources="question.options || []"
                     @update:modelValue="(value) => (currentValues[question.id] = value)"
