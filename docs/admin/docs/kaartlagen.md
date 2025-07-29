@@ -20,6 +20,7 @@ Onder algemene gegevens van de kaartlaag kent Atlas diverse velden, dat zijn de 
 - **Kort kenmerk:** (Een uniek ID dat de layer onderscheid van andere. Wordt gebruikt als slug voor betreffende kaartlaag.
 - **Categorie:** De categorie waar toe de kaartlaag behoort. (selecteer onder welke categorie deze layer komt)
 - **Gepubliceerd:** Met deze optie bepaal je op de laag wordt gepubliceerd of niet binnen Atlas, deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden. _Standaard_: uit.
+- **Kaartlaag is exporteerbaar**: Met deze optie bepaal je of de data achter de kaartlaag wel of niet exporteerbaar is vanuit de dataweergave. _Standaard_: aan.
 
 ### Bron
 

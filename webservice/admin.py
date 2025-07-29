@@ -92,7 +92,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'slug', 'layer_type', 'published')
+            'fields': ('title', 'slug', 'layer_type', 'published', 'is_exportable')
         }),
         ('Bron', {
             'fields': ('layer_source', 'layer_name', 'source_type', 'projection', 'server_type', 'format')

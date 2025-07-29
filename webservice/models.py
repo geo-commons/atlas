@@ -313,6 +313,8 @@ class Layer(models.Model):
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
+    is_exportable = models.BooleanField('Kaartlaag is exporteerbaar', default=True)
+
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS_WFS, max_length=20,
                                    help_text='"WMS en WFS" en WFS is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.'
                                    )
@@ -538,6 +540,7 @@ source: new ol.source.TileWMS({{
             'legend_url': self.legend_url,
             'is_filterable_in_legend': self.is_filterable_in_legend,
             'can_write': self.is_mutable_by(user, request),
+            'is_exportable': self.is_exportable
         }
 
     class Meta:

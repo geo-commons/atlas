@@ -162,6 +162,7 @@ export default {
       error: false,
       errorMessage: null,
       loading: true,
+      isDownloadPending: false,
     };
   },
   watch: {
@@ -471,6 +472,13 @@ export default {
       return [];
     },
     async downloadCSV() {
+      if (!this.layer.is_exportable) {
+        console.error("Het is niet mogelijk om voor deze kaartlaag de bijbehorende data te downloaden.");
+        return;
+      }
+
+      this.isDownloadPending = true;
+
       const separator = ";";
       const filename = this.layer.title
         .replace(" ", "-")
@@ -497,8 +505,17 @@ export default {
       hiddenElement.target = "_blank";
       hiddenElement.download = `${filename}.csv`;
       hiddenElement.click();
+
+      this.isDownloadPending = false;
     },
     async download(outputFormat) {
+      if (!this.layer.is_exportable) {
+        console.error("Het is niet mogelijk om voor deze kaartlaag de bijbehorende data te downloaden.");
+        return;
+      }
+
+      this.isDownloadPending = true;
+
       const fetchDownloadData = await this.fetchFeaturesForDownload();
 
       const result = await fetch(`/atlas/convert/${outputFormat}`, {
@@ -535,6 +552,8 @@ export default {
       document.body.appendChild(a);
       a.click();
       a.remove();
+
+      this.isDownloadPending = false;
     },
     replaceQuotes(value) {
       if (typeof value === "string") {
