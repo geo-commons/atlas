@@ -13,12 +13,19 @@
           :interactive="true"
         >
           <button
+            v-if="layer.is_exportable"
             v-tippy="{ placement: 'right' }"
             class="iconbutton __normal __outline"
             content="Download"
             aria-label="Download"
           >
-            <DownloadIcon />
+            <DownloadIcon v-if="!$refs?.featureTable?.isDownloadPending" />
+            <ProgressSpinner
+              v-else
+              stroke-width="4"
+              fill="transparent"
+              :pt="{ root: '!tw-max-w-6 !tw-max-h-6', circle: '!tw-stroke-black' }"
+            />
           </button>
           <template #content>
             <div class="menu">
@@ -111,7 +118,6 @@ export default {
       sortAscending: true,
     };
   },
-  computed: {},
   created() {
     this.store = useMapStore(this.mapId);
   },

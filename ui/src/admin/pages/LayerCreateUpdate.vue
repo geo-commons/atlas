@@ -533,6 +533,15 @@ export default {
               type: "checkbox",
               required: false,
             },
+            {
+              label: "Kaartlaag is exporteerbaar",
+              infoText:
+                "Met dit veld configureer je of de data achter een kaartlaag wel/niet exporteerbaar is vanuit de dataweergave.",
+              id: "is_exportable",
+              name: "IsExportable",
+              type: "checkbox",
+              required: false,
+            },
           ],
         },
         source: {

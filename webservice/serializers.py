@@ -258,6 +258,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'dataset',
             'is_filterable_in_legend',
             'authenticated_can_mutate',
+            'is_exportable'
         ]
 
 
@@ -397,6 +398,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'templates',
             'dataset',
             'is_filterable_in_legend',
+            'is_exportable',
             'authenticated_can_mutate'
         ]
 

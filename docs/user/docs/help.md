@@ -216,7 +216,7 @@ Let op dat bij grote selecties het sorteren lang kan duren.
 
 ##Download / exporteer kaartlagen
 
-Kaartlagen binnen Atlas kunnen gedownload worden in verschillende formaten:
+Kaartlagen binnen Atlas kunnen, indien de optie op de kaartlaag tot exporteren is ingeschakeld, worden gedownload in verschillende formaten.
 
 - CSV
 - ESRI Shape
