@@ -204,7 +204,7 @@ export default {
 
       const url = wmsSource.getFeatureInfoUrl(this.position.marker, view.getResolution(), "EPSG:28992", {
         info_format: this.layer.use_html_info_format ? "text/html" : "application/json",
-        feature_count: 20,
+        feature_count: 100,
       });
 
       try {
@@ -240,7 +240,7 @@ export default {
         ["outputFormat", "application/json"],
         ["srsname", this.layer.projection],
         ["bbox", extent.join(",")],
-        ["maxFeatures", "20"],
+        ["maxFeatures", "100"],
       ]);
 
       const url = new URL(this.layer.url);
