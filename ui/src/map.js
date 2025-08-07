@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!layer.is_base) {
       return {
         ...layer,
-        is_visible: settings.visibleLayers ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
+        is_visible: settings.visibleLayers?.length > 0 ? settings.visibleLayers.includes(layer.id) : layer.is_visible,
       };
     }
   });
