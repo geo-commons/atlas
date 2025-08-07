@@ -41,7 +41,6 @@
             />
           </div>
           <button
-            v-if="initialIsSelectable"
             v-tippy="{ placement: 'right' }"
             class="iconbutton __xs __round"
             :content="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"

@@ -57,7 +57,7 @@
       :selectable="false"
       :vector-style="MARKER_STYLE"
       :features="markerFeatures"
-      :z-index="3"
+      :z-index="20"
     />
     <ol-vector-layer
       v-if="store.cycloView"

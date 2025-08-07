@@ -213,23 +213,25 @@ export function useMapStore(mapName: string) {
         };
       },
       baseLayers: (state) => {
-        return state.layers.filter((layer) => layer.is_base);
+        return state.layers.filter((layer: ILayer) => layer.is_base);
       },
       regularLayers: (state) => {
-        return state.layers.filter((layer) => !layer.is_base);
+        return state.layers.filter((layer: ILayer) => !layer.is_base);
       },
       wmsWfsLayers: (state) => {
-        return state.layers.filter((l) => !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS"));
+        return state.layers.filter(
+          (l: ILayer) => !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS"),
+        );
       },
       visibleLayers: (state) => {
-        return state.layers.filter((layer) => layer.category && layer.is_visible && !layer.is_base);
+        return state.layers.filter((layer: ILayer) => layer.category && layer.is_visible && !layer.is_base);
       },
       visibleLayersForFeatures: (state) => {
-        return state.layers.filter((layer) => layer.is_selectable && !layer.is_base && layer.is_visible);
+        return state.layers.filter((layer: ILayer) => layer.is_selectable && !layer.is_base && layer.is_visible);
       },
       visibleLayersForDataPanel: (state) => {
         return state.layers.filter(
-          (layer) =>
+          (layer: ILayer) =>
             layer.is_visible &&
             !layer.is_base &&
             layer.show_in_detail_panel &&
@@ -237,7 +239,9 @@ export function useMapStore(mapName: string) {
         );
       },
       visibleLayersForDetailPanel: (state) => {
-        return state.layers.filter((layer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base);
+        return state.layers.filter(
+          (layer: ILayer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base && layer.is_selectable,
+        );
       },
     },
   })();
