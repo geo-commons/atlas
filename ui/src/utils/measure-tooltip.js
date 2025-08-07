@@ -19,10 +19,10 @@ export const createMeasurementTooltip = (geometry, map, options = {}) => {
 
   if (geometry.getType() === "Polygon" || geometry.getType() === "MultiPolygon") {
     tooltipCoord = geometry.getInteriorPoint().getCoordinates();
-    value = `${Math.round(getArea(geometry) * 100) / 100} m²`;
+    value = `${Number(getArea(geometry).toFixed(2))} m²`;
   } else if (geometry.getType() === "LineString" || geometry.getType() === "MultiLineString") {
     tooltipCoord = geometry.getLastCoordinate();
-    value = `${Math.round(getLength(geometry) * 100) / 100} m`;
+    value = `${Number(getLength(geometry).toFixed(2))} m`;
   } else if (geometry.getType() === "Circle") {
     tooltipCoord = geometry.getCenter();
     value = `Straal: ${Math.round(geometry.getRadius() * 100) / 100} m`;
