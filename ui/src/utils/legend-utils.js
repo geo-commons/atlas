@@ -2,6 +2,7 @@ import TileWMS from "ol/source/TileWMS";
 import Projection from "ol/proj/Projection";
 import View from "ol/View";
 import { getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
+import { getPointResolution } from "ol/proj";
 
 export const fetchLegendImage = async (layer, position, user) => {
   let legendImage;
@@ -32,7 +33,8 @@ export const fetchLegendImage = async (layer, position, user) => {
     LEGEND_OPTIONS: "forceTitles:off;forceLabels:on;fontAntiAliasing:true",
   };
 
-  const url = wmsSource.getLegendUrl(view.getResolution(), params);
+  const resolution = getPointResolution(view.getProjection(), view.getResolution(), view.getCenter());
+  const url = wmsSource.getLegendUrl(resolution, params);
 
   if (!layerRequiresAuthentication(layer)) {
     return { url: url, error: error };
