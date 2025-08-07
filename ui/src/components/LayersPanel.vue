@@ -283,7 +283,7 @@ export default {
           const matchesTitle = layer.title.toLowerCase().includes(searchTerm);
           const matchesDescription = layer.metadata?.description?.toLowerCase().includes(searchTerm) || false;
           const matchesSearchTerms =
-            layer.search_terms?.some((term) => term.toLowerCase().includes(searchTerm)) || false;
+            layer.search_terms?.some((term) => term.trim().toLowerCase() === searchTerm.trim().toLowerCase()) || false;
 
           if (!matchesTitle && !matchesDescription && !matchesSearchTerms) {
             return;
