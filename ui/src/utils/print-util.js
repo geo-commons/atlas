@@ -1,7 +1,8 @@
+import northArrow from "@/assets/images/north_arrow.png";
+import { fetchLegendImage } from "@/utils/legend-utils";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { fetchLegendImage } from "@/utils/legend-utils";
-import northArrow from "@/assets/images/north_arrow.png";
+import { getArea, getLength } from "ol/sphere";
 
 /**
  * Generates a PDF representation of the map, including custom settings, overlays, legends, and optional metadata.
@@ -21,10 +22,11 @@ import northArrow from "@/assets/images/north_arrow.png";
  * @param {Object} user - User data for accessing legend resources or API endpoints.
  * @param {Object} config - Configuration settings, including an optional organizational logo.
  * @param {Object} position - Geospatial data for fetching legends specific to layers.
+ * @param {Array} measuredAreas - Array of measured area geometries to include in the PDF.
  * @returns {Promise<void>} Resolves when the PDF is successfully created and downloaded; rejects on error.
  *
  */
-export const printMapToPdf = (settings, mapRef, layers, user, config, position) => {
+export const printMapToPdf = (settings, mapRef, layers, user, config, position, measuredAreas = []) => {
   return new Promise((resolve, reject) => {
     try {
       // We need the visible layers to determine which legends need to be fetched.
@@ -125,12 +127,12 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position) 
                   const aspectRatio = width / height;
                   let logoHeight = LOGO_HEIGHT;
                   let logoWidth = logoHeight * aspectRatio;
-                  
+
                   if (shouldLimitWidth && logoWidth > MAX_LOGO_WIDTH) {
                     logoWidth = MAX_LOGO_WIDTH;
                     logoHeight = logoWidth / aspectRatio;
                   }
-                  
+
                   return { width: logoWidth, height: logoHeight };
                 };
 
@@ -141,28 +143,28 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position) 
                 await new Promise((resolve, reject) => {
                   tempImg.onload = () => {
                     const { width, height } = calculateLogoDimensions(
-                      tempImg.width, 
-                      tempImg.height, 
-                      settings.title || settings.showDateTime
+                      tempImg.width,
+                      tempImg.height,
+                      settings.title || settings.showDateTime,
                     );
                     logoWidth = width;
 
                     const canvas = document.createElement("canvas");
                     canvas.width = tempImg.width;
                     canvas.height = tempImg.height;
-                    
+
                     const ctx = canvas.getContext("2d");
                     ctx.imageSmoothingEnabled = true;
                     ctx.imageSmoothingQuality = "high";
                     ctx.drawImage(tempImg, 0, 0, canvas.width, canvas.height);
-                    
+
                     pdf.addImage(
-                      canvas.toDataURL("image/png", 1.0), 
-                      "PNG", 
+                      canvas.toDataURL("image/png", 1.0),
+                      "PNG",
                       boxX + PADDING,
                       boxY + PADDING,
                       width,
-                      height
+                      height,
                     );
                     resolve();
                   };
@@ -186,7 +188,7 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position) 
               if (settings.showDateTime) {
                 const date = new Date().toLocaleString();
                 const dateY = settings.title ? boxY + 13 : settings.showLogo ? boxY + 10 : boxY + 8;
-                pdf.setFontSize(settings.title ? 10 : 14); 
+                pdf.setFontSize(settings.title ? 10 : 14);
                 pdf.text("Datum: " + date, boxX + titleOffset, dateY);
               }
             }
@@ -293,6 +295,59 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position) 
                 scale.width / IMAGE_SCALE_FACTOR,
                 scale.height / IMAGE_SCALE_FACTOR,
               );
+            }
+
+            // Add measurement values to the PDF
+            if (measuredAreas?.length > 0) {
+              try {
+                // Calculate scale factors once
+                const pdfScaleX = dim[0] / width;
+                const pdfScaleY = dim[1] / height;
+
+                measuredAreas.forEach((geometry) => {
+                  try {
+                    const geometryType = geometry.getType();
+                    let value, coordinates;
+
+                    if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
+                      const coords =
+                        geometryType === "Polygon" ? geometry.getCoordinates()[0] : geometry.getCoordinates()[0][0];
+                      const centroid = coords.reduce((acc, coord) => [acc[0] + coord[0], acc[1] + coord[1]], [0, 0]);
+                      coordinates = [centroid[0] / coords.length, centroid[1] / coords.length];
+                      value = `${Number(getArea(geometry).toFixed(2))} m²`;
+                    } else if (geometryType === "LineString" || geometryType === "MultiLineString") {
+                      const coords =
+                        geometryType === "LineString" ? geometry.getCoordinates() : geometry.getCoordinates()[0];
+                      const midIndex = Math.floor(coords.length / 2);
+                      coordinates = coords[midIndex];
+                      value = `${Number(getLength(geometry).toFixed(2))} m`;
+                    } else {
+                      return;
+                    }
+
+                    // Convert to PDF coordinates
+                    const pixelCoord = map.getPixelFromCoordinate(coordinates);
+                    if (!pixelCoord) return;
+
+                    const pdfX = pixelCoord[0] * pdfScaleX;
+                    const pdfY = pixelCoord[1] * pdfScaleY;
+
+                    // Check bounds
+                    const margin = 5;
+                    if (pdfX < margin || pdfX > dim[0] - margin || pdfY < margin || pdfY > dim[1] - margin) {
+                      return;
+                    }
+
+                    // Add text
+                    pdf.setFontSize(10);
+                    pdf.text(value, pdfX, pdfY, { align: "center", baseline: "middle" });
+                  } catch (err) {
+                    console.error("Error processing measurement geometry:", err);
+                  }
+                });
+              } catch (err) {
+                console.error("Error adding measurement values to PDF:", err);
+              }
             }
 
             pdf.save(`atlas-${new Date().toISOString()}.pdf`);

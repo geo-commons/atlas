@@ -419,7 +419,15 @@ export default {
         this.$emit("loading-print-to-pdf", true);
         // Wait for the promise to resolve
         await new Promise((resolve) => setTimeout(resolve, 500));
-        await printMapToPdf(settings, this.$refs.map.map, this.layers, this.user, this.config, this.position);
+        await printMapToPdf(
+          settings,
+          this.$refs.map.map,
+          this.layers,
+          this.user,
+          this.config,
+          this.position,
+          this.measuredAreas,
+        );
       } catch (e) {
         console.error("Failed to print PDF:", e);
       } finally {
