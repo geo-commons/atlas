@@ -56,7 +56,7 @@
             @position-changed="setPosition"
             @tool-used="toolUsed"
             @features-selected="featuresSelected"
-            @on-fit="(position) => onFit(position, true)"
+            @on-fit="(position) => onFit(position)"
             @loading-print-to-pdf="setLoadingPrint"
           />
         </SplitterPanel>
@@ -86,7 +86,7 @@
         @position-changed="setPosition"
         @tool-used="toolUsed"
         @features-selected="featuresSelected"
-        @on-fit="(position) => onFit(position, true)"
+        @on-fit="(position) => onFit(position)"
         @loading-print-to-pdf="setLoadingPrint"
       />
     </div>
@@ -418,6 +418,8 @@ import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.
 import { EditLayerMode } from "@/types/map";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
+const MAP_PADDING_RIGHT_INDEX = 3;
+const DEFAULT_PANEL_WIDTH = 280;
 
 export default {
   name: "MapRenderer",
@@ -897,27 +899,38 @@ export default {
     setWindowInnerWidth() {
       // Do not adjust the inner window padding for mobile screens.
       if (isMobile()) {
-        this.mapPadding[3] = 0;
+        this.mapPadding[MAP_PADDING_RIGHT_INDEX] = 0;
         return;
       }
 
       if (this.showDataPanel && !this.showDataPanelFullScreen) {
-        this.mapPadding[3] = window.innerWidth * 0.5;
+        this.mapPadding[MAP_PADDING_RIGHT_INDEX] = window.innerWidth * 0.5;
+
+        if (this.showList) {
+          const listWidth = this.$refs.listPanel.$el.getBoundingClientRect().width ?? DEFAULT_PANEL_WIDTH;
+          this.mapPadding[MAP_PADDING_RIGHT_INDEX] = this.mapPadding[3] + listWidth;
+        }
+
+        if (this.showFilters) {
+          const filterWidth = this.$refs.filterPanel.$el.getBoundingClientRect().width ?? DEFAULT_PANEL_WIDTH;
+          this.mapPadding[MAP_PADDING_RIGHT_INDEX] = this.mapPadding[MAP_PADDING_RIGHT_INDEX] + filterWidth;
+        }
+
         return;
       }
 
       if (this.showInfoPanel) {
         if (this.infoPanelExpanded) {
-          this.mapPadding[3] = window.innerWidth * 0.5;
+          this.mapPadding[MAP_PADDING_RIGHT_INDEX] = window.innerWidth * 0.5;
           return;
         }
 
-        this.mapPadding[3] = window.innerWidth * 0.25;
+        this.mapPadding[MAP_PADDING_RIGHT_INDEX] = window.innerWidth * 0.25;
         return;
       }
 
       // reset padding of the inner window.
-      this.mapPadding[3] = 0;
+      this.mapPadding[MAP_PADDING_RIGHT_INDEX] = 0;
     },
     toggleList() {
       this.showList = !this.showList;
@@ -996,12 +1009,7 @@ export default {
       this.showPanoramaPanel = false;
       this.showBaseLayersPanel = !this.showBaseLayersPanel;
     },
-    onFit(position, halfScreen) {
-      // Since onFit is called before the data panel is open we need to make sure the
-      // mapPadding is set correctly.
-      if (halfScreen && !isMobile()) {
-        this.mapPadding[3] = window.innerWidth * 0.5;
-      }
+    onFit(position) {
       this.$refs.map.fit(position, { maxZoom: 19 });
     },
     setColor(color) {
