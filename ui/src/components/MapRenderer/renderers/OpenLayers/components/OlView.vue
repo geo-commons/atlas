@@ -24,12 +24,41 @@ export default {
     markerOnClick: Boolean,
     tool: String,
   },
+  data() {
+    return {
+      currentAnimation: null,
+    };
+  },
   watch: {
     position(value, oldValue) {
       const view = this.map.getView();
 
       if (value.center !== oldValue.center) {
-        view.setCenter(value.center);
+        if (value.animateFast) {
+          // Cancel any existing animation before starting new one
+          if (this.currentAnimation) {
+            this.currentAnimation.cancel();
+          }
+
+          this.currentAnimation = view.animate(
+            {
+              center: value.center,
+              duration: 300,
+            },
+            (completed) => {
+              this.currentAnimation = null;
+              if (completed) {
+                // Only emit completion if animation wasn't cancelled
+                this.$emit("pan-animation-complete");
+              }
+            },
+          );
+        } else {
+          view.animate({
+            center: value.center,
+            duration: 1500,
+          });
+        }
       }
 
       if (value.zoom !== oldValue.zoom) {
@@ -96,6 +125,12 @@ export default {
   methods: {
     fit(geometryOrExtent, options) {
       this.view.fit(geometryOrExtent, options);
+    },
+    cancelAnimation() {
+      if (this.currentAnimation) {
+        this.currentAnimation.cancel();
+        this.currentAnimation = null;
+      }
     },
   },
 };

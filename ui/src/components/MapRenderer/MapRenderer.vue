@@ -6,6 +6,13 @@
     class="map-container"
     :class="{ showInfoPanel, showDataPanel, portalHeader: !isEmbed && config.features.portal }"
     :style="computedStyle"
+    tabindex="0"
+    role="application"
+    aria-label="Interactieve kaart - gebruik de pijltjestoetsen om te navigeren, + en - om in en uit te zoomen"
+    @keydown="handleKeyDown"
+    @keyup="handleKeyUp"
+    @blur="handleBlur"
+    @cancel-pan-animation="cancelPanAnimation"
   >
     <div class="renderer-container">
       <ConfirmPopup group="templating">
@@ -58,6 +65,7 @@
             @features-selected="featuresSelected"
             @on-fit="(position) => onFit(position)"
             @loading-print-to-pdf="setLoadingPrint"
+            @pan-animation-complete="processNextPan"
           />
         </SplitterPanel>
       </Splitter>
@@ -88,6 +96,7 @@
         @features-selected="featuresSelected"
         @on-fit="(position) => onFit(position)"
         @loading-print-to-pdf="setLoadingPrint"
+        @pan-animation-complete="processNextPan"
       />
     </div>
     <AboutPanel
@@ -416,6 +425,7 @@ import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 import { EditLayerMode } from "@/types/map";
+import panning from "@/utils/panning";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -457,6 +467,7 @@ export default {
     PanoramaIcon,
     ObliqueIcon,
   },
+  mixins: [panning],
   props: {
     mapId: String,
     about: {
@@ -697,12 +708,17 @@ export default {
     this.setViewportHeight();
     this.showAbout = this.features.showAbout ? this.features.showAbout : false;
   },
-  unmounted() {
+  beforeUnmount() {
     window.removeEventListener("resize", this.onResizeWindow);
+    this.stopKeyRepeat();
+    this.stopPanning();
   },
   methods: {
     onResizeWindow() {
       this.setViewportHeight();
+    },
+    cancelPanAnimation() {
+      this.$refs.map?.cancelPanAnimation();
     },
     setViewportHeight() {
       this.computedStyle["--vh"] = this.$refs.mapContainer.clientHeight / 100 + "px";

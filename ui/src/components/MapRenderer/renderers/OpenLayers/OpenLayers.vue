@@ -7,6 +7,7 @@
       :tool="tool"
       :marker-on-click="features.markerOnClick"
       @position-changed="onPositionChanged"
+      @pan-animation-complete="onPanAnimationComplete"
     />
     <ol-draw-interaction
       v-if="tool"
@@ -395,6 +396,12 @@ export default {
     },
     onPositionChanged(position) {
       this.$emit("position-changed", position);
+    },
+    onPanAnimationComplete() {
+      this.$emit("pan-animation-complete");
+    },
+    cancelPanAnimation() {
+      this.$refs.view?.cancelAnimation();
     },
     getMarkerFeature(marker) {
       return new Feature({ geometry: new Point([marker[0], marker[1]]) });
