@@ -12,7 +12,6 @@
     @keydown="handleKeyDown"
     @keyup="handleKeyUp"
     @blur="handleBlur"
-    @cancel-pan-animation="cancelPanAnimation"
   >
     <div class="renderer-container">
       <ConfirmPopup group="templating">

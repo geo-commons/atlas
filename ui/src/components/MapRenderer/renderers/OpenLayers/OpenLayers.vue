@@ -198,7 +198,7 @@ export default {
     fontSize: Number,
     showCompareSlider: Boolean,
   },
-  emits: ["position-changed", "tool-used", "on-fit", "features-selected", "loading-print-to-pdf"],
+  emits: ["position-changed", "tool-used", "on-fit", "features-selected", "loading-print-to-pdf", "pan-animation-complete"],
   data() {
     return {
       undoRedoInteraction: null,

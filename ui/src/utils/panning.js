@@ -2,7 +2,7 @@
 const PAN_DISTANCE_FACTOR = 2500;
 const ZOOM_BASE_LEVEL = 13;
 const KEY_REPEAT_INTERVAL = 200;
-const QUEUE_TIMEOUT_MS = 0;
+const QUEUE_TIMEOUT_MS = 50;
 
 // Arrow key to movement vector
 const ARROW_VEC = {
@@ -91,8 +91,14 @@ const panning = {
       this.panQueue = [];
       this.isProcessingPan = false;
       this.clearQueueTimeout();
-      // Emit event to cancel current animation
-      this.$emit("cancel-pan-animation");
+      // Cancel current animation directly if host exposes API; fall back to emit for legacy
+      if (typeof this.cancelPanAnimation === "function") {
+        this.cancelPanAnimation();
+      } else if (this.$refs?.map?.cancelPanAnimation) {
+        this.$refs.map.cancelPanAnimation();
+      } else {
+        this.$emit("cancel-pan-animation");
+      }
     },
 
     isTypingInField() {
@@ -148,12 +154,12 @@ const panning = {
       this.isProcessingPan = true;
       const { dx, dy } = this.panQueue.shift();
 
-      // Add timeout protection to prevent stuck queue
+      // Add timeout protection to prevent a stuck queue
       this.clearQueueTimeout();
       this.queueTimeoutTimer = setTimeout(() => {
-        if (this.isProcessingPan && this.panQueue.length === 0) {
-          console.warn("Pan queue timeout - resetting processing state");
+        if (this.isProcessingPan) {
           this.isProcessingPan = false;
+          this.processNextPan();
         }
       }, QUEUE_TIMEOUT_MS);
 

@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      currentAnimation: null,
+      isAnimating: false,
     };
   },
   watch: {
@@ -35,18 +35,16 @@ export default {
 
       if (value.center !== oldValue.center) {
         if (value.animateFast) {
-          // Cancel any existing animation before starting new one
-          if (this.currentAnimation) {
-            this.currentAnimation.cancel();
-          }
-
-          this.currentAnimation = view.animate(
+          // Cancel any existing animation before starting a new one
+          view.cancelAnimations();
+          this.isAnimating = true;
+          view.animate(
             {
               center: value.center,
               duration: 300,
             },
             (completed) => {
-              this.currentAnimation = null;
+              this.isAnimating = false;
               if (completed) {
                 // Only emit completion if animation wasn't cancelled
                 this.$emit("pan-animation-complete");
@@ -127,9 +125,9 @@ export default {
       this.view.fit(geometryOrExtent, options);
     },
     cancelAnimation() {
-      if (this.currentAnimation) {
-        this.currentAnimation.cancel();
-        this.currentAnimation = null;
+      if (this.isAnimating) {
+        this.view.cancelAnimations();
+        this.isAnimating = false;
       }
     },
   },
