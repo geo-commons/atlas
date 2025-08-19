@@ -1,33 +1,29 @@
-# Feature
+# Functionaliteit
 
 ## User story
 
-**As** [role]
-<br>**I can** [capability]
-<br>**so that** [receive benefit]
+**Als** [rol]  
+**kan ik** [mogelijkheid]  
+**zodat** [voordeel]
 
-### Possible technical solution
+### Mogelijke technische oplossing
 
 #### Work breakdown structure
 
-<!--  -->
+- stap 1  
+- stap 2  
+- enz.
 
-- step 1
-- step 2
-- etc.
+## Acceptatiecriteria
 
-## Acceptance criteria
+-  
+-  
+-  
 
-<!-- Notes about what the story must do in order for the product owner to accept it as complete -->
+### Aanvullende informatie
 
--
--
--
+<!-- Referenties, externe afhankelijkheden, etc. -->
 
-### Additional information
+### Ontwerp
 
-<!-- References, external dependencies, etc. -->
-
-### Design
-
-<!-- Maybe add later -->
+<!-- Misschien later toevoegen -->
