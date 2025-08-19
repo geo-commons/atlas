@@ -25,7 +25,7 @@
     "hex-rgb": "5.0.0",
     "html2canvas": "1.4.1",
     "js-cookie": "3.0.5",
-    "jspdf": "3.0.0",
+    "jspdf": "3.0.1",
     "markdown-it": "14.1.0",
     "nunjucks": "3.2.4",
     "ol": "10.4.0",
@@ -53,7 +53,7 @@
     "@types/node": "22.7.4",
     "@typescript-eslint/eslint-plugin": "8.8.0",
     "@typescript-eslint/parser": "8.8.0",
-    "@vitest/browser": "2.1.1",
+    "@vitest/browser": "3.2.4",
     "@vue/compiler-sfc": "3.3.7",
     "@vue/runtime-core": "3.5.10",
     "autoprefixer": "10.4.20",
@@ -68,8 +68,7 @@
     "typescript": "5.6.2",
     "unplugin-vue-components": "28.4.1",
     "vite-svg-loader": "5.1.0",
-    "vitest": "2.1.1",
-    "vitest-browser-vue": "0.0.1"
+    "vitest": "3.2.4"
   },
   "eslintConfig": {
     "root": true,
