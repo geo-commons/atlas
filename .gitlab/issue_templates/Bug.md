@@ -1,43 +1,23 @@
 # Bug
 
-## Current behavior / bug description
+## Huidig gedrag / bugbeschrijving
 
-<!-- What is happening -->
+<!-- Wat gebeurt er -->
 
-## Expected behavior
+## Verwacht gedrag
 
-<!-- What should happen? -->
+<!-- Wat zou er moeten gebeuren -->
 
-## Steps to reproduce the behavior
+## Stappen om het gedrag te reproduceren
 
-1.
-2.
-3.
+1.  
+2.  
+3.  
 
-## Context
+## Mogelijke oplossing
 
-<!-- Some more information -->
+<!-- Heb je een mogelijke oplossingsrichting? -->
 
-## Possible solution
+## Omgeving
 
-## Environment
-
-<!-- Remove things that are not applicable / does work -->
-
-- [ ] Happens everywhere
-- Browser:
-    - [ ] Internet Explorer 11
-    - [ ] Firefox
-    - [ ] Chrome
-    - [ ] Safari
-    - [ ] Standard mobile browser (version)
-    - [ ] Other browser : _
-- Operating System:
-    - [ ] Windows
-    - [ ] Mac
-    - [ ] IOS
-    - [ ] Android) (version)
-- Screensize
-    - [ ] Desktop
-    - [ ] Tablet
-    - [ ] Mobile
+<!-- Beschrijf de omgeving waarin het voorkomt -->
