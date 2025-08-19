@@ -107,16 +107,9 @@ persistence:
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
-    tag: 11.7.0
+    tag: 17.5.0-debian-12-r9
 
-  persistence:
-    size: 1Gi
-
-  resources:
-    requests:
-      cpu: "1m"
-      memory: "1Mi"
-
-  postgresqlDatabase: atlas
-  postgresqlUsername: atlas
-  postgresqlPassword: change-to-something-secret
+  auth:
+    username: atlas
+    password: change-to-something-secret
+    database: atlas

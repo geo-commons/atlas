@@ -1,6 +1,6 @@
 dependencies:
 - name: postgresql
-  repository: https://charts.helm.sh/stable
-  version: 8.6.4
-digest: sha256:75e4cfa5fd7041e692dcc301d905e617425fcd824376390a61bf59cd46a245cf
-generated: "2020-11-18T19:28:02.518661+01:00"
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 16.7.26
+digest: sha256:fd7ee087d33ae37cf7cbb08c61569e1b3b5594563cf0f2b13fb2542eeacbc1cd
+generated: "2025-08-19T22:50:48.019233+02:00"
