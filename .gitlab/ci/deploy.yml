@@ -24,7 +24,6 @@ Deploy Review App:
       --set ingress.annotations.kubernetes\\.io/ingress\\.class=nginx \
       --set ingress.annotations.cert-manager\\.io/cluster-issuer=letsencrypt-prod \
       --set persistence.media.enabled=false \
-      --set persistence.media.storageClassName=standard-retain \
       --set postgresql.persistence.enabled=false \
       --set loadDemoData=true \
       --set debug=true \
@@ -115,7 +114,6 @@ Deploy acceptance:
       --set ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
       --set persistence.media.enabled=false \
       --set postgresql.persistence.enabled=false \
-      --set persistence.media.storageClassName=standard-retain \
       --set ingress.tls[0].secretName=atlas-tls \
       --set ingress.tls[0].hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set ingress.annotations.kubernetes\\.io/ingress\\.class=nginx \

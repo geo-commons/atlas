@@ -23,7 +23,7 @@ COPY requirements.txt /app
 RUN /app/venv/bin/pip3 install -r requirements.txt
 
 # Docs & Admin Docs
-FROM python:3.12-slim as docs-build
+FROM python:3.12-slim AS docs-build
 WORKDIR /app/docs
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -48,9 +48,9 @@ WORKDIR /app
 ARG ATLAS_VERSION=unknown
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    mime-support \
+    media-types \
     libxml2 \
-    libgdal32 \
+    libgdal36 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /app
@@ -69,9 +69,9 @@ RUN chmod +x /start.sh
 
 RUN mkdir -p /app/static /app/media && chown www-data:www-data /app/static /app/media /app/docs/user/site /app/docs/admin/site
 
-ENV PYTHONUNBUFFERED 1
-ENV USE_SAFE_SETTINGS 1
-ENV ENVIRONMENT production
+ENV PYTHONUNBUFFERED=1
+ENV USE_SAFE_SETTINGS=1
+ENV ENVIRONMENT=production
 
 EXPOSE 8000
 CMD ["/start.sh"]

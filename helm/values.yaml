@@ -105,6 +105,10 @@ persistence:
 ## PostgreSQL subchart ##
 #########################
 postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
+    tag: 11.7.0
+
   persistence:
     size: 1Gi
 
