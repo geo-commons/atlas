@@ -17,7 +17,10 @@
             <a :href="`/atlas/login?next=${encodeURIComponent(nextUrl)}`">Log in</a>
           </li>
           <li v-if="user && !config.features.portal">
-            <a :href="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`">Log uit</a>
+            <form :action="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`" method="POST">
+              <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken" />
+              <button type="submit">Log uit</button>
+            </form>
           </li>
           <li><button @click="() => toggleModal('embed')">Embed</button></li>
           <li v-if="map?.features?.showAbout"><button @click="toggleAbout">Informatie</button></li>
@@ -35,6 +38,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import EllipsesVertIcon from "../assets/icons/ellipsis-vert-icon.svg";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
@@ -56,6 +60,9 @@ export default {
   computed: {
     nextUrl() {
       return window.location.pathname;
+    },
+    csrfToken() {
+      return Cookies.get("csrftoken") || "";
     },
     ...mapState(useGlobalStore, ["config", "map"]),
   },
