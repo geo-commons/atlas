@@ -1,6 +1,6 @@
 Build:
   stage: Build
-  image: docker:24.0.2-git
+  image: docker:24.0.9-git
   services:
     - docker:28.3.3-dind
   variables:
