@@ -18,7 +18,7 @@
     />
     <Menu id="overlay_menu" ref="menu" :model="items" :popup="true">
       <template #item="{ item, props }">
-        <a v-bind="props.action" :href="item.url">
+        <a v-bind="props.action" :href="item.url" @click.prevent="handleMenuClick(item)">
           <i :class="item.icon"></i>
           <span class="ml-2">{{ item.label }}</span>
         </a>
@@ -28,6 +28,7 @@
 </template>
 
 <script setup lang="ts">
+import Cookies from "js-cookie";
 import { useGlobalStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import { ref, Ref } from "vue";
@@ -62,6 +63,26 @@ const { user } = storeToRefs(globalStore) as { user: Ref<User | null> };
 const toggle = (event: Event): void => {
   menu.value?.toggle(event);
 };
+
+const csrfToken = Cookies.get("csrftoken") || "";
+function handleMenuClick(item: MenuItem) {
+  if (item.url === "/atlas/logout") {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = `/atlas/logout`;
+
+    const csrfInput = document.createElement("input");
+    csrfInput.type = "hidden";
+    csrfInput.name = "csrfmiddlewaretoken";
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  } else {
+    window.location.href = item.url;
+  }
+}
 </script>
 
 <style scoped>

@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -125,6 +126,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if 'test' in sys.argv:
+    DEBUG = False
+    INSTALLED_APPS = [app for app in INSTALLED_APPS if app != "debug_toolbar"]
+    MIDDLEWARE = [mw for mw in MIDDLEWARE if mw !=
+                  "debug_toolbar.middleware.DebugToolbarMiddleware"]
 
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda r: os.getenv(
