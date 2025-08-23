@@ -138,6 +138,10 @@ def v3_map(request, slug):
     return render(request, 'v3/map.html', context)
 
 
+def v3_sdk(request):
+    return render(request, 'v3/sdk.html')
+
+
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:
         # Do not return default base layers when the database contains base layers

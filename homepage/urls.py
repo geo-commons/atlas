@@ -18,6 +18,7 @@ urlpatterns = [
     path('convert/<str:output_format>',
          webservice_views.v3_convert, name='v3_convert'),
     re_path('embed', views.embed, name='embed'),
+    re_path('sdk', views.v3_sdk, name='sdk'),
     re_path(r'maps\/((?P<slug>[a-z0-9\-]+)?)', views.v3_map, name='v3_map'),
     re_path(r'((?P<theme_slug>[a-z0-9\-]+)?)', views.v3, name='v3'),
 ]

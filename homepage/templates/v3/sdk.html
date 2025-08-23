@@ -1,0 +1,36 @@
+{% load static %}
+{% load i18n %}
+{% load django_vite %}
+
+{% vite_hmr_client %}
+{% vite_asset 'src/sdk.js' %}
+
+<p>{% translate "Voorbeeld van een embed:" %}</p>
+
+<textarea name="code" rows="20" cols="100">
+  <script type="text/javascript">
+    let atlas;
+    function initAtlas() {
+        const settings = {};
+        map = new atlas.Map(document.getElementById("map"), settings);
+    }
+
+    window.initAtlas = initAtlas;
+</script>
+</textarea>
+
+<script type="text/javascript">
+  let form;
+  function initAtlas() {
+    const settings = {
+      'layers': [],
+      'center': [116041.74,495373.93],
+      'zoom': 19.73
+    };
+    atlas = new atlas.Map(document.getElementById("map"), settings);
+  }
+
+  window.initAtlas = initAtlas;
+</script>
+
+<div id="map" style="width:1000px; height:500px"></div>

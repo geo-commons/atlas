@@ -26,6 +26,7 @@ export default defineConfig({
         tables: path.resolve(__dirname, "src/tables.js"),
         portal: path.resolve(__dirname, "src/portal.js"),
         notFound: path.resolve(__dirname, "src/not_found.js"),
+        sdk: path.resolve(__dirname, "src/sdk.js"),
       },
     },
   },
