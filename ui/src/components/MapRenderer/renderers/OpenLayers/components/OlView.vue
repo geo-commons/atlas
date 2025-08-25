@@ -35,38 +35,38 @@ export default {
 
       const centerChanged =
         !oldValue.center || value.center[0] !== oldValue.center[0] || value.center[1] !== oldValue.center[1];
+      const zoomChanged = value.zoom !== oldValue.zoom;
 
-      if (centerChanged) {
-        if (value.animateFast) {
-          // Cancel any existing animation before starting a new one
-          view.cancelAnimations();
-          this.isAnimating = true;
-          view.animate(
-            {
-              center: value.center,
-              duration: 300,
-            },
-            (completed) => {
-              this.isAnimating = false;
-              if (completed) {
-                // Only emit completion if animation wasn't cancelled
-                this.$emit("pan-animation-complete");
-              }
-            },
-          );
-        } else {
-          view.animate({
-            center: value.center,
-            duration: 1500,
-          });
+      // Only animate if something actually changed
+      if (centerChanged || zoomChanged) {
+        const duration = value.animateFast ? 300 : 1500;
+
+        // Cancel any existing animation before starting a new one
+        view.cancelAnimations();
+        this.isAnimating = true;
+
+        // Create animation object with all changes
+        const animation = {};
+        if (centerChanged) {
+          animation.center = value.center;
         }
-      }
+        if (zoomChanged) {
+          animation.zoom = value.zoom;
+        }
 
-      if (value.zoom !== oldValue.zoom) {
-        view.animate({
-          zoom: value.zoom,
-          duration: value.animateFast ? 300 : 1500,
-        });
+        view.animate(
+          {
+            ...animation,
+            duration: duration,
+          },
+          (completed) => {
+            this.isAnimating = false;
+            if (completed) {
+              // Only emit completion if animation wasn't cancelled
+              this.$emit("pan-animation-complete");
+            }
+          },
+        );
       }
     },
     padding: {
@@ -84,6 +84,8 @@ export default {
       center: this.position.center,
       zoom: this.position.zoom,
       padding: this.padding,
+      minZoom: 1,
+      maxZoom: 28,
     });
 
     this.map.setView(this.view);

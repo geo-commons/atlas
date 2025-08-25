@@ -267,7 +267,7 @@ const panning = {
      */
     handleZoom(zoomDirection: number): void {
       const currentZoom = (this as any).position?.zoom || 10;
-      const newZoom = Math.max(1, Math.min(20, currentZoom + zoomDirection));
+      const newZoom = Math.max(1, Math.min(28, currentZoom + zoomDirection));
 
       // Only update if zoom level actually changes
       if (newZoom !== currentZoom) {
