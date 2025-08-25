@@ -17,7 +17,9 @@ const ZOOM_KEYS: Record<string, number> = {
   "+": 1,
   "-": -1,
   "=": 1,
-  "_": 0,
+  "_": -1,
+  "NumpadAdd": 1,
+  "NumpadSubtract": -1,
 };
 
 interface PanMovement {
@@ -63,7 +65,30 @@ const panning = {
     },
   },
 
+  mounted() {
+    window.addEventListener('beforeunload', (this as any).handleBlur);
+  },
+
+  beforeDestroy() {
+    (this as any).cleanup();
+  },
+
+  beforeUnmount() {
+    (this as any).cleanup();
+  },
+
   methods: {
+    /**
+     * Cleanup method to remove event listeners and reset state.
+     * Called by both beforeDestroy (Vue 2) and beforeUnmount (Vue 3) lifecycle hooks.
+     */
+    cleanup(): void {
+      (this as any).stopKeyRepeat();
+      window.removeEventListener('beforeunload', (this as any).handleBlur);
+      (this as any).stopPanning();
+      (this as any).clearQueueTimeout();
+    },
+
     /**
      * Handles key down events for panning and zooming.
      * Prevents default behavior for arrow keys and zoom keys.
@@ -76,6 +101,11 @@ const panning = {
 
       // Handle zoom keys
       if (key in ZOOM_KEYS) {
+        // Allow browser/system zoom shortcuts (Ctrl/Cmd + +/-) to work
+        if (event.ctrlKey || event.metaKey) {
+          return;
+        }
+
         event.preventDefault();
 
         // Ignore auto-repeat for zoom to prevent rapid zooming
@@ -248,17 +278,21 @@ const panning = {
      * @param {number} deltaY - Vertical movement direction (-1, 0, or 1)
      */
     panMap(deltaX: number, deltaY: number): void {
-      const { center } = (this as any).position;
+      const pos = (this as any).position;
+      if (!pos || !pos.center) return;
+      const { center } = pos;
       const panDistance = (this as any).panDistance;
       
       // Handle both array and object center formats
-      const [currentX, currentY] = Array.isArray(center) ? center : [center.x, center.y];
+      const [currentX, currentY] = Array.isArray(center)
+        ? center as [number, number]
+        : [center.x, center.y];
       const newCenter: [number, number] = [
         currentX + deltaX * panDistance, 
         currentY + deltaY * panDistance
       ];
 
-      (this as any).setPosition({ ...(this as any).position, center: newCenter, animateFast: true }, true);
+      (this as any).setPosition({ ...pos, center: newCenter, animateFast: true }, true);
     },
 
     /**
