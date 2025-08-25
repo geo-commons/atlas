@@ -33,7 +33,10 @@ export default {
     position(value, oldValue) {
       const view = this.map.getView();
 
-      if (value.center !== oldValue.center) {
+      const centerChanged =
+        !oldValue.center || value.center[0] !== oldValue.center[0] || value.center[1] !== oldValue.center[1];
+
+      if (centerChanged) {
         if (value.animateFast) {
           // Cancel any existing animation before starting a new one
           view.cancelAnimations();
