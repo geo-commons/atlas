@@ -34,38 +34,19 @@ export default {
     position(value, oldValue) {
       const view = this.map.getView();
 
-      const centerChanged =
-        !oldValue.center || value.center[0] !== oldValue.center[0] || value.center[1] !== oldValue.center[1];
-      const zoomChanged = value.zoom !== oldValue.zoom;
+      if (value.center !== oldValue.center) {
+        view.setCenter(value.center);
+      }
 
-      // Only animate if something actually changed
-      if (centerChanged || zoomChanged) {
-        const duration = value.animateFast ? 300 : 1500;
-
-        // Cancel any existing animation before starting a new one
-        view.cancelAnimations();
+      if (value.zoom !== oldValue.zoom && !this.isAnimating) {
         this.isAnimating = true;
-
-        // Create animation object with all changes
-        const animation = {};
-        if (centerChanged) {
-          animation.center = value.center;
-        }
-        if (zoomChanged) {
-          animation.zoom = value.zoom;
-        }
-
         view.animate(
           {
-            ...animation,
-            duration: duration,
+            zoom: value.zoom,
+            duration: value.animateFast ? 300 : 1500,
           },
-          (completed) => {
+          () => {
             this.isAnimating = false;
-            if (completed) {
-              // Only emit completion if animation wasn't cancelled
-              this.$emit("pan-animation-complete");
-            }
           },
         );
       }
