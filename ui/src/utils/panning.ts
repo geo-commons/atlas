@@ -22,293 +22,265 @@ const ZOOM_KEYS: Record<string, number> = {
   "NumpadSubtract": -1,
 };
 
+interface PanningComponent {
+  position?: {
+    zoom?: number;
+    center?: [number, number] | { x: number; y: number };
+  };
+  setPosition: (position: any, animateFast?: boolean) => void;
+  $refs?: {
+    map?: {
+      cancelPanAnimation?: () => void;
+    };
+  };
+  $emit: (event: string, ...args: any[]) => void;
+  cancelPanAnimation?: () => void;
+}
+
+interface PanningController {
+  init(): void;
+  cleanup(): void;
+  handleKeyDown(event: KeyboardEvent): void;
+  handleKeyUp(event: KeyboardEvent): void;
+  handleBlur(): void;
+  processNextPan(): void;
+}
+
 interface PanMovement {
   deltaX: number;
   deltaY: number;
 }
 
-interface PanningData {
+interface PanningState {
   pressedKeys: Set<string>;
-  keyRepeatTimer: number | null;
+  keyRepeatTimer: ReturnType<typeof setInterval> | null;
   panQueue: PanMovement[];
   isProcessingPan: boolean;
-  queueTimeoutTimer: number | null;
+  queueTimeoutTimer: ReturnType<typeof setTimeout> | null;
   lastZoom: number | null;
   cachedPanDistance: number | null;
 }
 
-const panning = {
-  data(): PanningData {
-    return {
-      pressedKeys: new Set<string>(),
-      keyRepeatTimer: null,
-      panQueue: [],
-      isProcessingPan: false,
-      queueTimeoutTimer: null,
-      lastZoom: null,
-      cachedPanDistance: null,
-    };
-  },
+/**
+ * Creates a panning controller for keyboard-based map navigation.
+ * Provides panning and zooming functionality that can be attached to any component.
+ * 
+ * @param component - The Vue component to attach panning to
+ * @returns Panning controller with init and cleanup methods
+ */
+export const createPanningController = (component: PanningComponent): PanningController => {
+  // State
+  const state: PanningState = {
+    pressedKeys: new Set(),
+    keyRepeatTimer: null,
+    panQueue: [],
+    isProcessingPan: false,
+    queueTimeoutTimer: null,
+    lastZoom: null,
+    cachedPanDistance: null,
+  };
 
-  computed: {
-    /**
-     * Calculates and caches the pan distance based on current zoom level.
-     * The distance decreases as zoom level increases for more precise control.
-     * @returns {number} The calculated pan distance in map units
-     */
-    panDistance(): number {
-      if ((this as any).position?.zoom !== (this as any).lastZoom) {
-        (this as any).lastZoom = (this as any).position?.zoom;
-        (this as any).cachedPanDistance = PAN_DISTANCE_FACTOR * Math.pow(2, ZOOM_BASE_LEVEL - ((this as any).position?.zoom || 10));
+  // Helper functions
+  const calculatePanDistance = (): number => {
+    if (component.position?.zoom !== state.lastZoom) {
+      state.lastZoom = component.position?.zoom || null;
+      state.cachedPanDistance = PAN_DISTANCE_FACTOR * Math.pow(2, ZOOM_BASE_LEVEL - (component.position?.zoom || 10));
+    }
+    return state.cachedPanDistance || PAN_DISTANCE_FACTOR;
+  };
+
+  const isTypingInField = (): boolean => {
+    const activeElement = document.activeElement;
+    return !!activeElement && (
+      activeElement.matches('input, textarea, select, [role="textbox"]') || 
+      (activeElement as HTMLElement).isContentEditable === true
+    );
+  };
+
+  const clearQueueTimeout = () => {
+    if (state.queueTimeoutTimer) {
+      clearTimeout(state.queueTimeoutTimer);
+      state.queueTimeoutTimer = null;
+    }
+  };
+
+  const stopKeyRepeat = () => {
+    if (!state.keyRepeatTimer) return;
+    clearInterval(state.keyRepeatTimer);
+    state.keyRepeatTimer = null;
+  };
+
+  const panFromPressedKeys = () => {
+    let totalDeltaX = 0;
+    let totalDeltaY = 0;
+    
+    for (const key of state.pressedKeys) {
+      const movementVector = ARROW_VEC[key];
+      if (movementVector) {
+        totalDeltaX += movementVector[0];
+        totalDeltaY += movementVector[1];
       }
-      return (this as any).cachedPanDistance || PAN_DISTANCE_FACTOR;
-    },
-  },
+    }
+    
+    if (totalDeltaX || totalDeltaY) {
+      queuePanMovement(totalDeltaX, totalDeltaY);
+    }
+  };
 
-  mounted() {
-    window.addEventListener('beforeunload', (this as any).handleBlur);
-  },
+  const queuePanMovement = (deltaX: number, deltaY: number): void => {
+    state.panQueue.push({ deltaX, deltaY });
+    if (!state.isProcessingPan) {
+      processNextPan();
+    }
+  };
 
-  beforeDestroy() {
-    (this as any).cleanup();
-  },
+  const processNextPan = (): void => {
+    if (state.panQueue.length === 0) {
+      state.isProcessingPan = false;
+      clearQueueTimeout();
+      return;
+    }
 
-  beforeUnmount() {
-    (this as any).cleanup();
-  },
+    state.isProcessingPan = true;
+    const movement = state.panQueue.shift();
+    if (!movement) return;
+    const { deltaX, deltaY } = movement;
 
-  methods: {
-    /**
-     * Cleanup method to remove event listeners and reset state.
-     * Called by both beforeDestroy (Vue 2) and beforeUnmount (Vue 3) lifecycle hooks.
-     */
-    cleanup(): void {
-      (this as any).stopKeyRepeat();
-      window.removeEventListener('beforeunload', (this as any).handleBlur);
-      (this as any).stopPanning();
-      (this as any).clearQueueTimeout();
-    },
+    // Add timeout protection to prevent a stuck queue
+    clearQueueTimeout();
+    state.queueTimeoutTimer = setTimeout(() => {
+      if (state.isProcessingPan) {
+        state.isProcessingPan = false;
+        processNextPan();
+      }
+    }, QUEUE_TIMEOUT_MS);
 
-    /**
-     * Handles key down events for panning and zooming.
-     * Prevents default behavior for arrow keys and zoom keys.
-     * @param {KeyboardEvent} event - The keyboard event
-     */
-    handleKeyDown(event: KeyboardEvent): void {
-      if (this.isTypingInField()) return;
+    panMap(deltaX, deltaY);
+  };
 
-      const key = event.key;
+  const panMap = (deltaX: number, deltaY: number): void => {
+    const pos = component.position;
+    if (!pos || !pos.center) return;
+    const { center } = pos;
+    const panDistance = calculatePanDistance();
+    
+    // Handle both array and object center formats
+    const [currentX, currentY] = Array.isArray(center)
+      ? center
+      : [center.x, center.y];
+    const newCenter = [
+      currentX + deltaX * panDistance, 
+      currentY + deltaY * panDistance
+    ];
 
-      // Handle zoom keys
-      if (key in ZOOM_KEYS) {
-        // Allow browser/system zoom shortcuts (Ctrl/Cmd + +/-) to work
-        if (event.ctrlKey || event.metaKey) {
-          return;
-        }
+    // Use the same logic as other position changes: call setPosition with animateFast = true
+    component.setPosition({
+      ...pos,
+      center: newCenter,
+    }, true);
+  };
 
-        event.preventDefault();
+  const handleZoom = (zoomDirection: number): void => {
+    const currentZoom = component.position?.zoom || 10;
+    const newZoom = Math.max(1, Math.min(28, currentZoom + zoomDirection));
 
-        // Ignore auto-repeat for zoom to prevent rapid zooming
-        if (event.repeat) return;
+    // Only update if zoom level actually changes
+    if (newZoom !== currentZoom) {
+      // Use the same logic as zoom buttons: call setPosition with animateFast = true
+      component.setPosition({
+        ...component.position,
+        zoom: newZoom,
+      }, true);
+    }
+  };
 
-        this.handleZoom(ZOOM_KEYS[key]);
+  const stopPanning = () => {
+    // Clear the queue and stop processing
+    state.panQueue = [];
+    state.isProcessingPan = false;
+    clearQueueTimeout();
+    
+    // Cancel current animation directly if host exposes API; fall back to emit for legacy
+    if (typeof component.cancelPanAnimation === "function") {
+      component.cancelPanAnimation();
+    } else if (component.$refs?.map?.cancelPanAnimation) {
+      component.$refs.map.cancelPanAnimation();
+    } else {
+      component.$emit("cancel-pan-animation");
+    }
+  };
+
+  const startKeyRepeat = () => {
+    stopKeyRepeat();
+    state.keyRepeatTimer = setInterval(() => panFromPressedKeys(), KEY_REPEAT_INTERVAL);
+  };
+
+  // Event handlers
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    if (isTypingInField()) return;
+
+    const key = event.key;
+
+    // Handle zoom keys
+    if (key in ZOOM_KEYS) {
+      // Allow browser/system zoom shortcuts (Ctrl/Cmd + +/-) to work
+      if (event.ctrlKey || event.metaKey) {
         return;
       }
-
-      // Handle arrow keys for panning
-      if (!(key in ARROW_VEC)) return;
 
       event.preventDefault();
-      (this as any).pressedKeys.add(key);
 
-      // Ignore auto-repeat if the timer is already running
-      if (event.repeat && (this as any).keyRepeatTimer) return;
+      // Ignore auto-repeat for zoom to prevent rapid zooming
+      if (event.repeat) return;
 
-      this.panFromPressedKeys();
-      this.startKeyRepeat();
+      handleZoom(ZOOM_KEYS[key]);
+      return;
+    }
+
+    // Handle arrow keys for panning
+    if (!(key in ARROW_VEC)) return;
+
+    event.preventDefault();
+    state.pressedKeys.add(key);
+
+    // Ignore auto-repeat if the timer is already running
+    if (event.repeat && state.keyRepeatTimer) return;
+
+    panFromPressedKeys();
+    startKeyRepeat();
+  };
+
+  const handleKeyUp = (event: KeyboardEvent): void => {
+    state.pressedKeys.delete(event.key);
+    if (state.pressedKeys.size === 0) {
+      stopKeyRepeat();
+      stopPanning();
+    }
+  };
+
+  const handleBlur = () => {
+    stopKeyRepeat();
+    stopPanning();
+    state.pressedKeys.clear();
+  };
+
+  // Public API
+  return {
+    init() {
+      window.addEventListener('beforeunload', handleBlur);
     },
 
-    /**
-     * Handles key up events to stop panning when keys are released.
-     * @param {KeyboardEvent} event - The keyboard event
-     */
-    handleKeyUp(event: KeyboardEvent): void {
-      (this as any).pressedKeys.delete(event.key);
-      if ((this as any).pressedKeys.size === 0) {
-        this.stopKeyRepeat();
-        this.stopPanning();
-      }
+    cleanup() {
+      stopKeyRepeat();
+      window.removeEventListener('beforeunload', handleBlur);
+      stopPanning();
+      clearQueueTimeout();
     },
 
-    /**
-     * Handles window blur events to stop all panning operations.
-     * Useful when the user switches to another window or tab.
-     */
-    handleBlur(): void {
-      this.stopKeyRepeat();
-      this.stopPanning();
-      (this as any).pressedKeys.clear();
-    },
-
-    /**
-     * Stops all panning operations and clears the movement queue.
-     * Cancels any ongoing pan animations.
-     */
-    stopPanning(): void {
-      // Clear the queue and stop processing
-      (this as any).panQueue = [];
-      (this as any).isProcessingPan = false;
-      this.clearQueueTimeout();
-      
-      // Cancel current animation directly if host exposes API; fall back to emit for legacy
-      if (typeof (this as any).cancelPanAnimation === "function") {
-        (this as any).cancelPanAnimation();
-      } else if ((this as any).$refs?.map?.cancelPanAnimation) {
-        (this as any).$refs.map.cancelPanAnimation();
-      } else {
-        (this as any).$emit("cancel-pan-animation");
-      }
-    },
-
-    /**
-     * Checks if the user is currently typing in an input field.
-     * Prevents panning when user is interacting with form elements.
-     * @returns {boolean} True if user is typing in a field
-     */
-    isTypingInField(): boolean {
-      const activeElement = document.activeElement;
-      return !!activeElement && (
-        activeElement.matches('input, textarea, select, [role="textbox"]') || 
-        (activeElement as HTMLElement).isContentEditable === true
-      );
-    },
-
-    /**
-     * Starts the key repeat timer for continuous panning while keys are held.
-     * Clears any existing timer before starting a new one.
-     */
-    startKeyRepeat(): void {
-      this.stopKeyRepeat();
-      (this as any).keyRepeatTimer = setInterval(() => this.panFromPressedKeys(), KEY_REPEAT_INTERVAL);
-    },
-
-    /**
-     * Stops the key repeat timer and clears the interval.
-     */
-    stopKeyRepeat(): void {
-      if (!(this as any).keyRepeatTimer) return;
-      clearInterval((this as any).keyRepeatTimer);
-      (this as any).keyRepeatTimer = null;
-    },
-
-    /**
-     * Clears the queue timeout timer to prevent stuck pan operations.
-     */
-    clearQueueTimeout(): void {
-      if ((this as any).queueTimeoutTimer) {
-        clearTimeout((this as any).queueTimeoutTimer);
-        (this as any).queueTimeoutTimer = null;
-      }
-    },
-
-    /**
-     * Calculates the total movement vector from all currently pressed arrow keys.
-     * Queues the movement for processing.
-     */
-    panFromPressedKeys(): void {
-      let totalDeltaX = 0;
-      let totalDeltaY = 0;
-      
-      for (const key of (this as any).pressedKeys) {
-        const movementVector = ARROW_VEC[key];
-        if (movementVector) {
-          totalDeltaX += movementVector[0];
-          totalDeltaY += movementVector[1];
-        }
-      }
-      
-      if (totalDeltaX || totalDeltaY) {
-        this.queuePanMovement(totalDeltaX, totalDeltaY);
-      }
-    },
-
-    /**
-     * Adds a pan movement to the queue for processing.
-     * Starts processing if not already in progress.
-     * @param {number} deltaX - Horizontal movement direction (-1, 0, or 1)
-     * @param {number} deltaY - Vertical movement direction (-1, 0, or 1)
-     */
-    queuePanMovement(deltaX: number, deltaY: number): void {
-      (this as any).panQueue.push({ deltaX, deltaY });
-      if (!(this as any).isProcessingPan) {
-        this.processNextPan();
-      }
-    },
-
-    /**
-     * Processes the next pan movement in the queue.
-     * Includes timeout protection to prevent stuck operations.
-     */
-    processNextPan(): void {
-      if ((this as any).panQueue.length === 0) {
-        (this as any).isProcessingPan = false;
-        this.clearQueueTimeout();
-        return;
-      }
-
-      (this as any).isProcessingPan = true;
-      const { deltaX, deltaY } = (this as any).panQueue.shift()!;
-
-      // Add timeout protection to prevent a stuck queue
-      this.clearQueueTimeout();
-      (this as any).queueTimeoutTimer = setTimeout(() => {
-        if ((this as any).isProcessingPan) {
-          (this as any).isProcessingPan = false;
-          this.processNextPan();
-        }
-      }, QUEUE_TIMEOUT_MS);
-
-      this.panMap(deltaX, deltaY);
-    },
-
-    /**
-     * Executes the actual map panning operation.
-     * Calculates new center position based on current position and movement deltas.
-     * @param {number} deltaX - Horizontal movement direction (-1, 0, or 1)
-     * @param {number} deltaY - Vertical movement direction (-1, 0, or 1)
-     */
-    panMap(deltaX: number, deltaY: number): void {
-      const pos = (this as any).position;
-      if (!pos || !pos.center) return;
-      const { center } = pos;
-      const panDistance = (this as any).panDistance;
-      
-      // Handle both array and object center formats
-      const [currentX, currentY] = Array.isArray(center)
-        ? center as [number, number]
-        : [center.x, center.y];
-      const newCenter: [number, number] = [
-        currentX + deltaX * panDistance, 
-        currentY + deltaY * panDistance
-      ];
-
-      (this as any).setPosition({ ...pos, center: newCenter, animateFast: true }, true);
-    },
-
-    /**
-     * Handles zoom operations with bounds checking.
-     * @param {number} zoomDirection - Direction of zoom (1 for zoom in, -1 for zoom out)
-     */
-    handleZoom(zoomDirection: number): void {
-      const currentZoom = (this as any).position?.zoom || 10;
-      const newZoom = Math.max(1, Math.min(28, currentZoom + zoomDirection));
-
-      // Only update if zoom level actually changes
-      if (newZoom !== currentZoom) {
-        (this as any).setPosition({ ...(this as any).position, zoom: newZoom }, true);
-      }
-    },
-  },
+    handleKeyDown,
+    handleKeyUp,
+    handleBlur,
+    processNextPan,
+  };
 };
 
-export default panning;

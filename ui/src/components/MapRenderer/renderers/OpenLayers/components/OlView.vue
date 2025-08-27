@@ -34,21 +34,75 @@ export default {
     position(value, oldValue) {
       const view = this.map.getView();
 
-      if (value.center !== oldValue.center) {
-        view.setCenter(value.center);
+      // Cancel any ongoing animations before starting new ones
+      if (this.isAnimating) {
+        view.cancelAnimations();
       }
 
-      if (value.zoom !== oldValue.zoom && !this.isAnimating) {
-        this.isAnimating = true;
-        view.animate(
-          {
-            zoom: value.zoom,
-            duration: value.animateFast ? 300 : 1500,
-          },
-          () => {
-            this.isAnimating = false;
-          },
-        );
+      // Handle center changes
+      if (value.center && (!oldValue || value.center !== oldValue.center)) {
+        if (value.animateFast === true) {
+          // Fast animated center change (300ms)
+          this.isAnimating = true;
+          view.animate(
+            {
+              center: value.center,
+              duration: 300,
+            },
+            () => {
+              this.isAnimating = false;
+              this.$emit("pan-animation-complete");
+            },
+          );
+        } else if (value.animateFast === false) {
+          // Direct center change (no animation)
+          view.setCenter(value.center);
+        } else {
+          // Default animated center change (1000ms)
+          this.isAnimating = true;
+          view.animate(
+            {
+              center: value.center,
+              duration: 1000,
+            },
+            () => {
+              this.isAnimating = false;
+              this.$emit("pan-animation-complete");
+            },
+          );
+        }
+      }
+
+      // Handle zoom changes
+      if (value.zoom && (!oldValue || value.zoom !== oldValue.zoom)) {
+        if (value.animateFast === true) {
+          // Fast animated zoom change (300ms)
+          this.isAnimating = true;
+          view.animate(
+            {
+              zoom: value.zoom,
+              duration: 300,
+            },
+            () => {
+              this.isAnimating = false;
+            },
+          );
+        } else if (value.animateFast === false) {
+          // Direct zoom change (no animation)
+          view.setZoom(value.zoom);
+        } else {
+          // Default animated zoom change (1000ms)
+          this.isAnimating = true;
+          view.animate(
+            {
+              zoom: value.zoom,
+              duration: 1000,
+            },
+            () => {
+              this.isAnimating = false;
+            },
+          );
+        }
       }
     },
     padding: {

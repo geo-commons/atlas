@@ -64,7 +64,7 @@
             @features-selected="featuresSelected"
             @on-fit="(position) => onFit(position)"
             @loading-print-to-pdf="setLoadingPrint"
-            @pan-animation-complete="processNextPan"
+            @pan-animation-complete="handlePanAnimationComplete"
           />
         </SplitterPanel>
       </Splitter>
@@ -95,7 +95,7 @@
         @features-selected="featuresSelected"
         @on-fit="(position) => onFit(position)"
         @loading-print-to-pdf="setLoadingPrint"
-        @pan-animation-complete="processNextPan"
+        @pan-animation-complete="handlePanAnimationComplete"
       />
     </div>
     <AboutPanel
@@ -345,8 +345,15 @@
             </a>
           </div>
         </div>
-        <GeoLocationButton v-if="features.gps" @set-position="setPosition" />
-        <ZoomPanel v-if="features.zoom" :position="position" @set-position="setPosition" />
+        <GeoLocationButton
+          v-if="features.gps"
+          @set-position="(position, animateFast) => setPosition(position, animateFast)"
+        />
+        <ZoomPanel
+          v-if="features.zoom"
+          :position="position"
+          @set-position="(position, animateFast) => setPosition(position, animateFast)"
+        />
       </div>
     </div>
 
@@ -424,7 +431,7 @@ import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 import { EditLayerMode } from "@/types/map";
-import panning from "@/utils/panning";
+import { createPanningController } from "@/utils/panning";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -466,7 +473,7 @@ export default {
     PanoramaIcon,
     ObliqueIcon,
   },
-  mixins: [panning],
+
   props: {
     mapId: String,
     about: {
@@ -571,6 +578,7 @@ export default {
         (!this.initialDrawing && this.drawFeatures?.length > 0),
       showNotAllowedToEditLayerModal: false,
       editLayerName: null,
+      panningController: null,
     };
   },
   computed: {
@@ -706,15 +714,38 @@ export default {
     window.addEventListener("resize", this.onResizeWindow);
     this.setViewportHeight();
     this.showAbout = this.features.showAbout ? this.features.showAbout : false;
+    this.panningController = createPanningController(this);
+    this.panningController.init();
   },
   beforeUnmount() {
     window.removeEventListener("resize", this.onResizeWindow);
-    this.stopKeyRepeat();
-    this.stopPanning();
+    if (this.panningController) {
+      this.panningController.cleanup();
+    }
   },
   methods: {
     onResizeWindow() {
       this.setViewportHeight();
+    },
+    handleKeyDown(event) {
+      if (this.panningController) {
+        this.panningController.handleKeyDown(event);
+      }
+    },
+    handleKeyUp(event) {
+      if (this.panningController) {
+        this.panningController.handleKeyUp(event);
+      }
+    },
+    handleBlur() {
+      if (this.panningController) {
+        this.panningController.handleBlur();
+      }
+    },
+    handlePanAnimationComplete() {
+      if (this.panningController) {
+        this.panningController.processNextPan();
+      }
     },
     cancelPanAnimation() {
       this.$refs.map?.cancelPanAnimation();
@@ -722,7 +753,7 @@ export default {
     setViewportHeight() {
       this.computedStyle["--vh"] = this.$refs.mapContainer.clientHeight / 100 + "px";
     },
-    async setPosition(position, animateFast = false) {
+    async setPosition(position, animateFast) {
       this.position = {
         ...position,
         animateFast: animateFast,
