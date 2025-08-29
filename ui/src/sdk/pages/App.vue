@@ -77,25 +77,67 @@ const props = defineProps<{
   layers?: any[];
   zoom?: number;
   center?: [number, number];
+  onMapReady?: () => void;
 }>();
 
-const polygonCoords = [
-  [
-    [116044.06969709918, 495387.60845237196],
-    [116036.42889836353, 495385.8300816352],
-    [116041.44790271131, 495365.34220878844],
-    [116048.77752176934, 495366.9938547696],
-    [116044.06969709918, 495387.60845237196],
-  ],
-];
-
-const pointOne = [116039.55578897425, 495373.06592906645];
-const pointTwo = [116045.62957295871, 495380.7780762627];
-const pointThree = [116040.36077535816, 495369.7799269963];
-
 const mapContainer = ref<HTMLDivElement | null>(null);
-
 const mapRef = ref<Map | null>(null);
+
+const olLayers: Record<string, any> = {};
+const sources: Record<string, any> = {};
+
+const drawStyle = new Style({
+  image: new CircleStyle({
+    radius: 7,
+    fill: new Fill({ color: "#ffcc33" }),
+    stroke: new Stroke({ color: "#ffcc33", width: 2 }),
+  }),
+});
+
+const selectStyle = new Style({
+  image: new CircleStyle({
+    radius: 10,
+    fill: new Fill({ color: "#2196f3" }),
+    stroke: new Stroke({ color: "#fff", width: 3 }),
+  }),
+});
+
+const addInteraction = (name: string, options: any) => {
+  switch (name) {
+    case "select": {
+      const selectInteraction = new Select({ layers: [olLayers[options.layer]], style: selectStyle });
+      mapRef.value?.addInteraction(selectInteraction);
+      return selectInteraction;
+    }
+    case "snap": {
+      console.log(sources[options.source]);
+      const snapInteraction = new Snap({ source: sources[options.source] });
+      mapRef.value?.addInteraction(snapInteraction);
+      return snapInteraction;
+    }
+    case "draw": {
+      const drawInteraction = new Draw({
+        source: sources[options.source],
+        type: options.type,
+        style: drawStyle,
+      });
+      mapRef.value?.addInteraction(drawInteraction);
+      return drawInteraction;
+    }
+    case "modify": {
+      const modifyInteraction = new Modify({
+        source: sources[options.source],
+      });
+      mapRef.value?.addInteraction(modifyInteraction);
+      return modifyInteraction;
+    }
+    default:
+      console.error("invalid interaction specified", name);
+      break;
+  }
+};
+
+defineExpose({ addInteraction });
 
 function zoomIn() {
   if (mapRef.value) {
@@ -120,6 +162,39 @@ function zoomOut() {
 }
 
 onMounted(async () => {
+  for (const layer of props.layers ?? []) {
+    if (layer.type === "wmts") {
+      // Fetch WMTS capabilities and create WMTS layer
+      const response = await fetch(layer.options.url);
+      const body = await response.text();
+      const caps = new WMTSCapabilities().read(body);
+      const options = optionsFromCapabilities(caps, {
+        layer: layer.options.name,
+        matrixSet: "EPSG:28992",
+        projection: rdProjection,
+        format: "image/png",
+        crossOrigin: "anonymous",
+        style: "default",
+      });
+      if (options) {
+        olLayers[layer.options.name] = new TileLayer({ source: new WMTS(options) });
+      }
+    } else if (layer.type === "vector") {
+      const features = (layer.options.features ?? [])
+        .map((f: any) => {
+          if (f.type === "Point") {
+            return new Feature({ geometry: new Point(f.coordinates) });
+          } else if (f.type === "Polygon") {
+            return new Feature({ geometry: new Polygon(f.coordinates) });
+          }
+          return null;
+        })
+        .filter(Boolean);
+      const vectorSource = new VectorSource({ features });
+      sources[layer.options.name] = vectorSource;
+      olLayers[layer.options.name] = new VectorLayer({ source: vectorSource });
+    }
+  }
   const response = await fetch(`https://tiles.zaanstad.nl/mapproxy/service?REQUEST=GetCapabilities&service=wmts`);
   const body = await response.text();
   const caps = new WMTSCapabilities().read(body);
@@ -136,36 +211,9 @@ onMounted(async () => {
     return;
   }
 
-  const polygonFeature = new Feature({
-    geometry: new Polygon(polygonCoords),
-  });
-  polygonFeature.setStyle(
-    new Style({
-      stroke: new Stroke({ color: "#1976d2", width: 2 }),
-      fill: new Fill({ color: "rgba(25, 118, 210, 0.2)" }),
-    }),
-  );
-  const vectorSource = new VectorSource({ features: [polygonFeature] });
-  const vectorLayer = new VectorLayer({ source: vectorSource });
-
-  const pointsSource = new VectorSource({
-    features: [
-      new Feature({ geometry: new Point(pointOne) }),
-      new Feature({ geometry: new Point(pointTwo) }),
-      new Feature({ geometry: new Point(pointThree) }),
-    ],
-  });
-  const pointsLayer = new VectorLayer({ source: pointsSource });
-
   const map = new Map({
     target: mapContainer.value as HTMLDivElement,
-    layers: [
-      new TileLayer({
-        source: new WMTS(options),
-      }),
-      vectorLayer,
-      pointsLayer,
-    ],
+    layers: Object.values(olLayers),
     view: new View({
       center: props.center,
       zoom: props.zoom,
@@ -179,52 +227,9 @@ onMounted(async () => {
   });
 
   mapRef.value = map;
-
-  const polygonGeometry = polygonFeature.getGeometry();
-  if (polygonGeometry) {
-    map.getView().fit(polygonGeometry.getExtent(), {
-      padding: [100, 100, 100, 100],
-    });
+  if (props.onMapReady) {
+    props.onMapReady();
   }
-
-  const drawInteraction = new Draw({
-    source: vectorSource,
-    type: "Point",
-    style: new Style({
-      image: new CircleStyle({
-        radius: 7,
-        fill: new Fill({ color: "#ffcc33" }),
-        stroke: new Stroke({ color: "#ffcc33", width: 2 }),
-      }),
-    }),
-  });
-
-  drawInteraction.on("drawend", (e) => {
-    console.log(e.feature.getGeometry());
-  });
-
-  const selectInteraction = new Select({
-    layers: [pointsLayer],
-    style: new Style({
-      image: new CircleStyle({
-        radius: 10,
-        fill: new Fill({ color: "#2196f3" }),
-        stroke: new Stroke({ color: "#fff", width: 3 }),
-      }),
-    }),
-  });
-
-  const modifyInteraction = new Modify({
-    source: pointsSource,
-  });
-
-  map.addInteraction(drawInteraction);
-  map.addInteraction(selectInteraction);
-  map.addInteraction(modifyInteraction);
-
-  // Add snap interaction for the polygon and drawn points
-  const snapInteraction = new Snap({ source: vectorSource, pixelTolerance: 15 });
-  map.addInteraction(snapInteraction);
 });
 </script>
 

@@ -8,12 +8,12 @@ import VueTippy from "vue-tippy";
 import App from "./sdk/pages/App.vue";
 
 const Map = class {
-  constructor(target, settings) {
-    this.renderMap(target, settings);
+  constructor(target, props) {
+    this.renderMap(target, props);
   }
 
-  async renderMap(target, settings) {
-    const app = createApp(App, settings);
+  renderMap(target, props) {
+    const app = createApp(App, props);
     app.use(VueTippy, {
       directive: "tippy",
       distance: 5,
@@ -26,7 +26,11 @@ const Map = class {
       boundary: "viewport",
       delay: [1000, 0],
     });
-    app.mount(target);
+    this.vm = app.mount(target);
+  }
+
+  addInteraction(name, options) {
+    return this.vm.addInteraction(name, options);
   }
 };
 

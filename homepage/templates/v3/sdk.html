@@ -7,27 +7,45 @@
 
 <p>{% translate "Voorbeeld van een embed:" %}</p>
 
-<textarea name="code" rows="20" cols="100">
-  <script type="text/javascript">
-    let atlas;
-    function initAtlas() {
-        const settings = {};
-        map = new atlas.Map(document.getElementById("map"), settings);
-    }
-
-    window.initAtlas = initAtlas;
-</script>
-</textarea>
-
 <script type="text/javascript">
   let form;
   function initAtlas() {
     const settings = {
-      'layers': [],
-      'center': [116041.74,495373.93],
+      'layers': [
+        { 'type': 'wmts', 'options': { 'name': 'referentiekaart', 'url': 'https://tiles.zaanstad.nl/mapproxy/service?REQUEST=GetCapabilities&service=wmts' } },
+        { 'type': 'vector', 'options': { 'name': 'pand', 'features': [{ type: 'Polygon', coordinates: [[[116044.06969709918, 495387.60845237196], [116036.42889836353, 495385.8300816352], [116041.44790271131, 495365.34220878844], [116048.77752176934, 495366.9938547696], [116044.06969709918, 495387.60845237196]]] }] } },
+        { 'type': 'vector', 'options': { 'name': 'meetbouten', 'features': [{ type: 'Point', coordinates: [116039.55578897425, 495373.06592906645] }, { type: 'Point', coordinates: [116045.62957295871, 495380.7780762627] }, { type: 'Point', coordinates: [116040.36077535816, 495369.7799269963] }] } },
+      ],
+      'center': [116041.74, 495373.93],
       'zoom': 19.73
     };
+
     atlas = new atlas.Map(document.getElementById("map"), settings);
+    setTimeout(() => {
+      // Nieuwe meetbouten toevoegen
+      const drawInteraction = atlas.addInteraction('draw', { 'source': 'meetbouten', 'type': 'Point' })
+      drawInteraction.on('drawend', (e) => {
+        alert('Meetbout toegevoegd')
+        console.log('Meetbout toegevoegd', e.feature)
+      })
+
+      // Positie meetbout aanpassen
+      const modifyInteraction = atlas.addInteraction('modify', { 'source': 'meetbouten' })
+      modifyInteraction.on('modifyend', (e) => {
+        alert('Meetbout aangepast')
+        console.log('Meetbout aangepast', e.features.item(0))
+      })
+
+      // Meetbout selecteren
+      const selectInteraction = atlas.addInteraction('select', { 'layer': 'meetbouten' })
+      selectInteraction.on('select', (e) => {
+        console.log('Meetbout geselecteerd', e.selected[0])
+      })
+
+      // Snap op pand
+      atlas.addInteraction('snap', { 'source': 'pand', 'pixelTolerance': 15 })
+
+    }, 100)
   }
 
   window.initAtlas = initAtlas;
