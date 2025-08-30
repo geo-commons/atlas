@@ -18,12 +18,14 @@ class AuthorizeViewSetTest(TestCase):
         self.layer = create_test_layer()
 
     def make_request(self, data, user=None):
-        request = self.factory.post('/', data=json.dumps(data), content_type='application/json')
+        request = self.factory.post(
+            '/', data=json.dumps(data), content_type='application/json')
         request.user = user or self.user
         return request
 
     def make_raw_request(self, raw_data, user=None):
-        request = self.factory.post('/', data=raw_data, content_type='application/json')
+        request = self.factory.post(
+            '/', data=raw_data, content_type='application/json')
         request.user = user or self.user
         return request
 
@@ -76,7 +78,8 @@ class AuthorizeViewSetTest(TestCase):
         request = self.make_request({'source': 'test-not-found'})
         response = self.view(request)
         self.assertEqual(response.status_code, 400)
-        self.assertIn('could not find source with slug', response.content.decode())
+        self.assertIn('could not find source with slug',
+                      response.content.decode())
 
     @patch('authz.viewsets.Source.objects.get')
     @patch('authz.viewsets.can_access_source')
@@ -97,7 +100,8 @@ class AuthorizeViewSetTest(TestCase):
                 request = self.make_request({'source': 'valid-source'})
                 response = self.view(request)
                 self.assertEqual(response.status_code, 400)
-                self.assertIn('resource is not specified', response.content.decode())
+                self.assertIn('resource is not specified',
+                              response.content.decode())
 
     @patch('authz.viewsets.Source.objects.get')
     @patch('authz.viewsets.Authorization.objects.filter')
@@ -107,33 +111,42 @@ class AuthorizeViewSetTest(TestCase):
         for source_type in [Source.SOURCE_OWS, Source.SOURCE_WMTS, Source.SOURCE_REST]:
             with self.subTest(source_type=source_type):
                 self.source.source_type = source_type
-                self.mock_prefetch_return(mock_auth_filter, [self.mock_authorization_rule(access=True)])
+                self.mock_prefetch_return(
+                    mock_auth_filter, [self.mock_authorization_rule(access=True)])
                 request = self.make_request(self.base_request_data())
                 response = self.view(request)
                 self.assertEqual(response.status_code, 200)
-                self.assertJSONEqual(response.content, {'result': True, 'status': 200})
+                self.assertJSONEqual(response.content, {
+                                     'result': True, 'status': 200, 'username': 'testuser'
+                                     })
 
     @patch('authz.viewsets.Source.objects.get')
     @patch('authz.viewsets.Authorization.objects.filter')
     def test_ows_authorization_user_has_mutation_access_on_authorization_rule_for_transaction_request(self, mock_auth_filter, mock_get):
         mock_get.return_value = self.source
         self.source.source_type = Source.SOURCE_OWS
-        self.mock_prefetch_return(mock_auth_filter, [self.mock_authorization_rule(mutate=True, access=True)])
-        request = self.make_request(self.base_request_data(request='Transaction'))
+        self.mock_prefetch_return(
+            mock_auth_filter, [self.mock_authorization_rule(mutate=True, access=True)])
+        request = self.make_request(
+            self.base_request_data(request='Transaction'))
         response = self.view(request)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {'result': True, 'status': 200})
+        self.assertJSONEqual(response.content, {
+                             'result': True, 'status': 200, 'username': 'testuser'})
 
     @patch('authz.viewsets.Source.objects.get')
     @patch('authz.viewsets.Authorization.objects.filter')
     def test_ows_authorization_user_has_no_mutation_access_on_authorization_rule_without_transaction_request(self, mock_auth_filter, mock_get):
         mock_get.return_value = self.source
         self.source.source_type = Source.SOURCE_OWS
-        self.mock_prefetch_return(mock_auth_filter, [self.mock_authorization_rule(mutate=True)])
-        request = self.make_request(self.base_request_data(request='RandomTestRequest'))
+        self.mock_prefetch_return(
+            mock_auth_filter, [self.mock_authorization_rule(mutate=True)])
+        request = self.make_request(
+            self.base_request_data(request='RandomTestRequest'))
         response = self.view(request)
         self.assertEqual(response.status_code, 403)
-        self.assertIn('does not have access to layer', response.content.decode())
+        self.assertIn('does not have access to layer',
+                      response.content.decode())
 
     @patch('authz.viewsets.Source.objects.get')
     @patch('authz.viewsets.Authorization.objects.filter')
@@ -143,11 +156,13 @@ class AuthorizeViewSetTest(TestCase):
         for source_type in [Source.SOURCE_OWS, Source.SOURCE_WMTS, Source.SOURCE_REST]:
             with self.subTest(source_type=source_type):
                 self.source.source_type = source_type
-                self.mock_prefetch_return(mock_auth_filter, [self.mock_authorization_rule()])
+                self.mock_prefetch_return(
+                    mock_auth_filter, [self.mock_authorization_rule()])
                 request = self.make_request(self.base_request_data())
                 response = self.view(request)
                 self.assertEqual(response.status_code, 403)
-                self.assertIn('does not have access to', response.content.decode())
+                self.assertIn('does not have access to',
+                              response.content.decode())
 
     @patch('authz.lib.Layer.objects.filter')
     @patch('authz.viewsets.Authorization.objects.filter')
@@ -159,11 +174,13 @@ class AuthorizeViewSetTest(TestCase):
             with self.subTest(source_type=source_type):
                 self.source.source_type = source_type
                 self.mock_prefetch_return(mock_auth_filter, [])
-                self.mock_prefetch_return(mock_layer_model, [self.mock_layer_rule(access=True)])
+                self.mock_prefetch_return(
+                    mock_layer_model, [self.mock_layer_rule(access=True)])
                 request = self.make_request(self.base_request_data())
                 response = self.view(request)
                 self.assertEqual(response.status_code, 200)
-                self.assertJSONEqual(response.content, {'result': True, 'status': 200})
+                self.assertJSONEqual(response.content, {
+                                     'result': True, 'status': 200, 'username': 'testuser'})
 
     @patch('authz.lib.Layer.objects.filter')
     @patch('authz.viewsets.Authorization.objects.filter')
@@ -175,11 +192,13 @@ class AuthorizeViewSetTest(TestCase):
             with self.subTest(source_type=source_type):
                 self.source.source_type = source_type
                 self.mock_prefetch_return(mock_auth_filter, [])
-                self.mock_prefetch_return(mock_layer_model, [self.mock_layer_rule()])
+                self.mock_prefetch_return(
+                    mock_layer_model, [self.mock_layer_rule()])
                 request = self.make_request(self.base_request_data())
                 response = self.view(request)
                 self.assertEqual(response.status_code, 403)
-                self.assertIn('does not have access to layer', response.content.decode())
+                self.assertIn('does not have access to layer',
+                              response.content.decode())
 
     @patch('authz.lib.Layer.objects.filter')
     @patch('authz.viewsets.Authorization.objects.filter')
@@ -188,11 +207,14 @@ class AuthorizeViewSetTest(TestCase):
         self.source.source_type = Source.SOURCE_OWS
         mock_get.return_value = self.source
         self.mock_prefetch_return(mock_auth_filter, [])
-        self.mock_prefetch_return(mock_layer_model, [self.mock_layer_rule(mutate=True, access=True)])
-        request = self.make_request(self.base_request_data(request='Transaction'))
+        self.mock_prefetch_return(
+            mock_layer_model, [self.mock_layer_rule(mutate=True, access=True)])
+        request = self.make_request(
+            self.base_request_data(request='Transaction'))
         response = self.view(request)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {'result': True, 'status': 200})
+        self.assertJSONEqual(response.content, {
+                             'result': True, 'status': 200, 'username': 'testuser'})
 
     @patch('authz.lib.Layer.objects.filter')
     @patch('authz.viewsets.Authorization.objects.filter')
@@ -202,10 +224,12 @@ class AuthorizeViewSetTest(TestCase):
         mock_get.return_value = self.source
         self.mock_prefetch_return(mock_auth_filter, [])
         self.mock_prefetch_return(mock_layer_model, [self.mock_layer_rule()])
-        request = self.make_request(self.base_request_data(request='Transaction'))
+        request = self.make_request(
+            self.base_request_data(request='Transaction'))
         response = self.view(request)
         self.assertEqual(response.status_code, 403)
-        self.assertIn('does not have access to layer', response.content.decode())
+        self.assertIn('does not have access to layer',
+                      response.content.decode())
 
     @patch('authz.lib.Layer.objects.filter')
     @patch('authz.viewsets.Authorization.objects.filter')
@@ -214,11 +238,14 @@ class AuthorizeViewSetTest(TestCase):
         self.source.source_type = Source.SOURCE_OWS
         mock_get.return_value = self.source
         self.mock_prefetch_return(mock_auth_filter, [])
-        self.mock_prefetch_return(mock_layer_model, [self.mock_layer_rule(mutate=True)])
-        request = self.make_request(self.base_request_data(request='RandomTestRequest'))
+        self.mock_prefetch_return(
+            mock_layer_model, [self.mock_layer_rule(mutate=True)])
+        request = self.make_request(
+            self.base_request_data(request='RandomTestRequest'))
         response = self.view(request)
         self.assertEqual(response.status_code, 403)
-        self.assertIn('does not have access to layer', response.content.decode())
+        self.assertIn('does not have access to layer',
+                      response.content.decode())
 
     @patch('authz.viewsets.Source.objects.get')
     @patch('authz.viewsets.can_access_source')
@@ -230,8 +257,3 @@ class AuthorizeViewSetTest(TestCase):
         request = self.make_request({'source': 'testsource'})
         response = self.view(request)
         self.assertEqual(response.status_code, 500)
-
-
-
-
-
