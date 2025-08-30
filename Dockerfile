@@ -48,7 +48,7 @@ WORKDIR /app
 ARG ATLAS_VERSION=unknown
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    mime-support \
+    media-types \
     libxml2 \
     libgdal32 \
     && rm -rf /var/lib/apt/lists/*
