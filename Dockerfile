@@ -50,7 +50,7 @@ ARG ATLAS_VERSION=unknown
 RUN apt-get update && apt-get install --no-install-recommends -y \
     media-types \
     libxml2 \
-    libgdal32 \
+    libgdal36 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /app
