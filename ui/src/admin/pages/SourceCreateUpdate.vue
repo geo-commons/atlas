@@ -52,6 +52,7 @@ export default {
       const url = `/atlas/api/v1/sources/${this.$route.params.id}/`;
 
       currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
+      // currentValues.atlas_groups = currentValues.atlas_groups?.[1]?.map((group) => group.id) || [];
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
