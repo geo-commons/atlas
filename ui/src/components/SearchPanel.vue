@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" tabindex="-1" @focusout="onFocusOut">
     <SearchForm
       :show-suggestions="showSuggestions ? true : null"
       :has-visible-layers="visibleLayers.length > 0"
@@ -244,6 +244,16 @@ export default {
       this.query = "";
       this.results = [];
       this.showSuggestions = false;
+    },
+    onFocusOut(event) {
+      // Check if the new focus target is still within the search panel
+      const searchPanel = event.currentTarget;
+      const relatedTarget = event.relatedTarget;
+
+      // If there's no related target or the related target is not within the search panel
+      if (!relatedTarget || !searchPanel.contains(relatedTarget)) {
+        this.showSuggestions = false;
+      }
     },
   },
 };

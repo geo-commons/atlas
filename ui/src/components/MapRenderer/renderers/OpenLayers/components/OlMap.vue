@@ -1,5 +1,12 @@
 <template>
-  <div ref="map" class="map">
+  <div
+    ref="map"
+    class="map"
+    tabindex="0"
+    role="application"
+    aria-roledescription="map"
+    aria-label="Interactieve kaart - gebruik de pijltjestoetsen om te navigeren, + en - om in en uit te zoomen"
+  >
     <slot></slot>
     <div
       class="scale"
@@ -22,6 +29,11 @@ import ScaleLine from "ol/control/ScaleLine";
 import { register } from "ol/proj/proj4";
 import { getPointResolution } from "ol/proj";
 import { getDefinitions } from "../../../../../utils/projections";
+import DoubleClickZoom from "ol/interaction/DoubleClickZoom";
+import DragPan from "ol/interaction/DragPan";
+import KeyboardPan from "ol/interaction/KeyboardPan";
+import KeyboardZoom from "ol/interaction/KeyboardZoom";
+import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
 
 const DEFAULT_DPI = 25.4 / 0.28;
 
@@ -43,6 +55,13 @@ export default {
     return {
       map: new Map({
         controls: [],
+        interactions: [
+          new KeyboardPan(),
+          new KeyboardZoom(),
+          new DragPan(),
+          new MouseWheelZoom(),
+          new DoubleClickZoom(),
+        ],
       }),
       scaleType: "LINE",
       scale: 0,
@@ -116,6 +135,23 @@ export default {
   flex: 1 1 auto;
   width: 100%;
   height: 0;
+}
+
+.map:focus {
+  outline: none;
+  position: relative;
+}
+
+.map:focus::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 3px solid var(--color-primary);
+  pointer-events: none;
+  z-index: 1000;
 }
 
 .map ::v-deep(.ol-attribution) {
