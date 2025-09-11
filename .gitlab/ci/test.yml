@@ -54,7 +54,7 @@ Test migrations backend:
 
 Lint ui:
   stage: Test
-  image: node:22.18.0-alpine
+  image: node:22.19.0-alpine
   cache:
     paths:
       - ui/node_modules/
@@ -67,7 +67,7 @@ Lint ui:
 
 Unit test frontend:
   stage: Test
-  image: mcr.microsoft.com/playwright:v1.54.2-noble
+  image: mcr.microsoft.com/playwright:v1.55.0-noble
   cache:
     paths:
       - ui/node_modules/
@@ -79,7 +79,7 @@ Unit test frontend:
 
 Browser test frontend:
   stage: Test
-  image: mcr.microsoft.com/playwright:v1.54.2-noble
+  image: mcr.microsoft.com/playwright:v1.55.0-noble
   cache:
     paths:
       - ui/node_modules/
