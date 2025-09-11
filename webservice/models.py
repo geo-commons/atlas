@@ -681,6 +681,9 @@ class MapLayer(models.Model):
         verbose_name = 'Kaartlaag'
         verbose_name_plural = 'Kaartlagen'
         ordering = ['layer__layer_type__ordering', 'layer__ordering', 'layer__title']
+        constraints = [
+            models.UniqueConstraint(fields=["layer", "map"], name='unique_map_layer'),
+        ]
 
     def __str__(self):
         return f"{self.map} - {self.layer}"
