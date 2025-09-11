@@ -26,7 +26,8 @@ def authorize_ows_request(source, request, data):
                           (not is_transaction and authorization.is_accessible_by(user, request)))
 
             if authorized:
-                should_log = authorization.audit_log and (is_transaction or data.get('request') in ['GetFeatureInfo', 'GetFeature'])
+                should_log = authorization.audit_log and (
+                    is_transaction or data.get('request') in ['GetFeatureInfo', 'GetFeature'])
 
                 if should_log:
                     Log.objects.create(
@@ -39,7 +40,12 @@ def authorize_ows_request(source, request, data):
                         params=data.get('params')
                     )
 
-                data = {'result': True, 'status': 200}
+                data = {
+                    'result': True,
+                    'status': 200,
+                    'username': user.username if user.is_authenticated else 'anonymous'
+                }
+
                 if authorization.response_filter:
                     data['response_filter'] = authorization.response_filter
 
@@ -58,7 +64,7 @@ def authorize_ows_request(source, request, data):
 
     for layer in layer_rules:
         if layer.is_accessible_by(user, request) and data.get('request') not in ['Transaction']:
-            return JsonResponse({'result': True, 'status': 200})
+            return JsonResponse({'result': True, 'status': 200, 'username': user.username if user.is_authenticated else 'anonymous'})
 
     write_layer_rules = Layer.objects.filter(
         layer_source=source,
@@ -67,7 +73,7 @@ def authorize_ows_request(source, request, data):
 
     for layer in write_layer_rules:
         if layer.is_mutable_by(user, request) and layer.is_accessible_by(user, request) and data.get('request') in ['Transaction']:
-            return JsonResponse({'result': True, 'status': 200})
+            return JsonResponse({'result': True, 'status': 200, 'username': user.username if user.is_authenticated else 'anonymous'})
 
     return JsonResponse({
         'result': False,
@@ -91,7 +97,11 @@ def authorize_wmts_request(source, request, data):
     if len(authorization_rules) > 0:
         for authorization in authorization_rules:
             if authorization.is_accessible_by(user, request):
-                data = {'result': True, 'status': 200}
+                data = {
+                    'result': True,
+                    'status': 200,
+                    'username': user.username if user.is_authenticated else 'anonymous'
+                }
                 return JsonResponse(data)
 
         return JsonResponse({
@@ -107,7 +117,7 @@ def authorize_wmts_request(source, request, data):
 
     for layer in layer_rules:
         if layer.is_accessible_by(user, request):
-            return JsonResponse({'result': True, 'status': 200})
+            return JsonResponse({'result': True, 'status': 200, 'username': user.username if user.is_authenticated else 'anonymous'})
 
     return JsonResponse({
         'result': False,
@@ -141,7 +151,12 @@ def authorize_rest_request(source, request, data):
                         resource=data.get('resource'),
                         params=data.get('params')
                     )
-                data = {'result': True, 'status': 200}
+                data = {
+                    'result': True,
+                    'status': 200,
+                    'username': user.username if user.is_authenticated else 'anonymous'
+                }
+
                 if authorization.response_filter:
                     data['response_filter'] = authorization.response_filter
                 return JsonResponse(data)
@@ -184,6 +199,8 @@ def can_access_source(request, source):
     return False
 
 # TODO: We should check if we can combine this function with the is_accesible_by method on a Layer model. Issue: https://gitlab.com/purmerend/atlas/-/issues/805
+
+
 def can_request_access_layer(request, layer):
     user = request.user
 
