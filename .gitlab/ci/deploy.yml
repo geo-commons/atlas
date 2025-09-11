@@ -1,6 +1,6 @@
 Deploy Review App:
   stage: Deploy
-  image: alpine/k8s:1.33.4
+  image: alpine/k8s:1.34.0
   script:
     - |
       echo $CI_MERGE_REQUEST_LABELS
@@ -42,7 +42,7 @@ Deploy Review App:
 
 Remove Review App:
   stage: Deploy
-  image: alpine/k8s:1.33.4
+  image: alpine/k8s:1.34.0
   variables:
     GIT_STRATEGY: none
   script: |
@@ -61,9 +61,9 @@ Remove Review App:
 
 Deploy Docker latest tag:
   stage: Deploy
-  image: docker:28.3.3
+  image: docker:28.4.0
   services:
-    - docker:28.3.3-dind
+    - docker:28.4.0-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
@@ -79,7 +79,7 @@ Deploy Docker version tag:
   stage: Deploy
   image: docker:24.0.9-git
   services:
-    - docker:28.3.3-dind
+    - docker:28.4.0-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
@@ -94,7 +94,7 @@ Deploy Docker version tag:
 
 Deploy acceptance:
   stage: Deploy
-  image: alpine/k8s:1.33.4
+  image: alpine/k8s:1.34.0
   script:
     - |
       kubectl config get-contexts
@@ -133,7 +133,7 @@ Deploy acceptance:
 Upload helm chart:
   stage: Deploy
   image:
-    name: alpine/k8s:1.33.4
+    name: alpine/k8s:1.34.0
     entrypoint: [""]
 
   script:
