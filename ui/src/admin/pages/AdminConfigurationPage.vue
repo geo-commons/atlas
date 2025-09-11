@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Configuratie</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -14,10 +16,11 @@
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Cookies from "js-cookie";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "AdminConfigurationPage",
-  components: { AdminFormSections },
+  components: { Spinner, AdminFormSections },
   props: {},
   data() {
     return {
@@ -25,11 +28,15 @@ export default {
       initialValues: {},
       currentValues: {},
       uploadedFile: null,
+      loading: false,
     };
   },
   created() {
-    this.getConfigurations();
-    this.sections = this.getSections();
+    this.loading = true;
+    Promise.all([this.getConfigurations()]).then(() => {
+      this.sections = this.getSections();
+      this.loading = false;
+    });
   },
   methods: {
     async getConfigurations() {
@@ -46,7 +53,7 @@ export default {
       let data = await result.json();
       this.initialValues = this.constructFormValues(data);
     },
-    async saveConfiguration(currentValues) {
+    async saveConfiguration(currentValues, continueEditing = false) {
       try {
         let fetchUrl = `/atlas/api/v1/configurations/`;
 
@@ -65,7 +72,16 @@ export default {
           body: data,
         });
         if (result.ok) {
-          window.location.href = "/atlas/admin/";
+          if (!continueEditing) {
+            this.$router.push(`/`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Laag opgeslagen",
+            detail: "De laag is succesvol opgeslagen.",
+            life: 3000,
+          });
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);

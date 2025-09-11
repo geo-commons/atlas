@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Categorie wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -14,23 +16,28 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "CategoryCreateUpdate",
   components: {
+    Spinner,
     AdminFormSections,
   },
   data() {
     return {
       sections: {},
       initialValues: {},
-      currentValues: {},
+      loading: false,
     };
   },
   created() {
-    this.getCategory();
+    this.loading = true;
 
-    this.sections = this.getSections();
+    Promise.all([this.getCategory()]).then(() => {
+      this.sections = this.getSections();
+      this.loading = false;
+    });
   },
   methods: {
     async getCategory() {

@@ -2,9 +2,9 @@
   <div v-if="loading">laden...</div>
   <vee-form
     v-else
-    v-slot="{ values }"
+    v-slot="{ values, setFieldValue }"
     ref="formRef"
-    :initial-values="currentValues"
+    :initial-values="initialValues"
     @submit="onSubmit"
     @invalid-submit="invalidSubmit"
   >
@@ -34,22 +34,15 @@
               <div v-else-if="question.type === 'checkbox'">
                 <div v-if="question.showIf !== undefined ? question.showIf : true" class="checkbox-wrapper">
                   <vee-field
-                    v-slot="{ field }"
+                    :id="question.id"
                     :name="question.id"
                     type="checkbox"
+                    as="input"
                     :value="true"
                     :unchecked-value="false"
+                    :disabled="question.disabled"
                     :rules="getRules(question)"
-                  >
-                    <input
-                      v-bind="field"
-                      :id="question.id"
-                      type="checkbox"
-                      :name="question.id"
-                      :value="true"
-                      :disabled="question.disabled"
-                    />
-                  </vee-field>
+                  />
                   <span class="label-info-text-wrapper">
                     <label :for="question.id">{{ question.label }}</label>
                     <AdminFormInfoText
@@ -108,18 +101,21 @@
                   <label class="question-label" :for="question.id">{{ question.label }}</label>
                   <vee-field
                     :id="question.id"
+                    v-slot="{ value, handleChange, handleBlur }"
                     :name="question.id"
                     :rules="getRules(question)"
                     class="__admin config-select-wrapper"
                     :disabled="question.disabled"
                   >
                     <PickList
-                      v-model="currentValues[question.id]"
+                      :model-value="value"
                       data-key="id"
                       breakpoint="900px"
                       :disabled="question.disabled"
                       :show-source-controls="false"
                       :show-target-controls="false"
+                      @blur="handleBlur"
+                      @update:modelValue="handleChange"
                     >
                       <template #option="{ option }">
                         {{ option.name }}
@@ -158,10 +154,10 @@
                     </option>
                   </vee-field>
                   <button
-                    v-if="currentValues[question.id]"
+                    v-if="values[question.id]"
                     type="button"
                     class="iconbutton __small __round __transparent-bg"
-                    @click="reset(question)"
+                    @click="setFieldValue(question.id, '')"
                   >
                     <close-icon class="icon __small"></close-icon>
                   </button>
@@ -169,7 +165,6 @@
                 <vee-field
                   v-else-if="question.type === 'url'"
                   :id="question.id"
-                  v-model="currentValues[question.id]"
                   :name="question.id"
                   :disabled="question.disabled"
                   :rules="getRules(question)"
@@ -178,50 +173,31 @@
                 <vee-field
                   v-else-if="question.type === 'number'"
                   :id="question.id"
-                  v-model="currentValues[question.id]"
+                  :rules="getRules(question)"
                   :name="question.id"
                   type="number"
+                  as="input"
                   :disabled="question.disabled"
-                >
-                  <input
-                    :id="question.id"
-                    :value="currentValues[question.id]"
-                    :name="question.id"
-                    type="number"
-                    :disabled="question.disabled"
-                    @change="(e) => handleInput(e, question)"
-                  />
-                </vee-field>
+                />
                 <vee-field
                   v-else-if="question.type === 'decimal'"
                   :id="question.id"
-                  :value="currentValues[question.id]"
                   :name="question.id"
                   :rules="getRules(question)"
                   type="number"
+                  as="input"
                   :disabled="question.disabled"
                   :step="question.step"
-                >
-                  <input
-                    :id="question.id"
-                    :value="currentValues[question.id]"
-                    :name="question.id"
-                    type="number"
-                    :disabled="question.disabled"
-                    :step="question.step"
-                    @change="(e) => handleInput(e, question)"
-                  />
-                </vee-field>
-                <label v-else-if="question.type === 'label'">{{
-                  currentValues[question.id] ? currentValues[question.id] : "-"
-                }}</label>
-                <label v-else-if="question.type === 'display_date'">{{
-                  formatDateValue(currentValues[question.id])
-                }}</label>
+                />
+                <label v-else-if="question.type === 'label'">
+                  {{ values[question.id] ? values[question.id] : "-" }}
+                </label>
+                <label v-else-if="question.type === 'display_date'">
+                  {{ formatDateValue(values[question.id]) }}
+                </label>
                 <vee-field
                   v-else-if="question.type === 'text' && question.multiLine"
                   :id="question.id"
-                  v-model="currentValues[question.id]"
                   :name="question.id"
                   as="textarea"
                   :rules="getRules(question)"
@@ -231,7 +207,7 @@
                 />
                 <vee-field
                   v-else-if="question.type === 'json'"
-                  v-model="currentValues[question.id]"
+                  v-slot="{ value, handleChange, handleBlur }"
                   :name="question.id"
                   :rules="getRules(question)"
                   :disabled="question.disabled"
@@ -239,63 +215,61 @@
                 >
                   <CodeMirror
                     :id="question.id"
-                    v-model="currentValues[question.id]"
+                    :model-value="value"
+                    basic
                     :lang="json()"
                     :linter="jsonParseLinter()"
                     :extensions="[clouds]"
-                    basic
                     gutter
                     :wrap="true"
                     class="!tw-text-sm"
-                  ></CodeMirror>
+                    @update:model-value="handleChange"
+                    @blur="handleBlur"
+                  />
                 </vee-field>
-                <vee-field v-else-if="question.type === 'layer-select'" :name="question.id" :rules="getRules(question)">
+                <vee-field
+                  v-else-if="question.type === 'layer-select'"
+                  v-slot="{ value, handleChange }"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                >
                   <InputText
                     :id="question.id"
-                    v-model="currentValues[question.id]"
+                    :model-value="value"
                     class="!tw-mb-2"
                     placeholder="Laagnaam"
                     type="text"
+                    @update:model-value="handleChange"
                   />
                   <span>Of selecteer een laagnaam</span>
                   <layer-field
-                    :model-value="currentValues[question.id]"
+                    :model-value="value"
                     :current-source-id="values[question.sourceField]"
                     :sources="question.options || []"
-                    @update:modelValue="(value) => (currentValues[question.id] = value)"
-                  />
-                </vee-field>
-                <vee-field v-else-if="question.type === 'theme-select'" v-slot="{ field }" :name="question.id">
-                  <theme-field
-                    :model-value="currentValues[question.id]"
-                    :field="field"
-                    @update:modelValue="(value) => (currentValues[question.id] = value)"
+                    @update:model-value="handleChange"
                   />
                 </vee-field>
                 <vee-field
                   v-else-if="question.type === 'date'"
                   :id="question.id"
-                  :value="currentValues[question.id] ? currentValues[question.id] : ''"
                   :name="question.id"
                   :disabled="question.disabled"
                   :rules="getRules(question)"
                   type="date"
-                  @input="(event) => (message = event.target.value)"
+                  as="input"
                 />
                 <vee-field
                   v-else-if="question.type === 'color'"
                   :id="question.id"
                   :name="question.id"
-                  :value="currentValues[question.id]"
                   :disabled="question.disabled"
                   :rules="getRules(question)"
                   type="color"
-                  @input="(event) => (currentValues[question.id] = event.target.value)"
+                  as="input"
                 />
                 <vee-field
                   v-else
                   :id="question.id"
-                  v-model="currentValues[question.id]"
                   :name="question.id"
                   :disabled="question.disabled"
                   :rules="getRules(question)"
@@ -347,7 +321,6 @@
 <script>
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import LayerField from "@/admin/components/LayerField.vue";
-import ThemeField from "@/admin/components/ThemeField.vue";
 import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
 import CloseIcon from "@/assets/icons/close-icon.svg";
 import { formatDateValue } from "@/utils/date-formatter";
@@ -363,7 +336,6 @@ export default {
   name: "AdminFormSections",
   components: {
     ArrowDownTrayIcon,
-    ThemeField,
     LayerField,
     CloseIcon,
     CodeMirror,
@@ -396,7 +368,6 @@ export default {
   },
   data() {
     return {
-      currentValues: { ...this.initialValues },
       options: {},
       unexpectedError: null,
       continueEditing: false,
@@ -410,11 +381,12 @@ export default {
     getRules() {
       return (question) => {
         let rules = [];
+        const values = this.$refs.formRef?.values || {};
 
         // Check if we should apply the contains-colon validation
         // Only apply if atlas_write_groups has items selected or authenticated_can_mutate is true
-        let atlasWriteGroupsHasItems =
-          Array.isArray(this.currentValues.atlas_write_groups) && this.currentValues.atlas_write_groups[1].length > 0;
+        const groups = values.atlas_write_groups;
+        let atlasWriteGroupsHasItems = Array.isArray(groups) && groups[1].length > 0;
         const authenticatedCanMutate = document.getElementById("authenticated_can_mutate")
           ? document.getElementById("authenticated_can_mutate").checked
           : false;
@@ -445,14 +417,10 @@ export default {
       };
     },
   },
-  watch: {
-    initialValues(newValues) {
-      this.currentValues = newValues;
-
-      if (this.containsImageField && this.currentValues) {
-        this.setImageFieldValues();
-      }
-    },
+  created() {
+    if (this.containsImageField) {
+      this.setImageFieldValues();
+    }
   },
   unmounted() {
     // Remove all created previewUrls
@@ -492,18 +460,17 @@ export default {
       this.save(values);
     },
     save(values) {
-      if (this.createView) {
-        this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
-      } else if (this.containsImageField) {
+      if (this.containsImageField) {
         // Manually add image fields to values object.
         Object.keys(this.imageFieldValues).forEach((key) => {
-          values[key] = this.currentValues[key];
+          if (this.imageFieldValues[key].file) {
+            // Only add image to values if there is a file available,
+            // otherwise we overwrite the current image with an undefined value.
+            values[key] = this.imageFieldValues[key].file;
+          }
         });
-
-        this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
-      } else {
-        this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
       }
+      this.objectSpecificSave(values, this.continueEditing, this.sendSaveRequest);
     },
     async sendSaveRequest(apiUrl, method, currentValues) {
       try {
@@ -546,20 +513,12 @@ export default {
         });
       }
     },
-    handleInput(event, question) {
-      event.preventDefault();
-      let value = event.target.value;
-      if (value === "") {
-        value = null;
-      }
-      this.currentValues[question.id] = value;
-    },
     setImageFieldValues() {
       Object.values(this.sections).forEach((section) => {
         section.questions.forEach((question) => {
           if (question.type === "image") {
             this.imageFieldValues[question.id] = {
-              imagePath: this.currentValues[question.id],
+              imagePath: this.initialValues[question.id],
               uploadButtonText: "Selecteer afbeelding",
             };
           }
@@ -572,9 +531,10 @@ export default {
       if (file) {
         this.imageFieldValues[id].uploadButtonText = file?.name;
         this.imageFieldValues[id].previewUrl = URL.createObjectURL(file);
-        this.currentValues[id] = file;
+        this.imageFieldValues[id].file = file;
       }
     },
+    // Note: this method is being used in the AdminListFormDialog.
     resetForm() {
       this.$refs.formRef.resetForm();
     },

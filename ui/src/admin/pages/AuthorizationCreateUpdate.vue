@@ -32,7 +32,6 @@ export default {
       groups: [],
       sections: {},
       initialValues: {},
-      currentValues: {},
       availableGroups: [],
       selectedGroups: [],
       loading: false,
@@ -67,8 +66,8 @@ export default {
       return response;
     },
     async saveAuthorization(currentValues, continueEditing = false) {
-      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
-      currentValues.atlas_write_groups = currentValues.atlas_write_groups[1].map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups?.[1]?.map((group) => group.id) || [];
+      currentValues.atlas_write_groups = currentValues.atlas_write_groups?.[1]?.map((group) => group.id) || [];
 
       const url = `/atlas/api/v1/authorizations/${this.$route.params.id}/`;
 

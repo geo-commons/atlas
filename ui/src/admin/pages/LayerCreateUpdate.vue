@@ -160,7 +160,6 @@ export default {
       formats: [],
       sections: {},
       initialValues: {},
-      currentValues: {},
       selectedSource: {},
       showFormModal: false,
       formModalType: null,
@@ -254,8 +253,8 @@ export default {
       currentValues.metadata.lineage = currentValues.metadata_lineage;
       currentValues.metadata.contact = currentValues.metadata_contact;
       currentValues.metadata.link = currentValues.metadata_link;
-      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
-      currentValues.atlas_write_groups = currentValues.atlas_write_groups[1].map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups?.[1]?.map((group) => group.id) || [];
+      currentValues.atlas_write_groups = currentValues.atlas_write_groups?.[1]?.map((group) => group.id) || [];
 
       currentValues.display_properties = currentValues.display_properties
         .split("\n")
@@ -386,13 +385,6 @@ export default {
       }
 
       return JSON.parse(text);
-    },
-    moveGroup(item, fromArray, toArray) {
-      const arrayAriaText = toArray === this.availableGroups ? "Beschikbare groepen" : "Geselecteerde groepen";
-      this.assistiveText = `${item.name}, verplaatst naar ${arrayAriaText}`;
-
-      fromArray.splice(fromArray.indexOf(item), 1);
-      toArray.push(item);
     },
     saveLinkedData(newValues) {
       if (!newValues.id && !newValues.randomId) {

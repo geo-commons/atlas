@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Viewer wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -14,21 +16,25 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "ViewerCreateUpdate",
   components: {
+    Spinner,
     AdminFormSections,
   },
   data() {
     return {
       sections: {},
       initialValues: {},
-      currentValues: {},
       viewerTypes: [],
+      loading: false,
     };
   },
   created() {
+    this.loading = true;
+
     this.viewerTypes = [
       { id: "GOOGLE_MAPS", label: "Google Maps" },
       { id: "STREET_SMART", label: "Street Smart" },
@@ -37,8 +43,10 @@ export default {
       { id: "BUTTON", label: "Knop naar nieuw tabblad" },
     ];
 
-    this.getViewer();
-    this.sections = this.getSections();
+    Promise.all([this.getViewer()]).then(() => {
+      this.sections = this.getSections();
+      this.loading = false;
+    });
   },
   methods: {
     async getViewer() {
