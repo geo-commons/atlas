@@ -98,7 +98,7 @@ const getCreateTableSections = () => {
           id: "slug",
           name: "Slug",
           type: "text",
-          required: true,
+          required: false,
         },
         {
           label: "Bron",

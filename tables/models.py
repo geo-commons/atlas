@@ -41,11 +41,11 @@ class Table(models.Model):
                                   max_length=128, blank=True, null=True)
 
     page_attribute = models.CharField('Veldnaam van pagina',
-                                  max_length=128, blank=True, null=True)
+                                      max_length=128, blank=True, null=True)
     items_per_page_attribute = models.CharField('Veldnaam van items per pagina',
-                                  max_length=128, blank=True, null=True)
+                                                max_length=128, blank=True, null=True)
     total_items_page_attribute = models.CharField('Veldnaam van totaal aantal items',
-                                  max_length=128, blank=True, null=True)
+                                                  max_length=128, blank=True, null=True)
 
     error_template = models.CharField(
         'Template van foutmelding', max_length=128, blank=True, null=True)
@@ -105,8 +105,8 @@ class Table(models.Model):
             'page_attribute': self.page_attribute,
             'items_per_page_attribute': self.items_per_page_attribute,
             'total_items_page_attribute': self.total_items_page_attribute,
-            'list_headings': self.list_headings.split('\r\n') if self.list_headings else [],
-            'list_fields': self.list_fields.split('\r\n') if self.list_fields else [],
+            'list_headings': self.list_headings.splitlines() if self.list_headings else [],
+            'list_fields': self.list_fields.splitlines() if self.list_fields else [],
             'search_fields': self.search_fields,
             'error_template': self.error_template,
             'login_required': self.login_required,

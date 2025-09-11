@@ -118,7 +118,7 @@ export default {
           }
         }
 
-        this.rows = fetchDot(this.table.list_query, data);
+        this.rows = this.table.list_query ? fetchDot(this.table.list_query, data) : fetchDot("", data);
         this.total_items = this.table.total_items_page_attribute
           ? fetchDot(this.table.total_items_page_attribute, data)
           : null;
@@ -164,6 +164,7 @@ export default {
 .section {
   padding: 30px 0 0 0;
 }
+
 .table {
   width: 100%;
   border: solid 1px var(--color-grey-60);
