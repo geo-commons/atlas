@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Gebruiker wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -16,16 +18,17 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
 import { getAllObjects } from "@/utils/api-helpers";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "UserCreateUpdateComponent",
-  components: { AdminFormSections },
+  components: { Spinner, AdminFormSections },
   data() {
     return {
       sections: {},
       initialValues: {},
-      currentValues: {},
       groups: [],
+      loading: false,
     };
   },
   computed: {
@@ -37,9 +40,11 @@ export default {
     },
   },
   created() {
+    this.loading = true;
     Promise.all([this.getUser(), this.getGroups()]).then(() => {
       this.setAtlasGroups();
       this.sections = this.getSections();
+      this.loading = false;
     });
   },
   methods: {
@@ -83,7 +88,7 @@ export default {
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
     async saveUser(currentValues, continueEditing = false) {
-      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups?.[1]?.map((group) => group.id) || [];
       currentValues.is_staff = currentValues.is_admin;
       currentValues.is_superuser = currentValues.is_admin;
 
@@ -107,13 +112,6 @@ export default {
       } catch (e) {
         console.error("An unexpected error occurred:", e);
       }
-    },
-    moveGroup(item, fromArray, toArray) {
-      const arrayAriaText = toArray === this.availableGroups ? "Beschikbare groepen" : "Geselecteerde groepen";
-      this.assistiveText = `${item.name}, verplaatst naar ${arrayAriaText}`;
-
-      fromArray.splice(fromArray.indexOf(item), 1);
-      toArray.push(item);
     },
     getSections() {
       return {

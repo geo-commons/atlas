@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Bron wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -15,24 +17,29 @@
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import { getAllObjects } from "@/utils/api-helpers";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "SourceCreateUpdate",
   components: {
+    Spinner,
     AdminFormSections,
   },
   data() {
     return {
       sections: {},
       initialValues: {},
-      currentValues: {},
       groups: [],
+      loading: false,
     };
   },
   created() {
+    this.loading = true;
+
     Promise.all([this.getSource(), this.getGroups()]).then(() => {
       this.setAtlasGroups();
       this.sections = this.getSections();
+      this.loading = false;
     });
   },
   methods: {
@@ -51,7 +58,7 @@ export default {
     async saveSource(currentValues, continueEditing = false) {
       const url = `/atlas/api/v1/sources/${this.$route.params.id}/`;
 
-      currentValues.atlas_groups = currentValues.atlas_groups[1].map((group) => group.id);
+      currentValues.atlas_groups = currentValues.atlas_groups?.[1]?.map((group) => group.id) || [];
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);

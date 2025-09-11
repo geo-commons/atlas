@@ -1,7 +1,9 @@
 <template>
   <div class="container __admin">
     <h1 class="font-weight-normal">Groep wijzigen</h1>
+    <Spinner v-if="loading" style-type="'admin'" />
     <AdminFormSections
+      v-else
       ref="formSections"
       :sections="sections"
       :initial-values="initialValues"
@@ -14,21 +16,26 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
+import Spinner from "@/components/Spinner.vue";
 
 export default {
   name: "GroupCreateUpdateComponent",
-  components: { AdminFormSections },
+  components: { Spinner, AdminFormSections },
   props: {},
   data() {
     return {
       sections: {},
       initialValues: {},
-      currentValues: {},
+      loading: false,
     };
   },
   created() {
-    this.getGroup();
-    this.sections = this.getSections();
+    this.loading = true;
+
+    Promise.all([this.getGroup()]).then(() => {
+      this.sections = this.getSections();
+      this.loading = false;
+    });
   },
   methods: {
     async getGroup() {

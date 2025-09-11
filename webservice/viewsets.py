@@ -1,8 +1,5 @@
-import os
-
 from constance import config
 from constance import settings as constance_settings
-from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django_filters.rest_framework import DjangoFilterBackend
@@ -219,7 +216,8 @@ class ConfigurationViewSet(ViewSet):
                     if (key in request.FILES):
                         uploaded_file = request.FILES[key]
                         # Define the path to save the file
-                        file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
+                        # file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
+                        file_path = uploaded_file.name
                         # Save the file
                         path = default_storage.save(file_path, ContentFile(uploaded_file.read()))
                         # Save the file path in the Constance setting (key is the field name)
