@@ -137,12 +137,12 @@ export default {
   height: 0;
 }
 
-.map:focus {
+.keyboard-user .map:focus {
   outline: none;
   position: relative;
 }
 
-.map:focus::before {
+.keyboard-user .map:focus::before {
   content: "";
   position: absolute;
   top: 0;
