@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <header-menu v-if="!isEmbed && config.features.portal" />
+    <outdated-map-alert v-if="outdated_map_slug" :theme-slug="outdated_map_slug" />
     <map-renderer
       v-if="readyToRenderMap"
       :initial-position="position"
@@ -25,6 +26,7 @@ import MapRenderer from "@/components/MapRenderer/MapRenderer.vue";
 import { mapState, mapStores } from "pinia";
 import { useGlobalStore } from "@/stores"; // Register EPSG:28992 projection
 import "primeicons/primeicons.css";
+import OutdatedMapAlert from "@/components/OutdatedMapAlert.vue";
 
 // Register EPSG:28992 projection
 register(getDefinitions());
@@ -34,6 +36,7 @@ nunjucks.configure({ autoescaping: true });
 export default {
   name: "App",
   components: {
+    OutdatedMapAlert,
     MapRenderer,
     HeaderMenu,
   },
@@ -58,6 +61,7 @@ export default {
       "selectedArea",
       "initiallyShowLayerList",
       "map",
+      "outdated_map_slug",
     ]),
   },
   created() {
