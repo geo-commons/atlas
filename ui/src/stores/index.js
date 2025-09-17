@@ -17,6 +17,7 @@ export const useGlobalStore = defineStore("global", {
     tables: null,
     maps: null,
     map: null,
+    outdated_map_slug: null,
   }),
   getters: {
     // getters

@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initiallyShowLayerList: settings.visibleLayers.length === 0 && !isMobile() && !data.is_embed,
     searchQuery: "",
     alert: "",
+    outdated_map_slug: data.outdated_map_slug || null,
   };
 
   const pinia = createPinia();

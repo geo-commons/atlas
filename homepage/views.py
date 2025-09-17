@@ -45,9 +45,15 @@ def v3(request, theme_slug=''):
 
     context = {}
 
+    # We set outdated_map_slug to None by default. If the user is on an outdated map (i.e., when theme_slug is set)
+    # we update it to that slug. This allows us to later display a message in the frontend
+    # letting the user know they are using an old map view, along with a redirect to the new map view.
+    outdated_map_slug = None
+
     if theme_slug:
         theme = get_object_or_404(Map, slug=theme_slug)
         visible_layers = authorized_layers.filter(map=theme)
+        outdated_map_slug = theme_slug
         context['title'] = theme.title
     else:
         visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
@@ -56,7 +62,8 @@ def v3(request, theme_slug=''):
         'is_embed': False,
         'config': _get_config(request),
         'user': user,
-        'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
+        'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers],
+        'outdated_map_slug': outdated_map_slug,
     }
 
     return render(request, 'v3/app.html', context)
