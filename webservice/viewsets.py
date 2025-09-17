@@ -100,7 +100,7 @@ class UsersViewSet(viewsets.ModelViewSet):
 
 class GroupsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
-    queryset = AtlasGroup.objects.all()
+    queryset = AtlasGroup.objects.all().order_by('name')
     serializer_class = GroupSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
