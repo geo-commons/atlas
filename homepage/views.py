@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 @xframe_options_exempt
 def embed(request):
-    authorized_layers = Layer.authorized.for_request(request)
+    authorized_layers = Layer.authorized.for_request(request).select_related('metadataset')
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
     user = _get_user(request)
 
@@ -40,7 +40,7 @@ def embed(request):
 def v3(request, theme_slug=''):
     authorized_layers = Layer.authorized.for_request(request).prefetch_related(
         'layer_source', 'layer_type', 'linked_data', 'templates'
-    )
+    ).select_related('metadataset')
     user = _get_user(request)
 
     context = {}

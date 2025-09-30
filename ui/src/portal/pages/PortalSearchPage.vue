@@ -10,7 +10,7 @@
       </div>
       <div v-if="results > 0">
         <div v-if="datasets.length > 0">
-          <h3 class="tw-m-0 tw-text-3xl md:tw-mt-6 md:tw-mb-2">Datasets</h3>
+          <h3 class="tw-m-0 tw-text-3xl md:tw-mt-6 md:tw-mb-2">Metadatasets</h3>
           <PortalDatasetList :datasets="datasets" />
         </div>
       </div>

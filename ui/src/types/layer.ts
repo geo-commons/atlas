@@ -1,9 +1,11 @@
 import { GeometryType } from "ol/render/webgl/MixedGeometryBatch";
+import { IMetadataset } from "./metadataset";
 
 export interface ILayer {
   id: string;
   name: string;
   title: string;
+  description?: string;
   url: string;
   source_type: ELayerTypes;
   is_visible: boolean;
@@ -14,6 +16,15 @@ export interface ILayer {
   is_base: boolean;
   category: string;
   show_in_detail_panel: boolean;
+  metadataset?: IMetadataset | null;
+  metadata?: {
+    description: string;
+    lineage: string;
+    organization: string;
+    contact: string;
+    updated: string;
+    link: string;
+  };
 }
 
 export type IGeometryType = GeometryType | "Geometry";

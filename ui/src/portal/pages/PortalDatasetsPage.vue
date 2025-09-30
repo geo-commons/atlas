@@ -1,6 +1,6 @@
 <template>
   <div class="container __portal">
-    <h1 class="__portal">Datasets</h1>
+    <h1 class="__portal">Metadatasets</h1>
     <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
     <section v-else>
       <div class="search-container">

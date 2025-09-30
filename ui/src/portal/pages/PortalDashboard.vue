@@ -19,11 +19,11 @@
     <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
     <div v-else class="tw-flex tw-flex-col tw-gap-4 md:tw-gap-8 tw-mt-4 md:tw-mt-8">
       <!-- Note: currently we can only search through datasets that is why it is the only check in the v-if below.     -->
-      <section v-if="availableLinks.datasets" class="tw-flex tw-justify-center">
+      <!-- <section v-if="availableLinks.datasets" class="tw-flex tw-justify-center">
         <div class="tw-w-full lg:tw-w-4/6">
           <PortalSearchField :size="'large'" @on-search="onSearch" />
         </div>
-      </section>
+      </section> -->
 
       <section class="tw-grid md:tw-grid-cols-12 tw-gap-4 lg:tw-gap-12 tw-mt-4 md:tw-mt-8">
         <EmbedAtlasFrame class="md:tw-col-span-7" :embed-url="embedUrl" />
@@ -55,7 +55,7 @@
             />
           </div>
         </section>
-        <section v-if="datasets?.length">
+        <!-- <section v-if="datasets?.length">
           <div class="tw-flex tw-justify-between tw-items-center">
             <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Datasets</h2>
             <router-link class="text-button" to="/datasets">
@@ -75,7 +75,7 @@
               :object-url="`/datasets/${dataset.slug}`"
             />
           </div>
-        </section>
+        </section> -->
         <section v-if="tables?.length">
           <div class="tw-flex tw-justify-between tw-items-center">
             <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Tabellen</h2>
@@ -103,21 +103,27 @@
 </template>
 
 <script>
-import { useGlobalStore } from "@/stores";
 import PortalCard from "@/portal/components/PortalCard.vue";
-import PortalSearchField from "@/portal/components/PortalSearchField.vue";
-import Spinner from "@/components/Spinner.vue";
-import ArrowRightIcon from "../../assets/icons/arrow-right-icon.svg";
-import PortalQuickNavigationMenu from "@/portal/components/PortalQuickNavigationMenu.vue";
+import { useGlobalStore } from "@/stores";
+// import PortalSearchField from "@/portal/components/PortalSearchField.vue";
 import EmbedAtlasFrame from "@/components/EmbedAtlasFrame.vue";
+import Spinner from "@/components/Spinner.vue";
+import PortalQuickNavigationMenu from "@/portal/components/PortalQuickNavigationMenu.vue";
+import ArrowRightIcon from "../../assets/icons/arrow-right-icon.svg";
 
 export default {
   name: "PortalDashboard",
-  components: { EmbedAtlasFrame, PortalQuickNavigationMenu, PortalSearchField, PortalCard, Spinner, ArrowRightIcon },
+  components: {
+    EmbedAtlasFrame,
+    PortalQuickNavigationMenu,
+    /* PortalSearchField, */ PortalCard,
+    Spinner,
+    ArrowRightIcon,
+  },
   data() {
     return {
       loading: false,
-      datasets: [],
+      // datasets: [],
       maps: [],
       maxNrItems: 4,
       embedUrl: String,
@@ -136,42 +142,45 @@ export default {
     visibleMaps() {
       return this.maps.slice(0, this.maxNrItems);
     },
-    visibleDatasets() {
-      return this.datasets.slice(0, this.maxNrItems);
-    },
+    // visibleDatasets() {
+    //   return this.datasets.slice(0, this.maxNrItems);
+    // },
     visibleTables() {
       return this.tables.slice(0, this.maxNrItems);
     },
     noContentAvailable() {
-      return !this.maps?.length && !this.tables?.length && !this.datasets?.length;
+      return !this.maps?.length && !this.tables?.length; // && !this.datasets?.length;
     },
     availableLinks() {
-      return { maps: this.maps?.length > 0, datasets: this.datasets?.length > 0, tables: this.tables?.length > 0 };
+      return {
+        maps: this.maps?.length > 0,
+        /* datasets: this.datasets?.length > 0, */ tables: this.tables?.length > 0,
+      };
     },
   },
   created() {
-    Promise.all([this.getDatasets(), this.getMaps()]).then(() => {
+    Promise.all([/* this.getDatasets(), */ this.getMaps()]).then(() => {
       this.loading = false;
     });
     this.embedUrl = this.getEmbedUrl();
   },
   methods: {
-    async getDatasets() {
-      this.loading = true;
+    // async getDatasets() {
+    //   // this.loading = true;
 
-      const result = await fetch("/atlas/api/v1/datasets/?published=True&show_in_overview=True", {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
+    //   // const result = await fetch("/atlas/api/v1/datasets/?published=True&show_in_overview=True", {
+    //   //   credentials: "same-origin",
+    //   //   headers: { "Content-Type": "application/json" },
+    //   // });
 
-      if (!result.ok) {
-        console.error("Could not fetch datasets");
-      }
+    //   // if (!result.ok) {
+    //   //   console.error("Could not fetch datasets");
+    //   // }
 
-      const response = await result.json();
-      this.datasets = response.results;
-      return result;
-    },
+    //   // const response = await result.json();
+    //   this.datasets = [];
+    //   return [];
+    // },
     async getMaps() {
       this.loading = true;
 

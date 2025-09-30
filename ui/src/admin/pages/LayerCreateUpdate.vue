@@ -10,6 +10,7 @@
       :form-object="'layers'"
       :object-specific-save="saveLayer"
       @update-source="(source) => (selectedSource = source)"
+      @metadataset-changed="handleMetadatasetChange"
     >
       <template #linkedData>
         <div class="layer-setting">
@@ -134,9 +135,9 @@ import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import FormModal from "@/components/FormModal.vue";
 import Spinner from "@/components/Spinner.vue";
+import { useGlobalStore } from "@/stores";
 import { getAllObjects } from "@/utils/api-helpers";
 import { mapState } from "pinia";
-import { useGlobalStore } from "@/stores";
 
 export default {
   name: "LayerCreateUpdate",
@@ -153,12 +154,11 @@ export default {
   data() {
     return {
       categories: [],
-      datasets: [],
+      metadatasets: [],
       sources: {},
       sourceTypes: [],
       groups: [],
       formats: [],
-      sections: {},
       initialValues: {},
       selectedSource: {},
       showFormModal: false,
@@ -166,11 +166,16 @@ export default {
       selectedLinkedData: null,
       selectedTemplate: null,
       loading: false,
+      disabledPublishedField: false,
     };
   },
   computed: {
     ...mapState(useGlobalStore, ["config"]),
+    sections() {
+      return this.getSections();
+    },
   },
+
   created() {
     this.loading = true;
 
@@ -188,13 +193,16 @@ export default {
       { id: "image/vnd.jpeg-png", label: "image/vnd.jpeg-png" },
     ];
 
-    Promise.all([this.getLayer(), this.getGroups(), this.getCategories(), this.getDatasets(), this.getSources()]).then(
-      () => {
-        this.setAtlasGroups();
-        this.sections = this.getSections();
-        this.loading = false;
-      },
-    );
+    Promise.all([
+      this.getLayer(),
+      this.getGroups(),
+      this.getCategories(),
+      this.getMetadatasets(),
+      this.getSources(),
+    ]).then(() => {
+      this.setAtlasGroups();
+      this.loading = false;
+    });
   },
   methods: {
     async getLayer() {
@@ -229,6 +237,14 @@ export default {
       this.initialValues.search_properties = response.search_properties.join("\n");
       this.initialValues.display_properties = response.display_properties.join("\n");
       this.initialValues.search_terms = response.search_terms ? response.search_terms.join("\n") : "";
+      if (response.metadataset) {
+        this.initialValues.metadataset = response.metadataset;
+      } else {
+        this.initialValues.metadataset = null;
+      }
+
+      // Set initial disabledPublishedField state based on metadataset
+      this.setInitialPublishedFieldState(response);
 
       // Set selectedSource
       this.selectedSource = {
@@ -241,8 +257,14 @@ export default {
       return result;
     },
     async saveLayer(currentValues, continueEditing = false) {
-      currentValues.layer_name =
-        typeof currentValues.layer_name === "string" ? currentValues.layer_name : currentValues.layer_name.value;
+      if (currentValues.layer_name) {
+        currentValues.layer_name =
+          typeof currentValues.layer_name === "string"
+            ? currentValues.layer_name
+            : currentValues.layer_name?.value || currentValues.layer_name;
+      } else {
+        currentValues.layer_name = null;
+      }
 
       currentValues.metadata = {};
       // Convert internal fields back to layer model.
@@ -276,21 +298,25 @@ export default {
       currentValues.templates = this.initialValues.templates;
       currentValues.linked_data = this.initialValues.linked_data;
 
+      if (currentValues.metadataset === undefined || currentValues.metadataset === "") {
+        currentValues.metadataset = null;
+      }
+
       const url = `/atlas/api/v1/layers/${this.$route.params.id}/`;
 
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
         if (result.ok) {
-          if (!continueEditing) {
-            this.$router.push(`/layers`);
-          }
-
           this.$toast.add({
             severity: "success",
             summary: "Laag opgeslagen",
             detail: "De laag is succesvol opgeslagen.",
             life: 3000,
           });
+
+          if (!continueEditing) {
+            this.$router.push(`/layers`);
+          }
         }
       } catch (e) {
         console.error("An unexpected error occurred:", e);
@@ -314,22 +340,29 @@ export default {
       });
       return response;
     },
-    async getDatasets() {
-      const url = getAllObjects("/atlas/api/v1/datasets/");
+    async getMetadatasets() {
+      const url = getAllObjects("/atlas/api/v1/metadatasets/");
       const result = await fetch(url, {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
       });
 
       if (!result.ok) {
-        console.error("Could not fetch datasets");
+        console.error("Could not fetch metadatasets");
       }
 
       const response = await result.json();
 
-      this.datasets = response.results.map((dataset) => {
-        return { id: dataset.id, label: dataset.title };
-      });
+      this.metadatasets = response.results.map((metadataset) => ({
+        id: metadataset.id,
+        label: metadataset.title,
+        value: metadataset.id,
+        organization: metadataset.organization,
+        description: metadataset.description,
+        last_updated: metadataset.last_updated,
+        update_frequency: metadataset.update_frequency,
+        responsible_email_internal: metadataset.responsible_email_internal,
+      }));
       return response;
     },
     async getSources() {
@@ -479,6 +512,55 @@ export default {
 
       this.showFormModal = true;
     },
+    /**
+     * Sets the initial state of the disabledPublishedField based on metadataset and published status.
+     *
+     * The published field should be disabled when:
+     * There is no metadataset assigned to the layer AND the layer is not currently published
+     *
+     * This ensures that users cannot publish a layer without first selecting a metadataset,
+     * which is required for proper metadata management and compliance.
+     *
+     * @param {Object} response - The layer response object containing metadataset and published properties
+     */
+    setInitialPublishedFieldState(response) {
+      this.disabledPublishedField = !response.metadataset && !response.published;
+    },
+
+    async handleMetadatasetChange(newValue) {
+      // Update disabledPublishedField based on whether metadataset is selected
+      // This is done to prevent publishing a layer without a metadataset, which is required for proper metadata management and compliance.
+      this.disabledPublishedField = !newValue;
+
+      // If metadataset is cleared, uncheck the published field.
+      // This is done to prevent publishing a layer without a metadataset, which is required for proper metadata management and compliance.
+      if (!newValue && this.$refs.formSections) {
+        this.$nextTick(() => {
+          this.$refs.formSections.updateFieldValue("published", false);
+        });
+      }
+
+      // If metadataset is selected and the layer was previously published, restore published state
+      // This is done to maintain user intent and prevent accidental unpublishing.
+      if (newValue && this.initialValues?.published) {
+        this.$nextTick(() => {
+          this.$refs.formSections.updateFieldValue("published", true);
+        });
+      }
+
+      // Show info message when metadataset is removed and was previously published
+      //
+      if (!newValue && this.initialValues?.published) {
+        this.$nextTick(() => {
+          this.$toast.add({
+            severity: "info",
+            summary: "Metadataset verwijderd",
+            detail: "Selecteer een metadataset om deze laag te kunnen publiceren.",
+            life: 3000,
+          });
+        });
+      }
+    },
     getSections() {
       return {
         general: {
@@ -510,13 +592,22 @@ export default {
               options: this.categories,
             },
             {
-              label: "Dataset",
-              id: "dataset",
-              name: "Dataset",
-              type: "dropdown",
+              label: "Beschrijving",
+              id: "description",
+              name: "Description",
+              type: "text",
               required: false,
-              placeholder: "Dataset",
-              options: this.datasets,
+              multiLine: true,
+              infoText: "Een beschrijving van de laag. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
+            },
+            {
+              label: "Metadata",
+              id: "metadataset",
+              name: "Metadataset",
+              type: "metadataset-select",
+              required: false,
+              placeholder: "Metadata",
+              options: this.metadatasets,
             },
             {
               label: "Gepubliceerd",
@@ -524,6 +615,8 @@ export default {
               name: "Published",
               type: "checkbox",
               required: false,
+              disabled: this.disabledPublishedField,
+              infoText: "Selecteer eerst een metadataset om deze laag te kunnen publiceren.",
             },
             {
               label: "Kaartlaag is exporteerbaar",
@@ -794,6 +887,7 @@ export default {
               type: "text",
               required: false,
               isNested: true,
+              disabled: true,
             },
             {
               label: "Omschrijving",
@@ -804,6 +898,7 @@ export default {
               multiLine: true,
               isNested: true,
               infoText: "Het is mogelijk om tekst op te maken met Markdown in dit veld.",
+              disabled: true,
             },
             {
               label: "Organisatie",
@@ -812,6 +907,7 @@ export default {
               type: "text",
               required: false,
               isNested: true,
+              disabled: true,
             },
             {
               label: "Contactpersoon",
@@ -820,6 +916,7 @@ export default {
               type: "text",
               required: false,
               isNested: true,
+              disabled: true,
             },
             {
               label: "Herkomst data",
@@ -830,7 +927,8 @@ export default {
               required: false,
               isNested: true,
               infoText:
-                "Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
+                "Beschrijft de herkomst van de metadataset. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
+              disabled: true,
             },
             {
               label: "Laatst bijgewerkt",
@@ -838,6 +936,7 @@ export default {
               name: "metadataUpdated",
               type: "text",
               required: false,
+              disabled: true,
             },
             {
               label: "Meer informatie",
@@ -846,6 +945,7 @@ export default {
               type: "text",
               required: false,
               infoText: "Link naar metadatacatalogus met meer informatie",
+              disabled: true,
             },
           ],
         },
@@ -861,12 +961,12 @@ export default {
               infoText: "Laag is alleen zichtbaar binnen interne omgeving.",
             },
             {
-              label: "Vereis inlog voor deze dataset",
+              label: "Vereis inlog voor deze metadataset",
               id: "login_required",
               name: "LoginRequired",
               type: "checkbox",
               required: false,
-              infoText: "De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.",
+              infoText: "De inhoud van deze metadataset kan alleen bekeken worden door ingelogde gebruikers.",
             },
             {
               label: "Ingelogde gebruikers kunnen kaartlaag bewerken",

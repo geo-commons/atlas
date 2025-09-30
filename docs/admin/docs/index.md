@@ -13,6 +13,7 @@ Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module w
 - [KAARTEN](kaarten.md)
 - [BRONNEN](bronnen.md)
 - [CATEGORIEEN](categorie.md)
+- [METADATA](metadata.md)
 - [KAARTLAGEN](kaartlagen.md)
 - [KAARTEN](kaarten.md)
 - [VIEWERS](viewers.md)

@@ -20,36 +20,52 @@
       <div class="container">
         <div class="heading">
           <h3 class="title">{{ layer.title }}</h3>
-          <div class="description">
-            <markdown :source="layer.metadata.description" />
-          </div>
-          <div v-if="layer.metadata.link" class="link">
-            <a :href="layer.metadata.link" target="_blank">Meer informatie</a>
+          <!-- Use metadataset abstract if available, fallback to old metadata description -->
+          <div v-if="layer.description" class="description">
+            <markdown :source="layer.description" />
           </div>
         </div>
-        <div v-if="layer.metadata" class="properties">
-          <div v-if="layer.metadata.organization" class="property">
+        <div v-if="layer.metadataset" class="properties">
+          <div v-if="layer.metadataset?.abstract" class="property">
+            <div class="key">Toelichting dataset</div>
+            <div class="value">
+              <markdown :source="layer.metadataset?.abstract" />
+            </div>
+          </div>
+          <div v-if="layer.metadataset?.source_organization" class="property">
             <div class="key">Organisatie</div>
             <div class="value">
-              <markdown :source="layer.metadata.organization" />
+              <markdown :source="layer.metadataset?.source_organization" />
             </div>
           </div>
-          <div v-if="layer.metadata.contact" class="property">
+          <div v-if="layer.metadataset?.source_email_public" class="property">
             <div class="key">Contactpersoon</div>
             <div class="value">
-              <markdown :source="layer.metadata.contact" />
+              <markdown :source="layer.metadataset?.source_email_public" />
             </div>
           </div>
-          <div v-if="layer.metadata.lineage" class="property">
+          <div v-if="layer.metadataset?.source_origin" class="property">
             <div class="key">Herkomst dataset</div>
             <div class="value">
-              <markdown :source="layer.metadata.lineage" />
+              <markdown :source="layer.metadataset?.source_origin" />
             </div>
           </div>
-          <div v-if="layer.metadata.updated" class="property">
+          <div v-if="layer.metadataset?.last_updated" class="property">
             <div class="key">Bijgewerkt</div>
             <div class="value">
-              <markdown :source="layer.metadata.updated" />
+              <markdown :source="layer.metadataset?.last_updated" />
+            </div>
+          </div>
+          <div v-if="layer.metadataset?.update_frequency" class="property">
+            <div class="key">Updatefrequentie</div>
+            <div class="value">
+              <markdown :source="layer.metadataset.update_frequency" />
+            </div>
+          </div>
+          <div v-if="layer.metadataset?.statement" class="property">
+            <div class="key">Doel van de vervaardiging</div>
+            <div class="value">
+              <markdown :source="layer.metadataset.statement" />
             </div>
           </div>
         </div>

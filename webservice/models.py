@@ -193,6 +193,208 @@ class Dataset(models.Model):
         super().save(*args, **kwargs)
 
 
+class MetadatasetManager(models.Manager):
+    def for_request(self, request):
+        if request.user.is_anonymous:
+            return self.filter(status='completed')
+
+        if request.user.is_authenticated and request.user.is_superuser:
+            return self.all()
+
+        return self.filter(status='completed')
+
+
+class TopicCategory(models.TextChoices):
+    FARMING = "farming", _("Landbouw en Veeteelt")
+    BIOTA = "biota", _("Biodiversiteit en Ecologie")
+    BOUNDARIES = "boundaries", _("Grenzen en Administratie")
+    CLIMATOLOGY_METEOROLOGY_ATMOSPHERE = "climatologyMeteorologyAtmosphere", _("Klimaat en Meteorologie")
+    ECONOMY = "economy", _("Economie en Werkgelegenheid")
+    ELEVATION = "elevation", _("Hoogte en Reliëf")
+    ENVIRONMENT = "environment", _("Milieu en Natuurbescherming")
+    GEOSCIENTIFIC_INFORMATION = "geoscientificInformation", _("Geowetenschappen")
+    HEALTH = "health", _("Gezondheid en Veiligheid")
+    IMAGERY_BASE_MAPS_EARTH_COVER = "imageryBaseMapsEarthCover", _("Basiskaarten en Beeldmateriaal")
+    INTELLIGENCE_MILITARY = "intelligenceMilitary", _("Defensie en Militaire Zaken")
+    INLAND_WATERS = "inlandWaters", _("Binnenwateren")
+    LOCATION = "location", _("Locatie en Adressering")
+    OCEANS = "oceans", _("Oceanen en Kustgebieden")
+    PLANNING_CADASTRE = "planningCadastre", _("Ruimtelijke Ordening en Kadaster")
+    SOCIETY = "society", _("Maatschappij en Cultuur")
+    STRUCTURE = "structure", _("Bouwwerken en Infrastructuur")
+    TRANSPORTATION = "transportation", _("Transport en Vervoer")
+    UTILITIES_COMMUNICATION = "utilitiesCommunication", _("Nutsvoorzieningen en Communicatie")
+
+
+class RoleType(models.TextChoices):
+    RESOURCE_PROVIDER = "resourceProvider", _("Data verstrekker")
+    CUSTODIAN = "custodian", _("Beheerder")
+    OWNER = "owner", _("Eigenaar")
+    USER = "user", _("Gebruiker")
+    DISTRIBUTOR = "distributor", _("Distributeur")
+    ORIGINATOR = "originator", _("Maker")
+    POINT_OF_CONTACT = "pointOfContact", _("Contactpunt")
+    PRINCIPAL_INVESTIGATOR = "principalInvestigator", _("Onderzoeksleider")
+    PROCESSOR = "processor", _("Bewerker")
+    PUBLISHER = "publisher", _("Uitgever")
+    AUTHOR = "author", _("Auteur")
+
+
+class UpdateMethodType(models.TextChoices):
+    MANUAL = "manual", _("Manueel")
+    AUTOMATIC = "automatic", _("Automatisch (via API)")
+
+
+class AuthorizationLevelType(models.TextChoices):
+    OPEN_DATA = "open_data", _("Open data")
+    INTERNAL = "internal", _("Interne toegang")
+    EXTERNAL = "external", _("Externe toegang")
+    PROTECTED = "protected", _("Beveiligd")
+
+
+class StatusType(models.TextChoices):
+    COMPLETED = "completed", _("Gepubliceerd")
+    UNDER_DEVELOPMENT = "underDevelopment", _("In ontwikkeling")
+    HISTORICAL_ARCHIVE = "historicalArchive", _("Gearchiveerd")
+
+
+class AccessConstraintsType(models.TextChoices):
+    LICENSE = "license", _("Licentie")
+    INTELLECTUAL_PROPERTY = "intellectualPropertyRights", _("Intellectuele eigendomsrechten")
+    RESTRICTED = "restricted", _("Beperkt")
+    OTHER = "otherRestrictions", _("Overige beperkingen")
+
+
+class OtherConstraintsType(models.TextChoices):
+    PUBLICDOMAIN_MARK = "publicdomain-mark", _("Open data (publiek)")
+    PUBLICDOMAIN_ZERO = "publicdomain-zero", _("Open data (CC0)")
+    LICENSES_BY = "licenses-by", _("Open data (CC-BY)")
+    LICENSES_BY_SA = "licenses-by-sa", _("Open data (CC-BY-SA)")
+    LICENSES_BY_NC = "licenses-by-nc", _("Open data (CC-BY-NC)")
+    LICENSES_BY_NC_SA = "licenses-by-nc-sa", _("Gebruiksvoorwaarden (CC-by-nc-sa)")
+    LICENSES_BY_ND = "licenses-by-nd", _("Gebruiksvoorwaarden (CC-by-nd)")
+    LICENSES_BY_NC_ND = "licenses-by-nc-nd", _("Gebruiksvoorwaarden (CC-by-nc-nd)")
+    CUSTOM = "custom", _("Gebruiksvoorwaarden Geogedeeld")
+
+
+class Metadataset(models.Model):
+    objects = models.Manager()
+    authorized = MetadatasetManager()
+
+    title = models.CharField('Naam', max_length=128,
+                             help_text="De naam van de dataset")
+
+    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
+                         overwrite_on_add=False, editable=True,
+                         help_text='Een uniek kort kenmerk voor de metadataset in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes.',
+                         max_length=255)
+
+    description = models.TextField(
+        'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld",
+        blank=True)
+
+    abstract = models.TextField(
+        'Toelichting dataset', null=True, blank=True,
+        help_text="Een beschrijving van de inhoud van de dataset, geef in deze samenvatting  publieks vriendelijk informatie over de inhoud van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).")
+
+    topic_category = models.CharField(
+        'Onderwerp', max_length=128, null=True, blank=True, choices=TopicCategory.choices,
+        help_text="Het belangrijkste onderwerp van de dataset.")
+
+    keyword = models.CharField(
+        'Trefwoord', max_length=500, null=True, blank=True,
+        help_text="In het algemeen gebruikte woorden of geformaliseerde zinnen om een dataset of datasetserie te beschrijven. Eén trefwoord per regel.")
+
+    statement = models.TextField(
+        'Doel van de vervaardiging', null=True, blank=True, help_text="De reden waarom de dataset is gemaakt.")
+
+    source_origin = models.TextField(
+        'Oorspronkelijke bron', null=True, blank=True,
+        help_text="Algemene beschrijving herkomst. Dit is de bron waar de dataset vandaan komt, dat kan een URL zijn of een beschrijving van de bron.")
+
+    source_location = models.TextField(
+        'Bronlocatie', null=True, blank=True, help_text="Bijvoorbeeld Objectstore (COG), S3, etc.")
+
+    source_email_internal = models.EmailField(
+        'E-mailadres aanspreekpunt', null=True, blank=True,
+        help_text="Het e-mailadres van het intern aanspreekpunt van de bron.")
+
+    source_organization = models.CharField(
+        'Verantwoordelijke organisatie', max_length=128, null=True, blank=True,
+        help_text="De organisatie van de verantwoordelijke van de bron, bijvoorbeeld de gemeente, provincie, Nederlandse organisatie voor toegepast-natuurwetenschappelijk onderzoek (TNO), etc.")
+
+    source_email_public = models.EmailField(
+        'E-mailadres verantwoordelijke', null=True, blank=True,
+        help_text="Het e-mailadres van de verantwoordelijke organisatie van de bron.")
+
+    source_email_person_responsible = models.EmailField(
+        'E-mailadres verantwoordelijke', null=True, blank=True,
+        help_text="Het e-mailadres van de verantwoordelijke van de bron.")
+
+    source_role_person_responsible = models.CharField(
+        'Rol verantwoordelijke', max_length=128, null=True, blank=True, choices=RoleType.choices,
+        help_text="De rol van de verantwoordelijke van de bron.")
+
+    update_method = models.CharField(
+        'Updatemethode', max_length=128, null=True, blank=True, choices=UpdateMethodType.choices,
+        help_text="De methode waarmee de dataset wordt bijgewerkt.", default="manual")
+
+    update_frequency = models.CharField(
+        'Updatefrequentie', max_length=128, null=True, blank=True,
+        help_text="De frequentie waarmee de dataset wordt bijgewerkt.")
+
+    last_updated = models.DateField(
+        'Laatst bijgewerkt', null=True, blank=True,
+        help_text="De datum waarop de dataset voor het laatst is bijgewerkt.")
+
+    authorization_level = models.CharField(
+        'Autorisatieniveau', max_length=128, null=True, blank=True, choices=AuthorizationLevelType.choices,
+        help_text="Het niveau van autorisatie voor de dataset.")
+
+    status = models.CharField(
+        'Status', max_length=128, null=True, blank=True, choices=StatusType.choices,
+        help_text="De status van de dataset.", default="underDevelopment")
+
+    show_in_overview = models.BooleanField(
+        'Toon in dataportaal', default=False, help_text="Toon de dataset in het dataportaal.")
+
+    access_constraints = models.CharField(
+        'Juridische toegangsrestricties', max_length=128, null=True, blank=True, choices=AccessConstraintsType.choices,
+        help_text="De juridische toegangsrestricties van de dataset.")
+
+    other_constraints = models.CharField(
+        'Overige beperkingen', max_length=128, null=True, blank=True, choices=OtherConstraintsType.choices,
+        help_text="De overige beperkingen van de dataset.")
+
+    usage_constraints = models.TextField(
+        'Gebruiksbeperkingen', null=True, blank=True,
+        help_text="In dit veld geef je aan waarvoor de dataset niet mag of kan worden gebruikt. Bijvoorbeeld: Niet gebruiken voor navigatie.")
+
+    meta_email_internal = models.EmailField(
+        'E-mailadres aanspreekpunt', null=True, blank=True,
+        help_text="Het e-mailadres van het intern aanspreekpunt van de verantwoordelijke van de metadata.")
+
+    meta_organization = models.CharField(
+        'Organisatie', max_length=128, null=True, blank=True,
+        help_text="De naam van de organisatie verantwoordelijk voor de metadata. Gebruik de volledig uitgeschreven naam van de verantwoordelijke organisatie. Bijvoorbeeld: Gemeente Purmerend.")
+
+    meta_email_person_responsible = models.EmailField(
+        'E-mailadres verantwoordelijke', null=True, blank=True,
+        help_text="Het e-mailadres van de organisatie verantwoordelijk voor de metadata. Gebruik bij voorkeur een functioneel e-mailadres.")
+
+    meta_role_person_responsible = models.CharField(
+        'Rol verantwoordelijke', max_length=128, null=True, blank=True, choices=RoleType.choices,
+        help_text="De rol van de verantwoordelijke van de bron.")
+
+    class Meta:
+        verbose_name = 'Metadataset'
+        verbose_name_plural = 'Metadatasets'
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+
 class Layer(models.Model):
     SOURCE_WMS_WFS = 'WMS_WFS'
     SOURCE_WMS = 'WMS'
@@ -229,6 +431,9 @@ class Layer(models.Model):
                          max_length=255)
 
     title = models.CharField('Titel', max_length=128, null=True)
+
+    description = models.TextField('Beschrijving', blank=True, null=True,
+                                   help_text='Beschrijving van de kaartlaag. Het is mogelijk om tekst op te maken met Markdown in dit veld.')
 
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
     # so inform them when changing.
@@ -288,7 +493,7 @@ class Layer(models.Model):
 
     _search_fields = models.CharField(
         'Zoek in deze velden', max_length=500, blank=True, null=True)
-    
+
     _search_terms = models.CharField(
         'Zoektermen', max_length=500, blank=True, null=True,
         help_text='Deze worden gebruikt om de laag beter vindbaar te maken in het lagenpaneel. Voer één zoekterm per regel in.')
@@ -309,7 +514,7 @@ class Layer(models.Model):
         help_text='De inhoud van deze dataset kan alleen bekeken worden door ingelogde gebruikers.')
 
     authenticated_can_mutate = models.BooleanField('Ingelogde gebruikers kunnen kaartlaag muteren', default=False,
-        help_text="Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren")
+                                                   help_text="Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren")
 
     published = models.BooleanField('Gepubliceerd', default=False)
 
@@ -321,7 +526,7 @@ class Layer(models.Model):
 
     legend_url = models.URLField(
         'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True, max_length=1000)
-    
+
     is_base = models.BooleanField('Is basislaag', default=False)
     is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
@@ -369,6 +574,9 @@ class Layer(models.Model):
 
     dataset = models.ForeignKey(
         Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
+
+    metadataset = models.ForeignKey(
+        Metadataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
 
     def __str__(self):
         return self.title
@@ -498,6 +706,7 @@ source: new ol.source.TileWMS({{
             'internal_id': self.id,
             'source_type': self.source_type,
             'title': self.title,
+            'description': self.description,
             'name': self.layer_name,
             'opacity': float(self.opacity),
             'server_style': self.server_style,
@@ -535,6 +744,28 @@ source: new ol.source.TileWMS({{
                 'updated': self.meta_updated,
                 'link': self.meta_link
             },
+            'metadataset': {
+                'id': self.metadataset.id,
+                'title': self.metadataset.title,
+                'abstract': self.metadataset.abstract,
+                'topic_category': self.metadataset.topic_category,
+                'keyword': self.metadataset.keyword,
+                'statement': self.metadataset.statement,
+                'source_origin': self.metadataset.source_origin,
+                'source_organization': self.metadataset.source_organization,
+                'source_email_public': self.metadataset.source_email_public,
+                'source_role_person_responsible': self.metadataset.source_role_person_responsible,
+                'update_frequency': self.metadataset.update_frequency,
+                'last_updated': self.metadataset.last_updated.strftime(
+                    '%d-%m-%Y') if self.metadataset.last_updated else None,
+                'status': self.metadataset.status,
+                'access_constraints': self.metadataset.access_constraints,
+                'other_constraints': self.metadataset.other_constraints,
+                'usage_constraints': self.metadataset.usage_constraints,
+                'meta_organization': self.metadataset.meta_organization,
+                'meta_email_person_responsible': self.metadataset.meta_email_person_responsible,
+                'meta_role_person_responsible': self.metadataset.meta_role_person_responsible,
+            } if self.metadataset else None,
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
             'templates': [item.to_dict() for item in self.templates.all()],
             'legend_url': self.legend_url,
@@ -646,6 +877,7 @@ class SelectionManager(models.Manager):
             return self.filter(login_required=False)
 
         return self.all()
+
 
 # TODO: Remove Selections, this is not used anymore in Atlas
 class Selection(models.Model):

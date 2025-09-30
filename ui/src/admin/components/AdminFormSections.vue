@@ -45,6 +45,7 @@
                   />
                   <span class="label-info-text-wrapper">
                     <label :for="question.id">{{ question.label }}</label>
+                    <VisibilityIndicator :visibility="question.visibility" />
                     <AdminFormInfoText
                       v-if="question.infoText && question.infoText !== ''"
                       :info-text="question.infoText"
@@ -76,7 +77,10 @@
                   </div>
                 </div>
                 <div class="upload-button">
-                  <label for="file" class="question-label">{{ question.label }}</label>
+                  <span class="label-info-text-wrapper">
+                    <label for="file" class="question-label">{{ question.label }}</label>
+                    <VisibilityIndicator :visibility="question.visibility" />
+                  </span>
                   <div>
                     <input
                       :id="`file_${question.id}`"
@@ -98,7 +102,10 @@
               </div>
               <div v-else-if="question.type === 'picklist'">
                 <div v-if="question.showIf !== undefined ? question.showIf : true" class="picklist-wrapper">
-                  <label class="question-label" :for="question.id">{{ question.label }}</label>
+                  <span class="label-info-text-wrapper">
+                    <label class="question-label" :for="question.id">{{ question.label }}</label>
+                    <VisibilityIndicator :visibility="question.visibility" />
+                  </span>
                   <vee-field
                     :id="question.id"
                     v-slot="{ value, handleChange, handleBlur }"
@@ -134,9 +141,11 @@
               <div v-else>
                 <span class="label-info-text-wrapper">
                   <label class="question-label" :for="question.id">{{ question.label }}</label>
+                  <VisibilityIndicator :visibility="question.visibility" />
                   <AdminFormInfoText
                     v-if="question.infoText && question.infoText !== ''"
                     :info-text="question.infoText"
+                    class="tw-ml-auto"
                   />
                 </span>
                 <div v-if="question.type === 'dropdown'" class="dropdown-wrapper">
@@ -250,6 +259,23 @@
                   />
                 </vee-field>
                 <vee-field
+                  v-else-if="question.type === 'metadataset-select'"
+                  v-slot="{ value, handleChange }"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                >
+                  <MetadatasetsField
+                    :model-value="value"
+                    :options="question.options || []"
+                    @metadataset-changed="
+                      (newValue) => {
+                        handleChange(newValue);
+                        $emit('metadataset-changed', newValue);
+                      }
+                    "
+                  />
+                </vee-field>
+                <vee-field
                   v-else-if="question.type === 'date'"
                   :id="question.id"
                   :name="question.id"
@@ -267,6 +293,30 @@
                   type="color"
                   as="input"
                 />
+                <div v-else-if="question.type === 'radio'" class="tw-flex tw-flex-col tw-gap-2">
+                  <div
+                    v-for="option in question.options"
+                    :key="option.id"
+                    class="tw-flex tw-items-start tw-gap-2 tw-cursor-pointer tw-py-1"
+                  >
+                    <vee-field
+                      :id="option.id"
+                      :name="question.id"
+                      type="radio"
+                      as="input"
+                      :value="option.id"
+                      :disabled="question.disabled"
+                      :rules="getRules(question)"
+                      class="tw-mt-[6px]"
+                    />
+                    <label :for="option.id" class="tw-flex-1 tw-leading-relaxed tw-font-normal tw-cursor-pointer">
+                      {{ option.label }}
+                    </label>
+                  </div>
+                  <span class="warning-text">
+                    <vee-error-message :name="question.id" />
+                  </span>
+                </div>
                 <vee-field
                   v-else
                   :id="question.id"
@@ -321,28 +371,36 @@
 <script>
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import LayerField from "@/admin/components/LayerField.vue";
+import MetadatasetsField from "@/admin/components/MetadatasetsField.vue";
+import VisibilityIndicator from "@/admin/components/VisibilityIndicator.vue";
 import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
 import CloseIcon from "@/assets/icons/close-icon.svg";
+import { useGlobalStore } from "@/stores";
 import { formatDateValue } from "@/utils/date-formatter";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
 import Cookies from "js-cookie";
+import { mapState } from "pinia";
+import InputText from "primevue/inputtext";
+import PickList from "primevue/picklist";
 import { clouds } from "thememirror";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import CodeMirror from "vue-codemirror6";
-import { mapState } from "pinia";
-import { useGlobalStore } from "@/stores";
 
 export default {
   name: "AdminFormSections",
   components: {
     ArrowDownTrayIcon,
     LayerField,
+    MetadatasetsField,
     CloseIcon,
     CodeMirror,
     AdminFormInfoText,
     VeeForm,
     VeeField,
     VeeErrorMessage,
+    VisibilityIndicator,
+    InputText,
+    PickList,
   },
   props: {
     sections: Object,
@@ -366,6 +424,8 @@ export default {
     objectSpecificSave: Function,
     formObject: String,
   },
+  emits: ["update-source", "metadataset-changed"],
+  expose: ["updateFieldValue", "sendSaveRequest"],
   data() {
     return {
       options: {},
@@ -434,10 +494,16 @@ export default {
     formatDateValue,
     json,
     jsonParseLinter,
+    updateFieldValue(fieldName, value) {
+      // Update the vee-validate form value
+      if (this.$refs.formRef) {
+        this.$refs.formRef.setFieldValue(fieldName, value);
+      }
+    },
     reset(question) {
-      this.currentValues[question.id] = "";
-      const dropdownElement = document.getElementById(question.id);
-      dropdownElement.value = "";
+      if (this.$refs.formRef) {
+        this.$refs.formRef.setFieldValue(question.id, "");
+      }
     },
     cancel() {
       if (!this.formObject) {
@@ -494,6 +560,7 @@ export default {
         }
         return result;
       } catch (error) {
+        console.error("Unexpected error in sendSaveRequest:", error);
         window.scrollTo({ top: 0, behavior: "smooth" });
         this.unexpectedError = "Er is een onverwachte fout opgetreden, probeer het later nog eens.";
       }
@@ -575,6 +642,17 @@ h3 {
   padding: 20px 0;
 }
 
+.config-section-wrapper .section-questions {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.config-section-wrapper .section-questions > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
 @media (max-width: 576px) {
   .config-section-wrapper {
     grid-template-areas:
@@ -594,9 +672,20 @@ h3 {
 }
 
 .label-info-text-wrapper {
-  display: flex;
-  gap: 5px;
+  display: inline-flex;
+  gap: 4px;
   align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  width: 100%;
+}
+
+.label-info-text-wrapper label {
+  display: inline-block;
+  margin-right: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: auto;
 }
 
 .checkbox-wrapper {
