@@ -55,11 +55,11 @@
             </span>
             Categorieën
           </router-link>
-          <router-link to="/datasets" class="button __tertiary __large" type="button" aria-label="Naar datasets">
-            <span class="button-icon tw-bg-amber-100">
-              <DatabaseIcon class="icon tw-text-amber-800" />
+          <router-link to="/metadatasets" class="button __tertiary __large" type="button" aria-label="Naar metadatasets">
+            <span class="button-icon tw-bg-amber-100 tw-w-[40px] tw-h-[40px] tw-flex tw-items-center tw-justify-center">
+              <i class="pi pi-tag tw-text-amber-800" style="font-size: 1.25rem" />
             </span>
-            Datasets
+            Metadatasets
           </router-link>
           <router-link to="/maps" class="button __tertiary __large" type="button" aria-label="Naar kaarten">
             <span class="button-icon tw-bg-amber-100">
@@ -146,7 +146,6 @@ import CogIcon from "@/assets/icons/cog-icon.svg";
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
 import BookIcon from "../../assets/icons/book-icon.svg";
 import CategoryIcon from "../../assets/icons/category-icon.svg";
-import DatabaseIcon from "../../assets/icons/database-icon.svg";
 import GroupIcon from "../../assets/icons/group-icon.svg";
 import LayerIcon from "../../assets/icons/layer-icon.svg";
 import MapIcon from "../../assets/icons/map-icon.svg";
@@ -169,7 +168,6 @@ export default {
     UserIcon,
     GroupIcon,
     BookIcon,
-    DatabaseIcon,
     ViewIcon,
     TableIcon,
     LogIcon,

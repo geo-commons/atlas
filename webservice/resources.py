@@ -1,5 +1,5 @@
 from import_export import resources, fields, widgets
-from .models import Category, Source, Layer, Selection, Map, Theme, Viewer, Dataset, MapLayer
+from .models import Category, Source, Layer, Selection, Map, Theme, Viewer, Dataset, Metadataset, MapLayer
 from .widgets import MapLayerManyToManyWidget
 
 
@@ -20,6 +20,13 @@ class ThemeResource(resources.ModelResource):
 class DatasetResource(resources.ModelResource):
     class Meta:
         model = Dataset
+        exclude = ('id', )
+        import_id_fields = ('slug', )
+
+
+class MetadatasetResource(resources.ModelResource):
+    class Meta:
+        model = Metadataset
         exclude = ('id', )
         import_id_fields = ('slug', )
 

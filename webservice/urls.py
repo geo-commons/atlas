@@ -14,8 +14,24 @@ api_router.register(r'users', viewsets.UsersViewSet, basename='users')
 api_router.register(r'groups', viewsets.GroupsViewSet, basename='groups')
 api_router.register(
     r'authorize', authz_viewsets.AuthorizeViewSet, basename='autorize')
+
+api_router.register(r'authorizations', authz_viewsets.AuthorizationViewSet, basename='authorizations')
+api_router.register(r'configurations', viewsets.ConfigurationViewSet, basename='configurations')
+
+api_router.register(r"metadatasets/topic-categories", viewsets.TopicCategoryViewSet, basename="topic-categories")
+api_router.register(r"metadatasets/role-types", viewsets.RoleTypeViewSet, basename="role-types")
+api_router.register(r"metadatasets/update-method-types", viewsets.UpdateMethodTypeViewSet,
+                    basename="update-method-types")
+api_router.register(r"metadatasets/authorization-level-types", viewsets.AuthorizationLevelTypeViewSet,
+                    basename="authorization-level-types")
+api_router.register(r"metadatasets/status-types", viewsets.StatusTypeViewSet, basename="status-types")
+api_router.register(r"metadatasets/access-constraints-types", viewsets.AccessConstraintsTypeViewSet,
+                    basename="access-constraints-types")
+api_router.register(r"metadatasets/other-constraints-types", viewsets.OtherConstraintsTypeViewSet,
+                    basename="other-constraints-types")
+
 api_router.register(
-    r'datasets', viewsets.DatasetViewSet, basename='datasets'
+    r'metadatasets', viewsets.MetadatasetViewSet, basename='metadatasets'
 )
 api_router.register(
     r'themes', viewsets.ThemeViewSet, basename='themes'
@@ -30,5 +46,3 @@ api_router.register(
 api_router.register(
     r'viewers', viewsets.ViewerViewSet, basename='viewers'
 )
-api_router.register(r'authorizations', authz_viewsets.AuthorizationViewSet, basename='authorizations')
-api_router.register(r'configurations', viewsets.ConfigurationViewSet, basename='configurations')

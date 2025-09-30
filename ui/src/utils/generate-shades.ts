@@ -16,16 +16,15 @@ import chroma from "chroma-js";
  */
 export const generateShades = (baseColor: string) => {
   return {
-    50: chroma(baseColor).brighten(3).hex(),
-    100: chroma(baseColor).brighten(2.5).hex(),
-    200: chroma(baseColor).brighten(2).hex(),
-    300: chroma(baseColor).brighten(1.5).hex(),
-    400: chroma(baseColor).brighten(1).hex(),
+    50: chroma.mix(baseColor, "#ffffff", 0.9).hex(),
+    100: chroma.mix(baseColor, "#ffffff", 0.75).hex(),
+    200: chroma.mix(baseColor, "#ffffff", 0.6).hex(),
+    300: chroma.mix(baseColor, "#ffffff", 0.45).hex(),
+    400: chroma.mix(baseColor, "#ffffff", 0.3).hex(),
     500: baseColor,
-    600: chroma(baseColor).darken(0.5).hex(),
-    700: chroma(baseColor).darken(1).hex(),
-    800: chroma(baseColor).darken(1.5).hex(),
-    900: chroma(baseColor).darken(2).hex(),
-    950: chroma(baseColor).darken(3).hex(),
+    600: chroma.mix(baseColor, "#000000", 0.2).hex(),
+    700: chroma.mix(baseColor, "#000000", 0.35).hex(),
+    800: chroma.mix(baseColor, "#000000", 0.5).hex(),
+    900: chroma.mix(baseColor, "#000000", 0.7).hex(),
   };
 };

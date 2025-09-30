@@ -19,6 +19,10 @@ Onder algemene gegevens van de kaartlaag kent Atlas diverse velden, dat zijn de 
 - **Titel**
 - **Kort kenmerk:** (Een uniek ID dat de layer onderscheid van andere. Wordt gebruikt als slug voor betreffende kaartlaag.
 - **Categorie:** De categorie waar toe de kaartlaag behoort. (selecteer onder welke categorie deze layer komt)
+- **Metadataset:** Selecteer de metadataset die aan deze kaartlaag gekoppeld moet worden. De metadataset bevat alle metadata informatie conform ISO 19115 standaard. Deze koppeling is verplicht voor publicatie van de kaartlaag.
+
+!!! info "Publicatie vereiste"
+    Een kaartlaag kan alleen worden gepubliceerd als er een metadataset aan is gekoppeld. Dit is nodig zodat gebruikers altijd toegang hebben tot de juiste beschrijvende informatie (metadata) over de kaartlaag. Zonder gekoppelde metadataset ontbreekt deze informatie en voldoet de publicatie niet aan de kwaliteits- en transparantie-eisen.
 - **Gepubliceerd:** Met deze optie bepaal je op de laag wordt gepubliceerd of niet binnen Atlas, deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden. _Standaard_: uit.
 - **Kaartlaag is exporteerbaar**: Met deze optie bepaal je of de data achter de kaartlaag wel of niet exporteerbaar is vanuit de dataweergave. _Standaard_: aan.
 
@@ -117,32 +121,13 @@ Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de i
 
 - **Zoektermen:** Via het veld "Zoektermen" kun je extra termen opgeven waarop een kaartlaag gevonden kan worden bij gebruik van de zoekfunctie binnen Atlas. Dit is vooral handig wanneer gebruikers verschillende woorden gebruiken voor hetzelfde concept. Bijvoorbeeld: bij een kaartlaag met als titel Scholen kun je de zoektermen onderwijs, educatie en basisschool toevoegen, zodat gebruikers deze kaartlaag ook vinden wanneer ze op die alternatieve termen zoeken. Voeg één zoekterm per regel in.
 
-### Metadata
-
-Onder metadata kunnen alle metadata gerelateerde velden worden geconfigureerd. Veel van deze metadata is zichtbaar in Atlas wanneer je via het "Zichtbare lagen" menu naar de kaartlaag zelf navigeert en hier op het ⓘ icoon klikt.
-
-- **Naam:** (Vul een naam in voor de laag als metadata. Deze informatie verschijnt wanneer op het ⓘ symbool wordt geklikt)
-- **Omschrijving:** Vul een metadata omschrijving in. Bijvoorbeeld: "De kaart is nog in bewerking" of "oude scholenkaart van 1980". _Ter informatie_: Er kan markdown in dit veld gebruikt worden. Deze informatie verschijnt wanneer op het ⓘ symbool wordt geklikt)
-- **Organisatie:** (Vul de eigenaar van de betreffende data in. Deze informatie verschijnt wanneer op het ⓘ symbool wordt geklikt)
-- **Contactpersoon:** Wie is binnen de organisatie het aanspreekpunt wanneer het gaat om updates of aanpassingen? Dit veld wordt niet getoond op de metadatapagina binnen Atlas maar wel binnen het Metadata Beheersysteem (MBS).
-- **Laatst bijgewerkt:** (Datum laatst bijgewerkt. Deze informatie verschijnt wanneer op het ⓘ symbool wordt geklikt)
-
-!!! tip
-
-    Het kan handig zijn om het veld Laatst bijgewerkt automatisch te laten updaten vanuit bv. FME wanneer kaartlagen dagelijks vernieuwd worden.
-
-- **Meer informatie**: Vul hier een link naar een metadatacatalogus in. _Veld eisen_: Moet een geldige link zijn.
-
-!!! info
-
-    Het veld "kort kenmerk" wordt gebruikt voor de metadatapagina van de laag. De linknaam wordt dan bijvoorbeeld: ```https://mijn_hostnaam/metadata/id_kort_kenmerk```
 
 ### Toegang
 
 Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een kaartlaag, ga hier zorgvuldig mee om.
 
 - **Alleen intern zichtbaar:** Wanneer "alleen intern zichtbaar" aan staat, is betreffende kaartlaag alleen beschikbaar binnen de interne omgeving. _Standaard_: aan.
-- **Vereis inlog voor deze dataset:** Wanneer "vereis inlog voor deze dataset" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. Indien je niet ingelogd bent, verschijnt de kaartlaag wel in het overzicht van lagen, maar krijg je de kaartlaag niet te zien en zie je enkel een slotje bij de kaartlaag staan om aan te wijzen dat je moet inloggen.
+- **Vereis inlog voor deze kaartlaag:** Wanneer "vereis inlog voor deze kaartlaag" aan staat, is betreffende kaartlaag alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas omgeving. Indien je niet ingelogd bent, verschijnt de kaartlaag wel in het overzicht van lagen, maar krijg je de kaartlaag niet te zien en zie je enkel een slotje bij de kaartlaag staan om aan te wijzen dat je moet inloggen.
   - **Ingelogde gebruikers kunnen kaartlaag bewerken:**
     Wanneer deze optie is ingeschakeld, kunnen alle ingelogde gebruikers binnen Atlas objecten op de kaartlaag muteren, dat wil zeggen: **toevoegen**, **bewerken** en/of **verwijderen**. Dit kan via zowel de kaartlaag module als de autorisatie module geregeld worden.
 

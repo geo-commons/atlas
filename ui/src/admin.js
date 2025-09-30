@@ -31,8 +31,8 @@ import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import ThemeCreateUpdate from "@/admin/pages/ThemeCreateUpdate.vue";
 import ThemeList from "@/admin/pages/ThemeList.vue";
-import DatasetList from "@/admin/pages/DatasetList.vue";
-import DatasetCreateUpdate from "@/admin/pages/DatasetCreateUpdate.vue";
+import MetadatasetList from "@/admin/pages/MetadatasetList.vue";
+import MetadatasetCreateUpdate from "@/admin/pages/MetadatasetCreateUpdate.vue";
 import LogList from "@/admin/pages/LogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
@@ -206,14 +206,14 @@ const routes = [
     meta: { title: "Thema bewerken", menu: true, breadcrumb: { themes: { title: "Thema's" } } },
   },
   {
-    path: "/datasets",
-    component: DatasetList,
-    meta: { title: "Datasets", menu: true },
+    path: "/metadatasets",
+    component: MetadatasetList,
+    meta: { title: "Metadatasets", menu: true },
   },
   {
-    path: "/datasets/update/:id",
-    component: DatasetCreateUpdate,
-    meta: { title: "Dataset Bewerken", menu: true, breadcrumb: { datasets: { title: "Datasets" } } },
+    path: "/metadatasets/update/:id",
+    component: MetadatasetCreateUpdate,
+    meta: { title: "Metadataset Bewerken", menu: true, breadcrumb: { metadatasets: { title: "Metadatasets" } } },
   },
   {
     path: "/general-information",

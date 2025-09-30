@@ -7,6 +7,7 @@ from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -17,11 +18,12 @@ from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin, DuplicateMixin, DeleteMixin, FileUploadMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
-from .models import Category, Drawing, Source, Layer, Theme, Viewer, Map, Dataset
+from .models import Category, Drawing, Source, Layer, Theme, Viewer, Map, Metadataset, TopicCategory, RoleType, \
+    UpdateMethodType, AuthorizationLevelType, StatusType, AccessConstraintsType, OtherConstraintsType
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
-    LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, DatasetSerializer, \
-    ThemeSerializer, ThemePatchOrCreateSerializer, DatasetPatchOrCreateSerializer, LogSerializer, ViewerSerializer, \
-    UserCreateUpdateSerializer
+    LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, \
+    ThemeSerializer, ThemePatchOrCreateSerializer, LogSerializer, ViewerSerializer, \
+    UserCreateUpdateSerializer, MetadatasetSerializer, MetadatasetPublicSerializer
 
 
 class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.ModelViewSet):
@@ -61,7 +63,7 @@ class LayerViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.
         return LayerSerializer
 
     def get_queryset(self):
-        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups')
+        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups').select_related('metadataset')
 
 
 class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -107,20 +109,27 @@ class GroupsViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
 
 
-class DatasetViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'patch', 'delete']
+class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, DuplicateMixin, DeleteMixin):
+    http_method_names = ['get', 'post', 'patch', 'delete', 'options']
+    serializer_class = MetadatasetSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
-    multiple_lookup_fields = ['themes', 'published', 'show_in_overview']
+    multiple_lookup_fields = ['topic_category', 'status']
     search_fields = ['title']
-    serializer_class = DatasetSerializer
-
-    def get_queryset(self):
-        return Dataset.authorized.for_request(self.request).prefetch_related('layers')
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
-        if self.action in ['partial_update', 'update', 'create']:
-            return DatasetPatchOrCreateSerializer
-        return DatasetSerializer
+        """
+        Return different serializers based on whether the user is authenticated or not.
+        Authenticated users get all fields including internal email addresses.
+        Anonymous users get only public fields.
+        """
+        if self.request.user.is_authenticated:
+            return MetadatasetSerializer
+        else:
+            return MetadatasetPublicSerializer
+
+    def get_queryset(self):
+        return Metadataset.authorized.for_request(self.request)
 
     def get_object(self):
         queryset = self.get_queryset()
@@ -135,7 +144,7 @@ class DatasetViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
             obj = queryset.filter(slug=lookup_field_value).first()
 
         if obj is None:
-            raise NotFound(f"No Dataset matches the given query: {lookup_field_value}")
+            raise NotFound(f"No Metadataset matches the given query: {lookup_field_value}")
 
         return obj
 
@@ -244,3 +253,45 @@ class ConfigurationViewSet(ViewSet):
         allow_settings = [key for key, options in settings]
 
         return self.setting(request, allow_settings)
+
+
+def enum_to_dict_list(enum_cls):
+    return [{"value": member.value, "label": member.label} for member in enum_cls]
+
+
+class BaseEnumViewSet(viewsets.ViewSet):
+    """List-only endpoint for TextChoices enums."""
+    permission_classes = [AllowAny]
+    pagination_class = None
+    enum_cls = None
+
+    def list(self, request):
+        return Response(enum_to_dict_list(self.enum_cls))
+
+
+class TopicCategoryViewSet(BaseEnumViewSet):
+    enum_cls = TopicCategory
+
+
+class RoleTypeViewSet(BaseEnumViewSet):
+    enum_cls = RoleType
+
+
+class UpdateMethodTypeViewSet(BaseEnumViewSet):
+    enum_cls = UpdateMethodType
+
+
+class AuthorizationLevelTypeViewSet(BaseEnumViewSet):
+    enum_cls = AuthorizationLevelType
+
+
+class StatusTypeViewSet(BaseEnumViewSet):
+    enum_cls = StatusType
+
+
+class AccessConstraintsTypeViewSet(BaseEnumViewSet):
+    enum_cls = AccessConstraintsType
+
+
+class OtherConstraintsTypeViewSet(BaseEnumViewSet):
+    enum_cls = OtherConstraintsType

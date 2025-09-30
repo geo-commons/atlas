@@ -4,7 +4,7 @@ from rest_framework import serializers
 from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer
+from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer, Metadataset
 from .util import safe_float_or_null
 
 
@@ -168,6 +168,74 @@ class MetadataSerializerField(serializers.Field):
         }
 
 
+class MetadatasetPublicSerializer(serializers.ModelSerializer):
+    """Serializer for external/public API calls - excludes internal email addresses and sensitive fields"""
+
+    class Meta:
+        model = Metadataset
+        fields = [
+            'id',
+            'title',
+            'slug',
+            'abstract',
+            'topic_category',
+            'keyword',
+            'statement',
+            'source_origin',
+            'source_organization',
+            'source_email_public',
+            'source_email_person_responsible',
+            'source_role_person_responsible',
+            'update_frequency',
+            'last_updated',
+            'status',
+            'show_in_overview',
+            'access_constraints',
+            'other_constraints',
+            'usage_constraints',
+            'meta_organization',
+            'meta_email_person_responsible',
+            'meta_role_person_responsible',
+        ]
+
+
+class MetadatasetSerializer(serializers.ModelSerializer):
+    """Serializer for internal API calls - includes all fields including internal email addresses"""
+
+    class Meta:
+        model = Metadataset
+        fields = [
+            'id',
+            'title',
+            'slug',
+            'description',
+            'abstract',
+            'topic_category',
+            'keyword',
+            'statement',
+            'source_origin',
+            'source_location',
+            'source_email_internal',
+            'source_organization',
+            'source_email_public',
+            'source_email_person_responsible',
+            'source_role_person_responsible',
+            'update_method',
+            'update_frequency',
+            'last_updated',
+            'authorization_level',
+            'status',
+            'show_in_overview',
+            'access_constraints',
+            'other_constraints',
+            'usage_constraints',
+            'meta_email_internal',
+            'meta_organization',
+            'meta_email_person_responsible',
+            'meta_role_person_responsible',
+        ]
+
+
 class LayerSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')
     category = CategorySerializer(source='layer_type')
@@ -213,6 +281,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'id',
             'source_type',
             'title',
+            'description',
             'can_access',
             'slug',
             'layer_name',
@@ -256,6 +325,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'published',
             'templated_properties',
             'dataset',
+            'metadataset',
             'is_filterable_in_legend',
             'authenticated_can_mutate',
             'is_exportable'
@@ -357,6 +427,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
+            'description',
             'slug',
             'category_id',
             'source_id',
@@ -397,6 +468,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'linked_data',
             'templates',
             'dataset',
+            'metadataset',
             'is_filterable_in_legend',
             'is_exportable',
             'authenticated_can_mutate'
@@ -406,6 +478,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
 class LayerListSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')
     category = CategorySerializer(source='layer_type')
+    metadataset = MetadatasetSerializer(read_only=True)
 
     def get_can_access(self, obj):
         request = self.context['request']
@@ -426,7 +499,8 @@ class LayerListSerializer(serializers.ModelSerializer):
             'is_base',
             'is_visible',
             'login_required',
-            'closed_dataset'
+            'closed_dataset',
+            'metadataset'
         ]
 
 
@@ -474,7 +548,6 @@ class BasicThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
         fields = ['id', 'title', 'slug']
-
 
 class DatasetSerializer(serializers.ModelSerializer):
     layers = LayerSerializer(many=True)

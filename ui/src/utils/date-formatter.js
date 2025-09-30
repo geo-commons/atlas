@@ -42,3 +42,27 @@ export function getDateString(delimiter = "_") {
   // Construct the date string with the specified delimiter
   return `${year}${delimiter}${month}${delimiter}${day}`;
 }
+
+/**
+ * Converts a date string or Date object to YYYY-MM-DD format for HTML date inputs.
+ *
+ * @param {string|Date|null|undefined} dateValue - The date value to format (ISO string, Date object, null, or undefined)
+ * @returns {string} Date string in YYYY-MM-DD format, or empty string if input is null/undefined
+ */
+export function formatDateForInput(dateValue) {
+  if (!dateValue) {
+    return "";
+  }
+
+  // If it's already a string, try to parse it as Date
+  // If it's a Date object, use it directly
+  const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return "";
+  }
+
+  // Use toISOString and split to get YYYY-MM-DD format
+  return date.toISOString().split("T")[0];
+}
