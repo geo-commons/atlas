@@ -122,7 +122,7 @@ Deploy acceptance:
       --set smartstreetPassword=$SMARTSTREET_PASSWORD \
       --set smartstreetApiKey=$SMARTSTREET_API_KEY \
       --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY \
-      --set loadDemoData=false \
+      --set loadDemoData=true \
       --set environment=acceptance
   environment:
     name: review/acc
