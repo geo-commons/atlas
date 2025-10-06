@@ -1,5 +1,5 @@
 <template>
-  <SidePanel initial-size-large :show-panel="showDataPanel" @toggle-full-side-panel="toggleFullScreen">
+  <SidePanel initial-size-large resizable :show-panel="showDataPanel" @toggle-full-side-panel="toggleFullScreen">
     <template #search>
       <div class="flexer" :class="{ 'full-window-padding': fullSizeWindow }">
         <div v-if="selectedLayerId != null" class="selected-layer-wrapper">
