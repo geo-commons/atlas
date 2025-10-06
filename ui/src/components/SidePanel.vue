@@ -1,6 +1,11 @@
 <template>
   <Transition name="slide">
-    <aside v-if="showPanel" class="wrapper" :class="{ large, medium, fullScreen }">
+    <aside
+      v-if="showPanel"
+      class="wrapper"
+      :class="{ large, medium, fullScreen }"
+      :style="{ width: fullScreen ? '100%' : panelWidth + 'px' }"
+    >
       <div class="wrapper-content tw-max-h-full">
         <template v-if="$slots.header">
           <slot name="header"></slot>
@@ -21,6 +26,8 @@
           <slot name="footer"></slot>
         </footer>
       </div>
+
+      <div v-if="resizable" class="resizer" @mousedown="initResize"></div>
 
       <button
         v-if="(large || medium) && !fullScreen && expandable"
@@ -68,6 +75,10 @@ export default {
   props: {
     initialSizeLarge: Boolean,
     initialSizeMedium: Boolean,
+    resizable: {
+      type: Boolean,
+      default: false,
+    },
     showPanel: Boolean,
     expandable: {
       type: Boolean,
@@ -79,6 +90,8 @@ export default {
       fullScreen: false,
       large: false,
       medium: false,
+      panelWidth: 400,
+      isResizing: false,
     };
   },
   watch: {
@@ -101,8 +114,30 @@ export default {
       this.large = !this.large;
       this.$emit("expand-side-panel", this.large);
     },
+    initResize(e) {
+      this.isResizing = true;
+      document.addEventListener("mousemove", this.resizePanel);
+      document.addEventListener("mouseup", this.stopResize);
+
+      // prevent text selection
+      e.preventDefault();
+    },
+    resizePanel(e) {
+      if (!this.isResizing) return;
+      const newWidth = e.clientX;
+      if (newWidth > window.innerWidth * 0.25 && newWidth < window.innerWidth * 0.9) {
+        this.panelWidth = newWidth;
+      }
+    },
+    stopResize() {
+      this.isResizing = false;
+      document.removeEventListener("mousemove", this.resizePanel);
+      document.removeEventListener("mouseup", this.stopResize);
+      this.$emit("resize", this.panelWidth);
+    },
     toggleFullScreen() {
       this.fullScreen = !this.fullScreen;
+      if (this.fullScreen) this.panelWidth = window.innerWidth;
       this.$emit("toggle-full-side-panel");
     },
   },
@@ -143,6 +178,14 @@ export default {
   }
 }
 
+@media (min-width: 1200px) {
+  .wrapper.large {
+    width: 25%;
+    max-width: 50vw;
+    min-width: 25vw;
+  }
+}
+
 @media (min-width: 1025px) {
   .wrapper {
     height: 100%;
@@ -163,6 +206,17 @@ export default {
     max-width: 100%;
     width: 100%;
   }
+
+  .resizer {
+    width: 5px;
+    cursor: ew-resize;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    z-index: 10;
+    background: transparent;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -175,8 +229,21 @@ export default {
     }
   }
 
+  .wrapper.medium {
+    min-width: 100%;
+  }
+
+  .wrapper.large {
+    width: 100%;
+    min-width: 100%;
+  }
+
   .wrapper.fullScreen {
     height: 100%;
+  }
+
+  .resizer {
+    display: none;
   }
 }
 
@@ -278,7 +345,7 @@ export default {
     opacity 0.3s ease-out,
     max-width 0.3s ease-out;
 
-  @media (max-width: 932px) {
+  @media (max-width: 1024px) {
     transition:
       opacity 0.3s ease-out,
       max-height 0.3s ease-out;
@@ -299,7 +366,7 @@ export default {
   }
 }
 
-@media (max-width: 932px) {
+@media (max-width: 1024px) {
   .slide-enter-from,
   .slide-leave-to {
     opacity: 0;
