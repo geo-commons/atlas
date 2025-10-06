@@ -864,6 +864,7 @@ export default {
               type: "text",
               required: false,
               infoText: "Overschrijf link naar legenda",
+              withImagePreview: true,
             },
             {
               label: "Zoektermen",

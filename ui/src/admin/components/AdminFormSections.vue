@@ -248,14 +248,14 @@
                     class="!tw-mb-2"
                     placeholder="Laagnaam"
                     type="text"
-                    @update:model-value="handleChange"
+                    @update:model-value="(updatedValue) => selectedLayerChanged(handleChange, updatedValue)"
                   />
                   <span>Of selecteer een laagnaam</span>
                   <layer-field
                     :model-value="value"
                     :current-source-id="values[question.sourceField]"
                     :sources="question.options || []"
-                    @update:model-value="handleChange"
+                    @update:model-value="(updatedValue) => selectedLayerChanged(handleChange, updatedValue)"
                   />
                 </vee-field>
                 <vee-field
@@ -320,11 +320,26 @@
                 <vee-field
                   v-else
                   :id="question.id"
+                  v-slot="{ value, handleChange, handleBlur }"
                   :name="question.id"
                   :disabled="question.disabled"
                   :rules="getRules(question)"
                   type="text"
-                />
+                >
+                  <InputText
+                    :id="question.id"
+                    :model-value="value"
+                    class="!tw-mb-2"
+                    type="text"
+                    :disabled="question.disabled"
+                    @update:model-value="handleChange"
+                    @blur="handleBlur"
+                  />
+                  <div v-if="question.withImagePreview" class="tw-flex tw-flex-col tw-gap-1 tw-items-start">
+                    <span>Legenda voorbeeld:</span>
+                    <img class="tw-max-w-full" :src="value" />
+                  </div>
+                </vee-field>
                 <span class="warning-text">
                   <vee-error-message :name="question.id" />
                 </span>
@@ -604,6 +619,24 @@ export default {
     // Note: this method is being used in the AdminListFormDialog.
     resetForm() {
       this.$refs.formRef.resetForm();
+    },
+    selectedLayerChanged(handleChange, value) {
+      // Handles layer selection changes.
+      // If `value` is a string (from a normal input), it represents the layer name directly.
+      // If `value` is an object (from <layer-field>), it has the form { name: "layer-name", legends: [] }.
+      // If there are no legends, `legend_url` is reset to an empty string.
+      const { formRef } = this.$refs;
+
+      if (typeof value === "string") {
+        formRef?.setFieldValue("legend_url", "");
+        handleChange(value);
+        return;
+      }
+
+      const { name, legends } = value;
+      handleChange(name);
+
+      formRef?.setFieldValue("legend_url", legends?.[0] || "");
     },
   },
 };
