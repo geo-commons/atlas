@@ -4,7 +4,7 @@
       v-if="showPanel"
       class="wrapper"
       :class="{ large, medium, fullScreen }"
-      :style="{ width: fullScreen ? '100%' : panelWidth + 'px' }"
+      :style="{ width: fullScreen ? '100%' : large ? '50%' : panelWidth + 'px' }"
     >
       <div class="wrapper-content tw-max-h-full">
         <template v-if="$slots.header">
