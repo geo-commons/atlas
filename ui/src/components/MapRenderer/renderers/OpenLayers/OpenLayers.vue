@@ -442,9 +442,8 @@ export default {
         return 0;
       }
       // Non-base layers get z-index based on position (higher = shown on top)
-      // We use layers.length - index so layers at the beginning of the array
-      // (lower indices) have higher z-indices
-      return this.layers.length - index;
+      // We use index so layers at the beginning of the array to preserve their order.
+      return index;
     },
   },
 };
