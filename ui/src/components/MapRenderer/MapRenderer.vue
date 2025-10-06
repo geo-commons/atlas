@@ -167,7 +167,7 @@
     <CompareLayersPanel
       :map-id="mapId"
       :show-compare-layer-panel="showCompareLayerPanel"
-      :layers="wmsWfsLayers"
+      :layers="wmsWfsAndWMTSLayers"
       @close-panel="closeCompareLayerPanel"
       @stop-compare="stopCompareLayers"
     />
@@ -620,8 +620,8 @@ export default {
     regularLayers() {
       return this.mapStore ? this.mapStore.regularLayers : [];
     },
-    wmsWfsLayers() {
-      return this.mapStore ? this.mapStore.wmsWfsLayers : [];
+    wmsWfsAndWMTSLayers() {
+      return this.mapStore ? this.mapStore.wmsWfsAndWMTSLayers : [];
     },
     countOfLayersWithActiveFilters() {
       return this.mapStore ? this.mapStore.getActiveLayersWithFilterCount : 0;

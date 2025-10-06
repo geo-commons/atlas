@@ -47,6 +47,7 @@ export enum ELayerTypes {
   WFS = "WFS",
   WMS = "WMS",
   WMS_WFS = "WMS_WFS",
+  WMTS = "WMTS",
 }
 
 export interface ISelectedLayerProps {

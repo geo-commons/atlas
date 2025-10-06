@@ -223,6 +223,12 @@ export function useMapStore(mapName: string) {
           (l: ILayer) => !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS"),
         );
       },
+      wmsWfsAndWMTSLayers: (state) => {
+        return state.layers.filter(
+          (l: ILayer) =>
+            !l.is_base && (l.source_type === "WMS" || l.source_type === "WMS_WFS" || l.source_type === "WMTS"),
+        );
+      },
       visibleLayers: (state) => {
         return state.layers.filter((layer: ILayer) => layer.category && layer.is_visible && !layer.is_base);
       },
