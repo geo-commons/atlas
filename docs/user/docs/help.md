@@ -254,7 +254,7 @@ Bij het aanmaken van het PDF bestand kan een aantal opties meegegeven worden:
 ##Kaartlagen vergelijken
 <img src="../images/kaartlaag-vergelijken-knop.png" alt="Kaartlaag vergelijken knop" title="Kaartlaag vergelijken knop" width="200" />
 
-Binnen Atlas is het mogelijk om kaartlagen met elkaar te vergelijken. Zo kun je bijvoorbeeld een luchtfoto uit 1990 naast een luchtfoto uit 2022 leggen. Deze functionaliteit activeer je via de knop "Vergelijk kaartlagen" (zie afbeelding hierboven).
+Binnen Atlas is het mogelijk om WMS, WMS_WFS en WMTS kaartlagen met elkaar te vergelijken. Zo kun je bijvoorbeeld een luchtfoto uit 1990 naast een luchtfoto uit 2022 leggen. Deze functionaliteit activeer je via de knop "Vergelijk kaartlagen" (zie afbeelding hierboven).
 
 Wanneer je op deze knop klikt, opent er een menu aan de zijkant van je scherm (zie afbeelding hieronder). Hier kun je twee kaartlagen selecteren om te vergelijken: één voor de linkerhelft en één voor de rechterhelft van het kaartbeeld.
 

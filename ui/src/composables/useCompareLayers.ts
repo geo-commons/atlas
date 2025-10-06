@@ -1,11 +1,16 @@
 import TileLayer from "ol/layer/Tile";
 import Map from "ol/Map";
 import { getRenderPixel } from "ol/render";
-import { IMapStore } from "@/types/mapStore";
+import { useMapStore } from "@/stores/map_store";
 
-export const useCompareLayers = (map: Map, mapStore: IMapStore, tileLayer: TileLayer, id: string) => {
+export const useCompareLayers = (
+  map: Map,
+  mapStore: ReturnType<typeof useMapStore>,
+  tileLayer: TileLayer,
+  id: string,
+) => {
   /*
-   * Note: currently it is only possible to compare WMS layers, this is due to the implementation for Tile Layers being more straight forwards as Vector Layers.
+   * Note: currently it is only possible to compare WMS and WMTS layers, this is due to the implementation for Tile Layers being more straight forwards as Vector Layers.
    * Vector layers will be implemented in the future.
    * */
 

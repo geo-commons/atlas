@@ -419,6 +419,24 @@
         }
     },
     {
+        "model": "webservice.source",
+        "pk": 17,
+        "fields": {
+            "title": "https://dpt.purmerend.nl/geoserver/gwc/service/wmts",
+            "slug": "dpt_purmerend_nl_geoserver_gwc_service_wmts",
+            "url": "https://dpt.purmerend.nl/geoserver/gwc/service/wmts"
+        }
+    },
+    {
+        "model": "webservice.source",
+        "pk": 18,
+        "fields": {
+            "title": "https://service.pdok.nl/lv/bgt/wmts/v1_0",
+            "slug": "service_pdok_nl_lv_bgt_wmts_v1_0",
+            "url": "https://service.pdok.nl/lv/bgt/wmts/v1_0"
+        }
+    },
+    {
         "model": "webservice.theme",
         "pk": 1,
         "fields": {
@@ -19968,6 +19986,86 @@
             "metadataset": 175,
             "atlas_groups": [],
             "atlas_write_groups": []
+        }
+    },
+    {
+        "model": "webservice.layer",
+        "pk": 297,
+        "fields": {
+            "slug": "topo-purmerend",
+            "title": "Topo Purmerend",
+            "layer_name": "topp:topo_purm_bgt",
+            "layer_source": 17,
+            "format": "image/png",
+            "meta_name": "Topo Purmerend",
+            "meta_description": "Topografische kaart van Purmerend",
+            "meta_org": "Gemeente Purmerend",
+            "meta_updated": "23-07-2019",
+            "opacity": "0.9",
+            "visible": false,
+            "client_style": {},
+            "layer_type": 2,
+            "_popup_attributes": "",
+            "_search_fields": "",
+            "projection": "EPSG:28992",
+            "server_type": "geoserver",
+            "closed_dataset": false,
+            "login_required": false,
+            "published": true,
+            "source_type": "WMTS",
+            "is_base": false,
+            "is_visible": false,
+            "not_in_atlas": false,
+            "created_at": "2019-07-23T11:56:48.321Z",
+            "updated_at": "2022-07-11T09:22:25.231Z",
+            "ordering": 20900,
+            "extent_min_x": null,
+            "extent_min_y": null,
+            "extent_max_x": null,
+            "extent_max_y": null,
+            "zoom_min": null,
+            "zoom_max": null,
+            "atlas_groups": []
+        }
+    },
+    {
+        "model": "webservice.layer",
+        "pk": 298,
+        "fields": {
+            "slug": "pdok-bgt-wmts",
+            "title": "PDOK - BGT (WMTS)",
+            "layer_name": "standaardvisualisatie",
+            "layer_source": 18,
+            "format": "image/png",
+            "meta_name": "BGT in WMTS",
+            "meta_description": "BGT in WMTS vanuit PDOK",
+            "meta_org": "PDOK",
+            "meta_updated": "23-07-2019",
+            "opacity": "0.9",
+            "visible": false,
+            "client_style": {},
+            "layer_type": 2,
+            "_popup_attributes": "",
+            "_search_fields": "",
+            "projection": "EPSG:28992",
+            "server_type": "geoserver",
+            "closed_dataset": false,
+            "login_required": false,
+            "published": true,
+            "source_type": "WMTS",
+            "is_base": false,
+            "is_visible": false,
+            "not_in_atlas": false,
+            "created_at": "2019-07-23T11:56:48.321Z",
+            "updated_at": "2022-07-11T09:22:25.231Z",
+            "ordering": 20900,
+            "extent_min_x": null,
+            "extent_min_y": null,
+            "extent_max_x": null,
+            "extent_max_y": null,
+            "zoom_min": null,
+            "zoom_max": null,
+            "atlas_groups": []
         }
     },
     {
