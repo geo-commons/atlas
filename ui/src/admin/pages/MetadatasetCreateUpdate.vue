@@ -23,7 +23,6 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import AssignedLayersList from "@/admin/components/AssignedLayersList.vue";
 import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
-import slugify from "slugify";
 import {
   accessConstraintsTypeOptions,
   // authorizationLevelTypeOptions,
@@ -83,8 +82,6 @@ const getMetadataset = async (): Promise<void> => {
 
 const saveMetadataset = async (currentValues: Partial<IMetadataset>, continueEditing = false): Promise<void> => {
   const url = `/atlas/api/v1/metadatasets/${route.params.id}/`;
-
-  currentValues.slug = slugify(currentValues.title || "");
 
   try {
     const result = await formSections.value.sendSaveRequest(url, "PATCH", currentValues);
