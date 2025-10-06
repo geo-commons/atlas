@@ -2,10 +2,11 @@
   <div class="layer-field">
     <Select
       class="!tw-mt-2"
-      :model-value="props.modelValue"
+      :model-value="selectedLayer"
       placeholder="Kies een laag"
       filter-placeholder="Zoek laag"
       :options="availableLayers"
+      option-label="name"
       :loading="isLoading"
       filter
       fluid
@@ -39,6 +40,14 @@ const isLoading = ref(true);
 
 const selectedSource = computed(() => {
   return props.sources.find((arr) => arr.id === props.currentSourceId);
+});
+
+const selectedLayer = computed(() => {
+  // Computes the currently selected layer object based on `modelValue`.
+  // `modelValue` is a string representing the layer name, while `availableLayers`
+  // is an array of objects like { name: "", legends: [] }.
+  // Returns the matching layer object or null if not found.
+  return availableLayers.value.find((layer) => layer.name === props.modelValue) || null;
 });
 
 watch(
@@ -82,7 +91,11 @@ const getLayers = async () => {
     }
 
     const caps = await new WMSCapabilities().read(body);
-    const layers = caps?.Capability?.Layer?.Layer.map((layer) => layer.Name);
+
+    const layers = caps?.Capability?.Layer?.Layer.map((layer) => ({
+      name: layer.Name,
+      legends: layer.Style?.map((style) => style.LegendURL?.map((legend) => legend.OnlineResource) || []).flat() || [],
+    }));
 
     availableLayers.value = layers ? layers : [];
 

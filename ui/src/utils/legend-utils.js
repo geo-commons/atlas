@@ -8,7 +8,7 @@ export const fetchLegendImage = async (layer, position, user) => {
   let legendImage;
   let error = false;
   const wmsSource = new TileWMS({
-    url: layer.legend_url ? layer.legend_url : layer.url,
+    url: layer.url,
     servertype: layer.server_type,
     params: {
       LAYERS: layer.name,

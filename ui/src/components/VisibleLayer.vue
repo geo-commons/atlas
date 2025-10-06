@@ -94,7 +94,7 @@
         <div class="content">
           <img
             v-if="layerHasLegend && !legendJson"
-            :src="legendImage"
+            :src="layer.legend_url ? layer.legend_url : legendImage"
             class="legend"
             :alt="`Legenda voor laag ${layer.title}`"
           />
@@ -183,7 +183,8 @@ export default {
       return (
         this.layer.source_type === "WMS" ||
         this.layer.source_type === "WMS_WFS" ||
-        (this.layer.source_type === "WMTS" && this.layer.legend_url)
+        (this.layer.source_type === "WMTS" && this.layer.legend_url) ||
+        this.layer.legend_url
       );
     },
     visibleLayers() {
