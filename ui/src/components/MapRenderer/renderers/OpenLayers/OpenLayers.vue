@@ -439,7 +439,7 @@ export default {
     },
     getZIndex(layer, index) {
       if (layer.is_base) {
-        return 0;
+        return -1;
       }
       // Non-base layers get z-index based on position (higher = shown on top)
       // We use index so layers at the beginning of the array to preserve their order.
