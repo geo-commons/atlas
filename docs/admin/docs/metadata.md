@@ -126,8 +126,8 @@ De huidige status van de dataset:
 - In ontwikkeling
 - Gearchiveerd
 
-**Toon in dataportaal**
-Schakel in om de dataset zichtbaar te maken in het publieke dataportaal.
+**Toon in dataportaal voor niet-ingelogde gebruikers**
+Schakel in om de metadataset in het dataportaal te tonen voor niet-ingelogde gebruikers. Ingelogde gebruikers zien gepubliceerde metadatasets altijd.
 
 ### Beperkingen
 

@@ -33,7 +33,7 @@ export default {
       type: String,
     },
     placeholder: {
-      default: "Zoek op datasets...",
+      default: "Zoek naar metadatasets...",
       type: String,
     },
   },

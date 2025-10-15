@@ -113,7 +113,7 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
     http_method_names = ['get', 'post', 'patch', 'delete', 'options']
     serializer_class = MetadatasetSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
-    multiple_lookup_fields = ['topic_category', 'status']
+    multiple_lookup_fields = ['topic_category', 'status', 'show_in_overview']
     search_fields = ['title']
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -135,14 +135,14 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
         queryset = self.get_queryset()
         lookup_field_value = self.kwargs.get('pk')
 
-        # Check if the lookup value is numeric (for id) or not (for slug)
-        if lookup_field_value.isdigit():
-            # Try to retrieve by primary key (id)
-            obj = queryset.filter(pk=lookup_field_value).first()
-        else:
-            # If not numeric, try to retrieve by slug
-            obj = queryset.filter(slug=lookup_field_value).first()
+        # first check if the lookup field is a slug
+        obj = queryset.filter(slug=lookup_field_value).first()
 
+        # if not, check if the lookup field is a primary key
+        if obj is None and lookup_field_value.isdigit():
+            obj = queryset.filter(pk=lookup_field_value).first()
+
+        # if not, raise an error
         if obj is None:
             raise NotFound(f"No Metadataset matches the given query: {lookup_field_value}")
 
