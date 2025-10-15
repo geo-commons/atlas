@@ -323,11 +323,13 @@ const getSections = (): AdminFormConfig => {
           options: statusTypeOptions,
         },
         {
-          label: "Toon in dataportaal",
+          label: "Toon in dataportaal voor niet-ingelogde gebruikers",
           id: "show_in_overview",
           name: "showInOverview",
           type: "checkbox",
           required: false,
+          visibility: "Publiek",
+          infoText: "Toon de metadataset in het dataportaal voor niet-ingelogde gebruikers. Ingelogde gebruikers zien gepubliceerde metadatasets altijd.",
         },
       ],
     },
@@ -361,6 +363,7 @@ const getSections = (): AdminFormConfig => {
           name: "Usage Restrictions",
           type: "text",
           required: false,
+          visibility: "Publiek",
           infoText:
             "In dit veld geef je aan waarvoor de dataset niet mag of kan worden gebruikt. Bijvoorbeeld: Niet gebruiken voor navigatie.",
         },

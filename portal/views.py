@@ -4,7 +4,7 @@ from homepage.views import _get_config, _get_user
 from tables.models import Table
 
 
-def index(request):
+def index(request, slug=None):
     if not config.FEATURE_PORTAL:
         return redirect('/atlas/')
 

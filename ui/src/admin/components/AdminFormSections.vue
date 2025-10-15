@@ -387,9 +387,9 @@
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import LayerField from "@/admin/components/LayerField.vue";
 import MetadatasetsField from "@/admin/components/MetadatasetsField.vue";
-import VisibilityIndicator from "@/admin/components/VisibilityIndicator.vue";
 import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
 import CloseIcon from "@/assets/icons/close-icon.svg";
+import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
 import { useGlobalStore } from "@/stores";
 import { formatDateValue } from "@/utils/date-formatter";
 import { json, jsonParseLinter } from "@codemirror/lang-json";

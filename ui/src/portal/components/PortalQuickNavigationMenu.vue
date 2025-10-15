@@ -14,10 +14,10 @@
           Alle kaarten</a
         >
       </li>
-      <li v-if="availableLinks.datasets">
-        <a href="/datasets" class="text-button">
+      <li v-if="availableLinks.metadatasets">
+        <a href="/metadatasets" class="text-button">
           <ChevronRightIcon class="icon __large" />
-          Alle datasets</a
+          Alle metadatasets</a
         >
       </li>
       <li v-if="availableLinks.tables">
@@ -43,7 +43,7 @@ export default {
         return {
           maps: false,
           tables: false,
-          datasets: false,
+          metadatasets: false,
         };
       },
     },

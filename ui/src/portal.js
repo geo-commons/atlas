@@ -13,8 +13,8 @@ import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import PortalDashboard from "@/portal/pages/PortalDashboard.vue";
 import PortalMapsPage from "@/portal/pages/PortalMapsPage.vue";
-import PortalDatasetPage from "@/portal/pages/PortalDatasetsPage.vue";
-import PortalDatasetDetailPage from "@/portal/pages/PortalDatasetDetailPage.vue";
+import PortalMetadatasetsPage from "@/portal/pages/PortalMetadatasetsPage.vue";
+import PortalMetadatasetDetailPage from "@/portal/pages/PortalMetadatasetDetailPage.vue";
 import PortalTablesPage from "@/portal/pages/PortalTablesPage.vue";
 import PortalSearchPage from "@/portal/pages/PortalSearchPage.vue";
 import PrimeVue from "primevue/config";
@@ -34,18 +34,18 @@ const routes = [
   { path: "/tables", component: PortalTablesPage, meta: { breadcrumb: "Tabellen", menu: true } },
   { path: "/search", component: PortalSearchPage, meta: { breadcrumb: "Zoeken", menu: true } },
   {
-    path: "/datasets",
-    component: PortalDatasetPage,
-    meta: { breadcrumb: "Datasets", menu: true },
+    path: "/metadatasets",
+    component: PortalMetadatasetsPage,
+    meta: { breadcrumb: "Metadatasets", menu: true },
   },
   {
-    path: "/datasets/:slug",
-    name: "dataset-details",
-    component: PortalDatasetDetailPage,
+    path: "/metadatasets/:slug",
+    name: "metadataset-details",
+    component: PortalMetadatasetDetailPage,
     meta: {
-      breadcrumb: "Dataset details",
+      breadcrumb: "Metadataset details",
       menu: true,
-      parentName: "Datasets",
+      parentName: "Metadatasets",
     },
   },
   { path: "/:pathMatch(.*)*", name: "not-found", component: PortalNotFound },

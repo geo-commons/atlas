@@ -9,7 +9,7 @@
 <script>
 import defaultMapsThumbnail from "@/assets/images/default_map_thumbnail.png";
 import defaultTableThumbnail from "@/assets/images/default_table_thumbnail.png";
-import defaultDatasetThumbnail from "@/assets/images/default_dataset_thumbnail.png";
+import defaultMetadatasetThumbnail from "@/assets/images/default_dataset_thumbnail.png";
 
 export default {
   name: "PortalCard",
@@ -32,8 +32,8 @@ export default {
             return defaultMapsThumbnail;
           case "table":
             return defaultTableThumbnail;
-          case "dataset":
-            return defaultDatasetThumbnail;
+          case "metadataset":
+            return defaultMetadatasetThumbnail;
         }
       }
       return this.thumbnail;

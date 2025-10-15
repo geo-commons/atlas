@@ -64,7 +64,7 @@ def create_metadatasets_from_layers(apps, _):
             # Set some default values for required fields
             update_method='manual',
             show_in_overview=False,
-            status='completed'
+            status='completed' if layer.published else 'underDevelopment'
         )
 
         # Link the metadataset back to the layer
