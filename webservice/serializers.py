@@ -4,7 +4,8 @@ from rest_framework import serializers
 from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer, Metadataset
+from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer, \
+    Metadataset
 from .util import safe_float_or_null
 
 
@@ -85,6 +86,35 @@ class LinkedDataSerializer(serializers.ModelSerializer):
     detail_view_fields = serializers.ListField(
         child=serializers.CharField(), required=False)
 
+    # New fields from model changes
+    kind = serializers.ChoiceField(choices=LinkedData.KIND_CHOICES)
+    source = serializers.PrimaryKeyRelatedField(queryset=Layer.objects.all())
+    # target_layer is eigenlijk zelfde als oude name/layer_name
+    target_layer = serializers.PrimaryKeyRelatedField(
+        queryset=Layer.objects.all(), allow_null=True, required=False)
+
+    # Graph (read-only to avoid custom create/update)
+    related = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = LinkedData
+        fields = [
+            'id',
+            'title',
+            'name',  # -> layer_name
+            'url',
+            'source_key',
+            'target_key',
+            'headers',
+            'display_properties',
+            'use_detail_view',
+            'detail_view_fields',
+            'kind',
+            'source',
+            'target_layer',
+            'related',  # read-only (manage via Admin for now)
+        ]
+
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['display_properties'] = instance.popup_attributes.split(
@@ -102,11 +132,6 @@ class LinkedDataSerializer(serializers.ModelSerializer):
         ret['headers'] = '\r\n'.join(data.get('headers', []))
         ret['detail_view_fields'] = '\r\n'.join(data.get('detail_view_fields', []))
         return ret
-
-    class Meta:
-        model = LinkedData
-        fields = ['id', 'title', 'name', 'url', 'source_key',
-                  'target_key', 'headers', 'display_properties', 'use_detail_view', 'detail_view_fields']
 
 
 class TemplateSerializer(serializers.ModelSerializer):
@@ -363,7 +388,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         linked_data, templates = (validated_data.pop(key, None)
-                                for key in ('linked_data', 'templates'))
+                                  for key in ('linked_data', 'templates'))
 
         # Handling many-to-many field 'atlas_groups'
         if 'atlas_groups' in validated_data:
@@ -548,6 +573,7 @@ class BasicThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
         fields = ['id', 'title', 'slug']
+
 
 class DatasetSerializer(serializers.ModelSerializer):
     layers = LayerSerializer(many=True)

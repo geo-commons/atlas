@@ -789,6 +789,39 @@ class LinkedData(models.Model):
     url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
+
+    # NEW: Define relationship type
+    KIND_CHOICES = [
+        ('layer_join', 'Layer Join'),
+        ('external_api', 'External API Lookup'),
+    ]
+    kind = models.CharField(
+        _('Type'),
+        max_length=20,
+        choices=KIND_CHOICES,
+        default='layer_join',
+        help_text='Hoe wordt de data opgehaald?'
+    )
+
+    # NEW: Target layer for joins (optional, only for layer_join)
+    target_layer = models.ForeignKey(
+        Layer,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='incoming_links',
+        help_text='Doellaag voor joins (laat leeg bij externe APIs)'
+    )
+
+    # NEW: Chain relationships
+    related = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        blank=True,
+        related_name='parent_links',
+        help_text='Wat kun je hierna bekijken?'
+    )
+
     headers = models.TextField(_('Tabel kopjes'), max_length=250, blank=True, null=True,
                                help_text='Voer één veld per regel in.')
     popup_attributes = models.TextField(_('Tabel velden'), max_length=250, blank=True, null=True,
@@ -807,15 +840,18 @@ class LinkedData(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.id,  # NEW: needed for drill-down navigation
             'title': self.title,
             'name': self.layer_name,
+            'kind': self.kind,  # NEW
             'url': self.url,
             'source_key': self.source_key,
             'target_key': self.target_key,
             'headers': self.headers.split('\r\n') if self.headers else [],
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else [],
             'use_detail_view': self.use_detail_view,
-            'detail_view_fields': self.detail_view_fields.split('\r\n') if self.detail_view_fields else []
+            'detail_view_fields': self.detail_view_fields.split('\r\n') if self.detail_view_fields else [],
+            'related': [r.to_dict() for r in self.related.all()],  # NEW: next drill-downs
         }
 
 

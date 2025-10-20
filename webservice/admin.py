@@ -12,6 +12,7 @@ from .resources import CategoryResource, LayerResource, SourceResource, Selectio
 class LinkedDataInline(admin.TabularInline):
     form = LinkedDataForm
     model = LinkedData
+    fk_name = 'source'
     extra = 0
 
 
