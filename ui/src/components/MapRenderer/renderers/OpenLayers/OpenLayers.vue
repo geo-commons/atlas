@@ -49,7 +49,7 @@
       :selectable="false"
       :vector-style="MAP_AREA_STYLE"
       :features="mapArea"
-      :z-index="3"
+      :z-index="onMapFeatures"
     />
     <ol-vector-layer
       name="marker"
@@ -57,12 +57,12 @@
       :selectable="false"
       :vector-style="MARKER_STYLE"
       :features="markerFeatures"
-      :z-index="20"
+      :z-index="markerIndex"
     />
     <ol-vector-layer
       v-if="store.cycloView"
       name="streetview"
-      :z-index="3"
+      :z-index="onMapFeatures"
       :is-visible="true"
       :selectable="false"
       :features="cycloFeatures"
@@ -74,7 +74,7 @@
       :is-visible="true"
       :vector-style="GEOLOCATION_STYLE"
       :features="geolocationFeatures"
-      :z-index="3"
+      :z-index="onMapFeatures"
     />
     <ol-vector-layer
       ref="selectedArea"
@@ -83,7 +83,7 @@
       :is-visible="true"
       :vector-style="SELECTED_AREA_STYLE"
       :features="selectedAreaFeatures"
-      :z-index="2"
+      :z-index="mapObjectsIndex"
     />
     <ol-vector-layer
       ref="highlightedSelection"
@@ -92,7 +92,7 @@
       :is-visible="true"
       :vector-style="HIGHLIGHTED_SELECTION_STYLE"
       :features="highlightedFeatures"
-      :z-index="2"
+      :z-index="mapObjectsIndex"
     />
     <ol-vector-layer
       ref="draw"
@@ -101,7 +101,7 @@
       :is-visible="true"
       :features="drawFeatures"
       :vector-style="DRAW_STYLE"
-      :z-index="2"
+      :z-index="mapObjectsIndex"
     />
     <ol-vector-layer
       ref="editLayerFeatures"
@@ -110,7 +110,7 @@
       :is-visible="true"
       :features="editLayerStore.feature ? [editLayerStore.feature] : []"
       :vector-style="DRAW_STYLE"
-      :z-index="2"
+      :z-index="mapObjectsIndex"
     />
     <ol-vector-layer
       ref="measuredAreas"
@@ -119,7 +119,7 @@
       :is-visible="true"
       :vector-style="SELECTED_AREA_STYLE"
       :features="measuredAreasFeatures"
-      :z-index="2"
+      :z-index="mapObjectsIndex"
     />
   </ol-map>
 </template>
@@ -327,6 +327,15 @@ export default {
         return [];
       }
       return this.measuredAreas.map((geom) => new Feature({ geometry: geom }));
+    },
+    markerIndex() {
+      return this.layers.length + 20;
+    },
+    mapObjectsIndex() {
+      return this.layers.length + 2;
+    },
+    onMapFeatures() {
+      return this.layers.length + 3;
     },
   },
   watch: {
