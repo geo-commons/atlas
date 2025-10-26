@@ -36,7 +36,6 @@ Deploy Review App:
     name: review/$CI_COMMIT_REF_NAME
     url: https://atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN/atlas/
     on_stop: Remove Review App
-    auto_stop_in: 1 week
   except:
     - master@purmerend/atlas
 
