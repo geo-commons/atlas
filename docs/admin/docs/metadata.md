@@ -135,7 +135,7 @@ Schakel in om de metadataset in het dataportaal te tonen voor niet-ingelogde geb
 Juridische toegangsrestricties die van toepassing zijn op de dataset:
 
 - Licentie - Formele toestemming om iets te doen met de data
-- Intellectuele eigendomsrechten - Recht op een financieel voordeel van en controle hebben op de distributie een niet tastbaar eigendom wat het resultaat is van creativiteit
+- Intellectuele eigendomsrechten - Recht op een financieel voordeel van - en controle hebben op de distributie van een niet tastbaar eigendom dat het resultaat is van creativiteit.
 - Beperkt - Verbod op distributie en gebruik
 - Overige beperkingen - Restrictie niet opgenomen in lijst
 
