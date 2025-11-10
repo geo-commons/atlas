@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Check if there is at least 1 base layer configured.
-  const hasBaseLayer = layers.some((layer) => layer.is_base);
+  const hasBaseLayer = layers.some((layer) => layer?.is_base);
 
   if (!hasBaseLayer) {
     // If there is no base layer configured, get the first available and add it to layers.
