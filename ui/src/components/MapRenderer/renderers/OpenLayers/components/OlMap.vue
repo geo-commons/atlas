@@ -34,6 +34,7 @@ import DragPan from "ol/interaction/DragPan";
 import KeyboardPan from "ol/interaction/KeyboardPan";
 import KeyboardZoom from "ol/interaction/KeyboardZoom";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
+import PinchZoom from "ol/interaction/PinchZoom";
 
 const DEFAULT_DPI = 25.4 / 0.28;
 
@@ -61,6 +62,7 @@ export default {
           new DragPan(),
           new MouseWheelZoom(),
           new DoubleClickZoom(),
+          new PinchZoom(),
         ],
       }),
       scaleType: "LINE",
