@@ -75,7 +75,7 @@ defineRule("json", (value) => {
 
 defineRule("max", (value, [max]) => {
   if (value.length > max) {
-    return "De ingevoerde waarde overschrijdt het maximaal aantal toegestane karakters.";
+    return `De ingevoerde waarde overschrijdt het maximaal aantal van ${max} toegestane karakters.`;
   }
   return true;
 });
