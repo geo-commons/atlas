@@ -579,7 +579,7 @@ export default {
               name: "Slug",
               type: "text",
               required: true,
-              maxLength: 50,
+              maxLength: 255,
               infoText: "Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.",
             },
             {
