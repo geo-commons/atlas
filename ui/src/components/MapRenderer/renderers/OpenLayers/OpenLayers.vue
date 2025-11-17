@@ -283,7 +283,7 @@ export default {
       }
 
       const { yaw, hFov } = this.store.cycloView.detail;
-      const radius = 150;
+      const radius = 10000 * Math.pow(2, -this.position.zoom / 2);
 
       // Convert center to map projection
       const centerProjected = [this.position.marker[0], this.position.marker[1]];

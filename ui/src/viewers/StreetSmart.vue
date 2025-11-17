@@ -20,9 +20,14 @@ interface StreetSmartProps {
 
 const props = defineProps<StreetSmartProps>();
 
+const emit = defineEmits<{
+  (e: "position-changed", position: any): void;
+}>();
+
 const mapStore = useMapStore(props.mapId);
 
 const viewer = ref<HTMLDivElement | null>(null);
+const streetSmartClient = ref<any>(null);
 
 watch(
   () => props.position,
@@ -40,42 +45,17 @@ watch(
       return;
     }
 
-    setPosition(value.marker);
+    if (streetSmartClient.value) {
+      streetSmartClient.value.openByCoordinate([value.marker[0], value.marker[1]]);
+    }
   },
 );
 
-const setPosition = (position: [number, number]) => {
-  const options = {
-    viewerType: [window.StreetSmartApi.ViewerType.PANORAMA],
-    panoramaViewer: {
-      closable: false,
-      maximizable: false,
-    },
-    obliqueViewer: {
-      closable: false,
-      maximizable: false,
-    },
-  };
-
-  window.StreetSmartApi.open(`${position[0]}, ${position[1]}`, options)
-    .then((results) => {
-      if (!results || results.length === 0) {
-        return;
-      }
-
-      const viewerInstance = results[0];
-      viewerInstance.toggle3DCursor(false);
-
-      viewerInstance.on("VIEW_CHANGE", (event) => {
-        mapStore.setCycloView(event);
-      });
-    })
-    .catch((err: any) => {
-      console.error("Failed to open StreetSmart viewer: ", err);
-    });
+const getXYCoordinates = (xyz: [number, number, number]): [number, number] => {
+  return [xyz[0], xyz[1]];
 };
 
-onMounted(() => {
+const initializeStreetSmartClient = () => {
   const options = {
     targetElement: viewer.value,
     username: props.username,
@@ -87,11 +67,59 @@ onMounted(() => {
 
   window.StreetSmartApi.init(options)
     .then(() => {
-      setPosition(props.position.marker);
+      openStreetSmartClient();
     })
     .catch((err: any) => {
       console.error("Failed to initialize StreetSmart API: ", err);
     });
+};
+
+const openStreetSmartClient = () => {
+  const options = {
+    viewerType: [window.StreetSmartApi.ViewerType.PANORAMA],
+    panoramaViewer: {
+      closable: false,
+      maximizable: false,
+      pitch: 0,
+    },
+    obliqueViewer: {
+      closable: false,
+      maximizable: false,
+    },
+  };
+  const position = props.position.marker;
+
+  window.StreetSmartApi.open({ coordinate: [position[0], position[1], 5.6], ...options })
+    .then((results) => {
+      if (!results || results.length === 0) {
+        return;
+      }
+
+      if (!streetSmartClient.value) {
+        streetSmartClient.value = results[0];
+        streetSmartClient.value.toggle3DCursor(false);
+        streetSmartClient.value.setOrientation({ yaw: 0, pitch: 0 });
+      }
+
+      streetSmartClient.value.on("VIEW_CHANGE", (event) => {
+        mapStore.setCycloView(event);
+        const recording = streetSmartClient.value.getRecording();
+        const coordinates = getXYCoordinates(recording.xyz);
+        emit("position-changed", { ...props.position, marker: coordinates });
+      });
+
+      streetSmartClient.value.on("RECORDING_CLICK", (event) => {
+        const coordinates = getXYCoordinates(event.detail.recording.xyz);
+        emit("position-changed", { ...props.position, marker: coordinates });
+      });
+    })
+    .catch((err: any) => {
+      console.error("Failed to open StreetSmart viewer: ", err);
+    });
+};
+
+onMounted(() => {
+  initializeStreetSmartClient();
 });
 
 onBeforeUnmount(() => {
