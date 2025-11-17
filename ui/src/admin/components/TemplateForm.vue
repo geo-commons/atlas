@@ -48,7 +48,7 @@
         </div>
         <div class="layer-setting">
           <label class="question-label" for="list">Tabel veld met lijst</label>
-          <vee-field id="list" v-model.trim="template.list" name="list" type="text" rules="required" />
+          <vee-field id="list" v-model.trim="template.list" name="list" type="text" />
           <vee-error-message class="form-error" name="list" />
         </div>
       </div>
