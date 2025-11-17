@@ -81,6 +81,7 @@ export default {
       draw: true,
       edit_layer_features: true,
       compareLayers: true,
+      panoramaViewers: true,
     };
 
     if (!this.user) {

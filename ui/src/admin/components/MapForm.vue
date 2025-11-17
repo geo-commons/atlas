@@ -199,6 +199,16 @@
             />
             <label for="features.compareLayers">Kaartlagen vergelijken</label>
           </div>
+
+          <div class="setting __hover">
+            <input
+              id="features.panoramaViewers"
+              v-model="data.features.panoramaViewers"
+              type="checkbox"
+              name="features.panoramaViewers"
+            />
+            <label for="features.panoramaViewers">Rondkijkfoto</label>
+          </div>
         </div>
       </form>
     </template>

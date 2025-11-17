@@ -311,7 +311,10 @@
             </button>
           </div>
         </div>
-        <div v-if="!isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)" class="bottom-right-buttons">
+        <div
+          v-if="features.panoramaViewers && !isEmbed && (panoramaViewers.length > 0 || obliqueViewers.length > 0)"
+          class="bottom-right-buttons"
+        >
           <div class="ui-button-wrapper">
             <button
               v-if="panoramaViewers.length > 0"
