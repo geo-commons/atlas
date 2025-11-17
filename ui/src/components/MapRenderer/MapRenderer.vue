@@ -29,6 +29,7 @@
             :position="position"
             @toggle="togglePanoramaPanel"
             @toggle-full-screen="togglePanoramaPanelFullScreen"
+            @position-changed="setPosition"
           />
         </SplitterPanel>
         <SplitterPanel v-if="!showPanoramaPanelFullScreen" class="flex items-center justify-center">
