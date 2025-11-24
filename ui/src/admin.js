@@ -45,6 +45,7 @@ import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import { ConfirmationService, ToastService } from "primevue";
+import LinkedDataList from "@/admin/pages/LinkedDataList.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -220,6 +221,16 @@ const routes = [
     component: AdminGeneralInformationPage,
     meta: { title: "Algemene informatie", menu: true },
   },
+  {
+    path: "/linked-data",
+    component: LinkedDataList,
+    meta: { title: "Gerelateerde data", menu: true },
+  },
+  // {
+  //   path: "/themes/update/:id",
+  //   component: ThemeCreateUpdate,
+  //   meta: { title: "Thema bewerken", menu: true, breadcrumb: { themes: { title: "Thema's" } } },
+  // },
   {
     path: "/:parentRoute/sort",
     name: "sort",
