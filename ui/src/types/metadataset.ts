@@ -9,8 +9,10 @@ export interface IMetadataset {
   statement: string;
   source_origin: string;
   source_location?: string;
+  source_name_internal?: string;
   source_email_internal?: string;
   source_organization: string;
+  source_name_public?: string;
   source_email_public: string;
   source_email_person_responsible?: string;
   source_role_person_responsible: string;

@@ -242,7 +242,7 @@ class RoleType(models.TextChoices):
 
 class UpdateMethodType(models.TextChoices):
     MANUAL = "manual", _("Manueel")
-    AUTOMATIC = "automatic", _("Automatisch (via API)")
+    AUTOMATIC = "automatic", _("Automatisch")
 
 
 class AuthorizationLevelType(models.TextChoices):
@@ -315,13 +315,21 @@ class Metadataset(models.Model):
     source_location = models.TextField(
         'Bronlocatie', null=True, blank=True, help_text="Bijvoorbeeld Objectstore (COG), S3, etc.")
 
+    source_name_internal = models.CharField(
+        'Naam contactpersoon aanspreekpunt', max_length=128, null=True, blank=True,
+        help_text="De naam van de contactpersoon van het interne aanspreekpunt van de bron.")
+
     source_email_internal = models.EmailField(
         'E-mailadres aanspreekpunt', null=True, blank=True,
-        help_text="Het e-mailadres van het intern aanspreekpunt van de bron.")
+        help_text="Het e-mailadres van het interne aanspreekpunt van de bron.")
 
     source_organization = models.CharField(
         'Verantwoordelijke organisatie', max_length=128, null=True, blank=True,
         help_text="De organisatie van de verantwoordelijke van de bron, bijvoorbeeld de gemeente, provincie, Nederlandse organisatie voor toegepast-natuurwetenschappelijk onderzoek (TNO), etc.")
+
+    source_name_public = models.CharField(
+        'Naam contactpersoon verantwoordelijke', max_length=128, null=True, blank=True,
+        help_text="De naam van de verantwoordelijke contactpersoon van de bron.")
 
     source_email_public = models.EmailField(
         'E-mailadres verantwoordelijke', null=True, blank=True,
@@ -372,7 +380,7 @@ class Metadataset(models.Model):
 
     meta_email_internal = models.EmailField(
         'E-mailadres aanspreekpunt', null=True, blank=True,
-        help_text="Het e-mailadres van het intern aanspreekpunt van de verantwoordelijke van de metadata.")
+        help_text="Het e-mailadres van het interne aanspreekpunt van de verantwoordelijke van de metadata.")
 
     meta_organization = models.CharField(
         'Organisatie', max_length=128, null=True, blank=True,
@@ -753,6 +761,7 @@ source: new ol.source.TileWMS({{
                 'statement': self.metadataset.statement,
                 'source_origin': self.metadataset.source_origin,
                 'source_organization': self.metadataset.source_organization,
+                'source_name_public': self.metadataset.source_name_public,
                 'source_email_public': self.metadataset.source_email_public,
                 'source_role_person_responsible': self.metadataset.source_role_person_responsible,
                 'update_frequency': self.metadataset.update_frequency,
@@ -765,6 +774,14 @@ source: new ol.source.TileWMS({{
                 'meta_organization': self.metadataset.meta_organization,
                 'meta_email_person_responsible': self.metadataset.meta_email_person_responsible,
                 'meta_role_person_responsible': self.metadataset.meta_role_person_responsible,
+                **({
+                    'description': self.metadataset.description,
+                    'source_location': self.metadataset.source_location,
+                    'source_name_internal': self.metadataset.source_name_internal,
+                    'source_email_internal': self.metadataset.source_email_internal,
+                    'update_method': self.metadataset.update_method,
+                    'meta_email_internal': self.metadataset.meta_email_internal,
+                } if user and user.is_authenticated else {})
             } if self.metadataset else None,
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
             'templates': [item.to_dict() for item in self.templates.all()],

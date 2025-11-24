@@ -81,11 +81,17 @@ Algemene beschrijving herkomst. Dit is de bron waar de dataset vandaan komt, dat
 **Bronlocatie** *(Intern)*
 Bijvoorbeeld Objectstore (COG), S3, etc.
 
+**Naam contactpersoon aanspreekpunt** *(Intern)*
+De naam van het interne aanspreekpunt van de bron.
+
 **E-mailadres aanspreekpunt** *(Intern)*
-Het e-mailadres van het intern aanspreekpunt van de bron.
+Het e-mailadres van het interne aanspreekpunt van de bron.
 
 **Verantwoordelijke organisatie** *(Publiek)*
 De organisatie van de verantwoordelijke van de bron, bijvoorbeeld de gemeente, provincie, Nederlandse organisatie voor toegepast-natuurwetenschappelijk onderzoek (TNO), etc.
+
+**Naam contactpersoon aanspreekpunt** *(Publiek)*
+De naam van de verantwoordelijke contactpersoon van de bron.
 
 **E-mailadres verantwoordelijke** *(Publiek)*
 Het e-mailadres van de verantwoordelijke organisatie van de bron.
@@ -111,7 +117,7 @@ De rol van de verantwoordelijke over de bron:
 De methode waarmee de dataset wordt bijgewerkt:
 
 - Manueel
-- Automatisch (via API)
+- Automatisch
 
 **Updatefrequentie** *(Publiek)*
 De frequentie waarmee de dataset wordt bijgewerkt. Bijvoorbeeld: dagelijks, wekelijks, maandelijks, jaarlijks.
@@ -158,7 +164,7 @@ In dit veld geef je aan waarvoor de dataset niet mag of kan worden gebruikt. Bij
 ### Verantwoordelijke metadata
 
 **E-mailadres aanspreekpunt** *(Intern)*
-Het e-mailadres van het intern aanspreekpunt van de verantwoordelijke van de metadata.
+Het e-mailadres van het interne aanspreekpunt van de verantwoordelijke van de metadata.
 
 **Organisatie** *(Publiek)*
 De naam van de organisatie verantwoordelijk voor de metadata. Gebruik de volledig uitgeschreven naam van de verantwoordelijke organisatie. Bijvoorbeeld: Gemeente Purmerend.

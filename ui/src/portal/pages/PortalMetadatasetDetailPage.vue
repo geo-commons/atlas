@@ -113,7 +113,9 @@ const hasSourceInfo = computed(() => {
     metadataset.value?.source_email_public ||
     metadataset.value?.source_role_person_responsible ||
     metadataset.value?.source_location ||
-    metadataset.value?.source_email_internal
+    metadataset.value?.source_email_internal ||
+    metadataset.value?.source_name_internal ||
+    metadataset.value?.source_name_public
   );
 });
 
@@ -196,6 +198,12 @@ const tableData = computed<TableSection[]>(() => {
           type: "text",
         },
         {
+          label: "Naam contactpersoon verantwoordelijke",
+          value: metadataset.value?.source_name_public || "",
+          show: !!metadataset.value?.source_name_public,
+          type: "text",
+        },
+        {
           label: "E-mailadres verantwoordelijke",
           value: metadataset.value?.source_email_public || "",
           show: !!metadataset.value?.source_email_public,
@@ -211,6 +219,13 @@ const tableData = computed<TableSection[]>(() => {
           label: "Bronlocatie",
           value: metadataset.value?.source_location || "",
           show: !!metadataset.value?.source_location,
+          type: "text",
+          hasVisibilityIndicator: true,
+        },
+        {
+          label: "Naam contactpersoon aanspreekpunt",
+          value: metadataset.value?.source_name_internal || "",
+          show: !!metadataset.value?.source_name_internal,
           type: "text",
           hasVisibilityIndicator: true,
         },
