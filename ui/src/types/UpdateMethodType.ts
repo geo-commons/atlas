@@ -9,10 +9,10 @@ export type UpdateMethodTypeId = "manual" | "automatic";
 
 export const updateMethodTypeOptions: Option<UpdateMethodTypeId>[] = [
   { id: "manual", label: "Manueel" },
-  { id: "automatic", label: "Automatisch (via API)" }
+  { id: "automatic", label: "Automatisch" }
 ];
 
 export const updateMethodTypeLabels: Record<UpdateMethodTypeId, string> = {
   "manual": "Manueel",
-  "automatic": "Automatisch (via API)"
+  "automatic": "Automatisch"
 };

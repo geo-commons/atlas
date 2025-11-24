@@ -233,13 +233,22 @@ const getSections = (): AdminFormConfig => {
           infoText: "Bijvoorbeeld Objectstore (COG), S3, etc.",
         },
         {
+          label: "Naam contactpersoon aanspreekpunt",
+          id: "source_name_internal",
+          name: "Source Name Internal",
+          type: "text",
+          required: false,
+          visibility: "Intern",
+          infoText: "De naam van de contactpersoon van het interne aanspreekpunt van de bron.",
+        },
+        {
           label: "E-mailadres aanspreekpunt",
           id: "source_email_internal",
           name: "Source Email Internal",
           type: "text",
           required: false,
           visibility: "Intern",
-          infoText: "Het e-mailadres van het intern aanspreekpunt van de bron.",
+          infoText: "Het e-mailadres van het interne aanspreekpunt van de bron.",
         },
         {
           label: "Verantwoordelijke organisatie",
@@ -250,6 +259,15 @@ const getSections = (): AdminFormConfig => {
           visibility: "Publiek",
           infoText:
             "De organisatie van de verantwoordelijke van de bron, bijvoorbeeld de gemeente, provincie, Nederlandse organisatie voor toegepast-natuurwetenschappelijk onderzoek (TNO), etc.",
+        },
+        {
+          label: "Naam contactpersoon aanspreekpunt",
+          id: "source_name_public",
+          name: "Source Name Public",
+          type: "text",
+          required: false,
+          visibility: "Publiek",
+          infoText: "De naam van de contactpersoon van de verantwoordelijke van de bron.",
         },
         {
           label: "E-mailadres verantwoordelijke",
@@ -329,7 +347,8 @@ const getSections = (): AdminFormConfig => {
           type: "checkbox",
           required: false,
           visibility: "Publiek",
-          infoText: "Toon de metadataset in het dataportaal voor niet-ingelogde gebruikers. Ingelogde gebruikers zien gepubliceerde metadatasets altijd.",
+          infoText:
+            "Toon de metadataset in het dataportaal voor niet-ingelogde gebruikers. Ingelogde gebruikers zien gepubliceerde metadatasets altijd.",
         },
       ],
     },
@@ -379,7 +398,7 @@ const getSections = (): AdminFormConfig => {
           type: "text",
           required: false,
           visibility: "Intern",
-          infoText: "Het e-mailadres van het intern aanspreekpunt van de verantwoordelijke van de metadata.",
+          infoText: "Het e-mailadres van het interne aanspreekpunt van de verantwoordelijke van de metadata.",
         },
         {
           label: "Organisatie",

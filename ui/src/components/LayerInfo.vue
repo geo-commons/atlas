@@ -1,12 +1,17 @@
 <template>
   <tippy
+    ref="tippyRef"
     theme="popover"
     trigger="click"
     :distance="8"
     :delay="[0, 0]"
     :a11y="null"
     :interactive="true"
-    :append-to="appendEl"
+    :append-to="appendEl ?? undefined"
+    boundary="viewport"
+    placement="auto"
+    :flip="true"
+    :shift="true"
   >
     <button
       v-tippy
@@ -20,7 +25,6 @@
       <div class="container">
         <div class="heading">
           <h3 class="title">{{ layer.title }}</h3>
-          <!-- Use metadataset abstract if available, fallback to old metadata description -->
           <div v-if="layer.description" class="description">
             <markdown :source="layer.description" />
           </div>
@@ -38,10 +42,30 @@
               <markdown :source="layer.metadataset?.source_organization" />
             </div>
           </div>
-          <div v-if="layer.metadataset?.source_email_public" class="property">
+          <div v-if="layer.metadataset?.source_name_internal && isLoggedIn" class="property">
+            <div class="key">
+              Contactpersoon
+              <VisibilityIndicator visibility="Intern" />
+            </div>
+            <div class="value">
+              {{ layer.metadataset.source_name_internal }}
+            </div>
+          </div>
+          <div v-if="layer.metadataset?.source_name_public" class="property">
             <div class="key">Contactpersoon</div>
             <div class="value">
-              <markdown :source="layer.metadataset?.source_email_public" />
+              {{ layer.metadataset.source_name_public }}
+            </div>
+          </div>
+          <div v-if="layer.metadataset?.source_email_public" class="property">
+            <div class="key">E-mailadres</div>
+            <div class="value">
+              <a
+                class="tw-text-blue-600 tw-no-underline hover:tw-underline"
+                :href="`mailto:${layer.metadataset?.source_email_public?.toLowerCase()}`"
+              >
+                {{ layer.metadataset?.source_email_public?.toLowerCase() }}
+              </a>
             </div>
           </div>
           <div v-if="layer.metadataset?.source_origin" class="property">
@@ -53,13 +77,13 @@
           <div v-if="layer.metadataset?.last_updated" class="property">
             <div class="key">Bijgewerkt</div>
             <div class="value">
-              <markdown :source="layer.metadataset?.last_updated" />
+              {{ layer.metadataset.last_updated }}
             </div>
           </div>
           <div v-if="layer.metadataset?.update_frequency" class="property">
             <div class="key">Updatefrequentie</div>
             <div class="value">
-              <markdown :source="layer.metadataset.update_frequency" />
+              {{ layer.metadataset.update_frequency }}
             </div>
           </div>
           <div v-if="layer.metadataset?.statement" class="property">
@@ -68,43 +92,71 @@
               <markdown :source="layer.metadataset.statement" />
             </div>
           </div>
+          <div class="tw-mt-4">
+            <Button outlined class="!tw-font-medium tw-w-full" aria-label="Meer informatie" @click="openModal">
+              Meer informatie
+            </Button>
+          </div>
         </div>
       </div>
     </template>
   </tippy>
+
+  <!-- Modal with all metadataset information -->
+  <LayerInfoModal v-model="showModal" :layer="layer" :is-logged-in="isLoggedIn" />
 </template>
 
-<script>
-import Markdown from "./Markdown";
-import InformationCircleIcon from "../assets/icons/information-circle-icon.svg";
+<script setup lang="ts">
+import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
+import { useGlobalStore } from "@/stores";
+import type { IMetadataset } from "@/types/metadataset";
+import { computed, onMounted, ref } from "vue";
 import { Tippy } from "vue-tippy";
+import InformationCircleIcon from "../assets/icons/information-circle-icon.svg";
+import LayerInfoModal from "./LayerInfoModal.vue";
+import Markdown from "./Markdown";
 
-export default {
-  name: "LayerInfo",
-  components: {
-    Tippy,
-    Markdown,
-    InformationCircleIcon,
-  },
-  props: {
-    layer: Object,
-    showAlways: Boolean,
-  },
-  data() {
-    return {
-      appendEl: null,
-    };
-  },
-  mounted() {
-    // The vue tippy pop up does not escape the parent container
-    // when the tippy popup is placed in a scrollable container.
-    // Using the append-to property on the map-container fixes this.
-    this.appendEl = document.getElementById("map-container");
-    this.markdownOptions = {
-      linkify: true,
-    };
-  },
+export interface LayerInfoLayer {
+  title: string;
+  description?: string;
+  metadataset?: Partial<IMetadataset>;
+}
+
+interface Props {
+  layer: LayerInfoLayer;
+  showAlways?: boolean;
+}
+
+defineProps<Props>();
+
+// Type for Tippy component instance with tippy property
+interface TippyInstance extends InstanceType<typeof Tippy> {
+  tippy?: {
+    hide: () => void;
+  };
+}
+
+const tippyRef = ref<TippyInstance | null>(null);
+const appendEl = ref<Element | null>(null);
+const showModal = ref(false);
+
+const globalStore = useGlobalStore();
+const isLoggedIn = computed(() => !!globalStore.user);
+
+const openModal = () => {
+  // Close the tippy popover when opening the modal
+  if (tippyRef.value?.tippy) {
+    tippyRef.value.tippy.hide();
+  }
+  showModal.value = true;
 };
+
+onMounted(() => {
+  // The vue tippy pop up does not escape the parent container
+  // when the tippy popup is placed in a scrollable container.
+  // Using the append-to property on the map-container fixes this.
+  appendEl.value = document.getElementById("map-container");
+});
 </script>
 
 <style scoped>
