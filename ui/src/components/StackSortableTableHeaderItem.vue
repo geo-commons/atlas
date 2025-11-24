@@ -1,8 +1,9 @@
 <template>
   <button
     v-tippy="{ placement: 'bottom' }"
-    aria-label="Sorteer kolom"
-    content="Sorteer"
+    :aria-label="ariaLabel"
+    :content="tooltipContent"
+    aria-live="assertive"
     class="header-background"
     @click="() => sortColumn()"
   >
@@ -16,45 +17,57 @@
   </button>
 </template>
 
-<script>
+<script setup>
+import { computed } from "vue";
 import ChevronDownIcon from "../assets/icons/chevron-down-icon.svg";
 import ChevronUpIcon from "../assets/icons/chevron-up-icon.svg";
 
-export default {
-  name: "StackSortableTableHeaderItem",
-  components: {
-    ChevronUpIcon,
-    ChevronDownIcon,
-  },
-  props: {
-    headerText: String,
-    property: String,
-    sortStack: Array,
-  },
-  computed: {
-    getSortStack() {
-      const result = this.sortStack.filter((value) => value.id === this.property);
+const props = defineProps({
+  headerText: String,
+  property: String,
+  sortStack: Array,
+});
 
-      return result.length > 0 ? result[0] : null;
-    },
-  },
-  methods: {
-    sortColumn() {
-      let ascending = null;
-      /* if sortAscending is null, we want it to move it to true.
-      If its true we want to move it to false, and if its false we want to move it to null.
-      When it is set to null the sorting for this property is removed */
-      if (this.getSortStack === null) {
-        ascending = true;
-      } else if (this.getSortStack.asc === true) {
-        ascending = false;
-      } else {
-        ascending = null;
-      }
+const emit = defineEmits(["sort"]);
 
-      this.$emit("sort", this.property, ascending);
-    },
-  },
+const getSortStack = computed(() => {
+  const result = props.sortStack.filter((value) => value.id === props.property);
+  return result.length > 0 ? result[0] : null;
+});
+
+const getSortActionText = () => {
+  if (getSortStack.value === null) {
+    return "Sorteer oplopend";
+  } else if (getSortStack.value.asc === true) {
+    return "Sorteer aflopend";
+  } else {
+    return "Verwijder sortering";
+  }
+};
+
+const tooltipContent = computed(() => {
+  return getSortActionText();
+});
+
+const ariaLabel = computed(() => {
+  const headerName = props.headerText || "Kolom";
+  return `${headerName}, ${getSortActionText()}`;
+});
+
+const sortColumn = () => {
+  let ascending = null;
+  /* if sortAscending is null, we want it to move it to true.
+  If its true we want to move it to false, and if its false we want to move it to null.
+  When it is set to null the sorting for this property is removed */
+  if (getSortStack.value === null) {
+    ascending = true;
+  } else if (getSortStack.value.asc === true) {
+    ascending = false;
+  } else {
+    ascending = null;
+  }
+
+  emit("sort", props.property, ascending);
 };
 </script>
 

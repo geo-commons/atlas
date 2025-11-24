@@ -15,7 +15,7 @@ export const accessConstraintsTypeOptions: Option<AccessConstraintsTypeId>[] = [
   {
     id: "intellectualPropertyRights",
     label:
-      "Intellectuele eigendomsrechten - Recht op een financieel voordeel van en controle hebben op de distributie een niet tastbaar eigendom wat het resultaat is van creativiteit.",
+      "Intellectuele eigendomsrechten - Recht op een financieel voordeel van - en controle hebben op de distributie van een niet tastbaar eigendom dat het resultaat is van creativiteit.",
   },
   {
     id: "restricted",

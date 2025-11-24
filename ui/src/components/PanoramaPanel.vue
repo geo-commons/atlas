@@ -38,6 +38,7 @@
         :password="selectedViewer.password"
         :api-key="selectedViewer.api_key"
         :map-id="mapId"
+        @position-changed="setPosition"
       />
       <iframe-viewer
         v-if="position.marker && selectedViewer.type == 'IFRAME'"
@@ -83,7 +84,7 @@ export default {
     position: Object,
     mapId: String,
   },
-  emits: ["toggle-full-screen", "toggle"],
+  emits: ["toggle-full-screen", "toggle", "position-changed"],
   data() {
     return {
       isFullscreen: false,
@@ -110,6 +111,9 @@ export default {
     toggleSize() {
       this.isFullscreen = !this.isFullscreen;
       this.$emit("toggle-full-screen", this.isFullscreen);
+    },
+    setPosition(position) {
+      this.$emit("position-changed", position);
     },
   },
 };
