@@ -7,7 +7,7 @@ import slugify from "slugify";
 import { onMounted, ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { statusTypeLabels, statusTypeOptions, topicCategoryLabels, topicCategoryOptions } from "@/types";
-import { formatDateForInput } from "@/utils/date-formatter";
+import { IMetadataset } from "@/types/metadataset";
 
 const router = useRouter();
 
@@ -45,15 +45,13 @@ const saveMetadataset = async (
 ) => {
   const url = "/atlas/api/v1/metadatasets/";
 
-  currentValues.slug = slugify(currentValues.title, { lower: true, strict: true });
-
-  // Default value
-  if (!currentValues.last_updated) {
-    currentValues.last_updated = formatDateForInput(new Date());
-  }
+  const payload: Partial<IMetadataset> = {
+    ...currentValues,
+    slug: slugify(currentValues.title, { lower: true, strict: true }),
+  };
 
   try {
-    const result = await sendSaveRequest(url, "POST", currentValues);
+    const result = await sendSaveRequest(url, "POST", payload);
 
     if (result.ok) {
       childRef?.value?.toggleDialog(EDialogTypes.Create);
@@ -98,7 +96,7 @@ const getCreateMetadatasetSections = () => {
 const initialCreateMetadatasetData = {
   title: "",
   status: "underDevelopment",
-  last_updated: formatDateForInput(new Date()),
+  last_updated: null,
   update_method: "manual",
 };
 

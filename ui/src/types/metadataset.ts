@@ -18,7 +18,7 @@ export interface IMetadataset {
   source_role_person_responsible: string;
   update_method?: string;
   update_frequency: string;
-  last_updated: string;
+  last_updated: string | null;
   authorization_level?: string;
   status: string;
   show_in_overview: boolean;
