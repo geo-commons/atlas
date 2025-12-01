@@ -359,7 +359,7 @@ const getSections = (): AdminFormConfig => {
           label: "Juridische toegangsrestricties",
           id: "access_constraints",
           name: "Legal Access Restrictions",
-          type: "radio",
+          type: "dropdown",
           required: false,
           visibility: "Publiek",
           options: accessConstraintsTypeOptions,
