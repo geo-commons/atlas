@@ -83,8 +83,13 @@ const getMetadataset = async (): Promise<void> => {
 const saveMetadataset = async (currentValues: Partial<IMetadataset>, continueEditing = false): Promise<void> => {
   const url = `/atlas/api/v1/metadatasets/${route.params.id}/`;
 
+  const payload: Partial<IMetadataset> = {
+    ...currentValues,
+    last_updated: currentValues.last_updated || null,
+  };
+
   try {
-    const result = await formSections.value.sendSaveRequest(url, "PATCH", currentValues);
+    const result = await formSections.value.sendSaveRequest(url, "PATCH", payload);
 
     if (result.ok) {
       if (!continueEditing) {
