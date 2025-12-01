@@ -22,9 +22,9 @@ export interface IMetadataset {
   authorization_level?: string;
   status: string;
   show_in_overview: boolean;
-  access_constraints: string;
-  other_constraints: string;
-  usage_constraints?: string;
+  access_constraints: string | null;
+  other_constraints: string | null;
+  usage_constraints: string | null;
   meta_email_internal?: string;
   meta_organization: string;
   meta_email_person_responsible: string;
