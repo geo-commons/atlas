@@ -3,19 +3,19 @@ from import_export.admin import ImportExportActionModelAdmin
 from import_export.formats import base_formats
 from reversion.admin import VersionAdmin
 
-from .forms import LayerForm, LinkedDataForm
-from .models import Source, Category, Layer, Template, Selection, Map, MapLayer, LinkedData, Viewer, Dataset, Theme
+from .forms import LayerForm
+from .models import Source, Category, Layer, Template, Selection, Map, MapLayer, Viewer, Dataset, Theme
 from .resources import CategoryResource, LayerResource, SourceResource, SelectionResource, MapResource, ThemeResource, \
     DatasetResource
 
 
-class LinkedDataInline(admin.TabularInline):
-    form = LinkedDataForm
-    model = LinkedData
-    fk_name = 'source'
-    extra = 0
-
-
+# class LinkedDataInline(admin.TabularInline):
+#     form = LinkedDataForm
+#     model = LinkedData
+#     fk_name = 'layer'
+#     extra = 0
+#
+#
 class TemplateInline(admin.StackedInline):
     model = Template
     extra = 0
@@ -85,7 +85,6 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     resource_classes = [LayerResource]
 
     inlines = [
-        LinkedDataInline,
         TemplateInline,
     ]
 

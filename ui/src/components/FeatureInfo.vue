@@ -95,6 +95,7 @@
             @set-position="setPosition"
             @on-fit="(value) => onFit(value)"
             @select-feature-details="onSelectFeatureDetails"
+            @select-related-linked-data="onSelectRelatedLinkedData"
           />
         </div>
       </div>
@@ -151,7 +152,14 @@ export default {
     atlasFeatures: Object,
     isOpen: Boolean,
   },
-  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature", "select-feature"],
+  emits: [
+    "set-position",
+    "on-fit",
+    "select-feature-details",
+    "show-selected-feature",
+    "select-feature",
+    "select-related-linked-data",
+  ],
   data() {
     return {
       features: [],
@@ -281,6 +289,9 @@ export default {
     },
     onSelectFeatureDetails(selectedFeature) {
       this.$emit("select-feature-details", selectedFeature);
+    },
+    onSelectRelatedLinkedData(linkedDataIdAttributes) {
+      this.$emit("select-related-linked-data", linkedDataIdAttributes);
     },
     formatProperty(property) {
       if (this.layer.friendly_fields && this.layer.friendly_fields[property]) {

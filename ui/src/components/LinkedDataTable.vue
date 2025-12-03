@@ -47,7 +47,13 @@
                     </button>
                   </td>
                   <td v-for="property in displayProperties" :key="property" class="linked-data-cell">
-                    <RichValue :data-key="property" :data-value="feature.properties[property]" />
+                    <button
+                      v-if="hasLinkedDataAttribute(property)"
+                      @click="openLinkedData(property, feature.properties[property])"
+                    >
+                      {{ feature.properties[property] }}
+                    </button>
+                    <RichValue v-else :data-key="property" :data-value="feature.properties[property]" />
                   </td>
                 </tr>
               </tbody>
@@ -279,6 +285,31 @@ export default {
       }
 
       return formatRawString(property);
+    },
+    hasLinkedDataAttribute(property) {
+      if (this.linkedData.related.length > 0) {
+        // console.log(property);
+        const relatedLinkedData = this.linkedData.related.find((linkedData) => linkedData.source_key === property);
+        if (relatedLinkedData) {
+          console.log(relatedLinkedData);
+          return true;
+        }
+      }
+
+      return false;
+    },
+    openLinkedData(property, value) {
+      console.log("open linked data", property);
+      const relatedLinkedData = this.linkedData.related.find((linkedData) => linkedData.source_key === property);
+      if (relatedLinkedData) {
+        console.log(relatedLinkedData);
+        const linkedDataIdAttributes = {
+          id: relatedLinkedData.to_linked_data,
+          property: property,
+          value: value,
+        };
+        this.$emit("select-related-linked-data", linkedDataIdAttributes);
+      }
     },
   },
 };

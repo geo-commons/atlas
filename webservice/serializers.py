@@ -5,7 +5,7 @@ from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
 from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer, \
-    Metadataset
+    Metadataset, LinkedDataRelation
 from .util import safe_float_or_null
 
 
@@ -77,6 +77,17 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'slug', 'ordering']
 
 
+class LinkedDataRelationSerializer(serializers.ModelSerializer):
+    from_linked_data = serializers.IntegerField(source='from_linked_data.id')
+    to_linked_data = serializers.IntegerField(source='to_linked_data.id')
+    source_key = serializers.CharField()
+    target_key = serializers.CharField()
+
+    class Meta:
+        model = LinkedDataRelation
+        fields = ['from_linked_data', 'to_linked_data', 'source_key', 'target_key']
+
+
 class LinkedDataSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='layer_name')
     display_properties = serializers.ListField(
@@ -88,13 +99,19 @@ class LinkedDataSerializer(serializers.ModelSerializer):
 
     # New fields from model changes
     kind = serializers.ChoiceField(choices=LinkedData.KIND_CHOICES)
+    # todo: kijken of dit direct op de linked data moet of juist in de nieuwe relation tabel. relation tabel is nu eigenlijk alleen van linkeddata naar linked data
+    # deze source/target is van linked data naar layer
     source = serializers.PrimaryKeyRelatedField(queryset=Layer.objects.all())
     # target_layer is eigenlijk zelfde als oude name/layer_name
     target_layer = serializers.PrimaryKeyRelatedField(
         queryset=Layer.objects.all(), allow_null=True, required=False)
 
     # Graph (read-only to avoid custom create/update)
-    related = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    related = serializers.SerializerMethodField()
+
+    def get_related(self, obj):
+        relations = LinkedDataRelation.objects.filter(from_linked_data=obj)
+        return LinkedDataRelationSerializer(relations, many=True).data
 
     class Meta:
         model = LinkedData
@@ -112,7 +129,7 @@ class LinkedDataSerializer(serializers.ModelSerializer):
             'kind',
             'source',
             'target_layer',
-            'related',  # read-only (manage via Admin for now)
+            'related',
         ]
 
     def to_representation(self, instance):

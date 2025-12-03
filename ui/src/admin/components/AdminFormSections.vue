@@ -17,6 +17,10 @@
             <h3>{{ section.label }}</h3>
           </div>
 
+          <div v-if="section.label === 'Gerelateerde data'" class="section-questions">
+            <slot name="relatedData"></slot>
+          </div>
+
           <div v-if="section.label === 'Gekoppelde data'" class="section-questions">
             <slot name="linkedData"></slot>
           </div>

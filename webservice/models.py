@@ -11,6 +11,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
 
+from tables.models import Table
 from user_management.models import AtlasGroup
 from utils.tools import is_internal
 from webservice.util import safe_float_or_null
@@ -395,6 +396,57 @@ class Metadataset(models.Model):
         return self.title
 
 
+# TODO: MOVE TO TABLES
+class TableTemp(models.Model):
+    title = models.CharField('Naam', max_length=128,
+                             help_text="De naam van de tabel")
+    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
+                         overwrite_on_add=False, editable=True,
+                         help_text='Een uniek kort kenmerk voor de tabel in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes.',
+                         max_length=255)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    source_type = models.CharField('Brontype', choices=Source.SOURCE_TYPES, default=Source.SOURCE_OWS)
+    fields = models.JSONField(null=True, blank=True)  # kolommen misschien als naam?
+
+    # rest tables
+    endpoint = models.CharField('Endpoint', max_length=500, null=True,
+                                blank=True, )  # /zoeken/&straatnaam={{straatNaam}}&postCode={{postCode}}+{{variable}}
+
+    # ows tables
+    cql_filters = models.JSONField(null=True, blank=True)  # ["straatNaam = {{straatNaam}}", "postCode = {{postCode}}"]
+
+    class Meta:
+        verbose_name = 'Tabel'
+        verbose_name_plural = 'Tabellen'
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+
+class TableTempRelation(models.Model):
+    from_table = models.ForeignKey('TableTemp', related_name='from_table', on_delete=models.CASCADE)
+    to_table = models.ForeignKey('TableTemp', related_name='to_table', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('from_table', 'to_table')
+
+
+class LayerTable(models.Model):
+    layer = models.ForeignKey('Layer', on_delete=models.CASCADE)
+    table = models.ForeignKey('tables.Table', on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, help_text="De naam van de relatie")
+
+    # keys =
+    # source_key = key_1 + key_2
+    # target_key = key_1
+    # [(source_key_1, target_key_1),(source_key_2, target_key_2), ...]
+    # {}
+
+    class Meta:
+        unique_together = ('layer', 'table')
+
+
 class Layer(models.Model):
     SOURCE_WMS_WFS = 'WMS_WFS'
     SOURCE_WMS = 'WMS'
@@ -577,6 +629,8 @@ class Layer(models.Model):
 
     metadataset = models.ForeignKey(
         Metadataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
+
+    tables = models.ManyToManyField(through=LayerTable, to=Table, related_name='table_layers', blank=True)
 
     def __str__(self):
         return self.title
@@ -780,6 +834,17 @@ source: new ol.source.TileWMS({{
         ordering = ['layer_type__ordering', 'ordering', 'title']
 
 
+class LinkedDataRelation(models.Model):
+    from_linked_data = models.ForeignKey('LinkedData', related_name='from_links', on_delete=models.CASCADE)
+    to_linked_data = models.ForeignKey('LinkedData', related_name='to_links', on_delete=models.CASCADE)
+    # Add your extra fields here
+    source_key = models.CharField(_('Bronsleutel'), max_length=128)
+    target_key = models.CharField(_('Doelsleutel'), max_length=128)
+
+    class Meta:
+        unique_together = ('from_linked_data', 'to_linked_data')
+
+
 class LinkedData(models.Model):
     source = models.ForeignKey(
         Layer, on_delete=models.CASCADE, related_name='linked_data')
@@ -803,19 +868,9 @@ class LinkedData(models.Model):
         help_text='Hoe wordt de data opgehaald?'
     )
 
-    # NEW: Target layer for joins (optional, only for layer_join)
-    target_layer = models.ForeignKey(
-        Layer,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='incoming_links',
-        help_text='Doellaag voor joins (laat leeg bij externe APIs)'
-    )
-
-    # NEW: Chain relationships
     related = models.ManyToManyField(
         'self',
+        through=LinkedDataRelation,
         symmetrical=False,
         blank=True,
         related_name='parent_links',
@@ -851,7 +906,15 @@ class LinkedData(models.Model):
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else [],
             'use_detail_view': self.use_detail_view,
             'detail_view_fields': self.detail_view_fields.split('\r\n') if self.detail_view_fields else [],
-            'related': [r.to_dict() for r in self.related.all()],  # NEW: next drill-downs
+            'related': [
+                {
+                    'from_linked_data': rel.from_linked_data.id,
+                    'to_linked_data': rel.to_linked_data.id,
+                    'source_key': rel.source_key,
+                    'target_key': rel.target_key
+                }
+                for rel in LinkedDataRelation.objects.filter(from_linked_data=self)
+            ],
         }
 
 

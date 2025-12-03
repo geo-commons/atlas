@@ -72,9 +72,16 @@
           :feature="selectedFeatureDetails"
           @back="closeFeatureInfoDetails"
         />
+        <FeatureInfoLinkedData
+          v-if="selectedRelatedLinkedDataAttributes"
+          :id="selectedRelatedLinkedDataAttributes.id"
+          :property="selectedRelatedLinkedDataAttributes.property"
+          :value="selectedRelatedLinkedDataAttributes.value"
+          @back="closeRelatedLinkedDataDetails"
+        />
         <FeatureInfo
           v-for="visibleLayer in visibleLayers"
-          v-show="!selectedFeatureDetails"
+          v-show="!selectedFeatureDetails && !selectedRelatedLinkedDataAttributes"
           :key="visibleLayer.id"
           :is-open="true"
           :layer="visibleLayer"
@@ -85,6 +92,7 @@
           @set-position="(position) => setPosition(position)"
           @on-fit="onFit"
           @select-feature-details="onSelectFeatureDetails"
+          @select-related-linked-data="onSelectRelatedLinkedData"
           @select-feature="selectFeature"
         />
       </div>
@@ -104,10 +112,12 @@ import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
 import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 import { useMapStore } from "@/stores/map_store";
+import FeatureInfoLinkedData from "@/components/FeatureInfoLinkedData.vue";
 
 export default {
   name: "PointInfoPanel",
   components: {
+    FeatureInfoLinkedData,
     FeatureInfoDetails,
     Tippy,
     MarkerIcon,
@@ -128,6 +138,7 @@ export default {
     return {
       resetSidePanel: null,
       selectedFeatureDetails: null,
+      selectedRelatedLinkedDataAttributes: null,
       copyButtonText: "Kopieer coördinaten",
       mapStore: null,
     };
@@ -193,8 +204,14 @@ export default {
     onSelectFeatureDetails(selectedFeature) {
       this.selectedFeatureDetails = selectedFeature;
     },
+    onSelectRelatedLinkedData(linkedDataIdAttributes) {
+      this.selectedRelatedLinkedDataAttributes = linkedDataIdAttributes;
+    },
     closeFeatureInfoDetails() {
       this.selectedFeatureDetails = null;
+    },
+    closeRelatedLinkedDataDetails() {
+      this.selectedRelatedLinkedDataAttributes = null;
     },
     copyCoordinates() {
       navigator.clipboard

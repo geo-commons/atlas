@@ -10,8 +10,76 @@
       :compact-layout="true"
       :form-object="'linked-data'"
       :object-specific-save="saveLinkedData"
-    />
+    >
+      <template #relatedData>
+        <div class="layer-setting">
+          <div class="admin-label-button">
+            <button
+              v-tippy
+              aria-label="Voeg gerelateerde data toe"
+              content="Voeg gerelateerde data toe"
+              type="button"
+              class="button __small __secondary_admin"
+              @click="toggleModal()"
+            >
+              <AddIcon />
+              Voeg toe
+            </button>
+          </div>
+
+          <ul class="admin-list">
+            <li v-for="relatedItem in initialValues.related" :key="relatedItem.id">
+              {{ relatedItem }}
+              <div class="admin-list-buttons">
+                <button
+                  v-tippy
+                  :content="`Bewerk gerelateerde data ${relatedItem.title}`"
+                  :aria-label="`Bewerk gerelateerde data ${relatedItem.title}`"
+                  type="button"
+                  class="iconbutton __normal __round"
+                  @click="editRelatedData(relatedItem)"
+                >
+                  <EditIcon class="icon __medium"></EditIcon>
+                </button>
+                <button
+                  v-tippy
+                  :content="`Verwijder gerelateerde data ${relatedItem.title}`"
+                  :aria-label="`Verwijder gerelateerde data ${relatedItem.title}`"
+                  type="button"
+                  class="iconbutton __normal __round"
+                  @click="removeRelatedData(relatedItem)"
+                >
+                  <TrashIcon class="icon __medium"></TrashIcon>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </template>
+    </AdminFormSections>
   </div>
+  <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
+    <template #header>
+      <h3>Gerelateerde data selecteren</h3>
+    </template>
+    <template #body>
+      <div class="related-data-selector">
+        <label for="relatedDataSelect">Selecteer gerelateerde LinkedData:</label>
+        <select id="relatedDataSelect" v-model="selectedRelatedDataId" class="form-control">
+          <option value="">Selecteer...</option>
+          <option v-for="linkedData in availableLinkedData" :key="linkedData.id" :value="linkedData.id">
+            {{ linkedData.title }}
+          </option>
+        </select>
+        <div class="modal-buttons">
+          <button type="button" class="button __primary" :disabled="!selectedRelatedDataId" @click="addRelatedData">
+            Toevoegen
+          </button>
+          <button type="button" class="button __secondary" @click="closeFormModal">Annuleren</button>
+        </div>
+      </div>
+    </template>
+  </FormModal>
 </template>
 
 <script setup lang="ts">
@@ -20,22 +88,65 @@ import { useRoute, useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
+import AddIcon from "@/assets/icons/add-icon.svg";
+import EditIcon from "@/assets/icons/edit-icon.svg";
+import TrashIcon from "@/assets/icons/trash-icon.svg";
+import FormModal from "@/components/FormModal.vue";
+
+// Types
+interface LinkedDataItem {
+  id: number;
+  title: string;
+  layer_name?: string;
+  kind?: string;
+  url?: string;
+  source_key?: string;
+  target_key?: string;
+  source?: number;
+  target_layer?: number;
+  headers?: string;
+  display_properties?: string[];
+  use_detail_view?: boolean;
+  detail_view_fields?: string;
+}
+
+interface InitialValues {
+  title?: string;
+  name?: string;
+  layer_name?: string;
+  kind?: string;
+  url?: string;
+  source_key?: string;
+  target_key?: string;
+  source?: number;
+  target_layer?: number;
+  headers?: string;
+  display_properties?: string[];
+  use_detail_view?: boolean;
+  detail_view_fields?: string;
+  related: LinkedDataItem[];
+}
 
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 
 const sections = ref({});
-const initialValues = ref({});
+const initialValues = ref<InitialValues>({ related: [] });
 const loading = ref(false);
 const formSections = ref<{
   sendSaveRequest: (url: string, method: string, currentValues: any) => Promise<Response>;
 } | null>(null);
 
+// Modal state
+const showFormModal = ref(false);
+const availableLinkedData = ref<LinkedDataItem[]>([]);
+const selectedRelatedDataId = ref("");
+
 onMounted(() => {
   loading.value = true;
 
-  Promise.all([getLinkedData()]).then(() => {
+  Promise.all([getLinkedData(), getAvailableLinkedData()]).then(() => {
     sections.value = getSections();
     loading.value = false;
   });
@@ -52,8 +163,25 @@ const getLinkedData = async () => {
     return;
   }
 
-  initialValues.value = await result.json();
+  const response = await result.json();
+  initialValues.value = { ...response, related: response.related || [] };
+
   console.log(initialValues.value);
+};
+
+const getAvailableLinkedData = async () => {
+  const result = await fetch("/atlas/api/v1/linked-data/", {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!result.ok) {
+    console.error("Could not fetch available linked data");
+    return;
+  }
+
+  const response = await result.json();
+  availableLinkedData.value = response.results || response;
 };
 
 const saveLinkedData = async (currentValues: any, continueEditing = false) => {
@@ -64,6 +192,9 @@ const saveLinkedData = async (currentValues: any, continueEditing = false) => {
       console.error("Form sections not available");
       return;
     }
+
+    // Include the related data in currentValues
+    currentValues.related = initialValues.value.related.map((item: LinkedDataItem) => item.id);
 
     const result = await formSections.value.sendSaveRequest(url, "PATCH", currentValues);
 
@@ -81,6 +212,43 @@ const saveLinkedData = async (currentValues: any, continueEditing = false) => {
     }
   } catch (e) {
     console.error("An unexpected error occurred:", e);
+  }
+};
+
+// Modal and related data management methods
+const toggleModal = () => {
+  selectedRelatedDataId.value = "";
+  showFormModal.value = true;
+};
+
+const closeFormModal = () => {
+  showFormModal.value = false;
+  selectedRelatedDataId.value = "";
+};
+
+const addRelatedData = () => {
+  if (!selectedRelatedDataId.value) return;
+
+  const selectedItem = availableLinkedData.value.find(
+    (item: LinkedDataItem) => item.id === parseInt(selectedRelatedDataId.value),
+  );
+
+  if (selectedItem && !initialValues.value.related.find((item: LinkedDataItem) => item.id === selectedItem.id)) {
+    initialValues.value.related.push(selectedItem);
+  }
+
+  closeFormModal();
+};
+
+const editRelatedData = (relatedItem: LinkedDataItem) => {
+  // Navigate to the edit page of the related LinkedData item
+  router.push(`/linked-data/${relatedItem.id}`);
+};
+
+const removeRelatedData = (relatedItem: LinkedDataItem) => {
+  const index = initialValues.value.related.findIndex((item: LinkedDataItem) => item.id === relatedItem.id);
+  if (index > -1) {
+    initialValues.value.related.splice(index, 1);
   }
 };
 
@@ -165,7 +333,7 @@ const getSections = () => {
           label: "Tabel kopjes",
           id: "headers",
           name: "Headers",
-          type: "textarea",
+          type: "text",
           required: false,
           multiLine: true,
           infoText: "Voer één veld per regel in.",
@@ -174,7 +342,7 @@ const getSections = () => {
           label: "Tabel velden",
           id: "display_properties",
           name: "DisplayProperties",
-          type: "textarea",
+          type: "text",
           required: false,
           multiLine: true,
           infoText: "Voer één veld per regel in. Bij geen invoer worden alle velden getoond.",
@@ -190,12 +358,17 @@ const getSections = () => {
           label: "Detailweergave velden",
           id: "detail_view_fields",
           name: "DetailViewFields",
-          type: "textarea",
+          type: "text",
           required: false,
           multiLine: true,
           infoText: "Voer één veld per regel in. Bij geen invoer worden alle velden getoond.",
         },
       ],
+    },
+    relatedData: {
+      label: "Gerelateerde data",
+      questions: [],
+      disableInputs: true,
     },
   };
 };
