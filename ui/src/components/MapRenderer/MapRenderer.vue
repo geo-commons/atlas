@@ -420,6 +420,7 @@ import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 import { EditLayerMode } from "@/types/map";
+import { ELayerTypes } from "@/types/layer";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -767,6 +768,10 @@ export default {
       this.editLayerStore.setHighlightedFeatureAndLayer(null);
 
       this.mapStore.visibleLayersForFeatures.forEach(async (layer) => {
+        if (layer.source_type === ELayerTypes.WMTS) {
+          return;
+        }
+
         const wmsSource = new TileWMS({
           url: layer.url,
           servertype: layer.server_type,
