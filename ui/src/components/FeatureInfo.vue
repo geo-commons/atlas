@@ -127,6 +127,10 @@ import EditIcon from "@/assets/icons/edit-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EditLayerMode } from "@/types/map";
 import GeoJSON from "ol/format/GeoJSON";
+import { ELayerTypes } from "@/types/layer";
+import { WMTS } from "ol/source";
+import { optionsFromCapabilities } from "ol/source/WMTS";
+import WMTSCapabilities from "ol/format/WMTSCapabilities";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -179,12 +183,16 @@ export default {
   },
   methods: {
     fetchFeatures() {
-      if (this.layer.source_type === "WMS" || this.layer.source_type === "WMS_WFS") {
+      if (this.layer.source_type === ELayerTypes.WMS || this.layer.source_type === ELayerTypes.WMS_WFS) {
         return this.fetchFeaturesFromWMS();
       }
 
-      if (this.layer.source_type === "WFS") {
+      if (this.layer.source_type === ELayerTypes.WFS) {
         return this.fetchFeaturesFromWFS();
+      }
+
+      if (this.layer.source_type === ELayerTypes.WMTS) {
+        return this.fetchFeaturesFromWMTS();
       }
     },
     async fetchFeaturesFromWMS() {
@@ -249,6 +257,108 @@ export default {
       const result = await fetch(url.toString(), this.getFetchParameters());
       const data = await result.json();
       this.features = data.features;
+    },
+    /**
+     * Fetches feature information from a WMTS layer at the current map position.
+     *
+     * This method:
+     *  1. Requests and parses the WMTS GetCapabilities document.
+     *  2. Builds a WMTS source from the capabilities and layer configuration.
+     *  3. Constructs an OpenLayers View to determine the map resolution and the WMTS zoom level.
+     *  4. Computes the WMTS tile (TileMatrix, TileRow, TileCol) that contains the user-selected coordinate.
+     *  5. Calculates the pixel position (I, J) of the coordinate within that tile.
+     *  6. Issues a WMTS GetFeatureInfo request using those computed values.
+     *  7. Stores the returned HTML or GeoJSON features depending on configuration.
+     *
+     * WMTS Specification Reference:
+     *   For definitions of TileMatrix, TileRow, TileCol, I, J, and the GetFeatureInfo
+     *   request structure, see the OGC WMTS 1.0.0 standard:
+     *   - Overview page: https://www.ogc.org/standards/wmts
+     *   - Direct PDF:    https://portal.ogc.org/files/?artifact_id=35326  (OGC 07-057r7)
+     */
+    async fetchFeaturesFromWMTS() {
+      const capabilitiesUrl = new URL(this.layer.url);
+
+      const capabilitiesParams = new URLSearchParams({
+        REQUEST: "GetCapabilities",
+        service: "wmts",
+      });
+
+      capabilitiesUrl.search = capabilitiesParams.toString();
+
+      const response = await fetch(capabilitiesUrl);
+      const text = await response.text();
+      const caps = new WMTSCapabilities().read(text);
+
+      const options = optionsFromCapabilities(caps, {
+        layer: this.layer.name,
+        matrixSet: this.layer.projection,
+        projection: this.layer.projection,
+        format: this.layer.format,
+        crossOrigin: "anonymous",
+        style: this.layer.serverStyle || null,
+      });
+
+      const wmtsSource = new WMTS(options);
+      const tileGrid = wmtsSource.getTileGrid();
+
+      const view = new View({
+        center: this.position.center,
+        resolutions: tileGrid.getResolutions(),
+        zoom: this.position.zoom,
+        projection: this.layer.projection,
+      });
+
+      const resolution = view.getResolution();
+      const coord = this.position.marker;
+
+      const z = tileGrid.getZForResolution(resolution);
+
+      const tileCoord = tileGrid.getTileCoordForCoordAndZ(coord, z);
+      const tileCol = tileCoord[1];
+      const tileRow = tileCoord[2];
+
+      const tileOrigin = tileGrid.getOrigin(z);
+      const tileSize = tileGrid.getTileSize(z);
+
+      const xFromOrigin = (coord[0] - tileOrigin[0]) / resolution;
+      const yFromOrigin = (tileOrigin[1] - coord[1]) / resolution;
+
+      const I = Math.floor(xFromOrigin - tileCol * tileSize);
+      const J = Math.floor(yFromOrigin - tileRow * tileSize);
+
+      const url = new URL(this.layer.url);
+
+      const params = new URLSearchParams({
+        SERVICE: "WMTS",
+        VERSION: "1.0.0",
+        REQUEST: "GetFeatureInfo",
+        LAYER: this.layer.name,
+        TileMatrixSet: this.layer.projection,
+        TileMatrix: `${this.layer.projection}:${z}`,
+        TileCol: tileCol,
+        TileRow: tileRow,
+        I: I,
+        J: J,
+        INFOFORMAT: this.layer.use_html_info_format ? "text/html" : "application/json",
+        FEATURE_COUNT: "20",
+      });
+
+      url.search = params.toString();
+
+      try {
+        const result = await fetch(url, this.getFetchParameters());
+
+        if (this.layer.use_html_info_format) {
+          this.html = await result.text();
+          this.features = [];
+        } else {
+          const data = await result.json();
+          this.features = data.features ?? [];
+        }
+      } catch (err) {
+        console.error(err);
+      }
     },
     setPosition(value) {
       this.$emit("set-position", value);
