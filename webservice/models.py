@@ -409,11 +409,16 @@ class TableTemp(models.Model):
     fields = models.JSONField(null=True, blank=True)  # kolommen misschien als naam?
 
     # rest tables
-    endpoint = models.CharField('Endpoint', max_length=500, null=True,
-                                blank=True, )  # /zoeken/&straatnaam={{straatNaam}}&postCode={{postCode}}+{{variable}}
+    list_endpoint = models.CharField('List endpoint', max_length=1024, null=True,
+                                     blank=True, )  # /zoeken/&straatnaam={{straatNaam}}&postCode={{postCode}}+{{variable}}
+    detail_endpoint = models.CharField('Detail endpoint', max_length=1024, null=True,
+                                       blank=True, )  # /zoeken/?id={{id}}
 
     # ows tables
-    cql_filters = models.JSONField(null=True, blank=True)  # ["straatNaam = {{straatNaam}}", "postCode = {{postCode}}"]
+    list_cql_filters = models.JSONField(null=True,
+                                        blank=True)  # { straatnaam: "{{straatnaam}}", adres: "{{straatnaam}} {{huisnummer}}" }
+    detail_cql_filters = models.JSONField(null=True,
+                                          blank=True)  # { straatnaam: "{{straatnaam}}", adres: "{{straatnaam}} {{huisnummer}}", staatId: "{{id}}"  }
 
     class Meta:
         verbose_name = 'Tabel'
@@ -427,6 +432,17 @@ class TableTemp(models.Model):
 class TableTempRelation(models.Model):
     from_table = models.ForeignKey('TableTemp', related_name='from_table', on_delete=models.CASCADE)
     to_table = models.ForeignKey('TableTemp', related_name='to_table', on_delete=models.CASCADE)
+    field_mapping = models.JSONField('Mapping van kolomnamen')
+    '''
+    from = adres
+    to = ligplaats
+    
+    mapping = {
+        ligplaatsnummer: ligplaatsnummer2,
+        
+    }
+    
+    '''
 
     class Meta:
         unique_together = ('from_table', 'to_table')
