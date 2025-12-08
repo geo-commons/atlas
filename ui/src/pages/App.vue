@@ -80,7 +80,7 @@ export default {
       markerOnClick: true,
       draw: true,
       edit_layer_features: true,
-      compareLayers: true,
+      compareLayers: this.config.features.compareLayers,
       panoramaViewers: true,
     };
 

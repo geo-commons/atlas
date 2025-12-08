@@ -233,6 +233,12 @@ export default {
               name: "featureDisableAdmin1",
               type: "checkbox",
             },
+            {
+              label: "Kaartlaagvergelijk functionaliteit op hoofdkaart",
+              id: "FEATURE_COMPARE_LAYERS",
+              name: "featureCompareLayers",
+              type: "checkbox",
+            },
           ],
         },
         portalConfiguration: {
