@@ -11,7 +11,6 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
 
-from tables.models import Table
 from user_management.models import AtlasGroup
 from utils.tools import is_internal
 from webservice.util import safe_float_or_null
@@ -396,73 +395,6 @@ class Metadataset(models.Model):
         return self.title
 
 
-# TODO: MOVE TO TABLES
-class TableTemp(models.Model):
-    title = models.CharField('Naam', max_length=128,
-                             help_text="De naam van de tabel")
-    slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
-                         overwrite_on_add=False, editable=True,
-                         help_text='Een uniek kort kenmerk voor de tabel in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes.',
-                         max_length=255)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
-    source_type = models.CharField('Brontype', choices=Source.SOURCE_TYPES, default=Source.SOURCE_OWS)
-    fields = models.JSONField(null=True, blank=True)  # kolommen misschien als naam?
-
-    # rest tables
-    list_endpoint = models.CharField('List endpoint', max_length=1024, null=True,
-                                     blank=True, )  # /zoeken/&straatnaam={{straatNaam}}&postCode={{postCode}}+{{variable}}
-    detail_endpoint = models.CharField('Detail endpoint', max_length=1024, null=True,
-                                       blank=True, )  # /zoeken/?id={{id}}
-
-    # ows tables
-    list_cql_filters = models.JSONField(null=True,
-                                        blank=True)  # { straatnaam: "{{straatnaam}}", adres: "{{straatnaam}} {{huisnummer}}" }
-    detail_cql_filters = models.JSONField(null=True,
-                                          blank=True)  # { straatnaam: "{{straatnaam}}", adres: "{{straatnaam}} {{huisnummer}}", staatId: "{{id}}"  }
-
-    class Meta:
-        verbose_name = 'Tabel'
-        verbose_name_plural = 'Tabellen'
-        ordering = ['title']
-
-    def __str__(self):
-        return self.title
-
-
-class TableTempRelation(models.Model):
-    from_table = models.ForeignKey('TableTemp', related_name='from_table', on_delete=models.CASCADE)
-    to_table = models.ForeignKey('TableTemp', related_name='to_table', on_delete=models.CASCADE)
-    field_mapping = models.JSONField('Mapping van kolomnamen')
-    '''
-    from = adres
-    to = ligplaats
-    
-    mapping = {
-        ligplaatsnummer: ligplaatsnummer2,
-        
-    }
-    
-    '''
-
-    class Meta:
-        unique_together = ('from_table', 'to_table')
-
-
-class LayerTable(models.Model):
-    layer = models.ForeignKey('Layer', on_delete=models.CASCADE)
-    table = models.ForeignKey('tables.Table', on_delete=models.CASCADE)
-    title = models.CharField(max_length=255, help_text="De naam van de relatie")
-
-    # keys =
-    # source_key = key_1 + key_2
-    # target_key = key_1
-    # [(source_key_1, target_key_1),(source_key_2, target_key_2), ...]
-    # {}
-
-    class Meta:
-        unique_together = ('layer', 'table')
-
-
 class Layer(models.Model):
     SOURCE_WMS_WFS = 'WMS_WFS'
     SOURCE_WMS = 'WMS'
@@ -646,7 +578,11 @@ class Layer(models.Model):
     metadataset = models.ForeignKey(
         Metadataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
 
-    tables = models.ManyToManyField(through=LayerTable, to=Table, related_name='table_layers', blank=True)
+    related_tables = models.ManyToManyField(
+        'tables_v2.TableTemp',
+        through='tables_v2.LayerToTable',
+        related_name='layers'
+    )
 
     def __str__(self):
         return self.title
@@ -850,17 +786,6 @@ source: new ol.source.TileWMS({{
         ordering = ['layer_type__ordering', 'ordering', 'title']
 
 
-class LinkedDataRelation(models.Model):
-    from_linked_data = models.ForeignKey('LinkedData', related_name='from_links', on_delete=models.CASCADE)
-    to_linked_data = models.ForeignKey('LinkedData', related_name='to_links', on_delete=models.CASCADE)
-    # Add your extra fields here
-    source_key = models.CharField(_('Bronsleutel'), max_length=128)
-    target_key = models.CharField(_('Doelsleutel'), max_length=128)
-
-    class Meta:
-        unique_together = ('from_linked_data', 'to_linked_data')
-
-
 class LinkedData(models.Model):
     source = models.ForeignKey(
         Layer, on_delete=models.CASCADE, related_name='linked_data')
@@ -870,28 +795,6 @@ class LinkedData(models.Model):
     url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
-
-    # NEW: Define relationship type
-    KIND_CHOICES = [
-        ('layer_join', 'Layer Join'),
-        ('external_api', 'External API Lookup'),
-    ]
-    kind = models.CharField(
-        _('Type'),
-        max_length=20,
-        choices=KIND_CHOICES,
-        default='layer_join',
-        help_text='Hoe wordt de data opgehaald?'
-    )
-
-    related = models.ManyToManyField(
-        'self',
-        through=LinkedDataRelation,
-        symmetrical=False,
-        blank=True,
-        related_name='parent_links',
-        help_text='Wat kun je hierna bekijken?'
-    )
 
     headers = models.TextField(_('Tabel kopjes'), max_length=250, blank=True, null=True,
                                help_text='Voer één veld per regel in.')
@@ -911,26 +814,14 @@ class LinkedData(models.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,  # NEW: needed for drill-down navigation
             'title': self.title,
             'name': self.layer_name,
-            'kind': self.kind,  # NEW
             'url': self.url,
             'source_key': self.source_key,
             'target_key': self.target_key,
             'headers': self.headers.split('\r\n') if self.headers else [],
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else [],
             'use_detail_view': self.use_detail_view,
-            'detail_view_fields': self.detail_view_fields.split('\r\n') if self.detail_view_fields else [],
-            'related': [
-                {
-                    'from_linked_data': rel.from_linked_data.id,
-                    'to_linked_data': rel.to_linked_data.id,
-                    'source_key': rel.source_key,
-                    'target_key': rel.target_key
-                }
-                for rel in LinkedDataRelation.objects.filter(from_linked_data=self)
-            ],
         }
 
 

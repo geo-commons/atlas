@@ -92,6 +92,7 @@ DATABASES = {
 INSTALLED_APPS = [
     'homepage',
     'tables',
+    'tables_v2',
     'webservice',
     'portal',
     'user_management',

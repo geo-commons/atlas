@@ -19,11 +19,11 @@ from webservice.mixins import DataExportImportMixin, DuplicateMixin, DeleteMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
 from .models import Category, Drawing, Source, Layer, Theme, Viewer, Map, Metadataset, TopicCategory, RoleType, \
-    UpdateMethodType, AuthorizationLevelType, StatusType, AccessConstraintsType, OtherConstraintsType, LinkedData
+    UpdateMethodType, AuthorizationLevelType, StatusType, AccessConstraintsType, OtherConstraintsType
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, \
     ThemeSerializer, ThemePatchOrCreateSerializer, LogSerializer, ViewerSerializer, \
-    UserCreateUpdateSerializer, MetadatasetSerializer, MetadatasetPublicSerializer, LinkedDataSerializer
+    UserCreateUpdateSerializer, MetadatasetSerializer, MetadatasetPublicSerializer
 
 
 class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.ModelViewSet):
@@ -210,15 +210,6 @@ class LogViewSet(viewsets.ModelViewSet):
         }
 
         return Response(data)
-
-
-class LinkedDataViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAdminUser]
-    queryset = LinkedData.objects.all().order_by('title')
-    serializer_class = LinkedDataSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
-
-    search_fields = ['title']
 
 
 class ConfigurationViewSet(ViewSet):
