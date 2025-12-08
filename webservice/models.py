@@ -587,7 +587,7 @@ class Layer(models.Model):
         Metadataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.title}"
 
     @property
     def popup_attributes(self):
@@ -775,13 +775,13 @@ source: new ol.source.TileWMS({{
                 'meta_email_person_responsible': self.metadataset.meta_email_person_responsible,
                 'meta_role_person_responsible': self.metadataset.meta_role_person_responsible,
                 **({
-                    'description': self.metadataset.description,
-                    'source_location': self.metadataset.source_location,
-                    'source_name_internal': self.metadataset.source_name_internal,
-                    'source_email_internal': self.metadataset.source_email_internal,
-                    'update_method': self.metadataset.update_method,
-                    'meta_email_internal': self.metadataset.meta_email_internal,
-                } if user and user.is_authenticated else {})
+                       'description': self.metadataset.description,
+                       'source_location': self.metadataset.source_location,
+                       'source_name_internal': self.metadataset.source_name_internal,
+                       'source_email_internal': self.metadataset.source_email_internal,
+                       'update_method': self.metadataset.update_method,
+                       'meta_email_internal': self.metadataset.meta_email_internal,
+                   } if user and user.is_authenticated else {})
             } if self.metadataset else None,
             'linked_data': [item.to_dict() for item in self.linked_data.all()],
             'templates': [item.to_dict() for item in self.templates.all()],
