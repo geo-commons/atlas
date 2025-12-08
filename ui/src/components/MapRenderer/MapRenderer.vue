@@ -131,8 +131,8 @@
       :config="config"
       :features="features"
       :map-id="mapId"
-      @set-position="setPosition"
-      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
+      @position-changed="setPosition"
+      @on-fit="onFit"
       @expanded-info-panel="toggleInfoPanel"
       @select-feature="selectFeature"
     />
@@ -152,8 +152,8 @@
       :user="user"
       :map-id="mapId"
       :full-size-window="showDataPanelFullScreen"
-      @set-position="setPosition"
-      @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19, duration: 1000 })"
+      set-position="setPosition"
+      @on-fit="onFit"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
@@ -1019,7 +1019,7 @@ export default {
       this.showBaseLayersPanel = !this.showBaseLayersPanel;
     },
     onFit(position) {
-      this.$refs.map.fit(position, { maxZoom: 19 });
+      this.$refs.map.fit(position, { maxZoom: 19, duration: 1000 });
     },
     setColor(color) {
       this.color = color;
