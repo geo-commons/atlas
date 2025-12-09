@@ -8,11 +8,14 @@
     </template>
 
     <template #default>
-      <form method="POST" class="map-form" @submit="submitForm">
-        <div class="margin-content">
+      <vee-form ref="mapForm" method="POST" class="map-form" :initial-values="initialData" @submit="submitForm">
+        <div class="tw-mx-4">
           <div class="input-wrapper">
             <label for="title" class="setting-label">Titel</label>
-            <input v-model="data.title" type="text" name="title" placeholder="Titel van de kaart" required />
+            <vee-field id="title" name="title" type="text" as="input" rules="required" />
+            <span class="warning-text">
+              <vee-error-message name="title" />
+            </span>
           </div>
           <div class="input-wrapper">
             <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2">
@@ -21,7 +24,10 @@
                 :info-text="'Dit is een korte, unieke naam voor de kaart die in de URL zal worden gebruikt. Het mag geen spaties en speciale tekens bevatten.'"
               />
             </label>
-            <input v-model="data.slug" type="text" name="slug" placeholder="Kort kenmerk van de kaart" required />
+            <vee-field id="slug" name="slug" type="text" as="input" rules="required" />
+            <span class="warning-text">
+              <vee-error-message name="slug" />
+            </span>
           </div>
         </div>
 
@@ -132,7 +138,6 @@
             <input
               id="features.baselayer"
               v-model="data.features.baselayer"
-              HEAD
               type="checkbox"
               name="features.baselayer"
             />
@@ -210,7 +215,7 @@
             <label for="features.panoramaViewers">Rondkijkfoto</label>
           </div>
         </div>
-      </form>
+      </vee-form>
     </template>
 
     <template #footer>
@@ -229,6 +234,7 @@ import ChevronRightIcon from "../../assets/icons/chevron-right-icon.svg";
 import MapIcon from "../../assets/icons/map-icon.svg";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 
 export default {
   name: "MapForm",
@@ -239,9 +245,13 @@ export default {
     ChevronRightIcon,
     MapIcon,
     AdminSidePanel,
+    VeeForm,
+    VeeField,
+    VeeErrorMessage,
   },
   props: {
     initialData: Object,
+    errors: Object,
   },
   emits: ["submit", "show-panel"],
   data() {
@@ -255,9 +265,30 @@ export default {
       ],
     };
   },
+  watch: {
+    errors: {
+      handler(newErrors) {
+        if (newErrors) {
+          this.setServerErrors(newErrors);
+        }
+      },
+    },
+  },
   methods: {
-    submitForm(continueEditing = false) {
-      this.$emit("submit", this.data, continueEditing);
+    async submitForm(continueEditing = false) {
+      // Note: not the nicest solution but for now the best way without refactoring the entire form to vee-validate.
+      const values = await this.$refs.mapForm.validate();
+      if (values.valid) {
+        const formValues = this.$refs.mapForm.values;
+        const formData = { ...this.data, title: formValues.title, slug: formValues.slug };
+        this.$emit("submit", formData, continueEditing);
+      }
+    },
+    setServerErrors(errors) {
+      Object.keys(errors).forEach((fieldName) => {
+        const errorMessage = errors[fieldName][0];
+        this.$refs.mapForm.setFieldError(fieldName, errorMessage);
+      });
     },
   },
 };

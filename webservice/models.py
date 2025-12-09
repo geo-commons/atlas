@@ -14,6 +14,7 @@ from django_extensions.db.fields import AutoSlugField
 from user_management.models import AtlasGroup
 from utils.tools import is_internal
 from webservice.util import safe_float_or_null
+from webservice.validators import no_underscore_validator
 
 
 class LayerManager(models.Manager):
@@ -47,7 +48,8 @@ class Category(models.Model):
 
     slug = AutoSlugField('Kort kenmerk', default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
-                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.', max_length=255)
+                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.', max_length=255,
+                         validators=[no_underscore_validator])
 
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
@@ -75,7 +77,8 @@ class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          editable=True,
-                         help_text='Een uniek kort kenmerk voor de bron in Atlas.', max_length=255)
+                         help_text='Een uniek kort kenmerk voor de bron in Atlas.', max_length=255,
+                         validators=[no_underscore_validator])
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_OWS, max_length=20,
                                    help_text='Selecteer het type bron')
@@ -287,7 +290,8 @@ class Metadataset(models.Model):
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
                          help_text='Een uniek kort kenmerk voor de metadataset in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes.',
-                         max_length=255)
+                         max_length=255,
+                         validators=[no_underscore_validator])
 
     description = models.TextField(
         'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld",
@@ -436,7 +440,8 @@ class Layer(models.Model):
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
                          help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)',
-                         max_length=255)
+                         max_length=255, validators=[no_underscore_validator]
+                         )
 
     title = models.CharField('Titel', max_length=128, null=True)
 
@@ -903,7 +908,8 @@ class Selection(models.Model):
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.', max_length=255)
+                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.', max_length=255,
+                         validators=[no_underscore_validator])
 
     layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
 
@@ -961,7 +967,8 @@ class Map(models.Model):
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaart in Atlas.', max_length=255)
+                         help_text='Een uniek kort kenmerk voor de kaart in Atlas.', max_length=255,
+                         validators=[no_underscore_validator])
 
     old_layers = models.ManyToManyField(
         Layer, verbose_name='Lagen', blank=True, related_name='old_layers')
