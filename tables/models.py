@@ -2,6 +2,7 @@ from django.db import models
 from django_extensions.db.fields import AutoSlugField
 
 from utils.tools import is_internal
+from webservice.validators import no_underscore_validator
 
 
 class TableManager(models.Manager):
@@ -31,7 +32,8 @@ class Table(models.Model):
 
     title = models.CharField('Titel', max_length=128)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor tabel.', max_length=255)
+                         help_text='Een uniek kort kenmerk voor tabel.', max_length=255,
+                         validators=[no_underscore_validator])
 
     source = models.ForeignKey('webservice.Source', on_delete=models.CASCADE)
     endpoint = models.CharField('Endpoint', max_length=500)
