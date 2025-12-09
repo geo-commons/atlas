@@ -101,6 +101,15 @@ class Source(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    def to_dict(self):
+        return {
+            'id': self.pk,
+            'title': self.title,
+            'slug': self.slug,
+            'source_type': self.source_type,
+            'url': self.url,
+        }
+
 
 class Theme(models.Model):
     title = models.CharField('Naam', max_length=128, null=False)
@@ -771,7 +780,8 @@ source: new ol.source.TileWMS({{
             'legend_url': self.legend_url,
             'is_filterable_in_legend': self.is_filterable_in_legend,
             'can_write': self.is_mutable_by(user, request),
-            'is_exportable': self.is_exportable
+            'is_exportable': self.is_exportable,
+            'related_tables': [item.to_dict() for item in self.related_tables.all()],
         }
 
     class Meta:

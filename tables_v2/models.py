@@ -48,6 +48,36 @@ class TableTemp(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    def to_dict(self):
+        return {
+            'id': self.pk,
+            'title': self.title,
+            'slug': self.slug,
+            'source': self.source.to_dict(),
+            'source_type': self.source_type,
+            'fields': self.fields,
+            'list_endpoint': self.list_endpoint,
+            'detail_endpoint': self.detail_endpoint,
+            'list_cql_filters': self.list_cql_filters,
+            'detail_cql_filters': self.detail_cql_filters,
+            'related_tables': [item.simple_to_dict() for item in self.tables.all()],
+        }
+
+    # A simpler version without related tables to prevent loops
+    def simple_to_dict(self):
+        return {
+            'id': self.pk,
+            'title': self.title,
+            'slug': self.slug,
+            'source': self.source.to_dict(),
+            'source_type': self.source_type,
+            'fields': self.fields,
+            'list_endpoint': self.list_endpoint,
+            'detail_endpoint': self.detail_endpoint,
+            'list_cql_filters': self.list_cql_filters,
+            'detail_cql_filters': self.detail_cql_filters,
+        }
+
 
 class TableToTable(models.Model):
     from_table = models.ForeignKey('TableTemp', related_name='outgoing_table_relations', on_delete=models.CASCADE)

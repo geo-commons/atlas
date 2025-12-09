@@ -233,6 +233,8 @@ class MetadatasetSerializer(serializers.ModelSerializer):
 
 
 class LayerSerializer(serializers.ModelSerializer):
+    from tables_v2.serializers import TableTempSerializer
+
     can_access = serializers.SerializerMethodField('get_can_access')
     category = CategorySerializer(source='layer_type')
     source = SourceSerializer(source='layer_source')
@@ -247,6 +249,7 @@ class LayerSerializer(serializers.ModelSerializer):
         'get_search_terms')
     metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True)
+    related_tables = TableTempSerializer(many=True)
     templates = TemplateSerializer(many=True)
 
     def get_can_access(self, obj):
@@ -324,7 +327,8 @@ class LayerSerializer(serializers.ModelSerializer):
             'metadataset',
             'is_filterable_in_legend',
             'authenticated_can_mutate',
-            'is_exportable'
+            'is_exportable',
+            'related_tables'
         ]
 
 

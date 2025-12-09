@@ -63,7 +63,7 @@ class LayerViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.
         return LayerSerializer
 
     def get_queryset(self):
-        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups').select_related('metadataset')
+        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups', 'related_tables').select_related('metadataset')
 
 
 class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

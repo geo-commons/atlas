@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
 from tables_v2.models import TableTemp, TableToTable
+from webservice.serializers import SourceSerializer
 
 
 class SimpleTableTempSerializer(serializers.ModelSerializer):
+    source = SourceSerializer(read_only=True)
+
     class Meta:
         model = TableTemp
         fields = [
@@ -32,6 +35,8 @@ class TableToTableSerializer(serializers.ModelSerializer):
 
 
 class TableTempSerializer(serializers.ModelSerializer):
+    source = SourceSerializer(read_only=True)
+
     related_tables = TableToTableSerializer(
         source='outgoing_table_relations',
         many=True,
