@@ -48,8 +48,8 @@ class TableTemp(models.Model):
     def __str__(self):
         return f"{self.title}"
 
-    def to_dict(self):
-        return {
+    def to_dict(self, from_layer=None):
+        data = {
             'id': self.pk,
             'title': self.title,
             'slug': self.slug,
@@ -62,6 +62,15 @@ class TableTemp(models.Model):
             'detail_cql_filters': self.detail_cql_filters,
             'related_tables': [item.simple_to_dict() for item in self.tables.all()],
         }
+
+        if from_layer:
+            try:
+                layer_to_table = LayerToTable.objects.get(from_layer=from_layer, to_table=self)
+                data['field_mapping'] = layer_to_table.field_mapping
+            except LayerToTable.DoesNotExist:
+                data['field_mapping'] = None
+
+        return data
 
     # A simpler version without related tables to prevent loops
     def simple_to_dict(self):

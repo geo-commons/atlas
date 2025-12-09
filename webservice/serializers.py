@@ -233,8 +233,6 @@ class MetadatasetSerializer(serializers.ModelSerializer):
 
 
 class LayerSerializer(serializers.ModelSerializer):
-    from tables_v2.serializers import TableTempSerializer
-
     can_access = serializers.SerializerMethodField('get_can_access')
     category = CategorySerializer(source='layer_type')
     source = SourceSerializer(source='layer_source')
@@ -249,12 +247,18 @@ class LayerSerializer(serializers.ModelSerializer):
         'get_search_terms')
     metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True)
-    related_tables = TableTempSerializer(many=True)
+    related_tables = serializers.SerializerMethodField('get_related_tables')
     templates = TemplateSerializer(many=True)
 
     def get_can_access(self, obj):
         request = self.context['request']
         return can_request_access_layer(request, obj)
+
+    def get_related_tables(self, obj):
+        from tables_v2.serializers import TableTempSerializer
+
+        tables = obj.related_tables.all()
+        return TableTempSerializer(tables, many=True, from_layer=obj).data
 
     def get_opacity(self, obj):
         return float(obj.opacity)

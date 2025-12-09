@@ -781,7 +781,7 @@ source: new ol.source.TileWMS({{
             'is_filterable_in_legend': self.is_filterable_in_legend,
             'can_write': self.is_mutable_by(user, request),
             'is_exportable': self.is_exportable,
-            'related_tables': [item.to_dict() for item in self.related_tables.all()],
+            'related_tables': [item.to_dict(from_layer=self) for item in self.related_tables.all()],
         }
 
     class Meta:
