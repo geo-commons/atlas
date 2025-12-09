@@ -15,7 +15,7 @@ Het `TableTemp` model representeert een tabel in Atlas die data kan ophalen van 
 
 Voor OWS bronnen gebruik je CQL filters om data op te halen:
 
-- `list_cql_filters`: JSON object met CQL filters voor het ophalen van lijsten
+- `list_cql_filters`: JSON object met CQL filter waarden voor het ophalen van lijstweergaves
   ```json
   {
     "straatnaam": "{{straatnaam}}",

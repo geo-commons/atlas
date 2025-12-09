@@ -3,6 +3,7 @@ from django.urls import path, re_path, include
 
 from homepage import views, viewclasses
 from webservice import views as webservice_views, urls
+from tables_v2 import urls as tables_urls
 
 app_name = 'homepage'
 
@@ -16,6 +17,7 @@ urlpatterns = [
     path('admin/', views.v3_admin, name='v3_admin'),
     path('api/v1/token', webservice_views.v3_token, name='v3_token'),
     path('api/v1/', include(urls.api_router.urls)),
+    path('api/v1/', include(tables_urls.tables_api_router.urls)),
     path('convert/<str:output_format>',
          webservice_views.v3_convert, name='v3_convert'),
     re_path('embed', views.embed, name='embed'),

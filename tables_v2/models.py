@@ -3,7 +3,7 @@ from django_extensions.db.fields import AutoSlugField
 
 from webservice.models import Source
 
-
+# TODO: Rename model name TableTemp to a better name (maybe just table?)
 class TableTemp(models.Model):
     title = models.CharField('Naam', max_length=128,
                              help_text="De naam van de tabel")
@@ -31,6 +31,12 @@ class TableTemp(models.Model):
         'self',
         through='TableToTable',
         symmetrical=False,
+        related_name='related_tables'
+    )
+
+    layers = models.ManyToManyField(
+        'webservice.Layer',
+        through='LayerToTable',
         related_name='related_tables'
     )
 

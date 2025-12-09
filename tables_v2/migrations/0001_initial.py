@@ -9,10 +9,6 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('webservice', '0139_layer_related_tables'),
-    ]
-
     operations = [
         migrations.CreateModel(
             name='TableTemp',

@@ -1,0 +1,2 @@
+# Bevindingen
+- Toevoegen van een laagnaam veld aan het model? Op dit moment hebben we een bron, brontype maar nog geen laagnaam. Hierdoor kunnen we uiteindelijk het request naar een OWS bron niet uitvoeren. 

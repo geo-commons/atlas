@@ -578,12 +578,6 @@ class Layer(models.Model):
     metadataset = models.ForeignKey(
         Metadataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
 
-    related_tables = models.ManyToManyField(
-        'tables_v2.TableTemp',
-        through='tables_v2.LayerToTable',
-        related_name='layers'
-    )
-
     def __str__(self):
         return self.title
 
