@@ -7,6 +7,7 @@ class SimpleTableTempSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableTemp
         fields = [
+            'id',
             'title',
             'slug',
             'source',
@@ -20,7 +21,7 @@ class SimpleTableTempSerializer(serializers.ModelSerializer):
 
 
 class TableToTableSerializer(serializers.ModelSerializer):
-    to_table = SimpleTableTempSerializer(many=True)
+    to_table = SimpleTableTempSerializer()
 
     class Meta:
         model = TableToTable
@@ -40,6 +41,7 @@ class TableTempSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableTemp
         fields = [
+            'id',
             'title',
             'slug',
             'source',
