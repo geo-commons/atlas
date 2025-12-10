@@ -103,6 +103,12 @@
       <div v-for="(template, key) in layer.templates" :key="key">
         <FeatureInfoTemplate :layer="layer" :template="template" :feature="feature" class="template" />
       </div>
+
+      <div v-if="layer.related_tables.length > 0">
+        <div v-for="(relatedTable, key) in layer.related_tables" :key="key">
+          <RelatedTableList :layer-feature="feature" :related-table="relatedTable" />
+        </div>
+      </div>
     </div>
   </ExpandButton>
 </template>
@@ -128,12 +134,14 @@ import EditIcon from "@/assets/icons/edit-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EditLayerMode } from "@/types/map";
 import GeoJSON from "ol/format/GeoJSON";
+import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 
 nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "FeatureInfo",
   components: {
+    RelatedTableList,
     EditIcon,
     MarkerIcon,
     CopyIcon,
