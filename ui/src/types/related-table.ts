@@ -17,6 +17,6 @@ export interface IRelatedTable {
   detail_endpoint: string;
   list_cql_filters: string | null;
   detail_cql_filters: string | null;
-  related_tables?: IRelatedTable[];
-  field_mapping?: Record<string, string>;
+  related_tables: IRelatedTable[] | null;
+  field_mapping: Record<string, string>;
 }

@@ -106,7 +106,11 @@
 
       <div v-if="layer.related_tables.length > 0">
         <div v-for="(relatedTable, key) in layer.related_tables" :key="key">
-          <RelatedTableList :layer-feature="feature" :related-table="relatedTable" />
+          <RelatedTableList
+            :layer-feature="feature"
+            :related-table="relatedTable"
+            @select-related-table-object="onSelectRelatedTableObject"
+          />
         </div>
       </div>
     </div>
@@ -167,6 +171,7 @@ export default {
     "show-selected-feature",
     "select-feature",
     "select-related-linked-data",
+    "select-related-table-object",
   ],
   data() {
     return {
@@ -300,6 +305,9 @@ export default {
     },
     onSelectRelatedLinkedData(linkedDataIdAttributes) {
       this.$emit("select-related-linked-data", linkedDataIdAttributes);
+    },
+    onSelectRelatedTableObject(attr) {
+      this.$emit("select-related-table-object", attr);
     },
     formatProperty(property) {
       if (this.layer.friendly_fields && this.layer.friendly_fields[property]) {

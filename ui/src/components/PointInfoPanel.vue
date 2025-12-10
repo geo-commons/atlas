@@ -79,9 +79,14 @@
           :value="selectedRelatedLinkedDataAttributes.value"
           @back="closeRelatedLinkedDataDetails"
         />
+        <RelatedTableDetails
+          v-if="selectedRelatedTableAttributes"
+          :selected-related-table-attributes="selectedRelatedTableAttributes"
+          @back="closeSelectedRelatedTable"
+        />
         <FeatureInfo
           v-for="visibleLayer in visibleLayers"
-          v-show="!selectedFeatureDetails && !selectedRelatedLinkedDataAttributes"
+          v-show="!selectedFeatureDetails && !selectedRelatedLinkedDataAttributes && !selectedRelatedTableAttributes"
           :key="visibleLayer.id"
           :is-open="true"
           :layer="visibleLayer"
@@ -94,6 +99,7 @@
           @select-feature-details="onSelectFeatureDetails"
           @select-related-linked-data="onSelectRelatedLinkedData"
           @select-feature="selectFeature"
+          @select-related-table-object="onSelectRelatedTableObject"
         />
       </div>
     </template>
@@ -113,10 +119,12 @@ import { mapStores } from "pinia";
 import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 import { useMapStore } from "@/stores/map_store";
 import FeatureInfoLinkedData from "@/components/FeatureInfoLinkedData.vue";
+import RelatedTableDetails from "@/components/related-tables/RelatedTableDetails.vue";
 
 export default {
   name: "PointInfoPanel",
   components: {
+    RelatedTableDetails,
     FeatureInfoLinkedData,
     FeatureInfoDetails,
     Tippy,
@@ -139,6 +147,7 @@ export default {
       resetSidePanel: null,
       selectedFeatureDetails: null,
       selectedRelatedLinkedDataAttributes: null,
+      selectedRelatedTableAttributes: null,
       copyButtonText: "Kopieer coördinaten",
       mapStore: null,
     };
@@ -207,11 +216,18 @@ export default {
     onSelectRelatedLinkedData(linkedDataIdAttributes) {
       this.selectedRelatedLinkedDataAttributes = linkedDataIdAttributes;
     },
+    onSelectRelatedTableObject(attributes) {
+      console.log(attributes);
+      this.selectedRelatedTableAttributes = attributes;
+    },
     closeFeatureInfoDetails() {
       this.selectedFeatureDetails = null;
     },
     closeRelatedLinkedDataDetails() {
       this.selectedRelatedLinkedDataAttributes = null;
+    },
+    closeSelectedRelatedTable() {
+      this.selectedRelatedTableAttributes = null;
     },
     copyCoordinates() {
       navigator.clipboard

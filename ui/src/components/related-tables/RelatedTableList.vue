@@ -10,6 +10,7 @@
             <table class="related-table">
               <thead>
                 <tr>
+                  <th v-if="hasRelatedTables"></th>
                   <th v-for="(property, i) in tableHeaders" :key="i" class="related-header">
                     {{ property }}
                     <!--                    <StackSortableTableHeaderItem-->
@@ -23,6 +24,9 @@
               </thead>
               <tbody>
                 <tr v-for="(item, i) in relatedTableData" :key="i">
+                  <td v-if="hasRelatedTables">
+                    <button @click="onSelectRelatedData(item)">bekijk</button>
+                  </td>
                   <td v-for="(value, key, index) in item" :key="index" class="related-cell">
                     <RichValue :data-key="key" :data-value="value" />
                   </td>
@@ -49,9 +53,15 @@ const { layerFeature, relatedTable } = defineProps<{
   relatedTable: IRelatedTable;
 }>();
 
+const emit = defineEmits<{
+  (e: "select-related-table-object", type: { slug: string; item: any }): void;
+}>();
+
 const fieldMappingValues = ref<Record<string, string>>({});
 const relatedTableData = ref<Record<string, string>[]>([{}]);
 const tableHeaders = ref<string[]>([]);
+// to check Whether this table has related tables
+const hasRelatedTables = ref<boolean>(false);
 
 const onShowContentChange = (isOpen: boolean) => {
   // Emit event or handle content visibility change
@@ -104,18 +114,24 @@ const getFieldMappingValue = (table: IRelatedTable, feature: any) => {
 };
 
 onMounted(async () => {
+  hasRelatedTables.value = relatedTable.related_tables ? relatedTable.related_tables.length > 0 : false;
+
   getFieldMappingValue(relatedTable, layerFeature);
 
   relatedTableData.value = await getRelatedTableData(relatedTable);
-  console.log("Related table data:", relatedTableData.value);
 
   if (relatedTableData.value.length > 0) {
     // retrieve one item to determine table headers,
-    // todo: in the end also check if display_propeties is set
+    // todo: in the end also check if display_properties is set
     const firstItem = relatedTableData.value[0];
     tableHeaders.value = Object.keys(firstItem);
   }
 });
+
+const onSelectRelatedData = (item: any) => {
+  // Emit event or handle related data selection
+  emit("select-related-table-object", { slug: relatedTable.slug, item });
+};
 </script>
 
 <style scoped>
