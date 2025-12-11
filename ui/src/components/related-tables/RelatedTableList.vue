@@ -47,14 +47,14 @@ import { onMounted, ref } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 
-const { layerFeature, relatedTable } = defineProps<{
-  // layer: ILayer;
-  layerFeature: object;
+const { layerFeature, relatedTable, tableFeature } = defineProps<{
+  layerFeature?: Record<string, string>;
+  tableFeature?: Record<string, string>;
   relatedTable: IRelatedTable;
 }>();
 
 const emit = defineEmits<{
-  (e: "select-related-table-object", type: { slug: string; item: any }): void;
+  (e: "select-related-table-object", type: { relatedTable: IRelatedTable; item: any }): void;
 }>();
 
 const fieldMappingValues = ref<Record<string, string>>({});
@@ -101,22 +101,26 @@ const getRelatedTableData = (table: IRelatedTable) => {
   return [];
 };
 
-const getFieldMappingValue = (table: IRelatedTable, feature: any) => {
+const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any) => {
+  if (tableFeature) {
+    fieldMappingValues.value = tableFeature;
+    return;
+  }
+
   const mapping: Record<string, string> = {};
 
-  if (table.field_mapping) {
-    for (const [key, value] of Object.entries(table.field_mapping)) {
+  if (fieldMapping) {
+    for (const [key, value] of Object.entries(fieldMapping)) {
       mapping[value] = feature.properties[key];
     }
   }
-
   fieldMappingValues.value = mapping;
 };
 
 onMounted(async () => {
   hasRelatedTables.value = relatedTable.related_tables ? relatedTable.related_tables.length > 0 : false;
 
-  getFieldMappingValue(relatedTable, layerFeature);
+  getFieldMappingValue(relatedTable.field_mapping, layerFeature);
 
   relatedTableData.value = await getRelatedTableData(relatedTable);
 
@@ -130,7 +134,7 @@ onMounted(async () => {
 
 const onSelectRelatedData = (item: any) => {
   // Emit event or handle related data selection
-  emit("select-related-table-object", { slug: relatedTable.slug, item });
+  emit("select-related-table-object", { relatedTable: relatedTable, item });
 };
 </script>
 

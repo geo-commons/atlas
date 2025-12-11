@@ -83,6 +83,7 @@
           v-if="selectedRelatedTableAttributes"
           :selected-related-table-attributes="selectedRelatedTableAttributes"
           @back="closeSelectedRelatedTable"
+          @select-related-table-object="onSelectRelatedTableObject"
         />
         <FeatureInfo
           v-for="visibleLayer in visibleLayers"
@@ -217,7 +218,6 @@ export default {
       this.selectedRelatedLinkedDataAttributes = linkedDataIdAttributes;
     },
     onSelectRelatedTableObject(attributes) {
-      console.log(attributes);
       this.selectedRelatedTableAttributes = attributes;
     },
     closeFeatureInfoDetails() {
