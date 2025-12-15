@@ -22,6 +22,8 @@ class TableTemp(models.Model):
                                        blank=True, )  # /zoeken/?id={{id}}
 
     # ows tables
+    layer_name = models.CharField(
+        'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
     list_cql_filters = models.JSONField(null=True,
                                         blank=True)  # { straatnaam: "{{straatnaam}}", adres: "{{straatnaam}} {{huisnummer}}" }
     detail_cql_filters = models.JSONField(null=True,
@@ -58,6 +60,7 @@ class TableTemp(models.Model):
             'fields': self.fields,
             'list_endpoint': self.list_endpoint,
             'detail_endpoint': self.detail_endpoint,
+            'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
             'related_tables': [item.simple_to_dict() for item in self.tables.all()],
@@ -83,6 +86,7 @@ class TableTemp(models.Model):
             'fields': self.fields,
             'list_endpoint': self.list_endpoint,
             'detail_endpoint': self.detail_endpoint,
+            'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
         }

@@ -18,6 +18,7 @@ class SimpleTableTempSerializer(serializers.ModelSerializer):
             'fields',
             'list_endpoint',
             'detail_endpoint',
+            'layer_name',
             'list_cql_filters',
             'detail_cql_filters',
         ]
@@ -55,6 +56,7 @@ class TableTempSerializer(serializers.ModelSerializer):
             'fields',
             'list_endpoint',
             'detail_endpoint',
+            'layer_name',
             'list_cql_filters',
             'detail_cql_filters',
             'related_tables',

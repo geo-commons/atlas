@@ -15,6 +15,7 @@ export interface IRelatedTable {
   fields: string[];
   list_endpoint: string;
   detail_endpoint: string;
+  layer_name: string;
   list_cql_filters: string | null;
   detail_cql_filters: string | null;
   related_tables: IRelatedTable[] | null;

@@ -32,6 +32,8 @@ Voor OWS bronnen gebruik je CQL filters om data op te halen:
     "staatId": "{{id}}"
   }
   ```
+  
+- `layer_name`: Laag naam van de laag op GeoServer
 
 **REST Tables (source_type = 'REST'):**
 

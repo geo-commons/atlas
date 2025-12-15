@@ -20579,7 +20579,7 @@
       "source_type": "REST",
       "fields": ["id", "city"],
       "list_endpoint": "/cities",
-      "detail_endpoint": "/cities/{{id}}"
+      "detail_endpoint": "/cities/?city={{city}}"
     }
   },
   {
@@ -20592,7 +20592,7 @@
       "source_type": "REST",
       "fields": ["id", "city", "district"],
       "list_endpoint": "/districts?city={{city}}",
-      "detail_endpoint": "/districts/{{id}}"
+      "detail_endpoint": "/districts/?city={{city}}&district={{district}}"
     }
   },
   {
@@ -20605,7 +20605,7 @@
       "source_type": "REST",
       "fields": ["id", "city", "district", "street"],
       "list_endpoint": "/streets?city={{city}}&district={{district}}",
-      "detail_endpoint": "/streets/{{id}}"
+      "detail_endpoint": "/streets/?city={{city}}&district={{district}}&street={{street}}"
     }
   },
   {
@@ -20622,6 +20622,48 @@
     }
   },
   {
+    "model": "tables_v2.tabletemp",
+    "pk": 5,
+    "fields": {
+      "title": "Adressen",
+      "slug": "adressen",
+      "source": 1,
+      "source_type": "OWS",
+      "fields": [
+        "straatnaam",
+        "huisnummer",
+        "huisletter",
+        "huislettertoevoeging",
+        "postcode",
+        "woonplaats",
+        "bouwjaar",
+        "wijknaam",
+        "ligplaatsnummer"
+      ],
+      "layer_name": "topp:bag_adressen",
+      "list_cql_filters": ["ligplaatsnummer in ('{{ligplaatsnummer}}')"],
+      "detail_cql_filters": [
+        "straatnaam in ('{{straatnaam}}')",
+        "huisnummer in ('{{huisnummer}}')",
+        "huisletter in ('{{huisletter}}')"
+      ]
+    }
+  },
+  {
+    "model": "tables_v2.tabletemp",
+    "pk": 6,
+    "fields": {
+      "title": "Subbuurten",
+      "slug": "subbuurten",
+      "source": 1,
+      "source_type": "OWS",
+      "fields": ["subbuurt", "buurt", "wijk"],
+      "layer_name": "topp:grenzen_subbuurten",
+      "list_cql_filters": ["wijk in ('{{wijk}}')"],
+      "detail_cql_filters": ["subbuurt in ('{{subbuurt}}')"]
+    }
+  },
+  {
     "model": "tables_v2.layertotable",
     "pk": 1,
     "fields": {
@@ -20629,6 +20671,17 @@
       "to_table": 1,
       "field_mapping": {
         "Naam": "city"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.layertotable",
+    "pk": 2,
+    "fields": {
+      "from_layer": 10,
+      "to_table": 5,
+      "field_mapping": {
+        "ligplaatsnummer": "ligplaatsnummer"
       }
     }
   },
@@ -20665,6 +20718,17 @@
         "city": "city",
         "district": "district",
         "street": "street"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 4,
+    "fields": {
+      "from_table": 5,
+      "to_table": 6,
+      "field_mapping": {
+        "wijknaam": "wijk"
       }
     }
   },
