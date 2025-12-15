@@ -7,7 +7,6 @@ import { createApp } from "vue";
 import VueTippy from "vue-tippy";
 
 import App from "./pages/App";
-import LegacyEmbedModal from "./pages/LegacyEmbedModal";
 import { getSettingsFromPath } from "./utils/router";
 import { isMobile } from "./utils/helpers";
 import detectKeyboard from "./utils/detect-keyboard";
@@ -43,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const initialState = {
-    isEmbed: data.is_embed,
+    isEmbed: settings.is_embed || data.is_embed,
     config: data.config,
     position: settings.position,
     drawing: settings.drawing,
@@ -93,36 +92,4 @@ document.addEventListener("DOMContentLoaded", () => {
   piniaStore.setInitialState(initialState);
 
   app.mount("#app");
-});
-
-// Embed map in jQuery frontend
-document.addEventListener("DOMContentLoaded", () => {
-  const el = document.querySelector("#embedCode");
-  if (!el) {
-    return;
-  }
-
-  const data = JSON.parse(document.querySelector("#app-data").innerHTML);
-  const settings = getSettingsFromPath(data.config);
-
-  const initialState = {
-    isEmbed: data.is_embed,
-    config: data.config,
-    position: settings.position,
-    drawing: settings.drawing,
-    layers: [],
-    tool: "",
-    selectedArea: null,
-    searchQuery: "",
-    alert: "",
-  };
-
-  const pinia = createPinia();
-
-  const app = createApp(LegacyEmbedModal).use(pinia);
-
-  const piniaStore = useGlobalStore();
-  piniaStore.setInitialState(initialState);
-
-  app.mount("#embedCode");
 });

@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const initialState = {
-    isEmbed: data.is_embed,
+    isEmbed: settings.is_embed,
     config: data.config,
     user: data.user,
     position: settings.position,

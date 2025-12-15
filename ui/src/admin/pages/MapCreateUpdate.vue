@@ -56,7 +56,7 @@
         :features="data.features"
         :settings="data.settings"
         :config="config"
-        :map-id="data.title || 'primary'"
+        :map-id="data.slug || 'primary'"
         :admin-map="true"
         :hide-reset-button="true"
         :about="data.about"
