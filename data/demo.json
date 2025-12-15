@@ -512,7 +512,10 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [1, 2]
+      "themes": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -534,7 +537,9 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [3]
+      "themes": [
+        3
+      ]
     }
   },
   {
@@ -556,7 +561,9 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [4]
+      "themes": [
+        4
+      ]
     }
   },
   {
@@ -578,7 +585,9 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [5]
+      "themes": [
+        5
+      ]
     }
   },
   {
@@ -600,7 +609,9 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [6]
+      "themes": [
+        6
+      ]
     }
   },
   {
@@ -20226,8 +20237,12 @@
         "customSettings": true,
         "login_required": false,
         "friendly_fields": {},
-        "search_properties": ["-"],
-        "display_properties": ["-"],
+        "search_properties": [
+          "-"
+        ],
+        "display_properties": [
+          "-"
+        ],
         "show_in_detail_panel": true,
         "templated_properties": {},
         "use_html_info_format": false
@@ -20577,7 +20592,10 @@
       "slug": "plaatsen",
       "source": 19,
       "source_type": "REST",
-      "fields": ["id", "city"],
+      "fields": [
+        "id",
+        "city"
+      ],
       "list_endpoint": "/cities",
       "detail_endpoint": "/cities/?city={{city}}"
     }
@@ -20590,7 +20608,11 @@
       "slug": "wijken",
       "source": 19,
       "source_type": "REST",
-      "fields": ["id", "city", "district"],
+      "fields": [
+        "id",
+        "city",
+        "district"
+      ],
       "list_endpoint": "/districts?city={{city}}",
       "detail_endpoint": "/districts/?city={{city}}&district={{district}}"
     }
@@ -20603,7 +20625,12 @@
       "slug": "straten",
       "source": 19,
       "source_type": "REST",
-      "fields": ["id", "city", "district", "street"],
+      "fields": [
+        "id",
+        "city",
+        "district",
+        "street"
+      ],
       "list_endpoint": "/streets?city={{city}}&district={{district}}",
       "detail_endpoint": "/streets/?city={{city}}&district={{district}}&street={{street}}"
     }
@@ -20616,7 +20643,14 @@
       "slug": "inwoners",
       "source": 19,
       "source_type": "REST",
-      "fields": ["id", "city", "district", "street", "firstName", "lastName"],
+      "fields": [
+        "id",
+        "city",
+        "district",
+        "street",
+        "firstName",
+        "lastName"
+      ],
       "list_endpoint": "/inhabitants?city={{city}}&district={{district}}&street={{street}}",
       "detail_endpoint": "/inhabitants/{{id}}"
     }
@@ -20641,7 +20675,9 @@
         "ligplaatsnummer"
       ],
       "layer_name": "topp:bag_adressen",
-      "list_cql_filters": ["ligplaatsnummer in ('{{ligplaatsnummer}}')"],
+      "list_cql_filters": [
+        "ligplaatsnummer in ('{{ligplaatsnummer}}')"
+      ],
       "detail_cql_filters": [
         "straatnaam in ('{{straatnaam}}')",
         "huisnummer in ('{{huisnummer}}')",
@@ -20657,10 +20693,18 @@
       "slug": "subbuurten",
       "source": 1,
       "source_type": "OWS",
-      "fields": ["subbuurt", "buurt", "wijk"],
+      "fields": [
+        "subbuurt",
+        "buurt",
+        "wijk"
+      ],
       "layer_name": "topp:grenzen_subbuurten",
-      "list_cql_filters": ["wijk in ('{{wijk}}')"],
-      "detail_cql_filters": ["subbuurt in ('{{subbuurt}}')"]
+      "list_cql_filters": [
+        "wijk in ('{{wijk}}')"
+      ],
+      "detail_cql_filters": [
+        "subbuurt in ('{{subbuurt}}')"
+      ]
     }
   },
   {
