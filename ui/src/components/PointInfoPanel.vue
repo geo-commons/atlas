@@ -72,13 +72,6 @@
           :feature="selectedFeatureDetails"
           @back="closeFeatureInfoDetails"
         />
-        <FeatureInfoLinkedData
-          v-if="selectedRelatedLinkedDataAttributes"
-          :id="selectedRelatedLinkedDataAttributes.id"
-          :property="selectedRelatedLinkedDataAttributes.property"
-          :value="selectedRelatedLinkedDataAttributes.value"
-          @back="closeRelatedLinkedDataDetails"
-        />
         <RelatedTableDetails
           v-if="selectedRelatedTableAttributes"
           :selected-related-table-attributes="selectedRelatedTableAttributes"
@@ -119,14 +112,12 @@ import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
 import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 import { useMapStore } from "@/stores/map_store";
-import FeatureInfoLinkedData from "@/components/FeatureInfoLinkedData.vue";
 import RelatedTableDetails from "@/components/related-tables/RelatedTableDetails.vue";
 
 export default {
   name: "PointInfoPanel",
   components: {
     RelatedTableDetails,
-    FeatureInfoLinkedData,
     FeatureInfoDetails,
     Tippy,
     MarkerIcon,
@@ -147,7 +138,6 @@ export default {
     return {
       resetSidePanel: null,
       selectedFeatureDetails: null,
-      selectedRelatedLinkedDataAttributes: null,
       selectedRelatedTableAttributes: null,
       copyButtonText: "Kopieer coördinaten",
       mapStore: null,
@@ -214,17 +204,11 @@ export default {
     onSelectFeatureDetails(selectedFeature) {
       this.selectedFeatureDetails = selectedFeature;
     },
-    onSelectRelatedLinkedData(linkedDataIdAttributes) {
-      this.selectedRelatedLinkedDataAttributes = linkedDataIdAttributes;
-    },
     onSelectRelatedTableObject(attributes) {
       this.selectedRelatedTableAttributes = attributes;
     },
     closeFeatureInfoDetails() {
       this.selectedFeatureDetails = null;
-    },
-    closeRelatedLinkedDataDetails() {
-      this.selectedRelatedLinkedDataAttributes = null;
     },
     closeSelectedRelatedTable() {
       this.selectedRelatedTableAttributes = null;
