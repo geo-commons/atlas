@@ -168,6 +168,16 @@
           </div>
 
           <div class="setting __hover">
+            <input
+              id="features.layerPanelCollapsed"
+              v-model="data.features.layerPanelCollapsed"
+              type="checkbox"
+              name="features.layerPanelCollapsed"
+            />
+            <label for="features.layerPanelCollapsed">Lagenlijst en legenda standaard gesloten</label>
+          </div>
+
+          <div class="setting __hover">
             <input id="features.list" v-model="data.features.list" type="checkbox" name="features.list" />
             <label for="features.list">Lijstweergave</label>
 

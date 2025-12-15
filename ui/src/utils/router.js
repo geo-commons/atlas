@@ -28,5 +28,6 @@ export const getSettingsFromPath = (defaultConfig) => {
     drawing: params.drawing ? params.drawing : null,
     visibleBase: params.base ? params.base : null,
     visibleLayers: params.layers ? params.layers.split(",") : [],
+    is_embed: params.is_embed ? params.is_embed === "true" : false,
   };
 };

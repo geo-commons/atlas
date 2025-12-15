@@ -1,6 +1,6 @@
 <template>
   <div class="app" data-testid="app">
-    <header-menu v-if="config.features.portal" />
+    <header-menu v-if="!isEmbed && config.features.portal" />
     <map-renderer
       v-if="readyToRenderMap"
       ref="map"
@@ -10,7 +10,8 @@
       :features="map.features"
       :settings="map.settings"
       :config="config"
-      :map-id="map.title || 'primary'"
+      :is-embed="isEmbed"
+      :map-id="map.slug || 'primary'"
     />
   </div>
 </template>
@@ -35,7 +36,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useGlobalStore, ["position", "layers", "config", "map", "user"]),
+    ...mapState(useGlobalStore, ["position", "layers", "config", "map", "user", "isEmbed"]),
     ...mapStores(useGlobalStore),
   },
   created() {

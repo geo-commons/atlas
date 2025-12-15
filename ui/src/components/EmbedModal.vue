@@ -2,7 +2,7 @@
   <div class="overlay">
     <button class="background" @click="closeModal" />
     <div class="modal">
-      <EmbedCode :position="position" :layers="layers" @close-modal="closeModal" />
+      <EmbedCode :map-id="mapId" :position="position" :layers="layers" @close-modal="closeModal" />
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@ export default {
   props: {
     position: Object,
     layers: Array,
+    mapId: String,
   },
   methods: {
     closeModal() {

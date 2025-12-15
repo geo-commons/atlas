@@ -18,7 +18,9 @@ urlpatterns = [
     path('api/v1/', include(urls.api_router.urls)),
     path('convert/<str:output_format>',
          webservice_views.v3_convert, name='v3_convert'),
-    re_path('embed', views.embed, name='embed'),
+    # This embed route is retained for backward compatibility with legacy /atlas/embed/* URLs.
+    # New embedded maps should use /atlas/maps/{slug} or /atlas/.
+    re_path(r'embed/.*$', views.embed, name='embed'),
     re_path(r'maps\/((?P<slug>[a-z0-9\-]+)?)', views.v3_map, name='v3_map'),
     re_path(r'((?P<theme_slug>[a-z0-9\-]+)?)', views.v3, name='v3'),
 ]
