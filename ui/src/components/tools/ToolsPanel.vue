@@ -20,7 +20,7 @@
       />
 
       <DrawMenu
-        v-if="config && config.features.draw && features.draw && user"
+        v-if="features.draw && user"
         :show-draw-menu="showDrawMenu"
         :tool="tool"
         :color="color"
@@ -40,7 +40,7 @@
       />
 
       <EditLayerMenu
-        v-if="config && config.features.edit_layer_features && features.edit_layer_features && user"
+        v-if="features.edit_layer_features && user"
         :show-edit-feature-menu="showEditFeatureMenu"
         :toggle-edit-layer="toggleEditLayer"
         :tool="tool"
