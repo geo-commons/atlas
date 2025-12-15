@@ -201,6 +201,21 @@
           </div>
 
           <div class="setting __hover">
+            <input id="features.draw" v-model="data.features.draw" type="checkbox" name="features.draw" />
+            <label for="features.draw">Tekenen</label>
+          </div>
+
+          <div class="setting __hover">
+            <input
+              id="features.edit_layer_features"
+              v-model="data.features.edit_layer_features"
+              type="checkbox"
+              name="features.edit_layer_features"
+            />
+            <label for="features.edit_layer_features">CRUD Functionaliteit</label>
+          </div>
+
+          <div class="setting __hover">
             <input
               id="features.panoramaViewers"
               v-model="data.features.panoramaViewers"

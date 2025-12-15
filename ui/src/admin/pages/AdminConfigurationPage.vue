@@ -210,21 +210,9 @@ export default {
               type: "checkbox",
             },
             {
-              label: "Tekenfunctionaliteit",
-              id: "FEATURE_DRAW",
-              name: "featureDraw",
-              type: "checkbox",
-            },
-            {
               label: "Sorteer kaartlagen in de viewer",
               id: "FEATURE_SORT_LAYER",
               name: "featureSortLayer",
-              type: "checkbox",
-            },
-            {
-              label: "Bewerkfunctionaliteit",
-              id: "FEATURE_EDIT_LAYER_FEATURES",
-              name: "featureAddFeature",
               type: "checkbox",
             },
             {
@@ -237,6 +225,18 @@ export default {
               label: "Kaartlaagvergelijk functionaliteit op hoofdkaart",
               id: "FEATURE_COMPARE_LAYERS",
               name: "featureCompareLayers",
+              type: "checkbox",
+            },
+            {
+              label: "Tekenfunctionaliteit op hoofdkaart",
+              id: "FEATURE_DRAW",
+              name: "featureDraw",
+              type: "checkbox",
+            },
+            {
+              label: "CRUD functionaliteit op hoofdkaart",
+              id: "FEATURE_EDIT_LAYER_FEATURES",
+              name: "featureAddFeature",
               type: "checkbox",
             },
           ],

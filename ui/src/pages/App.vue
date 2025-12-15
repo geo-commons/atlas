@@ -78,8 +78,8 @@ export default {
       gps: true,
       zoom: true,
       markerOnClick: true,
-      draw: true,
-      edit_layer_features: true,
+      draw: this.config.features.draw,
+      edit_layer_features: this.config.features.edit_layer_features,
       compareLayers: this.config.features.compareLayers,
       panoramaViewers: true,
     };
