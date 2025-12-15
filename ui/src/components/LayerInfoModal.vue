@@ -80,7 +80,6 @@ import { otherConstraintsTypeOptions } from "@/types/OtherConstraintsType";
 import { roleTypeLabels, type RoleTypeId } from "@/types/RoleType";
 import { topicCategoryLabels, type TopicCategoryId } from "@/types/TopicCategory";
 import { updateMethodTypeLabels, type UpdateMethodTypeId } from "@/types/UpdateMethodType";
-import { formatDateValue } from "@/utils/date-formatter";
 import { computed } from "vue";
 import type { LayerInfoLayer } from "./LayerInfo.vue";
 import Markdown from "./Markdown";
@@ -107,12 +106,12 @@ const getRoleTypeLabel = (roleId?: string): string => {
   return (roleId in roleTypeLabels ? roleTypeLabels[roleId as RoleTypeId] : roleId) || "";
 };
 
-const getAccessConstraintsLabel = (constraintId?: string): string => {
+const getAccessConstraintsLabel = (constraintId?: string | null): string => {
   if (!constraintId) return "";
   return accessConstraintsTypeOptions.find((option) => option.id === constraintId)?.label || constraintId;
 };
 
-const getOtherConstraintsLabel = (constraintId?: string): string => {
+const getOtherConstraintsLabel = (constraintId?: string | null): string => {
   if (!constraintId) return "";
   return otherConstraintsTypeOptions.find((option) => option.id === constraintId)?.label || constraintId;
 };
@@ -182,7 +181,7 @@ const tableData = computed(() => {
         },
         {
           label: "Laatste update",
-          value: md?.last_updated ? formatDateValue(md.last_updated) : "",
+          value: md?.last_updated ? md.last_updated : "",
           show: !!md?.last_updated,
           type: "text",
         },
