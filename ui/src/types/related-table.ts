@@ -16,7 +16,7 @@ export interface IRelatedTable {
   list_endpoint: string;
   detail_endpoint: string;
   layer_name: string;
-  list_cql_filters: string | null;
+  list_cql_filters: string[];
   detail_cql_filters: string | null;
   related_tables: IRelatedTable[] | null;
   field_mapping: Record<string, string>;

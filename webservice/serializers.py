@@ -104,6 +104,11 @@ class LinkedDataSerializer(serializers.ModelSerializer):
         ret['detail_view_fields'] = '\r\n'.join(data.get('detail_view_fields', []))
         return ret
 
+    class Meta:
+        model = LinkedData
+        fields = ['id', 'source', 'title', 'name', 'url', 'source_key', 'target_key',
+                  'display_properties', 'headers', 'use_detail_view', 'detail_view_fields']
+
 
 class TemplateSerializer(serializers.ModelSerializer):
     source_id = serializers.PrimaryKeyRelatedField(

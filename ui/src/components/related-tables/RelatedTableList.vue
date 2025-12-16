@@ -89,13 +89,52 @@ const getRestData = async (table: IRelatedTable) => {
   }
 };
 
+const getOwsData = async (table: IRelatedTable) => {
+  const params = new URLSearchParams([
+    ["service", "WFS"],
+    ["version", "1.0.0"],
+    ["request", "GetFeature"],
+    ["typename", table.layer_name],
+    ["outputFormat", "application/json"],
+    ["maxFeatures", "5000"],
+  ]);
+
+  if (relatedTable.list_cql_filters.length > 0) {
+    const joinedFilters = relatedTable.list_cql_filters.join(" AND ");
+    const cqlFilters = nunjucks.renderString(joinedFilters, fieldMappingValues.value);
+    console.log("replaced list_cql_filters", cqlFilters);
+    params.set("cql_filter", cqlFilters);
+  }
+
+  try {
+    const url = new URL(table.source.url);
+    url.search = params.toString();
+
+    const result = await fetch(url.toString());
+    if (!result.ok) {
+      console.error(`HTTP error! status: ${result.status}`);
+      return;
+    }
+
+    const data = await result.json();
+    const properties = data.features.map((feature: any) => feature.properties);
+
+    return properties;
+  } catch (e) {
+    console.error(e);
+  }
+
+  // loading = false;
+  return [];
+};
+
 const getRelatedTableData = (table: IRelatedTable) => {
   if (table.source_type === SourceType.REST) {
     return getRestData(table);
   }
 
-  if (table.source_type === SourceType.WMTS) {
-    return [];
+  if (table.source_type === SourceType.WMTS || table.source_type === SourceType.OWS) {
+    return getOwsData(table);
   }
 
   return [];
@@ -124,6 +163,7 @@ onMounted(async () => {
 
   relatedTableData.value = await getRelatedTableData(relatedTable);
 
+  // todo: wat als er geen data is?
   if (relatedTableData.value.length > 0) {
     // retrieve one item to determine table headers,
     // todo: in the end also check if display_properties is set
