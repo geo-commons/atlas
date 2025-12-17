@@ -209,16 +209,15 @@ export default {
   created() {
     this.store = useMapStore(this.mapId);
 
-    this.store.$subscribe((mutation, state) => {
-      const key = mutation?.events?.key;
-
-      if (key === this.layer.id) {
+    this.store.$subscribe((_, state) => {
+      // Subscribes to the store and keeps the layer’s checkbox filters in sync.
+      // Whenever filters for this layer change in the store, the corresponding
+      // checkboxFilters are updated. If no layer filters exist, the filters are reset.
+      if (state.layerFilters[this.layer.id]) {
         setTimeout(() => {
           this.checkboxFilters = state.layerFilters[this.layer.id]?.filters;
         }, 100);
-      }
-
-      if (key === "layerFilters") {
+      } else if (!Object.keys(state.layerFilters).length) {
         this.checkboxFilters = [];
       }
     });
@@ -327,6 +326,11 @@ export default {
         ...oldLayerFilters,
         [filterParameter]: this.checkboxFilters[filterParameter],
       };
+
+      // Remove filter if no checkbox filter values are selected
+      if (!this.checkboxFilters[filterParameter]?.length) {
+        delete filters[filterParameter];
+      }
 
       this.store.updateFiltersForLayer(this.layer.id, filters);
     },

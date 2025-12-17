@@ -218,14 +218,14 @@ export default {
 
     this.selectedFilterProperties = Object.keys(filters);
 
-    this.store.$subscribe((mutation, state) => {
-      if (mutation?.events?.newValue?.searchQuery) {
-        return;
+    this.store.$subscribe((_, state) => {
+      // From the moment this store subscription is created,
+      // when the filters for the relevant layer change, both the
+      // filter properties (selectedFilterProperties) and filter values (fieldFilters) are updated.
+      if (state.layerFilters[this.layer.id]) {
+        this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
+        this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
       }
-
-      this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
-
-      this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
     });
 
     await this.fetchFeatures();
