@@ -175,6 +175,8 @@ const getRelatedTable = async (tableId: number) => {
 };
 
 const handleSelectedRelatedTableAttributes = async () => {
+  feature.value = selectedRelatedTableAttributes.item;
+
   await getRelatedTable(selectedRelatedTableAttributes.relatedTableId);
 
   if (!relatedTable.value) {
@@ -182,8 +184,6 @@ const handleSelectedRelatedTableAttributes = async () => {
     console.error("Related table not found");
     return;
   }
-
-  feature.value = selectedRelatedTableAttributes.item;
 
   relatedTableData.value = await getRelatedTableData(relatedTable.value, selectedRelatedTableAttributes.item);
 };

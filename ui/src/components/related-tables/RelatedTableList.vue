@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import ExpandButton from "@/components/ExpandButton.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 
@@ -148,7 +148,6 @@ const getRelatedTableData = (table: IRelatedTable) => {
 
 const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any) => {
   const mapping: Record<string, string> = {};
-
   if (fieldMapping) {
     for (const [key, value] of Object.entries(fieldMapping)) {
       mapping[value] = feature.properties ? feature.properties[key] : feature[key];
@@ -157,7 +156,7 @@ const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any
   fieldMappingValues.value = mapping;
 };
 
-onMounted(async () => {
+const handleTableUpdate = async () => {
   getFieldMappingValue(fieldMapping, layerFeature || tableFeature);
 
   relatedTableData.value = await getRelatedTableData(relatedTable);
@@ -169,7 +168,19 @@ onMounted(async () => {
     const firstItem = relatedTableData.value[0];
     tableHeaders.value = Object.keys(firstItem);
   }
+};
+
+onMounted(async () => {
+  await handleTableUpdate();
 });
+
+watch(
+  () => relatedTable,
+  async () => {
+    await handleTableUpdate();
+  },
+  { deep: true },
+);
 
 const onSelectRelatedData = (item: any) => {
   // Emit event or handle related data selection
