@@ -5,7 +5,7 @@
       <span class="back-button-text">Terug naar overzicht</span>
     </button>
 
-    <h3>{{ selectedRelatedTableAttributes?.relatedTable.title || "Loading..." }}</h3>
+    <h3>{{ relatedTable?.title }}</h3>
     <!--    <h3>Gezocht op: [{{ property }}] met waarde: [{{ value }}]</h3>-->
 
     <!--    <div v-if="loading" class="loading">Loading linked data...</div>-->
@@ -34,7 +34,8 @@
       <div v-for="(table, key) in relatedTables" :key="key" class="tw-pt-4">
         <RelatedTableList
           :table-feature="feature"
-          :related-table="table"
+          :related-table="table.to_table"
+          :field-mapping="table.field_mapping"
           @select-related-table-object="onSelectRelatedTableObject"
         />
       </div>
@@ -45,15 +46,15 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
-import { IRelatedTable, SourceType } from "@/types/related-table";
+import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import nunjucks from "nunjucks";
-import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import TableList from "@/components/TableList.vue";
 import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
+import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 
 const { selectedRelatedTableAttributes } = defineProps<{
-  selectedRelatedTableAttributes: { relatedTable: IRelatedTable; item: any };
+  selectedRelatedTableAttributes: { relatedTableId: number; item: any };
 }>();
 
 const emit = defineEmits<{
@@ -62,7 +63,7 @@ const emit = defineEmits<{
 }>();
 
 const relatedTableData = ref<Record<string, string>>({});
-const relatedTable = ref<IRelatedTable | null>(null);
+const relatedTable = ref<IRelatedTable>();
 const relatedTables = ref<IRelatedTable[]>([]);
 const feature = ref<Record<string, string> | null>(null);
 
@@ -103,44 +104,88 @@ const getRestData = async (table: IRelatedTable, item: any, fetchById = true) =>
   }
 };
 
+const getOwsData = async (table: IRelatedTable, item: any) => {
+  const params = new URLSearchParams([
+    ["service", "WFS"],
+    ["version", "1.0.0"],
+    ["request", "GetFeature"],
+    ["typename", table.layer_name],
+    ["outputFormat", "application/json"],
+    ["maxFeatures", "5000"],
+  ]);
+
+  if (table.detail_cql_filters.length > 0) {
+    let replacedFilters: string[] = [];
+    table.detail_cql_filters.forEach((filterObject: ICqlFilterEntry) => {
+      const filterValue = item[filterObject.key];
+      if (filterValue) {
+        const replaceValue = nunjucks.renderString(filterObject.cql_filter, item);
+        replacedFilters.push(replaceValue);
+      }
+    });
+    const joinedFilters = replacedFilters.join(" AND ");
+
+    params.set("cql_filter", joinedFilters);
+
+    try {
+      const url = new URL(table.source.url);
+      url.search = params.toString();
+
+      const result = await fetch(url.toString());
+      if (!result.ok) {
+        console.error(`HTTP error! status: ${result.status}`);
+        return;
+      }
+
+      const data = await result.json();
+      const properties = data.features[0]?.properties || {};
+
+      return properties;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // loading = false;
+  return [];
+};
+
 const getRelatedTableData = (table: IRelatedTable, item: any) => {
   if (table.source_type === SourceType.REST) {
     return getRestData(table, item);
   }
 
-  if (table.source_type === SourceType.WMTS) {
-    return [];
+  if (table.source_type === SourceType.WMTS || table.source_type === SourceType.OWS) {
+    return getOwsData(table, item);
   }
 
   return [];
 };
 
-const getRelatedTables = async (table: IRelatedTable) => {
-  relatedTables.value = [];
-  table.related_tables?.forEach(async (relatedTable) => {
-    const response = await fetch(`/atlas/api/v1/tables-v2/${relatedTable.slug || relatedTable.to_table.slug}/`);
-    const result = await response.json();
+const getRelatedTable = async (tableId: number) => {
+  const response = await fetch(`/atlas/api/v1/tables-v2/${tableId}/`);
+  const result = await response.json();
 
-    if (!response.ok) {
-      console.error("gaat iets fout bij het ophalen van gerelateerde tabel");
-      return;
-    }
-
-    relatedTables.value.push(result as IRelatedTable);
-  });
+  if (!response.ok) {
+    console.error("gaat iets fout bij het ophalen van gerelateerde tabel");
+    return;
+  }
+  relatedTable.value = result;
+  relatedTables.value = relatedTable.value?.related_tables || [];
 };
 
 const handleSelectedRelatedTableAttributes = async () => {
-  await getRelatedTables(selectedRelatedTableAttributes.relatedTable);
+  await getRelatedTable(selectedRelatedTableAttributes.relatedTableId);
 
-  relatedTable.value = selectedRelatedTableAttributes.relatedTable;
+  if (!relatedTable.value) {
+    // todo: netter vermelden wat er fout gaat
+    console.error("Related table not found");
+    return;
+  }
 
   feature.value = selectedRelatedTableAttributes.item;
 
-  relatedTableData.value = await getRelatedTableData(
-    selectedRelatedTableAttributes.relatedTable,
-    selectedRelatedTableAttributes.item,
-  );
+  relatedTableData.value = await getRelatedTableData(relatedTable.value, selectedRelatedTableAttributes.item);
 };
 
 onMounted(async () => {

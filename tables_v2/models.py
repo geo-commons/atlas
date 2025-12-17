@@ -3,6 +3,7 @@ from django_extensions.db.fields import AutoSlugField
 
 from webservice.models import Source
 
+
 # TODO: Rename model name TableTemp to a better name (maybe just table?)
 class TableTemp(models.Model):
     title = models.CharField('Naam', max_length=128,
@@ -63,7 +64,7 @@ class TableTemp(models.Model):
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
-            'related_tables': [item.simple_to_dict() for item in self.tables.all()],
+            'related_tables': [item.simple_to_dict(self) for item in self.tables.all()],
         }
 
         if from_layer:
@@ -76,8 +77,8 @@ class TableTemp(models.Model):
         return data
 
     # A simpler version without related tables to prevent loops
-    def simple_to_dict(self):
-        return {
+    def simple_to_dict(self, from_table=None):
+        data = {'to_table': {
             'id': self.pk,
             'title': self.title,
             'slug': self.slug,
@@ -89,7 +90,23 @@ class TableTemp(models.Model):
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
-        }
+        }}
+
+        if from_table:
+            try:
+                print("looking for table_to_table:")
+                print(self)
+                print(from_table)
+
+                table_to_table = TableToTable.objects.get(from_table=from_table, to_table=self)
+                print("table_to_table found:")
+                print(table_to_table.field_mapping)
+
+                data['field_mapping'] = table_to_table.field_mapping
+            except TableToTable.DoesNotExist:
+                data['field_mapping'] = None
+
+        return data
 
 
 class TableToTable(models.Model):
@@ -126,4 +143,3 @@ class LayerToTable(models.Model):
 
     class Meta:
         unique_together = ('from_layer', 'to_table')
-

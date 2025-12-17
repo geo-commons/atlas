@@ -109,6 +109,7 @@
           <RelatedTableList
             :layer-feature="feature"
             :related-table="relatedTable"
+            :field-mapping="relatedTable.field_mapping"
             @select-related-table-object="onSelectRelatedTableObject"
           />
         </div>

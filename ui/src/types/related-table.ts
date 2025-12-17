@@ -6,6 +6,11 @@ export enum SourceType {
   REST = "REST",
 }
 
+export interface ICqlFilterEntry {
+  key: string;
+  cql_filter: string;
+}
+
 export interface IRelatedTable {
   id: number;
   title: string;
@@ -16,8 +21,9 @@ export interface IRelatedTable {
   list_endpoint: string;
   detail_endpoint: string;
   layer_name: string;
-  list_cql_filters: string[];
-  detail_cql_filters: string | null;
+  list_cql_filters: ICqlFilterEntry[];
+  detail_cql_filters: ICqlFilterEntry[];
   related_tables: IRelatedTable[] | null;
   field_mapping: Record<string, string>;
+  to_table: IRelatedTable;
 }

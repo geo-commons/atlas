@@ -10,7 +10,7 @@
             <table class="related-table">
               <thead>
                 <tr>
-                  <th v-if="hasRelatedTables"></th>
+                  <th></th>
                   <th v-for="(property, i) in tableHeaders" :key="i" class="related-header">
                     {{ property }}
                     <!--                    <StackSortableTableHeaderItem-->
@@ -24,7 +24,7 @@
               </thead>
               <tbody>
                 <tr v-for="(item, i) in relatedTableData" :key="i">
-                  <td v-if="hasRelatedTables">
+                  <td>
                     <button @click="onSelectRelatedData(item)">bekijk</button>
                   </td>
                   <td v-for="(value, key, index) in item" :key="index" class="related-cell">
@@ -41,27 +41,26 @@
 </template>
 
 <script setup lang="ts">
-import { IRelatedTable, SourceType } from "@/types/related-table";
+import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import ExpandButton from "@/components/ExpandButton.vue";
 import { onMounted, ref } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 
-const { layerFeature, relatedTable, tableFeature } = defineProps<{
+const { layerFeature, tableFeature, fieldMapping, relatedTable } = defineProps<{
   layerFeature?: Record<string, string>;
   tableFeature?: Record<string, string>;
+  fieldMapping: Record<string, string>;
   relatedTable: IRelatedTable;
 }>();
 
 const emit = defineEmits<{
-  (e: "select-related-table-object", type: { relatedTable: IRelatedTable; item: any }): void;
+  (e: "select-related-table-object", type: { relatedTableId: number; item: any }): void;
 }>();
 
 const fieldMappingValues = ref<Record<string, string>>({});
 const relatedTableData = ref<Record<string, string>[]>([{}]);
 const tableHeaders = ref<string[]>([]);
-// to check Whether this table has related tables
-const hasRelatedTables = ref<boolean>(false);
 
 const onShowContentChange = (isOpen: boolean) => {
   // Emit event or handle content visibility change
@@ -99,29 +98,36 @@ const getOwsData = async (table: IRelatedTable) => {
     ["maxFeatures", "5000"],
   ]);
 
-  if (relatedTable.list_cql_filters.length > 0) {
-    const joinedFilters = relatedTable.list_cql_filters.join(" AND ");
-    const cqlFilters = nunjucks.renderString(joinedFilters, fieldMappingValues.value);
-    console.log("replaced list_cql_filters", cqlFilters);
-    params.set("cql_filter", cqlFilters);
-  }
+  if (table.list_cql_filters.length > 0) {
+    let replacedFilters: string[] = [];
+    table.list_cql_filters.forEach((filterObject: ICqlFilterEntry) => {
+      if (fieldMappingValues.value[filterObject.key]) {
+        const replaceValue = nunjucks.renderString(filterObject.cql_filter, fieldMappingValues.value);
+        replacedFilters.push(replaceValue);
+      }
+    });
 
-  try {
-    const url = new URL(table.source.url);
-    url.search = params.toString();
+    const joinedFilters = replacedFilters.join(" AND ");
 
-    const result = await fetch(url.toString());
-    if (!result.ok) {
-      console.error(`HTTP error! status: ${result.status}`);
-      return;
+    params.set("cql_filter", joinedFilters);
+
+    try {
+      const url = new URL(table.source.url);
+      url.search = params.toString();
+
+      const result = await fetch(url.toString());
+      if (!result.ok) {
+        console.error(`HTTP error! status: ${result.status}`);
+        return;
+      }
+
+      const data = await result.json();
+      const properties = data.features.map((feature: any) => feature.properties);
+
+      return properties;
+    } catch (e) {
+      console.error(e);
     }
-
-    const data = await result.json();
-    const properties = data.features.map((feature: any) => feature.properties);
-
-    return properties;
-  } catch (e) {
-    console.error(e);
   }
 
   // loading = false;
@@ -141,25 +147,18 @@ const getRelatedTableData = (table: IRelatedTable) => {
 };
 
 const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any) => {
-  if (tableFeature) {
-    fieldMappingValues.value = tableFeature;
-    return;
-  }
-
   const mapping: Record<string, string> = {};
 
   if (fieldMapping) {
     for (const [key, value] of Object.entries(fieldMapping)) {
-      mapping[value] = feature.properties[key];
+      mapping[value] = feature.properties ? feature.properties[key] : feature[key];
     }
   }
   fieldMappingValues.value = mapping;
 };
 
 onMounted(async () => {
-  hasRelatedTables.value = relatedTable.related_tables ? relatedTable.related_tables.length > 0 : false;
-
-  getFieldMappingValue(relatedTable.field_mapping, layerFeature);
+  getFieldMappingValue(fieldMapping, layerFeature || tableFeature);
 
   relatedTableData.value = await getRelatedTableData(relatedTable);
 
@@ -174,7 +173,7 @@ onMounted(async () => {
 
 const onSelectRelatedData = (item: any) => {
   // Emit event or handle related data selection
-  emit("select-related-table-object", { relatedTable: relatedTable, item });
+  emit("select-related-table-object", { relatedTableId: relatedTable.id, item });
 };
 </script>
 
