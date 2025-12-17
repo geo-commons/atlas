@@ -288,10 +288,8 @@ export default {
     },
     hasLinkedDataAttribute(property) {
       if (this.linkedData.related.length > 0) {
-        // console.log(property);
         const relatedLinkedData = this.linkedData.related.find((linkedData) => linkedData.source_key === property);
         if (relatedLinkedData) {
-          console.log(relatedLinkedData);
           return true;
         }
       }
@@ -299,10 +297,8 @@ export default {
       return false;
     },
     openLinkedData(property, value) {
-      console.log("open linked data", property);
       const relatedLinkedData = this.linkedData.related.find((linkedData) => linkedData.source_key === property);
       if (relatedLinkedData) {
-        console.log(relatedLinkedData);
         const linkedDataIdAttributes = {
           id: relatedLinkedData.to_linked_data,
           property: property,
