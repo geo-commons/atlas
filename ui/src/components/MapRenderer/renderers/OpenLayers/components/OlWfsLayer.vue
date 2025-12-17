@@ -219,11 +219,24 @@ watch(
       }
 
       Object.keys(value[props.id][key]).map((filterKey) => {
-        const values = value[props.id][key][filterKey].map((filterValue) => `'${filterValue}'`).join(",");
+        const filterValues = value[props.id][key][filterKey];
+        const values = filterValues
+          .filter((filterValue) => filterValue !== "Leeg")
+          .map((filterValue) => `'${filterValue}'`)
+          .join(",");
+
+        let valueFilters = [];
+        if (filterValues.includes("Leeg")) {
+          valueFilters.push(`(${filterKey} IS NULL or ${filterKey} = '')`);
+        }
 
         // Check to make sure filterKey has values
-        if (values.length) {
-          cqlFilters.push(`${filterKey} IN (${values})`);
+        if (values.length > 0) {
+          valueFilters.push(`${filterKey} IN (${values})`);
+        }
+
+        if (valueFilters.length > 0) {
+          cqlFilters.push(`(${valueFilters.join(" OR ")})`);
         }
       });
     });
