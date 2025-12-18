@@ -4,10 +4,11 @@ from os import path
 from tempfile import TemporaryDirectory
 
 import fiona
-from django.core.exceptions import ValidationError
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import HttpResponse
 from django.views.decorators.http import require_http_methods
+from fiona.errors import FionaValueError, DriverError
+from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -33,9 +34,10 @@ def v3_convert(request, output_format):
     }
 
     if output_format not in formats:
-        raise ValidationError(
-            f"Invalid output format provided: {output_format}"
-        )
+        data = {
+            'error': f"Invalid output format provided: {output_format}"
+        }
+        return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
     file_name = f'output{formats[output_format]}'
 
@@ -47,15 +49,30 @@ def v3_convert(request, output_format):
         geojson_data = request_data.get('featureCollection', request_data)
         geojson_bytes = json.dumps(geojson_data).encode('utf-8')
 
-    except (json.JSONDecodeError, UnicodeDecodeError) as e:
-        raise ValidationError(f"Invalid JSON data: {str(e)}") from e
+        with fiona.open(BytesIO(geojson_bytes), driver='GeoJSON') as inputCollection:
+            # GeoJSON, ESRI Shapefile, GPKG, SQLite, GML
+            with fiona.open(output_file, 'w', driver=output_format, schema=inputCollection.schema,
+                            crs=inputCollection.crs) as outputCollection:
+                for feature in inputCollection:
+                    outputCollection.write(feature)
 
-    with fiona.open(BytesIO(geojson_bytes), driver='GeoJSON') as inputCollection:
-        # GeoJSON, ESRI Shapefile, GPKG, SQLite, GML
-        with fiona.open(output_file, 'w', driver=output_format, schema=inputCollection.schema,
-                        crs=inputCollection.crs) as outputCollection:
-            for feature in inputCollection:
-                outputCollection.write(feature)
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        data = {
+            'error': f"Invalid JSON data: {str(e)}"
+        }
+        return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
+
+    except (FionaValueError, DriverError) as e:
+        data = {
+            'error': f"Invalid or unsupported geospatial data: {str(e)}"
+        }
+        return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception:
+        data = {
+            'error': "Failed to process geospatial file."
+        }
+        return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def file_iterator(file_path, chunk_size=8192):
         with open(file_path, 'rb') as f:
