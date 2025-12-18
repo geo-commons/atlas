@@ -82,7 +82,7 @@
           :config="config"
           :atlas-features="features"
           @show-selected-feature="onFeatureSelect"
-          @set-position="(position) => setPosition(position)"
+          @set-position="setPosition"
           @on-fit="onFit"
           @select-feature-details="onSelectFeatureDetails"
           @select-feature="selectFeature"

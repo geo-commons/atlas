@@ -131,7 +131,7 @@
       :config="config"
       :features="features"
       :map-id="mapId"
-      @position-changed="setPosition"
+      @set-position="setPosition"
       @on-fit="onFit"
       @expanded-info-panel="toggleInfoPanel"
       @select-feature="selectFeature"
