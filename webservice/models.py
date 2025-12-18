@@ -893,38 +893,6 @@ class Template(models.Model):
         }
 
 
-class SelectionManager(models.Manager):
-    def for_request(self, request):
-        if request.user.is_anonymous:
-            return self.filter(login_required=False)
-
-        return self.all()
-
-
-# TODO: Remove Selections, this is not used anymore in Atlas
-class Selection(models.Model):
-    objects = models.Manager()
-    authorized = SelectionManager()
-
-    title = models.CharField('Titel', max_length=128, null=True)
-    slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
-                         help_text='Een uniek kort kenmerk voor de kaartselectie in Atlas.', max_length=255,
-                         validators=[no_underscore_validator])
-
-    layers = models.ManyToManyField(Layer, verbose_name='Lagen', blank=True)
-
-    login_required = models.BooleanField(
-        'Vereis inlog voor deze selectie', default=False,
-        help_text='De selectie kan alleen bekeken worden door ingelogde gebruikers.')
-
-    class Meta:
-        verbose_name = 'Selectie'
-        verbose_name_plural = 'Selecties'
-
-    def __str__(self):
-        return self.title
-
-
 class MapLayer(models.Model):
     layer = models.ForeignKey(
         'Layer', on_delete=models.CASCADE, related_name='maps_layer')
