@@ -48,8 +48,7 @@ class Category(models.Model):
 
     slug = AutoSlugField('Kort kenmerk', default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
-                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.', max_length=255,
-                         validators=[no_underscore_validator])
+                         help_text='Een uniek kort kenmerk voor de categorie in Atlas.', max_length=255)
 
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
@@ -77,8 +76,7 @@ class Source(models.Model):
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          editable=True,
-                         help_text='Een uniek kort kenmerk voor de bron in Atlas.', max_length=255,
-                         validators=[no_underscore_validator])
+                         help_text='Een uniek kort kenmerk voor de bron in Atlas.', max_length=255)
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_OWS, max_length=20,
                                    help_text='Selecteer het type bron')
@@ -440,8 +438,7 @@ class Layer(models.Model):
     slug = AutoSlugField('Kort kenmerk', null=True, default=None, blank=False, unique=True, populate_from='title',
                          overwrite_on_add=False, editable=True,
                          help_text='Een uniek kenmerk voor de laag in Atlas. Dit kenmerk komt terug in links naar de laag.)',
-                         max_length=255, validators=[no_underscore_validator]
-                         )
+                         max_length=255)
 
     title = models.CharField('Titel', max_length=128, null=True)
 
