@@ -117,6 +117,7 @@ import RichValue from "@/components/RichValue.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useMapStore } from "@/stores/map_store";
 import { WKT } from "ol/format";
+import { useToast } from "primevue";
 
 export default {
   name: "FeatureTable",
@@ -163,6 +164,7 @@ export default {
       errorMessage: null,
       loading: true,
       isDownloadPending: false,
+      toast: useToast(),
     };
   },
   watch: {
@@ -470,7 +472,12 @@ export default {
     },
     async downloadCSV() {
       if (!this.layer.is_exportable) {
-        console.error("Het is niet mogelijk om voor deze kaartlaag de bijbehorende data te downloaden.");
+        this.toast.add({
+          severity: "error",
+          summary: "Downloaden mislukt",
+          detail: "Deze kaartlaag is niet exporteerbaar.",
+          life: 5000,
+        });
         return;
       }
 
@@ -507,7 +514,12 @@ export default {
     },
     async download(outputFormat) {
       if (!this.layer.is_exportable) {
-        console.error("Het is niet mogelijk om voor deze kaartlaag de bijbehorende data te downloaden.");
+        this.toast.add({
+          severity: "error",
+          summary: "Downloaden mislukt",
+          detail: "Deze kaartlaag is niet exporteerbaar.",
+          life: 5000,
+        });
         return;
       }
 
@@ -527,6 +539,20 @@ export default {
           featureCollection: fetchDownloadData,
         }),
       });
+
+      if (!result.ok) {
+        const response = await result.json();
+
+        this.toast.add({
+          severity: "error",
+          summary: "Downloaden mislukt",
+          detail: response.error,
+          life: 5000,
+        });
+
+        this.isDownloadPending = false;
+        return;
+      }
 
       const formats = {
         "ESRI Shapefile": ".shp.zip",
