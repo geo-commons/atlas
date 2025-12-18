@@ -94,8 +94,6 @@
             :position="position"
             @set-position="setPosition"
             @on-fit="(value) => onFit(value)"
-            @select-feature-details="onSelectFeatureDetails"
-            @select-related-linked-data="onSelectRelatedLinkedData"
           />
         </div>
       </div>
@@ -201,6 +199,7 @@ export default {
   },
   methods: {
     fetchFeatures() {
+      this.onSelectRelatedTableObject(null);
       if (this.layer.source_type === "WMS" || this.layer.source_type === "WMS_WFS") {
         return this.fetchFeaturesFromWMS();
       }

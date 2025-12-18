@@ -67,11 +67,6 @@
 
     <template #default>
       <div>
-        <FeatureInfoDetails
-          v-if="selectedFeatureDetails"
-          :feature="selectedFeatureDetails"
-          @back="closeFeatureInfoDetails"
-        />
         <RelatedTableDetails
           v-if="selectedRelatedTableAttributes"
           :selected-related-table-attributes="selectedRelatedTableAttributes"
@@ -80,7 +75,7 @@
         />
         <FeatureInfo
           v-for="visibleLayer in visibleLayers"
-          v-show="!selectedFeatureDetails && !selectedRelatedLinkedDataAttributes && !selectedRelatedTableAttributes"
+          v-show="!selectedFeatureDetails && !selectedRelatedTableAttributes"
           :key="visibleLayer.id"
           :is-open="true"
           :layer="visibleLayer"
@@ -90,8 +85,6 @@
           @show-selected-feature="onFeatureSelect"
           @set-position="(position) => setPosition(position)"
           @on-fit="onFit"
-          @select-feature-details="onSelectFeatureDetails"
-          @select-related-linked-data="onSelectRelatedLinkedData"
           @select-feature="selectFeature"
           @select-related-table-object="onSelectRelatedTableObject"
         />
@@ -110,7 +103,6 @@ import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import { Tippy } from "vue-tippy";
 import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
-import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 import { useMapStore } from "@/stores/map_store";
 import RelatedTableDetails from "@/components/related-tables/RelatedTableDetails.vue";
 
@@ -118,7 +110,6 @@ export default {
   name: "PointInfoPanel",
   components: {
     RelatedTableDetails,
-    FeatureInfoDetails,
     Tippy,
     MarkerIcon,
     CloseIcon,

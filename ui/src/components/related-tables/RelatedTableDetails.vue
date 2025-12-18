@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import nunjucks from "nunjucks";
@@ -190,6 +190,10 @@ const handleSelectedRelatedTableAttributes = async () => {
 
 onMounted(async () => {
   await handleSelectedRelatedTableAttributes();
+});
+
+onUnmounted(() => {
+  console.log("Component unmounted");
 });
 
 watch(
