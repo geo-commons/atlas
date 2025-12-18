@@ -109,6 +109,16 @@
       "id": 20,
       "city": "Middenbeemster",
       "district": "Prins Alexander"
+    },
+    {
+      "id": 21,
+      "city": "Middenbeemster",
+      "district": "De Maten"
+    },
+    {
+      "id": 22,
+      "city": "Middenbeemster",
+      "district": "Zevenhuizen"
     }
   ],
   "streets": [

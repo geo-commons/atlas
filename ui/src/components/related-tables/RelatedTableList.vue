@@ -98,9 +98,15 @@ const tableHeaders = computed(() => {
 const getRestData = async (table: IRelatedTable) => {
   const fullUrl = `${table.source.url}${table.list_endpoint}`;
   const renderedUrl = nunjucks.renderString(fullUrl, fieldMappingValues.value);
+  // Add pagination parameters for JSON Server
+  const url = new URL(renderedUrl);
+  // todo: configureerbaar maken in admin om welke params het gaat
+  // todo: wat als een api geen paginatie heeft
+  url.searchParams.set("_page", (pageState.value.page + 1).toString()); // JSON Server uses 1-based indexing
+  url.searchParams.set("_limit", pageState.value.rows.toString());
 
   try {
-    const response = await fetch(renderedUrl);
+    const response = await fetch(url.toString());
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}`);
@@ -110,6 +116,7 @@ const getRestData = async (table: IRelatedTable) => {
     // todo: results moet hier misschien nog vervangen worden door het juiste key word dat gebruikt gaat worden als 'response key'
 
     relatedTableData.value = data.results;
+    numberMatched.value = data.total;
     loading.value = false;
   } catch (error) {
     console.error("Error fetching data:", error);
