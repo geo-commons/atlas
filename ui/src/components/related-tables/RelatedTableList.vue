@@ -91,7 +91,7 @@ const showPaginator = computed(() => {
 });
 
 const tableHeaders = computed(() => {
-  if (relatedTable.list_display_properties && relatedTable.list_display_properties.length > 1) {
+  if (relatedTable.list_display_properties && relatedTable.list_display_properties.length > 0) {
     return relatedTable.list_display_properties;
   }
 
