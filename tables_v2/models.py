@@ -30,6 +30,12 @@ class TableTemp(models.Model):
     detail_cql_filters = models.JSONField(null=True,
                                           blank=True)  # { straatnaam: "{{straatnaam}}", adres: "{{straatnaam}} {{huisnummer}}", staatId: "{{id}}"  }
 
+    # Display properties for columns
+    list_display_properties = models.JSONField('Kolommen voor lijstweergave', null=True, blank=True, default=list,
+                                               help_text='Lijst van kolomnamen die getoond worden in de lijstweergave')
+    detail_display_properties = models.JSONField('Kolommen voor detailweergave', null=True, blank=True, default=list,
+                                                 help_text='Lijst van kolomnamen die getoond worden in de detailweergave')
+
     tables = models.ManyToManyField(
         'self',
         through='TableToTable',
@@ -64,6 +70,8 @@ class TableTemp(models.Model):
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
+            'list_display_properties': self.list_display_properties,
+            'detail_display_properties': self.detail_display_properties,
             'related_tables': [item.simple_to_dict(self) for item in self.tables.all()],
         }
 
@@ -90,18 +98,13 @@ class TableTemp(models.Model):
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
+            'list_display_properties': self.list_display_properties,
+            'detail_display_properties': self.detail_display_properties,
         }}
 
         if from_table:
             try:
-                print("looking for table_to_table:")
-                print(self)
-                print(from_table)
-
                 table_to_table = TableToTable.objects.get(from_table=from_table, to_table=self)
-                print("table_to_table found:")
-                print(table_to_table.field_mapping)
-
                 data['field_mapping'] = table_to_table.field_mapping
             except TableToTable.DoesNotExist:
                 data['field_mapping'] = None

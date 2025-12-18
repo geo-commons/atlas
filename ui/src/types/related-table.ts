@@ -26,4 +26,6 @@ export interface IRelatedTable {
   related_tables: IRelatedTable[] | null;
   field_mapping: Record<string, string>;
   to_table: IRelatedTable;
+  list_display_properties: string[];
+  detail_display_properties: string[];
 }

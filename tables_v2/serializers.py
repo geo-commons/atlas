@@ -21,6 +21,8 @@ class SimpleTableTempSerializer(serializers.ModelSerializer):
             'layer_name',
             'list_cql_filters',
             'detail_cql_filters',
+            'list_display_properties',
+            'detail_display_properties',
         ]
 
 
@@ -60,7 +62,9 @@ class TableTempSerializer(serializers.ModelSerializer):
             'list_cql_filters',
             'detail_cql_filters',
             'related_tables',
-            'field_mapping'
+            'field_mapping',
+            'list_display_properties',
+            'detail_display_properties',
         ]
 
     def __init__(self, *args, from_layer=None, **kwargs):

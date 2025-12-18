@@ -27,8 +27,8 @@
                   <td>
                     <button @click="onSelectRelatedData(item)">bekijk</button>
                   </td>
-                  <td v-for="(value, key, index) in item" :key="index" class="related-cell">
-                    <RichValue :data-key="key" :data-value="value" />
+                  <td v-for="(property, index) in tableHeaders" :key="index" class="related-cell">
+                    <RichValue :data-key="property" :data-value="item[property]" />
                   </td>
                 </tr>
               </tbody>
@@ -91,6 +91,10 @@ const showPaginator = computed(() => {
 });
 
 const tableHeaders = computed(() => {
+  if (relatedTable.list_display_properties && relatedTable.list_display_properties.length > 1) {
+    return relatedTable.list_display_properties;
+  }
+
   const firstItem = relatedTableData.value[0];
   return firstItem ? Object.keys(firstItem) : [];
 });
