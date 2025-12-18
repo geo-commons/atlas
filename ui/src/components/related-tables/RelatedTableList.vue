@@ -35,6 +35,7 @@
             </table>
           </div>
           <Paginator
+            v-if="showPaginator"
             :template="{
               default: 'PrevPageLink PageLinks NextPageLink',
             }"
@@ -54,7 +55,7 @@
 <script setup lang="ts">
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import ExpandButton from "@/components/ExpandButton.vue";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 
@@ -79,11 +80,15 @@ const pageState = ref({
   rows: 10,
   pageCount: 4,
 });
-const numberMatched = ref<number | null>(null);
+const numberMatched = ref<number>(0);
 
 const onShowContentChange = (isOpen: boolean) => {
   // Emit event or handle content visibility change
 };
+
+const showPaginator = computed(() => {
+  return numberMatched.value !== null && numberMatched.value > pageState.value.rows;
+});
 
 const getRestData = async (table: IRelatedTable) => {
   const fullUrl = `${table.source.url}${table.list_endpoint}`;
