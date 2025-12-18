@@ -72,7 +72,7 @@ const emit = defineEmits<{
 
 const fieldMappingValues = ref<Record<string, string>>({});
 const relatedTableData = ref<Record<string, string>[]>([]);
-const tableHeaders = ref<string[]>([]);
+// const tableHeaders = ref<string[]>([]);
 const loading = ref<boolean>(false);
 const pageState = ref({
   page: 0,
@@ -88,6 +88,11 @@ const onShowContentChange = (isOpen: boolean) => {
 
 const showPaginator = computed(() => {
   return numberMatched.value !== null && numberMatched.value > pageState.value.rows;
+});
+
+const tableHeaders = computed(() => {
+  const firstItem = relatedTableData.value[0];
+  return firstItem ? Object.keys(firstItem) : [];
 });
 
 const getRestData = async (table: IRelatedTable) => {
