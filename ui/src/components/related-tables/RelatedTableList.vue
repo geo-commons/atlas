@@ -5,7 +5,7 @@
         <!--        <span v-if="error">{{ error }}</span>-->
         <!--        <span v-if="loading">Bezig met laden...</span>-->
         <!--        <span v-if="!loading && !error && displayProperties.length === 0">Geen weergave beschikbaar.</span>-->
-        <div>
+        <div v-if="!loading">
           <div class="table-wrapper">
             <table class="related-table">
               <thead>
@@ -34,6 +34,17 @@
               </tbody>
             </table>
           </div>
+          <Paginator
+            :template="{
+              default: 'PrevPageLink PageLinks NextPageLink',
+            }"
+            :current-page-report-template="'({currentPage} van {totalPages})'"
+            :rows="pageState.rows"
+            :total-records="numberMatched"
+            :first="pageState.page * pageState.rows - 1 + pageState.rows"
+            :rows-per-page-options="[10, 20, 30, 50, 100]"
+            @page="updatePageState"
+          ></Paginator>
         </div>
       </div>
     </template>
@@ -59,8 +70,16 @@ const emit = defineEmits<{
 }>();
 
 const fieldMappingValues = ref<Record<string, string>>({});
-const relatedTableData = ref<Record<string, string>[]>([{}]);
+const relatedTableData = ref<Record<string, string>[]>([]);
 const tableHeaders = ref<string[]>([]);
+const loading = ref<boolean>(false);
+const pageState = ref({
+  page: 0,
+  first: 10,
+  rows: 10,
+  pageCount: 4,
+});
+const numberMatched = ref<number | null>(null);
 
 const onShowContentChange = (isOpen: boolean) => {
   // Emit event or handle content visibility change
@@ -75,17 +94,17 @@ const getRestData = async (table: IRelatedTable) => {
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}`);
-      return [];
     }
 
     const data = await response.json();
     // todo: results moet hier misschien nog vervangen worden door het juiste key word dat gebruikt gaat worden als 'response key'
 
-    return data.results;
+    relatedTableData.value = data.results;
+    loading.value = false;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return [];
   }
+  loading.value = false;
 };
 
 const getOwsData = async (table: IRelatedTable) => {
@@ -95,7 +114,8 @@ const getOwsData = async (table: IRelatedTable) => {
     ["request", "GetFeature"],
     ["typename", table.layer_name],
     ["outputFormat", "application/json"],
-    ["maxFeatures", "5000"],
+    ["maxFeatures", pageState.value.rows.toString()],
+    ["startIndex", (pageState.value.rows * pageState.value.page).toString()],
   ]);
 
   if (table.list_cql_filters.length > 0) {
@@ -123,27 +143,32 @@ const getOwsData = async (table: IRelatedTable) => {
 
       const data = await result.json();
       const properties = data.features.map((feature: any) => feature.properties);
+      numberMatched.value = data.numberMatched;
 
-      return properties;
+      relatedTableData.value = properties;
+      if (relatedTableData.value.length > 0) {
+        // retrieve one item to determine table headers,
+        // todo: in the end also check if display_properties is set
+        const firstItem = relatedTableData.value[0];
+        tableHeaders.value = Object.keys(firstItem);
+      }
     } catch (e) {
       console.error(e);
     }
   }
 
   // loading = false;
-  return [];
+  loading.value = false;
 };
 
 const getRelatedTableData = (table: IRelatedTable) => {
   if (table.source_type === SourceType.REST) {
-    return getRestData(table);
+    getRestData(table);
   }
 
   if (table.source_type === SourceType.WMTS || table.source_type === SourceType.OWS) {
-    return getOwsData(table);
+    getOwsData(table);
   }
-
-  return [];
 };
 
 const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any) => {
@@ -156,22 +181,26 @@ const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any
   fieldMappingValues.value = mapping;
 };
 
-const handleTableUpdate = async () => {
+const handleTableUpdate = () => {
+  loading.value = true;
   getFieldMappingValue(fieldMapping, layerFeature || tableFeature);
 
-  relatedTableData.value = await getRelatedTableData(relatedTable);
-
-  // todo: wat als er geen data is?
-  if (relatedTableData.value.length > 0) {
-    // retrieve one item to determine table headers,
-    // todo: in the end also check if display_properties is set
-    const firstItem = relatedTableData.value[0];
-    tableHeaders.value = Object.keys(firstItem);
-  }
+  getRelatedTableData(relatedTable);
 };
 
-onMounted(async () => {
-  await handleTableUpdate();
+const updatePageState = (event: any) => {
+  pageState.value = {
+    ...pageState.value,
+    page: event.page,
+    first: event.first,
+    rows: event.rows,
+  };
+  // Re-fetch data with new pagination parameters
+  handleTableUpdate();
+};
+
+onMounted(() => {
+  handleTableUpdate();
 });
 
 watch(
