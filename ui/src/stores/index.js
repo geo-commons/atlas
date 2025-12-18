@@ -13,7 +13,6 @@ export const useGlobalStore = defineStore("global", {
     isEmbed: null,
     config: null,
     initiallyShowLayerList: null,
-    selections: null,
     tables: null,
     maps: null,
     map: null,
