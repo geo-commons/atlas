@@ -1,7 +1,13 @@
 {
   "cities": [
-    { "id": 1, "city": "Purmerend" },
-    { "id": 2, "city": "Middenbeemster" }
+    {
+      "id": 1,
+      "city": "Purmerend"
+    },
+    {
+      "id": 2,
+      "city": "Middenbeemster"
+    }
   ],
   "districts": [
     {
@@ -106,7 +112,12 @@
     }
   ],
   "streets": [
-    { "id": 1, "city": "Purmerend", "district": "Centrum", "street": "Damrak" },
+    {
+      "id": 1,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak"
+    },
     {
       "id": 2,
       "city": "Purmerend",
@@ -221,7 +232,6 @@
       "district": "IJburg",
       "street": "Lumièrestraat"
     },
-
     {
       "id": 21,
       "city": "Middenbeemster",
@@ -343,6 +353,176 @@
       "street": "Hoofdweg"
     }
   ],
+  "addresses": [
+    {
+      "id": 1,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "12"
+    },
+    {
+      "id": 2,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "14"
+    },
+    {
+      "id": 3,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "1"
+    },
+    {
+      "id": 4,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "2"
+    },
+    {
+      "id": 5,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Buikslotermeerplein",
+      "houseNumber": "5"
+    },
+    {
+      "id": 6,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Buikslotermeerplein",
+      "houseNumber": "7"
+    },
+    {
+      "id": 7,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Meeuwenlaan",
+      "houseNumber": "3"
+    },
+    {
+      "id": 8,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Meeuwenlaan",
+      "houseNumber": "4"
+    },
+    {
+      "id": 9,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Beethovenstraat",
+      "houseNumber": "8"
+    },
+    {
+      "id": 10,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Beethovenstraat",
+      "houseNumber": "10"
+    },
+    {
+      "id": 11,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Apollolaan",
+      "houseNumber": "22"
+    },
+    {
+      "id": 12,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Apollolaan",
+      "houseNumber": "24"
+    },
+    {
+      "id": 13,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Coolsingel",
+      "houseNumber": "101"
+    },
+    {
+      "id": 14,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Coolsingel",
+      "houseNumber": "103"
+    },
+    {
+      "id": 15,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Lijnbaan",
+      "houseNumber": "2A"
+    },
+    {
+      "id": 16,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Lijnbaan",
+      "houseNumber": "2B"
+    },
+    {
+      "id": 17,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Bergweg",
+      "houseNumber": "9"
+    },
+    {
+      "id": 18,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Bergweg",
+      "houseNumber": "11"
+    },
+    {
+      "id": 19,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Zwartjanstraat",
+      "houseNumber": "20"
+    },
+    {
+      "id": 20,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Zwartjanstraat",
+      "houseNumber": "22"
+    },
+    {
+      "id": 21,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Beijerlandselaan",
+      "houseNumber": "30"
+    },
+    {
+      "id": 22,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Beijerlandselaan",
+      "houseNumber": "32"
+    },
+    {
+      "id": 23,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Goereesestraat",
+      "houseNumber": "40"
+    },
+    {
+      "id": 24,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Goereesestraat",
+      "houseNumber": "42"
+    }
+  ],
   "inhabitants": [
     {
       "id": 1,
@@ -350,7 +530,8 @@
       "lastName": "De Vries",
       "city": "Purmerend",
       "district": "Centrum",
-      "street": "Damrak"
+      "street": "Damrak",
+      "houseNumber": "12"
     },
     {
       "id": 2,
@@ -358,16 +539,17 @@
       "lastName": "Jansen",
       "city": "Purmerend",
       "district": "Centrum",
-      "street": "Damrak"
+      "street": "Damrak",
+      "houseNumber": "14"
     },
-
     {
       "id": 3,
       "firstName": "Pieter",
       "lastName": "Bakker",
       "city": "Purmerend",
       "district": "Centrum",
-      "street": "Kalverstraat"
+      "street": "Kalverstraat",
+      "houseNumber": "1"
     },
     {
       "id": 4,
@@ -375,16 +557,17 @@
       "lastName": "Visser",
       "city": "Purmerend",
       "district": "Centrum",
-      "street": "Kalverstraat"
+      "street": "Kalverstraat",
+      "houseNumber": "2"
     },
-
     {
       "id": 5,
       "firstName": "Tom",
       "lastName": "Meijer",
       "city": "Purmerend",
       "district": "Noord",
-      "street": "Buikslotermeerplein"
+      "street": "Buikslotermeerplein",
+      "houseNumber": "5"
     },
     {
       "id": 6,
@@ -392,16 +575,17 @@
       "lastName": "Bos",
       "city": "Purmerend",
       "district": "Noord",
-      "street": "Buikslotermeerplein"
+      "street": "Buikslotermeerplein",
+      "houseNumber": "7"
     },
-
     {
       "id": 7,
       "firstName": "Mark",
       "lastName": "Peters",
       "city": "Purmerend",
       "district": "Noord",
-      "street": "Meeuwenlaan"
+      "street": "Meeuwenlaan",
+      "houseNumber": "3"
     },
     {
       "id": 8,
@@ -409,16 +593,17 @@
       "lastName": "Hendriks",
       "city": "Purmerend",
       "district": "Noord",
-      "street": "Meeuwenlaan"
+      "street": "Meeuwenlaan",
+      "houseNumber": "4"
     },
-
     {
       "id": 9,
       "firstName": "Daan",
       "lastName": "Kok",
       "city": "Purmerend",
       "district": "Zuid",
-      "street": "Beethovenstraat"
+      "street": "Beethovenstraat",
+      "houseNumber": "8"
     },
     {
       "id": 10,
@@ -426,16 +611,17 @@
       "lastName": "Van Leeuwen",
       "city": "Purmerend",
       "district": "Zuid",
-      "street": "Beethovenstraat"
+      "street": "Beethovenstraat",
+      "houseNumber": "10"
     },
-
     {
       "id": 11,
       "firstName": "Ahmed",
       "lastName": "El Amrani",
       "city": "Purmerend",
       "district": "Zuid",
-      "street": "Apollolaan"
+      "street": "Apollolaan",
+      "houseNumber": "22"
     },
     {
       "id": 12,
@@ -443,16 +629,17 @@
       "lastName": "Smit",
       "city": "Purmerend",
       "district": "Zuid",
-      "street": "Apollolaan"
+      "street": "Apollolaan",
+      "houseNumber": "24"
     },
-
     {
       "id": 13,
       "firstName": "Henk",
       "lastName": "Van Dijk",
       "city": "Middenbeemster",
       "district": "Centrum",
-      "street": "Coolsingel"
+      "street": "Coolsingel",
+      "houseNumber": "101"
     },
     {
       "id": 14,
@@ -460,16 +647,17 @@
       "lastName": "Jacobs",
       "city": "Middenbeemster",
       "district": "Centrum",
-      "street": "Coolsingel"
+      "street": "Coolsingel",
+      "houseNumber": "103"
     },
-
     {
       "id": 15,
       "firstName": "Ruben",
       "lastName": "Dekker",
       "city": "Middenbeemster",
       "district": "Centrum",
-      "street": "Lijnbaan"
+      "street": "Lijnbaan",
+      "houseNumber": "2A"
     },
     {
       "id": 16,
@@ -477,16 +665,17 @@
       "lastName": "Kuiper",
       "city": "Middenbeemster",
       "district": "Centrum",
-      "street": "Lijnbaan"
+      "street": "Lijnbaan",
+      "houseNumber": "2B"
     },
-
     {
       "id": 17,
       "firstName": "Mo",
       "lastName": "Haddad",
       "city": "Middenbeemster",
       "district": "Noord",
-      "street": "Bergweg"
+      "street": "Bergweg",
+      "houseNumber": "9"
     },
     {
       "id": 18,
@@ -494,16 +683,17 @@
       "lastName": "Van den Berg",
       "city": "Middenbeemster",
       "district": "Noord",
-      "street": "Bergweg"
+      "street": "Bergweg",
+      "houseNumber": "11"
     },
-
     {
       "id": 19,
       "firstName": "Kevin",
       "lastName": "Jong",
       "city": "Middenbeemster",
       "district": "Noord",
-      "street": "Zwartjanstraat"
+      "street": "Zwartjanstraat",
+      "houseNumber": "20"
     },
     {
       "id": 20,
@@ -511,16 +701,17 @@
       "lastName": "Vos",
       "city": "Middenbeemster",
       "district": "Noord",
-      "street": "Zwartjanstraat"
+      "street": "Zwartjanstraat",
+      "houseNumber": "22"
     },
-
     {
       "id": 21,
       "firstName": "Youssef",
       "lastName": "Ait Ali",
       "city": "Middenbeemster",
       "district": "Zuid",
-      "street": "Beijerlandselaan"
+      "street": "Beijerlandselaan",
+      "houseNumber": "30"
     },
     {
       "id": 22,
@@ -528,16 +719,17 @@
       "lastName": "Mulder",
       "city": "Middenbeemster",
       "district": "Zuid",
-      "street": "Beijerlandselaan"
+      "street": "Beijerlandselaan",
+      "houseNumber": "32"
     },
-
     {
       "id": 23,
       "firstName": "Brian",
       "lastName": "Smits",
       "city": "Middenbeemster",
       "district": "Zuid",
-      "street": "Goereesestraat"
+      "street": "Goereesestraat",
+      "houseNumber": "40"
     },
     {
       "id": 24,
@@ -545,7 +737,8 @@
       "lastName": "Rahmani",
       "city": "Middenbeemster",
       "district": "Zuid",
-      "street": "Goereesestraat"
+      "street": "Goereesestraat",
+      "houseNumber": "42"
     }
   ]
 }
