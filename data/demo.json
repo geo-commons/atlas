@@ -442,7 +442,7 @@
     "fields": {
       "title": "MOCK api",
       "slug": "mock-api",
-      "url": "http://localhost:4444/api"
+      "url": "http://localhost:4444/"
     }
   },
   {
@@ -512,10 +512,7 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [
-        1,
-        2
-      ]
+      "themes": [1, 2]
     }
   },
   {
@@ -537,9 +534,7 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [
-        3
-      ]
+      "themes": [3]
     }
   },
   {
@@ -561,9 +556,7 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [
-        4
-      ]
+      "themes": [4]
     }
   },
   {
@@ -585,9 +578,7 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [
-        5
-      ]
+      "themes": [5]
     }
   },
   {
@@ -609,9 +600,7 @@
       "thumbnail": "",
       "published": false,
       "show_in_overview": true,
-      "themes": [
-        6
-      ]
+      "themes": [6]
     }
   },
   {
@@ -20237,12 +20226,8 @@
         "customSettings": true,
         "login_required": false,
         "friendly_fields": {},
-        "search_properties": [
-          "-"
-        ],
-        "display_properties": [
-          "-"
-        ],
+        "search_properties": ["-"],
+        "display_properties": ["-"],
         "show_in_detail_panel": true,
         "templated_properties": {},
         "use_html_info_format": false
@@ -20592,12 +20577,14 @@
       "slug": "plaatsen",
       "source": 19,
       "source_type": "REST",
-      "fields": [
-        "id",
-        "city"
-      ],
-      "list_endpoint": "/cities",
-      "detail_endpoint": "/cities/?city={{city}}"
+      "fields": ["id", "city"],
+      "list_endpoint": "api/cities?city={{city}}",
+      "detail_endpoint": "api/cities/{{id}}",
+      "layer_name": null,
+      "list_cql_filters": null,
+      "detail_cql_filters": null,
+      "list_display_properties": ["city"],
+      "detail_display_properties": []
     }
   },
   {
@@ -20608,13 +20595,14 @@
       "slug": "wijken",
       "source": 19,
       "source_type": "REST",
-      "fields": [
-        "id",
-        "city",
-        "district"
-      ],
-      "list_endpoint": "/districts?city={{city}}",
-      "detail_endpoint": "/districts/?city={{city}}&district={{district}}"
+      "fields": ["id", "city", "district"],
+      "list_endpoint": "raw/districts?city={{city}}",
+      "detail_endpoint": "raw/districts/{{id}}",
+      "layer_name": null,
+      "list_cql_filters": null,
+      "detail_cql_filters": null,
+      "list_display_properties": ["city", "district"],
+      "detail_display_properties": []
     }
   },
   {
@@ -20625,14 +20613,14 @@
       "slug": "straten",
       "source": 19,
       "source_type": "REST",
-      "fields": [
-        "id",
-        "city",
-        "district",
-        "street"
-      ],
-      "list_endpoint": "/streets?city={{city}}&district={{district}}",
-      "detail_endpoint": "/streets/?city={{city}}&district={{district}}&street={{street}}"
+      "fields": ["id", "city", "district", "street"],
+      "list_endpoint": "nested/streets?city={{city}}&district={{district}}",
+      "detail_endpoint": "nested/streets/{{id}}",
+      "layer_name": null,
+      "list_cql_filters": null,
+      "detail_cql_filters": null,
+      "list_display_properties": ["city", "district", "street"],
+      "detail_display_properties": []
     }
   },
   {
@@ -20643,16 +20631,20 @@
       "slug": "inwoners",
       "source": 19,
       "source_type": "REST",
-      "fields": [
-        "id",
+      "fields": ["id", "city", "district", "street", "firstName", "lastName"],
+      "list_endpoint": "api/inhabitants?city={{city}}&district={{district}}&street={{street}}",
+      "detail_endpoint": "api/inhabitants/{{id}}",
+      "layer_name": null,
+      "list_cql_filters": null,
+      "detail_cql_filters": null,
+      "list_display_properties": [
         "city",
         "district",
         "street",
         "firstName",
         "lastName"
       ],
-      "list_endpoint": "/inhabitants?city={{city}}&district={{district}}&street={{street}}",
-      "detail_endpoint": "/inhabitants/{{id}}"
+      "detail_display_properties": []
     }
   },
   {
@@ -20674,15 +20666,36 @@
         "wijknaam",
         "ligplaatsnummer"
       ],
+      "list_endpoint": null,
+      "detail_endpoint": null,
       "layer_name": "topp:bag_adressen",
       "list_cql_filters": [
-        "ligplaatsnummer in ('{{ligplaatsnummer}}')"
+        {
+          "key": "ligplaatsnummer",
+          "cql_filter": "ligplaatsnummer in ('{{ligplaatsnummer}}')"
+        }
       ],
       "detail_cql_filters": [
-        "straatnaam in ('{{straatnaam}}')",
-        "huisnummer in ('{{huisnummer}}')",
-        "huisletter in ('{{huisletter}}')"
-      ]
+        {
+          "key": "straatnaam",
+          "cql_filter": "straatnaam in ('{{straatnaam}}')"
+        },
+        {
+          "key": "huisnummer",
+          "cql_filter": "huisnummer in ('{{huisnummer}}')"
+        },
+        {
+          "key": "huisletter",
+          "cql_filter": "huisletter in ('{{huisletter}}')"
+        }
+      ],
+      "list_display_properties": [
+        "straatnaam",
+        "huisnummer",
+        "postcode",
+        "woonplaats"
+      ],
+      "detail_display_properties": []
     }
   },
   {
@@ -20693,40 +20706,60 @@
       "slug": "subbuurten",
       "source": 1,
       "source_type": "OWS",
-      "fields": [
-        "subbuurt",
-        "buurt",
-        "wijk"
-      ],
+      "fields": ["subbuurt", "buurt", "wijk"],
+      "list_endpoint": null,
+      "detail_endpoint": null,
       "layer_name": "topp:grenzen_subbuurten",
       "list_cql_filters": [
-        "wijk in ('{{wijk}}')"
+        {
+          "key": "wijk",
+          "cql_filter": "wijk in ('{{wijk}}')"
+        }
       ],
       "detail_cql_filters": [
-        "subbuurt in ('{{subbuurt}}')"
-      ]
+        {
+          "key": "subbuurt",
+          "cql_filter": "subbuurt in ('{{subbuurt}}')"
+        }
+      ],
+      "list_display_properties": ["wijk", "buurt", "subbuurt"],
+      "detail_display_properties": []
     }
   },
   {
-    "model": "tables_v2.layertotable",
-    "pk": 1,
+    "model": "tables_v2.tabletemp",
+    "pk": 7,
     "fields": {
-      "from_layer": 252,
-      "to_table": 1,
-      "field_mapping": {
-        "Naam": "city"
-      }
+      "title": "Adressen",
+      "slug": "adressen_rest",
+      "source": 19,
+      "source_type": "REST",
+      "fields": ["id", "city", "district", "street", "houseNumber"],
+      "list_endpoint": "nested/addresses?city={{city}}&district={{district}}&street={{street}}",
+      "detail_endpoint": "nested/addresses/{{id}}",
+      "layer_name": null,
+      "list_cql_filters": null,
+      "detail_cql_filters": null,
+      "list_display_properties": [],
+      "detail_display_properties": []
     }
   },
   {
-    "model": "tables_v2.layertotable",
-    "pk": 2,
+    "model": "tables_v2.tabletemp",
+    "pk": 8,
     "fields": {
-      "from_layer": 10,
-      "to_table": 5,
-      "field_mapping": {
-        "ligplaatsnummer": "ligplaatsnummer"
-      }
+      "title": "Bedrijven",
+      "slug": "bedrijven",
+      "source": 19,
+      "source_type": "REST",
+      "fields": ["rsin", "city", "district", "street", "houseNumber"],
+      "list_endpoint": "api/companies/?city={{city}}&district={{district}}&street={{street}}?houseNumber={{houseNumber}}",
+      "detail_endpoint": "api/companies/{{rsin}}",
+      "layer_name": null,
+      "list_cql_filters": null,
+      "detail_cql_filters": null,
+      "list_display_properties": [],
+      "detail_display_properties": []
     }
   },
   {
@@ -20757,11 +20790,11 @@
     "pk": 3,
     "fields": {
       "from_table": 3,
-      "to_table": 4,
+      "to_table": 7,
       "field_mapping": {
         "city": "city",
-        "district": "district",
-        "street": "street"
+        "street": "street",
+        "district": "district"
       }
     }
   },
@@ -20773,6 +20806,106 @@
       "to_table": 6,
       "field_mapping": {
         "wijknaam": "wijk"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 5,
+    "fields": {
+      "from_table": 3,
+      "to_table": 2,
+      "field_mapping": {
+        "city": "city",
+        "district": "district"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 6,
+    "fields": {
+      "from_table": 2,
+      "to_table": 1,
+      "field_mapping": {
+        "city": "city"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 7,
+    "fields": {
+      "from_table": 7,
+      "to_table": 3,
+      "field_mapping": {
+        "city": "city",
+        "street": "street",
+        "district": "district"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 8,
+    "fields": {
+      "from_table": 7,
+      "to_table": 4,
+      "field_mapping": {
+        "city": "city",
+        "street": "street",
+        "district": "district",
+        "houseNumber": "houseNumber"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 9,
+    "fields": {
+      "from_table": 4,
+      "to_table": 7,
+      "field_mapping": {
+        "city": "city",
+        "street": "street",
+        "district": "district",
+        "houseNumber": "houseNumber"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 9,
+    "fields": {
+      "from_table": 5,
+      "to_table": 8,
+      "field_mapping": {
+        "city": "city",
+        "street": "street",
+        "district": "district",
+        "houseNumber": "houseNumber"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.layertotable",
+    "pk": 1,
+    "fields": {
+      "from_layer": 252,
+      "to_table": 1,
+      "field_mapping": {
+        "naam": "city"
+      }
+    }
+  },
+  {
+    "model": "tables_v2.layertotable",
+    "pk": 2,
+    "fields": {
+      "from_layer": 10,
+      "to_table": 5,
+      "field_mapping": {
+        "ligplaatsnummer": "ligplaatsnummer"
       }
     }
   },

@@ -750,5 +750,202 @@
       "street": "Goereesestraat",
       "houseNumber": "42"
     }
+  ],
+  "companies": [
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "12",
+      "rsin": "823456781",
+      "rechtsvorm": "BV",
+      "uitgebreideRechtsvorm": "Besloten Vennootschap",
+      "adressen": [
+        {
+          "type": "Bezoekadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Damrak 12, 1441 PG Purmerend",
+          "straatnaam": "Damrak",
+          "huisnummer": 12,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441PG",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Damrak 12",
+          "postcodeWoonplaats": "1441 PG Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000123456",
+            "nummerAanduidingId": "0392200000123456",
+            "gpsLatitude": 52.5051,
+            "gpsLongitude": 4.9593,
+            "rijksdriehoekX": 125000,
+            "rijksdriehoekY": 487000,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.damrakconsult.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "14",
+      "rsin": "834567892",
+      "rechtsvorm": "Eenmanszaak",
+      "uitgebreideRechtsvorm": "Eenmanszaak",
+      "adressen": [
+        {
+          "type": "Vestigingsadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Damrak 14, 1441 PG Purmerend",
+          "straatnaam": "Damrak",
+          "huisnummer": 14,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441PG",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Damrak 14",
+          "postcodeWoonplaats": "1441 PG Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000123457",
+            "nummerAanduidingId": "0392200000123457",
+            "gpsLatitude": 52.5052,
+            "gpsLongitude": 4.9595,
+            "rijksdriehoekX": 125020,
+            "rijksdriehoekY": 487010,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.damrakdesign.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "1",
+      "rsin": "845678903",
+      "rechtsvorm": "VOF",
+      "uitgebreideRechtsvorm": "Vennootschap Onder Firma",
+      "adressen": [
+        {
+          "type": "Hoofdadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Kalverstraat 1, 1441 KC Purmerend",
+          "straatnaam": "Kalverstraat",
+          "huisnummer": 1,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441KC",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Kalverstraat 1",
+          "postcodeWoonplaats": "1441 KC Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000456789",
+            "nummerAanduidingId": "0392200000456789",
+            "gpsLatitude": 52.5046,
+            "gpsLongitude": 4.9588,
+            "rijksdriehoekX": 124980,
+            "rijksdriehoekY": 486950,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.kalverstraatmedia.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "2",
+      "rsin": "856789014",
+      "rechtsvorm": "Stichting",
+      "uitgebreideRechtsvorm": "Stichting",
+      "adressen": [
+        {
+          "type": "Correspondentieadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Kalverstraat 2, 1441 KC Purmerend",
+          "straatnaam": "Kalverstraat",
+          "huisnummer": 2,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441KC",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Kalverstraat 2",
+          "postcodeWoonplaats": "1441 KC Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000456790",
+            "nummerAanduidingId": "0392200000456790",
+            "gpsLatitude": 52.5047,
+            "gpsLongitude": 4.959,
+            "rijksdriehoekX": 124990,
+            "rijksdriehoekY": 486960,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.stichtingcentrum.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "12",
+      "rsin": "867890125",
+      "rechtsvorm": "BV",
+      "uitgebreideRechtsvorm": "Besloten Vennootschap",
+      "adressen": [
+        {
+          "type": "Bezoekadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Damrak 12, 1441 PG Purmerend",
+          "straatnaam": "Damrak",
+          "huisnummer": 12,
+          "huisletter": "",
+          "huisnummerToevoeging": "A",
+          "toevoegingAdres": "Unit A",
+          "postcode": "1441PG",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Damrak 12A",
+          "postcodeWoonplaats": "1441 PG Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000123499",
+            "nummerAanduidingId": "0392200000123499",
+            "gpsLatitude": 52.5051,
+            "gpsLongitude": 4.9594,
+            "rijksdriehoekX": 125005,
+            "rijksdriehoekY": 487002,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.purmerendtech.nl"],
+      "_links": {}
+    }
   ]
 }
