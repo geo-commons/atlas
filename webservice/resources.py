@@ -1,5 +1,5 @@
 from import_export import resources, fields, widgets
-from .models import Category, Source, Layer, Selection, Map, Theme, Viewer, Dataset, Metadataset, MapLayer
+from .models import Category, Source, Layer, Map, Theme, Viewer, Dataset, Metadataset, MapLayer
 from .widgets import MapLayerManyToManyWidget
 
 
@@ -64,18 +64,6 @@ class LayerResource(resources.ModelResource):
 class SourceResource(resources.ModelResource):
     class Meta:
         model = Source
-        exclude = ('id', )
-        import_id_fields = ('slug', )
-
-
-class SelectionResource(resources.ModelResource):
-    layers = fields.Field(
-        column_name='layers',
-        attribute='layers',
-        widget=widgets.ManyToManyWidget(Layer, field='slug', separator='|'))
-
-    class Meta:
-        model = Selection
         exclude = ('id', )
         import_id_fields = ('slug', )
 

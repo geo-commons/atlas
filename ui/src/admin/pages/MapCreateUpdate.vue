@@ -42,6 +42,7 @@
     <MapForm
       v-if="sidebar === 'form'"
       :initial-data="data"
+      :errors="errors"
       @delete="deleteMap"
       @submit="saveMap"
       @show-panel="showSidebar"
@@ -55,7 +56,7 @@
         :features="data.features"
         :settings="data.settings"
         :config="config"
-        :map-id="data.title || 'primary'"
+        :map-id="data.slug || 'primary'"
         :admin-map="true"
         :hide-reset-button="true"
         :about="data.about"
@@ -104,6 +105,7 @@ export default {
       sidebar: "form",
       selectedLayerData: null,
       userLayerSettings: null,
+      errors: null,
     };
   },
   computed: {
@@ -200,6 +202,7 @@ export default {
     },
     async saveMap(data, continueEditing = false) {
       let result;
+      this.errors = null;
 
       if (!data.features.list) {
         data.settings.listLayerId = null;
@@ -250,7 +253,8 @@ export default {
           this.$router.push(`/maps`);
         }
       } else {
-        // @TODO: Duidelijkere error
+        this.errors = await result.json();
+
         this.toast.add({
           severity: "error",
           summary: "Er is iets misgegaan",

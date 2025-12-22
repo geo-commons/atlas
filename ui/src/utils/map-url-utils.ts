@@ -11,6 +11,7 @@ export function pushHistoryState(
   baseLayer: ILayer,
   visibleLayers: ILayer[],
   drawing?: string,
+  isEmbed?: boolean,
 ): void {
   const basePath = /(.*?)(@|$)/.exec(window.location.pathname);
 
@@ -37,6 +38,10 @@ export function pushHistoryState(
 
   if (markerCoords?.length === 2) {
     urlParts.push(`marker=${markerCoords.join(",")}`);
+  }
+
+  if (isEmbed) {
+    urlParts.push(`is_embed=true`);
   }
 
   window.history.replaceState({}, "", urlParts.join("/"));

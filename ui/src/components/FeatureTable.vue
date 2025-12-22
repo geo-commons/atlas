@@ -117,6 +117,7 @@ import RichValue from "@/components/RichValue.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useMapStore } from "@/stores/map_store";
 import { WKT } from "ol/format";
+import { useToast } from "primevue";
 
 export default {
   name: "FeatureTable",
@@ -163,6 +164,7 @@ export default {
       errorMessage: null,
       loading: true,
       isDownloadPending: false,
+      toast: useToast(),
     };
   },
   watch: {
@@ -218,14 +220,14 @@ export default {
 
     this.selectedFilterProperties = Object.keys(filters);
 
-    this.store.$subscribe((mutation, state) => {
-      if (mutation?.events.newValue?.searchQuery) {
-        return;
+    this.store.$subscribe((_, state) => {
+      // From the moment this store subscription is created,
+      // when the filters for the relevant layer change, both the
+      // filter properties (selectedFilterProperties) and filter values (fieldFilters) are updated.
+      if (state.layerFilters[this.layer.id]) {
+        this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
+        this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
       }
-
-      this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
-
-      this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
     });
 
     await this.fetchFeatures();
@@ -257,8 +259,22 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          if (this.fieldFilters[key].length) {
-            filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+          const values = this.fieldFilters[key];
+          if (values.length > 0) {
+            const filterOnEmptyValues = values.includes("Leeg");
+            const nonEmptyValues = values.filter((f) => f !== "Leeg");
+            let valueFilters = [];
+
+            if (nonEmptyValues.length > 0) {
+              valueFilters.push(`${key} in (${nonEmptyValues.map((f) => this.replaceQuotes(f)).join(",")})`);
+            }
+            if (filterOnEmptyValues) {
+              valueFilters.push(`(${key} IS NULL or ${key} = '')`);
+            }
+
+            if (valueFilters.length > 0) {
+              filters.push(`(${valueFilters.join(" OR ")})`);
+            }
           }
         });
       }
@@ -322,11 +338,9 @@ export default {
       const params = new URLSearchParams([
         ["service", "WFS"],
         ["version", "1.0.0"],
-        ["request", "GetFeature"],
+        ["request", "DescribeFeatureType"],
         ["typename", this.layer.name],
         ["outputFormat", "application/json"],
-        ["maxFeatures", this.pageState.rows],
-        ["startIndex", this.pageState.rows * this.pageState.page],
       ]);
 
       try {
@@ -335,28 +349,13 @@ export default {
         const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
         const data = await result.json();
 
-        if (this.displayProperties.length === 0 && data.features.length > 0) {
-          // cache first retrieval of properties into this.displayProperties
-          const fetchedProperties = Object.keys(data.features[0].properties);
+        const featureType = data.featureTypes[0];
 
-          this.displayProperties =
-            this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
+        const fetchedProperties = featureType.properties.map((p) => p.name);
+        this.displayProperties =
+          this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
 
-          // Remove empty columns from the filter options.
-          let emptyColumn = this.displayProperties.slice(0);
-
-          data.features.forEach((feature) => {
-            emptyColumn.forEach((prop) => {
-              if (feature.properties[prop] && feature.properties[prop] !== "") {
-                // Remove a column from the empty column array as soon as a corresponding cell is found that
-                // contains a value.
-                emptyColumn.splice(emptyColumn.indexOf(prop), 1);
-              }
-            });
-          });
-
-          this.filterProperties = this.displayProperties.filter((prop) => !emptyColumn.includes(prop));
-        }
+        this.filterProperties = [...this.displayProperties];
       } catch (e) {
         console.error(e);
         this.error = true;
@@ -473,7 +472,12 @@ export default {
     },
     async downloadCSV() {
       if (!this.layer.is_exportable) {
-        console.error("Het is niet mogelijk om voor deze kaartlaag de bijbehorende data te downloaden.");
+        this.toast.add({
+          severity: "error",
+          summary: "Downloaden mislukt",
+          detail: "Deze kaartlaag is niet exporteerbaar.",
+          life: 5000,
+        });
         return;
       }
 
@@ -510,7 +514,12 @@ export default {
     },
     async download(outputFormat) {
       if (!this.layer.is_exportable) {
-        console.error("Het is niet mogelijk om voor deze kaartlaag de bijbehorende data te downloaden.");
+        this.toast.add({
+          severity: "error",
+          summary: "Downloaden mislukt",
+          detail: "Deze kaartlaag is niet exporteerbaar.",
+          life: 5000,
+        });
         return;
       }
 
@@ -530,6 +539,20 @@ export default {
           featureCollection: fetchDownloadData,
         }),
       });
+
+      if (!result.ok) {
+        const response = await result.json();
+
+        this.toast.add({
+          severity: "error",
+          summary: "Downloaden mislukt",
+          detail: response.error,
+          life: 5000,
+        });
+
+        this.isDownloadPending = false;
+        return;
+      }
 
       const formats = {
         "ESRI Shapefile": ".shp.zip",
@@ -628,13 +651,12 @@ export default {
       }
 
       const fetchedFeatureFilters = await this.fetchFilterOptionsForProperty(property);
-
       // Extract the unique values from the fetched features
       const filters = Array.from(new Set(fetchedFeatureFilters.map((feature) => feature.properties[property]))).filter(
         (filter) => filter !== null && (typeof filter !== "string" || filter.trim() !== ""),
       );
 
-      this.filterOptions[property] = filters;
+      this.filterOptions[property] = ["Leeg", ...filters];
     },
     setFieldFilters(v) {
       this.fieldFilters = v;

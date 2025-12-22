@@ -213,6 +213,7 @@ def _get_config(request):
             'portal': config.get('FEATURE_PORTAL'),
             'edit_layer_features': config.get('FEATURE_EDIT_LAYER_FEATURES'),
             'sortLayer': config.get('FEATURE_SORT_LAYER'),
+            'compareLayers': config.get('FEATURE_COMPARE_LAYERS'),
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }

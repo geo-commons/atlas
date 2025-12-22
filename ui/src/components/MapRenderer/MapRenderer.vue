@@ -132,7 +132,7 @@
       :features="features"
       :map-id="mapId"
       @set-position="setPosition"
-      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19, duration: 1000 })"
+      @on-fit="onFit"
       @expanded-info-panel="toggleInfoPanel"
       @select-feature="selectFeature"
     />
@@ -152,8 +152,8 @@
       :user="user"
       :map-id="mapId"
       :full-size-window="showDataPanelFullScreen"
-      @set-position="setPosition"
-      @on-fit="(layer) => $refs.map.fit(layer, { maxZoom: 19, duration: 1000 })"
+      set-position="setPosition"
+      @on-fit="onFit"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
@@ -200,6 +200,7 @@
           </PrimaryButton>
           <PrimaryButton
             v-if="
+              !isEmbed &&
               !hideResetButton &&
               (countOfLayersWithActiveFilters > 0 ||
                 mapStore?.visibleLayers?.length > 0 ||
@@ -269,6 +270,7 @@
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
           :show-compare-slider="compareLayers"
+          :layer-legend-panels-collapsed="features.layerPanelCollapsed"
           :is-embed="features.legend && !features.layerlist"
           @on-fit="(layer) => $refs.map.fit(layer)"
           @set-position="setPosition"
@@ -348,7 +350,13 @@
 
     <transition name="fade">
       <div>
-        <EmbedModal v-if="modal === 'embed'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
+        <EmbedModal
+          v-if="modal === 'embed'"
+          :map-id="mapId"
+          :layers="layers"
+          :position="position"
+          @toggle-modal="toggleModal"
+        />
         <PrintModal
           v-if="modal === 'print'"
           :loading="loadingPrint"
@@ -420,6 +428,7 @@ import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 import { EditLayerMode } from "@/types/map";
+import { ELayerTypes } from "@/types/layer";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -649,7 +658,18 @@ export default {
     "mapStore.layers": {
       handler(value) {
         if (!this.adminMap) {
-          pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, this.drawingId);
+          pushHistoryState(
+            this.position,
+            this.mapStore.selectedBaseLayer,
+            this.mapStore.visibleLayers,
+            this.drawingId,
+            this.isEmbed,
+          );
+        }
+
+        // Notify parent window if in embed mode
+        if (this.isEmbed && window.parent !== window) {
+          this.notifyIframeParentOfStateChange();
         }
 
         const editableLayers = value.filter(
@@ -705,6 +725,34 @@ export default {
     window.removeEventListener("resize", this.onResizeWindow);
   },
   methods: {
+    notifyIframeParentOfStateChange() {
+      // Notifies the parent window of active layer, zoom, and position changes
+      // while configuring the embed, so it can update the embed URL accordingly.
+      if (!window.parent || window.parent === window) {
+        return;
+      }
+
+      const serializablePosition = {
+        center: this.position.center ? [this.position.center[0], this.position.center[1]] : null,
+        zoom: this.position.zoom,
+      };
+
+      const serializableLayers = this.mapStore.layers.map((layer) => ({
+        id: layer.id,
+        is_visible: layer.is_visible,
+        is_base: layer.is_base,
+        name: layer.name,
+      }));
+
+      window.parent.postMessage(
+        {
+          type: "map-state-update",
+          position: serializablePosition,
+          layers: serializableLayers,
+        },
+        window.location.origin,
+      );
+    },
     onResizeWindow() {
       this.setViewportHeight();
     },
@@ -718,7 +766,18 @@ export default {
       };
 
       if (!this.adminMap) {
-        pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, this.drawingId);
+        pushHistoryState(
+          this.position,
+          this.mapStore.selectedBaseLayer,
+          this.mapStore.visibleLayers,
+          this.drawingId,
+          this.isEmbed,
+        );
+      }
+
+      // Notify parent window if in embed mode
+      if (this.isEmbed && window.parent !== window) {
+        this.notifyIframeParentOfStateChange();
       }
 
       if (!position.marker) {
@@ -767,6 +826,10 @@ export default {
       this.editLayerStore.setHighlightedFeatureAndLayer(null);
 
       this.mapStore.visibleLayersForFeatures.forEach(async (layer) => {
+        if (layer.source_type === ELayerTypes.WMTS) {
+          return;
+        }
+
         const wmsSource = new TileWMS({
           url: layer.url,
           servertype: layer.server_type,
@@ -846,7 +909,7 @@ export default {
     },
     drawingSaved(id) {
       if (!this.adminMap) {
-        pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, id);
+        pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, id, this.isEmbed);
       }
 
       this.mapStore.setDrawingId(id);
@@ -856,7 +919,13 @@ export default {
       this.drawFeatures = [];
       this.mapStore.setDrawingId(null);
       if (!this.adminMap) {
-        pushHistoryState(this.position, this.mapStore.selectedBaseLayer, this.mapStore.visibleLayers, null);
+        pushHistoryState(
+          this.position,
+          this.mapStore.selectedBaseLayer,
+          this.mapStore.visibleLayers,
+          null,
+          this.isEmbed,
+        );
       }
     },
     toggleModal(modal) {
@@ -1014,7 +1083,7 @@ export default {
       this.showBaseLayersPanel = !this.showBaseLayersPanel;
     },
     onFit(position) {
-      this.$refs.map.fit(position, { maxZoom: 19 });
+      this.$refs.map.fit(position, { maxZoom: 19, duration: 1000 });
     },
     setColor(color) {
       this.color = color;

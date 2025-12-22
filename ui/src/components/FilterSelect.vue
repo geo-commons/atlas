@@ -60,16 +60,19 @@ export default {
   created() {
     this.store = useMapStore(this.mapId);
 
-    const filterProperties = this.store.layerFilters[this.layerId]?.filters?.[this.filterProperty]
+    const filterValues = this.store.layerFilters[this.layerId]?.filters?.[this.filterProperty]
       ? this.store.layerFilters[this.layerId].filters[this.filterProperty]
       : [];
 
-    this.selectedItems = filterProperties;
+    this.selectedItems = filterValues;
 
-    this.store.$subscribe((mutation, state) => {
-      const filterProperties = state.layerFilters[this.layerId]?.filters?.[this.filterProperty] || [];
+    this.store.$subscribe((_, state) => {
+      // From the moment this store subscription is created,
+      // When the filters for the relevant layer change, the corresponding filter values
+      // are updated to match the active filter values of the currently active filter.
+      const filterValues = state.layerFilters[this.layerId]?.filters?.[this.filterProperty] || [];
 
-      this.selectedItems = filterProperties;
+      this.selectedItems = filterValues;
     });
   },
   methods: {

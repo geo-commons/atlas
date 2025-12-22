@@ -34,7 +34,7 @@
       </button>
     </div>
     <iframe
-      :src="embedUrl"
+      :src="staticIframeSrc"
       width="100%"
       height="450"
       frameborder="0"
@@ -47,38 +47,81 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { useGlobalStore } from "@/stores";
+
 export default {
   name: "EmbedCode",
   components: {},
   props: {
     position: Object,
     layers: Array,
+    mapId: String,
   },
   data() {
     return {
       buttonText: "HTML kopiëren",
+      currentPosition: this.position,
+      currentLayers: this.layers,
+      staticIframeSrc: "",
     };
   },
   computed: {
+    ...mapState(useGlobalStore, ["map"]),
     embedUrl() {
-      const baseLayer = this.layers.filter((l) => l.is_visible && l.is_base).map((l) => l.id);
+      const baseLayer = this.currentLayers.filter((l) => l.is_visible && l.is_base).map((l) => l.id);
+      const urlPrefix = this.mapId !== "primary" ? `/atlas/maps/${this.mapId}/` : "/atlas/";
 
-      return `${encodeURI(window.location.origin)}/atlas/embed/@${encodeURIComponent(
-        this.position.center[0]
-      )},${encodeURIComponent(this.position.center[1])},${encodeURIComponent(
-        Math.round(this.position.zoom * 100) / 100
+      return `${encodeURI(window.location.origin)}${urlPrefix}@${encodeURIComponent(
+        this.currentPosition.center[0],
+      )},${encodeURIComponent(this.currentPosition.center[1])},${encodeURIComponent(
+        Math.round(this.currentPosition.zoom * 100) / 100,
       )}z/layers=${this.visibleLayers.map((l) => encodeURIComponent(l.id)).join(",")}/base=${
         baseLayer.length > 0 ? baseLayer[0] : ""
-      }`;
+      }/is_embed=true`;
     },
     embedCode() {
       return `<iframe src="${this.embedUrl}" width="560" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>`;
     },
     visibleLayers() {
-      return this.layers.filter((layer) => layer.is_visible && !layer.is_base);
+      return this.currentLayers.filter((layer) => layer.is_visible && !layer.is_base);
     },
   },
+  mounted() {
+    // Set the static iframe src once on mount, based on initial props
+    const baseLayer = this.layers.filter((l) => l.is_visible && l.is_base).map((l) => l.id);
+    const urlPrefix = this.mapId !== "primary" ? `/atlas/maps/${this.mapId}/` : "/atlas/";
+    const visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
+
+    this.staticIframeSrc = `${encodeURI(window.location.origin)}${urlPrefix}@${encodeURIComponent(
+      this.position.center[0],
+    )},${encodeURIComponent(this.position.center[1])},${encodeURIComponent(
+      Math.round(this.position.zoom * 100) / 100,
+    )}z/layers=${visibleLayers.map((l) => encodeURIComponent(l.id)).join(",")}/base=${
+      baseLayer.length > 0 ? baseLayer[0] : ""
+    }/is_embed=true`;
+
+    window.addEventListener("message", this.handleIframeMessage);
+  },
+  unmounted() {
+    window.removeEventListener("message", this.handleIframeMessage);
+  },
   methods: {
+    handleIframeMessage(event) {
+      // Verify the message is from our iframe
+      if (event.origin !== window.location.origin) {
+        return;
+      }
+
+      if (event.data.type === "map-state-update") {
+        if (event.data.position) {
+          this.currentPosition = event.data.position;
+        }
+        if (event.data.layers) {
+          this.currentLayers = event.data.layers;
+        }
+      }
+    },
     closeModal() {
       this.$emit("close-modal");
     },

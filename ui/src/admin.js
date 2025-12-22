@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const settings = getSettingsFromPath(data.config);
 
   const initialState = {
-    isEmbed: data.is_embed,
+    isEmbed: settings.is_embed,
     config: data.config,
     position: settings.position,
     layers: data.layers,

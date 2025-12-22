@@ -253,6 +253,10 @@ export default {
     showSimpleLayerList: Boolean,
     showCompareSlider: Boolean,
     isEmbed: Boolean,
+    layerPanelCollapsed: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -326,7 +330,7 @@ export default {
   },
   created() {
     this.mapStore = useMapStore(this.mapId);
-    this.panel = this.mapStore.visibleLayers.length > 0 ? "activeLayers" : "layers";
+    this.panel = this.layerPanelCollapsed ? null : this.mapStore.visibleLayers.length > 0 ? "activeLayers" : "layers";
   },
   mounted() {
     // Initialize layersOpen with the first layer open
