@@ -17,8 +17,7 @@ const childRef: Ref<null | {
 const sources: Ref<Array<object>> = ref([]);
 
 const getTables = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  // todo: niet vergeten url aan ta passen
-  const url = new URL("/atlas/api/v1/tables-v2/", window.location.origin);
+  const url = new URL("/atlas/api/v1/tables/", window.location.origin);
 
   if (params) {
     url.search = params.toString();
@@ -61,8 +60,7 @@ const saveTable = async (
   continueEditing = false,
   sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
 ) => {
-  // todo: niet vergeten url aan ta passen
-  const url = "/atlas/api/v1/tables-v2/";
+  const url = "/atlas/api/v1/tables/";
 
   currentValues.method = "GET";
   currentValues.endpoint = "/";
@@ -153,6 +151,6 @@ onMounted(() => {
     :save-create-object-dialog-data="saveTable"
     :get-objects="getTables"
     :table-headers="tableHeaders"
-    :view-base-url="'/tables'"
+    :view-base-url="'/tables_old'"
   />
 </template>

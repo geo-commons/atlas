@@ -45,8 +45,8 @@ import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import { ConfirmationService, ToastService } from "primevue";
-import LinkedDataList from "@/admin/pages/LinkedDataList.vue";
-import LinkedDataCreateUpdate from "@/admin/pages/LinkedDataCreateUpdate.vue";
+import TableOldCreateUpdate from "@/admin/pages/TableOldCreateUpdate.vue";
+import TableOldList from "@/admin/pages/TableOldList.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -148,6 +148,16 @@ const routes = [
     meta: { title: "Tabel bewerken", menu: true, breadcrumb: { tables: { title: "Tabellen" } } },
   },
   {
+    path: "/tables_old",
+    component: TableOldList,
+    meta: { title: "Tabellen (oud)", menu: true },
+  },
+  {
+    path: "/tables_old/update/:id",
+    component: TableOldCreateUpdate,
+    meta: { title: "Tabel (oud) bewerken", menu: true, breadcrumb: { tables: { title: "Tabellen" } } },
+  },
+  {
     path: "/users",
     component: UserList,
     meta: { title: "Gebruikers", menu: true },
@@ -221,20 +231,6 @@ const routes = [
     path: "/general-information",
     component: AdminGeneralInformationPage,
     meta: { title: "Algemene informatie", menu: true },
-  },
-  {
-    path: "/linked-data",
-    component: LinkedDataList,
-    meta: { title: "Gerelateerde data", menu: true },
-  },
-  {
-    path: "/linked-data/update/:id",
-    component: LinkedDataCreateUpdate,
-    meta: {
-      title: "Gerelateerde data bewerken",
-      menu: true,
-      breadcrumb: { "linked-data": { title: "Gerelateerde data" } },
-    },
   },
   {
     path: "/:parentRoute/sort",
