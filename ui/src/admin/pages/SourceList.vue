@@ -73,7 +73,7 @@ const getCreateSourceSections = () => {
           label: "URL",
           id: "url",
           name: "Url",
-          type: "url",
+          type: "text",
           required: true,
         },
       ],

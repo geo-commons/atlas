@@ -2,7 +2,7 @@
   <div v-if="loading">laden...</div>
   <vee-form
     v-else
-    v-slot="{ values, setFieldValue }"
+    v-slot="{ values }"
     ref="formRef"
     :initial-values="initialValues"
     @submit="onSubmit"
@@ -36,9 +36,10 @@
                             are decomposed in the OpenLayers.vue component -->
               <slot v-if="question.type === 'custom'" name="custom"></slot>
               <div v-else-if="question.type === 'checkbox'">
-                <div v-if="question.showIf !== undefined ? question.showIf : true" class="checkbox-wrapper">
+                <div v-if="question.showIf !== undefined ? question.showIf : true" class="tw-flex tw-flex-row tw-gap-2">
                   <vee-field
                     :id="question.id"
+                    v-slot="{ value, handleChange, handleBlur }"
                     :name="question.id"
                     type="checkbox"
                     as="input"
@@ -46,15 +47,24 @@
                     :unchecked-value="false"
                     :disabled="question.disabled"
                     :rules="getRules(question)"
-                  />
-                  <span class="label-info-text-wrapper">
-                    <label :for="question.id">{{ question.label }}</label>
-                    <VisibilityIndicator :visibility="question.visibility" />
-                    <AdminFormInfoText
-                      v-if="question.infoText && question.infoText !== ''"
-                      :info-text="question.infoText"
+                  >
+                    <Checkbox
+                      :model-value="value"
+                      :disabled="question.disabled"
+                      :input-id="question.id"
+                      binary
+                      @update:modelValue="handleChange"
+                      @blur="handleBlur"
                     />
-                  </span>
+                    <span class="label-info-text-wrapper">
+                      <label :for="question.id">{{ question.label }}</label>
+                      <VisibilityIndicator :visibility="question.visibility" />
+                      <AdminFormInfoText
+                        v-if="question.infoText && question.infoText !== ''"
+                        :info-text="question.infoText"
+                      />
+                    </span>
+                  </vee-field>
                   <span class="warning-text"><vee-error-message :name="question.id" /></span>
                 </div>
               </div>
@@ -155,53 +165,48 @@
                 <div v-if="question.type === 'dropdown'" class="dropdown-wrapper">
                   <vee-field
                     :id="question.id"
+                    v-slot="{ value, handleChange, handleBlur }"
                     :name="question.id"
                     :rules="getRules(question)"
-                    as="select"
-                    class="__admin config-select-wrapper"
                     :disabled="question.disabled"
                   >
-                    <option disabled value="-1">Selecteer een {{ question.placeholder }}</option>
-                    <option v-for="option in question.options" :key="option.id" :value="option.id">
-                      {{ option.label }}
-                    </option>
+                    <Select
+                      :model-value="value"
+                      :options="question.options"
+                      option-label="label"
+                      option-value="id"
+                      :disabled="question.disabled"
+                      :placeholder="`Selecteer een ${question.placeholder}`"
+                      filter
+                      :filter-placeholder="`Zoek een ${question.placeholder}`"
+                      fluid
+                      show-clear
+                      @update:model-value="handleChange"
+                      @blur="handleBlur"
+                    />
                   </vee-field>
-                  <button
-                    v-if="values[question.id]"
-                    type="button"
-                    class="iconbutton __small __round __transparent-bg"
-                    @click="setFieldValue(question.id, '')"
-                  >
-                    <close-icon class="icon __small"></close-icon>
-                  </button>
                 </div>
-                <vee-field
-                  v-else-if="question.type === 'url'"
-                  :id="question.id"
-                  :name="question.id"
-                  :disabled="question.disabled"
-                  :rules="getRules(question)"
-                  type="text"
-                />
-                <vee-field
-                  v-else-if="question.type === 'number'"
-                  :id="question.id"
-                  :rules="getRules(question)"
-                  :name="question.id"
-                  type="number"
-                  as="input"
-                  :disabled="question.disabled"
-                />
                 <vee-field
                   v-else-if="question.type === 'decimal'"
                   :id="question.id"
+                  v-slot="{ value, handleChange, handleBlur }"
                   :name="question.id"
                   :rules="getRules(question)"
-                  type="number"
-                  as="input"
                   :disabled="question.disabled"
                   :step="question.step"
-                />
+                >
+                  <InputNumber
+                    :model-value="value"
+                    :input-id="question.id"
+                    mode="decimal"
+                    show-buttons
+                    :step="question.step"
+                    min="0"
+                    fluid
+                    @blur="handleBlur"
+                    @update:modelValue="handleChange"
+                  />
+                </vee-field>
                 <label v-else-if="question.type === 'label'">
                   {{ values[question.id] ? values[question.id] : "-" }}
                 </label>
@@ -211,13 +216,20 @@
                 <vee-field
                   v-else-if="question.type === 'text' && question.multiLine"
                   :id="question.id"
+                  v-slot="{ value, handleChange, handleBlur }"
                   :name="question.id"
-                  as="textarea"
                   :rules="getRules(question)"
-                  :rows="question.rows ? question.rows : 5"
                   :disabled="question.disabled"
-                  class="width"
-                />
+                >
+                  <Textarea
+                    :disabled="question.disabled"
+                    :model-value="value"
+                    :rows="question.rows ? question.rows : 5"
+                    fluid
+                    @update:modelValue="handleChange"
+                    @blur="handleBlur"
+                  />
+                </vee-field>
                 <vee-field
                   v-else-if="question.type === 'json'"
                   v-slot="{ value, handleChange, handleBlur }"
@@ -252,6 +264,7 @@
                     class="!tw-mb-2"
                     placeholder="Laagnaam"
                     type="text"
+                    fluid
                     @update:model-value="(updatedValue) => selectedLayerChanged(handleChange, updatedValue)"
                   />
                   <span>Of selecteer een laagnaam</span>
@@ -282,12 +295,23 @@
                 <vee-field
                   v-else-if="question.type === 'date'"
                   :id="question.id"
+                  v-slot="{ value, handleChange, handleBlur }"
                   :name="question.id"
                   :disabled="question.disabled"
                   :rules="getRules(question)"
-                  type="date"
-                  as="input"
-                />
+                >
+                  <DatePicker
+                    fluid
+                    date-format="yy-mm-dd"
+                    :pt="{
+                      panel: '!tw-min-w-8',
+                    }"
+                    :model-value="value ? new Date(value) : null"
+                    @blur="handleBlur"
+                    @update:modelValue="handleChange"
+                  />
+                </vee-field>
+
                 <vee-field
                   v-else-if="question.type === 'color'"
                   :id="question.id"
@@ -317,30 +341,6 @@
                     @blur="handleBlur"
                   />
                 </vee-field>
-                <div v-else-if="question.type === 'radio'" class="tw-flex tw-flex-col tw-gap-2">
-                  <div
-                    v-for="option in question.options"
-                    :key="option.id"
-                    class="tw-flex tw-items-start tw-gap-2 tw-cursor-pointer tw-py-1"
-                  >
-                    <vee-field
-                      :id="option.id"
-                      :name="question.id"
-                      type="radio"
-                      as="input"
-                      :value="option.id"
-                      :disabled="question.disabled"
-                      :rules="getRules(question)"
-                      class="tw-mt-[6px]"
-                    />
-                    <label :for="option.id" class="tw-flex-1 tw-leading-relaxed tw-font-normal tw-cursor-pointer">
-                      {{ option.label }}
-                    </label>
-                  </div>
-                  <span class="warning-text">
-                    <vee-error-message :name="question.id" />
-                  </span>
-                </div>
                 <vee-field
                   v-else
                   :id="question.id"
@@ -355,6 +355,7 @@
                     :model-value="value"
                     class="!tw-mb-2"
                     type="text"
+                    fluid
                     :disabled="question.disabled"
                     @update:model-value="handleChange"
                     @blur="handleBlur"
@@ -374,35 +375,36 @@
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button
+      <Button
         v-if="!disableCreateAndUpdate"
-        class="button"
-        :class="createView ? '__secondary_admin' : '__tertiary'"
+        text
+        severity="secondary"
+        class="!tw-text-sm !tw-font-semibold"
         type="button"
         @click="cancel()"
       >
         Annuleren
-      </button>
-      <button
+      </Button>
+      <Button
         v-if="!disableCreateAndUpdate"
-        class="button __secondary_admin"
+        outlined
+        class="!tw-text-sm !tw-font-semibold !tw-bg-white hover:!tw-bg-transparent"
         type="submit"
         @click="setContinueEditing(true)"
       >
         Opslaan
-      </button>
-      <button
+      </Button>
+      <Button
         v-if="!disableCreateAndUpdate && !createView"
-        class="button"
-        :class="createView ? '__secondary_admin' : '__primary_admin'"
+        class="!tw-text-sm !tw-font-semibold"
         type="submit"
         @click="setContinueEditing(false)"
       >
         Opslaan en sluiten
-      </button>
-      <button v-if="createView" class="button __primary_admin" type="submit" @click="continueEditing = true">
+      </Button>
+      <Button v-if="createView" class="!tw-text-sm !tw-font-medium" type="submit" @click="continueEditing = true">
         Opslaan en openen
-      </button>
+      </Button>
     </div>
   </vee-form>
 </template>
@@ -412,7 +414,6 @@ import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import LayerField from "@/admin/components/LayerField.vue";
 import MetadatasetsField from "@/admin/components/MetadatasetsField.vue";
 import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
-import CloseIcon from "@/assets/icons/close-icon.svg";
 import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
 import { useGlobalStore } from "@/stores";
 import { formatDateValue } from "@/utils/date-formatter";
@@ -431,7 +432,6 @@ export default {
     ArrowDownTrayIcon,
     LayerField,
     MetadatasetsField,
-    CloseIcon,
     CodeMirror,
     AdminFormInfoText,
     VeeForm,
@@ -763,11 +763,6 @@ h3 {
   white-space: nowrap;
   flex-shrink: 0;
   width: auto;
-}
-
-.checkbox-wrapper {
-  display: flex;
-  flex-direction: row;
 }
 
 .dropdown-wrapper {
