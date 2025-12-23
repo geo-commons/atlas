@@ -1,9 +1,15 @@
 <template>
   <div class="tw-p-2">
-    <button class="back-button" @click="back">
-      <ArrowLeftIcon class="icon __smedium" />
-      <span class="back-button-text">Terug naar overzicht</span>
-    </button>
+    <div class="tw-flex tw-flex-row tw-gap-2">
+      <button class="back-button" @click="back">
+        <ArrowLeftIcon class="icon __smedium" />
+        <span class="back-button-text">Vorige</span>
+      </button>
+      <button class="back-button" @click="closeRelatedTableDetails">
+        <ArrowLeftIcon class="icon __smedium" />
+        <span class="back-button-text">Naar overzicht</span>
+      </button>
+    </div>
 
     <h3>{{ relatedTable?.title }}</h3>
     <!--    <h3>Gezocht op: [{{ property }}] met waarde: [{{ value }}]</h3>-->
@@ -59,6 +65,7 @@ const { selectedRelatedTableAttributes } = defineProps<{
 
 const emit = defineEmits<{
   (e: "back"): void;
+  (e: "close-related-table-details"): void;
   (e: "select-related-table-object", type: { relatedTable: IRelatedTable; item: any }): void;
 }>();
 
@@ -69,6 +76,10 @@ const feature = ref<Record<string, string> | null>(null);
 
 const back = () => {
   emit("back");
+};
+
+const closeRelatedTableDetails = () => {
+  emit("close-related-table-details");
 };
 
 const onSelectRelatedTableObject = (attr: any) => {

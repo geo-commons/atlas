@@ -70,8 +70,9 @@
         <RelatedTableDetails
           v-if="selectedRelatedTableAttributes"
           :selected-related-table-attributes="selectedRelatedTableAttributes"
-          @back="closeSelectedRelatedTable"
+          @back="back"
           @select-related-table-object="onSelectRelatedTableObject"
+          @close-related-table-details="closeRelatedTableDetails"
         />
         <FeatureInfo
           v-for="visibleLayer in visibleLayers"
@@ -132,6 +133,7 @@ export default {
       selectedRelatedTableAttributes: null,
       copyButtonText: "Kopieer coördinaten",
       mapStore: null,
+      history: [],
     };
   },
   computed: {
@@ -196,13 +198,34 @@ export default {
       this.selectedFeatureDetails = selectedFeature;
     },
     onSelectRelatedTableObject(attributes) {
-      this.selectedRelatedTableAttributes = attributes;
+      if (attributes) {
+        this.history.push(attributes);
+        this.selectedRelatedTableAttributes = attributes;
+      }
     },
     closeFeatureInfoDetails() {
       this.selectedFeatureDetails = null;
     },
-    closeSelectedRelatedTable() {
+    closeRelatedTableDetails() {
       this.selectedRelatedTableAttributes = null;
+      this.history = [];
+    },
+    back() {
+      let lastHistoryItem = null;
+
+      while (this.history.length > 0) {
+        lastHistoryItem = this.history.pop();
+
+        // stop and move to lastHistoryItem when it is a different object than the current active selectedRelatedTableAttributes
+        if (lastHistoryItem !== this.selectedRelatedTableAttributes) {
+          this.selectedRelatedTableAttributes = lastHistoryItem;
+          return;
+        }
+      }
+
+      // if no history item was found, reset the history and selected related table attributes
+      this.selectedRelatedTableAttributes = null;
+      this.history = [];
     },
     copyCoordinates() {
       navigator.clipboard
