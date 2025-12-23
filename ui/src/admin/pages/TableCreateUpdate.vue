@@ -55,11 +55,8 @@ async function getTable() {
 
   initialValues.value = data;
   initialValues.value.source_id = data.source?.id;
-  initialValues.value.fields = JSON.stringify(data.fields, null, 2);
   initialValues.value.list_cql_filters = JSON.stringify(data.list_cql_filters, null, 2);
   initialValues.value.detail_cql_filters = JSON.stringify(data.detail_cql_filters, null, 2);
-  initialValues.value.list_display_properties = JSON.stringify(data.list_display_properties, null, 2);
-  initialValues.value.detail_display_properties = JSON.stringify(data.detail_display_properties, null, 2);
 
   const source = data.source;
 
@@ -95,11 +92,8 @@ async function saveTable(currentValues, continueEditing = false) {
   const url = `/atlas/api/v1/tables-v2/${route.params.id}/`;
 
   try {
-    currentValues.fields = this.validateAndParseJsonString(currentValues.fields);
     currentValues.list_cql_filters = this.validateAndParseJsonString(currentValues.list_cql_filters);
     currentValues.detail_cql_filters = this.validateAndParseJsonString(currentValues.detail_cql_filters);
-    currentValues.list_display_properties = this.validateAndParseJsonString(currentValues.list_display_properties);
-    currentValues.detail_display_properties = this.validateAndParseJsonString(currentValues.detail_display_properties);
 
     const result = await formSections.value.sendSaveRequest(url, "PATCH", currentValues);
 
@@ -179,33 +173,34 @@ function getSections() {
         },
       ],
     },
-    // todo: toevoegen zodra component beschikbaar is
-    // table: {
-    //   label: "Tabel Instellingen",
-    //   questions: [
-    //     {
-    //       label: "Beschikbare velden",
-    //       id: "fields",
-    //       name: "Fields",
-    //       type: "text",
-    //       required: false,
-    //     },
-    //     {
-    //       label: "Toon deze velden in de lijstweergave",
-    //       id: "list_display_properties",
-    //       name: "listDisplayProperties",
-    //       type: "text",
-    //       required: false,
-    //     },
-    //     {
-    //       label: "Toon deze velden in de detailweergave",
-    //       id: "detail_display_properties",
-    //       name: "listDisplayProperties",
-    //       type: "text",
-    //       required: false,
-    //     },
-    //   ],
-    // },
+    table: {
+      label: "Tabel Instellingen",
+      questions: [
+        {
+          label: "Beschikbare velden",
+          id: "fields",
+          name: "Fields",
+          type: "array",
+          required: false,
+        },
+        {
+          label: "Toon deze velden in de lijstweergave",
+          id: "list_display_properties",
+          name: "listDisplayProperties",
+          type: "array",
+          required: false,
+          suggestionsFrom: "fields",
+        },
+        {
+          label: "Toon deze velden in de detailweergave",
+          id: "detail_display_properties",
+          name: "listDisplayProperties",
+          type: "array",
+          required: false,
+          suggestionsFrom: "fields",
+        },
+      ],
+    },
     rest: {
       label: "Rest Specifieke Instellingen",
       questions: [

@@ -297,6 +297,26 @@
                   type="color"
                   as="input"
                 />
+                <vee-field
+                  v-else-if="question.type === 'array'"
+                  :id="question.id"
+                  v-slot="{ value, handleChange, handleBlur }"
+                  :name="question.id"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                >
+                  <AutoComplete
+                    :model-value="value"
+                    :input-id="question.id"
+                    :suggestions="question.suggestionsFrom ? autoCompleteSuggestions[question.id] || [] : []"
+                    multiple
+                    fluid
+                    :typeahead="!!question.suggestionsFrom"
+                    @complete="(e) => onAutoComplete(e, question, values)"
+                    @update:modelValue="handleChange"
+                    @blur="handleBlur"
+                  />
+                </vee-field>
                 <div v-else-if="question.type === 'radio'" class="tw-flex tw-flex-col tw-gap-2">
                   <div
                     v-for="option in question.options"
@@ -453,6 +473,8 @@ export default {
       imageFieldValues: {},
       loading: false,
       clouds: clouds,
+      // autoCompleteSuggestions e.g.: { [questionId]: [] }
+      autoCompleteSuggestions: {},
     };
   },
   computed: {
@@ -641,6 +663,24 @@ export default {
       handleChange(name);
 
       formRef?.setFieldValue("legend_url", legends?.[0] || "");
+    },
+    onAutoComplete({ query }, question, values) {
+      const fieldId = question.id;
+
+      if (!this.autoCompleteSuggestions[fieldId]) {
+        this.autoCompleteSuggestions[fieldId] = [];
+      }
+
+      const suggestions = values[question.suggestionsFrom];
+
+      if (!Array.isArray(suggestions)) {
+        this.autoCompleteSuggestions[fieldId] = [];
+        return;
+      }
+
+      const q = (query || "").toLowerCase();
+
+      this.autoCompleteSuggestions[fieldId] = suggestions.filter((item) => String(item).toLowerCase().includes(q));
     },
   },
 };
