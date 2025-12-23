@@ -85,7 +85,7 @@ const saveMetadataset = async (currentValues: Partial<IMetadataset>, continueEdi
 
   const payload: Partial<IMetadataset> = {
     ...currentValues,
-    last_updated: currentValues.last_updated || null,
+    last_updated: formatDateForInput(currentValues.last_updated) || null,
   };
 
   try {
@@ -291,6 +291,7 @@ const getSections = (): AdminFormConfig => {
           options: roleTypeOptions,
           required: false,
           visibility: "Publiek",
+          placeholder: "rol",
           infoText: "De rol van de verantwoordelijke over de bron.",
         },
       ],
@@ -368,6 +369,7 @@ const getSections = (): AdminFormConfig => {
           required: false,
           visibility: "Publiek",
           options: accessConstraintsTypeOptions,
+          placeholder: "toegangsrestrictie",
           infoText: "Juridische toegangsrestricties die van toepassing zijn op de dataset.",
         },
         {
@@ -377,6 +379,7 @@ const getSections = (): AdminFormConfig => {
           type: "dropdown",
           required: false,
           visibility: "Publiek",
+          placeholder: "beperking",
           options: otherConstraintsTypeOptions,
           infoText:
             "Selecteer een optie wanneer je bij juridische toegangsrestricties 'Overige beperkingen' hebt gekozen.",
@@ -433,6 +436,7 @@ const getSections = (): AdminFormConfig => {
           options: roleTypeOptions,
           required: false,
           visibility: "Publiek",
+          placeholder: "rol",
           infoText: "De rol van de verantwoordelijke over de metadata.",
         },
       ],

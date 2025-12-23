@@ -102,11 +102,11 @@ select.__admin {
   flex-direction: column;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="date"],
-input[type="url"] {
+.map-update input[type="text"],
+.map-update input[type="number"],
+.map-update input[type="email"],
+.map-update input[type="date"],
+.map-update input[type="url"] {
   width: 100%;
   border: 1px solid var(--color-grey-60);
   border-radius: var(--radius-normal);
@@ -114,12 +114,12 @@ input[type="url"] {
   height: 40px;
 }
 
-input[type="checkbox"] {
+.map-update input[type="checkbox"] {
   padding: 0 16px;
   margin-right: 5px;
 }
 
-input:disabled {
+.map-update input:disabled {
   background: var(--color-grey-40);
 }
 
