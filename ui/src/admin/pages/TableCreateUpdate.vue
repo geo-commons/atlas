@@ -92,8 +92,8 @@ async function saveTable(currentValues, continueEditing = false) {
   const url = `/atlas/api/v1/tables-v2/${route.params.id}/`;
 
   try {
-    currentValues.list_cql_filters = this.validateAndParseJsonString(currentValues.list_cql_filters);
-    currentValues.detail_cql_filters = this.validateAndParseJsonString(currentValues.detail_cql_filters);
+    currentValues.list_cql_filters = validateAndParseJsonString(currentValues.list_cql_filters);
+    currentValues.detail_cql_filters = validateAndParseJsonString(currentValues.detail_cql_filters);
 
     const result = await formSections.value.sendSaveRequest(url, "PATCH", currentValues);
 

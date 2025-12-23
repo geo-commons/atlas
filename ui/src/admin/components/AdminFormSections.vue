@@ -339,6 +339,7 @@
                     @complete="(e) => onAutoComplete(e, question, values)"
                     @update:modelValue="handleChange"
                     @blur="handleBlur"
+                    @keydown.enter.prevent
                   />
                 </vee-field>
                 <vee-field
