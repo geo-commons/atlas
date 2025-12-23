@@ -117,7 +117,7 @@ export default {
               label: "URL",
               id: "url",
               name: "URL",
-              type: "url",
+              type: "text",
               required: true,
             },
             {

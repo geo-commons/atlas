@@ -79,27 +79,7 @@
                   @change="(e) => changeLayerOpacity(e.target.value / 100)"
                 />
               </vee-field>
-              <vee-field
-                id="opacity"
-                name="opacity"
-                class="opacity-input"
-                :value="mapLayerConfig.settings.opacity * 100"
-                type="number"
-                aria-label="Transparantie instellen"
-              >
-                <input
-                  id="opacity"
-                  class="opacity-input"
-                  type="number"
-                  name="opacity"
-                  aria-label="Transparantie instellen"
-                  min="0"
-                  max="100"
-                  step="10"
-                  :value="mapLayerConfig.settings.opacity * 100"
-                  @change="(e) => changeLayerOpacity(e.target.value / 100)"
-                />
-              </vee-field>
+              <span class="tw-text-sm tw-font-semibold">{{ mapLayerConfig.settings.opacity * 100 }}</span>
             </div>
           </div>
           <div v-if="!isBaseLayer" class="layer-settings extra-padding-top">
