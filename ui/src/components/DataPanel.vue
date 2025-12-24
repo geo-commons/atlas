@@ -42,8 +42,8 @@
         :position="position"
         :selected-area="selectedArea"
         :user="user"
-        @set-position="(position) => setPosition(position)"
-        @on-fit="(position) => onFit(position)"
+        @set-position="setPosition"
+        @on-fit="onFit"
         @show-layers="() => resetSelectedLayer()"
       />
       <div v-else>
@@ -140,8 +140,8 @@ export default {
     toggleDataPanel() {
       this.$emit("toggle-data-panel");
     },
-    setPosition(value) {
-      this.$emit("set-position", value);
+    setPosition(position, animateFast, animate) {
+      this.$emit("set-position", position, animateFast, animate);
     },
     onFit(value) {
       this.$emit("on-fit", value);

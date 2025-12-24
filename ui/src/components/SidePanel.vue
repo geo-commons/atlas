@@ -4,7 +4,7 @@
       v-if="showPanel"
       class="wrapper"
       :class="{ large, medium, fullScreen }"
-      :style="{ width: fullScreen ? '100%' : large ? '50%' : panelWidth + 'px' }"
+      :style="{ width: fullScreen ? '100%' : large && !resizable ? '50%' : panelWidth }"
     >
       <div class="wrapper-content tw-max-h-full">
         <template v-if="$slots.header">
@@ -90,19 +90,17 @@ export default {
       fullScreen: false,
       large: false,
       medium: false,
-      panelWidth: 400,
+      panelWidth: "400px",
       isResizing: false,
     };
-  },
-  watch: {
-    initialSizeLarge(value) {
-      this.large = value;
-      this.fullScreen = false;
-    },
   },
   created() {
     this.large = this.initialSizeLarge;
     this.medium = this.initialSizeMedium;
+
+    if (this.initialSizeLarge && this.resizable) {
+      this.panelWidth = "50%";
+    }
   },
   methods: {
     toggleSidePanel() {
@@ -126,7 +124,7 @@ export default {
       if (!this.isResizing) return;
       const newWidth = e.clientX;
       if (newWidth > window.innerWidth * 0.25 && newWidth < window.innerWidth * 0.9) {
-        this.panelWidth = newWidth;
+        this.panelWidth = newWidth + "px";
       }
     },
     stopResize() {
@@ -137,7 +135,7 @@ export default {
     },
     toggleFullScreen() {
       this.fullScreen = !this.fullScreen;
-      if (this.fullScreen) this.panelWidth = window.innerWidth;
+      if (this.fullScreen) this.panelWidth = window.innerWidth + "px";
       this.$emit("toggle-full-side-panel");
     },
   },

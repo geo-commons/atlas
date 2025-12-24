@@ -80,8 +80,8 @@
       :map-id="mapId"
       :selected-area="selectedArea"
       :user="user"
-      @set-position="(value) => onSetPosition(value)"
-      @on-fit="(value) => onFit(value)"
+      @set-position="onSetPosition"
+      @on-fit="onFit"
     />
   </div>
 </template>
@@ -128,8 +128,8 @@ export default {
     this.$refs.queryInput.value = value;
   },
   methods: {
-    onSetPosition(value) {
-      this.$emit("set-position", value);
+    onSetPosition(position, animateFast, animate) {
+      this.$emit("set-position", position, animateFast, animate);
     },
     onFit(value) {
       this.$emit("on-fit", value);

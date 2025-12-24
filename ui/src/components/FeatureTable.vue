@@ -589,11 +589,16 @@ export default {
       const geometry = new GeoJSON().readFeature(feature).getGeometry();
       const center = getFeatureCenterCoordinates(feature);
 
-      this.$emit("set-position", {
-        ...this.position,
-        marker: center,
-        zoom: 19,
-      });
+      this.$emit(
+        "set-position",
+        {
+          ...this.position,
+          marker: center,
+          zoom: 19,
+        },
+        false,
+        false,
+      );
 
       this.$emit("on-fit", geometry.getExtent());
     },

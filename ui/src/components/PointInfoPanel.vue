@@ -171,14 +171,18 @@ export default {
       const geometryExtend = geometry.getExtent();
       const center = getFeatureCenterCoordinates(feature);
 
-      this.$emit("on-fit", geometryExtend);
+      this.$emit(
+        "set-position",
+        {
+          ...this.position,
+          marker: center,
+          zoom: 19,
+        },
+        false,
+        false,
+      );
 
-      this.$emit("set-position", {
-        ...this.position,
-        marker: center,
-        center: center,
-        zoom: 19,
-      });
+      this.$emit("on-fit", geometryExtend);
     },
     onFit(value) {
       this.$emit("on-fit", value);
