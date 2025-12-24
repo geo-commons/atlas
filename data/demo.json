@@ -20579,7 +20579,12 @@
       "source_type": "REST",
       "fields": ["id", "city"],
       "list_endpoint": "api/cities?city={{city}}",
-      "detail_endpoint": "api/cities/{{id}}",
+      "detail_endpoint": "api/cities?id={{id}}",
+      "list_property": "results",
+      "detail_property": "results[0]",
+      "page_param": null,
+      "items_per_page_param": null,
+      "total_items_page_property": null,
       "layer_name": null,
       "list_cql_filters": null,
       "detail_cql_filters": null,
@@ -20596,8 +20601,13 @@
       "source": 19,
       "source_type": "REST",
       "fields": ["id", "city", "district"],
-      "list_endpoint": "raw/districts?city={{city}}",
-      "detail_endpoint": "raw/districts/{{id}}",
+      "list_endpoint": "api/districts?city={{city}}",
+      "detail_endpoint": "api/districts/{{id}}",
+      "list_property": "results",
+      "detail_property": null,
+      "page_param": "_page",
+      "items_per_page_param": "_limit",
+      "total_items_page_property": "total",
       "layer_name": null,
       "list_cql_filters": null,
       "detail_cql_filters": null,
@@ -20616,6 +20626,11 @@
       "fields": ["id", "city", "district", "street"],
       "list_endpoint": "nested/streets?city={{city}}&district={{district}}",
       "detail_endpoint": "nested/streets/{{id}}",
+      "list_property": "results.data[0]",
+      "detail_property": null,
+      "page_param": null,
+      "items_per_page_param": null,
+      "total_items_page_property": null,
       "layer_name": null,
       "list_cql_filters": null,
       "detail_cql_filters": null,
@@ -20634,6 +20649,11 @@
       "fields": ["id", "city", "district", "street", "firstName", "lastName"],
       "list_endpoint": "api/inhabitants?city={{city}}&district={{district}}&street={{street}}",
       "detail_endpoint": "api/inhabitants/{{id}}",
+      "list_property": "results",
+      "detail_property": null,
+      "page_param": null,
+      "items_per_page_param": null,
+      "total_items_page_property": null,
       "layer_name": null,
       "list_cql_filters": null,
       "detail_cql_filters": null,
@@ -20651,7 +20671,7 @@
     "model": "tables_v2.tabletemp",
     "pk": 5,
     "fields": {
-      "title": "Adressen",
+      "title": "Adressen - OWS",
       "slug": "adressen",
       "source": 1,
       "source_type": "OWS",
@@ -20668,6 +20688,11 @@
       ],
       "list_endpoint": null,
       "detail_endpoint": null,
+      "list_property": null,
+      "detail_property": null,
+      "page_param": null,
+      "items_per_page_param": null,
+      "total_items_page_property": null,
       "layer_name": "topp:bag_adressen",
       "list_cql_filters": [
         {
@@ -20709,18 +20734,17 @@
       "fields": ["subbuurt", "buurt", "wijk"],
       "list_endpoint": null,
       "detail_endpoint": null,
+      "list_property": null,
+      "detail_property": null,
+      "page_param": null,
+      "items_per_page_param": null,
+      "total_items_page_property": null,
       "layer_name": "topp:grenzen_subbuurten",
       "list_cql_filters": [
-        {
-          "key": "wijk",
-          "cql_filter": "wijk in ('{{wijk}}')"
-        }
+        { "key": "wijk", "cql_filter": "wijk in ('{{wijk}}')" }
       ],
       "detail_cql_filters": [
-        {
-          "key": "subbuurt",
-          "cql_filter": "subbuurt in ('{{subbuurt}}')"
-        }
+        { "key": "subbuurt", "cql_filter": "subbuurt in ('{{subbuurt}}')" }
       ],
       "list_display_properties": ["wijk", "buurt", "subbuurt"],
       "detail_display_properties": []
@@ -20730,13 +20754,18 @@
     "model": "tables_v2.tabletemp",
     "pk": 7,
     "fields": {
-      "title": "Adressen",
+      "title": "Adressen - REST",
       "slug": "adressen_rest",
       "source": 19,
       "source_type": "REST",
       "fields": ["id", "city", "district", "street", "houseNumber"],
-      "list_endpoint": "nested/addresses?city={{city}}&district={{district}}&street={{street}}",
-      "detail_endpoint": "nested/addresses/{{id}}",
+      "list_endpoint": "raw/addresses?city={{city}}&district={{district}}&street={{street}}",
+      "detail_endpoint": "raw/addresses/{{id}}",
+      "list_property": null,
+      "detail_property": null,
+      "page_param": null,
+      "items_per_page_param": null,
+      "total_items_page_property": null,
       "layer_name": null,
       "list_cql_filters": null,
       "detail_cql_filters": null,
@@ -20753,8 +20782,13 @@
       "source": 19,
       "source_type": "REST",
       "fields": ["rsin", "city", "district", "street", "houseNumber"],
-      "list_endpoint": "api/companies/?city={{city}}&district={{district}}&street={{street}}?houseNumber={{houseNumber}}",
+      "list_endpoint": "api/companies/?city={{city}}&district={{district}}&street={{street}}&houseNumber={{houseNumber}}",
       "detail_endpoint": "api/companies/{{rsin}}",
+      "list_property": "results",
+      "detail_property": null,
+      "page_param": null,
+      "items_per_page_param": null,
+      "total_items_page_property": null,
       "layer_name": null,
       "list_cql_filters": null,
       "detail_cql_filters": null,
@@ -20768,9 +20802,7 @@
     "fields": {
       "from_table": 1,
       "to_table": 2,
-      "field_mapping": {
-        "city": "city"
-      }
+      "field_mapping": { "city": "city" }
     }
   },
   {
@@ -20779,10 +20811,7 @@
     "fields": {
       "from_table": 2,
       "to_table": 3,
-      "field_mapping": {
-        "city": "city",
-        "district": "district"
-      }
+      "field_mapping": { "city": "city", "district": "district" }
     }
   },
   {
@@ -20804,9 +20833,7 @@
     "fields": {
       "from_table": 5,
       "to_table": 6,
-      "field_mapping": {
-        "wijknaam": "wijk"
-      }
+      "field_mapping": { "wijknaam": "wijk" }
     }
   },
   {
@@ -20815,10 +20842,7 @@
     "fields": {
       "from_table": 3,
       "to_table": 2,
-      "field_mapping": {
-        "city": "city",
-        "district": "district"
-      }
+      "field_mapping": { "city": "city", "district": "district" }
     }
   },
   {
@@ -20827,9 +20851,7 @@
     "fields": {
       "from_table": 2,
       "to_table": 1,
-      "field_mapping": {
-        "city": "city"
-      }
+      "field_mapping": { "city": "city" }
     }
   },
   {
@@ -20863,21 +20885,7 @@
     "model": "tables_v2.tabletotable",
     "pk": 9,
     "fields": {
-      "from_table": 4,
-      "to_table": 7,
-      "field_mapping": {
-        "city": "city",
-        "street": "street",
-        "district": "district",
-        "houseNumber": "houseNumber"
-      }
-    }
-  },
-  {
-    "model": "tables_v2.tabletotable",
-    "pk": 9,
-    "fields": {
-      "from_table": 5,
+      "from_table": 7,
       "to_table": 8,
       "field_mapping": {
         "city": "city",
@@ -20893,9 +20901,7 @@
     "fields": {
       "from_layer": 252,
       "to_table": 1,
-      "field_mapping": {
-        "naam": "city"
-      }
+      "field_mapping": { "naam": "city" }
     }
   },
   {
@@ -20904,9 +20910,7 @@
     "fields": {
       "from_layer": 10,
       "to_table": 5,
-      "field_mapping": {
-        "ligplaatsnummer": "ligplaatsnummer"
-      }
+      "field_mapping": { "ligplaatsnummer": "ligplaatsnummer" }
     }
   },
   {

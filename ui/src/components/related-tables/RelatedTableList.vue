@@ -5,7 +5,7 @@
         <!--        <span v-if="error">{{ error }}</span>-->
         <!--        <span v-if="loading">Bezig met laden...</span>-->
         <!--        <span v-if="!loading && !error && displayProperties.length === 0">Geen weergave beschikbaar.</span>-->
-        <div v-if="!loading">
+        <div v-if="!loading && relatedTableData.length > 0">
           <div class="table-wrapper">
             <table class="related-table">
               <thead>
@@ -46,6 +46,9 @@
             :rows-per-page-options="[10, 20, 30, 50, 100]"
             @page="updatePageState"
           ></Paginator>
+        </div>
+        <div v-else>
+          <p class="tw-mt-2 tw-mb-0">Geen resultaten gevonden</p>
         </div>
       </div>
     </template>
