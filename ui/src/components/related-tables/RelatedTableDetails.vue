@@ -26,6 +26,7 @@
         <table>
           <tbody>
             <tr v-for="(value, key) in relatedTableData" :key="key">
+              <!-- TODO: show (nested) objects correctly, for example look to "Bedrijven" table -->
               <td>
                 {{ formatRawString(key) }}
               </td>
