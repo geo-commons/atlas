@@ -216,6 +216,10 @@ export default {
         this.removeFilter(removedFilter);
       });
     },
+    isDownloadPending(isPending) {
+      // Emit event to parent when download state changes
+      this.$emit("download-pending", isPending);
+    },
   },
   async created() {
     this.store = useMapStore(this.mapId);

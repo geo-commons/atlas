@@ -3,6 +3,7 @@
     <div class="header">
       <div>
         <tippy
+          ref="downloadMenu"
           :arrow="false"
           placement="bottom-start"
           theme="popover"
@@ -15,11 +16,12 @@
           <button
             v-if="layer.is_exportable"
             v-tippy="{ placement: 'right' }"
+            :disabled="isDownloadPending"
             class="iconbutton __normal __outline"
             content="Download"
             aria-label="Download"
           >
-            <DownloadIcon v-if="!$refs?.featureTable?.isDownloadPending" />
+            <DownloadIcon v-if="!isDownloadPending" />
             <ProgressSpinner
               v-else
               stroke-width="4"
@@ -31,22 +33,32 @@
             <div class="menu">
               <ul class="list">
                 <li>
-                  <button @click="$refs.featureTable.downloadCSV()">Download CSV</button>
+                  <button :disabled="isDownloadPending" @click="$refs.featureTable.downloadCSV()">Download CSV</button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('ESRI Shapefile')">Download ESRI Shape</button>
+                  <button :disabled="isDownloadPending" @click="$refs.featureTable.download('ESRI Shapefile')">
+                    Download ESRI Shape
+                  </button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('GeoJSON')">Download GeoJSON</button>
+                  <button :disabled="isDownloadPending" @click="$refs.featureTable.download('GeoJSON')">
+                    Download GeoJSON
+                  </button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('GPKG')">Download GeoPackage</button>
+                  <button :disabled="isDownloadPending" @click="$refs.featureTable.download('GPKG')">
+                    Download GeoPackage
+                  </button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('GML')">Download GML</button>
+                  <button :disabled="isDownloadPending" @click="$refs.featureTable.download('GML')">
+                    Download GML
+                  </button>
                 </li>
                 <li>
-                  <button @click="$refs.featureTable.download('SQLite')">Download SQLite</button>
+                  <button :disabled="isDownloadPending" @click="$refs.featureTable.download('SQLite')">
+                    Download SQLite
+                  </button>
                 </li>
               </ul>
             </div>
@@ -82,6 +94,7 @@
       :user="user"
       @set-position="onSetPosition"
       @on-fit="onFit"
+      @download-pending="onDownloadPending"
     />
   </div>
 </template>
@@ -116,6 +129,7 @@ export default {
       numberMatched: 0,
       sortKey: "",
       sortAscending: true,
+      isDownloadPending: false,
     };
   },
   created() {
@@ -128,6 +142,13 @@ export default {
     this.$refs.queryInput.value = value;
   },
   methods: {
+    onDownloadPending(isPending) {
+      this.isDownloadPending = isPending;
+      if (isPending) {
+        // Close the menu when download starts
+        this.$refs.downloadMenu?.hide?.();
+      }
+    },
     onSetPosition(position, animateFast, animate) {
       this.$emit("set-position", position, animateFast, animate);
     },
