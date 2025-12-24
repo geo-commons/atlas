@@ -180,7 +180,7 @@ const getOwsData = async (table: IRelatedTable) => {
       relatedTableData.value = properties;
       if (relatedTableData.value.length > 0) {
         // retrieve one item to determine table headers,
-        // todo: in the end also check if display_properties is set
+        // TODO: in the end also check if display_properties is set
         const firstItem = relatedTableData.value[0];
         tableHeaders.value = Object.keys(firstItem);
       }

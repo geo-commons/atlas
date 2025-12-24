@@ -87,8 +87,6 @@ const onSelectRelatedTableObject = (attr: any) => {
   emit("select-related-table-object", attr);
 };
 
-// todo: detail toch in eerste instantie via id ophalen
-// later gaan we hier de aanname maken dat wanneer pathToObject leeg is --> id endpoint en anders pad gebruiken
 const getRestData = async (table: IRelatedTable, item: any) => {
   const fullUrl = `${table.source.url}${table.detail_endpoint}`;
   const renderedUrl = nunjucks.renderString(fullUrl, item);
@@ -97,6 +95,7 @@ const getRestData = async (table: IRelatedTable, item: any) => {
     const response = await fetch(renderedUrl);
 
     if (!response.ok) {
+      // TODO: introduce proper error handling
       console.error(`HTTP error! status: ${response.status}`);
       return [];
     }
@@ -104,6 +103,7 @@ const getRestData = async (table: IRelatedTable, item: any) => {
     const data = await response.json();
     return table.detail_property ? fetchDot(table.detail_property, data) : data;
   } catch (error) {
+    // TODO: introduce proper error handling
     console.error("Error fetching data:", error);
     return [];
   }
@@ -185,7 +185,7 @@ const handleSelectedRelatedTableAttributes = async () => {
   await getRelatedTable(selectedRelatedTableAttributes.relatedTableId);
 
   if (!relatedTable.value) {
-    // todo: netter vermelden wat er fout gaat
+    // TODO: introduce proper error handling
     console.error("Related table not found");
     return;
   }
@@ -210,7 +210,7 @@ watch(
 );
 </script>
 
-<!--todo: styling nalopen of verplaatsen, misschien tailwind? -->
+<!--TODO: styling nalopen of verplaatsen, misschien tailwind? -->
 <style scoped>
 .back-button {
   display: flex;
