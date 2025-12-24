@@ -508,24 +508,6 @@ export default {
 </script>
 
 <style scoped>
-.feature {
-  margin: 0 8px;
-}
-
-.feature :deep(.expand-wrapper) {
-  border-radius: var(--radius-normal);
-  overflow: hidden;
-  height: 40px;
-}
-
-.feature :deep(.expand-button) {
-  align-items: center;
-}
-
-.feature :deep(.name) {
-  font-weight: var(--font-weight-bold);
-}
-
 .linked-data {
   padding: 0 8px 0 20px;
 }

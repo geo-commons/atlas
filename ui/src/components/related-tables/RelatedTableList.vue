@@ -1,5 +1,5 @@
 <template>
-  <ExpandButton :title="relatedTable.title" :is-open="true" @show-content="onShowContentChange">
+  <ExpandButton :title="relatedTable.title" :is-open="true" class="feature" @show-content="onShowContentChange">
     <template #default>
       <div>
         <!--        <span v-if="error">{{ error }}</span>-->

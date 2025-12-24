@@ -1,42 +1,44 @@
 <template>
   <div class="tw-p-2">
-    <div class="tw-flex tw-flex-row tw-gap-2">
+    <div class="tw-flex tw-flex-row tw-gap-2 tw-ml-2">
       <button class="back-button" @click="back">
         <ArrowLeftIcon class="icon __smedium" />
         <span class="back-button-text">Vorige</span>
       </button>
       <button class="back-button" @click="closeRelatedTableDetails">
         <ArrowLeftIcon class="icon __smedium" />
-        <span class="back-button-text">Naar overzicht</span>
+        <span class="back-button-text">Naar begin</span>
       </button>
     </div>
 
-    <h3>{{ relatedTable?.title }}</h3>
-    <!--    <h3>Gezocht op: [{{ property }}] met waarde: [{{ value }}]</h3>-->
+    <div class="tw-px-2">
+      <p class="tw-font-bold tw-mb-2">{{ relatedTable?.title }}</p>
+      <!--    <h3>Gezocht op: [{{ property }}] met waarde: [{{ value }}]</h3>-->
 
-    <!--    <div v-if="loading" class="loading">Loading linked data...</div>-->
+      <!--    <div v-if="loading" class="loading">Loading linked data...</div>-->
 
-    <!--    <div v-else-if="error" class="error">-->
-    <!--      {{ error }}-->
-    <!--    </div>-->
+      <!--    <div v-else-if="error" class="error">-->
+      <!--      {{ error }}-->
+      <!--    </div>-->
 
-    <!--    <div v-else-if="linkedDataItems.length === 0" class="no-results">No linked data found</div>-->
-    <table-list>
-      <table>
-        <tbody>
-          <tr v-for="(value, key) in relatedTableData" :key="key">
-            <td>
-              {{ formatRawString(key) }}
-            </td>
-            <td>
-              <RichValue :data-key="key" :data-value="value" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </table-list>
+      <!--    <div v-else-if="linkedDataItems.length === 0" class="no-results">No linked data found</div>-->
+      <table-list>
+        <table>
+          <tbody>
+            <tr v-for="(value, key) in relatedTableData" :key="key">
+              <td>
+                {{ formatRawString(key) }}
+              </td>
+              <td>
+                <RichValue :data-key="key" :data-value="value" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </table-list>
+    </div>
 
-    <div v-if="feature !== null && relatedTables.length > 0" class="tw-pt-4">
+    <div v-if="feature !== null && relatedTables.length > 0" class="">
       <div v-for="(table, key) in relatedTables" :key="key" class="tw-pt-4">
         <RelatedTableList
           :table-feature="feature"
