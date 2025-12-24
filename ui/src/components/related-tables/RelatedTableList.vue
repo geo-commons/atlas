@@ -41,7 +41,7 @@
             }"
             :current-page-report-template="'({currentPage} van {totalPages})'"
             :rows="pageState.rows"
-            :total-records="numberMatched"
+            :total-records="totalItems"
             :first="pageState.page * pageState.rows - 1 + pageState.rows"
             :rows-per-page-options="[10, 20, 30, 50, 100]"
             @page="updatePageState"
@@ -58,6 +58,7 @@ import ExpandButton from "@/components/ExpandButton.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
+import fetchDot from "fetch-dot";
 
 const { layerFeature, tableFeature, fieldMapping, relatedTable } = defineProps<{
   layerFeature?: Record<string, string>;
@@ -78,16 +79,20 @@ const pageState = ref({
   page: 0,
   first: 10,
   rows: 10,
-  pageCount: 4,
 });
-const numberMatched = ref<number>(0);
+const totalItems = ref<number>(0);
 
 const onShowContentChange = (isOpen: boolean) => {
   // Emit event or handle content visibility change
 };
 
 const showPaginator = computed(() => {
-  return numberMatched.value !== null && numberMatched.value > pageState.value.rows;
+  // Don't show paginator if pagination is not enabled
+  if (!relatedTable.page_param || !relatedTable.items_per_page_param || !relatedTable.total_items_page_property) {
+    return false;
+  }
+
+  return totalItems.value !== null && totalItems.value > pageState.value.rows;
 });
 
 const tableHeaders = computed(() => {
@@ -102,25 +107,31 @@ const tableHeaders = computed(() => {
 const getRestData = async (table: IRelatedTable) => {
   const fullUrl = `${table.source.url}${table.list_endpoint}`;
   const renderedUrl = nunjucks.renderString(fullUrl, fieldMappingValues.value);
-  // Add pagination parameters for JSON Server
   const url = new URL(renderedUrl);
-  // todo: configureerbaar maken in admin om welke params het gaat
-  // todo: wat als een api geen paginatie heeft
-  url.searchParams.set("_page", (pageState.value.page + 1).toString()); // JSON Server uses 1-based indexing
-  url.searchParams.set("_limit", pageState.value.rows.toString());
+
+  // If pagination is enabled, add pagination parameters to the request URL
+  if (table.page_param && table.items_per_page_param && table.total_items_page_property) {
+    url.searchParams.set(table.page_param, (pageState.value.page + 1).toString());
+    url.searchParams.set(table.items_per_page_param, pageState.value.rows.toString());
+  }
 
   try {
     const response = await fetch(url.toString());
 
     if (!response.ok) {
+      // TODO: introduce proper error handling
       console.error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    // todo: results moet hier misschien nog vervangen worden door het juiste key word dat gebruikt gaat worden als 'response key'
+    relatedTableData.value = table.list_property ? fetchDot(table.list_property, data) : data;
 
-    relatedTableData.value = data.results;
-    numberMatched.value = data.total;
+    // If pagination is enabled set total items
+    if (table.total_items_page_property) {
+      totalItems.value = fetchDot(table.total_items_page_property, data);
+    }
+
+    totalItems.value = data.total;
     loading.value = false;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -164,7 +175,7 @@ const getOwsData = async (table: IRelatedTable) => {
 
       const data = await result.json();
       const properties = data.features.map((feature: any) => feature.properties);
-      numberMatched.value = data.numberMatched;
+      totalItems.value = data.numberMatched;
 
       relatedTableData.value = properties;
       if (relatedTableData.value.length > 0) {

@@ -58,6 +58,7 @@ import TableList from "@/components/TableList.vue";
 import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
+import fetchDot from "fetch-dot";
 
 const { selectedRelatedTableAttributes } = defineProps<{
   selectedRelatedTableAttributes: { relatedTableId: number; item: any };
@@ -88,15 +89,9 @@ const onSelectRelatedTableObject = (attr: any) => {
 
 // todo: detail toch in eerste instantie via id ophalen
 // later gaan we hier de aanname maken dat wanneer pathToObject leeg is --> id endpoint en anders pad gebruiken
-const getRestData = async (table: IRelatedTable, item: any, fetchById = true) => {
+const getRestData = async (table: IRelatedTable, item: any) => {
   const fullUrl = `${table.source.url}${table.detail_endpoint}`;
-
-  let renderedUrl = fullUrl;
-  if (!fetchById) {
-    renderedUrl = nunjucks.renderString(fullUrl, item);
-  } else {
-    renderedUrl = nunjucks.renderString(fullUrl, { id: table.id });
-  }
+  const renderedUrl = nunjucks.renderString(fullUrl, item);
 
   try {
     const response = await fetch(renderedUrl);
@@ -107,8 +102,7 @@ const getRestData = async (table: IRelatedTable, item: any, fetchById = true) =>
     }
 
     const data = await response.json();
-    // todo: results moet hier misschien nog vervangen worden door het juiste key word dat gebruikt gaat worden als 'response key'
-    return data;
+    return table.detail_property ? fetchDot(table.detail_property, data) : data;
   } catch (error) {
     console.error("Error fetching data:", error);
     return [];

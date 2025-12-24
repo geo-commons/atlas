@@ -30,8 +30,8 @@ router.render = (req, res) => {
     res.json({
       results: data,
       total: totalCount ? Number(totalCount) : data.length,
-      page: page,
-      page_size: pageSize,
+      _page: page,
+      _limit: pageSize,
     });
   } else if (
     shouldReturnRawResponse &&

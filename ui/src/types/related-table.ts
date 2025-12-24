@@ -20,6 +20,11 @@ export interface IRelatedTable {
   fields: string[];
   list_endpoint: string;
   detail_endpoint: string;
+  list_property: string | null;
+  detail_property: string | null;
+  page_param: string | null;
+  items_per_page_param: string | null;
+  total_items_page_property: string | null;
   layer_name: string;
   list_cql_filters: ICqlFilterEntry[];
   detail_cql_filters: ICqlFilterEntry[];

@@ -21,6 +21,16 @@ class TableTemp(models.Model):
                                      blank=True, )  # /zoeken/&straatnaam={{straatNaam}}&postCode={{postCode}}+{{variable}}
     detail_endpoint = models.CharField('Detail endpoint', max_length=1024, null=True,
                                        blank=True, )  # /zoeken/?id={{id}}
+    list_property = models.CharField('Veldnaam van lijst',
+                                  max_length=255, blank=True, null=True)
+    detail_property = models.CharField('Veldnaam van detailweergave',
+                                       max_length=255, blank=True, null=True)
+    page_param = models.CharField('URL parameter voor pagina',
+                                      max_length=255, blank=True, null=True)
+    items_per_page_param = models.CharField('URL parameter voor items per pagina',
+                                                max_length=255, blank=True, null=True)
+    total_items_page_property = models.CharField('Veldnaam van totaal aantal items',
+                                                  max_length=255, blank=True, null=True)
 
     # ows tables
     layer_name = models.CharField(
@@ -67,6 +77,11 @@ class TableTemp(models.Model):
             'fields': self.fields,
             'list_endpoint': self.list_endpoint,
             'detail_endpoint': self.detail_endpoint,
+            'list_property': self.list_property,
+            'detail_property': self.detail_property,
+            'page_param': self.page_param,
+            'items_per_page_param': self.items_per_page_param,
+            'total_items_page_property': self.total_items_page_property,
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
@@ -95,6 +110,11 @@ class TableTemp(models.Model):
             'fields': self.fields,
             'list_endpoint': self.list_endpoint,
             'detail_endpoint': self.detail_endpoint,
+            'list_property': self.list_property,
+            'detail_property': self.detail_property,
+            'page_param': self.page_param,
+            'items_per_page_param': self.items_per_page_param,
+            'total_items_page_property': self.total_items_page_property,
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
