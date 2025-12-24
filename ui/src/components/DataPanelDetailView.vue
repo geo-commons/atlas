@@ -55,11 +55,12 @@
                     Download GML
                   </button>
                 </li>
-                <li>
+                <!-- TODO: Add download for SQLite, currently not supported by GeoServer -->
+                <!-- <li>
                   <button :disabled="isDownloadPending" @click="$refs.featureTable.download('SQLite')">
                     Download SQLite
                   </button>
-                </li>
+                </li> -->
               </ul>
             </div>
           </template>

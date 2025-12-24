@@ -103,7 +103,6 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
 import TableList from "./TableList.vue";
 import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
@@ -511,22 +510,6 @@ export default {
       a.remove();
       URL.revokeObjectURL(objectUrl);
     },
-    async fetchFeaturesForDownload() {
-      const url = this.buildWFSDownloadUrl("application/json");
-      if (!url) {
-        // Geometry too complex - return empty array
-        return [];
-      }
-
-      try {
-        const fetchParams = getFetchParameters(this.layer, this.user);
-        const result = await fetch(url, fetchParams);
-        return await result.json();
-      } catch (e) {
-        console.error("Er is iets fout gegaan bij het ophalen van de data voor de download", e);
-        return [];
-      }
-    },
     async downloadCSV() {
       if (!this.layer.is_exportable) {
         this.showDownloadError("Deze kaartlaag is niet exporteerbaar.");
@@ -576,7 +559,6 @@ export default {
         GeoPackage: ".gpkg",
         GPKG: ".gpkg",
         GML: ".gml",
-        SQLite: ".sqlite3",
       };
 
       if (formats[outputFormat] === undefined) {
@@ -585,98 +567,31 @@ export default {
         return;
       }
 
-      const filename = this.layer.title
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/gi, "")
-        .toLowerCase();
-
       const wfsFormat = WFS_FORMAT_MAP[outputFormat];
-
-      // Use direct WFS download for formats that GeoServer supports natively
-      // Never fall back to conversion endpoint for these formats
-      if (wfsFormat) {
-        try {
-          const url = this.buildWFSDownloadUrl(wfsFormat);
-          if (!url) {
-            throw new Error(
-              "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.",
-            );
-          }
-
-          await this.downloadBlobFromUrl(url, `${filename}${formats[outputFormat]}`);
-        } catch (e) {
-          console.error("Direct WFS download failed", e);
-          this.showDownloadError(e.message || "Er is iets fout gegaan bij het downloaden. Probeer het opnieuw.");
-        } finally {
-          this.isDownloadPending = false;
-        }
+      if (!wfsFormat) {
+        this.showDownloadError("Onbekend downloadformaat.");
+        this.isDownloadPending = false;
         return;
       }
 
-      // Use conversion endpoint only for SQLite (not supported by WFS)
-      if (outputFormat === "SQLite") {
-        try {
-          // Check for complex geometry first
-          if (!this.buildWFSDownloadUrl("application/json")) {
-            this.isDownloadPending = false;
-            this.showDownloadError(
-              "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.",
-            );
-            return;
-          }
-
-          // Fetch features for conversion
-          const fetchDownloadData = await this.fetchFeaturesForDownload();
-
-          // Check if data is empty or invalid
-          if (
-            !fetchDownloadData ||
-            (Array.isArray(fetchDownloadData) && fetchDownloadData.length === 0) ||
-            (!Array.isArray(fetchDownloadData) &&
-              (!fetchDownloadData.features || fetchDownloadData.features.length === 0))
-          ) {
-            this.isDownloadPending = false;
-            this.showDownloadError("Geen data beschikbaar voor download.");
-            return;
-          }
-
-          // POST to conversion endpoint
-          const result = await fetch(`/atlas/convert/${outputFormat}`, {
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": Cookies.get("csrftoken"),
-            },
-            body: JSON.stringify({
-              outputFormat,
-              featureCollection: fetchDownloadData,
-              filename: filename,
-            }),
-          });
-
-          if (!result.ok) {
-            const response = await result.json().catch(() => ({ error: "Unknown error" }));
-            throw new Error(response.error || "Er is iets fout gegaan bij het downloaden.");
-          }
-
-          const blob = await result.blob();
-          const objectUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = objectUrl;
-          a.download = `${filename}${formats[outputFormat]}`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(objectUrl);
-        } catch (e) {
-          console.error("Er is iets fout gegaan bij het downloaden", e);
-          this.showDownloadError(e.message || "Er is iets fout gegaan bij het downloaden. Probeer het opnieuw.");
-        } finally {
-          this.isDownloadPending = false;
+      try {
+        const url = this.buildWFSDownloadUrl(wfsFormat);
+        if (!url) {
+          throw new Error(
+            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.",
+          );
         }
-      } else {
-        this.showDownloadError("Onbekend downloadformaat.");
+
+        const filename = this.layer.title
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/gi, "")
+          .toLowerCase();
+
+        await this.downloadBlobFromUrl(url, `${filename}${formats[outputFormat]}`);
+      } catch (e) {
+        console.error("Er is iets fout gegaan bij het downloaden", e);
+        this.showDownloadError(e.message || "Er is iets fout gegaan bij het downloaden. Probeer het opnieuw.");
+      } finally {
         this.isDownloadPending = false;
       }
     },
