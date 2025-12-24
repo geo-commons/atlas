@@ -119,6 +119,17 @@ import { useMapStore } from "@/stores/map_store";
 import { WKT } from "ol/format";
 import { useToast } from "primevue";
 
+// WFS outputFormat mapping per GeoServer documentation
+// See: https://docs.geoserver.org/stable/en/user/services/wfs/outputformats.html
+const WFS_FORMAT_MAP = {
+  csv: "csv",
+  "ESRI Shapefile": "shape-zip",
+  GeoJSON: "application/json",
+  GeoPackage: "geopkg",
+  GPKG: "geopkg", // Alias for GeoPackage
+  GML: "GML3",
+};
+
 export default {
   name: "FeatureTable",
   components: {
@@ -394,15 +405,13 @@ export default {
         console.error(e);
       }
     },
-    async fetchFeaturesForDownload() {
-      this.error = false;
-
+    buildWFSDownloadUrl(outputFormat) {
       const params = new URLSearchParams([
         ["service", "WFS"],
         ["version", "1.0.0"],
         ["request", "GetFeature"],
         ["typename", this.layer.name],
-        ["outputFormat", "application/json"],
+        ["outputFormat", outputFormat],
       ]);
 
       const filters = [];
@@ -417,8 +426,22 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          if (this.fieldFilters[key].length) {
-            filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+          const values = this.fieldFilters[key];
+          if (values.length > 0) {
+            const filterOnEmptyValues = values.includes("Leeg");
+            const nonEmptyValues = values.filter((f) => f !== "Leeg");
+            let valueFilters = [];
+
+            if (nonEmptyValues.length > 0) {
+              valueFilters.push(`${key} in (${nonEmptyValues.map((f) => this.replaceQuotes(f)).join(",")})`);
+            }
+            if (filterOnEmptyValues) {
+              valueFilters.push(`(${key} IS NULL or ${key} = '')`);
+            }
+
+            if (valueFilters.length > 0) {
+              filters.push(`(${valueFilters.join(" OR ")})`);
+            }
           }
         });
       }
@@ -432,11 +455,8 @@ export default {
         if (encodedLength <= 32000) {
           filters.push(fullFilter);
         } else {
-          this.error = true;
-          this.errorMessage =
-            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.";
-          this.loading = false;
-          return;
+          // Geometry too complex - return null, callers handle UI state
+          return null;
         }
       }
 
@@ -454,129 +474,207 @@ export default {
         params.set("sortBy", sortString);
       }
 
+      const url = new URL(this.layer.url);
+      url.search = params.toString();
+
+      return url.toString();
+    },
+    showDownloadError(detail) {
+      this.toast.add({
+        severity: "error",
+        summary: "Downloaden mislukt",
+        detail: detail,
+        life: 5000,
+      });
+    },
+    // Helper function to download a blob from a URL
+    async downloadBlobFromUrl(url, downloadFilename) {
+      const fetchParams = getFetchParameters(this.layer, this.user);
+      const res = await fetch(url, fetchParams);
+      if (!res.ok) {
+        if (res.status === 413) {
+          throw new Error("De export is te groot. Selecteer een kleiner gebied.");
+        }
+        throw new Error(`Download failed: ${res.status}`);
+      }
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = downloadFilename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(objectUrl);
+    },
+    async fetchFeaturesForDownload() {
+      const url = this.buildWFSDownloadUrl("application/json");
+      if (!url) {
+        // Geometry too complex - return empty array
+        return [];
+      }
+
       try {
-        const url = new URL(this.layer.url);
-        url.search = params.toString();
-
         const fetchParams = getFetchParameters(this.layer, this.user);
-
-        const result = await fetch(url.toString(), fetchParams);
-
+        const result = await fetch(url, fetchParams);
         return await result.json();
       } catch (e) {
         console.error("Er is iets fout gegaan bij het ophalen van de data voor de download", e);
+        return [];
       }
-
-      this.loading = false;
-      return [];
     },
     async downloadCSV() {
       if (!this.layer.is_exportable) {
-        this.toast.add({
-          severity: "error",
-          summary: "Downloaden mislukt",
-          detail: "Deze kaartlaag is niet exporteerbaar.",
-          life: 5000,
-        });
+        this.showDownloadError("Deze kaartlaag is niet exporteerbaar.");
         return;
       }
 
       this.isDownloadPending = true;
 
-      const separator = ";";
-      const filename = this.layer.title
-        .replace(" ", "-")
-        .replace(/[^a-z0-9-]/gi, "")
-        .toLowerCase();
+      try {
+        const filename = this.layer.title
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/gi, "")
+          .toLowerCase();
 
-      const fetchDownloadData = await this.fetchFeaturesForDownload();
+        const url = this.buildWFSDownloadUrl(WFS_FORMAT_MAP.csv);
+        if (!url) {
+          throw new Error(
+            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.",
+          );
+        }
 
-      let data = this.displayProperties.map((property) => `"${property.replace(/"/g, '""')}"`).join(separator) + "\n";
+        const urlObj = new URL(url);
+        urlObj.searchParams.set("format_options", "csvseparator:semicolon");
 
-      fetchDownloadData.features.forEach((feature) => {
-        data +=
-          this.displayProperties
-            .map((property) =>
-              feature.properties[property] !== null
-                ? `"${String(feature.properties[property]).replace(/"/g, '""')}"`
-                : "",
-            )
-            .join(separator) + "\n";
-      });
-
-      const hiddenElement = document.createElement("a");
-      hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
-      hiddenElement.target = "_blank";
-      hiddenElement.download = `${filename}.csv`;
-      hiddenElement.click();
-
-      this.isDownloadPending = false;
+        await this.downloadBlobFromUrl(urlObj.toString(), `${filename}.csv`);
+      } catch (e) {
+        console.error("Er is iets fout gegaan bij het downloaden van de CSV", e);
+        this.showDownloadError(
+          e.message || "Er is iets fout gegaan bij het downloaden van de CSV. Probeer het opnieuw.",
+        );
+      } finally {
+        this.isDownloadPending = false;
+      }
     },
     async download(outputFormat) {
       if (!this.layer.is_exportable) {
-        this.toast.add({
-          severity: "error",
-          summary: "Downloaden mislukt",
-          detail: "Deze kaartlaag is niet exporteerbaar.",
-          life: 5000,
-        });
+        this.showDownloadError("Deze kaartlaag is niet exporteerbaar.");
         return;
       }
 
       this.isDownloadPending = true;
-
-      const fetchDownloadData = await this.fetchFeaturesForDownload();
-
-      const result = await fetch(`/atlas/convert/${outputFormat}`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify({
-          outputFormat,
-          featureCollection: fetchDownloadData,
-        }),
-      });
-
-      if (!result.ok) {
-        const response = await result.json();
-
-        this.toast.add({
-          severity: "error",
-          summary: "Downloaden mislukt",
-          detail: response.error,
-          life: 5000,
-        });
-
-        this.isDownloadPending = false;
-        return;
-      }
+      this.error = false;
 
       const formats = {
         "ESRI Shapefile": ".shp.zip",
         GeoJSON: ".geojson",
+        GeoPackage: ".gpkg",
         GPKG: ".gpkg",
         GML: ".gml",
         SQLite: ".sqlite3",
       };
 
+      if (formats[outputFormat] === undefined) {
+        this.showDownloadError("Onbekend downloadformaat.");
+        this.isDownloadPending = false;
+        return;
+      }
+
       const filename = this.layer.title
-        .replace(" ", "-")
+        .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/gi, "")
         .toLowerCase();
 
-      const data = await result.blob();
-      const url = window.URL.createObjectURL(data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${filename}${formats[outputFormat]}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      const wfsFormat = WFS_FORMAT_MAP[outputFormat];
 
-      this.isDownloadPending = false;
+      // Use direct WFS download for formats that GeoServer supports natively
+      // Never fall back to conversion endpoint for these formats
+      if (wfsFormat) {
+        try {
+          const url = this.buildWFSDownloadUrl(wfsFormat);
+          if (!url) {
+            throw new Error(
+              "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.",
+            );
+          }
+
+          await this.downloadBlobFromUrl(url, `${filename}${formats[outputFormat]}`);
+        } catch (e) {
+          console.error("Direct WFS download failed", e);
+          this.showDownloadError(e.message || "Er is iets fout gegaan bij het downloaden. Probeer het opnieuw.");
+        } finally {
+          this.isDownloadPending = false;
+        }
+        return;
+      }
+
+      // Use conversion endpoint only for SQLite (not supported by WFS)
+      if (outputFormat === "SQLite") {
+        try {
+          // Check for complex geometry first
+          if (!this.buildWFSDownloadUrl("application/json")) {
+            this.isDownloadPending = false;
+            this.showDownloadError(
+              "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.",
+            );
+            return;
+          }
+
+          // Fetch features for conversion
+          const fetchDownloadData = await this.fetchFeaturesForDownload();
+
+          // Check if data is empty or invalid
+          if (
+            !fetchDownloadData ||
+            (Array.isArray(fetchDownloadData) && fetchDownloadData.length === 0) ||
+            (!Array.isArray(fetchDownloadData) &&
+              (!fetchDownloadData.features || fetchDownloadData.features.length === 0))
+          ) {
+            this.isDownloadPending = false;
+            this.showDownloadError("Geen data beschikbaar voor download.");
+            return;
+          }
+
+          // POST to conversion endpoint
+          const result = await fetch(`/atlas/convert/${outputFormat}`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": Cookies.get("csrftoken"),
+            },
+            body: JSON.stringify({
+              outputFormat,
+              featureCollection: fetchDownloadData,
+              filename: filename,
+            }),
+          });
+
+          if (!result.ok) {
+            const response = await result.json().catch(() => ({ error: "Unknown error" }));
+            throw new Error(response.error || "Er is iets fout gegaan bij het downloaden.");
+          }
+
+          const blob = await result.blob();
+          const objectUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = objectUrl;
+          a.download = `${filename}${formats[outputFormat]}`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(objectUrl);
+        } catch (e) {
+          console.error("Er is iets fout gegaan bij het downloaden", e);
+          this.showDownloadError(e.message || "Er is iets fout gegaan bij het downloaden. Probeer het opnieuw.");
+        } finally {
+          this.isDownloadPending = false;
+        }
+      } else {
+        this.showDownloadError("Onbekend downloadformaat.");
+        this.isDownloadPending = false;
+      }
     },
     replaceQuotes(value) {
       if (typeof value === "string") {
