@@ -90,17 +90,6 @@
             </span>
             Viewers
           </router-link>
-          <router-link
-            to="/linked-data"
-            class="button __tertiary __large"
-            type="button"
-            aria-label="Naar gerelateerde data"
-          >
-            <span class="button-icon tw-bg-amber-100">
-              <ViewIcon class="icon tw-text-amber-800" />
-            </span>
-            Gerelateerde data
-          </router-link>
         </div>
       </div>
       <div>
