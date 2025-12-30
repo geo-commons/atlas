@@ -152,7 +152,7 @@
       :user="user"
       :map-id="mapId"
       :full-size-window="showDataPanelFullScreen"
-      set-position="setPosition"
+      @set-position="setPosition"
       @on-fit="onFit"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
@@ -759,10 +759,11 @@ export default {
     setViewportHeight() {
       this.computedStyle["--vh"] = this.$refs.mapContainer.clientHeight / 100 + "px";
     },
-    async setPosition(position, animateFast = false) {
+    async setPosition(position, animateFast = false, animate = true) {
       this.position = {
         ...position,
         animateFast: animateFast,
+        animate: animate,
       };
 
       if (!this.adminMap) {

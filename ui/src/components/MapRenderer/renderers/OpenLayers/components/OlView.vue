@@ -32,7 +32,7 @@ export default {
         view.setCenter(value.center);
       }
 
-      if (value.zoom !== oldValue.zoom) {
+      if (value.zoom !== oldValue.zoom && value.animate) {
         view.animate({
           zoom: value.zoom,
           duration: value.animateFast ? 300 : 1500,
