@@ -41,10 +41,6 @@
                     :id="question.id"
                     v-slot="{ value, handleChange, handleBlur }"
                     :name="question.id"
-                    type="checkbox"
-                    as="input"
-                    :value="true"
-                    :unchecked-value="false"
                     :disabled="question.disabled"
                     :rules="getRules(question)"
                   >
