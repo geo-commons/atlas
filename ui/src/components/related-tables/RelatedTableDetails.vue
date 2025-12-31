@@ -13,25 +13,15 @@
 
     <div class="tw-px-2">
       <p class="tw-font-bold tw-mb-2">{{ relatedTable?.title }}</p>
-      <!--    <h3>Gezocht op: [{{ property }}] met waarde: [{{ value }}]</h3>-->
-
-      <!--    <div v-if="loading" class="loading">Loading linked data...</div>-->
-
-      <!--    <div v-else-if="error" class="error">-->
-      <!--      {{ error }}-->
-      <!--    </div>-->
-
-      <!--    <div v-else-if="linkedDataItems.length === 0" class="no-results">No linked data found</div>-->
       <table-list>
         <table>
           <tbody>
-            <tr v-for="(value, key) in relatedTableData" :key="key">
-              <!-- TODO: show (nested) objects correctly, for example look to "Bedrijven" table -->
+            <tr v-for="(value, index) in tableItems" :key="index">
               <td>
-                {{ formatRawString(key) }}
+                {{ formatRawString(getResolvedKey(value) || "") }}
               </td>
               <td>
-                <RichValue :data-key="key" :data-value="value" />
+                <RichValue :data-key="getResolvedKey(value)" :data-value="fetchDot(value, relatedTableData)" />
               </td>
             </tr>
           </tbody>
@@ -53,12 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import nunjucks from "nunjucks";
 import TableList from "@/components/TableList.vue";
-import { formatRawString } from "@/utils/string-helpers";
+import { formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import fetchDot from "fetch-dot";
@@ -77,6 +67,15 @@ const relatedTableData = ref<Record<string, string>>({});
 const relatedTable = ref<IRelatedTable>();
 const relatedTables = ref<IRelatedTable[]>([]);
 const feature = ref<Record<string, string> | null>(null);
+
+const tableItems = computed(() => {
+  if (relatedTable.value?.detail_display_properties && relatedTable.value?.detail_display_properties.length > 0) {
+    return relatedTable.value.detail_display_properties;
+  }
+
+  const firstItem = relatedTableData.value;
+  return firstItem ? Object.keys(firstItem) : [];
+});
 
 const back = () => {
   emit("back");

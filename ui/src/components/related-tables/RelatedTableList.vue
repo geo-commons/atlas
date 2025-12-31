@@ -2,9 +2,6 @@
   <ExpandButton :title="relatedTable.title" :is-open="true" class="feature" @show-content="onShowContentChange">
     <template #default>
       <div>
-        <!--        <span v-if="error">{{ error }}</span>-->
-        <!--        <span v-if="loading">Bezig met laden...</span>-->
-        <!--        <span v-if="!loading && !error && displayProperties.length === 0">Geen weergave beschikbaar.</span>-->
         <div v-if="!loading && relatedTableData.length > 0">
           <div class="table-wrapper">
             <table class="related-table">
@@ -12,23 +9,24 @@
                 <tr>
                   <th></th>
                   <th v-for="(property, i) in tableHeaders" :key="i" class="related-header">
-                    {{ property }}
-                    <!--                    <StackSortableTableHeaderItem-->
-                    <!--                      :header-text="headerText(property)"-->
-                    <!--                      :property="displayProperties[i]"-->
-                    <!--                      :sort-stack="sortStack"-->
-                    <!--                      @sort="(column, ascending) => sortColumn(column, ascending)"-->
-                    <!--                    />-->
+                    {{ getResolvedKey(property) }}
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(item, i) in relatedTableData" :key="i">
                   <td>
-                    <button @click="onSelectRelatedData(item)">bekijk</button>
+                    <button
+                      v-tippy="{ placement: 'bottom' }"
+                      aria-label="Bekijk details"
+                      content="Bekijk"
+                      @click="onSelectRelatedData(item)"
+                    >
+                      <ArrowRightIcon class="icon __smedium" />
+                    </button>
                   </td>
                   <td v-for="(property, index) in tableHeaders" :key="index" class="related-cell">
-                    <RichValue :data-key="property" :data-value="item[property]" />
+                    <RichValue :data-key="property" :data-value="fetchDot(property, item)" />
                   </td>
                 </tr>
               </tbody>
@@ -62,6 +60,8 @@ import { computed, onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
+import ArrowRightIcon from "@/assets/icons/arrow-right-icon.svg";
+import { getResolvedKey } from "@/utils/string-helpers";
 
 const { layerFeature, tableFeature, fieldMapping, relatedTable } = defineProps<{
   layerFeature?: Record<string, string>;
@@ -273,8 +273,17 @@ const onSelectRelatedData = (item: any) => {
   border-bottom: 1px solid var(--color-grey-60);
 }
 
+.related-table tbody tr td:first-child {
+  width: 24px;
+  height: 16px;
+}
+
 .related-table tbody tr:hover {
   background-color: var(--color-grey-40);
+
+  button {
+    background-color: transparent;
+  }
 }
 
 .related-header {
@@ -283,5 +292,16 @@ const onSelectRelatedData = (item: any) => {
   padding: 8px 4px;
   border-bottom: 1px solid var(--color-grey-60);
   text-align: left;
+}
+
+.related-table button {
+  background-color: white;
+  width: 16px;
+  height: 16px;
+  margin-top: 6px;
+
+  &:hover {
+    background-color: transparent;
+  }
 }
 </style>

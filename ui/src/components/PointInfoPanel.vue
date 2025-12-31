@@ -152,11 +152,10 @@ export default {
   },
   watch: {
     searchQuery(newValue, oldValue) {
-      // todo: check if this is the best place to reset selected feature details
-      //       needs to be reset when user clicks on other point of map, checking position does not work well
-      // When user selects a different point on the map we need to reset the selected feature details.
-      if (newValue.title !== oldValue.title) {
+      // When user selects a different point on the map we need to reset the selected feature details and the related table details.
+      if (newValue.coordinates !== oldValue.coordinates) {
         this.selectedFeatureDetails = null;
+        this.closeRelatedTableDetails();
       }
     },
   },
