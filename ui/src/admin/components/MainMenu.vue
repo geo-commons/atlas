@@ -5,84 +5,13 @@
       Atlas beheer
     </router-link>
 
-    <Button
-      type="button"
-      :label="user?.name"
-      icon="pi pi-chevron-down"
-      icon-pos="right"
-      aria-haspopup="true"
-      aria-controls="overlay_menu"
-      variant="text"
-      severity="primary"
-      @click="toggle"
-    />
-    <Menu id="overlay_menu" ref="menu" :model="items" :popup="true">
-      <template #item="{ item, props }">
-        <a v-bind="props.action" :href="item.url" @click.prevent="handleMenuClick(item)">
-          <i :class="item.icon"></i>
-          <span class="ml-2">{{ item.label }}</span>
-        </a>
-      </template>
-    </Menu>
+    <UserMenu current-page="beheer" />
   </div>
 </template>
 
 <script setup lang="ts">
-import Cookies from "js-cookie";
-import { useGlobalStore } from "@/stores";
-import { storeToRefs } from "pinia";
-import { ref, Ref } from "vue";
 import MenuIcon from "../../assets/icons/menu-icon.svg";
-
-interface MenuItem {
-  label: string;
-  icon: string;
-  url: string;
-}
-
-interface User {
-  name: string;
-}
-
-interface MenuRef {
-  toggle: (event: Event) => void;
-}
-
-const menu = ref<MenuRef | null>(null);
-const items = ref<MenuItem[]>([
-  {
-    label: "Uitloggen",
-    icon: "pi pi-sign-out",
-    url: "/atlas/logout",
-  },
-]);
-
-const globalStore = useGlobalStore();
-const { user } = storeToRefs(globalStore) as { user: Ref<User | null> };
-
-const toggle = (event: Event): void => {
-  menu.value?.toggle(event);
-};
-
-const csrfToken = Cookies.get("csrftoken") || "";
-function handleMenuClick(item: MenuItem) {
-  if (item.url === "/atlas/logout") {
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = `/atlas/logout`;
-
-    const csrfInput = document.createElement("input");
-    csrfInput.type = "hidden";
-    csrfInput.name = "csrfmiddlewaretoken";
-    csrfInput.value = csrfToken;
-    form.appendChild(csrfInput);
-
-    document.body.appendChild(form);
-    form.submit();
-  } else {
-    window.location.href = item.url;
-  }
-}
+import UserMenu from "@/components/UserMenu.vue";
 </script>
 
 <style scoped>
@@ -104,14 +33,5 @@ function handleMenuClick(item: MenuItem) {
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-xl);
   text-decoration: none;
-}
-
-.header .p-button.p-button-text.p-button-primary {
-  background-color: transparent;
-  color: var(--color-white);
-}
-
-.header .p-button.p-button-text.p-button-primary:hover {
-  background-color: transparent;
 }
 </style>

@@ -78,8 +78,8 @@ export default {
 
           this.$toast.add({
             severity: "success",
-            summary: "Laag opgeslagen",
-            detail: "De laag is succesvol opgeslagen.",
+            summary: "Configuratie opgeslagen",
+            detail: "De configuratie is succesvol opgeslagen.",
             life: 3000,
           });
         }

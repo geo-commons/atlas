@@ -7,3 +7,4 @@ export * from "./AccessConstraintsType";
 export * from "./OtherConstraintsType";
 export * from "./AdminFormType";
 export * from "./APIResponseType";
+export * from "./ConfigType";

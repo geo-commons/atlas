@@ -13,41 +13,27 @@
       <span v-if="config.organization_name" class="organisation-name">Portaal {{ config.organization_name }}</span>
     </div>
 
-    <form v-if="user" :action="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`" method="POST" class="account">
-      <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken" />
-      <div class="account-name">{{ user.name }}</div>
-      <button
-        v-tippy="{ placement: 'bottom' }"
-        class="account-logout"
-        aria-label="Uitloggen"
-        content="Uitloggen"
-        type="submit"
-      >
-        <LogoutIcon class="icon __black" />
-      </button>
-    </form>
+    <div v-if="user" class="account">
+      <UserMenu current-page="portaal" />
+    </div>
 
     <a v-if="!user" :href="`/atlas/login?next=${encodeURIComponent(nextUrl)}`" class="account">Inloggen</a>
   </header>
 </template>
 
 <script>
-import Cookies from "js-cookie";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
-import LogoutIcon from "@/assets/icons/logout-icon.svg";
 import MenuIcon from "@/assets/icons/menu-icon.svg";
+import UserMenu from "@/components/UserMenu.vue";
 
 export default {
   name: "HeaderPortal",
-  components: { MenuIcon, LogoutIcon },
+  components: { MenuIcon, UserMenu },
   computed: {
     ...mapState(useGlobalStore, ["user", "config"]),
     nextUrl() {
       return window.location.pathname;
-    },
-    csrfToken() {
-      return Cookies.get("csrftoken") || "";
     },
   },
 };
@@ -110,15 +96,5 @@ header {
 .account {
   display: flex;
   align-items: center;
-}
-
-.account-name {
-  margin-right: 10px;
-  font-weight: var(--font-weight-bold);
-  text-transform: capitalize;
-}
-
-.account-logout {
-  height: 24px;
 }
 </style>
