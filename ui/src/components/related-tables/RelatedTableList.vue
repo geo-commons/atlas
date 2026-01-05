@@ -181,12 +181,6 @@ const getOwsData = async (table: IRelatedTable) => {
       totalItems.value = data.numberMatched;
 
       relatedTableData.value = properties;
-      if (relatedTableData.value.length > 0) {
-        // retrieve one item to determine table headers,
-        // TODO: in the end also check if display_properties is set
-        const firstItem = relatedTableData.value[0];
-        tableHeaders.value = Object.keys(firstItem);
-      }
     } catch (e) {
       console.error(e);
     }

@@ -1,14 +1,16 @@
 <template>
   <div class="tw-p-2">
-    <div class="tw-flex tw-flex-row tw-gap-2 tw-ml-2">
-      <button class="back-button" @click="back">
-        <ArrowLeftIcon class="icon __smedium" />
-        <span class="back-button-text">Vorige</span>
-      </button>
-      <button class="back-button" @click="closeRelatedTableDetails">
-        <ArrowLeftIcon class="icon __smedium" />
-        <span class="back-button-text">Naar begin</span>
-      </button>
+    <div class="tw-ml-2">
+      <ButtonGroup>
+        <Button variant="outlined" size="small" label="Terug" icon="pi pi-arrow-left" @click="back" />
+        <Button
+          variant="outlined"
+          size="small"
+          label="Naar begin"
+          icon="pi pi-home"
+          @click="closeRelatedTableDetails"
+        />
+      </ButtonGroup>
     </div>
 
     <div class="tw-px-2">
