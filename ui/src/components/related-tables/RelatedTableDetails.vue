@@ -201,10 +201,6 @@ onMounted(async () => {
   await handleSelectedRelatedTableAttributes();
 });
 
-onUnmounted(() => {
-  console.log("Component unmounted");
-});
-
 watch(
   () => selectedRelatedTableAttributes,
   async () => {
