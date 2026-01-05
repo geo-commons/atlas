@@ -1,5 +1,5 @@
 <template>
-  <ExpandButton :title="relatedTable.title" :is-open="true" class="feature" @show-content="onShowContentChange">
+  <ExpandButton :title="relatedTable.title" :is-open="true" class="feature">
     <template #default>
       <div>
         <div v-if="!loading && relatedTableData.length > 0">
@@ -45,6 +45,9 @@
             @page="updatePageState"
           ></Paginator>
         </div>
+        <div v-else-if="loading" class="tw-flex tw-justify-center tw-items-center tw-mt-4">
+          <ProgressSpinner stroke-width="2" style="width: 48px; height: 48px" />
+        </div>
         <div v-else>
           <p class="tw-mt-2 tw-mb-0">Geen resultaten gevonden</p>
         </div>
@@ -84,10 +87,6 @@ const pageState = ref({
   rows: 10,
 });
 const totalItems = ref<number>(0);
-
-const onShowContentChange = (isOpen: boolean) => {
-  // Emit event or handle content visibility change
-};
 
 const showPaginator = computed(() => {
   // Don't show paginator if pagination is not enabled
@@ -135,10 +134,10 @@ const getRestData = async (table: IRelatedTable) => {
     }
 
     totalItems.value = data.total;
-    loading.value = false;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
+
   loading.value = false;
 };
 
@@ -186,7 +185,6 @@ const getOwsData = async (table: IRelatedTable) => {
     }
   }
 
-  // loading = false;
   loading.value = false;
 };
 
@@ -224,6 +222,7 @@ const updatePageState = (event: any) => {
     first: event.first,
     rows: event.rows,
   };
+
   // Re-fetch data with new pagination parameters
   handleTableUpdate();
 };
@@ -234,8 +233,8 @@ onMounted(() => {
 
 watch(
   () => relatedTable,
-  async () => {
-    await handleTableUpdate();
+  () => {
+    handleTableUpdate();
   },
   { deep: true },
 );

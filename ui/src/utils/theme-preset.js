@@ -24,10 +24,12 @@ export const AtlasPresetApp = definePreset(Aura, {
     progressspinner: {
       colorScheme: {
         light: {
-          colorOne: "{primary.500}",
-          colorTwo: "{primary.500}",
-          colorThree: "{primary.500}",
-          colorFour: "{primary.500}",
+          root: {
+            colorOne: "{primary.500}",
+            colorTwo: "{primary.500}",
+            colorThree: "{primary.500}",
+            colorFour: "{primary.500}",
+          },
         },
       },
     },
@@ -45,10 +47,12 @@ export const AtlasPresetAdmin = definePreset(Aura, {
     progressspinner: {
       colorScheme: {
         light: {
-          colorOne: "{primary.500}",
-          colorTwo: "{primary.500}",
-          colorThree: "{primary.500}",
-          colorFour: "{primary.500}",
+          root: {
+            colorOne: "{primary.500}",
+            colorTwo: "{primary.500}",
+            colorThree: "{primary.500}",
+            colorFour: "{primary.500}",
+          },
         },
       },
     },

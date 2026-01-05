@@ -13,40 +13,44 @@
       </ButtonGroup>
     </div>
 
-    <div class="tw-px-2">
-      <p class="tw-font-bold tw-mb-2">{{ relatedTable?.title }}</p>
-      <table-list>
-        <table>
-          <tbody>
-            <tr v-for="(value, index) in tableItems" :key="index">
-              <td>
-                {{ formatRawString(getResolvedKey(value) || "") }}
-              </td>
-              <td>
-                <RichValue :data-key="getResolvedKey(value)" :data-value="fetchDot(value, relatedTableData)" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </table-list>
-    </div>
-
-    <div v-if="feature !== null && relatedTables.length > 0" class="">
-      <div v-for="(table, key) in relatedTables" :key="key" class="tw-pt-4">
-        <RelatedTableList
-          :table-feature="feature"
-          :related-table="table.to_table"
-          :field-mapping="table.field_mapping"
-          @select-related-table-object="onSelectRelatedTableObject"
-        />
+    <div v-if="!loading">
+      <div class="tw-px-2">
+        <p class="tw-font-bold tw-mb-2">{{ relatedTable?.title }}</p>
+        <table-list>
+          <table>
+            <tbody>
+              <tr v-for="(value, index) in tableItems" :key="index">
+                <td>
+                  {{ formatRawString(getResolvedKey(value) || "") }}
+                </td>
+                <td>
+                  <RichValue :data-key="getResolvedKey(value)" :data-value="fetchDot(value, relatedTableData)" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </table-list>
       </div>
+
+      <div v-if="feature !== null && relatedTables.length > 0" class="">
+        <div v-for="(table, key) in relatedTables" :key="key" class="tw-pt-4">
+          <RelatedTableList
+            :table-feature="feature"
+            :related-table="table.to_table"
+            :field-mapping="table.field_mapping"
+            @select-related-table-object="onSelectRelatedTableObject"
+          />
+        </div>
+      </div>
+    </div>
+    <div v-else class="tw-px-2 tw-mt-4 tw-flex tw-justify-center tw-items-center">
+      <ProgressSpinner stroke-width="2" style="width: 48px; height: 48px" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
-import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
+import { computed, onMounted, ref, watch } from "vue";
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import nunjucks from "nunjucks";
 import TableList from "@/components/TableList.vue";
@@ -69,6 +73,7 @@ const relatedTableData = ref<Record<string, string>>({});
 const relatedTable = ref<IRelatedTable>();
 const relatedTables = ref<IRelatedTable[]>([]);
 const feature = ref<Record<string, string> | null>(null);
+const loading = ref<boolean>(false);
 
 const tableItems = computed(() => {
   if (relatedTable.value?.detail_display_properties && relatedTable.value?.detail_display_properties.length > 0) {
@@ -155,17 +160,16 @@ const getOwsData = async (table: IRelatedTable, item: any) => {
     }
   }
 
-  // loading = false;
   return [];
 };
 
-const getRelatedTableData = (table: IRelatedTable, item: any) => {
+const getRelatedTableData = async (table: IRelatedTable, item: any) => {
   if (table.source_type === SourceType.REST) {
-    return getRestData(table, item);
+    return await getRestData(table, item);
   }
 
   if (table.source_type === SourceType.WMTS || table.source_type === SourceType.OWS) {
-    return getOwsData(table, item);
+    return await getOwsData(table, item);
   }
 
   return [];
@@ -184,6 +188,7 @@ const getRelatedTable = async (tableId: number) => {
 };
 
 const handleSelectedRelatedTableAttributes = async () => {
+  loading.value = true;
   feature.value = selectedRelatedTableAttributes.item;
 
   await getRelatedTable(selectedRelatedTableAttributes.relatedTableId);
@@ -195,6 +200,7 @@ const handleSelectedRelatedTableAttributes = async () => {
   }
 
   relatedTableData.value = await getRelatedTableData(relatedTable.value, selectedRelatedTableAttributes.item);
+  loading.value = false;
 };
 
 onMounted(async () => {
