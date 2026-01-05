@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from tables_v2.models import TableTemp, TableToTable, LayerToTable
+from webservice.models import Source
 from webservice.serializers import SourceSerializer
 
 
@@ -44,6 +45,8 @@ class TableToTableSerializer(serializers.ModelSerializer):
 
 class TableTempSerializer(serializers.ModelSerializer):
     source = SourceSerializer(read_only=True)
+    source_id = serializers.PrimaryKeyRelatedField(
+        source='source', queryset=Source.objects.all())
     field_mapping = serializers.SerializerMethodField()
 
     related_tables = TableToTableSerializer(
@@ -59,6 +62,7 @@ class TableTempSerializer(serializers.ModelSerializer):
             'title',
             'slug',
             'source',
+            'source_id',
             'source_type',
             'fields',
             'list_endpoint',

@@ -104,7 +104,7 @@ const getCreateTableSections = () => {
         },
         {
           label: "Bron",
-          id: "source",
+          id: "source_id",
           name: "Source",
           type: "dropdown",
           required: true,
