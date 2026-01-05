@@ -20781,7 +20781,15 @@
       "slug": "bedrijven",
       "source": 19,
       "source_type": "REST",
-      "fields": ["rsin", "city", "district", "street", "houseNumber"],
+      "fields": [
+        "rsin",
+        "city",
+        "district",
+        "street",
+        "houseNumber",
+        "adressen[0].type",
+        "adressen"
+      ],
       "list_endpoint": "api/companies/?city={{city}}&district={{district}}&street={{street}}&houseNumber={{houseNumber}}",
       "detail_endpoint": "api/companies?rsin={{rsin}}",
       "list_property": "results",
@@ -20792,8 +20800,31 @@
       "layer_name": null,
       "list_cql_filters": null,
       "detail_cql_filters": null,
-      "list_display_properties": [],
-      "detail_display_properties": []
+      "list_display_properties": ["adressen[0].type", "rsin", "street"],
+      "detail_display_properties": ["adressen[0].type", "adressen"]
+    }
+  },
+  {
+    "model": "tables_v2.tabletemp",
+    "pk": 18,
+    "fields": {
+      "title": "kvk",
+      "slug": "kvk",
+      "source": 16,
+      "source_type": "REST",
+      "fields": ["kvkNummer", "type", "naam"],
+      "list_endpoint": "/zoeken?kvkNummer=90001818",
+      "detail_endpoint": "/zoeken?kvkNummer=90001818",
+      "list_property": "resultaten",
+      "detail_property": "resultaten[0]",
+      "page_param": "pagina",
+      "items_per_page_param": "resultatenPerPagina",
+      "total_items_page_property": "totaal",
+      "layer_name": null,
+      "list_cql_filters": null,
+      "detail_cql_filters": null,
+      "list_display_properties": ["kvkNummer", "type", "naam"],
+      "detail_display_properties": ["kvkNummer", "type", "naam"]
     }
   },
   {
@@ -20894,6 +20925,11 @@
         "houseNumber": "houseNumber"
       }
     }
+  },
+  {
+    "model": "tables_v2.tabletotable",
+    "pk": 11,
+    "fields": { "from_table": 8, "to_table": 18, "field_mapping": {} }
   },
   {
     "model": "tables_v2.layertotable",
