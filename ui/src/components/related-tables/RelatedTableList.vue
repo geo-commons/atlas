@@ -3,7 +3,7 @@
     <template #default>
       <div>
         <div v-if="!loading && relatedTableData.length > 0">
-          <div class="table-wrapper">
+          <div class="table-wrapper tw-mb-2">
             <table class="related-table">
               <thead>
                 <tr>
@@ -45,11 +45,14 @@
             @page="updatePageState"
           ></Paginator>
         </div>
-        <div v-else-if="loading" class="tw-flex tw-justify-center tw-items-center tw-mt-4">
+        <div v-else-if="loading" class="tw-flex tw-justify-center tw-items-center tw-mt-2 tw-mb-2">
           <ProgressSpinner stroke-width="2" style="width: 48px; height: 48px" />
         </div>
-        <div v-else>
-          <p class="tw-mt-2 tw-mb-0">Geen resultaten gevonden</p>
+        <div v-else-if="errorMessage" class="tw-mt-2 tw-mb-2 tw-mb-0">
+          <Message severity="error">{{ errorMessage }}</Message>
+        </div>
+        <div v-else class="tw-mt-2 tw-mb-0 tw-mb-2">
+          <Message severity="secondary">Geen resultaten gevonden</Message>
         </div>
       </div>
     </template>
@@ -87,6 +90,7 @@ const pageState = ref({
   rows: 10,
 });
 const totalItems = ref<number>(0);
+const errorMessage = ref<string | null>(null);
 
 const showPaginator = computed(() => {
   // Don't show paginator if pagination is not enabled
@@ -121,8 +125,19 @@ const getRestData = async (table: IRelatedTable) => {
     const response = await fetch(url.toString());
 
     if (!response.ok) {
-      // TODO: introduce proper error handling
-      console.error(`HTTP error! status: ${response.status}`);
+      let error = `Er is een onbekende fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${response.status}`;
+
+      try {
+        const errorResponse = await response.json();
+
+        if (table.list_error_property) {
+          error = fetchDot(table.list_error_property, errorResponse) ?? error;
+        }
+      } catch {
+        // Response body was not JSON, ignore and use default message
+      }
+
+      throw new Error(error);
     }
 
     const data = await response.json();
@@ -135,7 +150,7 @@ const getRestData = async (table: IRelatedTable) => {
 
     totalItems.value = data.total;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    errorMessage.value = (error as Error).message;
   }
 
   loading.value = false;
@@ -210,6 +225,7 @@ const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any
 
 const handleTableUpdate = () => {
   loading.value = true;
+  errorMessage.value = null;
   getFieldMappingValue(fieldMapping, layerFeature || tableFeature);
 
   getRelatedTableData(relatedTable);

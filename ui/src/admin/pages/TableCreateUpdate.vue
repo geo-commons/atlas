@@ -253,6 +253,20 @@ function getSections() {
           type: "text",
           required: false,
         },
+        {
+          label: "Veldnaam van foutmelding in lijstweergave",
+          id: "list_error_property",
+          name: "ListErrorProperty",
+          type: "text",
+          required: false,
+        },
+        {
+          label: "Veldnaam van foutmelding detailweergave",
+          id: "detail_error_property",
+          name: "DetailErrorProperty",
+          type: "text",
+          required: false,
+        },
       ],
     },
     ows: {

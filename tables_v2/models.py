@@ -31,6 +31,8 @@ class TableTemp(models.Model):
                                                 max_length=255, blank=True, null=True)
     total_items_page_property = models.CharField('Veldnaam van totaal aantal items',
                                                   max_length=255, blank=True, null=True)
+    list_error_property = models.CharField('Veldnaam van foutmelding in lijstweergave', max_length=255, blank=True, null=True)
+    detail_error_property = models.CharField('Veldnaam van foutmelding detailweergave', max_length=255, blank=True, null=True)
 
     # ows tables
     layer_name = models.CharField(
@@ -82,6 +84,8 @@ class TableTemp(models.Model):
             'page_param': self.page_param,
             'items_per_page_param': self.items_per_page_param,
             'total_items_page_property': self.total_items_page_property,
+            'list_error_property': self.list_error_property,
+            'detail_error_property': self.detail_error_property,
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,
@@ -115,6 +119,8 @@ class TableTemp(models.Model):
             'page_param': self.page_param,
             'items_per_page_param': self.items_per_page_param,
             'total_items_page_property': self.total_items_page_property,
+            'list_error_property': self.list_error_property,
+            'detail_error_property': self.detail_error_property,
             'layer_name': self.layer_name,
             'list_cql_filters': self.list_cql_filters,
             'detail_cql_filters': self.detail_cql_filters,

@@ -13,7 +13,7 @@
       </ButtonGroup>
     </div>
 
-    <div v-if="!loading">
+    <div v-if="!loading && !errorMessage">
       <div class="tw-px-2">
         <p class="tw-font-bold tw-mb-2">{{ relatedTable?.title }}</p>
         <table-list>
@@ -43,8 +43,14 @@
         </div>
       </div>
     </div>
-    <div v-else class="tw-px-2 tw-mt-4 tw-flex tw-justify-center tw-items-center">
+    <div v-else-if="loading" class="tw-px-2 tw-mt-4 tw-flex tw-justify-center tw-items-center">
       <ProgressSpinner stroke-width="2" style="width: 48px; height: 48px" />
+    </div>
+    <div v-else-if="errorMessage" class="tw-mt-4 tw-mb-2 tw-px-2">
+      <Message severity="error">{{ errorMessage }}</Message>
+    </div>
+    <div v-else class="tw-mt-4 tw-mb-2 tw-px-2">
+      <Message severity="secondary">Geen resultaat gevonden.</Message>
     </div>
   </div>
 </template>
@@ -74,6 +80,7 @@ const relatedTable = ref<IRelatedTable>();
 const relatedTables = ref<IRelatedTable[]>([]);
 const feature = ref<Record<string, string> | null>(null);
 const loading = ref<boolean>(false);
+const errorMessage = ref<string | null>(null);
 
 const tableItems = computed(() => {
   if (relatedTable.value?.detail_display_properties && relatedTable.value?.detail_display_properties.length > 0) {
@@ -104,16 +111,25 @@ const getRestData = async (table: IRelatedTable, item: any) => {
     const response = await fetch(renderedUrl);
 
     if (!response.ok) {
-      // TODO: introduce proper error handling
-      console.error(`HTTP error! status: ${response.status}`);
-      return [];
+      let error = `Er is een onbekende fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${response.status}`;
+
+      try {
+        const errorResponse = await response.json();
+
+        if (table.list_error_property) {
+          error = fetchDot(table.detail_error_property, errorResponse) ?? error;
+        }
+      } catch {
+        // Response body was not JSON, ignore and use default message
+      }
+
+      throw new Error(error);
     }
 
     const data = await response.json();
     return table.detail_property ? fetchDot(table.detail_property, data) : data;
   } catch (error) {
-    // TODO: introduce proper error handling
-    console.error("Error fetching data:", error);
+    errorMessage.value = (error as Error).message;
     return [];
   }
 };
@@ -189,6 +205,7 @@ const getRelatedTable = async (tableId: number) => {
 
 const handleSelectedRelatedTableAttributes = async () => {
   loading.value = true;
+  errorMessage.value = null;
   feature.value = selectedRelatedTableAttributes.item;
 
   await getRelatedTable(selectedRelatedTableAttributes.relatedTableId);

@@ -25,6 +25,8 @@ export interface IRelatedTable {
   page_param: string | null;
   items_per_page_param: string | null;
   total_items_page_property: string | null;
+  list_error_property: string | null;
+  detail_error_property: string | null;
   layer_name: string;
   list_cql_filters: ICqlFilterEntry[];
   detail_cql_filters: ICqlFilterEntry[];
