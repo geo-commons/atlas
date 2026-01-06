@@ -46,11 +46,21 @@ Sommige opties hebben een submenu met keuzes, dit wordt zichtbaar nadat de optie
   <img src="../images/lagenlijst.png" alt="zoekbalk" width="50"/>
 - **Legenda**  
   <img src="../images/legenda.png" alt="zoekbalk" width="50"/>
+- **Lagenlijst en legenda standaard gesloten**\
+  Met de optie "lagenlijst en legenda standaard gesloten" kunnen de lagenlijst en de legenda standaard gesloten worden getoond bij het openen van de kaart
 - **Lijstweergave**  
   De lijstweergave kan na aanvinken in het submenu verder geconfigureerd worden.  
   <img src="../images/lijstweergave.png" alt="zoekbalk" width="100"/>
 - **Filters**  
   De filterfunctie kan na aanvinken in het submenu verder geconfigureerd worden.  
   <img src="../images/filters.png" alt="zoekbalk" width="100"/>
+- **Kaartlagen vergelijken**\
+  Met de optie "kaartlagen vergelijken" kun je ervoor kiezen de kaartvergelijk functionaliteit wel of niet te laten zien op kaartniveau.
+- **Tekenen**\
+  Met de optie "tekenen" kun je ervoor kiezen de tekenfunctionaliteit wel of niet te laten zien op kaartniveau.
+- **CRUD functionaliteit**\
+  Met de optie "CRUD functionaliteit" kun je ervoor kiezen de CRUD functionaliteit wel of niet te laten zien op kaartniveau.
+- **Rondkijkfoto**\
+  Met de optie "rondkijkfoto" kun je ervoor kiezen de rondkijkfoto functionaliteit wel of niet te laten zien op kaartniveau.
 
 Klik op opslaan om de gemaakte keuzes te bewaren.

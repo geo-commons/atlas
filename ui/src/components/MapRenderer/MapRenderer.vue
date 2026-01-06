@@ -270,7 +270,7 @@
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
           :show-compare-slider="compareLayers"
-          :layer-legend-panels-collapsed="features.layerPanelCollapsed"
+          :layer-panel-collapsed="features.layerPanelCollapsed"
           :is-embed="features.legend && !features.layerlist"
           @on-fit="(layer) => $refs.map.fit(layer)"
           @set-position="setPosition"
