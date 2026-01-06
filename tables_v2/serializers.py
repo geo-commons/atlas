@@ -80,6 +80,7 @@ class TableTempSerializer(serializers.ModelSerializer):
             'detail_cql_filters',
             'related_tables',
             'field_mapping',
+            'layer_name',
             'list_display_properties',
             'detail_display_properties',
         ]

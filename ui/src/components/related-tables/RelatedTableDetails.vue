@@ -162,9 +162,10 @@ const getOwsData = async (table: IRelatedTable, item: any) => {
       url.search = params.toString();
 
       const result = await fetch(url.toString());
+
       if (!result.ok) {
-        console.error(`HTTP error! status: ${result.status}`);
-        return;
+        const error = `Er is een fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${result.status}`;
+        throw new Error(error);
       }
 
       const data = await result.json();
@@ -172,7 +173,7 @@ const getOwsData = async (table: IRelatedTable, item: any) => {
 
       return properties;
     } catch (e) {
-      console.error(e);
+      errorMessage.value = (e as Error).message;
     }
   }
 
@@ -196,7 +197,8 @@ const getRelatedTable = async (tableId: number) => {
   const result = await response.json();
 
   if (!response.ok) {
-    console.error("gaat iets fout bij het ophalen van gerelateerde tabel");
+    errorMessage.value =
+      "Er is een fout opgetreden bij het ophalen van de gerelateerde tabel. Probeer het later opnieuw.";
     return;
   }
   relatedTable.value = result;
@@ -211,8 +213,7 @@ const handleSelectedRelatedTableAttributes = async () => {
   await getRelatedTable(selectedRelatedTableAttributes.relatedTableId);
 
   if (!relatedTable.value) {
-    // TODO: introduce proper error handling
-    console.error("Related table not found");
+    errorMessage.value = "Geen gerelateerde tabel gevonden";
     return;
   }
 
@@ -233,15 +234,7 @@ watch(
 );
 </script>
 
-<!--TODO: styling nalopen of verplaatsen, misschien tailwind? -->
 <style scoped>
-.back-button {
-  display: flex;
-  align-items: center;
-  font-size: var(--font-size-small);
-  gap: 4px;
-}
-
 .table-wrapper td:first-child {
   width: 40%;
   color: var(--color-text-grey);

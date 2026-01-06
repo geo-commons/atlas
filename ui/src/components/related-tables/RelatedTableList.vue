@@ -186,8 +186,8 @@ const getOwsData = async (table: IRelatedTable) => {
 
       const result = await fetch(url.toString());
       if (!result.ok) {
-        console.error(`HTTP error! status: ${result.status}`);
-        return;
+        const error = `Er is een fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${result.status}`;
+        throw new Error(error);
       }
 
       const data = await result.json();
@@ -196,7 +196,7 @@ const getOwsData = async (table: IRelatedTable) => {
 
       relatedTableData.value = properties;
     } catch (e) {
-      console.error(e);
+      errorMessage.value = (e as Error).message;
     }
   }
 
