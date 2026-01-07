@@ -56,6 +56,7 @@ nav:
   - "Groepen": "groepen.md"
   - "Autorisaties": "autorisaties.md"
   - "logs": "logs.md"
+  - "Tabellen (old)": "tabellen_(old).md"
   - "Tabellen": "tabellen.md"
   - "Beveiliging": "layer_security.md"
   - "CRUD functionaliteit": "crud_functionaliteit.md"
