@@ -273,6 +273,13 @@ function getSections() {
       label: "OWS Specifieke Instellingen",
       questions: [
         {
+          label: "Laagnaam",
+          id: "layer_name",
+          name: "LayerName",
+          type: "text",
+          required: false,
+        },
+        {
           label: "Lijst CQL filters",
           id: "list_cql_filters",
           name: "listCqlFilters",
