@@ -40,26 +40,32 @@
     <template #default>
       <div class="margin-content">
         <div class="select-wrapper">
-          <select v-model="selectedLayerTitle" class="__admin layer-select edit-field-border" @change="onLayerChange">
-            <option disabled value="">Selecteer een laag</option>
-            <option v-for="l in availableLayers" :key="l.id" :value="l.id">
-              {{ l.title }}
-            </option>
-          </select>
+          <Select
+            :model-value="selectedLayerTitle"
+            :options="availableLayers"
+            option-label="title"
+            option-value="id"
+            fluid
+            filter
+            placeholder="Kies een laag"
+            filter-placeholder="Zoek een laag"
+            show-clear
+            @update:modelValue="(value) => onLayerChange(value)"
+          />
         </div>
 
         <div class="filters">
           <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de filters instelt.</p>
 
-          <div v-if="selectedLayerTitle">
+          <div v-if="selectedLayerTitle" class="tw-flex tw-flex-col tw-gap-2">
             <div v-for="facet in availableFacets" :key="facet" class="facet">
-              <input
-                :id="`facet-${facet}`"
-                type="checkbox"
+              <Checkbox
+                binary
+                :input-id="`facet-${facet}`"
                 :name="`facet-${facet}`"
                 :value="facet"
-                :checked="data.settings.facets && data.settings.facets.includes(facet)"
-                @click="onChangeFacet"
+                :model-value="data.settings.facets.includes(facet)"
+                @update:modelValue="(value) => onChangeFacet(value, facet)"
               />
               <label :for="`facet-${facet}`">{{ facet }}</label>
             </div>
@@ -115,7 +121,8 @@ export default {
   methods: {
     onLayerChange(e) {
       this.data.settings.facets = [];
-      const layerId = e.target.value;
+      const layerId = e;
+      this.selectedLayerTitle = e;
       this.data.settings.filterLayerId = layerId;
       this.selectedLayer = this.getLayerById(layerId);
       this.fetchFeatureType();
@@ -156,14 +163,12 @@ export default {
 
       return {};
     },
-    onChangeFacet(e) {
-      const changeFacet = e.target.value;
-
-      if (this.data.settings.facets.includes(changeFacet)) {
-        const facetIndex = this.data.settings.facets.indexOf(changeFacet);
+    onChangeFacet(value, facet) {
+      if (this.data.settings.facets.includes(facet)) {
+        const facetIndex = this.data.settings.facets.indexOf(facet);
         this.data.settings.facets.splice(facetIndex, 1);
       } else {
-        this.data.settings.facets.push(e.target.value);
+        this.data.settings.facets.push(facet);
       }
     },
   },

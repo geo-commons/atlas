@@ -15,17 +15,19 @@
       <template #linkedData>
         <div class="layer-setting">
           <div class="admin-label-button">
-            <button
+            <Button
               v-tippy
+              size="small"
+              outlined
               aria-label="Voeg gekoppelde data toe"
               content="Voeg gekoppelde data toe"
+              class="!tw-text-sm !tw-font-semibold !tw-bg-white hover:!tw-bg-transparent"
               type="button"
-              class="button __small __secondary_admin"
               @click="toggleModal('linkedData')"
             >
               <AddIcon />
               Voeg toe
-            </button>
+            </Button>
           </div>
 
           <ul class="admin-list">
@@ -60,17 +62,19 @@
       <template #templates>
         <div class="layer-setting">
           <div class="admin-label-button">
-            <button
+            <Button
               v-tippy
-              content="Voeg template toe"
+              size="small"
+              outlined
               aria-label="Voeg template toe"
+              content="Voeg template toe"
+              class="!tw-text-sm !tw-font-semibold !tw-bg-white hover:!tw-bg-transparent"
               type="button"
-              class="button __small __secondary_admin"
               @click="toggleModal('templates')"
             >
               <AddIcon />
               Voeg toe
-            </button>
+            </Button>
           </div>
 
           <ul class="admin-list">
@@ -104,26 +108,25 @@
       </template>
     </AdminFormSections>
   </div>
-  <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-    <template #header>
-      <h3 v-if="formModalType === 'linkedData'">Gerelateerde data</h3>
-      <h3 v-else-if="formModalType === 'templates'">Templates</h3>
-    </template>
-    <template #body>
-      <LinkedDataForm
-        v-if="formModalType === 'linkedData'"
-        :initial-linked-data="selectedLinkedData"
-        @close="closeFormModal"
-        @save="saveLinkedData"
-      />
-      <TemplateForm
-        v-else-if="formModalType === 'templates'"
-        :initial-template="selectedTemplate"
-        @close="closeFormModal"
-        @save="saveTemplate"
-      />
-    </template>
-  </FormModal>
+  <Dialog
+    v-model:visible="showFormModal"
+    modal
+    :header="formModalType === 'linkedData' ? 'Gerelateerde data' : 'Templates'"
+    :style="{ width: '1200px', marginLeft: '2rem', marginRight: '2rem' }"
+  >
+    <LinkedDataForm
+      v-if="formModalType === 'linkedData'"
+      :initial-linked-data="selectedLinkedData"
+      @close="closeFormModal"
+      @save="saveLinkedData"
+    />
+    <TemplateForm
+      v-else-if="formModalType === 'templates'"
+      :initial-template="selectedTemplate"
+      @close="closeFormModal"
+      @save="saveTemplate"
+    />
+  </Dialog>
 </template>
 
 <script>
@@ -133,7 +136,6 @@ import TemplateForm from "@/admin/components/TemplateForm.vue";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
-import FormModal from "@/components/FormModal.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useGlobalStore } from "@/stores";
 import { getAllObjects } from "@/utils/api-helpers";
@@ -148,7 +150,6 @@ export default {
     TrashIcon,
     TemplateForm,
     LinkedDataForm,
-    FormModal,
     AdminFormSections,
   },
   data() {

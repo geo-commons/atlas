@@ -19,21 +19,23 @@
     <template #default>
       <div class="settings">
         <div class="setting __hover">
-          <input
-            id="features.layerlistsearch"
-            v-model="data.features.layerlistsearch"
-            type="checkbox"
+          <Checkbox
+            input-id="features.layerlistsearch"
+            :model-value="data.features.layerlistsearch"
             name="features.layerlistsearch"
+            binary
+            @update:modelValue="(value) => (data.features.layerlistsearch = value)"
           />
           <label for="features.layerlistsearch">Verberg zoekbalk lagenlijst</label>
         </div>
 
         <div class="setting __hover">
-          <input
-            id="features.layerlistsimple"
-            v-model="data.features.layerlistsimple"
-            type="checkbox"
+          <Checkbox
+            input-id="features.layerlistsimple"
+            :model-value="data.features.layerlistsimple"
             name="features.layerlistsimple"
+            binary
+            @update:modelValue="(value) => (data.features.layerlistsimple = value)"
           />
           <label for="features.layerlistsimple">Versimpelde weergave lagenlijst</label>
         </div>

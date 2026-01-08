@@ -11,20 +11,24 @@
       <vee-form ref="mapForm" method="POST" class="map-form" :initial-values="initialData" @submit="submitForm">
         <div class="tw-mx-4">
           <div class="input-wrapper">
-            <label for="title" class="setting-label">Titel</label>
-            <vee-field id="title" name="title" type="text" as="input" rules="required" />
+            <label for="title" class="tw-font-bold">Titel</label>
+            <vee-field id="title" v-slot="{ value, handleChange, handleBlur }" name="title" rules="required">
+              <InputText id="title" :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            </vee-field>
             <span class="warning-text">
               <vee-error-message name="title" />
             </span>
           </div>
           <div class="input-wrapper">
-            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2">
+            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
               Kort kenmerk
               <AdminFormInfoText
                 :info-text="'Dit is een korte, unieke naam voor de kaart die in de URL zal worden gebruikt. Het mag geen spaties en speciale tekens bevatten.'"
               />
             </label>
-            <vee-field id="slug" name="slug" type="text" as="input" rules="required" />
+            <vee-field id="slug" v-slot="{ value, handleChange, handleBlur }" name="slug" rules="required">
+              <InputText id="slug" :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            </vee-field>
             <span class="warning-text">
               <vee-error-message name="slug" />
             </span>
@@ -33,30 +37,54 @@
 
         <div class="settings">
           <div class="setting __hover">
-            <input id="published" v-model="data.published" type="checkbox" name="published" />
+            <Checkbox
+              input-id="published"
+              :model-value="data.published"
+              name="published"
+              binary
+              @update:modelValue="(value) => (data.published = value)"
+            />
             <label for="published">Publiceer kaart</label>
             <AdminFormInfoText
               :info-text="'Markeer dit veld als Gepubliceerd om de kaart te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de kaart te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.'"
             />
           </div>
           <div class="setting __hover">
-            <input id="show_in_overview" v-model="data.show_in_overview" type="checkbox" name="show_in_overview" />
+            <Checkbox
+              input-id="show_in_overview"
+              :model-value="data.show_in_overview"
+              name="show_in_overview"
+              binary
+              @update:modelValue="(value) => (data.show_in_overview = value)"
+            />
             <label for="show_in_overview">Toon kaart in overzicht weergave</label>
             <AdminFormInfoText
               :info-text="'Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.'"
             />
           </div>
-          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'layers')">
+          <button
+            type="button"
+            class="button __chevron setting !tw-font-normal"
+            @click="() => $emit('show-panel', 'layers')"
+          >
             <LayerIcon class="icon setting-icon" />
             Lagen
             <ChevronRightIcon class="icon setting-chevron" />
           </button>
-          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'thumbnail')">
+          <button
+            type="button"
+            class="button __chevron setting !tw-font-normal"
+            @click="() => $emit('show-panel', 'thumbnail')"
+          >
             <ImageIcon class="icon setting-icon" />
             Thumbnail
             <ChevronRightIcon class="icon setting-chevron" />
           </button>
-          <button type="button" class="button __chevron setting" @click="() => $emit('show-panel', 'about')">
+          <button
+            type="button"
+            class="button __chevron setting !tw-font-normal"
+            @click="() => $emit('show-panel', 'about')"
+          >
             <i class="pi pi-file-edit icon setting-icon"></i>
             Kaartomschrijving
             <ChevronRightIcon class="icon setting-chevron" />
@@ -65,91 +93,122 @@
 
         <div class="settings">
           <div class="setting __hover">
-            <input
-              id="features.searchbar"
-              v-model="data.features.searchbar"
-              type="checkbox"
+            <Checkbox
+              input-id="features.searchbar"
+              :model-value="data.features.searchbar"
               name="features.searchbar"
+              binary
+              @update:modelValue="(value) => (data.features.searchbar = value)"
             />
             <label for="features.searchbar">Toon zoekbalk</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.datapanel"
-              v-model="data.features.datapanel"
-              type="checkbox"
+            <Checkbox
+              input-id="features.datapanel"
+              :model-value="data.features.datapanel"
               name="features.datapanel"
+              binary
+              @update:modelValue="(value) => (data.features.datapanel = value)"
             />
             <label for="features.datapanel">Toon dataweergave</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.selectarea"
-              v-model="data.features.selectarea"
-              type="checkbox"
+            <Checkbox
+              input-id="features.selectarea"
+              :model-value="data.features.selectarea"
               name="features.selectarea"
+              binary
+              @update:modelValue="(value) => (data.features.selectarea = value)"
             />
             <label for="features.selectarea">Selecteer gebied</label>
           </div>
 
           <div class="setting __hover">
-            <input id="features.measure" v-model="data.features.measure" type="checkbox" name="features.measure" />
+            <Checkbox
+              input-id="features.measure"
+              :model-value="data.features.measure"
+              name="features.measure"
+              binary
+              @update:modelValue="(value) => (data.features.measure = value)"
+            />
             <label for="features.measure">Opmeten</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.morepanel"
-              v-model="data.features.morepanel"
-              type="checkbox"
+            <Checkbox
+              input-id="features.morepanel"
+              :model-value="data.features.morepanel"
               name="features.morepanel"
+              binary
+              @update:modelValue="(value) => (data.features.morepanel = value)"
             />
             <label for="features.morepanel">Meer opties</label>
           </div>
 
           <div class="setting __hover">
-            <input id="features.gps" v-model="data.features.gps" type="checkbox" name="features.gps" />
+            <Checkbox
+              input-id="features.gps"
+              :model-value="data.features.gps"
+              name="features.gps"
+              binary
+              @update:modelValue="(value) => (data.features.gps = value)"
+            />
             <label for="features.gps">GPS knop</label>
           </div>
 
           <div class="setting __hover">
-            <input id="features.zoom" v-model="data.features.zoom" type="checkbox" name="features.zoom" />
+            <Checkbox
+              input-id="features.zoom"
+              :model-value="data.features.zoom"
+              name="features.zoom"
+              binary
+              @update:modelValue="(value) => (data.features.zoom = value)"
+            />
             <label for="features.zoom">Zoomfunctie</label>
           </div>
 
           <div class="setting __hover">
-            <input id="features.scale" v-model="data.features.scale" type="checkbox" name="features.scale" />
+            <Checkbox
+              input-id="features.scale"
+              :model-value="data.features.scale"
+              name="features.scale"
+              binary
+              @update:modelValue="(value) => (data.features.scale = value)"
+            />
             <label for="features.scale">Toon schaal</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.markerOnClick"
-              v-model="data.features.markerOnClick"
-              type="checkbox"
+            <Checkbox
+              input-id="features.markerOnClick"
+              :model-value="data.features.markerOnClick"
               name="features.markerOnClick"
+              binary
+              @update:modelValue="(value) => (data.features.markerOnClick = value)"
             />
             <label for="features.markerOnClick">Prikker bij klik</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.baselayer"
-              v-model="data.features.baselayer"
-              type="checkbox"
+            <Checkbox
+              input-id="features.baselayer"
+              :model-value="data.features.baselayer"
               name="features.baselayer"
+              binary
+              @update:modelValue="(value) => (data.features.baselayer = value)"
             />
             <label for="features.baselayer">Basislagen</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.layerlist"
-              v-model="data.features.layerlist"
-              type="checkbox"
+            <Checkbox
+              input-id="features.layerlist"
+              :model-value="data.features.layerlist"
               name="features.layerlist"
+              binary
+              @update:modelValue="(value) => (data.features.layerlist = value)"
             />
             <label for="features.layerlist">Lagenlijst</label>
             <button
@@ -163,22 +222,35 @@
           </div>
 
           <div class="setting __hover">
-            <input id="features.legend" v-model="data.features.legend" type="checkbox" name="features.legend" />
+            <Checkbox
+              input-id="features.legend"
+              :model-value="data.features.legend"
+              name="features.legend"
+              binary
+              @update:modelValue="(value) => (data.features.legend = value)"
+            />
             <label for="features.legend">Legenda</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.layerPanelCollapsed"
-              v-model="data.features.layerPanelCollapsed"
-              type="checkbox"
+            <Checkbox
+              input-id="features.layerPanelCollapsed"
+              :model-value="data.features.layerPanelCollapsed"
               name="features.layerPanelCollapsed"
+              binary
+              @update:modelValue="(value) => (data.features.layerPanelCollapsed = value)"
             />
             <label for="features.layerPanelCollapsed">Lagenlijst en legenda standaard gesloten</label>
           </div>
 
           <div class="setting __hover">
-            <input id="features.list" v-model="data.features.list" type="checkbox" name="features.list" />
+            <Checkbox
+              input-id="features.list"
+              :model-value="data.features.list"
+              name="features.list"
+              binary
+              @update:modelValue="(value) => (data.features.list = value)"
+            />
             <label for="features.list">Lijstweergave</label>
 
             <button
@@ -192,7 +264,13 @@
           </div>
 
           <div class="setting __hover">
-            <input id="features.filters" v-model="data.features.filters" type="checkbox" name="features.filters" />
+            <Checkbox
+              input-id="features.filters"
+              :model-value="data.features.filters"
+              name="features.filters"
+              binary
+              @update:modelValue="(value) => (data.features.filters = value)"
+            />
             <label for="features.filters">Filters</label>
 
             <button
@@ -206,36 +284,45 @@
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.compareLayers"
-              v-model="data.features.compareLayers"
-              type="checkbox"
+            <Checkbox
+              input-id="features.compareLayers"
+              :model-value="data.features.compareLayers"
               name="features.compareLayers"
+              binary
+              @update:modelValue="(value) => (data.features.compareLayers = value)"
             />
             <label for="features.compareLayers">Kaartlagen vergelijken</label>
           </div>
 
           <div class="setting __hover">
-            <input id="features.draw" v-model="data.features.draw" type="checkbox" name="features.draw" />
+            <Checkbox
+              input-id="features.draw"
+              :model-value="data.features.draw"
+              name="features.draw"
+              binary
+              @update:modelValue="(value) => (data.features.draw = value)"
+            />
             <label for="features.draw">Tekenen</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.edit_layer_features"
-              v-model="data.features.edit_layer_features"
-              type="checkbox"
+            <Checkbox
+              input-id="features.edit_layer_features"
+              :model-value="data.features.edit_layer_features"
               name="features.edit_layer_features"
+              binary
+              @update:modelValue="(value) => (data.features.edit_layer_features = value)"
             />
             <label for="features.edit_layer_features">CRUD Functionaliteit</label>
           </div>
 
           <div class="setting __hover">
-            <input
-              id="features.panoramaViewers"
-              v-model="data.features.panoramaViewers"
-              type="checkbox"
+            <Checkbox
+              input-id="features.panoramaViewers"
+              :model-value="data.features.panoramaViewers"
               name="features.panoramaViewers"
+              binary
+              @update:modelValue="(value) => (data.features.panoramaViewers = value)"
             />
             <label for="features.panoramaViewers">Rondkijkfoto</label>
           </div>
@@ -325,10 +412,6 @@ export default {
   flex-direction: column;
   gap: 32px;
   height: 100%;
-}
-
-.setting-label {
-  font-weight: var(--font-weight-bold);
 }
 
 .input-wrapper {

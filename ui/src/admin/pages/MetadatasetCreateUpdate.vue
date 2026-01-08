@@ -307,6 +307,7 @@ const getSections = (): AdminFormConfig => {
           required: false,
           visibility: "Intern",
           options: updateMethodTypeOptions,
+          placeholder: "updatemethode",
           infoText: "De methode waarmee de dataset wordt bijgewerkt.",
         },
         {
@@ -344,6 +345,7 @@ const getSections = (): AdminFormConfig => {
           name: "Status",
           type: "dropdown",
           required: false,
+          placeholder: "status",
           options: statusTypeOptions,
         },
         {

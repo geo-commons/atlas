@@ -83,8 +83,9 @@ select.__admin {
   height: 41px;
   padding: 0 8px 0 16px;
   display: flex;
+  gap: 8px;
   align-items: center;
-  font-weight: var(--font-weight-bold);
+  font-weight: 400;
   border-top: 1px solid var(--color-grey-60);
 }
 
@@ -100,27 +101,6 @@ select.__admin {
   display: flex;
   gap: 12px;
   flex-direction: column;
-}
-
-.map-update input[type="text"],
-.map-update input[type="number"],
-.map-update input[type="email"],
-.map-update input[type="date"],
-.map-update input[type="url"] {
-  width: 100%;
-  border: 1px solid var(--color-grey-60);
-  border-radius: var(--radius-normal);
-  padding: 0 16px;
-  height: 40px;
-}
-
-.map-update input[type="checkbox"] {
-  padding: 0 16px;
-  margin-right: 5px;
-}
-
-.map-update input:disabled {
-  background: var(--color-grey-40);
 }
 
 .edit-field-border {
