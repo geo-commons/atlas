@@ -59,16 +59,28 @@
         </div>
 
         <div class="title-wrapper">
-          <label for="title" class="setting-label">Header titel</label>
-          <input v-model="data.about_title" type="text" name="title" placeholder="Titel" maxlength="128" />
+          <label for="title" class="setting-label tw-font-bold">Header titel</label>
+          <InputText
+            :model-value="data.about_title"
+            name="title"
+            placeholder="Titel"
+            maxlength="128"
+            fluid
+            @update:modelValue="(value) => (data.about_title = value)"
+          />
         </div>
 
         <div class="tw-my-3 tw-flex tw-flex-col">
-          <label for="editor" class="setting-label tw-flex tw-items-center tw-gap-2"
+          <label for="editor" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold"
             >Zijbalk tekst
             <AdminFormInfoText :info-text="'Het is mogelijk om tekst op te maken met Markdown in dit veld.'"
           /></label>
-          <textarea v-model="data.about" name="editor" rows="12" />
+          <Textarea
+            :model-value="data.about"
+            name="editor"
+            rows="12"
+            @update:modelValue="(value) => (data.about = value)"
+          />
         </div>
       </div>
     </template>
@@ -152,7 +164,6 @@ const emitUpdate = () => {
 
 <style lang="scss">
 label {
-  font-weight: var(--font-weight-bold);
   width: 100%;
 }
 

@@ -6,84 +6,126 @@
           <label class="question-label" for="source">Bron</label>
           <vee-field
             id="source"
+            v-slot="{ value, handleChange, handleBlur }"
             v-model="template.source_id"
-            as="select"
             name="source_id"
-            class="__admin config-select-wrapper"
             rules="required"
           >
-            <option disabled value="-1">Selecteer bron</option>
-            <option v-for="source in sources" :key="source.id" :value="source.id">
-              {{ source.label }}
-            </option>
+            <Select
+              :model-value="value"
+              :options="sources"
+              option-label="label"
+              option-value="id"
+              placeholder="Selecteer een bron"
+              filter
+              filter-placeholder="Zoek een bron"
+              show-clear
+              @update:model-value="handleChange"
+              @blur="handleBlur"
+            />
           </vee-field>
           <vee-error-message class="form-error" name="source_id" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="endpoint">Endpoint</label>
-          <vee-field id="endpoint" v-model.trim="template.endpoint" name="endpoint" type="text" rules="required" />
+          <vee-field
+            id="endpoint"
+            v-slot="{ value, handleChange, handleBlur }"
+            v-model.trim="template.endpoint"
+            name="endpoint"
+            type="text"
+            rules="required"
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="endpoint" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="Method">Methode</label>
           <vee-field
             id="method"
+            v-slot="{ value, handleChange, handleBlur }"
             v-model="template.method"
-            as="select"
             name="method"
-            class="__admin config-select-wrapper"
             rules="required"
           >
-            <option disabled value="-1">Selecteer methode</option>
-            <option v-for="method in methods" :key="method.id" :value="method.id">
-              {{ method.label }}
-            </option>
+            <Select
+              :model-value="value"
+              :options="methods"
+              option-label="label"
+              option-value="id"
+              placeholder="Selecteer een methode"
+              filter
+              filter-placeholder="Zoek een methode"
+              show-clear
+              @update:model-value="handleChange"
+              @blur="handleBlur"
+            />
           </vee-field>
           <vee-error-message class="form-error" name="method" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="title">Titel</label>
-          <vee-field id="title" v-model.trim="template.title" name="title" type="text" rules="required" />
+          <vee-field
+            id="title"
+            v-slot="{ value, handleChange, handleBlur }"
+            v-model.trim="template.title"
+            name="title"
+            type="text"
+            rules="required"
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="title" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="list">Tabel veld met lijst</label>
-          <vee-field id="list" v-model.trim="template.list" name="list" type="text" />
+          <vee-field
+            id="list"
+            v-slot="{ value, handleChange, handleBlur }"
+            v-model.trim="template.list"
+            name="list"
+            type="text"
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="list" />
         </div>
       </div>
-      <div>
+      <div class="tw-flex tw-flex-col tw-gap-2">
         <div class="layer-setting">
           <label class="question-label" for="headers">Tabel kopjes</label>
-          <textarea
+          <Textarea
             id="headers"
             name="headers"
             rows="6"
-            :value="headers"
-            @change="(e) => updateMultiLineField(template, 'headers', e.target.value)"
+            :model-value="headers"
+            @update:modelValue="(value) => updateMultiLineField(template, 'headers', value)"
           />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="fields">Tabel velden</label>
-          <textarea
+          <Textarea
             id="fields"
             name="fields"
             rows="6"
-            :value="fields"
-            @change="(e) => updateMultiLineField(template, 'fields', e.target.value)"
+            :model-value="fields"
+            @update:modelValue="(value) => updateMultiLineField(template, 'fields', value)"
           />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="template">Vrij veld template</label>
-          <textarea id="template" v-model="template.template" name="template" rows="6" />
+          <Textarea id="template" v-model="template.template" name="template" rows="6" />
         </div>
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button class="button __secondary_admin" type="button" @click="cancel()">Annuleer</button>
-      <button class="button __primary_admin" type="submit">
+      <Button text severity="secondary" class="!tw-text-sm !tw-font-semibold" type="button" @click="cancel()">
+        Annuleer
+      </Button>
+      <Button class="!tw-text-sm !tw-font-semibold" type="submit">
         {{ template.edit ? "Pas toe" : "Voeg toe" }}
-      </button>
+      </Button>
     </div>
   </vee-form>
 </template>

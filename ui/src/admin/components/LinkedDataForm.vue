@@ -4,88 +4,123 @@
       <div class="layer-settings">
         <div class="layer-setting">
           <label class="question-label" for="title">Titel</label>
-          <vee-field id="title" v-model.trim="linkedData.title" name="title" type="text" rules="required" />
+          <vee-field
+            id="title"
+            v-slot="{ value, handleChange, handleBlur }"
+            v-model.trim="linkedData.title"
+            name="title"
+            type="text"
+            rules="required"
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="title" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="name">Laag naam</label>
-          <vee-field id="name" v-model.trim="linkedData.name" name="name" type="text" rules="required" />
+          <vee-field
+            id="name"
+            v-slot="{ value, handleChange, handleBlur }"
+            v-model.trim="linkedData.name"
+            name="name"
+            type="text"
+            rules="required"
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="name" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="url">URL</label>
-          <vee-field id="url" v-model.trim="linkedData.url" name="url" type="text" rules="required" />
+          <vee-field
+            id="url"
+            v-slot="{ value, handleChange, handleBlur }"
+            v-model.trim="linkedData.url"
+            name="url"
+            type="text"
+            rules="required"
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="url" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="source_key">Bronsleutel</label>
           <vee-field
             id="source_key"
+            v-slot="{ value, handleChange, handleBlur }"
             v-model.trim="linkedData.source_key"
             name="source_key"
             type="text"
             rules="required"
-          />
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="source_key" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="target_key">Doelsleutel</label>
           <vee-field
             id="target_key"
+            v-slot="{ value, handleChange, handleBlur }"
             v-model.trim="linkedData.target_key"
             name="target_key"
             type="text"
             rules="required"
-          />
+          >
+            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+          </vee-field>
           <vee-error-message class="form-error" name="target_key" />
         </div>
       </div>
       <div class="layer-settings">
         <div class="layer-setting">
           <label class="question-label" for="headers">Tabel kopjes</label>
-          <textarea
+          <Textarea
             id="headers"
             name="headers"
             rows="6"
-            :value="headers"
-            @change="(e) => updateMultiLineField(linkedData, 'headers', e.target.value)"
+            :model-value="headers"
+            @update:modelValue="(value) => updateMultiLineField(linkedData, 'headers', value)"
           />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="display_properties">Toon deze velden</label>
-          <textarea
+          <Textarea
             id="display_properties"
             name="display_properties"
             rows="6"
-            :value="display_properties"
-            @change="(e) => updateMultiLineField(linkedData, 'display_properties', e.target.value)"
+            :model-value="display_properties"
+            @update:modelValue="(value) => updateMultiLineField(linkedData, 'display_properties', value)"
           />
         </div>
         <div class="layer-setting-toggle">
-          <switch-slider
-            aria-label="Gebruik detailweergave"
-            :initial-checked-status="linkedData.use_detail_view"
-            @toggleSwitch="toggleUseDetailView"
+          <ToggleSwitch
+            :model-value="linkedData.use_detail_view"
+            input-id="use_detail_view"
+            @update:modelValue="toggleUseDetailView"
           />
-          <div>Gebruik detailweergave</div>
+          <label for="use_detail_view">Gebruik detailweergave</label>
         </div>
         <div v-if="linkedData.use_detail_view" class="layer-setting">
           <label class="question-label" for="display_properties">Toon deze velden in de detailweergave</label>
-          <textarea
+          <Textarea
             id="detail_view_fields"
             name="detail_view_fields"
             rows="6"
-            :value="detail_view_fields"
-            @change="(e) => updateMultiLineField(linkedData, 'detail_view_fields', e.target.value)"
+            :model-value="detail_view_fields"
+            @update:modelValue="(value) => updateMultiLineField(linkedData, 'detail_view_fields', value)"
           />
         </div>
       </div>
     </div>
     <div class="config-btn-wrapper">
-      <button class="button __secondary_admin" type="button" @click="cancel()">Annuleer</button>
-      <button class="button __primary_admin" type="submit">
+      <Button text severity="secondary" class="!tw-text-sm !tw-font-semibold" type="button" @click="cancel()">
+        Annuleer
+      </Button>
+      <Button class="!tw-text-sm !tw-font-semibold" type="submit">
         {{ linkedData.edit ? "Pas toe" : "Voeg toe" }}
-      </button>
+      </Button>
     </div>
   </vee-form>
 </template>
@@ -93,11 +128,10 @@
 <script>
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
-import SwitchSlider from "@/components/SwitchSlider.vue";
 
 export default {
   name: "LinkedDataForm",
-  components: { SwitchSlider, VeeForm, VeeField, VeeErrorMessage },
+  components: { VeeForm, VeeField, VeeErrorMessage },
   props: {
     initialLinkedData: Object,
   },
