@@ -405,82 +405,30 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
 
             # Get existing relations
             existing_relations = LayerToTable.objects.filter(from_layer=instance)
-            existing_table_ids = {relation.to_table.id for relation in existing_relations}
-
-            print('new_table_ids')
-            print(new_table_ids)
-            print('existing_table_ids')
-            print(existing_table_ids)
 
             # Delete relations that are no longer needed
             relations_to_delete = existing_relations.exclude(to_table_id__in=new_table_ids)
-            print('relations_to_delete')
-            print(relations_to_delete)
-            # relations_to_delete.delete()
+            relations_to_delete.delete()
 
             for item in related_tables:
                 obj_id = item.get('id')
-                print(item)
 
                 if obj_id:
                     # Update existing relation using its ID
                     existing_relation = LayerToTable.objects.get(id=obj_id)
-                    print(f'Current field_mapping: {existing_relation.field_mapping}')
 
                     field_mapping = item.get('field_mapping')
-                    print(f'New field_mapping: {field_mapping}')
 
                     if field_mapping is not None:
                         existing_relation.field_mapping = field_mapping
                         existing_relation.save()
-                        print('Updated successfully')
                 else:
                     # Create new relation
-                    print('Create new relation')
-
                     LayerToTable.objects.create(
                         from_layer=instance,
-                        to_table=item.get('to_table'),
+                        to_table_id=item.get('to_table'),
                         field_mapping=item.get('field_mapping')
                     )
-
-        # Handling many-to-many field 'linked_data'
-        if linked_data is not None:
-            linked_data_to_create = []
-            for data in linked_data:
-                linked_data_to_create.append(LinkedData(
-                    source=data.get('source'),
-                    title=data.get('title'),
-                    layer_name=data.get('layer_name'),
-                    url=data.get('url'),
-                    source_key=data.get('source_key'),
-                    target_key=data.get('target_key'),
-                    popup_attributes=data.get('popup_attributes'),
-                    headers=data.get('headers'),
-                    use_detail_view=data.get('use_detail_view'),
-                    detail_view_fields=data.get('detail_view_fields'),
-                ))
-
-            instance.linked_data.all().delete()
-            instance.linked_data.set(linked_data_to_create, bulk=False)
-
-        # Handling many-to-many field 'templates'
-        if templates is not None:
-            templates_data_to_create = []
-            for data in templates:
-                templates_data_to_create.append(Template(
-                    source=data.get('source'),
-                    endpoint=data.get('endpoint'),
-                    method=data.get('method'),
-                    title=data.get('title'),
-                    list=data.get('list'),
-                    template=data.get('template'),
-                    fields=data.get('fields'),
-                    headers=data.get('headers'),
-                ))
-
-            instance.templates.all().delete()
-            instance.templates.set(templates_data_to_create, bulk=False)
 
         return instance
 

@@ -158,6 +158,7 @@ export default {
     return {
       categories: [],
       metadatasets: [],
+      selectedRelatedTables: [],
       relatedTables: [],
       sources: {},
       sourceTypes: [],
@@ -248,9 +249,6 @@ export default {
         this.initialValues.metadataset = null;
       }
 
-      this.relatedTables = this.initialValues.related_tables;
-      console.log("this.relatedTables", this.relatedTables);
-
       // Set initial disabledPublishedField state based on metadataset
       this.setInitialPublishedFieldState(response);
 
@@ -303,9 +301,10 @@ export default {
       currentValues.friendly_fields = this.validateAndParseJsonString(currentValues.friendly_fields);
       currentValues.templated_properties = this.validateAndParseJsonString(currentValues.templated_properties);
 
-      // todo: zorg dat de valuues ook geupdate worden
       if (currentValues.related_tables && currentValues.related_tables.length > 0) {
         const relatedTables = [];
+        // Because relatedTables consist of the actual tables we still need to translate it to the relations objects
+        // expected by the API.
         currentValues.related_tables.forEach((related_table) => {
           console.log("related table", related_table);
           const layerToTable = {
@@ -316,7 +315,6 @@ export default {
           };
           relatedTables.push(layerToTable);
         });
-        console.log("relatedTables", relatedTables);
 
         currentValues.related_tables = relatedTables;
       }
@@ -606,7 +604,7 @@ export default {
     },
 
     handleRelatedTablesChange(newValue) {
-      console.log(newValue);
+      this.initialValues.related_tables = newValue;
     },
     getSections() {
       return {
