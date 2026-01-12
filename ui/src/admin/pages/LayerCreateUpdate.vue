@@ -306,7 +306,6 @@ export default {
         // Because relatedTables consist of the actual tables we still need to translate it to the relations objects
         // expected by the API.
         currentValues.related_tables.forEach((related_table) => {
-          console.log("related table", related_table);
           const layerToTable = {
             id: related_table.layer_to_table_id,
             from_layer: currentValues.id,
@@ -1050,7 +1049,7 @@ export default {
               type: "related-tables-select",
               required: false,
               placeholder: "Selecteer gerelateerde tabellen",
-              options: this.relatedTables, // dit zijn alle bestaande tabellen
+              options: this.relatedTables,
             },
           ],
         },

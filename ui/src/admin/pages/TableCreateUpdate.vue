@@ -29,6 +29,7 @@ const toast = useToast();
 
 const formSections = ref();
 const sources = ref([]);
+const availableTables = ref([]);
 const sections = ref({});
 const initialValues = ref({});
 const loading = ref(false);
@@ -57,6 +58,17 @@ async function getTable() {
   initialValues.value.source_id = data.source?.id;
   initialValues.value.list_cql_filters = JSON.stringify(data.list_cql_filters, null, 2);
   initialValues.value.detail_cql_filters = JSON.stringify(data.detail_cql_filters, null, 2);
+
+  if (initialValues.value.related_tables && initialValues.value.related_tables.length > 0) {
+    initialValues.value.related_tables = initialValues.value.related_tables.map((table) => {
+      const table_to_table_id = table.id;
+      return {
+        ...table.to_table,
+        table_to_table_id: table_to_table_id,
+        field_mapping: table.field_mapping,
+      };
+    });
+  }
 
   const source = data.source;
 
@@ -88,12 +100,45 @@ async function getSources() {
   }));
 }
 
+async function getAvailableTables() {
+  const url = getAllObjects("/atlas/api/v1/tables-v2/");
+  const result = await fetch(url, {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!result.ok) {
+    console.error("Could not fetch tables");
+    return;
+  }
+
+  const response = await result.json();
+  availableTables.value = response.results;
+}
+
 async function saveTable(currentValues, continueEditing = false) {
   const url = `/atlas/api/v1/tables-v2/${route.params.id}/`;
 
   try {
     currentValues.list_cql_filters = validateAndParseJsonString(currentValues.list_cql_filters);
     currentValues.detail_cql_filters = validateAndParseJsonString(currentValues.detail_cql_filters);
+
+    if (currentValues.related_tables && currentValues.related_tables.length > 0) {
+      const relatedTables = [];
+      // Because relatedTables consist of the actual tables we still need to translate it to the relations objects
+      // expected by the API.
+      currentValues.related_tables.forEach((related_table) => {
+        const tableToTable = {
+          id: related_table.table_to_table_id,
+          from_table: currentValues.id,
+          to_table: related_table,
+          field_mapping: related_table.field_mapping,
+        };
+        relatedTables.push(tableToTable);
+      });
+
+      currentValues.related_tables = relatedTables;
+    }
 
     const result = await formSections.value.sendSaveRequest(url, "PATCH", currentValues);
 
@@ -124,7 +169,7 @@ const validateAndParseJsonString = (text) => {
 
 onMounted(async () => {
   loading.value = true;
-  await Promise.all([getTable(), getSources()]);
+  await Promise.all([getTable(), getSources(), getAvailableTables()]);
   sections.value = getSections();
   loading.value = false;
 });
@@ -292,6 +337,20 @@ function getSections() {
           name: "detailCqlFilters",
           type: "json",
           required: false,
+        },
+      ],
+    },
+    tables: {
+      label: "Relaties",
+      questions: [
+        {
+          label: "Gerelateerde tabellen",
+          id: "related_tables",
+          name: "relatedTables",
+          type: "related-tables-select",
+          required: false,
+          placeholder: "Selecteer gerelateerde tabellen",
+          options: availableTables.value,
         },
       ],
     },
