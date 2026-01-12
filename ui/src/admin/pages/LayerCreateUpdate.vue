@@ -608,21 +608,6 @@ export default {
     },
     getSections() {
       return {
-        // todo naar onder verplaatsen
-        tables: {
-          label: "Relaties",
-          questions: [
-            {
-              label: "Gerelateerde tabellen",
-              id: "related_tables",
-              name: "relatedTables",
-              type: "related-tables-select",
-              required: false,
-              placeholder: "Selecteer gerelateerde tabellen",
-              options: this.relatedTables, // dit zijn alle bestaande tabellen
-            },
-          ],
-        },
         general: {
           label: "Algemene gegevens",
           questions: [
@@ -1055,8 +1040,22 @@ export default {
             },
           ],
         },
-        linkedData: { label: "Gekoppelde data", questions: [], disableInputs: true },
-        templates: { label: "Templates", questions: [], disableInputs: true },
+        tables: {
+          label: "Relaties",
+          questions: [
+            {
+              label: "Gerelateerde tabellen",
+              id: "related_tables",
+              name: "relatedTables",
+              type: "related-tables-select",
+              required: false,
+              placeholder: "Selecteer gerelateerde tabellen",
+              options: this.relatedTables, // dit zijn alle bestaande tabellen
+            },
+          ],
+        },
+        linkedData: { label: "(Oud) Gekoppelde data", questions: [], disableInputs: true },
+        templates: { label: "(Oud) Templates", questions: [], disableInputs: true },
       };
     },
   },

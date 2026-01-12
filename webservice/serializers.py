@@ -400,35 +400,40 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
 
         # Handling many-to-many field 'related_tables'
         if related_tables:
-            # Get IDs of tables that should be related
-            new_table_ids = {item.get('id') for item in related_tables}
+            try:
+                # Get IDs of table relations sent in the request
+                incoming_table_ids = {item.get('id') for item in related_tables}
 
-            # Get existing relations
-            existing_relations = LayerToTable.objects.filter(from_layer=instance)
+                # Get existing relations
+                existing_relations = LayerToTable.objects.filter(from_layer=instance)
 
-            # Delete relations that are no longer needed
-            relations_to_delete = existing_relations.exclude(to_table_id__in=new_table_ids)
-            relations_to_delete.delete()
+                # Delete relations that are no longer needed
+                relations_to_delete = existing_relations.exclude(to_table_id__in=incoming_table_ids)
+                relations_to_delete.delete()
 
-            for item in related_tables:
-                obj_id = item.get('id')
+                for item in related_tables:
+                    relation_id = item.get('id')
 
-                if obj_id:
-                    # Update existing relation using its ID
-                    existing_relation = LayerToTable.objects.get(id=obj_id)
+                    if relation_id:
+                        # Update existing relation using its ID
+                        existing_relation = LayerToTable.objects.get(id=relation_id)
 
-                    field_mapping = item.get('field_mapping')
+                        field_mapping = item.get('field_mapping')
 
-                    if field_mapping is not None:
-                        existing_relation.field_mapping = field_mapping
-                        existing_relation.save()
-                else:
-                    # Create new relation
-                    LayerToTable.objects.create(
-                        from_layer=instance,
-                        to_table_id=item.get('to_table'),
-                        field_mapping=item.get('field_mapping')
-                    )
+                        if field_mapping is not None:
+                            existing_relation.field_mapping = field_mapping
+                            existing_relation.save()
+                    else:
+                        # Create new relation
+                        LayerToTable.objects.create(
+                            from_layer=instance,
+                            to_table_id=item.get('to_table'),
+                            field_mapping=item.get('field_mapping')
+                        )
+            except Exception as e:
+                raise serializers.ValidationError({
+                    'related_tables': 'Er is een onverwachte fout opgretreden bij het opslaan van de gerelateerde tabellen. '
+                                      f'Error details: {str(e)}'})
 
         return instance
 
