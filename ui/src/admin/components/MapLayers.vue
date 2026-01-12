@@ -333,7 +333,6 @@ li.setting:first-child {
   gap: 4px;
   align-items: center;
   justify-content: center;
-  font-weight: var(--font-weight-bold);
 }
 
 .base-layer-warning {

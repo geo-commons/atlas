@@ -204,10 +204,14 @@
                   />
                 </vee-field>
                 <label v-else-if="question.type === 'label'">
-                  {{ values[question.id] ? values[question.id] : "-" }}
+                  <p class="tw-mt-0 tw-mb-0 tw-font-normal">
+                    {{ initialValues[question.id] ? initialValues[question.id] : "-" }}
+                  </p>
                 </label>
                 <label v-else-if="question.type === 'display_date'">
-                  {{ formatDateValue(values[question.id]) }}
+                  <p class="tw-mt-0 tw-mb-0 tw-font-normal">
+                    {{ formatDateValue(initialValues[question.id]) }}
+                  </p>
                 </label>
                 <vee-field
                   v-else-if="question.type === 'text' && question.multiLine"

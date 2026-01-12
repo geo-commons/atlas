@@ -87,12 +87,10 @@
       </div>
       <div v-else class="tw-font-bold tw-px-3 tw-pt-4">Er is nog geen thumbnail geselecteerd</div>
       <div class="tw-flex tw-flex-col tw-gap-2 tw-px-3 tw-pt-4">
-        <Button class="button __primary_admin __normal" @click="openModal">
+        <Button @click="openModal">
           {{ thumbnail ? "Wijzig thumbnail" : "Selecteer een thumbnail" }}
         </Button>
-        <Button v-if="thumbnail" class="button __secondary_admin __alert" @click="confirmDelete($event)"
-          >Verwijder
-        </Button>
+        <Button v-if="thumbnail" severity="danger" outlined @click="confirmDelete($event)">Verwijder </Button>
       </div>
     </template>
   </AdminSidePanel>

@@ -60,40 +60,44 @@
     <template #default>
       <div class="margin-content">
         <div class="select-wrapper">
-          <select
-            v-model="selectedLayerTitle"
-            class="__admin layer-select edit-field-border"
-            @change="onListLayerChange"
-          >
-            <option disabled value="">Selecteer een laag</option>
-            <option v-for="l in availableLayers" :key="l.id" :value="l.id">
-              {{ l.title }}
-            </option>
-          </select>
+          <Select
+            :model-value="selectedLayerTitle"
+            :options="availableLayers"
+            option-label="title"
+            option-value="id"
+            placeholder="Selecteer een laag"
+            show-clear
+            filter
+            fluid
+            class="tw-mb-2"
+            filter-placeholder="Zoek een laag"
+            @update:modelValue="(value) => onListLayerChange(value)"
+          />
         </div>
 
         <p v-if="!selectedLayerTitle">Kies eerst een laag voordat je de lijstweergave instelt.</p>
 
         <div v-if="selectedLayerTitle" class="list-config-wrapper">
           <div>
-            <label>Template naam:</label>
-            <input
-              v-model="data.settings.title"
-              type="text"
-              name="title"
-              class="title-input edit-field-border"
+            <label class="tw-font-bold">Template naam:</label>
+            <InputText
+              :model-value="data.settings.title"
               placeholder="Template titel"
+              name="title"
+              fluid
+              @update:modelValue="(value) => (data.settings.title = value)"
             />
           </div>
 
           <div>
-            <label>Korte beschrijving:</label>
-            <textarea
-              v-model="data.settings.short_description"
-              type="text"
-              name="title"
-              class="short-description-input edit-field-border"
+            <label class="tw-font-bold">Korte beschrijving:</label>
+            <Textarea
+              :model-value="data.settings.short_description"
               placeholder="Template korte beschrijving"
+              name="short_description"
+              fluid
+              rows="5"
+              @update:modelValue="(value) => (data.settings.short_description = value)"
             />
           </div>
         </div>
@@ -150,7 +154,8 @@ export default {
       this.data.settings.title = "";
       this.data.settings.short_description = "";
 
-      const layerId = e.target.value;
+      const layerId = e;
+      this.selectedLayerTitle = layerId;
       this.selectedLayer = this.getLayerById(layerId);
       this.data.settings.listLayerId = layerId;
       this.data.settings.listLayerDisplayName = this.selectedLayerTitle;

@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <button
-      v-tippy="{ placement: 'bottom' }"
+      v-tippy="{ placement: 'auto' }"
       class="iconbutton"
       :class="{ isOpen, isActive: isOpen }"
       content="Opties"
@@ -11,25 +11,35 @@
       <EllipsesVertIcon class="icon" />
     </button>
     <transition name="fade">
-      <div v-if="isOpen" class="menu">
+      <div v-if="isOpen" class="menu tw-min-w-24 tw-max-w-48">
         <ul class="list">
           <li v-if="!user">
-            <a :href="`/atlas/login?next=${encodeURIComponent(nextUrl)}`">Log in</a>
+            <a :href="`/atlas/login?next=${encodeURIComponent(nextUrl)}`">Inloggen</a>
           </li>
-          <li v-if="user && !config.features.portal">
-            <form :action="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`" method="POST">
-              <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken" />
-              <button type="submit">Log uit</button>
-            </form>
+
+          <li v-if="config.features.portal">
+            <a href="/">Portaal</a>
           </li>
+
           <li><button @click="() => toggleModal('embed')">Embed</button></li>
           <li v-if="map?.features?.showAbout"><button @click="toggleAbout">Informatie</button></li>
           <li v-if="config.features.print">
             <button @click="() => toggleModal('print')">Print</button>
           </li>
-          <li><a href="/atlas/docs/" target="_blank">Help</a></li>
+          <li><a href="/atlas/docs/" target="_blank" rel="noopener noreferrer">Help</a></li>
           <li v-if="showDisclaimer">
-            <a href="/atlas/disclaimer" target="_blank">Disclaimer</a>
+            <a href="/atlas/disclaimer" target="_blank" rel="noopener noreferrer">Disclaimer</a>
+          </li>
+
+          <li v-if="user"><hr /></li>
+          <li v-if="user && user.is_superuser">
+            <a href="/atlas/admin/">Beheer</a>
+          </li>
+          <li v-if="user">
+            <form :action="`/atlas/logout?next=${encodeURIComponent(nextUrl)}`" method="POST">
+              <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken" />
+              <button type="submit">Uitloggen</button>
+            </form>
           </li>
         </ul>
       </div>

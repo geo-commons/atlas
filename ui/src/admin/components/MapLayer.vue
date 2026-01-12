@@ -24,31 +24,31 @@
       <div class="margin-content">
         <h3>Kaartlaag instellingen bewerken</h3>
         <div class="layer-setting-toggle">
-          <switch-slider
-            aria-label="Kaartlaag specifieke instellingen"
-            :initial-checked-status="mapLayerConfig.settings.customSettings"
-            @toggleSwitch="toggleSettings"
+          <ToggleSwitch
+            input-id="customSettings"
+            :model-value="mapLayerConfig.settings.customSettings"
+            @update:modelValue="toggleSettings"
           />
-          <div>Kaart specifieke laag instellingen</div>
+          <label for="customSettings">Kaart specifieke laag instellingen</label>
           <AdminFormInfoText :info-text="toggleSettingsInfo" />
         </div>
         <div v-if="mapLayerConfig.settings.customSettings" class="extra-padding-top">
           <div class="layer-settings">
             <div class="layer-setting-toggle">
-              <switch-slider
-                aria-label="Basislaag"
-                :initial-checked-status="mapLayerConfig.settings.is_base"
-                @toggleSwitch="toggleSliderField('is_base')"
+              <ToggleSwitch
+                input-id="is_base"
+                :model-value="mapLayerConfig.settings.is_base"
+                @update:modelValue="toggleSliderField('is_base')"
               />
-              <div>Is een basislaag</div>
+              <label for="is_base">Is een basislaag</label>
             </div>
             <div class="layer-setting-toggle">
-              <switch-slider
-                aria-label="Standaard zichtbaar"
-                :initial-checked-status="mapLayerConfig.settings.is_visible"
-                @toggleSwitch="toggleSliderField('is_visible')"
+              <ToggleSwitch
+                input-id="is_visible"
+                :model-value="mapLayerConfig.settings.is_visible"
+                @update:modelValue="toggleSliderField('is_visible')"
               />
-              <div>Kaartlaag standaard zichtbaar</div>
+              <label for="is_visible">Kaartlaag standaard zichtbaar</label>
             </div>
             <div v-if="otherVisibleBaseLayer" class="other-base-layer-visible">
               Merk op: er is al een basislaag met de instelling 'kaartlaag standaard zichtbaar' aanwezig
@@ -57,125 +57,155 @@
               />
             </div>
 
-            <div class="opacity-wrapper">
+            <div class="layer-setting tw-flex tw-flex-col">
               <label for="opacity">Transparantie</label>
-              <vee-field
-                id="opacity"
-                name="opacity"
-                class="opacity-slider"
-                type="range"
-                :value="mapLayerConfig.settings.opacity * 100"
-              >
-                <input
-                  id="opacity"
-                  class="opacity-slider"
-                  type="range"
-                  name="opacity"
-                  min="0"
-                  max="100"
-                  step="10"
-                  aria-label="Transparantie instellen"
-                  :value="mapLayerConfig.settings.opacity * 100"
-                  @change="(e) => changeLayerOpacity(e.target.value / 100)"
+              <div class="tw-max-w-full tw-flex tw-items-center tw-gap-4">
+                <InputNumber
+                  :model-value="mapLayerConfig.settings.opacity * 100"
+                  input-id="opacity"
+                  :min="0"
+                  :max="100"
+                  @update:modelValue="(value) => handleInput(value / 100, 'opacity')"
                 />
-              </vee-field>
-              <span class="tw-text-sm tw-font-semibold">{{ mapLayerConfig.settings.opacity * 100 }}</span>
+                <Slider
+                  id="opacity"
+                  :model-value="mapLayerConfig.settings.opacity * 100"
+                  name="opacity"
+                  :min="0"
+                  class="tw-w-full tw-mr-2"
+                  :max="100"
+                  :step="10"
+                  fluid
+                  @update:modelValue="(value) => handleInput(value / 100, 'opacity')"
+                />
+              </div>
             </div>
           </div>
           <div v-if="!isBaseLayer" class="layer-settings extra-padding-top">
             <div class="layer-setting">
               <label class="question-label" for="zoom_min">Zoomniveau minimum</label>
-              <input
-                id="zoom_min"
-                :value="mapLayerConfig.settings.zoom_min"
+              <InputNumber
+                :model-value="mapLayerConfig.settings.zoom_min"
+                input-id="zoom_min"
                 name="zoom_min"
-                type="number"
-                @change="(e) => handleInput(e, 'zoom_min')"
+                show-buttons
+                :step="1"
+                :min="0"
+                fluid
+                @update:modelValue="(value) => handleInput(value, 'zoom_min')"
               />
             </div>
             <div class="layer-setting">
-              <label class="question-label" for="zoom_man">Zoomniveau maximum</label>
-              <input
-                id="zoom_max"
-                :value="mapLayerConfig.settings.zoom_max"
+              <label class="question-label" for="zoom_max">Zoomniveau maximum</label>
+              <InputNumber
+                :model-value="mapLayerConfig.settings.zoom_max"
+                input-id="zoom_max"
                 name="zoom_max"
-                type="number"
-                @change="(e) => handleInput(e, 'zoom_max')"
+                show-buttons
+                :step="1"
+                :min="0"
+                fluid
+                @update:modelValue="(value) => handleInput(value, 'zoom_max')"
               />
             </div>
             <div class="layer-setting">
               <label class="question-label" for="display_properties">Toon deze velden</label>
-              <textarea
+              <Textarea
                 id="display_properties"
+                :model-value="displayProperties"
                 name="display_properties"
                 rows="6"
-                :value="displayProperties"
-                @change="(e) => updateMultiLineField(mapLayerConfig.settings, 'display_properties', e.target.value)"
+                @update:modelValue="
+                  (value) => updateMultiLineField(mapLayerConfig.settings, 'display_properties', value)
+                "
               />
             </div>
             <div class="layer-setting">
               <label class="question-label" for="search_properties">Doorzoek deze velden</label>
-              <textarea
+              <Textarea
                 id="search_properties"
+                :model-value="searchProperties"
                 name="search_properties"
                 rows="6"
-                :value="searchProperties"
-                @change="(e) => updateMultiLineField(mapLayerConfig.settings, 'search_properties', e.target.value)"
+                @update:modelValue="
+                  (value) => updateMultiLineField(mapLayerConfig.settings, 'search_properties', value)
+                "
               />
             </div>
             <div v-if="checkLayerType(['WMS', 'WMTS'])" class="layer-setting">
               <label class="question-label" for="server_style">Stijlnaam voor WMS / WMTS laag</label>
-              <input
+              <InputText
                 id="server_style"
-                v-model.trim="mapLayerConfig.settings.server_style"
+                :model-value="mapLayerConfig.settings.server_style"
                 name="server_style"
-                type="text"
+                @update:modelValue="(value) => handleInput(value, 'server_style')"
               />
               <span class="info-text">Stijlnaam zoals beschikbaar op de server</span>
             </div>
             <div v-if="checkLayerType(['WFS', 'WMS_WFS', 'MVT'])" class="layer-setting">
               <label class="question-label" for="client_style">Stijl voor WFS / MVT laag</label>
-              <textarea
+              <CodeMirror
                 id="client_style"
-                :value="clientStyle"
+                :model-value="JSON.stringify(mapLayerConfig.settings.client_style, {}, 2)"
                 name="client_style"
-                rows="6"
-                @change="(e) => updateJsonField('client_style', e.target.value)"
+                basic
+                :lang="json()"
+                :linter="jsonParseLinter()"
+                :extensions="[clouds]"
+                gutter
+                :wrap="true"
+                class="!tw-text-sm"
+                @update:model-value="(value) => updateJsonField('client_style', value)"
               />
             </div>
             <div class="layer-setting">
               <label class="question-label" for="friendly_fields">Vriendelijke veldnamen</label>
-              <textarea
+              <CodeMirror
                 id="friendly_fields"
-                :value="friendlyFields"
+                :model-value="JSON.stringify(mapLayerConfig.settings.friendly_fields, {}, 2)"
                 name="friendly_fields"
-                rows="6"
-                @change="(e) => updateJsonField('friendly_fields', e.target.value)"
+                basic
+                :lang="json()"
+                :linter="jsonParseLinter()"
+                :extensions="[clouds]"
+                gutter
+                :wrap="true"
+                class="!tw-text-sm"
+                @update:model-value="(value) => updateJsonField('friendly_fields', value)"
               />
             </div>
             <div class="layer-setting">
               <label class="question-label" for="templated_properties">Templatevelden</label>
-              <textarea
+              <CodeMirror
                 id="templated_properties"
-                :value="templatedProperties"
+                :model-value="JSON.stringify(mapLayerConfig.settings.templated_properties, {}, 2)"
                 name="templated_properties"
-                rows="6"
-                @change="(e) => updateJsonField('templated_properties', e.target.value)"
+                basic
+                :lang="json()"
+                :linter="jsonParseLinter()"
+                :extensions="[clouds]"
+                gutter
+                :wrap="true"
+                class="!tw-text-sm"
+                @update:model-value="(value) => updateJsonField('templated_properties', value)"
               />
             </div>
             <div class="layer-setting">
               <div class="admin-label-button">
                 <label for="linked_data">Gerelateerde data</label>
-                <button
+                <Button
                   v-tippy
-                  content="Voeg gekoppelde data toe"
+                  size="small"
+                  outlined
                   aria-label="Voeg gekoppelde data toe"
-                  class="button __small __secondary_admin"
+                  content="Voeg gekoppelde data toe"
+                  class="!tw-text-sm !tw-font-semibold !tw-bg-white hover:!tw-bg-transparent !tw-px-8"
+                  type="button"
                   @click="toggleModal('linkedData')"
                 >
                   <AddIcon />
-                  Voeg toe
-                </button>
+                  Toevoegen
+                </Button>
               </div>
 
               <ul class="admin-list">
@@ -208,16 +238,19 @@
             <div class="layer-setting">
               <div class="admin-label-button">
                 <label for="linked_data">Templates</label>
-                <button
+                <Button
                   v-tippy
-                  content="Voeg template toe"
+                  size="small"
+                  outlined
                   aria-label="Voeg template toe"
-                  class="button __small __secondary_admin"
+                  content="Voeg template toe"
+                  class="!tw-text-sm !tw-font-semibold !tw-bg-white hover:!tw-bg-transparent !tw-px-8"
+                  type="button"
                   @click="toggleModal('templates')"
                 >
                   <AddIcon />
-                  Voeg toe
-                </button>
+                  Toevoegen
+                </Button>
               </div>
 
               <ul class="admin-list">
@@ -247,26 +280,25 @@
               </ul>
             </div>
           </div>
-          <FormModal v-if="showFormModal" :toggle-modal="showFormModal" @close="closeFormModal">
-            <template #header>
-              <h3 v-if="formModalType === 'linkedData'">Gerelateerde data</h3>
-              <h3 v-else-if="formModalType === 'templates'">Templates</h3>
-            </template>
-            <template #body>
-              <LinkedDataForm
-                v-if="formModalType === 'linkedData'"
-                :initial-linked-data="selectedLinkedData"
-                @close="closeFormModal"
-                @save="saveLinkedData"
-              />
-              <TemplateForm
-                v-else-if="formModalType === 'templates'"
-                :initial-template="selectedTemplate"
-                @close="closeFormModal"
-                @save="saveTemplate"
-              />
-            </template>
-          </FormModal>
+          <Dialog
+            v-model:visible="showFormModal"
+            modal
+            :header="formModalType === 'linkedData' ? 'Gerelateerde data' : 'Templates'"
+            :style="{ width: '1200px', marginLeft: '2rem', marginRight: '2rem' }"
+          >
+            <LinkedDataForm
+              v-if="formModalType === 'linkedData'"
+              :initial-linked-data="selectedLinkedData"
+              @close="closeFormModal"
+              @save="saveLinkedData"
+            />
+            <TemplateForm
+              v-else-if="formModalType === 'templates'"
+              :initial-template="selectedTemplate"
+              @close="closeFormModal"
+              @save="saveTemplate"
+            />
+          </Dialog>
         </div>
       </div>
     </template>
@@ -274,7 +306,6 @@
 </template>
 
 <script>
-import FormModal from "@/components/FormModal.vue";
 import AddIcon from "@/assets/icons/add-icon.svg";
 import ArrowLeftIcon from "@/assets/icons/arrow-left-icon.svg";
 import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
@@ -284,28 +315,27 @@ import TrashIcon from "@/assets/icons/trash-icon.svg";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import LinkedDataForm from "@/admin/components/LinkedDataForm.vue";
 import TemplateForm from "@/admin/components/TemplateForm.vue";
-import { Field as VeeField } from "vee-validate";
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
-import SwitchSlider from "@/components/SwitchSlider.vue";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import { getAllObjects } from "@/utils/api-helpers";
+import CodeMirror from "vue-codemirror6";
+import { json, jsonParseLinter } from "@codemirror/lang-json";
+import { clouds } from "thememirror";
 
 export default {
   name: "MapLayer",
   components: {
+    CodeMirror,
     AdminFormInfoText,
-    SwitchSlider,
     TemplateForm,
     LinkedDataForm,
     AddIcon,
-    FormModal,
     ArrowLeftIcon,
     ChevronRightIcon,
     EditIcon,
     LayerIcon,
     TrashIcon,
     AdminSidePanel,
-    VeeField,
   },
   props: {
     initialData: Object,
@@ -327,6 +357,9 @@ export default {
     };
   },
   computed: {
+    clouds() {
+      return clouds;
+    },
     displayProperties() {
       return this.mapLayerConfig?.settings.display_properties.join("\n");
     },
@@ -388,6 +421,8 @@ export default {
     this.layerDefaultSettings = this.allLayers.find((layer) => this.mapLayerConfig.layer === layer.id);
   },
   methods: {
+    jsonParseLinter,
+    json,
     updateMultiLineField,
     async getLayer(layerId) {
       const result = await fetch(`/atlas/api/v1/layers/${layerId}/`, {
@@ -454,22 +489,18 @@ export default {
         };
       }
     },
-    changeLayerOpacity(newValue) {
-      this.mapLayerConfig.settings.opacity = newValue;
-    },
-    updateJsonField(field, newValue) {
+    updateJsonField(field, value) {
       // Set the corresponding field to an empty object when the user
       // clears out the field.
-      if (!newValue || newValue.trim() === "") {
+      if (!value || value.trim() === "") {
         this.mapLayerConfig.settings[field] = {};
         return;
       }
 
       try {
-        this.mapLayerConfig.settings[field] = JSON.parse(newValue);
+        this.mapLayerConfig.settings[field] = JSON.parse(value);
       } catch {
-        // todo: maak nettere foutmelding
-        console.error("geen geldige json");
+        // Ignore JSON parse errors.
       }
     },
     checkLayerType(types) {
@@ -575,8 +606,7 @@ export default {
     back() {
       this.$emit("show-layers");
     },
-    handleInput(event, question) {
-      let value = event.target.value;
+    handleInput(value, question) {
       if (value === "") {
         value = null;
       }
@@ -587,6 +617,10 @@ export default {
 </script>
 
 <style scoped>
+.layer-setting label {
+  font-weight: 700;
+}
+
 .layer-wrapper {
   display: flex;
   gap: 6px;
@@ -612,37 +646,6 @@ export default {
 
 .extra-padding-top {
   padding-top: 20px;
-}
-
-.opacity-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.opacity-input {
-  width: 22px;
-  flex-shrink: 0;
-  padding: 0;
-  font-size: 12px;
-  font-weight: var(--font-weight-bold);
-  border: none;
-  background: transparent;
-}
-
-.opacity-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.opacity-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-.opacity-slider {
-  flex-shrink: 0;
-  width: 80px;
-  margin: 0;
 }
 
 .info-text {

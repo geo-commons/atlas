@@ -230,4 +230,5 @@ def _get_user(request):
         'username': user.username,
         'name': user.name,
         'is_authenticated': user.is_authenticated,
+        'is_superuser': bool(user.is_authenticated and user.is_superuser),
     }
