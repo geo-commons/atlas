@@ -293,6 +293,24 @@
                   />
                 </vee-field>
                 <vee-field
+                  v-else-if="question.type === 'related-tables-select'"
+                  v-slot="{ value, handleChange }"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                >
+                  <RelatedTablesField
+                    :related-tables="value"
+                    :parent-id="initialValues.id"
+                    :options="question.options || []"
+                    @related-tables-changed="
+                      (newValue) => {
+                        handleChange(newValue);
+                        $emit('related-tables-changed', newValue);
+                      }
+                    "
+                  />
+                </vee-field>
+                <vee-field
                   v-else-if="question.type === 'date'"
                   :id="question.id"
                   v-slot="{ value, handleChange, handleBlur }"
@@ -426,10 +444,12 @@ import PickList from "primevue/picklist";
 import { clouds } from "thememirror";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import CodeMirror from "vue-codemirror6";
+import RelatedTablesField from "@/admin/components/RelatedTablesField.vue";
 
 export default {
   name: "AdminFormSections",
   components: {
+    RelatedTablesField,
     ArrowDownTrayIcon,
     LayerField,
     MetadatasetsField,
@@ -464,7 +484,7 @@ export default {
     objectSpecificSave: Function,
     formObject: String,
   },
-  emits: ["update-source", "metadataset-changed"],
+  emits: ["update-source", "metadataset-changed", "related-tables-changed"],
   expose: ["updateFieldValue", "sendSaveRequest"],
   data() {
     return {

@@ -266,7 +266,7 @@ class LayerSerializer(serializers.ModelSerializer):
         from tables_v2.serializers import TableTempSerializer
 
         tables = obj.related_tables.all()
-        return TableTempSerializer(tables, many=True, from_layer=obj).data
+        return TableTempSerializer(tables, many=True, context={'from_layer': obj}).data
 
     def get_opacity(self, obj):
         return float(obj.opacity)
@@ -371,11 +371,15 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         ret['_popup_attributes'] = '\r\n'.join(data.get('display_properties', []))
         ret['_search_fields'] = '\r\n'.join(data.get('search_properties', []))
         ret['_search_terms'] = '\r\n'.join(data.get('search_terms', []))
+        if 'related_tables' in data:
+            ret['related_tables'] = data['related_tables']
         return ret
 
     def update(self, instance, validated_data):
-        linked_data, templates = (validated_data.pop(key, None)
-                                  for key in ('linked_data', 'templates'))
+        from tables_v2.models import LayerToTable
+
+        linked_data, templates, related_tables = (validated_data.pop(key, None)
+                                                  for key in ('linked_data', 'templates', 'related_tables'))
 
         # Handling many-to-many field 'atlas_groups'
         if 'atlas_groups' in validated_data:
@@ -393,6 +397,52 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
 
         instance.save()
+
+        # Handling many-to-many field 'related_tables'
+        if related_tables:
+            # Get IDs of tables that should be related
+            new_table_ids = {item.get('id') for item in related_tables}
+
+            # Get existing relations
+            existing_relations = LayerToTable.objects.filter(from_layer=instance)
+            existing_table_ids = {relation.to_table.id for relation in existing_relations}
+
+            print('new_table_ids')
+            print(new_table_ids)
+            print('existing_table_ids')
+            print(existing_table_ids)
+
+            # Delete relations that are no longer needed
+            relations_to_delete = existing_relations.exclude(to_table_id__in=new_table_ids)
+            print('relations_to_delete')
+            print(relations_to_delete)
+            # relations_to_delete.delete()
+
+            for item in related_tables:
+                obj_id = item.get('id')
+                print(item)
+
+                if obj_id:
+                    # Update existing relation using its ID
+                    existing_relation = LayerToTable.objects.get(id=obj_id)
+                    print(f'Current field_mapping: {existing_relation.field_mapping}')
+
+                    field_mapping = item.get('field_mapping')
+                    print(f'New field_mapping: {field_mapping}')
+
+                    if field_mapping is not None:
+                        existing_relation.field_mapping = field_mapping
+                        existing_relation.save()
+                        print('Updated successfully')
+                else:
+                    # Create new relation
+                    print('Create new relation')
+
+                    LayerToTable.objects.create(
+                        from_layer=instance,
+                        to_table=item.get('to_table'),
+                        field_mapping=item.get('field_mapping')
+                    )
 
         # Handling many-to-many field 'linked_data'
         if linked_data is not None:
@@ -483,7 +533,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'metadataset',
             'is_filterable_in_legend',
             'is_exportable',
-            'authenticated_can_mutate'
+            'authenticated_can_mutate',
+            'related_tables'
         ]
 
 

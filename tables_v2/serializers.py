@@ -45,11 +45,23 @@ class TableToTableSerializer(serializers.ModelSerializer):
         ]
 
 
+class LayerToTableSerializer(serializers.ModelSerializer):
+    # to_table = SimpleTableTempSerializer()
+
+    class Meta:
+        unique_together = ('from_layer', 'to_table')
+        model = LayerToTable
+        fields = [
+            'field_mapping',
+        ]
+
+
 class TableTempSerializer(serializers.ModelSerializer):
     source = SourceSerializer(read_only=True)
     source_id = serializers.PrimaryKeyRelatedField(
         source='source', queryset=Source.objects.all())
     field_mapping = serializers.SerializerMethodField()
+    layer_to_table_id = serializers.SerializerMethodField()
 
     related_tables = TableToTableSerializer(
         source='outgoing_table_relations',
@@ -83,18 +95,25 @@ class TableTempSerializer(serializers.ModelSerializer):
             'layer_name',
             'list_display_properties',
             'detail_display_properties',
+            'layer_to_table_id',
         ]
 
-    def __init__(self, *args, from_layer=None, **kwargs):
-        self.from_layer = from_layer
-        super().__init__(*args, **kwargs)
+    def _get_layer_to_table(self, obj):
+        """Helper method to get LayerToTable object"""
+        from_layer = self.context.get('from_layer')
+        if from_layer:
+            return LayerToTable.objects.filter(
+                from_layer=from_layer,
+                to_table=obj
+            ).first()
+        return None
 
     def get_field_mapping(self, obj):
         """Include field_mapping from LayerToTable if called from a Layer context"""
-        if self.from_layer:
-            try:
-                layer_to_table = LayerToTable.objects.get(from_layer=self.from_layer, to_table=obj)
-                return layer_to_table.field_mapping
-            except LayerToTable.DoesNotExist:
-                return None
-        return None
+        layer_to_table = self._get_layer_to_table(obj)
+        return layer_to_table.field_mapping if layer_to_table else None
+
+    def get_layer_to_table_id(self, obj):
+        """Include LayerToTable ID for editing relations"""
+        layer_to_table = self._get_layer_to_table(obj)
+        return layer_to_table.id if layer_to_table else None
