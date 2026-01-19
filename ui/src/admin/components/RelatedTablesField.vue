@@ -92,8 +92,6 @@ interface RelatedTablesFieldEmits {
 const props = defineProps<RelatedTablesFieldProps>();
 const { relatedTables, options } = toRefs(props);
 
-console.log(relatedTables);
-
 const emit = defineEmits<RelatedTablesFieldEmits>();
 
 const extensions = [json(), linter(jsonParseLinter()), clouds];

@@ -165,8 +165,6 @@ const getLinkedData = async () => {
 
   const response = await result.json();
   initialValues.value = { ...response, related: response.related || [] };
-
-  console.log(initialValues.value);
 };
 
 const getAvailableLinkedData = async () => {
