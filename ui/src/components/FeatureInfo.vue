@@ -86,21 +86,22 @@
         </Button>
       </div>
 
-      <div v-for="(linkedData, key) in layer.linked_data" :key="key">
-        <div v-if="feature.properties[linkedData.source_key]" class="linked-data">
-          <LinkedDataTable
-            :linked-data="linkedData"
-            :overall-filter="{ key: linkedData.target_key, value: feature.properties[linkedData.source_key] }"
-            :position="position"
-            @set-position="setPosition"
-            @on-fit="(value) => onFit(value)"
-          />
-        </div>
-      </div>
+      <!-- TODO: remove LinkedDataTable and FeatureInfoTemplate -->
+      <!--      <div v-for="(linkedData, key) in layer.linked_data" :key="key">-->
+      <!--        <div v-if="feature.properties[linkedData.source_key]" class="linked-data">-->
+      <!--          <LinkedDataTable-->
+      <!--            :linked-data="linkedData"-->
+      <!--            :overall-filter="{ key: linkedData.target_key, value: feature.properties[linkedData.source_key] }"-->
+      <!--            :position="position"-->
+      <!--            @set-position="setPosition"-->
+      <!--            @on-fit="(value) => onFit(value)"-->
+      <!--          />-->
+      <!--        </div>-->
+      <!--      </div>-->
 
-      <div v-for="(template, key) in layer.templates" :key="key">
-        <FeatureInfoTemplate :layer="layer" :template="template" :feature="feature" class="template" />
-      </div>
+      <!--      <div v-for="(template, key) in layer.templates" :key="key">-->
+      <!--        <FeatureInfoTemplate :layer="layer" :template="template" :feature="feature" class="template" />-->
+      <!--      </div>-->
 
       <div v-if="layer.related_tables.length > 0">
         <div v-for="(relatedTable, key) in layer.related_tables" :key="key">
