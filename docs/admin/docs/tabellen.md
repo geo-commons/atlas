@@ -76,6 +76,30 @@ Het configureren van tabellen verloopt via de Atlas admin. In dit artikel wordt 
 | **Lijst CQL filters** | CQL (Common Query Language) filters voor het filteren van resultaten bij verzoeken naar een OWS bron voor de lijstweergave. Je kunt template tags gebruiken: `{{variabele}}` | Optioneel (alleen relevant bij OWS bron) | `null` (niet van toepassing bij REST) |
 | **Detail CQL filters** | CQL filters voor het filteren van resultaten bij verzoeken naar een OWS bron voor de detailweergave. Je kunt template tags gebruiken: `{{variabele}}` | Optioneel (alleen relevant bij OWS bron) | `null` (niet van toepassing bij REST) |
 
+## Relaties
+Een kracht van tabellen is dat je ze aan elkaar kan verbinden, waardoor je in de detailweergave van een tabel de lijstweergaves van andere tabellen kan tonen. Dit noemen wij ook wel een relatie tussen tabellen.
+
+### Het configureren van een relatie
+Voeg een nieuwe relatie toe door op "Nieuwe relatie" te drukken. Kies een tabel die je wil koppelen aan de huidige tabel en klik op "Toevoegen". Nu zie je dat er een relatie voor de tabel is toegevoegd. Via het veld "Field Mapping" configureer je welke velden uit de huidige tabel kunnen worden gebruikt om data op te vragen in de gerelateerde tabel.
+
+**Een voorbeeld:**
+<img src="../images/gerelateerde-tabel.png" alt="Voorbeeld van geconfigureerde tabel" width="800"/>
+
+In het bovenstaande voorbeeld zie je dat het veld "wijknaam" vanuit de huidige tabel wordt gemapped naar het veld "wijk" van de gerelateerde tabel. 
+
+In de gerelateerde tabel kan hierna het veld "wijk" worden gebruiken in het "Lijst endpoint" veld of in het "Lijst CQL filters" veld.
+
+Je kan meerdere field mapping waardes toevoegen, dit object dient geldige JSON te zijn. Bijvoorbeeld:
+
+```json
+{
+  "wijknaam": "wijk",
+  "buurtnaam": "buurt",
+  "straatnaam": "straat",
+  "nummer": "huisnummer"
+}
+```
+
 ## Handige tips
 
 ### Objectnotatie

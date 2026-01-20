@@ -146,6 +146,30 @@ Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een 
 - **Lees groepen:** Onder "beschikbare groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot de kaartlaag.
 - **Schrijf groepen:** Onder "schrijf groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot het muteren van objecten op de kaartlaag (toevoegen, bewerken en/of verwijderen van objecten). 
 
+## Relaties
+Een kracht van tabellen is dat je ze kan verbinden aan kaartlagen, waardoor je in de detailweergave van een object op een kaartlaag de lijstweergaves van andere tabellen kan tonen. Dit noemen wij ook wel een relatie tussen tabellen.
+
+### Het configureren van een relatie
+Voeg een nieuwe relatie toe door op "Nieuwe relatie" te drukken. Kies een tabel die je wil koppelen aan de huidige kaartlaag en klik op "Toevoegen". Nu zie je dat er een relatie voor de kaartlaag is toegevoegd. Via het veld "Field Mapping" configureer je welke velden uit de huidige kaartlaag kunnen worden gebruikt om data op te vragen in de gerelateerde tabel.
+
+**Een voorbeeld:**
+<img src="../images/gerelateerde-tabel.png" alt="Voorbeeld van geconfigureerde relatie" width="800"/>
+
+In het bovenstaande voorbeeld zie je dat het veld "wijknaam" vanuit de huidige kaartlaag wordt gemapped naar het veld "wijk" van de gerelateerde tabel. 
+
+In de gerelateerde tabel kan hierna het veld "wijk" worden gebruiken in het "Lijst endpoint" veld of in het "Lijst CQL filters" veld.
+
+Je kan meerdere field mapping waardes toevoegen, dit object dient geldige JSON te zijn. Bijvoorbeeld:
+
+```json
+{
+  "wijknaam": "wijk",
+  "buurtnaam": "buurt",
+  "straatnaam": "straat",
+  "nummer": "huisnummer"
+}
+```
+
 ### Gekoppelde Data
 
 Met gekoppelde data is het mogelijk om een tabelweergave te tonen met gekoppelde data bij de detailweergave van een feature. Deze data komt uit een OWS bron (WMS/WFS). Denk bijvoorbeeld aan het tonen van alle adressen bij een BAG pand. Het is mogelijk om meerdere tabellen te koppelen bij één punt.

@@ -20553,6 +20553,27 @@
     }
   },
   {
+    "model": "user_management.atlasuser",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$gMnVYdX3x7ovTHfLyuBPGT$HGI8mCVV4gH6VnvGsi/ecjxvzKAVVwcI1FVnNXRIPc0=",
+      "last_login": "2025-10-13T14:20:47.016Z",
+      "is_superuser": true,
+      "username": "demo@example.com",
+      "first_name": "",
+      "last_name": "",
+      "email": "demo@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-10-13T14:18:56.445Z",
+      "name": "demo",
+      "external_id": "demo@example.com",
+      "groups": [],
+      "user_permissions": [],
+      "atlas_groups": []
+    }
+  },
+  {
     "model": "authz.authorization",
     "pk": 2,
     "fields": {
