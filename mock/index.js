@@ -3,6 +3,9 @@ const server = jsonServer.create();
 const router = jsonServer.router("db.json");
 const middlewares = jsonServer.defaults();
 
+const PORT = process.env.MOCK_PORT || 4444;
+const HOST = process.env.MOCK_HOST || "localhost";
+
 server.use(middlewares);
 
 server.use("/", (req, res, next) => {
@@ -61,7 +64,6 @@ server.use("/api", router);
 server.use("/nested", router);
 server.use("/raw", router);
 
-const PORT = 4444;
-server.listen(PORT, () => {
-  console.log(`JSON Server is running on http://localhost:${PORT}/api`);
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`JSON Server is running on http://${HOST}:${PORT}/api`);
 });
