@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "json-server db.json --watch",
+    "start": "json-server --host $MOCK_HOST --port $MOCK_PORT db.json --watch",
     "dev": "node index.js"
   },
   "author": "",

@@ -120,13 +120,13 @@
 <script>
 import nunjucks from "nunjucks";
 import { getForViewAndSize } from "ol/extent";
-import LinkedDataTable from "./LinkedDataTable.vue";
+// import LinkedDataTable from "./LinkedDataTable.vue";
 import TableList from "./TableList";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
 import ExpandButton from "./ExpandButton";
 import RichValue from "./RichValue";
-import FeatureInfoTemplate from "./FeatureInfoTemplate";
+// import FeatureInfoTemplate from "./FeatureInfoTemplate";
 import MarkdownTemplate from "./MarkdownTemplate";
 import { mapState, mapStores } from "pinia";
 import { useGlobalStore } from "@/stores";
@@ -155,10 +155,10 @@ export default {
     CopyIcon,
     AreaSelectIcon,
     TableList,
-    LinkedDataTable,
+    // LinkedDataTable,
     ExpandButton,
     RichValue,
-    FeatureInfoTemplate,
+    // FeatureInfoTemplate,
     MarkdownTemplate,
   },
   props: {
