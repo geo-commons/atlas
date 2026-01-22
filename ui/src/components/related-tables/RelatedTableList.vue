@@ -217,7 +217,7 @@ const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any
   const mapping: Record<string, string> = {};
   if (fieldMapping) {
     for (const [key, value] of Object.entries(fieldMapping)) {
-      mapping[value] = feature.properties ? feature.properties[key] : feature[key];
+      mapping[value] = feature.properties ? fetchDot(key, feature.properties) : fetchDot(key, feature);
     }
   }
   fieldMappingValues.value = mapping;
