@@ -31,6 +31,7 @@ class SimpleTableTempSerializer(serializers.ModelSerializer):
             'detail_cql_filters',
             'list_display_properties',
             'detail_display_properties',
+            'template_fields',
         ]
 
 
@@ -95,6 +96,7 @@ class TableTempSerializer(serializers.ModelSerializer):
             'layer_name',
             'list_display_properties',
             'detail_display_properties',
+            'template_fields',
             'layer_to_table_id',
         ]
 

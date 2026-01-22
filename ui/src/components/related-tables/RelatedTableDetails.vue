@@ -27,6 +27,14 @@
                   <RichValue :data-key="getResolvedKey(value)" :data-value="fetchDot(value, relatedTableData)" />
                 </td>
               </tr>
+              <tr v-for="property in Object.keys(relatedTable?.template_fields || {})" :key="property">
+                <td>
+                  {{ formatRawString(property) }}
+                </td>
+                <td>
+                  <MarkdownTemplate :source="relatedTable?.template_fields[property]" :data="relatedTableData" />
+                </td>
+              </tr>
             </tbody>
           </table>
         </table-list>
@@ -64,6 +72,7 @@ import { formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import fetchDot from "fetch-dot";
+import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 
 const { selectedRelatedTableAttributes } = defineProps<{
   selectedRelatedTableAttributes: { relatedTableId: number; item: any };

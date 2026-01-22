@@ -33,6 +33,7 @@ class TableTemp(models.Model):
                                                   max_length=255, blank=True, null=True)
     list_error_property = models.CharField('Veldnaam van foutmelding in lijstweergave', max_length=255, blank=True, null=True)
     detail_error_property = models.CharField('Veldnaam van foutmelding detailweergave', max_length=255, blank=True, null=True)
+    template_fields = models.JSONField('Templatevelden', default=dict, blank=True, null=True)
 
     # ows tables
     layer_name = models.CharField(
@@ -91,6 +92,7 @@ class TableTemp(models.Model):
             'detail_cql_filters': self.detail_cql_filters,
             'list_display_properties': self.list_display_properties,
             'detail_display_properties': self.detail_display_properties,
+            'template_fields': self.template_fields,
             'related_tables': [item.simple_to_dict(self) for item in self.tables.all()],
         }
 
@@ -126,6 +128,7 @@ class TableTemp(models.Model):
             'detail_cql_filters': self.detail_cql_filters,
             'list_display_properties': self.list_display_properties,
             'detail_display_properties': self.detail_display_properties,
+            'template_fields': self.template_fields,
         }}
 
         if from_table:

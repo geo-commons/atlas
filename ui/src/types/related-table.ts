@@ -35,10 +35,5 @@ export interface IRelatedTable {
   to_table: IRelatedTable;
   list_display_properties: string[];
   detail_display_properties: string[];
-}
-
-export interface ILayerToTable {
-  from_layer: number;
-  to_table: number;
-  field_mapping: Record<string, string>;
+  template_fields: Record<string, string>;
 }

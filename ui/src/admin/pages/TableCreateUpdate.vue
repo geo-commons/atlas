@@ -58,6 +58,7 @@ async function getTable() {
   initialValues.value.source_id = data.source?.id;
   initialValues.value.list_cql_filters = JSON.stringify(data.list_cql_filters, null, 2);
   initialValues.value.detail_cql_filters = JSON.stringify(data.detail_cql_filters, null, 2);
+  initialValues.value.template_fields = JSON.stringify(data.template_fields, null, 2);
 
   if (initialValues.value.related_tables && initialValues.value.related_tables.length > 0) {
     initialValues.value.related_tables = initialValues.value.related_tables.map((table) => {
@@ -122,6 +123,7 @@ async function saveTable(currentValues, continueEditing = false) {
   try {
     currentValues.list_cql_filters = validateAndParseJsonString(currentValues.list_cql_filters);
     currentValues.detail_cql_filters = validateAndParseJsonString(currentValues.detail_cql_filters);
+    currentValues.template_fields = validateAndParseJsonString(currentValues.template_fields);
 
     if (currentValues.related_tables && currentValues.related_tables.length > 0) {
       const relatedTables = [];
@@ -310,6 +312,13 @@ function getSections() {
           id: "detail_error_property",
           name: "DetailErrorProperty",
           type: "text",
+          required: false,
+        },
+        {
+          label: "Templatevelden",
+          id: "template_fields",
+          name: "TemplateFields",
+          type: "json",
           required: false,
         },
       ],
