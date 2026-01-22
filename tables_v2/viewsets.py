@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import AllowAny, IsAdminUser
 
 from tables_v2.models import TableTemp
 from tables_v2.serializers import TableTempSerializer
@@ -29,3 +30,14 @@ class TableTempViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet
             raise NotFound(f"No TableTemp matches the given query: {lookup_field_value}")
 
         return obj
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [AllowAny]
+
+        return [permission() for permission in permission_classes]
