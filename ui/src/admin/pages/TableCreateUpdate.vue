@@ -133,7 +133,7 @@ async function saveTable(currentValues, continueEditing = false) {
         const tableToTable = {
           id: related_table.table_to_table_id,
           from_table: currentValues.id,
-          to_table: related_table,
+          to_table: related_table.id,
           field_mapping: related_table.field_mapping,
         };
         relatedTables.push(tableToTable);

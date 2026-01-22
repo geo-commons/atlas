@@ -408,7 +408,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
                 existing_relations = LayerToTable.objects.filter(from_layer=instance)
 
                 # Delete relations that are no longer needed
-                relations_to_delete = existing_relations.exclude(to_table_id__in=incoming_table_ids)
+                relations_to_delete = existing_relations.exclude(id__in=incoming_table_ids)
                 relations_to_delete.delete()
 
                 for item in related_tables:
