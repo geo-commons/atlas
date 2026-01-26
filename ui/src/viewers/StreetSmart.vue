@@ -1,5 +1,5 @@
 <template>
-  <div ref="viewer" class="street-smart"></div>
+  <div ref="viewer" tabindex="0" class="street-smart"></div>
 </template>
 
 <script setup lang="ts">
@@ -45,8 +45,12 @@ watch(
       return;
     }
 
+    const orientation = streetSmartClient.value?.getOrientation();
+
     if (streetSmartClient.value) {
-      streetSmartClient.value.openByCoordinate([value.marker[0], value.marker[1]]);
+      streetSmartClient.value.openByCoordinate([value.marker[0], value.marker[1]]).then(() => {
+        streetSmartClient.value.setOrientation(orientation);
+      });
     }
   },
 );
