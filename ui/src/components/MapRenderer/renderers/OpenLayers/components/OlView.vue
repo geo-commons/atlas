@@ -77,6 +77,7 @@ export default {
         zoom: view.getZoom(),
         extent: view.calculateExtent(this.map.getSize()),
         flyTo: false, // reset fly to
+        source: "map",
       });
     });
 
@@ -89,6 +90,7 @@ export default {
         this.$emit("position-changed", {
           ...this.position,
           marker: e.coordinate,
+          source: "map",
         });
       }
     });

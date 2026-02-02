@@ -8,6 +8,7 @@ import { useMapStore } from "@/stores/map_store";
 
 interface Position {
   marker: [number, number];
+  source: string;
 }
 
 interface StreetSmartProps {
@@ -32,6 +33,10 @@ const streetSmartClient = ref<any>(null);
 watch(
   () => props.position,
   (value, prevValue) => {
+    if (value.source === "streetsmart") {
+      return;
+    }
+
     if (!value?.marker) {
       return;
     }
@@ -45,8 +50,12 @@ watch(
       return;
     }
 
+    const orientation = streetSmartClient.value?.getOrientation();
+
     if (streetSmartClient.value) {
-      streetSmartClient.value.openByCoordinate([value.marker[0], value.marker[1]]);
+      streetSmartClient.value.openByCoordinate([value.marker[0], value.marker[1]]).then(() => {
+        streetSmartClient.value.setOrientation(orientation);
+      });
     }
   },
 );
@@ -105,12 +114,12 @@ const openStreetSmartClient = () => {
         mapStore.setCycloView(event);
         const recording = streetSmartClient.value.getRecording();
         const coordinates = getXYCoordinates(recording.xyz);
-        emit("position-changed", { ...props.position, marker: coordinates });
+        emit("position-changed", { ...props.position, marker: coordinates, source: "streetsmart" });
       });
 
       streetSmartClient.value.on("RECORDING_CLICK", (event) => {
         const coordinates = getXYCoordinates(event.detail.recording.xyz);
-        emit("position-changed", { ...props.position, marker: coordinates });
+        emit("position-changed", { ...props.position, marker: coordinates, source: "streetsmart" });
       });
     })
     .catch((err: any) => {
