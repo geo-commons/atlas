@@ -3,3 +3,8 @@ export enum EditLayerMode {
   EDIT = "EDIT",
   NONE = "NONE",
 }
+
+export interface IPosition {
+  center: [number, number];
+  zoom: number;
+}

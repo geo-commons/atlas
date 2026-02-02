@@ -142,6 +142,7 @@ import SelectableDisabledIcon from "../assets/icons/selectable-disabled-icon.svg
 import { useMapStore } from "@/stores/map_store";
 import { fetchLegendImage } from "@/utils/legend-utils";
 import { getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
+import { ELayerTypes } from "@/types/layer";
 
 export default {
   name: "VisibleLayer",
@@ -181,9 +182,9 @@ export default {
   computed: {
     layerHasLegend() {
       return (
-        this.layer.source_type === "WMS" ||
-        this.layer.source_type === "WMS_WFS" ||
-        (this.layer.source_type === "WMTS" && this.layer.legend_url) ||
+        this.layer.source_type === ELayerTypes.WMS ||
+        this.layer.source_type === ELayerTypes.WMS_WFS ||
+        this.layer.source_type === ELayerTypes.WMTS ||
         this.layer.legend_url
       );
     },
