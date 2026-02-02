@@ -25,6 +25,12 @@ export interface ILayer {
     updated: string;
     link: string;
   };
+  server_type: string;
+  server_style: string | null;
+  source: {
+    authenticate: boolean;
+  };
+  login_required: boolean;
 }
 
 export type IGeometryType = GeometryType | "Geometry";
