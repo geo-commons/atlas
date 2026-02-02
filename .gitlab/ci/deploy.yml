@@ -110,6 +110,7 @@ Deploy acceptance:
       --set allowedHosts=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set secretKey=$SECRET_KEY \
       --set dbHost=atlas-acc-postgresql \
+      --set ingress.enabled=true \
       --set ingress.hosts[0].host=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set ingress.hosts[0].paths[0].path=/ \
       --set ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
