@@ -124,12 +124,12 @@ Deploy acceptance:
       --set googleMapsApiKey=$GOOGLE_MAPS_API_KEY \
       --set loadDemoData=true \
       --set environment=acceptance \
-      --set geoserver.ingress.hosts[0].host=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN \
       --set geoserver.enabled=true \
+      --set geoserver.ingress.hosts[0].host=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set geoserver.ingress.hosts[0].paths[0].path=/geoserver \
       --set geoserver.ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
       --set geoserver.ingress.tls[0].secretName=atlas-tls \
-      --set geoserver.ingress.tls[0].hosts[0]=atlas-$CI_ENVIRONMENT_SLUG.$REVIEW_BASE_DOMAIN \
+      --set geoserver.ingress.tls[0].hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set geoserver.ingress.annotations.kubernetes\\.io/ingress\\.class=nginx \
       --set geoserver.ingress.annotations.cert-manager\\.io/cluster-issuer=letsencrypt-prod \
   environment:
