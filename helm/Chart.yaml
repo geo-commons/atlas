@@ -13,3 +13,9 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - postgresql
+  - name: geoserver
+    version: 2.27.3
+    repository: https://delta10.github.io/helm-charts
+    condition: geoserver.enabled
+    tags:
+      - geoserver
