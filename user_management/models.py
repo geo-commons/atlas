@@ -7,7 +7,7 @@ class AtlasGroup(models.Model):
     name = models.CharField('Groep', max_length=50)
     external_id = models.CharField(
         'External ID', max_length=255, null=True, blank=True,
-        help_text='Het unieke kernmerk van de groep in de inlogbron.')
+        help_text='Het unieke kernmerk van de groep volgens de inlogbron. Alleen invullen als synchronisatie met inlogbron gewenst is.')
     slug = AutoSlugField('Kort kenmerk', null=True, blank=True, unique=True, populate_from='name', editable=True,
                          help_text='Een uniek kort kenmerk voor de groep.', max_length=255)
 
