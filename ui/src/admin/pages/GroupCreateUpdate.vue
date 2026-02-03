@@ -90,8 +90,9 @@ export default {
               id: "external_id",
               name: "ExternalId",
               type: "text",
-              required: true,
-              infoText: "Het unieke kenmerk van de groep in de inlogbron.",
+              required: false,
+              infoText:
+                "Het unieke kenmerk van de groep volgens de inlogbron. Alleen invullen als synchronisatie met inlogbron gewenst is.",
             },
             {
               label: "Kort kenmerk",
