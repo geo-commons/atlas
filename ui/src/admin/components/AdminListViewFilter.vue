@@ -46,7 +46,7 @@ onMounted(async () => {
         :model-value="props.params.get('search')"
         class="!tw-text-sm"
         :placeholder="'Zoek op ' + props.singularName.toLowerCase()"
-        @update:modelValue="(value: string) => emit('update-search-term', value)"
+        @update:model-value="(value: string) => emit('update-search-term', value)"
       />
     </InputGroup>
     <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2 tw-max-w-full">

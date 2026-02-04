@@ -2,7 +2,7 @@
   <PanelDisplay
     :title="layerDisplayName ? layerDisplayName : 'Lijstweergave'"
     :loading="loading"
-    @hidePanel="hidePanel"
+    @hide-panel="hidePanel"
   >
     <p v-if="!layer" class="info-text">De lijstweergave is nog niet geconfigureerd.</p>
 

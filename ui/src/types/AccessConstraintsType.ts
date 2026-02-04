@@ -1,7 +1,7 @@
 /* AUTO-GENERATED FILE — do not edit, rather run npm install to get the most recent version of the types.
-   * Source: 2025-09-17T10:27:52.839Z
-   * From: AccessConstraintsType at build-time
-   */
+ * Source: 2025-09-17T10:27:52.839Z
+ * From: AccessConstraintsType at build-time
+ */
 import { Option } from "./Option";
 
 // AccessConstraintsType
@@ -24,12 +24,12 @@ export const accessConstraintsTypeOptions: Option<AccessConstraintsTypeId>[] = [
   {
     id: "otherRestrictions",
     label: "Overige beperkingen - Restrictie niet opgenomen in lijst.",
-  }
+  },
 ];
 
 export const accessConstraintsTypeLabels: Record<AccessConstraintsTypeId, string> = {
-  "license": "Licentie",
-  "intellectualPropertyRights": "Intellectuele eigendomsrechten",
-  "restricted": "Beperkt",
-  "otherRestrictions": "Overige beperkingen"
+  license: "Licentie",
+  intellectualPropertyRights: "Intellectuele eigendomsrechten",
+  restricted: "Beperkt",
+  otherRestrictions: "Overige beperkingen",
 };

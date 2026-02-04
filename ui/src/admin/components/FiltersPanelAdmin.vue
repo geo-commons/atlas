@@ -50,7 +50,7 @@
             placeholder="Kies een laag"
             filter-placeholder="Zoek een laag"
             show-clear
-            @update:modelValue="(value) => onLayerChange(value)"
+            @update:model-value="(value) => onLayerChange(value)"
           />
         </div>
 
@@ -65,7 +65,7 @@
                 :name="`facet-${facet}`"
                 :value="facet"
                 :model-value="data.settings.facets.includes(facet)"
-                @update:modelValue="(value) => onChangeFacet(value, facet)"
+                @update:model-value="(value) => onChangeFacet(value, facet)"
               />
               <label :for="`facet-${facet}`">{{ facet }}</label>
             </div>

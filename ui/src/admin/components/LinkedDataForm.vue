@@ -12,7 +12,7 @@
             type="text"
             rules="required"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="title" />
         </div>
@@ -26,7 +26,7 @@
             type="text"
             rules="required"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="name" />
         </div>
@@ -40,7 +40,7 @@
             type="text"
             rules="required"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="url" />
         </div>
@@ -54,7 +54,7 @@
             type="text"
             rules="required"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="source_key" />
         </div>
@@ -68,7 +68,7 @@
             type="text"
             rules="required"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="target_key" />
         </div>
@@ -81,7 +81,7 @@
             name="headers"
             rows="6"
             :model-value="headers"
-            @update:modelValue="(value) => updateMultiLineField(linkedData, 'headers', value)"
+            @update:model-value="(value) => updateMultiLineField(linkedData, 'headers', value)"
           />
         </div>
         <div class="layer-setting">
@@ -91,14 +91,14 @@
             name="display_properties"
             rows="6"
             :model-value="display_properties"
-            @update:modelValue="(value) => updateMultiLineField(linkedData, 'display_properties', value)"
+            @update:model-value="(value) => updateMultiLineField(linkedData, 'display_properties', value)"
           />
         </div>
         <div class="layer-setting-toggle">
           <ToggleSwitch
             :model-value="linkedData.use_detail_view"
             input-id="use_detail_view"
-            @update:modelValue="toggleUseDetailView"
+            @update:model-value="toggleUseDetailView"
           />
           <label for="use_detail_view">Gebruik detailweergave</label>
         </div>
@@ -109,7 +109,7 @@
             name="detail_view_fields"
             rows="6"
             :model-value="detail_view_fields"
-            @update:modelValue="(value) => updateMultiLineField(linkedData, 'detail_view_fields', value)"
+            @update:model-value="(value) => updateMultiLineField(linkedData, 'detail_view_fields', value)"
           />
         </div>
       </div>

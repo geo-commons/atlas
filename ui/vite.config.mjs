@@ -44,4 +44,7 @@ export default defineConfig({
       host: "localhost",
     },
   },
+  test: {
+    projects: ["./vitest.unit.config.mjs", "./vitest.browser.config.mjs"],
+  },
 });

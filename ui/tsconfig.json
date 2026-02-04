@@ -16,10 +16,7 @@
     "paths": {
       "@/*": ["src/*", "tests/*"]
     },
-    "types": [
-      "@vitest/browser/providers/playwright",
-      "vite-svg-loader"
-    ]
+    "types": ["@vitest/browser-playwright", "vite-svg-loader"]
   },
   "include": [
     "src/**/*.ts",
@@ -32,5 +29,5 @@
     "tests/**/*.js",
     "vite-env.d.ts"
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

@@ -13,9 +13,9 @@
       <RulerIcon class="icon" />
     </button>
 
-    <div v-if="showMeasureMenu || tool === 'MEASURE_AREA' || tool === 'MEASURE_LINE'">
+    <div>
       <transition name="fade">
-        <div class="tools-panel__draw-bar">
+        <div v-if="showMeasureMenu || tool === 'MEASURE_AREA' || tool === 'MEASURE_LINE'" class="tools-panel__draw-bar">
           <div class="tools-panel__draw-menu">
             <button
               v-tippy="{ placement: 'bottom' }"

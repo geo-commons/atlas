@@ -8,7 +8,7 @@
         <switch-slider
           :initial-checked-status="showFilters"
           :aria-label="`${showFilters ? 'Deactiveer' : 'Activeer'} filters voor laag ${layer.title}`"
-          @toggleSwitch="toggleFilters()"
+          @toggle-switch="toggleFilters()"
         />
         <div>{{ showFilters ? "Deactiveer" : "Activeer" }} filters voor {{ layer.title.toLowerCase() }}</div>
       </div>
@@ -39,7 +39,7 @@
               :filter-options="filterOptions[property]"
               :field-filters="fieldFilters"
               :filter-property="property"
-              @onFilterChange="(v) => setFieldFilters(v, property)"
+              @on-filter-change="(v) => setFieldFilters(v, property)"
             />
           </div>
         </div>

@@ -45,7 +45,7 @@
                       :disabled="question.disabled"
                       :input-id="question.id"
                       binary
-                      @update:modelValue="handleChange"
+                      @update:model-value="handleChange"
                       @blur="handleBlur"
                     />
                     <span class="label-info-text-wrapper">
@@ -128,7 +128,7 @@
                       :show-source-controls="false"
                       :show-target-controls="false"
                       @blur="handleBlur"
-                      @update:modelValue="handleChange"
+                      @update:model-value="handleChange"
                     >
                       <template #option="{ option }">
                         {{ option.name }}
@@ -196,7 +196,7 @@
                     min="0"
                     fluid
                     @blur="handleBlur"
-                    @update:modelValue="handleChange"
+                    @update:model-value="handleChange"
                   />
                 </vee-field>
                 <label v-else-if="question.type === 'label'">
@@ -222,7 +222,7 @@
                     :model-value="value"
                     :rows="question.rows ? question.rows : 5"
                     fluid
-                    @update:modelValue="handleChange"
+                    @update:model-value="handleChange"
                     @blur="handleBlur"
                   />
                 </vee-field>
@@ -304,7 +304,7 @@
                     }"
                     :model-value="value ? new Date(value) : null"
                     @blur="handleBlur"
-                    @update:modelValue="handleChange"
+                    @update:model-value="handleChange"
                   />
                 </vee-field>
 

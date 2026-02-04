@@ -16,9 +16,9 @@
   >
     <component :is="tool.icon" />
   </button>
-  <div v-if="toolInUse === tool.name && tool.enableUndo">
+  <div>
     <transition name="fade">
-      <div class="tools-panel__draw-options-menu">
+      <div v-if="toolInUse === tool.name && tool.enableUndo" class="tools-panel__draw-options-menu">
         <ul>
           <li>
             <button

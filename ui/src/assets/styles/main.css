@@ -528,7 +528,8 @@ hr {
 }
 
 /* codemirror */
-.cm-activeLine, .cm-activeLineGutter {
+.cm-activeLine,
+.cm-activeLineGutter {
   background-color: transparent !important;
 }
 
