@@ -55,7 +55,12 @@
             </span>
             Categorieën
           </router-link>
-          <router-link to="/metadatasets" class="button __tertiary __large" type="button" aria-label="Naar metadatasets">
+          <router-link
+            to="/metadatasets"
+            class="button __tertiary __large"
+            type="button"
+            aria-label="Naar metadatasets"
+          >
             <span class="button-icon tw-bg-amber-100 tw-w-[40px] tw-h-[40px] tw-flex tw-items-center tw-justify-center">
               <i class="pi pi-tag tw-text-amber-800" style="font-size: 1.25rem" />
             </span>

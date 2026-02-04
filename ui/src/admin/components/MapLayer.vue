@@ -27,7 +27,7 @@
           <ToggleSwitch
             input-id="customSettings"
             :model-value="mapLayerConfig.settings.customSettings"
-            @update:modelValue="toggleSettings"
+            @update:model-value="toggleSettings"
           />
           <label for="customSettings">Kaart specifieke laag instellingen</label>
           <AdminFormInfoText :info-text="toggleSettingsInfo" />
@@ -38,7 +38,7 @@
               <ToggleSwitch
                 input-id="is_base"
                 :model-value="mapLayerConfig.settings.is_base"
-                @update:modelValue="toggleSliderField('is_base')"
+                @update:model-value="toggleSliderField('is_base')"
               />
               <label for="is_base">Is een basislaag</label>
             </div>
@@ -46,7 +46,7 @@
               <ToggleSwitch
                 input-id="is_visible"
                 :model-value="mapLayerConfig.settings.is_visible"
-                @update:modelValue="toggleSliderField('is_visible')"
+                @update:model-value="toggleSliderField('is_visible')"
               />
               <label for="is_visible">Kaartlaag standaard zichtbaar</label>
             </div>
@@ -65,7 +65,7 @@
                   input-id="opacity"
                   :min="0"
                   :max="100"
-                  @update:modelValue="(value) => handleInput(value / 100, 'opacity')"
+                  @update:model-value="(value) => handleInput(value / 100, 'opacity')"
                 />
                 <Slider
                   id="opacity"
@@ -76,7 +76,7 @@
                   :max="100"
                   :step="10"
                   fluid
-                  @update:modelValue="(value) => handleInput(value / 100, 'opacity')"
+                  @update:model-value="(value) => handleInput(value / 100, 'opacity')"
                 />
               </div>
             </div>
@@ -92,7 +92,7 @@
                 :step="1"
                 :min="0"
                 fluid
-                @update:modelValue="(value) => handleInput(value, 'zoom_min')"
+                @update:model-value="(value) => handleInput(value, 'zoom_min')"
               />
             </div>
             <div class="layer-setting">
@@ -105,7 +105,7 @@
                 :step="1"
                 :min="0"
                 fluid
-                @update:modelValue="(value) => handleInput(value, 'zoom_max')"
+                @update:model-value="(value) => handleInput(value, 'zoom_max')"
               />
             </div>
             <div class="layer-setting">
@@ -115,7 +115,7 @@
                 :model-value="displayProperties"
                 name="display_properties"
                 rows="6"
-                @update:modelValue="
+                @update:model-value="
                   (value) => updateMultiLineField(mapLayerConfig.settings, 'display_properties', value)
                 "
               />
@@ -127,7 +127,7 @@
                 :model-value="searchProperties"
                 name="search_properties"
                 rows="6"
-                @update:modelValue="
+                @update:model-value="
                   (value) => updateMultiLineField(mapLayerConfig.settings, 'search_properties', value)
                 "
               />
@@ -138,7 +138,7 @@
                 id="server_style"
                 :model-value="mapLayerConfig.settings.server_style"
                 name="server_style"
-                @update:modelValue="(value) => handleInput(value, 'server_style')"
+                @update:model-value="(value) => handleInput(value, 'server_style')"
               />
               <span class="info-text">Stijlnaam zoals beschikbaar op de server</span>
             </div>

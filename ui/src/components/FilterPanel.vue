@@ -3,7 +3,7 @@
     title="Verfijn resultaten"
     :loading="loading"
     :badge="countOfActiveSelectedFiltersForLayer"
-    @hidePanel="hidePanel"
+    @hide-panel="hidePanel"
   >
     <p v-if="facets.length <= 0 || !layer" class="info-text">Er zijn nog geen filters geconfigureerd.</p>
     <div v-if="layer">

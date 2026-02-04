@@ -66,7 +66,7 @@
             placeholder="Titel"
             maxlength="128"
             fluid
-            @update:modelValue="(value) => (data.about_title = value)"
+            @update:model-value="(value) => (data.about_title = value)"
           />
         </div>
 
@@ -79,7 +79,7 @@
             :model-value="data.about"
             name="editor"
             rows="12"
-            @update:modelValue="(value) => (data.about = value)"
+            @update:model-value="(value) => (data.about = value)"
           />
         </div>
       </div>

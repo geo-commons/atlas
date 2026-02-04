@@ -10,7 +10,7 @@
       :loading="isLoading"
       filter
       fluid
-      @update:modelValue="(value) => emit('update:modelValue', value)"
+      @update:model-value="(value) => emit('update:modelValue', value)"
     ></Select>
   </div>
 </template>

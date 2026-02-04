@@ -42,7 +42,7 @@
         :group="'categories'"
         :selectable-items="true"
         class="category-table"
-        @updateList="(newCategories) => updateCategories(newCategories)"
+        @update-list="(newCategories) => updateCategories(newCategories)"
         @item-selected="(selectedItem) => selectCategory(selectedItem)"
       />
 
@@ -52,7 +52,7 @@
         :title="'Kaartlagen'"
         :group="'layers'"
         class="layer-table"
-        @updateList="(newLayers) => updateLayers(newLayers)"
+        @update-list="(newLayers) => updateLayers(newLayers)"
       >
         <template #empty-list>De geselecteerde categorie heeft geen bijbehorende kaartlagen.</template>
       </SortableList>

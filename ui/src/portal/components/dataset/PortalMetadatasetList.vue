@@ -5,7 +5,7 @@
         v-for="metadataset in metadatasets"
         :key="metadataset.id"
         class="tw-pb-4 tw-mb-4 last:tw-pb-0 last:tw-mb-0"
-        style="border-bottom: 1px solid var(--color-grey-60);"
+        style="border-bottom: 1px solid var(--color-grey-60)"
       >
         <PortalMetadatasetListItem :metadataset="metadataset" />
       </li>

@@ -18,7 +18,7 @@
         option: 'tw-overflow-hidden tw-max-w-full',
         optionContent: 'tw-max-w-full tw-overflow-hidden',
       }"
-      @update:modelValue="handleModelValueUpdate"
+      @update:model-value="handleModelValueUpdate"
     >
       <template #option="{ option }">
         <div class="tw-py-2 tw-w-full tw-min-w-0">

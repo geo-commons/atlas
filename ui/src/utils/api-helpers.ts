@@ -17,7 +17,7 @@ export function getAllObjects(url: string, maxPageSize: number = 10000): string 
 
   // Set or override the 'page_size' parameter with the provided or default value
   params.set("page_size", maxPageSize.toString());
-  
+
   // Return the updated URL as a string
   return `${url}?${params.toString()}`;
 }

@@ -13,9 +13,9 @@
       <AreaSelectIcon class="icon __smedium" />
     </button>
 
-    <div v-if="showSelectMenu" class="tools-panel__menu">
+    <div class="tools-panel__menu">
       <transition name="fade">
-        <ul class="tools-panel__list">
+        <ul v-if="showSelectMenu" class="tools-panel__list">
           <li>
             <button aria-label="Selecteer gebied met behulp van cirkel" @click="() => setTool('SELECT_CIRCLE')">
               Cirkel

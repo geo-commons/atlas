@@ -12,7 +12,7 @@
       fluid
       class="!max-w-full"
       filter-placeholder="Zoek thema"
-      @update:modelValue="(value) => emit('update:modelValue', value)"
+      @update:model-value="(value) => emit('update:modelValue', value)"
     />
   </div>
 </template>

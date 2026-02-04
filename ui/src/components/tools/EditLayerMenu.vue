@@ -14,9 +14,9 @@
       <EditLocationIcon class="icon" />
     </button>
 
-    <div v-if="showEditFeatureMenu">
+    <div>
       <transition name="fade">
-        <div class="tools-panel__draw-bar">
+        <div v-if="showEditFeatureMenu" class="tools-panel__draw-bar">
           <div class="tools-panel__draw-menu">
             <button
               v-tippy="{ placement: 'bottom' }"
@@ -49,7 +49,7 @@
       </transition>
 
       <transition name="fade">
-        <div class="tools-panel__draw-bar tools-panel__draw-bar--secondary">
+        <div v-if="showEditFeatureMenu" class="tools-panel__draw-bar tools-panel__draw-bar--secondary">
           <div v-for="geometryTool in availableGeometryTools" :key="geometryTool.name" class="tools-panel__draw-menu">
             <EditLayerTool
               v-if="geometryTool.name === editLayerStore.geometryType || editLayerStore.geometryType === 'Geometry'"

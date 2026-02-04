@@ -11,7 +11,7 @@
       placeholder="Kies waarde"
       filter-placeholder="Zoek waarde"
       filter
-      @update:modelValue="updateFieldFilters()"
+      @update:model-value="updateFieldFilters()"
     />
     <multi-select
       v-else
@@ -22,7 +22,7 @@
       placeholder="Kies waarde"
       filter-placeholder="Zoek waarde"
       filter
-      @update:modelValue="updateFieldFilters()"
+      @update:model-value="updateFieldFilters()"
     />
   </div>
 </template>

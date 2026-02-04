@@ -99,7 +99,7 @@
       :thumbnail="thumbnail"
       :show-panel="showAbout"
       @close-side-panel="closeAbout"
-      @hidePanel="closeAbout"
+      @hide-panel="closeAbout"
       @toggle-modal="toggleModal"
       @toggle-about="toggleAbout"
     />
@@ -110,7 +110,7 @@
       :layer="getSelectedLayer(settings.listLayerId)"
       :title-template="settings.title"
       :short-description-template="settings.short_description"
-      @hidePanel="toggleList"
+      @hide-panel="toggleList"
       @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19 })"
     />
     <FilterPanel
@@ -120,7 +120,7 @@
       :facets="settings.facets"
       :user="user"
       :map-id="mapId"
-      @hidePanel="toggleFilters"
+      @hide-panel="toggleFilters"
     />
     <PointInfoPanel
       v-if="!showPanoramaPanel && features.markerOnClick"
@@ -247,10 +247,10 @@
           @set-selected-area="setSelectedArea"
           @drawing-saved="drawingSaved"
           @clear-draw="clearDrawing"
-          @setInteraction="setInteraction"
-          @setColor="setColor"
-          @setStrokeWidth="setStrokeWidth"
-          @setFontSize="setFontSize"
+          @set-interaction="setInteraction"
+          @set-color="setColor"
+          @set-stroke-width="setStrokeWidth"
+          @set-font-size="setFontSize"
         />
         <MorePanel
           v-if="features.morepanel && !isEmbed && !showPanoramaPanel"
@@ -349,7 +349,7 @@
     </div>
 
     <transition name="fade">
-      <div>
+      <div v-if="modal === 'embed' || modal === 'print' || modal === 'drawing'">
         <EmbedModal
           v-if="modal === 'embed'"
           :map-id="mapId"

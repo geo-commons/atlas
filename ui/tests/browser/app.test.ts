@@ -1,9 +1,9 @@
-import { describe, it } from 'vitest'
+import { describe, it } from "vitest";
 
 // An entry will be shown in the report for this suite
-describe.todo('unimplemented browser suite')
+describe.todo("unimplemented browser suite");
 
 // An entry will be shown in the report for this test
-describe('suite', () => {
-  it.todo('unimplemented test')
-})
+describe("suite", () => {
+  it.todo("unimplemented test");
+});

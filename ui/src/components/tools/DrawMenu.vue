@@ -13,9 +13,9 @@
       <BrushIcon class="icon" />
     </button>
 
-    <div v-if="showDrawMenu">
+    <div>
       <transition name="fade">
-        <div class="tools-panel__draw-bar">
+        <div v-if="showDrawMenu" class="tools-panel__draw-bar">
           <div class="tools-panel__draw-menu">
             <button
               v-tippy="{ placement: 'bottom' }"
@@ -29,17 +29,18 @@
             >
               <DotIcon />
             </button>
-            <div
-              v-if="
-                showDrawMenu &&
-                (tool === 'DRAW_POINT' ||
-                  previousTool === 'DRAW_POINT' ||
-                  tool === 'DRAW_COORDINATE' ||
-                  previousTool === 'DRAW_COORDINATE')
-              "
-            >
+            <div>
               <transition name="fade">
-                <div class="tools-panel__draw-options-menu">
+                <div
+                  v-if="
+                    showDrawMenu &&
+                    (tool === 'DRAW_POINT' ||
+                      previousTool === 'DRAW_POINT' ||
+                      tool === 'DRAW_COORDINATE' ||
+                      previousTool === 'DRAW_COORDINATE')
+                  "
+                  class="tools-panel__draw-options-menu"
+                >
                   <ul>
                     <li>
                       <button
@@ -74,9 +75,12 @@
             >
               <LineIcon />
             </button>
-            <div v-if="showDrawMenu && (tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE')">
+            <div>
               <transition name="fade">
-                <div class="tools-panel__draw-options-menu">
+                <div
+                  v-if="showDrawMenu && (tool === 'DRAW_LINE' || previousTool === 'DRAW_LINE')"
+                  class="tools-panel__draw-options-menu"
+                >
                   <ul>
                     <li>
                       <button
@@ -107,9 +111,12 @@
             >
               <PolyGonIcon />
             </button>
-            <div v-if="showDrawMenu && (tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON')">
+            <div>
               <transition name="fade">
-                <div class="tools-panel__draw-options-menu">
+                <div
+                  v-if="showDrawMenu && (tool === 'DRAW_POLYGON' || previousTool === 'DRAW_POLYGON')"
+                  class="tools-panel__draw-options-menu"
+                >
                   <ul>
                     <li>
                       <button
@@ -163,9 +170,9 @@
               <FormatSizeIcon />
               <p>{{ fontSize }}px</p>
             </button>
-            <div v-if="showDrawMenu && showFontSizeMenu">
+            <div>
               <transition name="fade">
-                <div class="tools-panel__draw-options-menu">
+                <div v-if="showDrawMenu && showFontSizeMenu" class="tools-panel__draw-options-menu">
                   <ul>
                     <li>
                       <button
@@ -231,9 +238,9 @@
               <LineWeightIcon />
               <p>{{ strokeWidth }}px</p>
             </button>
-            <div v-if="showDrawMenu && showLineWeightMenu">
+            <div>
               <transition name="fade">
-                <div class="tools-panel__draw-options-menu">
+                <div v-if="showDrawMenu && showLineWeightMenu" class="tools-panel__draw-options-menu">
                   <ul>
                     <li>
                       <button

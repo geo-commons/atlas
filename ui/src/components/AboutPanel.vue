@@ -144,7 +144,8 @@ const processedAbout = computed(() => {
   strong {
     font-weight: 700;
   }
-  ul, ol {
+  ul,
+  ol {
     @apply tw-list-disc tw-pl-4;
   }
 

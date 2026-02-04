@@ -13,7 +13,7 @@
           <div class="input-wrapper">
             <label for="title" class="tw-font-bold">Titel</label>
             <vee-field id="title" v-slot="{ value, handleChange, handleBlur }" name="title" rules="required">
-              <InputText id="title" :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+              <InputText id="title" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
             </vee-field>
             <span class="warning-text">
               <vee-error-message name="title" />
@@ -27,7 +27,7 @@
               />
             </label>
             <vee-field id="slug" v-slot="{ value, handleChange, handleBlur }" name="slug" rules="required">
-              <InputText id="slug" :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+              <InputText id="slug" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
             </vee-field>
             <span class="warning-text">
               <vee-error-message name="slug" />
@@ -42,7 +42,7 @@
               :model-value="data.published"
               name="published"
               binary
-              @update:modelValue="(value) => (data.published = value)"
+              @update:model-value="(value) => (data.published = value)"
             />
             <label for="published">Publiceer kaart</label>
             <AdminFormInfoText
@@ -55,7 +55,7 @@
               :model-value="data.show_in_overview"
               name="show_in_overview"
               binary
-              @update:modelValue="(value) => (data.show_in_overview = value)"
+              @update:model-value="(value) => (data.show_in_overview = value)"
             />
             <label for="show_in_overview">Toon kaart in overzicht weergave</label>
             <AdminFormInfoText
@@ -98,7 +98,7 @@
               :model-value="data.features.searchbar"
               name="features.searchbar"
               binary
-              @update:modelValue="(value) => (data.features.searchbar = value)"
+              @update:model-value="(value) => (data.features.searchbar = value)"
             />
             <label for="features.searchbar">Toon zoekbalk</label>
           </div>
@@ -109,7 +109,7 @@
               :model-value="data.features.datapanel"
               name="features.datapanel"
               binary
-              @update:modelValue="(value) => (data.features.datapanel = value)"
+              @update:model-value="(value) => (data.features.datapanel = value)"
             />
             <label for="features.datapanel">Toon dataweergave</label>
           </div>
@@ -120,7 +120,7 @@
               :model-value="data.features.selectarea"
               name="features.selectarea"
               binary
-              @update:modelValue="(value) => (data.features.selectarea = value)"
+              @update:model-value="(value) => (data.features.selectarea = value)"
             />
             <label for="features.selectarea">Selecteer gebied</label>
           </div>
@@ -131,7 +131,7 @@
               :model-value="data.features.measure"
               name="features.measure"
               binary
-              @update:modelValue="(value) => (data.features.measure = value)"
+              @update:model-value="(value) => (data.features.measure = value)"
             />
             <label for="features.measure">Opmeten</label>
           </div>
@@ -142,7 +142,7 @@
               :model-value="data.features.morepanel"
               name="features.morepanel"
               binary
-              @update:modelValue="(value) => (data.features.morepanel = value)"
+              @update:model-value="(value) => (data.features.morepanel = value)"
             />
             <label for="features.morepanel">Meer opties</label>
           </div>
@@ -153,7 +153,7 @@
               :model-value="data.features.gps"
               name="features.gps"
               binary
-              @update:modelValue="(value) => (data.features.gps = value)"
+              @update:model-value="(value) => (data.features.gps = value)"
             />
             <label for="features.gps">GPS knop</label>
           </div>
@@ -164,7 +164,7 @@
               :model-value="data.features.zoom"
               name="features.zoom"
               binary
-              @update:modelValue="(value) => (data.features.zoom = value)"
+              @update:model-value="(value) => (data.features.zoom = value)"
             />
             <label for="features.zoom">Zoomfunctie</label>
           </div>
@@ -175,7 +175,7 @@
               :model-value="data.features.scale"
               name="features.scale"
               binary
-              @update:modelValue="(value) => (data.features.scale = value)"
+              @update:model-value="(value) => (data.features.scale = value)"
             />
             <label for="features.scale">Toon schaal</label>
           </div>
@@ -186,7 +186,7 @@
               :model-value="data.features.markerOnClick"
               name="features.markerOnClick"
               binary
-              @update:modelValue="(value) => (data.features.markerOnClick = value)"
+              @update:model-value="(value) => (data.features.markerOnClick = value)"
             />
             <label for="features.markerOnClick">Prikker bij klik</label>
           </div>
@@ -197,7 +197,7 @@
               :model-value="data.features.baselayer"
               name="features.baselayer"
               binary
-              @update:modelValue="(value) => (data.features.baselayer = value)"
+              @update:model-value="(value) => (data.features.baselayer = value)"
             />
             <label for="features.baselayer">Basislagen</label>
           </div>
@@ -208,7 +208,7 @@
               :model-value="data.features.layerlist"
               name="features.layerlist"
               binary
-              @update:modelValue="(value) => (data.features.layerlist = value)"
+              @update:model-value="(value) => (data.features.layerlist = value)"
             />
             <label for="features.layerlist">Lagenlijst</label>
             <button
@@ -227,7 +227,7 @@
               :model-value="data.features.legend"
               name="features.legend"
               binary
-              @update:modelValue="(value) => (data.features.legend = value)"
+              @update:model-value="(value) => (data.features.legend = value)"
             />
             <label for="features.legend">Legenda</label>
           </div>
@@ -238,7 +238,7 @@
               :model-value="data.features.layerPanelCollapsed"
               name="features.layerPanelCollapsed"
               binary
-              @update:modelValue="(value) => (data.features.layerPanelCollapsed = value)"
+              @update:model-value="(value) => (data.features.layerPanelCollapsed = value)"
             />
             <label for="features.layerPanelCollapsed">Lagenlijst en legenda standaard gesloten</label>
           </div>
@@ -249,7 +249,7 @@
               :model-value="data.features.list"
               name="features.list"
               binary
-              @update:modelValue="(value) => (data.features.list = value)"
+              @update:model-value="(value) => (data.features.list = value)"
             />
             <label for="features.list">Lijstweergave</label>
 
@@ -269,7 +269,7 @@
               :model-value="data.features.filters"
               name="features.filters"
               binary
-              @update:modelValue="(value) => (data.features.filters = value)"
+              @update:model-value="(value) => (data.features.filters = value)"
             />
             <label for="features.filters">Filters</label>
 
@@ -289,7 +289,7 @@
               :model-value="data.features.compareLayers"
               name="features.compareLayers"
               binary
-              @update:modelValue="(value) => (data.features.compareLayers = value)"
+              @update:model-value="(value) => (data.features.compareLayers = value)"
             />
             <label for="features.compareLayers">Kaartlagen vergelijken</label>
           </div>
@@ -300,7 +300,7 @@
               :model-value="data.features.draw"
               name="features.draw"
               binary
-              @update:modelValue="(value) => (data.features.draw = value)"
+              @update:model-value="(value) => (data.features.draw = value)"
             />
             <label for="features.draw">Tekenen</label>
           </div>
@@ -311,7 +311,7 @@
               :model-value="data.features.edit_layer_features"
               name="features.edit_layer_features"
               binary
-              @update:modelValue="(value) => (data.features.edit_layer_features = value)"
+              @update:model-value="(value) => (data.features.edit_layer_features = value)"
             />
             <label for="features.edit_layer_features">CRUD Functionaliteit</label>
           </div>
@@ -322,7 +322,7 @@
               :model-value="data.features.panoramaViewers"
               name="features.panoramaViewers"
               binary
-              @update:modelValue="(value) => (data.features.panoramaViewers = value)"
+              @update:model-value="(value) => (data.features.panoramaViewers = value)"
             />
             <label for="features.panoramaViewers">Rondkijkfoto</label>
           </div>

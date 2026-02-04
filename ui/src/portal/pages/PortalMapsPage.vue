@@ -11,7 +11,7 @@
         />
       </div>
       <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-        <p class="!tw-mt-0" v-if="!maps.length > 0">Geen resultaten gevonden.</p>
+        <p v-if="!maps.length > 0" class="!tw-mt-0">Geen resultaten gevonden.</p>
         <PortalCard
           v-for="map in maps"
           :key="map.id"

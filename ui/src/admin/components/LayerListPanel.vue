@@ -24,7 +24,7 @@
             :model-value="data.features.layerlistsearch"
             name="features.layerlistsearch"
             binary
-            @update:modelValue="(value) => (data.features.layerlistsearch = value)"
+            @update:model-value="(value) => (data.features.layerlistsearch = value)"
           />
           <label for="features.layerlistsearch">Verberg zoekbalk lagenlijst</label>
         </div>
@@ -35,7 +35,7 @@
             :model-value="data.features.layerlistsimple"
             name="features.layerlistsimple"
             binary
-            @update:modelValue="(value) => (data.features.layerlistsimple = value)"
+            @update:model-value="(value) => (data.features.layerlistsimple = value)"
           />
           <label for="features.layerlistsimple">Versimpelde weergave lagenlijst</label>
         </div>

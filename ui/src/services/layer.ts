@@ -118,7 +118,7 @@ const addFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
-  user: IUser
+  user: IUser,
 ) => {
   await performWfsTransaction(layer, { toInsert: [feature] }, featureProperties, geometryName, user);
 };
@@ -129,7 +129,7 @@ const editFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
-  user: IUser
+  user: IUser,
 ) => {
   await performWfsTransaction(layer, { toUpdate: [feature] }, featureProperties, geometryName, user);
 };
@@ -140,7 +140,7 @@ const deleteFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
-  user: IUser
+  user: IUser,
 ) => {
   await performWfsTransaction(layer, { toDelete: [feature] }, featureProperties, geometryName, user);
 };

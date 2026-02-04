@@ -13,6 +13,9 @@ htmlcov
 /ui/webpack-stats.json
 /ui/package-lock.json
 
+/mock/node_modules
+/mock/package-lock.json
+
 !.vscode/
 .vscode/tasks.json
 

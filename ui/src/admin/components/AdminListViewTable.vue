@@ -126,7 +126,7 @@ defineExpose({ resetSelection });
       <thead>
         <tr class="table-border">
           <th v-if="items.length && props.enableActions" class="tw-w-8 tw-p-2">
-            <Checkbox v-model="selectAllRows" :binary="true" @update:modelValue="onSelectAllRows" />
+            <Checkbox v-model="selectAllRows" :binary="true" @update:model-value="onSelectAllRows" />
           </th>
           <th v-for="header in props.tableHeaders" :key="header.key" class="first:tw-pl-4">
             <AdminListViewTableHeader
@@ -146,7 +146,7 @@ defineExpose({ resetSelection });
             <Checkbox
               :model-value="selectedRowsCheckedValue[row.id]"
               :binary="true"
-              @update:modelValue="onSelectRow(row)"
+              @update:model-value="onSelectRow(row)"
             />
           </td>
 
@@ -164,7 +164,7 @@ defineExpose({ resetSelection });
               <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
             </router-link>
           </td>
-          <td class="btn-col" v-if="props.enableEdit">
+          <td v-if="props.enableEdit" class="btn-col">
             <button
               v-tippy="{ placement: 'bottom' }"
               class="iconbutton __normal __round __admin_hover tw-my-1"
@@ -189,7 +189,7 @@ defineExpose({ resetSelection });
               <ViewIcon class="icon" />
             </a>
           </td>
-          <td class="btn-col" v-if="enableDelete">
+          <td v-if="enableDelete" class="btn-col">
             <button
               v-tippy="{ placement: 'bottom' }"
               :disabled="blockDelete(row)"

@@ -36,7 +36,7 @@
             type="text"
             rules="required"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="endpoint" />
         </div>
@@ -74,7 +74,7 @@
             type="text"
             rules="required"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="title" />
         </div>
@@ -87,7 +87,7 @@
             name="list"
             type="text"
           >
-            <InputText :model-value="value" @update:modelValue="handleChange" @blur="handleBlur" />
+            <InputText :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
           </vee-field>
           <vee-error-message class="form-error" name="list" />
         </div>
@@ -100,7 +100,7 @@
             name="headers"
             rows="6"
             :model-value="headers"
-            @update:modelValue="(value) => updateMultiLineField(template, 'headers', value)"
+            @update:model-value="(value) => updateMultiLineField(template, 'headers', value)"
           />
         </div>
         <div class="layer-setting">
@@ -110,7 +110,7 @@
             name="fields"
             rows="6"
             :model-value="fields"
-            @update:modelValue="(value) => updateMultiLineField(template, 'fields', value)"
+            @update:model-value="(value) => updateMultiLineField(template, 'fields', value)"
           />
         </div>
         <div class="layer-setting">

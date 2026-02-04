@@ -71,7 +71,7 @@
             fluid
             class="tw-mb-2"
             filter-placeholder="Zoek een laag"
-            @update:modelValue="(value) => onListLayerChange(value)"
+            @update:model-value="(value) => onListLayerChange(value)"
           />
         </div>
 
@@ -85,7 +85,7 @@
               placeholder="Template titel"
               name="title"
               fluid
-              @update:modelValue="(value) => (data.settings.title = value)"
+              @update:model-value="(value) => (data.settings.title = value)"
             />
           </div>
 
@@ -97,7 +97,7 @@
               name="short_description"
               fluid
               rows="5"
-              @update:modelValue="(value) => (data.settings.short_description = value)"
+              @update:model-value="(value) => (data.settings.short_description = value)"
             />
           </div>
         </div>
