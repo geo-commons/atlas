@@ -138,6 +138,7 @@ export default {
     selectedArea: Object,
     user: Object,
   },
+  emits: ["set-position", "on-fit"],
   data() {
     return {
       featureCollection: {

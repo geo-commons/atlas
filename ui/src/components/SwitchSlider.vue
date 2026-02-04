@@ -14,6 +14,7 @@ export default {
       type: Boolean,
     },
   },
+  emits: ["toggleSwitch"],
 };
 </script>
 

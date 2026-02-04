@@ -49,6 +49,7 @@ export default {
   props: {
     objectName: Object,
   },
+  emits: ["close", "import-successful"],
   data() {
     return {
       uploadedFile: null,

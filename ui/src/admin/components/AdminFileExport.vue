@@ -30,6 +30,7 @@ export default {
     objectName: Object,
     exportType: EDialogTypes,
   },
+  emits: ["close", "export-successful"],
   data() {
     return {
       exportSuccessful: false,

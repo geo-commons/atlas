@@ -136,8 +136,8 @@ import { computed, type ComputedRef, toRefs } from "vue";
 import { formatDateValue } from "../../utils/date-formatter";
 
 interface MetadatasetsFieldProps {
-  modelValue: number | null;
-  options: IMetadatasetOption[];
+  modelValue?: number | null;
+  options?: IMetadatasetOption[];
 }
 
 interface Emits {

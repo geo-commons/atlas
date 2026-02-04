@@ -49,6 +49,7 @@ export default {
     features: Object,
     showCompareSlider: Boolean,
   },
+  emits: ["set-position"],
   setup() {
     register(getDefinitions());
   },

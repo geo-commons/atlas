@@ -93,9 +93,16 @@ export default {
     },
     mapId: String,
   },
-  computed: {
-    ...mapStores(useEditLayerStore),
-  },
+  emits: [
+    "set-color",
+    "set-tool",
+    "set-stroke-width",
+    "set-font-size",
+    "set-interaction",
+    "set-selected-area",
+    "clear-draw",
+    "drawing-saved",
+  ],
   data() {
     return {
       showMeasureMenu: false,
@@ -106,6 +113,9 @@ export default {
       showFontSizeMenu: false,
       previousTool: "",
     };
+  },
+  computed: {
+    ...mapStores(useEditLayerStore),
   },
   watch: {
     // This code resets the color, stroke width, and font size to their default values whenever 'showDrawMenu' is turned off

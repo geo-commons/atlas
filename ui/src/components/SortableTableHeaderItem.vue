@@ -32,6 +32,7 @@ export default {
     sortKey: String,
     sortAscending: Boolean,
   },
+  emits: ["sort"],
   methods: {
     sortColumn() {
       this.$emit("sort", this.property);

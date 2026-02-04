@@ -89,7 +89,6 @@ export const printMapToPdf = (settings, mapRef, layers, user, config, position, 
             const LOGO_HEIGHT = 14; // Fixed logo height
             const MAX_LOGO_WIDTH = 50; // Maximum logo width
             let logoWidth = 0; // Will be calculated based on aspect ratio
-            const LOGO_SPACING = settings.showLogo ? PADDING : PADDING;
 
             const NORTH_IMAGE_DIMENSIONS = [62, 120];
 

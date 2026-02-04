@@ -258,6 +258,7 @@ export default {
       default: false,
     },
   },
+  emits: ["set-position", "on-fit"],
   data() {
     return {
       panel: null,

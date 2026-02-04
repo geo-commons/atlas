@@ -323,7 +323,7 @@ const handleSaveCreateObjectDialogData = async (
     return;
   }
 
-  const result = await props.saveCreateObjectDialogData(currentValues, continueEditing, sendSaveRequest);
+  await props.saveCreateObjectDialogData(currentValues, continueEditing, sendSaveRequest);
 
   // Set items
   const newItems = await props.getObjects(params);

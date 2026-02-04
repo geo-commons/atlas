@@ -85,6 +85,7 @@ export default {
       default: true,
     },
   },
+  emits: ["expand-side-panel", "toggle-full-side-panel", "resize"],
   data() {
     return {
       fullScreen: false,

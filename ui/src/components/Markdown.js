@@ -6,7 +6,7 @@ const Markdown = defineComponent({
   name: "VueMarkdown",
   props: {
     source: {
-      required: true,
+      required: false,
       type: String,
       default: function () {
         return "";
@@ -14,6 +14,7 @@ const Markdown = defineComponent({
     },
     options: {
       required: false,
+      type: Object,
       default: function () {
         return { linkify: true };
       },

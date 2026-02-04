@@ -58,6 +58,7 @@ export default {
     layers: Array,
     mapId: String,
   },
+  emits: ["close-modal"],
   data() {
     return {
       buttonText: "HTML kopiëren",
@@ -139,7 +140,7 @@ export default {
         setTimeout(() => {
           this.buttonText = "HTML kopiëren";
         }, 2000);
-      } catch (err) {
+      } catch {
         console.error("Could not copy text");
       }
     },

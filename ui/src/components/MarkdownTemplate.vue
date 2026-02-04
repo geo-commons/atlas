@@ -21,7 +21,7 @@ export default {
     parsedSource() {
       try {
         return nunjucks.renderString(this.source, this.data);
-      } catch (e) {
+      } catch {
         return "";
       }
     },

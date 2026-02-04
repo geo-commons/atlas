@@ -43,6 +43,7 @@ export default {
   props: {
     position: Object,
   },
+  emits: ["set-position"],
   methods: {
     zoomIn() {
       this.$emit(

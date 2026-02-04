@@ -26,6 +26,7 @@ export default {
     label: String,
     badge: Number,
   },
+  emits: ["on-button-click"],
 };
 </script>
 

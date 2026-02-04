@@ -16,6 +16,7 @@ export default {
     strokeWidth: Number,
     fontSize: Number,
   },
+  emits: ["draw-start", "draw-end", "on-fit"],
   created() {
     if (this.tool !== "SELECT_FEATURE") {
       const onDrawStart = () => {

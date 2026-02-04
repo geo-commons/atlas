@@ -26,10 +26,10 @@ module.exports = [
       },
     },
     rules: {
+      // TODO: set vue/require-default-prop back to default ("warn") and fix issues
       "vue/require-default-prop": "off",
-      "vue/no-v-model-argument": "off",
-      "vue/no-multiple-template-root": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "vue/no-v-html": "off",
+      // TODO: set @typescript-eslint/no-explicit-any back to default ("error") and fix issues
       "@typescript-eslint/no-explicit-any": "off",
     },
   },

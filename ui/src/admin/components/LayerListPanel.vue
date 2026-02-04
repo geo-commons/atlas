@@ -55,6 +55,7 @@ export default {
   props: {
     initialData: Object,
   },
+  emits: ["show-form"],
   data() {
     return {
       data: this.initialData || { features: {} },

@@ -28,7 +28,7 @@ export type TableHeaderRef = { sortKey: string; sortAscending: boolean };
     class="tw-min-h-8"
     @click="
       () =>
-        $emit(
+        emit(
           'update-list-sort',
           props.header.overrideKeyForFilter ? props.header.overrideKeyForFilter : props.header.key,
         )

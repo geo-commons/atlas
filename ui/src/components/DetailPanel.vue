@@ -99,6 +99,7 @@ export default {
     features: Array,
     showPanel: Boolean,
   },
+  emits: ["features-selected"],
   computed: {
     firstFeature() {
       if (this.features && this.features.length > 0) {

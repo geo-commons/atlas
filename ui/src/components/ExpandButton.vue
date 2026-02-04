@@ -30,6 +30,7 @@ export default {
     title: String,
     isOpen: Boolean,
   },
+  emits: ["show-content"],
   data() {
     return {
       showContent: this.isOpen,

@@ -439,7 +439,7 @@ export default {
     objectSpecificSave: Function,
     formObject: String,
   },
-  emits: ["update-source", "metadataset-changed"],
+  emits: ["update-source", "metadataset-changed", "close"],
   expose: ["updateFieldValue", "sendSaveRequest"],
   data() {
     return {

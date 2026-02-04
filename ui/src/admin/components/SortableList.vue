@@ -68,6 +68,7 @@ export default {
       default: false,
     },
   },
+  emits: ["updateList", "item-selected"],
   data() {
     return {
       items: this.currentItemList,

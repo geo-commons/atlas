@@ -135,6 +135,7 @@ export default {
   props: {
     initialLinkedData: Object,
   },
+  emits: ["save", "close"],
   data() {
     return {
       linkedData: null,

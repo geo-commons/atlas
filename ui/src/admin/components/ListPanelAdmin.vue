@@ -127,6 +127,7 @@ export default {
     initialData: Object,
     layers: Array,
   },
+  emits: ["show-form"],
   data() {
     return {
       data: this.initialData,
