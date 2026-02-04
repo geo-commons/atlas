@@ -6,8 +6,8 @@
       content: '!tw-px-0 !tw-rounded-none',
     }"
   >
-    U bevindt zich op een verouderde themakaart. Via <a class="link" :href="`/atlas/maps/${themeSlug}`">deze url</a> kan
-    u de nieuwe themakaart bezoeken.
+    U bevindt zich op een verouderde themakaart. Via
+    <a class="link" :href="`/atlas/maps/${themeSlug}`">deze url</a> kunt u de nieuwe themakaart bezoeken.
   </Message>
 </template>
 
