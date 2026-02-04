@@ -25,7 +25,7 @@ type AdminListViewProps = {
   sort: TableHeaderRef;
   pagination: PaginationRef;
   enableActions: boolean;
-  enableDelete: boolean;
+  enableDelete?: boolean;
   enableEdit: boolean;
   viewBaseUrl?: string;
   blockDelete: Array<number>;

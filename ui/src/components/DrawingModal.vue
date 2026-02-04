@@ -29,6 +29,7 @@ export default {
     layers: Array,
     position: Object,
   },
+  emits: ["toggle-modal"],
   computed: {
     drawingUrl() {
       return window.location;
@@ -52,7 +53,7 @@ export default {
         setTimeout(() => {
           this.buttonText = "HTML kopiëren";
         }, 2000);
-      } catch (err) {
+      } catch {
         console.error("Could not copy text");
       }
     },

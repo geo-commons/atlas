@@ -35,6 +35,7 @@ export default {
   props: {
     feature: Object,
   },
+  emits: ["back"],
   methods: {
     capitalizeFirstLetter,
     formatRawString,

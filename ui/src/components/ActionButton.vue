@@ -28,6 +28,7 @@ export default {
     title: String,
     mapId: String,
   },
+  emits: ["select-item"],
   data() {
     return {
       store: null,

@@ -28,6 +28,15 @@
 
 <script>
 export default {
-  props: ["fillColor", "strokeColor"],
+  props: {
+    fillColor: {
+      type: String,
+      required: true,
+    },
+    strokeColor: {
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>

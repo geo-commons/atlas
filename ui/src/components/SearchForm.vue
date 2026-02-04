@@ -50,6 +50,7 @@ export default {
     showDataPanel: Boolean,
     mapId: String,
   },
+  emits: ["on-submit", "show-data-panel", "on-close"],
   computed: {
     ...mapState(useGlobalStore, ["isEmbed"]),
     showDataPanelButton() {

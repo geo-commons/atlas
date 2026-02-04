@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import type { Ref } from "vue";
 import type { IConfig } from "@/types/ConfigType";
 import type { IUser } from "@/types/user";
 import type { ILayer } from "@/types/layer";

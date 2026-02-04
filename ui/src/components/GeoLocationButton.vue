@@ -39,6 +39,7 @@ export default {
   props: {
     position: Object,
   },
+  emits: ["set-position"],
   data() {
     return {
       isLoading: false,

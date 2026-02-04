@@ -20,6 +20,7 @@ export default {
     layers: Array,
     mapId: String,
   },
+  emits: ["toggle-modal"],
   methods: {
     closeModal() {
       this.$emit("toggle-modal", "");

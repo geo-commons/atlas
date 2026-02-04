@@ -59,8 +59,6 @@ import { useMapStore } from "@/stores/map_store";
 
 const suggestEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
 
-const visibleSourceTypes = ["WMS_WFS", "WFS"];
-
 export default {
   name: "SearchPanel",
   components: {

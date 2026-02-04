@@ -45,6 +45,7 @@ export default {
     },
     optionLabel: String,
   },
+  emits: ["onFilterChange"],
   data() {
     return {
       selectedItems: [],

@@ -86,6 +86,7 @@ export default {
     position: Object,
     user: Object,
   },
+  emits: ["set-position", "on-fit", "select-feature-details"],
   data() {
     return {
       features: [],

@@ -37,6 +37,7 @@ export default {
       type: String,
     },
   },
+  emits: ["on-search"],
   data() {
     return {
       searchQuery: "",

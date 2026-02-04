@@ -122,7 +122,7 @@ export default {
         this.total_items = this.table.total_items_page_attribute
           ? fetchDot(this.table.total_items_page_attribute, data)
           : null;
-      } catch (e) {
+      } catch {
         this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
       }
 

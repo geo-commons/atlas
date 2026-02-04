@@ -32,6 +32,7 @@ export default {
   props: {
     table: Object,
   },
+  emits: ["submit"],
   methods: {
     onSearch(values) {
       this.$emit("submit", values);

@@ -24,6 +24,7 @@ export default {
   props: {
     layer: Object,
   },
+  emits: "click",
   methods: {
     onClick(e) {
       this.$emit("click", e);

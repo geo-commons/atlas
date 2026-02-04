@@ -341,6 +341,7 @@ export default {
     initialData: Object,
     initialConfiguredLayers: Object,
   },
+  emits: ["show-layers"],
   data() {
     return {
       mapLayerConfig: null,

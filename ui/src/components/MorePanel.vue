@@ -62,6 +62,7 @@ export default {
     user: Object,
     showDisclaimer: Boolean,
   },
+  emits: ["toggle-modal", "toggle-about"],
   data() {
     return {
       isOpen: false,

@@ -167,6 +167,7 @@ export default {
     sortLayers: Boolean,
     index: Number,
   },
+  emits: ["toggle-is-open"],
   data() {
     return {
       showSlider: false,

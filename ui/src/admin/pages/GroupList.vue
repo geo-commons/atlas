@@ -89,7 +89,7 @@ const tableHeaders: Array<TableHeader> = [
 
 // onMounted
 onMounted(() => {
-  Promise.all([getGroups()]).then((result) => {
+  Promise.all([getGroups()]).then(() => {
     loading.value = false;
   });
 });

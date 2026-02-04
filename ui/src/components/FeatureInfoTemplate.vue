@@ -12,7 +12,7 @@
         </thead>
         <tbody>
           <tr v-for="(record, key) in fetchedData" :key="key">
-            <td v-for="(field, key) in template.fields" :key="key" class="template-table-cell">
+            <td v-for="(field, fieldKey) in template.fields" :key="fieldKey" class="template-table-cell">
               <RichValue :data-key="field" :data-value="renderString(field, record)" />
             </td>
           </tr>
@@ -58,11 +58,11 @@ export default {
       error: "",
     };
   },
-  mounted() {
-    this.fetchData();
-  },
   computed: {
     ...mapState(useGlobalStore, ["user"]),
+  },
+  mounted() {
+    this.fetchData();
   },
   methods: {
     async fetchData() {

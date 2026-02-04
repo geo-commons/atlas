@@ -9,6 +9,11 @@
 
 <script>
 export default {
-  props: ["fillColor"],
+  props: {
+    fillColor: {
+      type: String,
+      default: "#000000",
+    },
+  },
 };
 </script>

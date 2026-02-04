@@ -282,7 +282,7 @@ const handleSaveFeature = async () => {
   try {
     const feature = editLayerStore.highlightedFeatureAndLayer!.feature as Feature;
     const featureValuesToSubmit = Object.fromEntries(
-      Object.entries(unref(featureValues.value)).filter(([key, value]) => value != null),
+      Object.entries(unref(featureValues.value)).filter(([, value]) => value != null),
     );
 
     feature.setProperties(featureValuesToSubmit);

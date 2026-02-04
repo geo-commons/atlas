@@ -141,6 +141,7 @@ export default {
   props: {
     initialTemplate: Object,
   },
+  emits: ["save", "close"],
   data() {
     return {
       template: null,

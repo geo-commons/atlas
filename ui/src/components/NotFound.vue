@@ -24,11 +24,11 @@ import MapSvg from "@/assets/images/map.svg";
 import "../assets/styles/main.css";
 
 interface NotFoundProps {
-  code: string;
-  title: string;
-  message: string;
-  linkUrl: string;
-  linkText: string;
+  code?: string;
+  title?: string;
+  message?: string;
+  linkUrl?: string;
+  linkText?: string;
 }
 
 const props = withDefaults(defineProps<NotFoundProps>(), {

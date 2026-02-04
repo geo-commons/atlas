@@ -24,6 +24,7 @@ export default {
     markerOnClick: Boolean,
     tool: String,
   },
+  emits: ["position-changed"],
   watch: {
     position(value, oldValue) {
       const view = this.map.getView();

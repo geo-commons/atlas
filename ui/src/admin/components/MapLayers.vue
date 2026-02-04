@@ -156,6 +156,7 @@ export default {
   props: {
     initialData: Object,
   },
+  emits: ["update-layers", "show-form", "show-layer"],
   data() {
     return {
       allLayers: [],
