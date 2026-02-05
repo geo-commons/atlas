@@ -145,7 +145,7 @@ Upload helm chart:
   stage: Deploy
   image:
     name: alpine/k8s:1.34.0
-    entrypoint: [ "" ]
+    entrypoint: [""]
 
   script:
     - cd helm
