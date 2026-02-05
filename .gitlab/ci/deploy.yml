@@ -127,6 +127,7 @@ Deploy acceptance:
       --set loadDemoData=true \
       --set environment=acceptance \
       --set geoserver.enabled=true \
+      --set  geoserver.env.GEOSERVER_CSRF_WHITELIST=atlas-acc.$REVIEW_BASE_DOMAIN \
       --set geoserver.ingress.hosts[0].host=geoserver-acc.$REVIEW_BASE_DOMAIN \
       --set geoserver.ingress.hosts[0].paths[0].path=/ \
       --set geoserver.ingress.hosts[0].paths[0].pathType=ImplementationSpecific  \
