@@ -168,3 +168,29 @@ default: False)
 - GOOGLE_MAPS_API_KEY: The [API key](https://developers.google.com/maps/documentation/javascript/get-api-key) for Google
   Maps (used externally).
 - SENTRY_DSN: The [Sentry](https://sentry.io/) DSN to collect app statistics. (optional)
+
+## Documentation (MkDocs)
+
+The Atlas documentation is built using **MkDocs** and is split into two variants:
+
+- **Admin documentation** – for configurators (*geo-beheerders*), covering the admin environment  
+  Location: `docs/admin`
+
+- **User documentation** – for end users of the Atlas application  
+  Location: `docs/user`
+
+### Run the documentation locally
+
+**Admin docs**
+
+```bash
+cd docs/admin
+mkdocs serve
+```
+
+**User docs**
+
+```bash
+cd docs/user
+mkdocs serve
+```
