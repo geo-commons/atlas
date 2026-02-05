@@ -1,10 +1,15 @@
 # Metadata
 
-Metadata in Atlas beschrijft de eigenschappen en kenmerken van datasets. Atlas ondersteunt uitgebreide metadata conform de standaard ISO 19115. Zie het [overzicht van metadata-elementen volgens het Nederlandse profiel op ISO 19115](https://docs.geostandaarden.nl/md/mdprofiel-iso19115/#metadata-elementen-overzicht) voor een volledige beschrijving van de velden. Deze handleiding beschrijft hoe je metadata beheert binnen de Atlas Admin Module.
+Metadata in Atlas beschrijft de eigenschappen en kenmerken van datasets. Atlas ondersteunt uitgebreide metadata conform
+de standaard ISO 19115. Zie
+het [overzicht van metadata-elementen volgens het Nederlandse profiel op ISO 19115](https://docs.geostandaarden.nl/md/mdprofiel-iso19115/#metadata-elementen-overzicht)
+voor een volledige beschrijving van de velden. Deze handleiding beschrijft hoe je metadata beheert binnen de Atlas Admin
+Module.
 
 ## Overzicht
 
-Atlas gebruikt **Metadatasets** voor het beheren van metadata. Metadatasets bevatten uitgebreide informatie over datasets zoals herkomst, kwaliteit, contact informatie en gebruiksvoorwaarden.
+Atlas gebruikt **Metadatasets** voor het beheren van metadata. Metadatasets bevatten uitgebreide informatie over
+datasets zoals herkomst, kwaliteit, contact informatie en gebruiksvoorwaarden.
 
 Metadatasets kunnen worden gekoppeld aan meerdere kaartlagen. Alle metadata wordt centraal beheerd via metadatasets.
 
@@ -25,24 +30,27 @@ De lijst toont:
 
 1. Klik op **Toevoegen** in de metadatasets lijst
 2. Vul de verplichte velden in:
-   - **Titel**: Beschrijvende naam van de dataset
-   - **Beschrijving**: Beschrijving voor intern gebruik
+    - **Titel**: Beschrijvende naam van de dataset
+    - **Beschrijving**: Beschrijving voor intern gebruik
 
 ## Metadataset velden
 
 ### Algemene informatie
 
 **Naam** *(Publiek)*
-De naam van de metadataset. Dit is de naam die wordt weergegeven in de interface. Gebruik een duidelijke, beschrijvende naam.
+De naam van de metadataset. Dit is de naam die wordt weergegeven in de interface. Gebruik een duidelijke, beschrijvende
+naam.
 
 **Kort kenmerk** *(Publiek)*
-Een uniek kort kenmerk voor de metadataset in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes. Dit wordt gebruikt in URLs en koppelingen. Maximaal 255 karakters.
+Een uniek kort kenmerk voor de metadataset in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes. Dit
+wordt gebruikt in URLs en koppelingen. Maximaal 255 karakters.
 
 **Beschrijving** *(Intern)*
-Beschrijving voor intern gebruik. Markdown opmaak is toegestaan.
+Beschrijving voor intern gebruik. [Markdown](markdown.md) opmaak is toegestaan.
 
 **Toelichting dataset** *(Publiek)*
-Een beschrijving van de inhoud van de dataset. Geef in deze samenvatting publieksvriendelijke informatie over de inhoud van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).
+Een beschrijving van de inhoud van de dataset. Geef in deze samenvatting publieksvriendelijke informatie over de inhoud
+van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).
 
 **Onderwerp** *(Publiek)*
 Het belangrijkste onderwerp van de dataset uit een voorgedefinieerde lijst:
@@ -68,7 +76,8 @@ Het belangrijkste onderwerp van de dataset uit een voorgedefinieerde lijst:
 - Nutsvoorzieningen en Communicatie
 
 **Trefwoorden** *(Publiek)*
-In het algemeen gebruikte woorden of geformaliseerde zinnen om een dataset of datasetserie te beschrijven. Voeg één trefwoord per regel toe.
+In het algemeen gebruikte woorden of geformaliseerde zinnen om een dataset of datasetserie te beschrijven. Voeg één
+trefwoord per regel toe.
 
 **Doel van de vervaardiging** *(Publiek)*
 De reden waarom de dataset is gemaakt.
@@ -76,7 +85,8 @@ De reden waarom de dataset is gemaakt.
 ### Bron
 
 **Oorspronkelijke bron** *(Publiek)*
-Algemene beschrijving herkomst. Dit is de bron waar de dataset vandaan komt, dat kan een URL zijn of een beschrijving van de bron.
+Algemene beschrijving herkomst. Dit is de bron waar de dataset vandaan komt, dat kan een URL zijn of een beschrijving
+van de bron.
 
 **Bronlocatie** *(Intern)*
 Bijvoorbeeld Objectstore (COG), S3, etc.
@@ -88,7 +98,8 @@ De naam van het interne aanspreekpunt van de bron.
 Het e-mailadres van het interne aanspreekpunt van de bron.
 
 **Verantwoordelijke organisatie** *(Publiek)*
-De organisatie van de verantwoordelijke van de bron, bijvoorbeeld de gemeente, provincie, Nederlandse organisatie voor toegepast-natuurwetenschappelijk onderzoek (TNO), etc.
+De organisatie van de verantwoordelijke van de bron, bijvoorbeeld de gemeente, provincie, Nederlandse organisatie voor
+toegepast-natuurwetenschappelijk onderzoek (TNO), etc.
 
 **Naam contactpersoon aanspreekpunt** *(Publiek)*
 De naam van de verantwoordelijke contactpersoon van de bron.
@@ -133,7 +144,8 @@ De huidige status van de dataset:
 - Gearchiveerd
 
 **Toon in dataportaal voor niet-ingelogde gebruikers**
-Schakel in om de metadataset in het dataportaal te tonen voor niet-ingelogde gebruikers. Ingelogde gebruikers zien gepubliceerde metadatasets altijd.
+Schakel in om de metadataset in het dataportaal te tonen voor niet-ingelogde gebruikers. Ingelogde gebruikers zien
+gepubliceerde metadatasets altijd.
 
 ### Beperkingen
 
@@ -141,7 +153,8 @@ Schakel in om de metadataset in het dataportaal te tonen voor niet-ingelogde geb
 Juridische toegangsrestricties die van toepassing zijn op de dataset:
 
 - Licentie - Formele toestemming om iets te doen met de data
-- Intellectuele eigendomsrechten - Recht op een financieel voordeel van - en controle hebben op de distributie van een niet tastbaar eigendom dat het resultaat is van creativiteit.
+- Intellectuele eigendomsrechten - Recht op een financieel voordeel van - en controle hebben op de distributie van een
+  niet tastbaar eigendom dat het resultaat is van creativiteit.
 - Beperkt - Verbod op distributie en gebruik
 - Overige beperkingen - Restrictie niet opgenomen in lijst
 
@@ -159,7 +172,8 @@ Selecteer een optie wanneer je bij juridische toegangsrestricties 'Overige beper
 - Gebruiksvoorwaarden Geogedeeld
 
 **Gebruiksbeperkingen**
-In dit veld geef je aan waarvoor de dataset niet mag of kan worden gebruikt. Bijvoorbeeld: Niet gebruiken voor navigatie.
+In dit veld geef je aan waarvoor de dataset niet mag of kan worden gebruikt. Bijvoorbeeld: Niet gebruiken voor
+navigatie.
 
 ### Verantwoordelijke metadata
 
@@ -167,7 +181,8 @@ In dit veld geef je aan waarvoor de dataset niet mag of kan worden gebruikt. Bij
 Het e-mailadres van het interne aanspreekpunt van de verantwoordelijke van de metadata.
 
 **Organisatie** *(Publiek)*
-De naam van de organisatie verantwoordelijk voor de metadata. Gebruik de volledig uitgeschreven naam van de verantwoordelijke organisatie. Bijvoorbeeld: Gemeente Purmerend.
+De naam van de organisatie verantwoordelijk voor de metadata. Gebruik de volledig uitgeschreven naam van de
+verantwoordelijke organisatie. Bijvoorbeeld: Gemeente Purmerend.
 
 **E-mailadres verantwoordelijke** *(Publiek)*
 Het e-mailadres van de organisatie verantwoordelijk voor de metadata. Gebruik bij voorkeur een functioneel e-mailadres.
@@ -198,11 +213,14 @@ De rol van de verantwoordelijke over de metadata:
 5. Sla de wijzigingen op
 
 !!! info "Publicatie vereiste"
-    Een kaartlaag kan alleen worden gepubliceerd als er een metadataset aan is gekoppeld. Dit is nodig zodat gebruikers altijd toegang hebben tot de juiste beschrijvende informatie (metadata) over de kaartlaag. Zonder gekoppelde metadataset ontbreekt deze informatie en voldoet de publicatie niet aan de kwaliteits- en transparantie-eisen.
+Een kaartlaag kan alleen worden gepubliceerd als er een metadataset aan is gekoppeld. Dit is nodig zodat gebruikers
+altijd toegang hebben tot de juiste beschrijvende informatie (metadata) over de kaartlaag. Zonder gekoppelde metadataset
+ontbreekt deze informatie en voldoet de publicatie niet aan de kwaliteits- en transparantie-eisen.
 
 ### Gekoppelde kaartlagen bekijken
 
-Bij het bewerken van een metadataset zie je onderaan een lijst van alle kaartlagen die aan deze metadataset zijn gekoppeld.
+Bij het bewerken van een metadataset zie je onderaan een lijst van alle kaartlagen die aan deze metadataset zijn
+gekoppeld.
 
 ## Metadata in Atlas frontend
 
@@ -217,6 +235,7 @@ Gebruikers kunnen metadata bekijken door:
 ### Metadata pagina
 
 Elke kaartlaag heeft een eigen metadata pagina bereikbaar via:
+
 ```
 https://jouw-atlas-url/metadata/kort-kenmerk-kaartlaag
 ```
@@ -240,7 +259,7 @@ Het korte kenmerk van de kaartlaag wordt gebruikt voor deze URL.
 4. Bevestig de import
 
 !!! warning "Import validatie"
-    Zorg ervoor dat korte kenmerken uniek zijn en verplichte velden zijn ingevuld bij het importeren van metadatasets.
+Zorg ervoor dat korte kenmerken uniek zijn en verplichte velden zijn ingevuld bij het importeren van metadatasets.
 
 ## Best practices
 
@@ -271,28 +290,31 @@ Het korte kenmerk van de kaartlaag wordt gebruikt voor deze URL.
 
 ### MBS (Metadata Beheersysteem)
 
-Atlas is geïntegreerd met het Metadata Beheersysteem (MBS). Metadatasets worden automatisch gesynchroniseerd met MBS voor publicatie in externe catalogi.
+Atlas is geïntegreerd met het Metadata Beheersysteem (MBS). Metadatasets worden automatisch gesynchroniseerd met MBS
+voor publicatie in externe catalogi.
 
 ### API toegang
 
-Metadata is toegankelijk en bewerkbaar via de Atlas API. Hiermee kun je niet alleen metadatasets opvragen, maar ook metadata-velden zoals de "Laatst bijgewerkt" datum aanpassen. Dit is handig wanneer je wijzigingen in de dataset hebt doorgevoerd en de metadata up-to-date wilt houden.
+Metadata is toegankelijk en bewerkbaar via de Atlas API. Hiermee kun je niet alleen metadatasets opvragen, maar ook
+metadata-velden zoals de "Laatst bijgewerkt" datum aanpassen. Dit is handig wanneer je wijzigingen in de dataset hebt
+doorgevoerd en de metadata up-to-date wilt houden.
 
 Voorbeelden van API-endpoints:
 
 - **Lijst van metadatasets ophalen (GET):**
-  
+
   ```
   GET /atlas/api/v1/metadatasets/
   ```
 
 - **Details van een specifieke metadataset ophalen (GET):**
-  
+
   ```
   GET /atlas/api/v1/metadatasets/<id>/
   ```
 
 - **Een nieuwe metadataset aanmaken (POST):**
-  
+
   ```
   POST /atlas/api/v1/metadatasets/
   Content-Type: application/json
@@ -306,7 +328,7 @@ Voorbeelden van API-endpoints:
   ```
 
 - **Een metadataset bijwerken, bijvoorbeeld het veld "Laatst bijgewerkt" aanpassen (PATCH):**
-  
+
   ```
   PATCH /atlas/api/v1/metadatasets/<id>/
   Content-Type: application/json
@@ -317,14 +339,15 @@ Voorbeelden van API-endpoints:
   ```
 
 - **Een metadataset verwijderen (DELETE):**
-  
+
   ```
   DELETE /atlas/api/v1/metadatasets/<id>/
   ```
 
 **Voorbeeld: "Laatst bijgewerkt" aanpassen via de API**
 
-Stel, je wilt het veld "Laatst bijgewerkt" van een metadataset met id 42 aanpassen naar 22 september 2025. Gebruik dan het volgende verzoek:
+Stel, je wilt het veld "Laatst bijgewerkt" van een metadataset met id 42 aanpassen naar 22 september 2025. Gebruik dan
+het volgende verzoek:
 
 ```bash
 curl -X PATCH "https://<jouw-atlas-url>/atlas/api/v1/metadatasets/42/" \
