@@ -4,7 +4,7 @@
     <div v-if="!loading && error" class="warning-text">Er is iets fout gegaan bij het laden van de kaart</div>
     <iframe
       v-show="!loading && !error"
-      class="embed-iframe"
+      class="embed-iframe tw-h-[24rem] md:tw-h-[32rem] lg:tw-h-[40rem]"
       :src="embedUrl"
       aria-hidden="false"
       tabindex="0"
@@ -42,14 +42,8 @@ export default {
 
 <style scoped>
 .embed-iframe {
-  border: 1px solid var(--color-grey-60);
-  height: 300px;
+  border: none;
   width: 100%;
-}
-
-@media (min-width: 1024px) {
-  .embed-iframe {
-    height: 400px;
-  }
+  display: block;
 }
 </style>

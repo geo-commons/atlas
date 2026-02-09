@@ -1,41 +1,64 @@
 <template>
   <div>
-    <h3>Direct naar</h3>
-    <ul class="navigation-list">
+    <h2 class="tw-text-2xl tw-mb-6">Direct naar</h2>
+    <ul class="tw-space-y-2">
       <li>
-        <a href="/atlas/" target="_blank" class="text-button">
-          <ChevronRightIcon class="icon __large" />
-          Hoofdkaart</a
+        <a
+          href="/atlas/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="tw-w-full tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-rounded-xl hover:tw-bg-gray-50 tw-transition-colors tw-group tw-text-left tw-no-underline"
         >
+          <i
+            class="pi pi-map-marker tw-text-lg tw-text-gray-500 group-hover:tw-text-[var(--color-primary-organization)] tw-transition-colors"
+            aria-hidden="true"
+          ></i>
+          <span class="tw-text-gray-700 group-hover:tw-text-gray-900 tw-font-medium">Hoofdkaart</span>
+        </a>
       </li>
       <li v-if="availableLinks.maps">
-        <a href="/maps" class="text-button">
-          <ChevronRightIcon class="icon __large" />
-          Alle kaarten</a
+        <a
+          href="/maps"
+          class="tw-w-full tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-rounded-xl hover:tw-bg-gray-50 tw-transition-colors tw-group tw-text-left tw-no-underline"
         >
+          <i
+            class="pi pi-map tw-text-lg tw-text-gray-500 group-hover:tw-text-[var(--color-primary-organization)] tw-transition-colors"
+            aria-hidden="true"
+          ></i>
+          <span class="tw-text-gray-700 group-hover:tw-text-gray-900 tw-font-medium">Alle kaarten</span>
+        </a>
       </li>
       <li v-if="availableLinks.metadatasets">
-        <a href="/metadatasets" class="text-button">
-          <ChevronRightIcon class="icon __large" />
-          Alle metadatasets</a
+        <a
+          href="/metadatasets"
+          class="tw-w-full tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-rounded-xl hover:tw-bg-gray-50 tw-transition-colors tw-group tw-text-left tw-no-underline"
         >
+          <i
+            class="pi pi-database tw-text-lg tw-text-gray-500 group-hover:tw-text-[var(--color-primary-organization)] tw-transition-colors"
+            aria-hidden="true"
+          ></i>
+          <span class="tw-text-gray-700 group-hover:tw-text-gray-900 tw-font-medium">Alle metadatasets</span>
+        </a>
       </li>
       <li v-if="availableLinks.tables">
-        <a href="/tables" class="text-button">
-          <ChevronRightIcon class="icon __large" />
-          Alle tabellen</a
+        <a
+          href="/tables"
+          class="tw-w-full tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-rounded-xl hover:tw-bg-gray-50 tw-transition-colors tw-group tw-text-left tw-no-underline"
         >
+          <i
+            class="pi pi-table tw-text-lg tw-text-gray-500 group-hover:tw-text-[var(--color-primary-organization)] tw-transition-colors"
+            aria-hidden="true"
+          ></i>
+          <span class="tw-text-gray-700 group-hover:tw-text-gray-900 tw-font-medium">Alle tabellen</span>
+        </a>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import ChevronRightIcon from "@/assets/icons/chevron-right-icon.svg";
-
 export default {
   name: "PortalQuickNavigationMenu",
-  components: { ChevronRightIcon },
   props: {
     availableLinks: {
       type: Object,
@@ -50,37 +73,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-h3 {
-  font-size: var(--font-size-2xl);
-  margin: 8px 0 0;
-}
-
-@media (min-width: 1024px) {
-  h3 {
-    margin: 0 0 12px;
-  }
-}
-
-.navigation-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-@media (min-width: 1024px) {
-  .navigation-list {
-    gap: 16px;
-  }
-}
-
-.navigation-list > li {
-  width: fit-content;
-}
-
-.text-button {
-  font-size: var(--font-size-xl);
-  color: var(--color-primary-organization);
-}
-</style>

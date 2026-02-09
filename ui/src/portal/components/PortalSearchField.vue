@@ -1,37 +1,35 @@
 <template>
-  <div class="portal-search-field" :class="sizeCssFormat">
-    <input
-      :value="searchQuery"
-      class="search-field"
-      type="search"
-      :placeholder="placeholder"
-      @keyup="(e) => setSearchQuery(e)"
-      @keydown.enter="onSearch"
-    />
+  <div>
+    <!-- TODO: zoeken binnen andere objecttypen toevoegen -->
+    <div class="tw-relative">
+      <i
+        class="pi pi-search tw-absolute tw-left-4 tw-top-1/2 -tw-translate-y-1/2 tw-text-lg tw-text-gray-400"
+        aria-hidden="true"
+      ></i>
+      <input
+        :value="searchQuery"
+        type="search"
+        :placeholder="placeholder"
+        class="tw-w-full tw-pl-12 tw-pr-4 tw-py-3.5 !tw-border !tw-border-solid !tw-border-gray-300 tw-rounded-xl focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-[var(--color-primary-organization)] focus:!tw-border-[var(--color-primary-organization)] tw-text-base tw-bg-white"
+        @keyup="(e) => setSearchQuery(e)"
+        @keydown.enter="onSearch"
+      />
+    </div>
     <button
-      v-tippy="{ placement: 'bottom' }"
-      class="flex __center"
-      :aria-label="placeholder"
-      content="Zoek"
+      class="tw-mt-5 tw-px-8 tw-py-3 tw-rounded-xl tw-bg-[var(--color-primary-organization)] hover:tw-opacity-90 tw-text-white tw-font-medium tw-transition-colors"
+      aria-label="Zoeken"
       @click="onSearch"
     >
-      <SearchIcon class="icon __grey" :class="sizeCssFormat" />
+      Zoeken
     </button>
   </div>
 </template>
 
 <script>
-import SearchIcon from "@/assets/icons/search-icon.svg";
-
 export default {
   name: "PortalSearchField",
-  components: { SearchIcon },
   props: {
     initialSearchQuery: { default: "", type: String },
-    size: {
-      default: "medium",
-      type: String,
-    },
     placeholder: {
       default: "Zoek naar metadatasets...",
       type: String,
@@ -42,11 +40,6 @@ export default {
     return {
       searchQuery: "",
     };
-  },
-  computed: {
-    sizeCssFormat() {
-      return `__${this.size}`;
-    },
   },
   created() {
     this.searchQuery = this.initialSearchQuery;
@@ -67,30 +60,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.portal-search-field {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.portal-search-field.__medium {
-  height: 40px;
-  font-size: var(--font-size-normal);
-  border: 1px solid var(--color-grey-50);
-  padding: 0 8px;
-}
-
-.portal-search-field.__large {
-  height: 60px;
-  font-size: var(--font-size-xl);
-  border-bottom: 3px solid var(--color-primary-organization);
-}
-
-.search-field {
-  display: flex;
-  flex: 1;
-}
-</style>

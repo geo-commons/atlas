@@ -1,61 +1,89 @@
 <template>
-  <div class="tw-mx-auto tw-max-w-7xl tw-px-4 md:tw-pt-6 tw-my-4 tw-w-full">
-    <h1 class="tw-text-2xl md:tw-text-4xl tw-my-0 tw-mb-2">
-      Alle zoekresultaten voor: "{{ searchQuery }}" ({{ totalItems }} resultaten)
-    </h1>
-    <section class="tw-flex-1">
-      <div class="tw-w-full md:tw-w-2/6 tw-my-5">
-        <PortalSearchField :initial-search-query="searchQuery" @on-search="onSearch" />
-      </div>
-      <div v-if="results > 0">
-        <div v-if="metadatasets.length > 0">
-          <h3 class="tw-m-0 tw-text-3xl md:tw-mt-6 md:tw-mb-2">Metadatasets</h3>
-          <PortalMetadatasetList :metadatasets="metadatasets" />
-          <div class="tw-flex tw-flex-row tw-items-start tw-py-8">
-            <Paginator
-              :first="(page - 1) * itemsPerPage"
-              :rows="itemsPerPage"
-              :total-records="totalItems"
-              @page="updatePageState"
-            />
-          </div>
+  <PortalOverviewTemplate
+    v-model:search-query="searchQuery"
+    title="Zoekresultaten"
+    :subtitle="subtitle"
+    header-icon="pi pi-search"
+    search-placeholder="Zoek op naam, trefwoord of categorie..."
+    :total-records="totalItems"
+    :items-per-page="itemsPerPage"
+    :page="page"
+    :has-results="metadatasets.length > 0"
+    :loading="loading"
+    empty-icon="pi pi-search"
+    empty-title="Geen resultaten gevonden"
+    :empty-message="emptyMessage"
+    @search="handleSearch"
+    @update:items-per-page="handleItemsPerPageChange"
+    @page="updatePageState"
+  >
+    <template #default>
+      <div class="tw-grid sm:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6 tw-mb-12">
+        <div v-for="metadataset in metadatasets" :key="metadataset.id" class="tw-relative">
+          <PortalCard
+            :object-type="'metadataset'"
+            :title="metadataset.title"
+            :summary="metadataset.abstract || metadataset.description || ''"
+            :show-thumbnail="false"
+            :object-url="`/metadatasets/${metadataset.slug}`"
+            :last-updated="metadataset.last_updated || undefined"
+            :category="getTopicCategoryLabel(metadataset.topic_category)"
+          />
+          <span
+            v-if="isInternal(metadataset) && user"
+            class="tw-absolute tw-top-3 tw-right-3 tw-inline-block tw-px-2 tw-py-0.5 tw-text-xs tw-bg-white/90 tw-backdrop-blur-sm tw-text-gray-700 tw-rounded tw-font-medium tw-z-10"
+          >
+            Intern
+          </span>
         </div>
       </div>
-      <div v-else class="tw-mt-4">
-        <p>Helaas er zijn geen resultaten gevonden voor de zoekopdracht: "{{ searchQuery }}"</p>
-      </div>
-    </section>
-  </div>
+    </template>
+  </PortalOverviewTemplate>
 </template>
 
 <script setup lang="ts">
-import PortalMetadatasetList from "@/portal/components/dataset/PortalMetadatasetList.vue";
-import PortalSearchField from "@/portal/components/PortalSearchField.vue";
+import PortalCard from "@/portal/components/PortalCard.vue";
+import PortalOverviewTemplate from "@/portal/components/PortalOverviewTemplate.vue";
 import { APIResponseType } from "@/types/APIResponseType";
 import type { IMetadataset } from "@/types/metadataset";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/stores";
 import type { PageState } from "primevue/paginator";
+import { topicCategoryLabels } from "@/types/TopicCategory";
+import type { TopicCategoryId } from "@/types/TopicCategory";
 
 const route = useRoute();
 const router = useRouter();
 
 const metadatasets = ref<IMetadataset[]>([]);
 const searchQuery = ref<string>("");
+const submittedQuery = ref<string>("");
+const loading = ref(false);
 
 const page = ref<number>(1);
-const itemsPerPage = ref<number>(20);
+const itemsPerPage = ref<number>(12);
 const totalItems = ref<number>(0);
 
 const globalStore = useGlobalStore();
 const user = computed(() => globalStore.user);
 
-const results = computed((): number => {
-  return metadatasets.value.length;
+const subtitle = computed((): string => {
+  if (submittedQuery.value) {
+    return `Resultaten voor "${submittedQuery.value}"`;
+  }
+  return "Doorzoek alle metadatasets in het dataportaal.";
+});
+
+const emptyMessage = computed((): string => {
+  if (submittedQuery.value) {
+    return `Geen resultaten gevonden voor "${submittedQuery.value}". Probeer andere zoektermen.`;
+  }
+  return "Er zijn geen resultaten beschikbaar. Probeer een andere zoekopdracht.";
 });
 
 const getMetadatasets = async (): Promise<void> => {
+  loading.value = true;
   try {
     // For logged-in users, show all metadatasets regardless of status and show_in_overview
     // For anonymous users, only show completed metadatasets that are marked for overview
@@ -67,7 +95,9 @@ const getMetadatasets = async (): Promise<void> => {
       searchParams.set("show_in_overview", "True");
     }
 
-    searchParams.set("search", searchQuery.value);
+    if (searchQuery.value) {
+      searchParams.set("search", searchQuery.value);
+    }
     searchParams.set("page", page.value.toString());
     searchParams.set("page_size", itemsPerPage.value.toString());
 
@@ -86,13 +116,21 @@ const getMetadatasets = async (): Promise<void> => {
     totalItems.value = response.count;
   } catch (error) {
     console.error("Error fetching metadatasets:", error);
+  } finally {
+    loading.value = false;
   }
 };
 
-const onSearch = (query: string) => {
-  searchQuery.value = query;
+const handleSearch = () => {
   page.value = 1;
-  router.push({ query: { query } });
+  submittedQuery.value = searchQuery.value;
+  router.push({ query: searchQuery.value ? { query: searchQuery.value } : {} });
+  getMetadatasets();
+};
+
+const handleItemsPerPageChange = (value: number) => {
+  itemsPerPage.value = value;
+  page.value = 1;
   getMetadatasets();
 };
 
@@ -102,8 +140,31 @@ const updatePageState = (pageState: PageState) => {
   getMetadatasets();
 };
 
+const isInternal = (metadataset: IMetadataset): boolean => {
+  return metadataset.authorization_level === "internal";
+};
+
+const getTopicCategoryLabel = (topicId: string): string => {
+  return topicCategoryLabels[topicId as TopicCategoryId] || topicId || "";
+};
+
 onMounted(() => {
-  searchQuery.value = (route.query.query as string) || "";
+  const initialQuery = (route.query.query as string) || "";
+  searchQuery.value = initialQuery;
+  submittedQuery.value = initialQuery;
   getMetadatasets();
 });
+
+watch(
+  () => route.query.query,
+  (value) => {
+    const nextQuery = (value as string) || "";
+    if (nextQuery !== searchQuery.value) {
+      searchQuery.value = nextQuery;
+      submittedQuery.value = nextQuery;
+      page.value = 1;
+      getMetadatasets();
+    }
+  },
+);
 </script>

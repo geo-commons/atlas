@@ -1,68 +1,92 @@
 <template>
-  <div class="container __portal">
-    <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-    <div v-else-if="error" class="tw-flex tw-justify-center tw-items-center tw-min-h-64">
+  <div class="tw-min-h-screen tw-bg-gray-50">
+    <div v-if="loading" class="tw-flex tw-justify-center tw-items-center tw-min-h-[60vh]">
+      <Spinner class="spinner" :style-type="'portal'" />
+    </div>
+    <div v-else-if="error" class="tw-flex tw-justify-center tw-items-center tw-min-h-[60vh]">
       <div class="tw-text-center">
         <p class="tw-text-gray-600 tw-text-lg">{{ error }}</p>
       </div>
     </div>
     <div v-else>
-      <h1 class="__portal tw-my-6">{{ metadataset?.title }}</h1>
-
-      <section class="tw-flex tw-flex-col tw-gap-6 lg:tw-gap-8">
-        <div v-if="metadataset?.abstract">
-          <h3 class="tw-m-0">Over deze dataset</h3>
-          <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">{{ metadataset?.abstract }}</p>
-        </div>
-
-        <div v-if="metadataset?.description">
-          <h3 class="tw-m-0">Beschrijving <VisibilityIndicator visibility="Intern" /></h3>
-          <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">{{ metadataset?.description }}</p>
-        </div>
-
-        <div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-12 lg:tw-gap-10">
-          <div class="lg:tw-col-span-7">
-            <div v-for="section in tableData" v-show="section.show" :key="section.title" class="tw-mb-8">
-              <h3 class="tw-m-0">{{ section.title }}</h3>
-              <table class="tw-border-collapse">
-                <tbody>
-                  <tr v-for="row in section.rows" v-show="row.show" :key="row.label" class="">
-                    <td
-                      class="tw-text-gray-600 tw-pr-3 lg:tw-pr-8 tw-w-[12rem] tw-min-w-[12rem] lg:tw-w-[18rem] lg:tw-min-w-[18rem] tw-py-3 tw-px-1"
-                    >
-                      {{ row.label }}
-                      <VisibilityIndicator v-if="row.hasVisibilityIndicator" visibility="Intern" />
-                    </td>
-                    <td class="tw-py-3 tw-px-1">
-                      <!-- Keywords type -->
-                      <div v-if="row.type === 'keywords' && row.value" class="tw-flex tw-flex-wrap tw-gap-2">
-                        <span
-                          v-for="keyword in row.value.split('\n').filter((k) => k.trim())"
-                          :key="keyword"
-                          class="tw-bg-gray-100 tw-text-gray-800 tw-px-2 tw-py-1 tw-rounded tw-text-sm tw-border tw-border-gray-300"
-                        >
-                          {{ keyword.trim() }}
-                        </span>
-                      </div>
-                      <!-- Email type -->
-                      <a
-                        v-else-if="row.type === 'email' && row.value"
-                        class="tw-text-blue-600 tw-no-underline hover:tw-underline"
-                        :href="`mailto:${row.value.toLowerCase()}`"
-                      >
-                        {{ row.value.toLowerCase() }}
-                      </a>
-                      <!-- Text type -->
-                      <span v-else-if="row.value">{{ row.value }}</span>
-                      <span v-else>N/A</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+      <header class="tw-bg-white tw-border-b tw-border-gray-200 tw-border-solid tw-border-0">
+        <div class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-12">
+          <div class="tw-flex tw-items-start tw-gap-4 tw-mb-4">
+            <div
+              class="tw-w-16 tw-h-16 tw-bg-gray-50 tw-rounded-2xl tw-flex tw-items-center tw-justify-center tw-flex-shrink-0"
+            >
+              <i class="pi pi-database tw-text-2xl tw-text-gray-700" aria-hidden="true"></i>
+            </div>
+            <div class="tw-flex-1">
+              <h1 class="tw-text-4xl tw-my-3">{{ metadataset?.title }}</h1>
+              <p v-if="metadataset?.abstract" class="tw-text-gray-600 tw-text-lg tw-leading-relaxed tw-max-w-3xl">
+                {{ metadataset?.abstract }}
+              </p>
             </div>
           </div>
         </div>
-      </section>
+      </header>
+
+      <main class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-10 tw-space-y-6">
+        <section
+          v-if="metadataset?.description"
+          class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-6"
+        >
+          <h2 class="tw-text-xl tw-mb-3">
+            Beschrijving
+            <VisibilityIndicator visibility="Intern" />
+          </h2>
+          <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed tw-text-gray-700">
+            {{ metadataset?.description }}
+          </p>
+        </section>
+
+        <section class="tw-space-y-6">
+          <div
+            v-for="section in tableData"
+            v-show="section.show"
+            :key="section.title"
+            class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-6"
+          >
+            <h2 class="tw-text-xl tw-mb-4">{{ section.title }}</h2>
+            <table class="tw-w-full tw-border-collapse">
+              <tbody class="tw-divide-y tw-divide-gray-200">
+                <tr v-for="row in section.rows" v-show="row.show" :key="row.label">
+                  <td class="tw-text-gray-600 tw-pr-4 tw-py-3 tw-w-[12rem] lg:tw-w-[16rem] tw-align-top">
+                    <div class="tw-flex tw-items-center tw-gap-2">
+                      <span>{{ row.label }}</span>
+                      <VisibilityIndicator v-if="row.hasVisibilityIndicator" visibility="Intern" />
+                    </div>
+                  </td>
+                  <td class="tw-py-3 tw-text-gray-800">
+                    <!-- Keywords type -->
+                    <div v-if="row.type === 'keywords' && row.value" class="tw-flex tw-flex-wrap tw-gap-2">
+                      <span
+                        v-for="keyword in row.value.split('\n').filter((k) => k.trim())"
+                        :key="keyword"
+                        class="tw-bg-gray-100 tw-text-gray-800 tw-px-2 tw-py-1 tw-rounded-lg tw-text-sm tw-border tw-border-gray-200"
+                      >
+                        {{ keyword.trim() }}
+                      </span>
+                    </div>
+                    <!-- Email type -->
+                    <a
+                      v-else-if="row.type === 'email' && row.value"
+                      class="tw-text-[var(--color-primary-organization)] tw-no-underline hover:tw-underline"
+                      :href="`mailto:${row.value.toLowerCase()}`"
+                    >
+                      {{ row.value.toLowerCase() }}
+                    </a>
+                    <!-- Text type -->
+                    <span v-else-if="row.value">{{ row.value }}</span>
+                    <span v-else class="tw-text-gray-400">N/A</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
     </div>
   </div>
 </template>
@@ -359,9 +383,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-table tbody tr:not(:last-child) td {
-  border-bottom: 1px solid;
-  @apply tw-border-gray-300;
-}
-</style>
+<style scoped></style>

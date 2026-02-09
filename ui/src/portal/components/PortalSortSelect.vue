@@ -1,6 +1,5 @@
 <template>
   <div class="tw-flex tw-items-center tw-gap-2">
-    <span class="tw-text-sm tw-text-gray-700 tw-whitespace-nowrap">Sorteren op:</span>
     <Dropdown
       v-model="selectedSort"
       :options="sortOptions"
