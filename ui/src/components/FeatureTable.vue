@@ -103,7 +103,6 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
 import TableList from "./TableList.vue";
 import GeoJSON from "ol/format/GeoJSON";
 import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
@@ -166,6 +165,14 @@ export default {
       loading: true,
       isDownloadPending: false,
       toast: useToast(),
+      WFS_FORMAT_MAP: {
+        CSV: { wfsFormat: "csv", extension: ".csv" },
+        "ESRI Shapefile": { wfsFormat: "shape-zip", extension: ".shp.zip" },
+        GeoJSON: { wfsFormat: "application/json", extension: ".geojson" },
+        GeoPackage: { wfsFormat: "geopkg", extension: ".gpkg" },
+        GPKG: { wfsFormat: "geopkg", extension: ".gpkg" }, // Alias for GeoPackage
+        GML: { wfsFormat: "GML3", extension: ".gml" },
+      },
     };
   },
   watch: {
@@ -205,6 +212,10 @@ export default {
       listWithRemovedFilters.map((removedFilter) => {
         this.removeFilter(removedFilter);
       });
+    },
+    isDownloadPending(isPending) {
+      // Emit event to parent when download state changes
+      this.$emit("download-pending", isPending);
     },
   },
   async created() {
@@ -395,15 +406,13 @@ export default {
         console.error(e);
       }
     },
-    async fetchFeaturesForDownload() {
-      this.error = false;
-
+    getWFSDownloadUrl(outputFormat) {
       const params = new URLSearchParams([
         ["service", "WFS"],
         ["version", "1.0.0"],
         ["request", "GetFeature"],
         ["typename", this.layer.name],
-        ["outputFormat", "application/json"],
+        ["outputFormat", outputFormat],
       ]);
 
       const filters = [];
@@ -418,8 +427,22 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          if (this.fieldFilters[key].length) {
-            filters.push(`${key} in (${this.fieldFilters[key].map((f) => this.replaceQuotes(f)).join(",")})`);
+          const values = this.fieldFilters[key];
+          if (values.length > 0) {
+            const filterOnEmptyValues = values.includes("Leeg");
+            const nonEmptyValues = values.filter((f) => f !== "Leeg");
+            let valueFilters = [];
+
+            if (nonEmptyValues.length > 0) {
+              valueFilters.push(`${key} in (${nonEmptyValues.map((f) => this.replaceQuotes(f)).join(",")})`);
+            }
+            if (filterOnEmptyValues) {
+              valueFilters.push(`(${key} IS NULL or ${key} = '')`);
+            }
+
+            if (valueFilters.length > 0) {
+              filters.push(`(${valueFilters.join(" OR ")})`);
+            }
           }
         });
       }
@@ -433,11 +456,8 @@ export default {
         if (encodedLength <= 32000) {
           filters.push(fullFilter);
         } else {
-          this.error = true;
-          this.errorMessage =
-            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.";
-          this.loading = false;
-          return;
+          // Geometry too complex - return null, callers handle UI state
+          return null;
         }
       }
 
@@ -455,129 +475,84 @@ export default {
         params.set("sortBy", sortString);
       }
 
-      try {
-        const url = new URL(this.layer.url);
-        url.search = params.toString();
+      const url = new URL(this.layer.url);
+      url.search = params.toString();
 
-        const fetchParams = getFetchParameters(this.layer, this.user);
-
-        const result = await fetch(url.toString(), fetchParams);
-
-        return await result.json();
-      } catch (e) {
-        console.error("Er is iets fout gegaan bij het ophalen van de data voor de download", e);
-      }
-
-      this.loading = false;
-      return [];
+      return url.toString();
     },
-    async downloadCSV() {
-      if (!this.layer.is_exportable) {
-        this.toast.add({
-          severity: "error",
-          summary: "Downloaden mislukt",
-          detail: "Deze kaartlaag is niet exporteerbaar.",
-          life: 5000,
-        });
-        return;
-      }
-
-      this.isDownloadPending = true;
-
-      const separator = ";";
-      const filename = this.layer.title
-        .replace(" ", "-")
-        .replace(/[^a-z0-9-]/gi, "")
-        .toLowerCase();
-
-      const fetchDownloadData = await this.fetchFeaturesForDownload();
-
-      let data = this.displayProperties.map((property) => `"${property.replace(/"/g, '""')}"`).join(separator) + "\n";
-
-      fetchDownloadData.features.forEach((feature) => {
-        data +=
-          this.displayProperties
-            .map((property) =>
-              feature.properties[property] !== null
-                ? `"${String(feature.properties[property]).replace(/"/g, '""')}"`
-                : "",
-            )
-            .join(separator) + "\n";
+    showDownloadError(detail) {
+      this.toast.add({
+        severity: "error",
+        summary: "Downloaden mislukt",
+        detail: detail,
+        life: 5000,
       });
-
-      const hiddenElement = document.createElement("a");
-      hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
-      hiddenElement.target = "_blank";
-      hiddenElement.download = `${filename}.csv`;
-      hiddenElement.click();
-
-      this.isDownloadPending = false;
+    },
+    // Helper function to download a blob from a URL
+    async downloadBlobFromUrl(url, downloadFilename) {
+      const fetchParams = getFetchParameters(this.layer, this.user);
+      const res = await fetch(url, fetchParams);
+      if (!res.ok) {
+        if (res.status === 413) {
+          throw new Error("De export is te groot. Selecteer een kleiner gebied.");
+        }
+        throw new Error(`Download failed: ${res.status}`);
+      }
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = downloadFilename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(objectUrl);
     },
     async download(outputFormat) {
       if (!this.layer.is_exportable) {
-        this.toast.add({
-          severity: "error",
-          summary: "Downloaden mislukt",
-          detail: "Deze kaartlaag is niet exporteerbaar.",
-          life: 5000,
-        });
+        this.showDownloadError("Deze kaartlaag is niet exporteerbaar.");
         return;
       }
 
       this.isDownloadPending = true;
+      this.error = false;
 
-      const fetchDownloadData = await this.fetchFeaturesForDownload();
-
-      const result = await fetch(`/atlas/convert/${outputFormat}`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": Cookies.get("csrftoken"),
-        },
-        body: JSON.stringify({
-          outputFormat,
-          featureCollection: fetchDownloadData,
-        }),
-      });
-
-      if (!result.ok) {
-        const response = await result.json();
-
-        this.toast.add({
-          severity: "error",
-          summary: "Downloaden mislukt",
-          detail: response.error,
-          life: 5000,
-        });
-
+      const formatInfo = this.WFS_FORMAT_MAP[outputFormat];
+      if (!formatInfo) {
+        this.showDownloadError("Onbekend downloadformaat.");
         this.isDownloadPending = false;
         return;
       }
 
-      const formats = {
-        "ESRI Shapefile": ".shp.zip",
-        GeoJSON: ".geojson",
-        GPKG: ".gpkg",
-        GML: ".gml",
-        SQLite: ".sqlite3",
-      };
+      const wfsFormat = formatInfo.wfsFormat;
 
-      const filename = this.layer.title
-        .replace(" ", "-")
-        .replace(/[^a-z0-9-]/gi, "")
-        .toLowerCase();
+      try {
+        let url = this.getWFSDownloadUrl(wfsFormat);
+        if (!url) {
+          throw new Error(
+            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.",
+          );
+        }
 
-      const data = await result.blob();
-      const url = window.URL.createObjectURL(data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${filename}${formats[outputFormat]}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+        // CSV requires specific format options
+        if (outputFormat === "CSV") {
+          const urlObj = new URL(url);
+          urlObj.searchParams.set("format_options", "csvseparator:semicolon");
+          url = urlObj.toString();
+        }
 
-      this.isDownloadPending = false;
+        const filename = this.layer.title
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/gi, "")
+          .toLowerCase();
+
+        await this.downloadBlobFromUrl(url, `${filename}${formatInfo.extension}`);
+      } catch (e) {
+        console.error("Er is iets fout gegaan bij het downloaden", e);
+        this.showDownloadError(e.message || "Er is iets fout gegaan bij het downloaden. Probeer het opnieuw.");
+      } finally {
+        this.isDownloadPending = false;
+      }
     },
     replaceQuotes(value) {
       if (typeof value === "string") {
