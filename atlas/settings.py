@@ -85,6 +85,7 @@ DATABASES = {
         'USER': os.getenv('DB_USER', 'atlas'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'atlas'),
         'NAME': os.getenv('DB_NAME', 'atlas'),
+        'PORT': os.getenv('DB_PORT', '5432'),
         'CONN_MAX_AGE': 600,
     }
 }
