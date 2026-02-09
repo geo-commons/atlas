@@ -1,18 +1,20 @@
 <template>
-  <div v-if="routeArray.length >= 1" class="breadcrumb-wrapper">
-    <ul class="breadcrumb">
-      <li>
-        <router-link class="text-button" to="/">Home</router-link>
-        <span class="grey">/</span>
-      </li>
-      <li v-for="(crumb, index) in breadcrumbs" :key="crumb.path">
-        <router-link v-if="index < breadcrumbs.length - 1" class="text-button" :to="`/${crumb.path}`"
-          >{{ crumb.name }}
-        </router-link>
-        <span v-if="index < breadcrumbs.length - 1" class="grey">/</span>
-        <span v-else class="grey">{{ crumb.name }}</span>
-      </li>
-    </ul>
+  <div v-if="routeArray.length >= 1" class="tw-bg-white tw-border-b tw-border-gray-200">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-3">
+      <ul class="breadcrumb">
+        <li>
+          <router-link class="text-button" to="/">Home</router-link>
+          <span class="grey">/</span>
+        </li>
+        <li v-for="(crumb, index) in breadcrumbs" :key="crumb.path">
+          <router-link v-if="index < breadcrumbs.length - 1" class="text-button" :to="`/${crumb.path}`"
+            >{{ crumb.name }}
+          </router-link>
+          <span v-if="index < breadcrumbs.length - 1" class="grey">/</span>
+          <span v-else class="grey">{{ crumb.name }}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -49,16 +51,6 @@ export default {
 </script>
 
 <style scoped>
-.breadcrumb-wrapper {
-  padding: 12px 20px;
-}
-
-@media (min-width: 1024px) {
-  .breadcrumb-wrapper {
-    padding: 12px 32px;
-  }
-}
-
 ul.breadcrumb > li {
   display: flex;
   align-items: center;

@@ -1,118 +1,159 @@
 <template>
-  <main class="tw-mx-auto tw-max-w-7xl tw-px-4 md:tw-pt-6 tw-my-4">
-    <section class="tw-grid md:tw-grid-cols-12 lg:tw-gap-12 tw-gap-4">
-      <div class="md:tw-col-span-7">
-        <h1 class="tw-text-4xl tw-my-0 tw-mb-2">
-          {{ config?.organization_header ? config.organization_header : "Welkom op het dataportaal!" }}
-        </h1>
-        <p v-if="config?.organization_introduction" class="tw-leading-8">
-          {{ config.organization_introduction }}
-        </p>
-      </div>
-      <img
-        v-if="config?.organization_image"
-        :src="config.organization_image"
-        class="md:tw-col-span-5 tw-w-full tw-shadow"
-        :alt="`Impressie van ${config?.organization_name}`"
-      />
-    </section>
-    <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-    <div v-else-if="hasCriticalError" class="tw-flex tw-justify-center tw-items-center tw-min-h-64">
-      <div class="tw-text-center">
-        <p class="tw-text-gray-600 tw-text-lg">
-          Er is een probleem opgetreden bij het laden van de gegevens. Probeer het opnieuw.
-        </p>
-      </div>
-    </div>
-    <div v-else class="tw-flex tw-flex-col tw-gap-4 md:tw-gap-8 tw-mt-4 md:tw-mt-8">
-      <!-- Note: currently we can only search through metadatasets that is why it is the only check in the v-if below.     -->
-      <section v-if="availableLinks.metadatasets" class="tw-flex tw-justify-center">
-        <div class="tw-w-full lg:tw-w-4/6">
-          <PortalSearchField :size="'large'" @on-search="onSearch" />
+  <div class="tw-min-h-screen tw-bg-gray-50">
+    <!-- Header Section -->
+    <section class="tw-bg-white tw-border-b tw-border-gray-200 tw-border-solid tw-border-0">
+      <div class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-16">
+        <div class="tw-grid md:tw-grid-cols-2 tw-gap-12 tw-items-stretch">
+          <!-- Left: Text Content -->
+          <div class="tw-flex tw-flex-col tw-justify-center">
+            <h1 class="tw-text-5xl tw-mb-6 tw-leading-tight">
+              {{ config?.organization_header ? config.organization_header : "Welkom op het dataportaal" }}
+            </h1>
+            <p v-if="config?.organization_introduction" class="tw-text-gray-600 tw-text-lg tw-leading-relaxed">
+              {{ config.organization_introduction }}
+            </p>
+          </div>
+
+          <!-- Right: Header Image -->
+          <div
+            v-if="config?.organization_image"
+            class="tw-rounded-2xl tw-overflow-hidden tw-shadow-sm tw-flex tw-items-center"
+          >
+            <img
+              :src="config.organization_image"
+              class="tw-w-full tw-h-auto tw-max-h-[300px] md:tw-max-h-[400px] tw-object-cover"
+              :alt="`Impressie van ${config?.organization_name}`"
+            />
+          </div>
         </div>
-      </section>
-
-      <section class="tw-grid md:tw-grid-cols-12 tw-gap-4 lg:tw-gap-12 tw-mt-4 md:tw-mt-8">
-        <EmbedAtlasFrame class="md:tw-col-span-7" :embed-url="embedUrl" />
-        <PortalQuickNavigationMenu :available-links="availableLinks" class="md:tw-col-span-5" />
-      </section>
-
-      <div v-if="noContentAvailable" class="tw-flex tw-justify-center tw-text-xl">
-        <p v-if="user">Het lijkt er op dat er nog geen data geconfigureerd is...</p>
       </div>
-      <div v-else class="tw-flex tw-flex-col tw-gap-4 md:tw-gap-8">
-        <section v-if="maps?.length || errors.maps">
-          <div class="tw-flex tw-justify-between tw-items-center">
-            <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Kaarten</h2>
-            <router-link v-if="maps?.length" class="text-button" to="/maps">
-              Toon alle kaarten
-              <ArrowRightIcon class="icon __smedium" />
-            </router-link>
-          </div>
-          <div v-if="errors.maps" class="tw-text-center tw-py-4">
-            <p class="tw-text-red-600 tw-text-sm">{{ errors.maps }}</p>
-          </div>
-          <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-            <PortalCard
-              v-for="map in visibleMaps"
-              :key="map.id"
-              :object-type="'map'"
-              :title="map.title"
-              :thumbnail="map.thumbnail"
-              :summary="map.description"
-              :show-thumbnail="true"
-              :object-url="`/atlas/maps/${map.slug}`"
-            />
-          </div>
-        </section>
-        <section v-if="metadatasets?.length || errors.metadatasets">
-          <div class="tw-flex tw-justify-between tw-items-center">
-            <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Metadatasets</h2>
-            <router-link v-if="metadatasets?.length" class="text-button" to="/metadatasets">
-              Toon alle metadatasets
-              <ArrowRightIcon class="icon __smedium" />
-            </router-link>
-          </div>
-          <div v-if="errors.metadatasets" class="tw-text-center tw-py-4">
-            <p class="tw-text-red-600 tw-text-sm">{{ errors.metadatasets }}</p>
-          </div>
-          <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-            <PortalCard
-              v-for="metadataset in visibleMetadatasets"
-              :key="metadataset.id"
-              :object-type="'metadataset'"
-              :title="metadataset.title"
-              :summary="metadataset.description"
-              :thumbnail="metadataset.thumbnail"
-              :show-thumbnail="true"
-              :object-url="`/metadatasets/${metadataset.slug}`"
-            />
-          </div>
-        </section>
-        <section v-if="tables?.length">
-          <div class="tw-flex tw-justify-between tw-items-center">
-            <h2 class="tw-text-4xl tw-mb-3 tw-mt-0">Tabellen</h2>
-            <router-link class="text-button" to="/tables">
-              Toon alle tabellen
-              <ArrowRightIcon class="icon __smedium" />
-            </router-link>
-          </div>
-          <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-            <PortalCard
-              v-for="table in visibleTables"
-              :key="table.id"
-              :object-type="'table'"
-              :title="table.title"
-              :summary="table.description"
-              :thumbnail="table.thumbnail"
-              :show-thumbnail="true"
-              :object-url="`/tables/${table.slug}`"
-            />
-          </div>
-        </section>
+    </section>
+
+    <!-- Main Content -->
+    <main class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-16 tw-space-y-20">
+      <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
+      <div v-else-if="hasCriticalError" class="tw-flex tw-justify-center tw-items-center tw-min-h-64">
+        <div class="tw-text-center">
+          <p class="tw-text-gray-600 tw-text-lg">
+            Er is een probleem opgetreden bij het laden van de gegevens. Probeer het opnieuw.
+          </p>
+        </div>
       </div>
-    </div>
-  </main>
+      <div v-else class="tw-space-y-20">
+        <!-- Search and Quick Links Section -->
+        <div class="tw-grid md:tw-grid-cols-3 tw-gap-8">
+          <!-- Search Bar (2 columns on desktop) -->
+          <div v-if="availableLinks.metadatasets" class="md:tw-col-span-2">
+            <div class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8">
+              <h2 class="tw-text-2xl tw-mb-6">Zoeken</h2>
+              <PortalSearchField @on-search="onSearch" />
+            </div>
+          </div>
+
+          <!-- Direct naar links -->
+          <div class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8">
+            <PortalQuickNavigationMenu :available-links="availableLinks" />
+          </div>
+        </div>
+
+        <!-- Map Preview -->
+        <section id="map">
+          <div class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-overflow-hidden">
+            <EmbedAtlasFrame :embed-url="embedUrl" />
+          </div>
+        </section>
+
+        <div v-if="noContentAvailable" class="tw-flex tw-justify-center tw-text-xl">
+          <p v-if="user">Het lijkt er op dat er nog geen data geconfigureerd is...</p>
+        </div>
+        <div v-else class="tw-space-y-20">
+          <!-- Kaarten Section -->
+          <section v-if="maps?.length || errors.maps" id="maps">
+            <div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+              <h2 class="tw-text-3xl">Kaarten</h2>
+              <a
+                v-if="maps?.length"
+                href="/maps"
+                class="tw-text-[var(--color-primary-organization)] hover:tw-opacity-80 tw-transition-colors tw-font-medium tw-text-lg tw-flex tw-items-center tw-gap-1 tw-no-underline"
+              >
+                Bekijk alle kaarten <i class="pi pi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div v-if="errors.maps" class="tw-text-center tw-py-4">
+              <p class="tw-text-red-600 tw-text-sm">{{ errors.maps }}</p>
+            </div>
+            <div class="tw-grid sm:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-6">
+              <PortalCard
+                v-for="map in visibleMaps"
+                :key="map.id"
+                :object-type="'map'"
+                :title="map.title"
+                :thumbnail="map.thumbnail"
+                :summary="map.description"
+                :show-thumbnail="true"
+                :object-url="`/atlas/maps/${map.slug}`"
+              />
+            </div>
+          </section>
+
+          <!-- Metadatasets Section -->
+          <section v-if="metadatasets?.length || errors.metadatasets" id="metadata">
+            <div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+              <h2 class="tw-text-3xl">Metadatasets</h2>
+              <a
+                v-if="metadatasets?.length"
+                href="/metadatasets"
+                class="tw-text-[var(--color-primary-organization)] hover:tw-opacity-80 tw-transition-colors tw-font-medium tw-text-lg tw-flex tw-items-center tw-gap-1 tw-no-underline"
+              >
+                Bekijk alle metadatasets <i class="pi pi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div v-if="errors.metadatasets" class="tw-text-center tw-py-4">
+              <p class="tw-text-red-600 tw-text-sm">{{ errors.metadatasets }}</p>
+            </div>
+            <div class="tw-grid sm:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+              <PortalCard
+                v-for="metadataset in visibleMetadatasets"
+                :key="metadataset.id"
+                :object-type="'metadataset'"
+                :title="metadataset.title"
+                :summary="metadataset.abstract || metadataset.description || ''"
+                :thumbnail="metadataset.thumbnail"
+                :show-thumbnail="false"
+                :object-url="`/metadatasets/${metadataset.slug}`"
+              />
+            </div>
+          </section>
+
+          <!-- Tabellen Section -->
+          <!-- Note: Tables are loaded from the store (not via API), so no error handling is needed -->
+          <section v-if="tables?.length" id="tables">
+            <div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+              <h2 class="tw-text-3xl">Tabellen</h2>
+              <a
+                href="/tables"
+                class="tw-text-[var(--color-primary-organization)] hover:tw-opacity-80 tw-transition-colors tw-font-medium tw-text-lg tw-flex tw-items-center tw-gap-1 tw-no-underline"
+              >
+                Bekijk alle tabellen <i class="pi pi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="tw-grid sm:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+              <PortalCard
+                v-for="table in visibleTables"
+                :key="table.id"
+                :object-type="'table'"
+                :title="table.title"
+                :summary="table.description"
+                :thumbnail="table.thumbnail"
+                :show-thumbnail="false"
+                :object-url="`/tables/${table.slug}`"
+              />
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -125,7 +166,6 @@ import { useGlobalStore } from "@/stores";
 import { APIResponseType } from "@/types/APIResponseType";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import ArrowRightIcon from "../../assets/icons/arrow-right-icon.svg";
 
 interface Map {
   id: number;
@@ -138,7 +178,8 @@ interface Map {
 interface Metadataset {
   id: number;
   title: string;
-  description: string;
+  abstract?: string;
+  description?: string;
   thumbnail?: string;
   slug: string;
 }
@@ -179,7 +220,6 @@ const maxNrItems = ref(4);
 const embedUrl = ref("");
 
 const router = useRouter();
-
 const globalStore = useGlobalStore();
 
 const user = computed(() => globalStore.user);
@@ -286,11 +326,10 @@ const loadData = async (): Promise<void> => {
   } finally {
     loading.value = false;
   }
-
-  embedUrl.value = getEmbedUrl();
 };
 
 onMounted(() => {
   loadData();
+  embedUrl.value = getEmbedUrl();
 });
 </script>

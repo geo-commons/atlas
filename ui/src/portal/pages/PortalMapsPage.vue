@@ -1,105 +1,141 @@
 <template>
-  <main class="tw-mx-auto tw-max-w-7xl tw-px-4 md:tw-pt-6 tw-my-4 tw-w-full">
-    <h1 class="tw-text-4xl tw-my-0 tw-mb-2">Kaarten</h1>
-    <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-    <section>
-      <div class="tw-w-full md:tw-w-2/6 tw-my-5">
-        <PortalSearchField
-          :initial-search-query="searchQuery"
-          :placeholder="'Zoek op kaarten'"
-          @on-search="setSearchQuery"
-        />
+  <PortalOverviewTemplate
+    v-model:search-query="searchQuery"
+    title="Kaarten"
+    subtitle="Doorzoek alle beschikbare themakaarten in het dataportaal. Gebruik de zoekfunctie om kaarten te vinden."
+    header-icon="pi pi-map"
+    search-placeholder="Zoek op kaarten..."
+    :total-records="totalItems"
+    :items-per-page="itemsPerPage"
+    :page="page"
+    :has-results="maps.length > 0"
+    :loading="loading"
+    empty-icon="pi pi-map"
+    empty-title="Geen resultaten gevonden"
+    empty-message="Probeer andere zoektermen om resultaten te vinden."
+    @search="handleSearch"
+    @update:items-per-page="handleItemsPerPageChange"
+    @page="updatePageState"
+  >
+    <template #filters>
+      <div class="tw-grid md:tw-grid-cols-2 tw-gap-6">
+        <div>
+          <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">Sorteren op</label>
+          <Dropdown
+            v-model="selectedSort"
+            :options="sortOptions"
+            option-label="label"
+            option-value="value"
+            class="tw-w-full"
+            :pt="{ input: { class: 'tw-text-sm' }, panel: { class: 'tw-text-sm' } }"
+            @change="handleSortChange"
+          />
+        </div>
       </div>
-      <div class="tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4 md:tw-gap-8">
-        <p v-if="!maps.length > 0" class="!tw-mt-0">Geen resultaten gevonden.</p>
+    </template>
+
+    <template #default>
+      <div class="tw-grid sm:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6 tw-mb-12">
         <PortalCard
           v-for="map in maps"
           :key="map.id"
           :object-type="'map'"
           :title="map.title"
-          :thumbnail="map.thumbnail"
           :summary="map.description"
+          :thumbnail="map.thumbnail"
           :show-thumbnail="true"
           :object-url="`/atlas/maps/${map.slug}`"
         />
       </div>
-      <div class="tw-flex tw-flex-row tw-items-start tw-py-8">
-        <Paginator
-          :first="page * items_per_page - 1"
-          :rows="items_per_page"
-          :total-records="total_items"
-          :rows-per-page-options="[10, 20, 30]"
-          :pt="{
-            root: {
-              class: '!tw-p-0',
-            },
-          }"
-          @page="updatePageState"
-        ></Paginator>
-      </div>
-    </section>
-  </main>
+    </template>
+  </PortalOverviewTemplate>
 </template>
 
-<script>
-import { useGlobalStore } from "@/stores";
+<script setup lang="ts">
 import PortalCard from "@/portal/components/PortalCard.vue";
-import PortalSearchField from "@/portal/components/PortalSearchField.vue";
-import Spinner from "@/components/Spinner.vue";
+import PortalOverviewTemplate from "@/portal/components/PortalOverviewTemplate.vue";
+import { onMounted, ref } from "vue";
+import type { PageState } from "primevue/paginator";
+import Dropdown from "primevue/dropdown";
 
-export default {
-  name: "PortalMapsPage",
-  components: { PortalSearchField, PortalCard, Spinner },
-  data() {
-    return {
-      loading: false,
-      maps: [],
-      searchQuery: "",
-      items_per_page: 20,
-      page: 1,
-      total_items: 20,
-    };
-  },
-  computed: {
-    config() {
-      return useGlobalStore().config;
-    },
-  },
-  created() {
-    this.getMaps();
-  },
-  methods: {
-    async getMaps() {
-      this.loading = true;
+interface Map {
+  id: number;
+  title: string;
+  description?: string;
+  slug: string;
+  thumbnail?: string;
+}
 
-      const result = await fetch(
-        `/atlas/api/v1/maps/?published=True&show_in_overview=True&search=${this.searchQuery}&page=${this.page}&page_size=${this.items_per_page}`,
-        {
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+interface SortOption {
+  label: string;
+  value: string;
+}
 
-      if (!result.ok) {
-        console.error("Could not fetch maps");
-      }
+const loading = ref(false);
+const maps = ref<Map[]>([]);
+const searchQuery = ref("");
+const selectedSort = ref("title");
+const page = ref(1);
+const itemsPerPage = ref(12);
+const totalItems = ref(0);
 
-      const response = await result.json();
-      this.maps = response.results;
-      this.loading = false;
-      this.total_items = response.count;
-    },
-    async setSearchQuery(newSearchQuery) {
-      this.searchQuery = newSearchQuery;
-      this.page = 1;
-      await this.getMaps();
-    },
-    async updatePageState(pageState) {
-      this.page = pageState.page + 1;
-      this.items_per_page = pageState.rows;
+const sortOptions: SortOption[] = [
+  { label: "Titel (A-Z)", value: "title" },
+  { label: "Titel (Z-A)", value: "-title" },
+];
 
-      await this.getMaps();
-    },
-  },
+const getMaps = async () => {
+  loading.value = true;
+  const params = new URLSearchParams();
+  params.set("published", "True");
+  params.set("show_in_overview", "True");
+  if (searchQuery.value) params.set("search", searchQuery.value);
+  params.set("page", page.value.toString());
+  params.set("page_size", itemsPerPage.value.toString());
+  if (selectedSort.value) params.set("ordering", selectedSort.value);
+
+  try {
+    const res = await fetch(`/atlas/api/v1/maps/?${params}`, {
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) {
+      console.error("Could not fetch maps");
+      return;
+    }
+    const data = await res.json();
+    maps.value = data.results || [];
+    totalItems.value = data.count ?? 0;
+  } catch (e) {
+    console.error("Error fetching maps:", e);
+  } finally {
+    loading.value = false;
+  }
 };
+
+const handleSearch = () => {
+  page.value = 1;
+  getMaps();
+};
+
+const handleSortChange = () => {
+  page.value = 1;
+  getMaps();
+};
+
+const handleItemsPerPageChange = (v: number) => {
+  itemsPerPage.value = v;
+  page.value = 1;
+  getMaps();
+};
+
+const updatePageState = (pageState: PageState) => {
+  page.value = pageState.page + 1;
+  itemsPerPage.value = pageState.rows;
+  getMaps();
+};
+
+onMounted(() => {
+  getMaps();
+});
 </script>
