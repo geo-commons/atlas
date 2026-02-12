@@ -93,6 +93,7 @@ DATABASES = {
 INSTALLED_APPS = [
     'homepage',
     'tables',
+    'table',
     'webservice',
     'portal',
     'user_management',
@@ -314,6 +315,8 @@ CONSTANCE_CONFIG = {
     'FEATURE_SORT_LAYER': (False, 'Sorteer kaartlagen in de viewer'),
     'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
     'FEATURE_COMPARE_LAYERS': (True, ('Kaartlaagvergelijk functionaliteit op hoofdkaart')),
+    'FEATURE_NEW_TABLES': (False, ('Gebruik de nieuwe tabellen functionaliteit')),
+    'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE': (True, ('Gebruik de oude gekoppelde data en templates')),
     'ORGANIZATION_IMAGE': (
         '', 'Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
     'ORGANIZATION_PRIMARY_COLOR': (
@@ -348,6 +351,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'FEATURE_EDIT_LAYER_FEATURES',
         'FEATURE_DISABLE_ADMIN1',
         'FEATURE_COMPARE_LAYERS',
+        'FEATURE_NEW_TABLES',
+        'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE'
     ),
     '5. Portaal configuratie': (
         'ORGANIZATION_IMAGE',

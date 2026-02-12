@@ -22,7 +22,8 @@ Onder algemene gegevens van de kaartlaag kent Atlas diverse velden, dat zijn de 
 - **Metadataset:** Selecteer de metadataset die aan deze kaartlaag gekoppeld moet worden. De metadataset bevat alle metadata informatie conform ISO 19115 standaard. Deze koppeling is verplicht voor publicatie van de kaartlaag.
 
 !!! info "Publicatie vereiste"
-    Een kaartlaag kan alleen worden gepubliceerd als er een metadataset aan is gekoppeld. Dit is nodig zodat gebruikers altijd toegang hebben tot de juiste beschrijvende informatie (metadata) over de kaartlaag. Zonder gekoppelde metadataset ontbreekt deze informatie en voldoet de publicatie niet aan de kwaliteits- en transparantie-eisen.
+Een kaartlaag kan alleen worden gepubliceerd als er een metadataset aan is gekoppeld. Dit is nodig zodat gebruikers altijd toegang hebben tot de juiste beschrijvende informatie (metadata) over de kaartlaag. Zonder gekoppelde metadataset ontbreekt deze informatie en voldoet de publicatie niet aan de kwaliteits- en transparantie-eisen.
+
 - **Gepubliceerd:** Met deze optie bepaal je op de laag wordt gepubliceerd of niet binnen Atlas, deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden. _Standaard_: uit.
 - **Kaartlaag is exporteerbaar**: Met deze optie bepaal je of de data achter de kaartlaag wel of niet exporteerbaar is vanuit de dataweergave. _Standaard_: aan.
 
@@ -61,8 +62,8 @@ Een geldig RD coördinaat is bijvoorbeeld: _128981.03_
 - **Bereik maximum x:** Dit is de X waarde van het coördinaat rechtsboven. _Veld eisen_: Is een geldig RD coordinaat.
 - **Bereik maximum y:** Dit is de Y waarde van het coördinaat rechtsboven. _Veld eisen_: Is een geldig RD coordinaat.
 
-- **Zoomniveau minimum:** Wanneer in het stijlbestand (SLD) [MinScaleDenominator](https://docs.geoserver.org/main/en/user/styling/sld/reference/rules.html)  en/of [MaxScaleDenominator](https://docs.geoserver.org/main/en/user/styling/sld/reference/rules.html) geconfigureerd is voor een object, dan is het raadzaam zoomniveau minimum en/of zoomniveau maximum in te vullen.
-Wanneer het zoomniveau wordt ingevuld zal de kaartlaag greyed-out worden wanneer te ver uitgezoomd (minimum) of te ver inzoomd (maximum) is. Wanneer de kaartlaag greyed-out is verschijnt een vergrootglas-icoon naast de kaartlaagnaam. Klikken hierop laat de kaartlaag in- of uitzoomen naar het niveau waar de objecten getoond worden.
+- **Zoomniveau minimum:** Wanneer in het stijlbestand (SLD) [MinScaleDenominator](https://docs.geoserver.org/main/en/user/styling/sld/reference/rules.html) en/of [MaxScaleDenominator](https://docs.geoserver.org/main/en/user/styling/sld/reference/rules.html) geconfigureerd is voor een object, dan is het raadzaam zoomniveau minimum en/of zoomniveau maximum in te vullen.
+  Wanneer het zoomniveau wordt ingevuld zal de kaartlaag greyed-out worden wanneer te ver uitgezoomd (minimum) of te ver inzoomd (maximum) is. Wanneer de kaartlaag greyed-out is verschijnt een vergrootglas-icoon naast de kaartlaagnaam. Klikken hierop laat de kaartlaag in- of uitzoomen naar het niveau waar de objecten getoond worden.
 
 Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarbij de objecten binnen de laag niet meer zichtbaar zijn (Hoe verder uitgezoomd wordt, hoe kleiner het zoomniveau). Bijvoorbeeld: een minimaal zoomniveau van 10, zorgt ervoor dat bij een zoomniveau van 9 de objecten niet meer zichtbaar zijn. _Veld eisen_: Numeriek. Nauwkeurigheid: 2 cijfers achter de komma, bijvoorbeeld: 10,55. Wanneer een punt wordt ingegeven, wordt dez automatisch omgezet naar een komma.
 
@@ -74,7 +75,7 @@ Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarb
     Een handvat:
 
     Zoomniveau MaxScaleDenominator Niveau
- 
+
     12,96      70000               Regio-overzicht
     14,48      24000               Stadsniveau
     19,5       1000                Straatniveau
@@ -85,13 +86,13 @@ Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarb
     De MinScaleDenominator en MaxScaleDenominator waardes komen overeen met de schaallat rechtsonderin het Atlas kaartscherm. Klik eventueel 1x op de schaallat om in de schaalmodus te komen.
     Het zoomniveau kan uit de url gehaald worden:
     https://hostnaam.nl/atlas/@126647.71,501835.21,16.02z/layers=id_mijn_layer/base=achtergrondkaart
-    Het zoomniveau staat hier achter de coordinaten, dus 16.02. 
+    Het zoomniveau staat hier achter de coordinaten, dus 16.02.
 
 - **Stijlnaam voor WMS / WMTS laag:** m verschillende stijlen met één kaartlaag te kunnen gebruiken, kan hier een stijlbestand worden ingevuld. Het stijlbestand waarmee de kaartlaag in Geoserver is geconfigureerd wordt hiermee overruled. Het stijlbestand dat hier wordt ingevuld moet net als het originele stijlbestand op de Geoserver staan.
-Via het veld "Stijlnaam voor WMS / WMTS laag" is het mogelijk om gebruik te maken van een stijl aanwezig op de GeoServer door exact die naam in dit veld op te nemen. _Veld eisen_: Is de stijlnaam zoals op de GeoServer. Hiermee wordt de WFS stijl in Geoserver overruled.
+  Via het veld "Stijlnaam voor WMS / WMTS laag" is het mogelijk om gebruik te maken van een stijl aanwezig op de GeoServer door exact die naam in dit veld op te nemen. _Veld eisen_: Is de stijlnaam zoals op de GeoServer. Hiermee wordt de WFS stijl in Geoserver overruled.
 
 - **Stijl voor WFS / MVT laag:** m verschillende stijlen met één kaartlaag te kunnen gebruiken, kan hier een stijlbestand worden ingevuld. Het stijlbestand waarmee de kaartlaag in Geoserver is geconfigureerd wordt hiermee overruled. Het stijlbestand dat hier wordt ingevuld moet net als het originele stijlbestand op de Geoserver staan.
-Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de inhoud van dit veld moet opgesteld zijn in het GeoStyler formaat. Via [de GeoStyler website](https://geostyler.github.io/geostyler-demo/) kan je zelf gemakkelijk stijlen maken.
+  Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de inhoud van dit veld moet opgesteld zijn in het GeoStyler formaat. Via [de GeoStyler website](https://geostyler.github.io/geostyler-demo/) kan je zelf gemakkelijk stijlen maken.
 
 - **Vriendelijke veldnamen:** Met het vriendelijke veldnamen veld kan je ervoor zorgen dat de uiteindelijke veldnamen die in Atlas worden laten zien een andere naam krijgen dan hoe ze binnen GeoServer gedefinieerd staan. Bijvoorbeeld:
 
@@ -121,7 +122,6 @@ Door middel van dit veld kan je de standaard GeoServer stijl overschrijven, de i
 
 - **Zoektermen:** Via het veld "Zoektermen" kun je extra termen opgeven waarop een kaartlaag gevonden kan worden bij gebruik van de zoekfunctie binnen Atlas. Dit is vooral handig wanneer gebruikers verschillende woorden gebruiken voor hetzelfde concept. Bijvoorbeeld: bij een kaartlaag met als titel Scholen kun je de zoektermen onderwijs, educatie en basisschool toevoegen, zodat gebruikers deze kaartlaag ook vinden wanneer ze op die alternatieve termen zoeken. Voeg één zoekterm per regel in.
 
-
 ### Toegang
 
 Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een kaartlaag, ga hier zorgvuldig mee om.
@@ -132,21 +132,46 @@ Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een 
     Wanneer deze optie is ingeschakeld, kunnen alle ingelogde gebruikers binnen Atlas objecten op de kaartlaag muteren, dat wil zeggen: **toevoegen**, **bewerken** en/of **verwijderen**. Dit kan via zowel de kaartlaag module als de autorisatie module geregeld worden.
 
     Wil je dat gebruikers deze acties kunnen uitvoeren, dan zijn er twee mogelijkheden:
-
     1. **Schakel deze optie in**  
-    Hiermee krijgen alle ingelogde gebruikers bewerkingsrechten op de kaartlaag.
+       Hiermee krijgen alle ingelogde gebruikers bewerkingsrechten op de kaartlaag.
 
     2. **Gebruik schrijfgroepen**  
-    In plaats van algemene toegang kun je specifieke gebruikers of groepen schrijfrechten geven via:
+       In plaats van algemene toegang kun je specifieke gebruikers of groepen schrijfrechten geven via:
        - De instellingen van de **kaartlaag**
        - De instellingen binnen de **autorisatie**-module
 
-    >   💡 Tip: Gebruik schrijfgroepen als je meer controle wilt over wie wijzigingen mag aanbrengen.
+    > 💡 Tip: Gebruik schrijfgroepen als je meer controle wilt over wie wijzigingen mag aanbrengen.
 
 - **Lees groepen:** Onder "beschikbare groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot de kaartlaag.
-- **Schrijf groepen:** Onder "schrijf groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot het muteren van objecten op de kaartlaag (toevoegen, bewerken en/of verwijderen van objecten). 
+- **Schrijf groepen:** Onder "schrijf groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot het muteren van objecten op de kaartlaag (toevoegen, bewerken en/of verwijderen van objecten).
 
-### Gekoppelde Data
+## Relaties tussen kaartlaag en tabellen
+
+Een kracht van tabellen is dat je ze kan verbinden aan kaartlagen, waardoor je in de detailweergave van een object op een kaartlaag de lijstweergaves van andere tabellen kan tonen. Dit noemen wij ook wel een relatie tussen kaartlaag en tabellen.
+
+### Het configureren van een relatie
+
+Voeg een nieuwe relatie toe door op "Nieuwe relatie" te drukken. Kies een tabel die je wil koppelen aan de huidige kaartlaag en klik op "Toevoegen". Nu zie je dat er een relatie voor de kaartlaag is toegevoegd. Via het veld "Field Mapping" configureer je welke velden uit de huidige kaartlaag kunnen worden gebruikt om data op te vragen in de gerelateerde tabel.
+
+**Een voorbeeld:**
+<img src="../images/gerelateerde-tabel.png" alt="Voorbeeld van geconfigureerde relatie" width="800"/>
+
+In het bovenstaande voorbeeld zie je dat het veld "wijknaam" vanuit de huidige kaartlaag wordt gemapped naar het veld "wijk" van de gerelateerde tabel.
+
+In de gerelateerde tabel kan hierna het veld "wijk" worden gebruiken in het "Lijst endpoint" veld of in het "Lijst CQL filters" veld.
+
+Je kan meerdere field mapping waardes toevoegen, dit object dient geldige JSON te zijn. Bijvoorbeeld:
+
+```json
+{
+  "wijknaam": "wijk",
+  "buurtnaam": "buurt",
+  "straatnaam": "straat",
+  "nummer": "huisnummer"
+}
+```
+
+### (Oud) Gekoppelde Data
 
 Met gekoppelde data is het mogelijk om een tabelweergave te tonen met gekoppelde data bij de detailweergave van een feature. Deze data komt uit een OWS bron (WMS/WFS). Denk bijvoorbeeld aan het tonen van alle adressen bij een BAG pand. Het is mogelijk om meerdere tabellen te koppelen bij één punt.
 
@@ -162,7 +187,7 @@ Per tabel zijn er de volgende instellingen:
 - _Gebruik detailweergave_: maak het mogelijk om door te klikken op een rij in de tabel en hier een detailweergave voor te tonen (optioneel)
 - _Toon deze velden in de detailweergave_: beperk de detailweergave met vooringestelde velden. Dit is een lijst met velden, gesplitst door een enter
 
-### Templates
+### (Oud) Templates
 
 Met templates is het mogelijk om een tabelweergave of een veldweergave te tonen met gekoppelde data bij de detailweergave van een feature. Deze data komt uit een REST bron. Denk bijvoorbeeld aan het tonen van alle vestigingen uit het handelsregister bij een specifiek BAG-adres.
 

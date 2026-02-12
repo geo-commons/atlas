@@ -1,13 +1,10 @@
 import { ILayer } from "@/types/layer";
+import { IPosition } from "@/types/map";
 
-export interface Position {
-  center: [number, number];
-  zoom: number;
-  marker?: [number, number];
-}
+export type Position = IPosition;
 
 export function pushHistoryState(
-  position: Position,
+  position: IPosition,
   baseLayer: ILayer,
   visibleLayers: ILayer[],
   drawing?: string,

@@ -14,11 +14,13 @@ from tablib import Dataset
 
 from authz.models import Authorization
 from authz.resources import AuthorizationResource
-from tables.models import Table
-from tables.resources import TableResource
+from tables.models import Table as OldTable
+from tables.resources import TableResource as OldTableResource
 from webservice.models import Category, Layer, Map, Source, Theme, Viewer, Dataset as Datasets, Metadataset
+from table.models import Table
 from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ThemeResource, ViewerResource, \
     DatasetResource, MetadatasetResource
+from table.resources import TableResource
 from .serializers import DataExportSettingsSerializer, DuplicateSettingsSerializer, DeleteSettingsSerializer
 
 
@@ -35,8 +37,9 @@ class ResourceMappingMixin:
         Datasets: DatasetResource,
         Metadataset: MetadatasetResource,
         Viewer: ViewerResource,
-        Table: TableResource,
-        Authorization: AuthorizationResource
+        OldTable: OldTableResource,
+        Authorization: AuthorizationResource,
+        Table: TableResource
     }
 
     def get_resource_class(self):

@@ -26,6 +26,28 @@ paths:
     backend:
       slug: kvk
       path: /zoeken
+  - path: /api/dso/_zoek
+    backend:
+      slug: dso
+      path: /_zoek
+    allowedMethods:
+      - POST
+    requestRewrite: |
+      {
+          "geometrie": {
+              "type": "Point",
+              "coordinates": [
+                  .latitude,
+                  .longitude
+              ]
+          }
+      }
+  - path: /api/dso/{uriIdentificatie}
+    backend:
+      slug: dso
+      path: /{uriIdentificatie}
+    allowedMethods:
+      - GET 
 
 backends:
   geoserver:
@@ -37,3 +59,11 @@ backends:
     auth:
       header:
         apikey: l7xx1f2691f2520d487b902f4e0b57a0b197
+  dso:
+    type: REST
+    baseUrl: https://service.omgevingswet.overheid.nl/publiek/omgevingsinformatie/api/ontsluiten/v2/documenten
+    auth:
+      header:
+        x-api-key: ${DSO_API_KEY}
+        content-crs: http://www.opengis.net/def/crs/EPSG/0/28992
+        content-type: application/json

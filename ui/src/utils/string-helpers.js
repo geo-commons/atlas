@@ -32,3 +32,30 @@ export function formatRawString(string) {
 
   return capitalizeFirstLetter(string.replace(/_/g, " ").trim());
 }
+
+/**
+ * Resolves the logical property key from a dot/bracket notation path.
+ *
+ * Rules:
+ * - If the path ends with an array index (e.g. "items[0]"),
+ *   the array name is returned ("items").
+ * - If the path ends with a property (e.g. "items[0].type"),
+ *   the property name is returned ("type").
+ *
+ * This function does not inspect the target object; it operates
+ * purely on the path string.
+ *
+ @param {string} path - The raw path string to be formatted.
+ */
+export function getResolvedKey(path) {
+  // Match ending like [0], [12], etc.
+  const arrayEndMatch = path.match(/^(.*)\[\d+\]$/);
+
+  if (arrayEndMatch) {
+    // Path ends with an array index → return the array key
+    return arrayEndMatch[1].split(".").pop();
+  }
+
+  // Normal property path
+  return path.split(".").pop();
+}

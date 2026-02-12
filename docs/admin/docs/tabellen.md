@@ -1,108 +1,152 @@
-Binnen Tabellen worden de API-bronweergaven geconfigureerd. Binnen Atlas kunnen meerdere tabellen geconfigureerd worden voor verschillende bronnen. Tabellen kunnen worden toegevoegd, bewerkt en verwijderd.
+In dit artikel wordt uitgelegd wat "Tabellen" zijn, wat je ermee kan en hoe je ze configureert.
 
-Klik op "Nieuwe tabel" om een tabel toe te voegen. Vul de titel in, deze verschijnt in het hoofdmenu onder tabellen. Het veld "Kort kenmerk" moet een unieke waarde hebben en mag geen spaties bevatten. Vul bij de BRON de bron in waaruit de tabeldata moet komen.
+## Wat zijn tabellen?
 
-### Algemene gegevens
-- **Titel**  
-  Dit is de titel zoals ingegeven bij het aanmaken van de tabel.
+Tabellen zijn raadpleegbaar via kaartlagen in de kaartviewer. Via een aan een kaartlaag gekoppelde tabel kan je een lijstweergave met resultaten vanuit een OWS / REST bron weergeven en door op een resultaat in de lijstweergave te drukken kan je een bijbehorende detailweergave bekijken. Tabellen kunnen geraadpleegd worden voor het tonen van (geo-)informatie vanuit diverse type (OWS en REST) bronnen waar niet altijd een geometrie aanhangt.
 
-- **Kort kenmerk**  
-  Dit is het korte kenmerk zoals ingegeven bij het aanmaken van de tabel.
+Een bijkomende kracht van tabellen is dat je ze aan elkaar kan verbinden, waardoor je in de detailweergave van een tabel de lijstweergaves van andere tabellen kan tonen. Daarnaast is een tafel erg flexibel te configureren, waardoor je ze voor veel verschillende doeleinden kan inzetten.
 
-### Bron
-- **Bron**  
-  In dit selectieveld kun je een tabelbron kiezen uit de bronnen die binnen Atlas geconfigureerd zijn. Deze bron wordt gebruikt om de tabeldata op te halen in de tabelweergave.
+### Voorbeeld
 
-- **Endpoint**  
-  Dit is het endpoint dat gebruikt wordt om de data van de bron op te halen. Voorbeeld voor de bron "KVK" waarbij als bron de URL "https://api.kvk.nl" is ingesteld: "/api/v2/zoeken"
+<img src="../images/kaartlaag-bag-standligplaatsen.png" alt="Kaartlaag BAG standligplaatsen met gekoppelde tabel" width="800"/>
+In dit voorbeeld zie je een kaartlaag (BAG pand, stand- en ligplaats) waarbij de detailweergave van gebouw met Gebouw id 9180 openstaat. Onderaan zie je dat er aan deze kaartlaag een tabel is gekoppeld. Op basis van beschikbare informatie van het specifieke aangeklikte object op de BAG pand, stand- en ligplaats kaartlaag met Gebouw ID 9180 wordt een OWS verzoek gedaan naar een BAG Adressen kaartlaag en de resultaten worden weergegeven in de bijbehorende lijstweergave.
 
-- **Bron methode**  
-  Kies hier uit "GET" of "POST". Wanneer je data wilt ophalen vanuit een bron in je tabel, wordt over het algemeen de "GET" methode gebruikt.
+<img src="../images/tabel-detailweergave-adressen.png" alt="Detailweergave van een adres" width="800"/>
+In de bovenstaande screenshot zie je de detailweergave van een adres uit de lijstweergave. Daarnaast zie je dat er een "subbuurten" tabel aan deze tabel is gekoppeld, waardoor op basis van de beschikbare informatie van het adres object de bijbehorende subbuurten voor dit adres worden opgehaald.
 
-### Tabel Instellingen
-Onder tabelinstellingen stel je in hoe je tabel weergegeven moet worden in de tabelweergave. Dit kun je configureren op basis van hoe een response vanuit je gewenste bron eruitziet. Als voorbeeld nemen we een response van de KVK test API:
+# Het configureren van tabellen
+
+Het configureren van tabellen verloopt via de Atlas admin. In dit artikel wordt per veld uitgelegd wat ermee geconfigureerd kan worden en daarnaast wordt er een voorbeeld gegeven van een mogelijke configuratie voor een KvK tabel, die resultaten uit de KVK ZOEKEN api toont.
+
+## Basisinformatie
+
+| Veld             | Uitleg                                                                                        | Validatie                         | Voorbeeld (KVK) |
+| ---------------- | --------------------------------------------------------------------------------------------- | --------------------------------- | --------------- |
+| **Titel**        | De titel van de tabel wordt zowel in de lijstweergave als in de detailweergave getoond.       | Verplicht, maximaal 128 karakters | `Bedrijven`     |
+| **Kort kenmerk** | De slug (korte identifier) van de tabel. Dit wordt gebruikt in URL's en interne verwijzingen. | Verplicht, maximaal 255 karakters | `bedrijven`     |
+
+### Bronconfiguratie
+
+| Veld          | Uitleg                                                                                                                | Validatie | Voorbeeld (KVK)                   |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- | --------- | --------------------------------- |
+| **Bron**      | De URL van de externe databron waarmee de tabel verbinding maakt. Dit kan een OWS (OGC Web Service) of REST API zijn. | Verplicht | `https://api.kvk.nl/test/api/v2/` |
+| **Type bron** | Het type API dat wordt gebruikt voor het ophalen van gegevens. Keuze tussen REST of OWS.                              | Verplicht | `REST`                            |
+
+### Veldconfiguratie
+
+| Veld                                      | Uitleg                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Validatie | Voorbeeld (KVK)                                                                                                                                                                                                                                                                               |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Beschikbare velden**                    | Een lijst met velden uit het API-resultaat die je wilt gebruiken in je tabel. Je kunt objectnotatie gebruiken om geneste velden aan te spreken.<br><br>**Objectnotatie:**<br>• Genest object: `adres.binnenlandsAdres.type`<br>• Array element: `adres.adressen[0].type`                                                                                                                                                                                                                                                                              | Optioneel | `kvkNummer`<br>`rsin`<br>`vestigingsnummer`<br>`type`<br>`naam`<br>`adres.binnenlandsAdres.type`<br>`adres.binnenlandsAdres.straatnaam`<br>`adres.binnenlandsAdres.huisnummer`<br>`adres.binnenlandsAdres.huisletter`<br>`adres.binnenlandsAdres.postcode`<br>`adres.binnenlandsAdres.plaats` |
+| **Toon deze velden in de lijstweergave**  | Bepaal welke velden zichtbaar zijn in het overzicht met meerdere resultaten. Indien dit veld niet is ingevuld worden alle velden getoond.                                                                                                                                                                                                                                                                                                                                                                                                             | Optioneel | `kvkNummer`<br>`naam`<br>`adres.binnenlandsAdres.straatnaam`<br>`adres.binnenlandsAdres.huisnummer`<br>`adres.binnenlandsAdres.huisletter`                                                                                                                                                    |
+| **Toon deze velden in de detailweergave** | Bepaal welke velden zichtbaar zijn wanneer een individueel item wordt bekeken. Indien dit veld niet is ingevuld worden alle velden getoond.                                                                                                                                                                                                                                                                                                                                                                                                           | Optioneel | `kvkNummer`<br>`naam`<br>`adres.binnenlandsAdres.straatnaam`<br>`adres.binnenlandsAdres.huisnummer`<br>`adres.binnenlandsAdres.huisletter`                                                                                                                                                    |
+| **Templatevelden**                        | Met templatevelden is het mogelijk om nieuwe velden toe te voegen aan de detailweergave van een tabel. Dit kun je bijvoorbeeld gebruiken om een samengesteld veld _adres_ te maken, waarin de velden _straatnaam_ en _huisnummer_ worden samengevoegd. Je gebruikt hiervoor een JSON structuur, waarbij de sleutel de naam van het veld is, en de waarde de template die gerender wordt. Je kunt dynamische waarden meegeven via template tags tussen dubbele accolades: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`. | Optioneel | `{ "adres": "Het adres van deze vestiging is: {{ adres.binnenlandsAdres.straatnaam }} {{ adres.binnenlandsAdres.huisnummer }}" }`                                                                                                                                                             |
+
+## REST-specifieke configuratie
+
+### REST API endpoints
+
+| Veld                         | Uitleg                                                                                                                                                                                                                                                          | Validatie                                     | Voorbeeld (KVK)                                                                     |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **Lijst endpoint**           | Het API-endpoint voor het ophalen van meerdere resultaten. Je kunt dynamische waarden meegeven via template tags tussen dubbele accolades: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`.                                         | Optioneel (verplicht bij REST bron)           | `/zoeken?postcode={{postcode}}&huisnummer={{huisnummer}}&huisletter={{huisletter}}` |
+| **Detail endpoint**          | Het API-endpoint voor het ophalen van één specifiek resultaat. Ook hier kun je template tags gebruiken: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`                                                                             | Optioneel (verplicht bij REST bron)           | `/zoeken?kvkNummer={{kvkNummer}}`                                                   |
+| **HTTP Methode**             | De HTTP methode die gebruikt wordt voor het doen van het request naar het betreffende **Lijst endpoint**. Standaard waarde is `GET`.                                                                                                                            | Optioneel                                     | `GET`                                                                               |
+| **Request body (voor POST)** | De request body die verstuurd wordt naar de API indien je hebt gekozen voor **HTTP Methode** POST. Je kunt dynamische waarden meegeven via template tags tussen dubbele accolades: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`. | Optioneel, moet een geldige JSON waarde zijn. | `{}`                                                                                |
+
+### Response mapping
+
+| Veld                            | Uitleg                                                                                                                             | Validatie | Voorbeeld (KVK) |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------- | --------------- |
+| **Veldnaam van lijst**          | Het pad in de API-response waar de array met resultaten staat voor de lijstweergave. Gebruik objectnotatie voor geneste velden.    | Optioneel | `resultaten`    |
+| **Veldnaam van detailweergave** | Het pad in de API-response waar het individuele resultaat staat voor de detailweergave. Gebruik objectnotatie voor geneste velden. | Optioneel | `resultaten[0]` |
+
+### Paginering
+
+| Veld                                    | Uitleg                                                                                                                                                    | Validatie | Voorbeeld (KVK)       |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | --------------------- |
+| **URL parameter voor pagina**           | De naam van de URL-parameter waarmee je aangeeft welke pagina moet worden opgehaald.                                                                      | Optioneel | `pagina`              |
+| **URL parameter voor items per pagina** | De naam van de URL-parameter waarmee je aangeeft hoeveel resultaten per pagina moeten worden getoond.                                                     | Optioneel | `resultatenPerPagina` |
+| **Veldnaam van totaal aantal items**    | Het pad in de API-response waar het totale aantal beschikbare items staat. Dit wordt gebruikt voor paginering. Gebruik objectnotatie voor geneste velden. | Optioneel | `totaal`              |
+| **Startindex pagina**                   | De startindex van de paginatie. Standaard `0`.                                                                                                            | Optioneel | `1`                   |
+
+### Foutafhandeling
+
+| Veld                                           | Uitleg                                                                                                                                        | Validatie | Voorbeeld (KVK)        |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------------------- |
+| **Veldnaam van foutmelding in lijstweergave**  | Het pad in de API-response waar foutmeldingen staan bij mislukte verzoeken voor de lijstweergave. Gebruik objectnotatie voor geneste velden.  | Optioneel | `fout[0].omschrijving` |
+| **Veldnaam van foutmelding in detailweergave** | Het pad in de API-response waar foutmeldingen staan bij mislukte verzoeken voor de detailweergave. Gebruik objectnotatie voor geneste velden. | Optioneel | `fout[0].omschrijving` |
+
+## OWS-specifieke configuratie
+
+### CQL filters
+
+| Veld                   | Uitleg                                                                                                                                                                                                                                    | Validatie                                | Voorbeeld (KVK)                       |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------- |
+| **Laagnaam**           | Naam van de laag op GeoServer                                                                                                                                                                                                             | Optioneel (alleen relevant bij OWS bron) | `null` (niet van toepassing bij REST) |
+| **Lijst CQL filters**  | CQL (Common Query Language) filters voor het filteren van resultaten bij verzoeken naar een OWS bron voor de lijstweergave. Je kunt template tags gebruiken: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`. | Optioneel (alleen relevant bij OWS bron) | `null` (niet van toepassing bij REST) |
+| **Detail CQL filters** | CQL filters voor het filteren van resultaten bij verzoeken naar een OWS bron voor de detailweergave. Je kunt template tags gebruiken: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`.                        | Optioneel (alleen relevant bij OWS bron) | `null` (niet van toepassing bij REST) |
+
+## Relaties tussen tabellen
+
+Een kracht van tabellen is dat je ze aan elkaar kan verbinden, waardoor je in de detailweergave van een tabel de lijstweergaves van andere tabellen kan tonen. Dit noemen wij ook wel een relatie tussen tabellen.
+
+### Het configureren van een relatie
+
+Voeg een nieuwe relatie toe door op "Nieuwe relatie" te drukken. Kies een tabel die je wil koppelen aan de huidige tabel en klik op "Toevoegen". Nu zie je dat er een relatie voor de tabel is toegevoegd. Via het veld "Field Mapping" configureer je welke velden uit de huidige tabel kunnen worden gebruikt om data op te vragen in de gerelateerde tabel.
+
+**Een voorbeeld:**
+<img src="../images/gerelateerde-tabel.png" alt="Voorbeeld van geconfigureerde tabel" width="800"/>
+
+In het bovenstaande voorbeeld zie je dat het veld "wijknaam" vanuit de huidige tabel wordt gemapped naar het veld "wijk" van de gerelateerde tabel.
+
+In de gerelateerde tabel kan hierna het veld "wijk" worden gebruiken in het "Lijst endpoint" veld of in het "Lijst CQL filters" veld.
+
+Je kan meerdere field mapping waardes toevoegen, dit object dient geldige JSON te zijn. Bijvoorbeeld:
 
 ```json
 {
-  "pagina": 1,
-  "resultatenPerPagina": 1,
-  "totaal": 992,
-  "volgende": "https://api.kvk.nl/test/api/v2/zoeken?pagina=2&resultatenperpagina=1",
-  "resultaten": [
-    {
-      "kvkNummer": "90002148",
-      "naam": "Free Stathex",
-      "type": "rechtspersoon",
-      "links": [
-        {
-          "rel": "basisprofiel",
-          "href": "https://api.kvk.nl/test/api/v1/basisprofielen/90002148"
-        }
-      ]
-    }
-  ],
-  "links": [
-    {
-      "rel": "self",
-      "href": "https://api.kvk.nl/test/api/v2/zoeken?pagina=1&resultatenperpagina=1"
-    }
-  ]
+  "wijknaam": "wijk",
+  "buurtnaam": "buurt",
+  "straatnaam": "straat",
+  "nummer": "huisnummer"
 }
 ```
 
-- **Veldnaam van lijst**  
-  Met dit veld configureer je uit welk response-attribuut de data uit je bron komt. In het KVK-voorbeeld is dit het attribuut "resultaten". Het is mogelijk om in dit veld ook de verwijzing te leggen naar geneste velden, zoals "resultaten[0].links". Hiermee zou de getoonde lijst opgebouwd worden uit de objecten die in de eerste lijst met attribuutnaam "links" in het "resultaten" object staan in het KVK-voorbeeld.
+## Handige tips
 
-- **Veldnaam van pagina**  
-  Met dit veld configureer je met welk response-attribuut de huidige pagina uit je bron komt. In het KVK-voorbeeld is dit het attribuut "pagina".
+### Objectnotatie
 
-- **Veldnaam van items per pagina**  
-  Met dit veld configureer je met welk response-attribuut het aantal items per pagina uit je bron komt. In het KVK-voorbeeld is dit het attribuut "resultatenPerPagina".
+Voor het aanspreken van geneste velden gebruik je puntnotatie:
 
-- **Veldnaam van totaal aantal items**  
-  Met dit veld configureer je met welk response-attribuut het totaal aantal items vanuit je bron komt. In het KVK-voorbeeld is dit het attribuut "totaal".
+<ul>
+<li>Simpel genest veld: object.veld</li>
+<li>Diep genest veld: object.subobject.veld</li>
+<li>Array element: array[0].veld</li>
+</ul>
 
-- **Template van foutmelding**  
-  Met dit veld configureer je met welk response-attribuut een foutmelding wordt teruggegeven, indien deze beschikbaar is. In een error response vanuit de KVK-bron is dit het attribuut "fout[0].omschrijving".
+### Template tags
 
-  - **Kopjes in lijstweergave**  
-    Met dit veld configureer je welke kopjes in de tabelweergave staan. Voor het KVK-voorbeeld zouden dit bijvoorbeeld kunnen zijn:
+Voor dynamische waarden in URL's, request_body en filters gebruik je dubbele accolades:
 
-    ```
-    naam
-    kvkNummer
-    ```
-  
-    Let op: Voer hier enkel één veld per regel in.
+<ul>
+<li>Enkelvoudig: {{variabele}}</li>
+<li>Meerdere: ?postcode={{postcode}}&huisnummer={{huisnummer}}</li>
+<li>Coordinaten van huidige punt van de marker in de viewer zijn beschikbaar via {{x}} en {{y}}</li>
+</ul>
 
-  - **Velden in lijstweergave**  
-    Met dit veld configureer je met welke velden de tabelrijen worden ingevuld. Het eerste attribuut komt onder het eerste kopje, het tweede attribuut onder het tweede kopje en de rest volgt op dezelfde manier. Voor het KVK-voorbeeld:
+# Voorbeelden
 
-    ```
-    {{ naam }}
-    {{ kvkNummer }}
-    ```
+## Voorbeeld configuratie subbuurten tabel (OWS)
 
-  - **Velden waarop gezocht kan worden**  
-    Met dit veld configureer je op welke velden de tabel kan worden doorzocht. Met "name" als attribuut dat wordt gebruikt in de zoekopdracht naar de bron en "label" als attribuut dat wordt gebruikt voor op de tabelweergave pagina. Een voorbeeld voor de KVK-api:
-  
-    ```json
-    [
-      {"name": "naam", "label": "naam"},  
-      {"name": "kvkNummer", "label": "kvkNummer"}
-    ]
-    ```
+Met dit voorbeeld laten we zien hoe je een OWS laag kan configureren.
 
-  - **Sortering**  
-    De volgorde van de tabellen die getoond worden in het Tabellen-menu van het Atlas-portaalscherm. Hierbij is 0 het eerste item dat weergegeven zal worden.  
-
-    !!! Alert "Let op"
-
-        Wanneer bij één geconfigureerde tabel de volgorde is ingegeven, dan moet dit bij alle tabellen gedaan worden.  
-
-### Toegang
-
-Via toegang valt te regelen wie wel en geen toegang heeft tot het zien van een tabel. Ga hier zorgvuldig mee om.
-
-- **Alleen intern zichtbaar:** Wanneer "alleen intern zichtbaar" aan staat, is de betreffende tabel alleen beschikbaar binnen de interne omgeving.
-- **Vereis inlog voor deze dataset:** Wanneer "vereis inlog voor deze tabel" aan staat, is de betreffende tabel alleen beschikbaar voor personen die zijn ingelogd binnen de Atlas-omgeving.
+| Veld                                     | Voorbeeld (subbuurten)                                                |
+| ---------------------------------------- | --------------------------------------------------------------------- |
+| **Titel**                                | `Subbuurten`                                                          |
+| **Kort kenmerk**                         | `subbuurten`                                                          |
+| **Bron**                                 | `https://datalab.purmerend.nl/geoserver/topp/wms`                     |
+| **Brontype**                             | `OWS`                                                                 |
+| **Beschikbare velden**                   | `subbuurt` `buurt` `wijk`                                             |
+| **Toon deze velden in de lijstweergave** | `subbuurt` `buurt` `wijk`                                             |
+| **Laagnaam**                             | `topp:grenzen_subbuurten`                                             |
+| **Lijst CQL filters**                    | `[{"key": "wijk", "cql_filter": "wijk in ('{{wijk}}')"}]`             |
+| **Detail CQL filters**                   | `[{"key": "subbuurt", "cql_filter": "subbuurt in ('{{subbuurt}}')"}]` |

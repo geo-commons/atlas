@@ -45,6 +45,8 @@ services:
       - 6556:6556
   filter-proxy:
     image: ghcr.io/delta10/filter-proxy:0.8.2
+    environment:
+      - DSO_API_KEY=${DSO_API_KEY}
     volumes:
       - ./filter-proxy.dev.yml:/config.yaml
     ports:

@@ -82,6 +82,8 @@ export default {
       edit_layer_features: this.config.features.edit_layer_features,
       compareLayers: this.config.features.compareLayers,
       panoramaViewers: true,
+      newTables: this.config.features.newTables,
+      oldLinkedDataAndTemplate: this.config.features.oldLinkedDataAndTemplate,
     };
 
     if (!this.user) {

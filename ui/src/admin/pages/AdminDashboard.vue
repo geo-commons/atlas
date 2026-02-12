@@ -134,6 +134,12 @@
       <div>
         <h3>Tabellen</h3>
         <div class="buttons tw-mb-12">
+          <router-link to="/tables_old" class="button __tertiary __large" type="button" aria-label="Naar tabellen">
+            <span class="button-icon tw-bg-cyan-100">
+              <TableIcon class="icon tw-text-cyan-800" />
+            </span>
+            Tabellen (old)
+          </router-link>
           <router-link to="/tables" class="button __tertiary __large" type="button" aria-label="Naar tabellen">
             <span class="button-icon tw-bg-cyan-100">
               <TableIcon class="icon tw-text-cyan-800" />
