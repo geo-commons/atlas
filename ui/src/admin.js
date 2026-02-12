@@ -45,6 +45,8 @@ import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import { ConfirmationService, ToastService } from "primevue";
+import TableOldCreateUpdate from "@/admin/pages/TableOldCreateUpdate.vue";
+import TableOldList from "@/admin/pages/TableOldList.vue";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -144,6 +146,16 @@ const routes = [
     path: "/tables/update/:id",
     component: TableCreateUpdate,
     meta: { title: "Tabel bewerken", menu: true, breadcrumb: { tables: { title: "Tabellen" } } },
+  },
+  {
+    path: "/tables_old",
+    component: TableOldList,
+    meta: { title: "Tabellen (oud)", menu: true },
+  },
+  {
+    path: "/tables_old/update/:id",
+    component: TableOldCreateUpdate,
+    meta: { title: "Tabel (oud) bewerken", menu: true, breadcrumb: { tables: { title: "Tabellen" } } },
   },
   {
     path: "/users",

@@ -87,20 +87,37 @@
       </div>
 
       <div v-for="(linkedData, key) in layer.linked_data" :key="key">
-        <div v-if="feature.properties[linkedData.source_key]" class="linked-data">
+        <div v-if="feature.properties[linkedData.source_key] && showTemplatesAndLinkedData" class="linked-data">
           <LinkedDataTable
             :linked-data="linkedData"
             :overall-filter="{ key: linkedData.target_key, value: feature.properties[linkedData.source_key] }"
             :position="position"
             @set-position="setPosition"
             @on-fit="(value) => onFit(value)"
-            @select-feature-details="onSelectFeatureDetails"
           />
         </div>
       </div>
 
       <div v-for="(template, key) in layer.templates" :key="key">
-        <FeatureInfoTemplate :layer="layer" :template="template" :feature="feature" class="template" />
+        <FeatureInfoTemplate
+          v-if="showTemplatesAndLinkedData"
+          :layer="layer"
+          :template="template"
+          :feature="feature"
+          class="template"
+        />
+      </div>
+
+      <div v-if="layer.related_tables.length > 0 && showNewTables">
+        <div v-for="(relatedTable, key) in layer.related_tables" :key="key" class="tw-ml-2">
+          <RelatedTableList
+            :layer-feature="feature"
+            :position="position"
+            :related-table="relatedTable"
+            :field-mapping="relatedTable.field_mapping"
+            @select-related-table-object="onSelectRelatedTableObject"
+          />
+        </div>
       </div>
     </div>
   </ExpandButton>
@@ -131,12 +148,14 @@ import { ELayerTypes } from "@/types/layer";
 import { WMTS } from "ol/source";
 import { optionsFromCapabilities } from "ol/source/WMTS";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
+import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 
 nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "FeatureInfo",
   components: {
+    RelatedTableList,
     EditIcon,
     MarkerIcon,
     CopyIcon,
@@ -155,7 +174,15 @@ export default {
     atlasFeatures: Object,
     isOpen: Boolean,
   },
-  emits: ["set-position", "on-fit", "select-feature-details", "show-selected-feature", "select-feature"],
+  emits: [
+    "set-position",
+    "on-fit",
+    "select-feature-details",
+    "show-selected-feature",
+    "select-feature",
+    "select-related-linked-data",
+    "select-related-table-object",
+  ],
   data() {
     return {
       features: [],
@@ -174,6 +201,12 @@ export default {
 
       return this.layer.title;
     },
+    showTemplatesAndLinkedData() {
+      return this.config && this.config.features && this.config.features.oldLinkedDataAndTemplate;
+    },
+    showNewTables() {
+      return this.config && this.config.features && this.config.features.newTables;
+    },
   },
   watch: {
     position: "fetchFeatures",
@@ -183,6 +216,8 @@ export default {
   },
   methods: {
     fetchFeatures() {
+      this.onSelectRelatedTableObject(null);
+
       if (this.layer.source_type === ELayerTypes.WMS || this.layer.source_type === ELayerTypes.WMS_WFS) {
         return this.fetchFeaturesFromWMS();
       }
@@ -392,6 +427,12 @@ export default {
     onSelectFeatureDetails(selectedFeature) {
       this.$emit("select-feature-details", selectedFeature);
     },
+    onSelectRelatedLinkedData(linkedDataIdAttributes) {
+      this.$emit("select-related-linked-data", linkedDataIdAttributes);
+    },
+    onSelectRelatedTableObject(attr) {
+      this.$emit("select-related-table-object", attr);
+    },
     formatProperty(property) {
       if (this.layer.friendly_fields && this.layer.friendly_fields[property]) {
         return this.layer.friendly_fields[property];
@@ -480,24 +521,6 @@ export default {
 </script>
 
 <style scoped>
-.feature {
-  margin: 0 8px;
-}
-
-.feature :deep(.expand-wrapper) {
-  border-radius: var(--radius-normal);
-  overflow: hidden;
-  height: 40px;
-}
-
-.feature :deep(.expand-button) {
-  align-items: center;
-}
-
-.feature :deep(.name) {
-  font-weight: var(--font-weight-bold);
-}
-
 .linked-data {
   padding: 0 8px 0 20px;
 }

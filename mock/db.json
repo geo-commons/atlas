@@ -1,0 +1,951 @@
+{
+  "cities": [
+    {
+      "id": 1,
+      "city": "Purmerend"
+    },
+    {
+      "id": 2,
+      "city": "Middenbeemster"
+    }
+  ],
+  "districts": [
+    {
+      "id": 1,
+      "city": "Purmerend",
+      "district": "Centrum"
+    },
+    {
+      "id": 2,
+      "city": "Purmerend",
+      "district": "Noord"
+    },
+    {
+      "id": 3,
+      "city": "Purmerend",
+      "district": "Zuid"
+    },
+    {
+      "id": 4,
+      "city": "Purmerend",
+      "district": "Oost"
+    },
+    {
+      "id": 5,
+      "city": "Purmerend",
+      "district": "West"
+    },
+    {
+      "id": 6,
+      "city": "Purmerend",
+      "district": "Zuidoost"
+    },
+    {
+      "id": 7,
+      "city": "Purmerend",
+      "district": "Slotervaart"
+    },
+    {
+      "id": 8,
+      "city": "Purmerend",
+      "district": "Osdorp"
+    },
+    {
+      "id": 9,
+      "city": "Purmerend",
+      "district": "Buitenveldert"
+    },
+    {
+      "id": 10,
+      "city": "Purmerend",
+      "district": "IJburg"
+    },
+    {
+      "id": 11,
+      "city": "Middenbeemster",
+      "district": "Centrum"
+    },
+    {
+      "id": 12,
+      "city": "Middenbeemster",
+      "district": "Noord"
+    },
+    {
+      "id": 13,
+      "city": "Middenbeemster",
+      "district": "Zuid"
+    },
+    {
+      "id": 14,
+      "city": "Middenbeemster",
+      "district": "Kralingen"
+    },
+    {
+      "id": 15,
+      "city": "Middenbeemster",
+      "district": "Delfshaven"
+    },
+    {
+      "id": 16,
+      "city": "Middenbeemster",
+      "district": "Overschie"
+    },
+    {
+      "id": 17,
+      "city": "Middenbeemster",
+      "district": "Feijenoord"
+    },
+    {
+      "id": 18,
+      "city": "Middenbeemster",
+      "district": "Charlois"
+    },
+    {
+      "id": 19,
+      "city": "Middenbeemster",
+      "district": "Hillegersberg"
+    },
+    {
+      "id": 20,
+      "city": "Middenbeemster",
+      "district": "Prins Alexander"
+    },
+    {
+      "id": 21,
+      "city": "Middenbeemster",
+      "district": "De Maten"
+    },
+    {
+      "id": 22,
+      "city": "Middenbeemster",
+      "district": "Zevenhuizen"
+    }
+  ],
+  "streets": [
+    {
+      "id": 1,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak"
+    },
+    {
+      "id": 2,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat"
+    },
+    {
+      "id": 3,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Buikslotermeerplein"
+    },
+    {
+      "id": 4,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Meeuwenlaan"
+    },
+    {
+      "id": 5,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Beethovenstraat"
+    },
+    {
+      "id": 6,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Apollolaan"
+    },
+    {
+      "id": 7,
+      "city": "Purmerend",
+      "district": "Oost",
+      "street": "Javastraat"
+    },
+    {
+      "id": 8,
+      "city": "Purmerend",
+      "district": "Oost",
+      "street": "Linnaeusstraat"
+    },
+    {
+      "id": 9,
+      "city": "Purmerend",
+      "district": "West",
+      "street": "Kinkerstraat"
+    },
+    {
+      "id": 10,
+      "city": "Purmerend",
+      "district": "West",
+      "street": "Bilderdijkstraat"
+    },
+    {
+      "id": 11,
+      "city": "Purmerend",
+      "district": "Zuidoost",
+      "street": "Karspeldreef"
+    },
+    {
+      "id": 12,
+      "city": "Purmerend",
+      "district": "Zuidoost",
+      "street": "Bijlmerdreef"
+    },
+    {
+      "id": 13,
+      "city": "Purmerend",
+      "district": "Slotervaart",
+      "street": "Heemstedestraat"
+    },
+    {
+      "id": 14,
+      "city": "Purmerend",
+      "district": "Slotervaart",
+      "street": "Louwesweg"
+    },
+    {
+      "id": 15,
+      "city": "Purmerend",
+      "district": "Osdorp",
+      "street": "Osdorpplein"
+    },
+    {
+      "id": 16,
+      "city": "Purmerend",
+      "district": "Osdorp",
+      "street": "Tussen Meer"
+    },
+    {
+      "id": 17,
+      "city": "Purmerend",
+      "district": "Buitenveldert",
+      "street": "Van Nijenrodeweg"
+    },
+    {
+      "id": 18,
+      "city": "Purmerend",
+      "district": "Buitenveldert",
+      "street": "Gelderlandplein"
+    },
+    {
+      "id": 19,
+      "city": "Purmerend",
+      "district": "IJburg",
+      "street": "IJburglaan"
+    },
+    {
+      "id": 20,
+      "city": "Purmerend",
+      "district": "IJburg",
+      "street": "Lumièrestraat"
+    },
+    {
+      "id": 21,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Coolsingel"
+    },
+    {
+      "id": 22,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Lijnbaan"
+    },
+    {
+      "id": 23,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Bergweg"
+    },
+    {
+      "id": 24,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Zwartjanstraat"
+    },
+    {
+      "id": 25,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Beijerlandselaan"
+    },
+    {
+      "id": 26,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Goereesestraat"
+    },
+    {
+      "id": 27,
+      "city": "Middenbeemster",
+      "district": "Kralingen",
+      "street": "Oudedijk"
+    },
+    {
+      "id": 28,
+      "city": "Middenbeemster",
+      "district": "Kralingen",
+      "street": "Voorschoterlaan"
+    },
+    {
+      "id": 29,
+      "city": "Middenbeemster",
+      "district": "Delfshaven",
+      "street": "Nieuwe Binnenweg"
+    },
+    {
+      "id": 30,
+      "city": "Middenbeemster",
+      "district": "Delfshaven",
+      "street": "Schiedamseweg"
+    },
+    {
+      "id": 31,
+      "city": "Middenbeemster",
+      "district": "Overschie",
+      "street": "Overschiese Dorpsstraat"
+    },
+    {
+      "id": 32,
+      "city": "Middenbeemster",
+      "district": "Overschie",
+      "street": "Van Noortwijckstraat"
+    },
+    {
+      "id": 33,
+      "city": "Middenbeemster",
+      "district": "Feijenoord",
+      "street": "Breeweg"
+    },
+    {
+      "id": 34,
+      "city": "Middenbeemster",
+      "district": "Feijenoord",
+      "street": "Afrikaanderplein"
+    },
+    {
+      "id": 35,
+      "city": "Middenbeemster",
+      "district": "Charlois",
+      "street": "Carnissesingel"
+    },
+    {
+      "id": 36,
+      "city": "Middenbeemster",
+      "district": "Charlois",
+      "street": "Slinge"
+    },
+    {
+      "id": 37,
+      "city": "Middenbeemster",
+      "district": "Hillegersberg",
+      "street": "Weissenbruchlaan"
+    },
+    {
+      "id": 38,
+      "city": "Middenbeemster",
+      "district": "Hillegersberg",
+      "street": "Bergse Dorpsstraat"
+    },
+    {
+      "id": 39,
+      "city": "Middenbeemster",
+      "district": "Prins Alexander",
+      "street": "Prins Alexanderlaan"
+    },
+    {
+      "id": 40,
+      "city": "Middenbeemster",
+      "district": "Prins Alexander",
+      "street": "Hoofdweg"
+    }
+  ],
+  "addresses": [
+    {
+      "id": 1,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "12"
+    },
+    {
+      "id": 2,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "14"
+    },
+    {
+      "id": 3,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "1"
+    },
+    {
+      "id": 4,
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "2"
+    },
+    {
+      "id": 5,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Buikslotermeerplein",
+      "houseNumber": "5"
+    },
+    {
+      "id": 6,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Buikslotermeerplein",
+      "houseNumber": "7"
+    },
+    {
+      "id": 7,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Meeuwenlaan",
+      "houseNumber": "3"
+    },
+    {
+      "id": 8,
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Meeuwenlaan",
+      "houseNumber": "4"
+    },
+    {
+      "id": 9,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Beethovenstraat",
+      "houseNumber": "8"
+    },
+    {
+      "id": 10,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Beethovenstraat",
+      "houseNumber": "10"
+    },
+    {
+      "id": 11,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Apollolaan",
+      "houseNumber": "22"
+    },
+    {
+      "id": 12,
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Apollolaan",
+      "houseNumber": "24"
+    },
+    {
+      "id": 13,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Coolsingel",
+      "houseNumber": "101"
+    },
+    {
+      "id": 14,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Coolsingel",
+      "houseNumber": "103"
+    },
+    {
+      "id": 15,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Lijnbaan",
+      "houseNumber": "2A"
+    },
+    {
+      "id": 16,
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Lijnbaan",
+      "houseNumber": "2B"
+    },
+    {
+      "id": 17,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Bergweg",
+      "houseNumber": "9"
+    },
+    {
+      "id": 18,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Bergweg",
+      "houseNumber": "11"
+    },
+    {
+      "id": 19,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Zwartjanstraat",
+      "houseNumber": "20"
+    },
+    {
+      "id": 20,
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Zwartjanstraat",
+      "houseNumber": "22"
+    },
+    {
+      "id": 21,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Beijerlandselaan",
+      "houseNumber": "30"
+    },
+    {
+      "id": 22,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Beijerlandselaan",
+      "houseNumber": "32"
+    },
+    {
+      "id": 23,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Goereesestraat",
+      "houseNumber": "40"
+    },
+    {
+      "id": 24,
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Goereesestraat",
+      "houseNumber": "42"
+    }
+  ],
+  "inhabitants": [
+    {
+      "id": 1,
+      "firstName": "Jan",
+      "lastName": "De Vries",
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "12"
+    },
+    {
+      "id": 2,
+      "firstName": "Anna",
+      "lastName": "Jansen",
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "14"
+    },
+    {
+      "id": 3,
+      "firstName": "Pieter",
+      "lastName": "Bakker",
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "1"
+    },
+    {
+      "id": 4,
+      "firstName": "Sophie",
+      "lastName": "Visser",
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "2"
+    },
+    {
+      "id": 5,
+      "firstName": "Tom",
+      "lastName": "Meijer",
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Buikslotermeerplein",
+      "houseNumber": "5"
+    },
+    {
+      "id": 6,
+      "firstName": "Eva",
+      "lastName": "Bos",
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Buikslotermeerplein",
+      "houseNumber": "7"
+    },
+    {
+      "id": 7,
+      "firstName": "Mark",
+      "lastName": "Peters",
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Meeuwenlaan",
+      "houseNumber": "3"
+    },
+    {
+      "id": 8,
+      "firstName": "Laura",
+      "lastName": "Hendriks",
+      "city": "Purmerend",
+      "district": "Noord",
+      "street": "Meeuwenlaan",
+      "houseNumber": "4"
+    },
+    {
+      "id": 9,
+      "firstName": "Daan",
+      "lastName": "Kok",
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Beethovenstraat",
+      "houseNumber": "8"
+    },
+    {
+      "id": 10,
+      "firstName": "Noor",
+      "lastName": "Van Leeuwen",
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Beethovenstraat",
+      "houseNumber": "10"
+    },
+    {
+      "id": 11,
+      "firstName": "Ahmed",
+      "lastName": "El Amrani",
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Apollolaan",
+      "houseNumber": "22"
+    },
+    {
+      "id": 12,
+      "firstName": "Mila",
+      "lastName": "Smit",
+      "city": "Purmerend",
+      "district": "Zuid",
+      "street": "Apollolaan",
+      "houseNumber": "24"
+    },
+    {
+      "id": 13,
+      "firstName": "Henk",
+      "lastName": "Van Dijk",
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Coolsingel",
+      "houseNumber": "101"
+    },
+    {
+      "id": 14,
+      "firstName": "Lotte",
+      "lastName": "Jacobs",
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Coolsingel",
+      "houseNumber": "103"
+    },
+    {
+      "id": 15,
+      "firstName": "Ruben",
+      "lastName": "Dekker",
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Lijnbaan",
+      "houseNumber": "2A"
+    },
+    {
+      "id": 16,
+      "firstName": "Isabel",
+      "lastName": "Kuiper",
+      "city": "Middenbeemster",
+      "district": "Centrum",
+      "street": "Lijnbaan",
+      "houseNumber": "2B"
+    },
+    {
+      "id": 17,
+      "firstName": "Mo",
+      "lastName": "Haddad",
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Bergweg",
+      "houseNumber": "9"
+    },
+    {
+      "id": 18,
+      "firstName": "Sara",
+      "lastName": "Van den Berg",
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Bergweg",
+      "houseNumber": "11"
+    },
+    {
+      "id": 19,
+      "firstName": "Kevin",
+      "lastName": "Jong",
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Zwartjanstraat",
+      "houseNumber": "20"
+    },
+    {
+      "id": 20,
+      "firstName": "Nina",
+      "lastName": "Vos",
+      "city": "Middenbeemster",
+      "district": "Noord",
+      "street": "Zwartjanstraat",
+      "houseNumber": "22"
+    },
+    {
+      "id": 21,
+      "firstName": "Youssef",
+      "lastName": "Ait Ali",
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Beijerlandselaan",
+      "houseNumber": "30"
+    },
+    {
+      "id": 22,
+      "firstName": "Femke",
+      "lastName": "Mulder",
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Beijerlandselaan",
+      "houseNumber": "32"
+    },
+    {
+      "id": 23,
+      "firstName": "Brian",
+      "lastName": "Smits",
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Goereesestraat",
+      "houseNumber": "40"
+    },
+    {
+      "id": 24,
+      "firstName": "Aisha",
+      "lastName": "Rahmani",
+      "city": "Middenbeemster",
+      "district": "Zuid",
+      "street": "Goereesestraat",
+      "houseNumber": "42"
+    }
+  ],
+  "companies": [
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "12",
+      "rsin": "823456781",
+      "rechtsvorm": "BV",
+      "uitgebreideRechtsvorm": "Besloten Vennootschap",
+      "adressen": [
+        {
+          "type": "Bezoekadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Damrak 12, 1441 PG Purmerend",
+          "straatnaam": "Damrak",
+          "huisnummer": 12,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441PG",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Damrak 12",
+          "postcodeWoonplaats": "1441 PG Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000123456",
+            "nummerAanduidingId": "0392200000123456",
+            "gpsLatitude": 52.5051,
+            "gpsLongitude": 4.9593,
+            "rijksdriehoekX": 125000,
+            "rijksdriehoekY": 487000,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.damrakconsult.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "14",
+      "rsin": "834567892",
+      "rechtsvorm": "Eenmanszaak",
+      "uitgebreideRechtsvorm": "Eenmanszaak",
+      "adressen": [
+        {
+          "type": "Vestigingsadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Damrak 14, 1441 PG Purmerend",
+          "straatnaam": "Damrak",
+          "huisnummer": 14,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441PG",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Damrak 14",
+          "postcodeWoonplaats": "1441 PG Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000123457",
+            "nummerAanduidingId": "0392200000123457",
+            "gpsLatitude": 52.5052,
+            "gpsLongitude": 4.9595,
+            "rijksdriehoekX": 125020,
+            "rijksdriehoekY": 487010,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.damrakdesign.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "1",
+      "rsin": "845678903",
+      "rechtsvorm": "VOF",
+      "uitgebreideRechtsvorm": "Vennootschap Onder Firma",
+      "adressen": [
+        {
+          "type": "Hoofdadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Kalverstraat 1, 1441 KC Purmerend",
+          "straatnaam": "Kalverstraat",
+          "huisnummer": 1,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441KC",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Kalverstraat 1",
+          "postcodeWoonplaats": "1441 KC Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000456789",
+            "nummerAanduidingId": "0392200000456789",
+            "gpsLatitude": 52.5046,
+            "gpsLongitude": 4.9588,
+            "rijksdriehoekX": 124980,
+            "rijksdriehoekY": 486950,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.kalverstraatmedia.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Kalverstraat",
+      "houseNumber": "2",
+      "rsin": "856789014",
+      "rechtsvorm": "Stichting",
+      "uitgebreideRechtsvorm": "Stichting",
+      "adressen": [
+        {
+          "type": "Correspondentieadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Kalverstraat 2, 1441 KC Purmerend",
+          "straatnaam": "Kalverstraat",
+          "huisnummer": 2,
+          "huisletter": "",
+          "huisnummerToevoeging": "",
+          "toevoegingAdres": "",
+          "postcode": "1441KC",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Kalverstraat 2",
+          "postcodeWoonplaats": "1441 KC Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000456790",
+            "nummerAanduidingId": "0392200000456790",
+            "gpsLatitude": 52.5047,
+            "gpsLongitude": 4.959,
+            "rijksdriehoekX": 124990,
+            "rijksdriehoekY": 486960,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.stichtingcentrum.nl"],
+      "_links": {}
+    },
+    {
+      "city": "Purmerend",
+      "district": "Centrum",
+      "street": "Damrak",
+      "houseNumber": "12",
+      "rsin": "867890125",
+      "rechtsvorm": "BV",
+      "uitgebreideRechtsvorm": "Besloten Vennootschap",
+      "adressen": [
+        {
+          "type": "Bezoekadres",
+          "indAfgeschermd": "Nee",
+          "volledigAdres": "Damrak 12, 1441 PG Purmerend",
+          "straatnaam": "Damrak",
+          "huisnummer": 12,
+          "huisletter": "",
+          "huisnummerToevoeging": "A",
+          "toevoegingAdres": "Unit A",
+          "postcode": "1441PG",
+          "postbusnummer": 0,
+          "plaats": "Purmerend",
+          "straatHuisnummer": "Damrak 12A",
+          "postcodeWoonplaats": "1441 PG Purmerend",
+          "regio": "Noord-Holland",
+          "land": "Nederland",
+          "geoData": {
+            "addresseerbaarObjectId": "NL.IMBAG.0392.0000123499",
+            "nummerAanduidingId": "0392200000123499",
+            "gpsLatitude": 52.5051,
+            "gpsLongitude": 4.9594,
+            "rijksdriehoekX": 125005,
+            "rijksdriehoekY": 487002,
+            "rijksdriehoekZ": 0
+          }
+        }
+      ],
+      "websites": ["https://www.purmerendtech.nl"],
+      "_links": {}
+    }
+  ]
+}

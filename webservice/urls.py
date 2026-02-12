@@ -41,7 +41,7 @@ api_router.register(
 )
 
 api_router.register(
-    r'tables', viewsets.TableViewSet, basename='tables'
+    r'tables_old', viewsets.TableViewSet, basename='tables_old'
 )
 api_router.register(
     r'viewers', viewsets.ViewerViewSet, basename='viewers'

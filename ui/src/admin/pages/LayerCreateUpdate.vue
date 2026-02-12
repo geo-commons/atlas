@@ -11,7 +11,9 @@
       :object-specific-save="saveLayer"
       @update-source="(source) => (selectedSource = source)"
       @metadataset-changed="handleMetadatasetChange"
+      @related-tables-changed="handleRelatedTablesChange"
     >
+      <!-- todo: weghalen wanneer we over zijn naar nieuwe manier van data koppelen.      -->
       <template #linkedData>
         <div class="layer-setting">
           <div class="admin-label-button">
@@ -156,6 +158,8 @@ export default {
     return {
       categories: [],
       metadatasets: [],
+      selectedRelatedTables: [],
+      relatedTables: [],
       sources: {},
       sourceTypes: [],
       groups: [],
@@ -200,6 +204,7 @@ export default {
       this.getCategories(),
       this.getMetadatasets(),
       this.getSources(),
+      this.getRelatedTables(),
     ]).then(() => {
       this.setAtlasGroups();
       this.loading = false;
@@ -295,6 +300,23 @@ export default {
       currentValues.client_style = this.validateAndParseJsonString(currentValues.client_style);
       currentValues.friendly_fields = this.validateAndParseJsonString(currentValues.friendly_fields);
       currentValues.templated_properties = this.validateAndParseJsonString(currentValues.templated_properties);
+
+      if (currentValues.related_tables && currentValues.related_tables.length > 0) {
+        const relatedTables = [];
+        // Because relatedTables consist of the actual tables we still need to translate it to the relations objects
+        // expected by the API.
+        currentValues.related_tables.forEach((related_table) => {
+          const layerToTable = {
+            id: related_table.layer_to_table_id,
+            from_layer: currentValues.id,
+            to_table: related_table.id,
+            field_mapping: related_table.field_mapping,
+          };
+          relatedTables.push(layerToTable);
+        });
+
+        currentValues.related_tables = relatedTables;
+      }
 
       currentValues.templates = this.initialValues.templates;
       currentValues.linked_data = this.initialValues.linked_data;
@@ -399,6 +421,24 @@ export default {
 
       const response = await result.json();
       this.groups = response.results;
+      return response;
+    },
+    // TODO: fix after https://gitlab.com/purmerend/atlas/-/issues/867 is resolved
+    async getRelatedTables() {
+      const url = getAllObjects("/atlas/api/v1/tables/");
+      const result = await fetch(url, {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch related tables");
+      }
+
+      const response = await result.json();
+
+      this.relatedTables = response.results;
+
       return response;
     },
     setAtlasGroups() {
@@ -561,6 +601,10 @@ export default {
           });
         });
       }
+    },
+
+    handleRelatedTablesChange(newValue) {
+      this.initialValues.related_tables = newValue;
     },
     getSections() {
       return {
@@ -996,8 +1040,33 @@ export default {
             },
           ],
         },
-        linkedData: { label: "Gekoppelde data", questions: [], disableInputs: true },
-        templates: { label: "Templates", questions: [], disableInputs: true },
+        tables: {
+          label: "Relaties",
+          questions: [
+            {
+              label: "Gerelateerde tabellen",
+              id: "related_tables",
+              name: "relatedTables",
+              type: "related-tables-select",
+              required: false,
+              placeholder: "Selecteer gerelateerde tabellen",
+              options: this.relatedTables,
+            },
+          ],
+          showIf: this.config?.features?.newTables,
+        },
+        linkedData: {
+          label: "(Oud) Gekoppelde data",
+          questions: [],
+          disableInputs: true,
+          showIf: this.config?.features?.oldLinkedDataAndTemplate,
+        },
+        templates: {
+          label: "(Oud) Templates",
+          questions: [],
+          disableInputs: true,
+          showIf: this.config?.features?.oldLinkedDataAndTemplate,
+        },
       };
     },
   },

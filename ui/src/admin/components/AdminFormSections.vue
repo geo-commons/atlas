@@ -11,17 +11,24 @@
     <div :class="{ 'create-view-container': createView || compactLayout }">
       <p v-if="unexpectedError" class="warning-text">{{ unexpectedError }}</p>
       <div v-for="section in sections" :key="section.label">
-        <hr v-if="!createView && !compactLayout" />
-        <div :class="{ 'config-section-wrapper': !createView && !compactLayout }">
+        <hr v-if="!createView && !compactLayout && section?.showIf !== undefined ? section.showIf : true" />
+        <div
+          :class="{ 'config-section-wrapper': !createView && !compactLayout }"
+          v-if="section?.showIf !== undefined ? section.showIf : true"
+        >
           <div v-if="!createView && !compactLayout" class="section-label">
             <h3>{{ section.label }}</h3>
           </div>
 
-          <div v-if="section.label === 'Gekoppelde data'" class="section-questions">
+          <div v-if="section.label === 'Gerelateerde data'" class="section-questions">
+            <slot name="relatedData"></slot>
+          </div>
+
+          <div v-if="section.label === '(Oud) Gekoppelde data'" class="section-questions">
             <slot name="linkedData"></slot>
           </div>
 
-          <div v-if="section.label === 'Templates'" class="section-questions" style="z-index: 1">
+          <div v-if="section.label === '(Oud) Templates'" class="section-questions" style="z-index: 1">
             <slot name="templates"></slot>
           </div>
 
@@ -289,6 +296,24 @@
                   />
                 </vee-field>
                 <vee-field
+                  v-else-if="question.type === 'related-tables-select'"
+                  v-slot="{ value, handleChange }"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                >
+                  <RelatedTablesField
+                    :related-tables="value"
+                    :parent-id="initialValues.id"
+                    :options="question.options || []"
+                    @related-tables-changed="
+                      (newValue) => {
+                        handleChange(newValue);
+                        $emit('related-tables-changed', newValue);
+                      }
+                    "
+                  />
+                </vee-field>
+                <vee-field
                   v-else-if="question.type === 'date'"
                   :id="question.id"
                   v-slot="{ value, handleChange, handleBlur }"
@@ -317,6 +342,27 @@
                   type="color"
                   as="input"
                 />
+                <vee-field
+                  v-else-if="question.type === 'array'"
+                  :id="question.id"
+                  v-slot="{ value, handleChange, handleBlur }"
+                  :name="question.id"
+                  :disabled="question.disabled"
+                  :rules="getRules(question)"
+                >
+                  <AutoComplete
+                    :model-value="value"
+                    :input-id="question.id"
+                    :suggestions="question.suggestionsFrom ? autoCompleteSuggestions[question.id] || [] : []"
+                    multiple
+                    fluid
+                    :typeahead="!!question.suggestionsFrom"
+                    @complete="(e) => onAutoComplete(e, question, values)"
+                    @update:modelValue="handleChange"
+                    @blur="handleBlur"
+                    @keydown.enter.prevent
+                  />
+                </vee-field>
                 <vee-field
                   v-else
                   :id="question.id"
@@ -401,10 +447,12 @@ import PickList from "primevue/picklist";
 import { clouds } from "thememirror";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import CodeMirror from "vue-codemirror6";
+import RelatedTablesField from "@/admin/components/RelatedTablesField.vue";
 
 export default {
   name: "AdminFormSections",
   components: {
+    RelatedTablesField,
     ArrowDownTrayIcon,
     LayerField,
     MetadatasetsField,
@@ -439,7 +487,7 @@ export default {
     objectSpecificSave: Function,
     formObject: String,
   },
-  emits: ["update-source", "metadataset-changed", "close"],
+  emits: ["update-source", "metadataset-changed", "related-tables-changed", "close"],
   expose: ["updateFieldValue", "sendSaveRequest"],
   data() {
     return {
@@ -449,6 +497,8 @@ export default {
       imageFieldValues: {},
       loading: false,
       clouds: clouds,
+      // autoCompleteSuggestions e.g.: { [questionId]: [] }
+      autoCompleteSuggestions: {},
     };
   },
   computed: {
@@ -637,6 +687,24 @@ export default {
       handleChange(name);
 
       formRef?.setFieldValue("legend_url", legends?.[0] || "");
+    },
+    onAutoComplete({ query }, question, values) {
+      const fieldId = question.id;
+
+      if (!this.autoCompleteSuggestions[fieldId]) {
+        this.autoCompleteSuggestions[fieldId] = [];
+      }
+
+      const suggestions = values[question.suggestionsFrom];
+
+      if (!Array.isArray(suggestions)) {
+        this.autoCompleteSuggestions[fieldId] = [];
+        return;
+      }
+
+      const q = (query || "").toLowerCase();
+
+      this.autoCompleteSuggestions[fieldId] = suggestions.filter((item) => String(item).toLowerCase().includes(q));
     },
   },
 };

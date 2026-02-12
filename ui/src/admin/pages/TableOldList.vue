@@ -17,8 +17,7 @@ const childRef: Ref<null | {
 const sources: Ref<Array<object>> = ref([]);
 
 const getTables = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  // todo: niet vergeten url aan ta passen
-  const url = new URL("/atlas/api/v1/tables/", window.location.origin);
+  const url = new URL("/atlas/api/v1/tables_old/", window.location.origin);
 
   if (params) {
     url.search = params.toString();
@@ -61,7 +60,7 @@ const saveTable = async (
   continueEditing = false,
   sendSaveRequest: (apiUrl: string, method: string, currentValues: object) => Response,
 ) => {
-  const url = "/atlas/api/v1/tables/";
+  const url = "/atlas/api/v1/tables_old/";
 
   currentValues.method = "GET";
   currentValues.endpoint = "/";
@@ -74,7 +73,7 @@ const saveTable = async (
 
       if (continueEditing) {
         const response = await result.json();
-        await router.push(`/tables/update/${response.id}`);
+        await router.push(`/tables_old/update/${response.id}`);
       }
     }
   } catch (e) {
@@ -103,7 +102,7 @@ const getCreateTableSections = () => {
         },
         {
           label: "Bron",
-          id: "source_id",
+          id: "source",
           name: "Source",
           type: "dropdown",
           required: true,
@@ -146,12 +145,12 @@ onMounted(() => {
     plural-name="Tabellen"
     :enable-import-export="true"
     :enable-delete-multiple="true"
-    :enable-duplicate="true"
-    api-name="tables"
+    api-name="tables_old"
     :get-create-object-dialog-sections="getCreateTableSections"
     :initial-create-object-dialog-data="initialCreateTableData"
     :save-create-object-dialog-data="saveTable"
     :get-objects="getTables"
     :table-headers="tableHeaders"
+    :view-base-url="'/tables'"
   />
 </template>

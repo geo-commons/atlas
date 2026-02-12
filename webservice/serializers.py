@@ -4,7 +4,8 @@ from rest_framework import serializers
 from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer, Metadataset
+from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer, \
+    Metadataset
 from .util import safe_float_or_null
 
 
@@ -105,8 +106,8 @@ class LinkedDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LinkedData
-        fields = ['id', 'title', 'name', 'url', 'source_key',
-                  'target_key', 'headers', 'display_properties', 'use_detail_view', 'detail_view_fields']
+        fields = ['id', 'source', 'title', 'name', 'url', 'source_key', 'target_key',
+                  'display_properties', 'headers', 'use_detail_view', 'detail_view_fields']
 
 
 class TemplateSerializer(serializers.ModelSerializer):
@@ -254,11 +255,18 @@ class LayerSerializer(serializers.ModelSerializer):
         'get_search_terms')
     metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True)
+    related_tables = serializers.SerializerMethodField('get_related_tables')
     templates = TemplateSerializer(many=True)
 
     def get_can_access(self, obj):
         request = self.context['request']
         return can_request_access_layer(request, obj)
+
+    def get_related_tables(self, obj):
+        from table.serializers import TableSerializer
+
+        tables = obj.related_tables.all()
+        return TableSerializer(tables, many=True, context={'from_layer': obj}).data
 
     def get_opacity(self, obj):
         return float(obj.opacity)
@@ -331,7 +339,8 @@ class LayerSerializer(serializers.ModelSerializer):
             'metadataset',
             'is_filterable_in_legend',
             'authenticated_can_mutate',
-            'is_exportable'
+            'is_exportable',
+            'related_tables'
         ]
 
 
@@ -362,11 +371,15 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         ret['_popup_attributes'] = '\r\n'.join(data.get('display_properties', []))
         ret['_search_fields'] = '\r\n'.join(data.get('search_properties', []))
         ret['_search_terms'] = '\r\n'.join(data.get('search_terms', []))
+        if 'related_tables' in data:
+            ret['related_tables'] = data['related_tables']
         return ret
 
     def update(self, instance, validated_data):
-        linked_data, templates = (validated_data.pop(key, None)
-                                for key in ('linked_data', 'templates'))
+        from table.models import LayerToTable
+
+        linked_data, templates, related_tables = (validated_data.pop(key, None)
+                                                  for key in ('linked_data', 'templates', 'related_tables'))
 
         # Handling many-to-many field 'atlas_groups'
         if 'atlas_groups' in validated_data:
@@ -423,6 +436,43 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             instance.templates.all().delete()
             instance.templates.set(templates_data_to_create, bulk=False)
 
+        # Handling many-to-many field 'related_tables'
+        if related_tables:
+            try:
+                # Get IDs of table relations sent in the request
+                incoming_table_ids = {item.get('id') for item in related_tables}
+
+                # Get existing relations
+                existing_relations = LayerToTable.objects.filter(from_layer=instance)
+
+                # Delete relations that are no longer needed
+                relations_to_delete = existing_relations.exclude(id__in=incoming_table_ids)
+                relations_to_delete.delete()
+
+                for item in related_tables:
+                    relation_id = item.get('id')
+
+                    if relation_id:
+                        # Update existing relation using its ID
+                        existing_relation = LayerToTable.objects.get(id=relation_id)
+
+                        field_mapping = item.get('field_mapping')
+
+                        if field_mapping is not None:
+                            existing_relation.field_mapping = field_mapping
+                            existing_relation.save()
+                    else:
+                        # Create new relation
+                        LayerToTable.objects.create(
+                            from_layer=instance,
+                            to_table_id=item.get('to_table'),
+                            field_mapping=item.get('field_mapping')
+                        )
+            except Exception as e:
+                raise serializers.ValidationError({
+                    'related_tables': 'Er is een onverwachte fout opgretreden bij het opslaan van de gerelateerde tabellen. '
+                                      f'Error details: {str(e)}'})
+
         return instance
 
     class Meta:
@@ -474,7 +524,8 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'metadataset',
             'is_filterable_in_legend',
             'is_exportable',
-            'authenticated_can_mutate'
+            'authenticated_can_mutate',
+            'related_tables'
         ]
 
 
@@ -551,6 +602,7 @@ class BasicThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
         fields = ['id', 'title', 'slug']
+
 
 class DatasetSerializer(serializers.ModelSerializer):
     layers = LayerSerializer(many=True)

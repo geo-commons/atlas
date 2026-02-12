@@ -102,6 +102,15 @@ class Source(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    def to_dict(self):
+        return {
+            'id': self.pk,
+            'title': self.title,
+            'slug': self.slug,
+            'source_type': self.source_type,
+            'url': self.url,
+        }
+
 
 class Theme(models.Model):
     title = models.CharField('Naam', max_length=128, null=False)
@@ -790,7 +799,8 @@ source: new ol.source.TileWMS({{
             'legend_url': self.legend_url,
             'is_filterable_in_legend': self.is_filterable_in_legend,
             'can_write': self.is_mutable_by(user, request),
-            'is_exportable': self.is_exportable
+            'is_exportable': self.is_exportable,
+            'related_tables': [item.to_dict(from_layer=self) for item in self.related_tables.all()],
         }
 
     class Meta:
@@ -808,6 +818,7 @@ class LinkedData(models.Model):
     url = models.CharField(_('URL'), max_length=500)
     source_key = models.CharField(_('Bronsleutel'), max_length=128)
     target_key = models.CharField(_('Doelsleutel'), max_length=128)
+
     headers = models.TextField(_('Tabel kopjes'), max_length=250, blank=True, null=True,
                                help_text='Voer één veld per regel in.')
     popup_attributes = models.TextField(_('Tabel velden'), max_length=250, blank=True, null=True,
@@ -834,7 +845,6 @@ class LinkedData(models.Model):
             'headers': self.headers.split('\r\n') if self.headers else [],
             'display_properties': self.popup_attributes.split('\r\n') if self.popup_attributes else [],
             'use_detail_view': self.use_detail_view,
-            'detail_view_fields': self.detail_view_fields.split('\r\n') if self.detail_view_fields else []
         }
 
 
