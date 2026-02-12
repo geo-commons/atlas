@@ -178,9 +178,31 @@ export default {
         return this.unselectedLayers;
       }
 
-      return this.unselectedLayers.filter(
-        (layer) => layer.title.toLowerCase().search(this.searchQuery.toLowerCase()) !== -1,
-      );
+      const searchTerm = this.searchQuery.trim().toLowerCase();
+
+      return this.unselectedLayers.filter((layer) => {
+        // Laag velden
+        const matchesLayerTitle = layer.title.toLowerCase().includes(searchTerm);
+        const matchesLayerDescription = layer.description?.toLowerCase().includes(searchTerm) || false;
+        const matchesLayerSearchTerms =
+          layer.search_terms?.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
+
+        // Metadataset velden
+        const matchesMetadatasetTitle = layer.metadataset?.title.toLowerCase().includes(searchTerm);
+        const matchesMetadatasetAbstract = layer.metadataset?.abstract?.toLowerCase().includes(searchTerm) || false;
+        const metadatasetKeywords = layer.metadataset?.keyword ? layer.metadataset.keyword.split(/\r?\n/) : [];
+        const matchesMetadatasetKeywords =
+          metadatasetKeywords.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
+
+        return (
+          matchesLayerTitle ||
+          matchesLayerDescription ||
+          matchesLayerSearchTerms ||
+          matchesMetadatasetTitle ||
+          matchesMetadatasetAbstract ||
+          matchesMetadatasetKeywords
+        );
+      });
     },
     selectedBaseLayers() {
       let baseLayers = [];

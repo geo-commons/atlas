@@ -282,15 +282,29 @@ export default {
         }
 
         if (this.searchQuery) {
-          const searchTerm = this.searchQuery.toLowerCase();
+          const searchTerm = this.searchQuery.trim().toLowerCase();
 
-          // Check if layer matches search criteria in title, meta description or search terms
-          const matchesTitle = layer.title.toLowerCase().includes(searchTerm);
-          const matchesDescription = layer.metadata?.description?.toLowerCase().includes(searchTerm) || false;
-          const matchesSearchTerms =
-            layer.search_terms?.some((term) => term.trim().toLowerCase() === searchTerm.trim().toLowerCase()) || false;
+          // Laag velden
+          const matchesLayerTitle = layer.title.toLowerCase().includes(searchTerm);
+          const matchesLayerDescription = layer.description?.toLowerCase().includes(searchTerm) || false;
+          const matchesLayerSearchTerms =
+            layer.search_terms?.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
 
-          if (!matchesTitle && !matchesDescription && !matchesSearchTerms) {
+          // Metadataset velden
+          const matchesMetadatasetTitle = layer.metadataset?.title.toLowerCase().includes(searchTerm);
+          const matchesMetadatasetAbstract = layer.metadataset?.abstract?.toLowerCase().includes(searchTerm) || false;
+          const metadatasetKeywords = layer.metadataset?.keyword ? layer.metadataset.keyword.split(/\r?\n/) : [];
+          const matchesMetadatasetKeywords =
+            metadatasetKeywords.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
+
+          if (
+            !matchesLayerTitle &&
+            !matchesLayerDescription &&
+            !matchesLayerSearchTerms &&
+            !matchesMetadatasetTitle &&
+            !matchesMetadatasetAbstract &&
+            !matchesMetadatasetKeywords
+          ) {
             return;
           }
         }
