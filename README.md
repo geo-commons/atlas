@@ -77,7 +77,7 @@ source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-Run a Postgres database server with:
+Run a Postgres database server, filter-proxy and dex with:
 
 ```bash
 docker compose up -d postgres dex filter-proxy
@@ -108,6 +108,10 @@ And start a watch server:
 ```bash
 npm run dev
 ```
+
+Run the mock api server:
+
+- see [mock/README.md](mock/README.md)
 
 Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
 

@@ -239,6 +239,21 @@ export default {
               name: "featureAddFeature",
               type: "checkbox",
             },
+            {
+              label: "Nieuwe tabellen functionaliteit",
+              id: "FEATURE_NEW_TABLES",
+              name: "featureNewTables",
+              type: "checkbox",
+              infoText: "Zet deze feature aan om gebruik te maken van de nieuwe tabellen functionaliteit.",
+            },
+            {
+              label: "Oude gekoppelde data en templates functionaliteit",
+              id: "FEATURE_OLD_LINKED_DATA_AND_TEMPLATE",
+              name: "featureOldLinkedDataAndTemplate",
+              type: "checkbox",
+              infoText:
+                "Zet deze feature aan om gebruik te maken van de oude gekoppelde data en templates functionaliteit. Zet deze uit om over te stappen op de nieuwe tabellen functionaliteit.",
+            },
           ],
         },
         portalConfiguration: {

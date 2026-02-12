@@ -67,14 +67,17 @@
 
     <template #default>
       <div>
-        <FeatureInfoDetails
-          v-if="selectedFeatureDetails"
-          :feature="selectedFeatureDetails"
-          @back="closeFeatureInfoDetails"
+        <RelatedTableDetails
+          v-if="selectedRelatedTableAttributes"
+          :selected-related-table-attributes="selectedRelatedTableAttributes"
+          :position="position"
+          @back="back"
+          @select-related-table-object="onSelectRelatedTableObject"
+          @close-related-table-details="closeRelatedTableDetails"
         />
         <FeatureInfo
           v-for="visibleLayer in visibleLayers"
-          v-show="!selectedFeatureDetails"
+          v-show="!selectedFeatureDetails && !selectedRelatedTableAttributes"
           :key="visibleLayer.id"
           :is-open="true"
           :layer="visibleLayer"
@@ -84,8 +87,8 @@
           @show-selected-feature="onFeatureSelect"
           @set-position="setPosition"
           @on-fit="onFit"
-          @select-feature-details="onSelectFeatureDetails"
           @select-feature="selectFeature"
+          @select-related-table-object="onSelectRelatedTableObject"
         />
       </div>
     </template>
@@ -102,13 +105,13 @@ import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import { Tippy } from "vue-tippy";
 import { useGlobalStore } from "@/stores";
 import { mapStores } from "pinia";
-import FeatureInfoDetails from "@/components/FeatureInfoDetails.vue";
 import { useMapStore } from "@/stores/map_store";
+import RelatedTableDetails from "@/components/related-tables/RelatedTableDetails.vue";
 
 export default {
   name: "PointInfoPanel",
   components: {
-    FeatureInfoDetails,
+    RelatedTableDetails,
     Tippy,
     MarkerIcon,
     CloseIcon,
@@ -128,8 +131,10 @@ export default {
     return {
       resetSidePanel: null,
       selectedFeatureDetails: null,
+      selectedRelatedTableAttributes: null,
       copyButtonText: "Kopieer coördinaten",
       mapStore: null,
+      history: [],
     };
   },
   computed: {
@@ -148,11 +153,10 @@ export default {
   },
   watch: {
     searchQuery(newValue, oldValue) {
-      // todo: check if this is the best place to reset selected feature details
-      //       needs to be reset when user clicks on other point of map, checking position does not work well
-      // When user selects a different point on the map we need to reset the selected feature details.
-      if (newValue.title !== oldValue.title) {
+      // When user selects a different point on the map we need to reset the selected feature details and the related table details.
+      if (newValue.coordinates !== oldValue.coordinates) {
         this.selectedFeatureDetails = null;
+        this.closeRelatedTableDetails();
       }
     },
   },
@@ -197,8 +201,35 @@ export default {
     onSelectFeatureDetails(selectedFeature) {
       this.selectedFeatureDetails = selectedFeature;
     },
+    onSelectRelatedTableObject(attributes) {
+      if (attributes) {
+        this.history.push(attributes);
+        this.selectedRelatedTableAttributes = attributes;
+      }
+    },
     closeFeatureInfoDetails() {
       this.selectedFeatureDetails = null;
+    },
+    closeRelatedTableDetails() {
+      this.selectedRelatedTableAttributes = null;
+      this.history = [];
+    },
+    back() {
+      let lastHistoryItem = null;
+
+      while (this.history.length > 0) {
+        lastHistoryItem = this.history.pop();
+
+        // stop and move to lastHistoryItem when it is a different object than the current active selectedRelatedTableAttributes
+        if (lastHistoryItem !== this.selectedRelatedTableAttributes) {
+          this.selectedRelatedTableAttributes = lastHistoryItem;
+          return;
+        }
+      }
+
+      // if no history item was found, reset the history and selected related table attributes
+      this.selectedRelatedTableAttributes = null;
+      this.history = [];
     },
     copyCoordinates() {
       navigator.clipboard
