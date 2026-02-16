@@ -5,5 +5,5 @@ dependencies:
 - name: geoserver
   repository: https://delta10.github.io/helm-charts
   version: 2.27.3
-digest: sha256:6275568e545fc8fa90121cdffaaae39e6f61ec6c293fd0f32a481858e58a3320
-generated: "2026-02-02T14:02:51.579392305+01:00"
+digest: sha256:2c2dd6bfc94cf6e70672a334a2f0a6b0dbc61c44a3ecde3451090373a064dfff
+generated: "2026-02-16T10:38:27.947268+01:00"
