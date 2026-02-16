@@ -150,6 +150,7 @@ Upload helm chart:
   script:
     - cd helm
     - helm repo add helm https://charts.helm.sh/stable
+    - helm repo add delta10 https://delta10.github.io/helm-charts
     - helm dependency build
     - helm package .
     - FILENAME=$(echo atlas-*.tgz)
