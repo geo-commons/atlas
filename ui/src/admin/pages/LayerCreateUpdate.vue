@@ -1007,12 +1007,12 @@ export default {
               infoText: "Laag is alleen zichtbaar binnen interne omgeving.",
             },
             {
-              label: "Vereis inlog voor deze metadataset",
+              label: "Vereis inlog voor deze kaartlaag",
               id: "login_required",
               name: "LoginRequired",
               type: "checkbox",
               required: false,
-              infoText: "De inhoud van deze metadataset kan alleen bekeken worden door ingelogde gebruikers.",
+              infoText: "De inhoud van deze kaartlaag kan alleen bekeken worden door ingelogde gebruikers.",
             },
             {
               label: "Ingelogde gebruikers kunnen kaartlaag bewerken",
