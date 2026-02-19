@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-flex tw-min-h-full tw-w-full tw-flex-col" :style="computedStyle">
+  <div class="portal-app tw-flex tw-min-h-full tw-w-full tw-flex-col" :style="computedStyle">
     <portal-header />
     <portal-breadcrumb />
     <router-view></router-view>
@@ -19,16 +19,25 @@ export default {
   },
   data() {
     return {
-      computedStyle: { "--color-primary-organization": "#000000" },
+      computedStyle: {
+        "--color-primary-organization": "",
+        "--color-title-organization": "",
+        "--color-text-organization": "",
+      },
     };
   },
   computed: {
+    store() {
+      return useGlobalStore();
+    },
     config() {
-      return useGlobalStore().config;
+      return this.store.config;
     },
   },
   mounted() {
-    this.computedStyle["--color-primary-organization"] = this.config.organization_primary_color;
+    this.computedStyle["--color-primary-organization"] = this.config.organization_primary_color || "inherit";
+    this.computedStyle["--color-title-organization"] = this.config.organization_title_color || "inherit";
+    this.computedStyle["--color-text-organization"] = this.config.organization_text_color || "inherit";
   },
 };
 </script>
@@ -39,6 +48,8 @@ export default {
 :root {
   /* Set default color for organization primary color. Otherwise IDE does not acknowledge its existence. */
   --color-primary-organization: #000000;
+  --color-title-organization: inherit;
+  --color-text-organization: inherit;
 
   --font-weight-light: 300;
   --font-weight-normal: 400;
@@ -66,6 +77,21 @@ html {
 
 .brand-color {
   color: var(--color-primary-organization);
+}
+
+/* Organization title color: all headings in the portal */
+.portal-app h1,
+.portal-app h2,
+.portal-app h3,
+.portal-app h4,
+.portal-app h5,
+.portal-app h6 {
+  color: var(--color-title-organization, inherit);
+}
+
+/* Organization text color: default text in the portal */
+.portal-app {
+  color: var(--color-text-organization, inherit);
 }
 
 h1.__portal {

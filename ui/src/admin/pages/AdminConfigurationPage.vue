@@ -256,42 +256,8 @@ export default {
             },
           ],
         },
-        portalConfiguration: {
-          label: "Portaal configuratie",
-          questions: [
-            {
-              id: "ORGANIZATION_IMAGE",
-              name: "organizationImage",
-              type: "image",
-              label: "Organisatie specifieke afbeelding die bovenaan de portaal pagina getoond wordt",
-            },
-            {
-              id: "ORGANIZATION_PRIMARY_COLOR",
-              name: "organizationPrimaryColor",
-              type: "color",
-              label: "Primaire kleur van de organisatie",
-              infoText: "Klik op de kleur om de kleur aan te passen. NB: voor nu alleen beschikbaar in HEX",
-            },
-            {
-              label: "Organisatie header tekst",
-              id: "ORGANIZATION_HEADER",
-              name: "organizationHeader",
-              type: "text",
-            },
-            {
-              label: "Organisatie introductie",
-              id: "ORGANIZATION_INTRODUCTION",
-              name: "organizationIntroduction",
-              type: "text",
-              multiLine: true,
-              infoText: "Introductie tekst die wordt laten zien bovenaan de pagina",
-            },
-          ],
-        },
       };
     },
   },
 };
 </script>
-
-<style scoped></style>

@@ -26,8 +26,7 @@
       "ordering": 0,
       "created_at": "2024-05-15T06:06:25.531Z",
       "updated_at": "2024-05-15T06:09:20.381Z",
-      "description": "Tabel met een overzicht van alle beschikbare gebruikers.",
-      "thumbnail": ""
+      "description": "Tabel met een overzicht van alle beschikbare gebruikers."
     }
   },
   {
@@ -61,8 +60,7 @@
       "ordering": 0,
       "created_at": "2024-05-16T06:06:25.531Z",
       "updated_at": "2024-05-16T06:09:20.381Z",
-      "description": "Tabel met een overzicht van KVK testdata.",
-      "thumbnail": ""
+      "description": "Tabel met een overzicht van KVK testdata."
     }
   },
   {

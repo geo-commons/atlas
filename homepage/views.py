@@ -195,6 +195,8 @@ def _get_config(request):
         'organization_image': settings.MEDIA_URL + config.get('ORGANIZATION_IMAGE') if config.get(
             'ORGANIZATION_IMAGE') else None,
         'organization_primary_color': config.get('ORGANIZATION_PRIMARY_COLOR'),
+        'organization_title_color': config.get('ORGANIZATION_TITLE_COLOR'),
+        'organization_text_color': config.get('ORGANIZATION_TEXT_COLOR'),
         'organization_introduction': config.get('ORGANIZATION_INTRODUCTION'),
         'organization_header': config.get('ORGANIZATION_HEADER'),
         'position': {

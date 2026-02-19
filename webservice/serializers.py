@@ -20,8 +20,8 @@ class MapSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Map
-        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description', 'published',
-                  'show_in_overview', 'about', 'about_title']
+        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description', 'keywords',
+                  'published', 'show_in_overview', 'about', 'about_title']
 
     def create(self, validated_data):
         try:
@@ -171,6 +171,10 @@ class MetadataSerializerField(serializers.Field):
 
 class MetadatasetPublicSerializer(serializers.ModelSerializer):
     """Serializer for external/public API calls - excludes internal email addresses and sensitive fields"""
+    layers = serializers.SerializerMethodField()
+
+    def get_layers(self, obj):
+        return obj.get_serialized_layers()
 
     class Meta:
         model = Metadataset
@@ -178,6 +182,7 @@ class MetadatasetPublicSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'slug',
+            'layers',
             'abstract',
             'topic_category',
             'keyword',
@@ -203,6 +208,10 @@ class MetadatasetPublicSerializer(serializers.ModelSerializer):
 
 class MetadatasetSerializer(serializers.ModelSerializer):
     """Serializer for internal API calls - includes all fields including internal email addresses"""
+    layers = serializers.SerializerMethodField()
+
+    def get_layers(self, obj):
+        return obj.get_serialized_layers()
 
     class Meta:
         model = Metadataset
@@ -210,6 +219,7 @@ class MetadatasetSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'slug',
+            'layers',
             'description',
             'abstract',
             'topic_category',

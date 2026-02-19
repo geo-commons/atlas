@@ -3,6 +3,18 @@ import type { IConfig } from "@/types/ConfigType";
 import type { IUser } from "@/types/user";
 import type { ILayer } from "@/types/layer";
 
+export interface PortalAvailableLinks {
+  maps: boolean;
+  metadatasets: boolean;
+  tables: boolean;
+}
+
+export const DEFAULT_PORTAL_AVAILABLE_LINKS: PortalAvailableLinks = {
+  maps: false,
+  metadatasets: false,
+  tables: false,
+};
+
 export interface IGlobalStoreState {
   position: any;
   layers: ILayer[];
@@ -19,6 +31,7 @@ export interface IGlobalStoreState {
   maps: any;
   map: any;
   outdated_map_slug: string | null;
+  portalAvailableLinks: PortalAvailableLinks;
 }
 
 export const useGlobalStore = defineStore("global", {
@@ -38,6 +51,7 @@ export const useGlobalStore = defineStore("global", {
     maps: null,
     map: null,
     outdated_map_slug: null,
+    portalAvailableLinks: DEFAULT_PORTAL_AVAILABLE_LINKS,
   }),
   getters: {
     // getters

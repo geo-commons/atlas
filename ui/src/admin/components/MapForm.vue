@@ -33,6 +33,34 @@
               <vee-error-message name="slug" />
             </span>
           </div>
+          <div class="input-wrapper">
+            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
+              Portaal beschrijving
+              <AdminFormInfoText
+                :info-text="'Dit is de beschrijving van de kaart die in het dataportaal wordt getoond.'"
+              />
+            </label>
+            <vee-field id="description" v-slot="{ value, handleChange, handleBlur }" name="description">
+              <Textarea id="description" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
+            </vee-field>
+            <span class="warning-text">
+              <vee-error-message name="description" />
+            </span>
+          </div>
+          <div class="input-wrapper">
+            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
+              Zoektermen
+              <AdminFormInfoText
+                :info-text="'Dit is de lijst van zoektermen die gebruikt worden om de kaart te vinden in het dataportaal. Voer één zoekterm per regel in.'"
+              />
+            </label>
+            <vee-field id="keywords" v-slot="{ value, handleChange, handleBlur }" name="keywords">
+              <Textarea id="keywords" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
+            </vee-field>
+            <span class="warning-text">
+              <vee-error-message name="keywords" />
+            </span>
+          </div>
         </div>
 
         <div class="settings">
@@ -57,7 +85,7 @@
               binary
               @update:model-value="(value) => (data.show_in_overview = value)"
             />
-            <label for="show_in_overview">Toon kaart in overzicht weergave</label>
+            <label for="show_in_overview">Toon kaart in het dataportaal</label>
             <AdminFormInfoText
               :info-text="'Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.'"
             />
@@ -392,7 +420,13 @@ export default {
       const values = await this.$refs.mapForm.validate();
       if (values.valid) {
         const formValues = this.$refs.mapForm.values;
-        const formData = { ...this.data, title: formValues.title, slug: formValues.slug };
+        const formData = {
+          ...this.data,
+          title: formValues.title,
+          slug: formValues.slug,
+          description: formValues.description,
+          keywords: formValues.keywords,
+        };
         this.$emit("submit", formData, continueEditing);
       }
     },

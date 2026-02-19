@@ -1,5 +1,6 @@
 from constance import config
 from constance import settings as constance_settings
+from django.db.models import Prefetch
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django_filters.rest_framework import DjangoFilterBackend
@@ -31,7 +32,7 @@ class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.M
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['published', 'show_in_overview']
 
-    search_fields = ['title']
+    search_fields = ['title', 'description', 'keywords', 'about']
 
     def get_queryset(self):
         return Map.authorized.for_request(self.request)
@@ -114,7 +115,7 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
     serializer_class = MetadatasetSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['topic_category', 'status', 'show_in_overview']
-    search_fields = ['title']
+    search_fields = ['title', 'abstract', 'keyword']
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
@@ -129,7 +130,15 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
             return MetadatasetPublicSerializer
 
     def get_queryset(self):
-        return Metadataset.authorized.for_request(self.request)
+        return Metadataset.authorized.for_request(self.request).prefetch_related(
+            Prefetch(
+                'layers', 
+                queryset=
+                    Layer.authorized.for_request(self.request)
+                    .filter(not_in_atlas=False, published=True)
+                    .order_by('title')
+                )
+            )
 
     def get_object(self):
         queryset = self.get_queryset()
@@ -177,13 +186,19 @@ class ViewerViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
 
 class TableViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
-    permission_classes = [permissions.IsAdminUser]
-    queryset = Table.objects.all()
     serializer_class = TableSerializer
 
-    search_fields = ['title']
+    search_fields = ['title', 'description']
 
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return [AllowAny()]
+
+    def get_queryset(self):
+        return Table.authorized.for_request(self.request)
 
 
 class LogViewSet(viewsets.ModelViewSet):

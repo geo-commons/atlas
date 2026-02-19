@@ -318,9 +318,13 @@ CONSTANCE_CONFIG = {
     'FEATURE_NEW_TABLES': (False, ('Gebruik de nieuwe tabellen functionaliteit')),
     'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE': (True, ('Gebruik de oude gekoppelde data en templates')),
     'ORGANIZATION_IMAGE': (
-        '', 'Organisatie specifieke afbeelding die bovenaan de portaal pagina wordt laten zien', 'image_field'),
+        '', 'Organisatie header afbeelding', 'image_field'),
     'ORGANIZATION_PRIMARY_COLOR': (
         '#000000', 'Primaire kleur van de organisatie.\n Note: voor nu alleen beschikbaar in HEX'),
+    'ORGANIZATION_TITLE_COLOR': (
+        '#000000', 'Titel kleur op het portaal. Leeg = overnemen van standaard. NB: voor nu alleen beschikbaar in HEX'),
+    'ORGANIZATION_TEXT_COLOR': (
+        '#000000', 'Tekst kleur op het portaal. Leeg = overnemen van standaard. NB: voor nu alleen beschikbaar in HEX'),
     'ORGANIZATION_INTRODUCTION': ('', 'Introductie tekst die wordt laten zien bovenaan de pagina'),
     'ORGANIZATION_HEADER': ('', 'Header tekst die bovenaan de portaal pagina zichtbaar is'),
 }
@@ -357,6 +361,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     '5. Portaal configuratie': (
         'ORGANIZATION_IMAGE',
         'ORGANIZATION_PRIMARY_COLOR',
+        'ORGANIZATION_TITLE_COLOR',
+        'ORGANIZATION_TEXT_COLOR',
         'ORGANIZATION_INTRODUCTION',
         'ORGANIZATION_HEADER'
     )

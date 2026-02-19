@@ -4,8 +4,16 @@ Een kaart verschijnt niet in het Atlas hoofdscherm scherm. Bij het aanmaken van 
 <img src="../images/hondenbeleid.png" alt="hondenbeleid" width="500"/>
 
 Om een kaart aan te maken klik je in het Kaarten menu op de knop Nieuwe kaart.
-Vul de twee velden in. De titel mag uit meerdere woorden bestaan. Het veld Kort kenmerk mag geen spaties bevatten, wel (liggende)streepjes. Dit veld moet ook een unieke waarde hebben.
-Klik op Opslaan en openen wanneer beide velden zijn ingevuld.
+Vul de vereiste velden in (Titel en Kort kenmerk). Klik op Opslaan en openen wanneer deze velden zijn ingevuld.
+
+### Basisinformatie
+
+| Veld                   | Uitleg                                                                                                                                 | Validatie                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **Titel**              | De titel van de kaart. Mag uit meerdere woorden bestaan.                                                                               | Verplicht                                      |
+| **Kort kenmerk**       | Een korte, unieke naam voor de kaart die in de URL wordt gebruikt. Mag geen spaties en speciale tekens bevatten, wel (liggende)streepjes. | Verplicht, unieke waarde                        |
+| **Portaal beschrijving** | De beschrijving van de kaart die in het dataportaal wordt getoond.                                                                   | Optioneel                                       |
+| **Zoektermen**         | De lijst van zoektermen die gebruikt worden om de kaart te vinden in het dataportaal. Voer één zoekterm per regel in.                  | Optioneel                                       |
 
 <img src="../images/nieuwe_kaart.png" alt="Kaart Toevoegen" width="800"/>
 

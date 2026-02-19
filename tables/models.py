@@ -77,13 +77,6 @@ class Table(models.Model):
         'Beschrijving van de tabel', null=True,
         help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
 
-    thumbnail = models.ImageField(
-        upload_to='thumbnails/',
-        blank=True,
-        null=True,
-        help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
-    )
-
     class Meta:
         verbose_name = 'Tabel'
         verbose_name_plural = 'Tabellen'
@@ -114,5 +107,4 @@ class Table(models.Model):
             'login_required': self.login_required,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
-            'thumbnail': self.thumbnail.url if self.thumbnail else None
         }

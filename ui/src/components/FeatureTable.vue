@@ -137,7 +137,7 @@ export default {
     selectedArea: Object,
     user: Object,
   },
-  emits: ["set-position", "on-fit"],
+  emits: ["set-position", "on-fit", "download-pending"],
   data() {
     return {
       featureCollection: {

@@ -10,7 +10,7 @@
     >
       {{ metadataset.title }}
     </h2>
-    <div v-if="metadataset.last_updated" class="tw-text-gray-500 tw-text-sm">
+    <div v-if="metadataset.last_updated" class="tw-text-[var(--color-text-organization)] tw-text-sm">
       Laatst bijgewerkt: {{ formatDateValue(metadataset.last_updated) }}
     </div>
     <p v-if="metadataset.abstract">{{ metadataset.abstract }}</p>
