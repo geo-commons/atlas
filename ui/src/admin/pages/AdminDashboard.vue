@@ -2,24 +2,38 @@
   <div class="container __admin __dashboard">
     <div>
       <div class="tw-mt-12">
-        <h3>Algemene instellingen</h3>
+        <h3>Algemeen</h3>
         <div class="buttons tw-mb-12">
           <router-link
             to="/configuration"
             class="button __tertiary __large"
             type="button"
-            aria-label="Naar configuratie"
+            aria-label="Atlas configuratie"
           >
             <span class="button-icon tw-bg-orange-100">
               <CogIcon class="icon tw-text-orange-800" />
             </span>
-            Configuratie
+            Atlas configuratie
+          </router-link>
+          <router-link
+            to="/portal-configuration"
+            class="button __tertiary __large"
+            type="button"
+            aria-label="Portaal configuratie"
+          >
+            <span class="button-icon tw-bg-orange-100">
+              <i
+                class="pi pi-home tw-text-orange-800 tw-text-5xl tw-w-6 tw-h-6 tw-flex tw-items-center tw-justify-center"
+                style="font-size: 1.25rem"
+              />
+            </span>
+            Portaal configuratie
           </router-link>
           <router-link
             to="/general-information"
             class="button __tertiary __large"
             type="button"
-            aria-label="Naar algemene informatie"
+            aria-label="Algemene informatie"
           >
             <span class="button-icon tw-bg-orange-100">
               <InformationCircleIcon class="icon tw-text-orange-800" />
@@ -29,9 +43,10 @@
           <a
             href="/atlas/admin/docs/"
             target="_blank"
+            rel="noopener noreferrer"
             class="button __tertiary __large"
             type="button"
-            aria-label="Naar admin documentatie pagina"
+            aria-label="Admin documentatie pagina"
           >
             <span class="button-icon tw-bg-orange-100">
               <BookIcon class="icon tw-text-orange-800" />
@@ -43,48 +58,43 @@
       <div>
         <h3>Kaarten</h3>
         <div class="buttons tw-mb-12">
-          <router-link to="/sources" class="button __tertiary __large" type="button" aria-label="Naar bronnen">
+          <router-link to="/sources" class="button __tertiary __large" type="button" aria-label="Bronnen">
             <span class="button-icon tw-bg-amber-100">
               <SourceIcon class="icon tw-text-amber-800" />
             </span>
             Bronnen
           </router-link>
-          <router-link to="/categories" class="button __tertiary __large" type="button" aria-label="Naar categorieën">
+          <router-link to="/categories" class="button __tertiary __large" type="button" aria-label="Categorieën">
             <span class="button-icon tw-bg-amber-100">
               <CategoryIcon class="icon tw-text-amber-800" />
             </span>
             Categorieën
           </router-link>
-          <router-link
-            to="/metadatasets"
-            class="button __tertiary __large"
-            type="button"
-            aria-label="Naar metadatasets"
-          >
+          <router-link to="/metadatasets" class="button __tertiary __large" type="button" aria-label="Metadatasets">
             <span class="button-icon tw-bg-amber-100 tw-w-[40px] tw-h-[40px] tw-flex tw-items-center tw-justify-center">
               <i class="pi pi-tag tw-text-amber-800" style="font-size: 1.25rem" />
             </span>
             Metadatasets
           </router-link>
-          <router-link to="/maps" class="button __tertiary __large" type="button" aria-label="Naar kaarten">
+          <router-link to="/maps" class="button __tertiary __large" type="button" aria-label="Kaarten">
             <span class="button-icon tw-bg-amber-100">
               <MapIcon class="icon tw-text-amber-800" />
             </span>
             Kaarten
           </router-link>
-          <router-link to="/layers" class="button __tertiary __large" type="button" aria-label="Naar kaartlagen">
+          <router-link to="/layers" class="button __tertiary __large" type="button" aria-label="Kaartlagen">
             <span class="button-icon tw-bg-amber-100">
               <LayerIcon class="icon tw-text-amber-800" />
             </span>
             Kaartlagen
           </router-link>
-          <router-link to="/themes" class="button __tertiary __large" type="button" aria-label="Naar thema's">
+          <router-link to="/themes" class="button __tertiary __large" type="button" aria-label="Thema's">
             <span class="button-icon tw-bg-amber-100">
               <BookIcon class="icon tw-text-amber-800" />
             </span>
             Thema's
           </router-link>
-          <router-link to="/viewers" class="button __tertiary __large" type="button" aria-label="Naar viewers">
+          <router-link to="/viewers" class="button __tertiary __large" type="button" aria-label="Viewers">
             <span class="button-icon tw-bg-amber-100">
               <ViewIcon class="icon tw-text-amber-800" />
             </span>
@@ -95,13 +105,13 @@
       <div>
         <h3>Gebruikersbeheer</h3>
         <div class="buttons tw-mb-12">
-          <router-link to="/users" class="button __tertiary __large" type="button" aria-label="Naar gebruikers">
+          <router-link to="/users" class="button __tertiary __large" type="button" aria-label="Gebruikers">
             <span class="button-icon tw-bg-lime-100">
               <UserIcon class="icon tw-text-lime-800" />
             </span>
             Gebruikers
           </router-link>
-          <router-link to="/groups" class="button __tertiary __large" type="button" aria-label="Naar groepen">
+          <router-link to="/groups" class="button __tertiary __large" type="button" aria-label="Groepen">
             <span class="button-icon tw-bg-lime-100">
               <GroupIcon class="icon tw-text-lime-800" />
             </span>
@@ -112,18 +122,13 @@
       <div>
         <h3>Autorisatie</h3>
         <div class="buttons tw-mb-12">
-          <router-link
-            to="/authorizations"
-            class="button __tertiary __large"
-            type="button"
-            aria-label="Naar autorisaties"
-          >
+          <router-link to="/authorizations" class="button __tertiary __large" type="button" aria-label="Autorisaties">
             <span class="button-icon tw-bg-emerald-100">
               <ShieldIcon class="icon tw-text-emerald-800" />
             </span>
             Autorisaties
           </router-link>
-          <router-link to="/logs" class="button __tertiary __large" type="button" aria-label="Naar logs">
+          <router-link to="/logs" class="button __tertiary __large" type="button" aria-label="Logs">
             <span class="button-icon tw-bg-emerald-100">
               <LogIcon class="icon tw-text-emerald-800" />
             </span>
@@ -134,13 +139,13 @@
       <div>
         <h3>Tabellen</h3>
         <div class="buttons tw-mb-12">
-          <router-link to="/tables_old" class="button __tertiary __large" type="button" aria-label="Naar tabellen">
+          <router-link to="/tables_old" class="button __tertiary __large" type="button" aria-label="Tabellen (old)">
             <span class="button-icon tw-bg-cyan-100">
               <TableIcon class="icon tw-text-cyan-800" />
             </span>
             Tabellen (old)
           </router-link>
-          <router-link to="/tables" class="button __tertiary __large" type="button" aria-label="Naar tabellen">
+          <router-link to="/tables" class="button __tertiary __large" type="button" aria-label="Tabellen">
             <span class="button-icon tw-bg-cyan-100">
               <TableIcon class="icon tw-text-cyan-800" />
             </span>

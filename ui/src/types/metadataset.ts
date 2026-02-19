@@ -1,7 +1,13 @@
+export interface IMetadatasetLayer {
+  slug: string;
+  title: string;
+}
+
 export interface IMetadataset {
   id: number;
   title: string;
   slug?: string;
+  layers?: IMetadatasetLayer[];
   description?: string;
   abstract: string;
   topic_category: string;

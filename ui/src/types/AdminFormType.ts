@@ -3,7 +3,7 @@ export interface AdminFormQuestion {
   id: string;
   name: string;
   type: string;
-  required: boolean;
+  required?: boolean;
   visibility?: string;
   infoText?: string;
   maxLength?: number;
@@ -17,15 +17,23 @@ export interface AdminFormQuestion {
   value?: any;
   uncheckedValue?: any;
   objectDisplayName?: string;
-  containsColon?: boolean;
+  contains_colon?: boolean;
+  json?: boolean;
+  isNested?: boolean;
+  sourceField?: string;
 }
 
 export interface AdminFormSection {
   label: string;
   questions: AdminFormQuestion[];
   disableInputs?: boolean;
+  showIf?: boolean;
 }
 
 export interface AdminFormConfig {
   [key: string]: AdminFormSection;
+}
+
+export interface AdminFormValues {
+  [key: string]: string | boolean | File | unknown;
 }

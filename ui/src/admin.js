@@ -42,6 +42,7 @@ import AuthorizationList from "@/admin/pages/AuthorizationList.vue";
 import AuthorizationCreateUpdate from "@/admin/pages/AuthorizationCreateUpdate.vue";
 import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
+import AdminPortalConfigurationPage from "@/admin/pages/AdminPortalConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
 import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import { ConfirmationService, ToastService } from "primevue";
@@ -97,6 +98,11 @@ const routes = [
     meta: { title: "Dashboard", menu: true },
   },
   { path: "/configuration", component: AdminConfigurationPage, meta: { title: "Configuratie", menu: true } },
+  {
+    path: "/portal-configuration",
+    component: AdminPortalConfigurationPage,
+    meta: { title: "Portaal configuratie", menu: true },
+  },
   { path: "/maps", component: MapList, meta: { title: "Kaarten", menu: true } },
   {
     path: "/maps/update/:id",

@@ -13,8 +13,8 @@
       <div v-for="section in sections" :key="section.label">
         <hr v-if="!createView && !compactLayout && section?.showIf !== undefined ? section.showIf : true" />
         <div
-          :class="{ 'config-section-wrapper': !createView && !compactLayout }"
           v-if="section?.showIf !== undefined ? section.showIf : true"
+          :class="{ 'config-section-wrapper': !createView && !compactLayout }"
         >
           <div v-if="!createView && !compactLayout" class="section-label">
             <h3>{{ section.label }}</h3>
@@ -72,29 +72,61 @@
                   v-if="imageFieldValues[question.id]?.imagePath || imageFieldValues[question.id]?.previewUrl"
                   class="preview-image-wrapper"
                 >
-                  <div v-if="imageFieldValues[question.id]?.imagePath" class="current-logo">
-                    <div class="question-label">Huidige afbeelding</div>
-                    <img
-                      :src="`/atlas/media/${imageFieldValues[question.id]?.imagePath}`"
-                      class="logo-preview"
-                      :alt="`voorbeeld weergave van de huidige afbeelding voor ${question.id}`"
-                    />
+                  <div
+                    v-if="imageFieldValues[question.id]?.imagePath"
+                    class="current-logo tw-flex tw-items-start tw-gap-2"
+                  >
+                    <div>
+                      <div class="question-label">Huidige afbeelding</div>
+                      <div class="tw-flex tw-gap-2">
+                        <img
+                          :src="`/atlas/media/${imageFieldValues[question.id]?.imagePath}`"
+                          class="logo-preview"
+                          :alt="`voorbeeld weergave van de huidige afbeelding voor ${question.id}`"
+                        />
+                        <Button
+                          type="button"
+                          icon="pi pi-trash"
+                          severity="secondary"
+                          outlined
+                          rounded
+                          aria-label="Verwijder afbeelding"
+                          @click="clearImage(question.id)"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div v-if="imageFieldValues[question.id]?.previewUrl" class="current-logo">
-                    <div class="question-label">Geselecteerde afbeelding</div>
-                    <img
-                      :src="imageFieldValues[question.id]?.previewUrl"
-                      class="logo-preview"
-                      :alt="`voorbeeld weergave van geselecteerde afbeelding`"
-                    />
+                  <div
+                    v-if="imageFieldValues[question.id]?.previewUrl"
+                    class="current-logo tw-flex tw-items-start tw-gap-2"
+                  >
+                    <div>
+                      <div class="question-label">Geselecteerde afbeelding</div>
+                      <div class="tw-flex tw-gap-2">
+                        <img
+                          :src="imageFieldValues[question.id]?.previewUrl"
+                          class="logo-preview"
+                          :alt="`voorbeeld weergave van geselecteerde afbeelding`"
+                        />
+                        <Button
+                          type="button"
+                          icon="pi pi-trash"
+                          severity="secondary"
+                          outlined
+                          rounded
+                          aria-label="Verwijder afbeelding"
+                          @click="clearImage(question.id)"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="upload-button">
                   <span class="label-info-text-wrapper">
-                    <label for="file" class="question-label">{{ question.label }}</label>
+                    <label :for="`file_${question.id}`" class="question-label">{{ question.label }}</label>
                     <VisibilityIndicator :visibility="question.visibility" />
                   </span>
-                  <div>
+                  <div class="tw-flex tw-flex-wrap tw-gap-2 tw-items-center">
                     <input
                       :id="`file_${question.id}`"
                       :ref="`fileInput_${question.id}`"
@@ -105,7 +137,7 @@
                       @change="(e) => onFileUpload(e, question.id)"
                     />
                     <label :for="`file_${question.id}`" class="button __primary_admin __import">
-                      <ArrowDownTrayIcon class="icon" />
+                      <i class="pi pi-upload tw-mr-2" />
                       <span :ref="`fileLabelText_${question.id}`" :content="'selecteer afbeelding'">{{
                         imageFieldValues[question.id]?.uploadButtonText
                       }}</span>
@@ -358,7 +390,7 @@
                     fluid
                     :typeahead="!!question.suggestionsFrom"
                     @complete="(e) => onAutoComplete(e, question, values)"
-                    @update:modelValue="handleChange"
+                    @update:model-value="handleChange"
                     @blur="handleBlur"
                     @keydown.enter.prevent
                   />
@@ -435,7 +467,6 @@
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import LayerField from "@/admin/components/LayerField.vue";
 import MetadatasetsField from "@/admin/components/MetadatasetsField.vue";
-import ArrowDownTrayIcon from "@/assets/icons/arrow-down-tray-icon.svg";
 import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
 import { useGlobalStore } from "@/stores";
 import { formatDateValue } from "@/utils/date-formatter";
@@ -453,7 +484,6 @@ export default {
   name: "AdminFormSections",
   components: {
     RelatedTablesField,
-    ArrowDownTrayIcon,
     LayerField,
     MetadatasetsField,
     CodeMirror,
@@ -594,9 +624,9 @@ export default {
       if (this.containsImageField) {
         // Manually add image fields to values object.
         Object.keys(this.imageFieldValues).forEach((key) => {
-          if (this.imageFieldValues[key].file) {
-            // Only add image to values if there is a file available,
-            // otherwise we overwrite the current image with an undefined value.
+          if (this.imageFieldValues[key].clearRequested) {
+            values[key] = "";
+          } else if (this.imageFieldValues[key].file) {
             values[key] = this.imageFieldValues[key].file;
           }
         });
@@ -652,10 +682,30 @@ export default {
             this.imageFieldValues[question.id] = {
               imagePath: this.initialValues[question.id],
               uploadButtonText: "Selecteer afbeelding",
+              clearRequested: false,
             };
           }
         });
       });
+    },
+    clearImage(id) {
+      if (!(id in this.imageFieldValues)) return;
+      const field = this.imageFieldValues[id];
+      if (field?.previewUrl) {
+        URL.revokeObjectURL(field.previewUrl);
+      }
+      this.imageFieldValues[id] = {
+        imagePath: null,
+        uploadButtonText: "Selecteer afbeelding",
+        previewUrl: null,
+        file: null,
+        clearRequested: true,
+      };
+      const fileInput = this.$refs[`fileInput_${id}`];
+      if (fileInput) {
+        const el = Array.isArray(fileInput) ? fileInput[0] : fileInput;
+        if (el) el.value = "";
+      }
     },
     onFileUpload(event, id) {
       event.preventDefault();
@@ -664,6 +714,7 @@ export default {
         this.imageFieldValues[id].uploadButtonText = file?.name;
         this.imageFieldValues[id].previewUrl = URL.createObjectURL(file);
         this.imageFieldValues[id].file = file;
+        this.imageFieldValues[id].clearRequested = false;
       }
     },
     // Note: this method is being used in the AdminListFormDialog.

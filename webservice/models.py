@@ -413,6 +413,9 @@ class Metadataset(models.Model):
     def __str__(self):
         return self.title
 
+    def get_serialized_layers(self):
+        return [{'slug': layer.slug, 'title': layer.title} for layer in self.layers.all()]
+
 
 class Layer(models.Model):
     SOURCE_WMS_WFS = 'WMS_WFS'
@@ -969,6 +972,10 @@ class Map(models.Model):
     description = models.TextField(
         'Beschrijving van de kaart', null=True,
         help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld", blank=True)
+
+    keywords = models.TextField(
+        'Zoektermen', null=True, blank=True,
+        help_text='Zoektermen om de kaart te vinden in het dataportaal. Eén zoekterm per regel.')
 
     about = models.TextField(
         'Beschrijving van de kaart voor de zijbalk', null=True,

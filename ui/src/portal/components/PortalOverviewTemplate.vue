@@ -11,7 +11,7 @@
           </div>
           <div class="tw-flex-1">
             <h1 class="tw-text-4xl tw-my-3">{{ title }}</h1>
-            <p class="tw-text-gray-600 tw-text-lg tw-leading-relaxed tw-max-w-3xl">
+            <p class="tw-text-[var(--color-text-organization)] tw-text-lg tw-leading-relaxed tw-max-w-3xl">
               {{ subtitle }}
             </p>
           </div>
@@ -20,7 +20,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-12">
+    <main id="main-content" class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-12">
       <!-- Search -->
       <div class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8 tw-mb-6">
         <div class="tw-relative">
@@ -44,33 +44,60 @@
         v-if="$slots.filters"
         class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8 tw-mb-10"
       >
-        <h3 class="tw-text-lg tw-font-medium tw-mb-4">Filters</h3>
+        <h3 class="tw-text-lg tw-font-medium tw-mb-4 tw-mt-0">Filters</h3>
         <slot name="filters" />
       </div>
 
       <!-- Results count and controls -->
       <div class="tw-flex tw-items-center tw-justify-between tw-mb-6">
-        <p class="tw-text-gray-600">
-          <span class="tw-font-medium tw-text-gray-900">{{ totalRecords }}</span>
+        <p class="tw-text-[var(--color-text-organization)]">
+          <span class="tw-font-medium tw-text-[var(--color-text-organization)]">{{ totalRecords }}</span>
           {{ totalRecords === 1 ? "resultaat" : "resultaten" }} gevonden
         </p>
         <div class="tw-flex tw-items-center tw-gap-4">
           <div class="tw-flex tw-items-center tw-gap-2">
-            <span class="tw-text-sm tw-text-gray-600">Toon:</span>
+            <label class="tw-text-sm tw-text-[var(--color-text-organization)]" :for="itemsPerPageInputId">Toon:</label>
             <Dropdown
               :model-value="itemsPerPage"
               :options="itemsPerPageOptions"
               option-label="label"
               option-value="value"
+              :input-id="itemsPerPageInputId"
               :pt="{ input: { class: 'tw-text-sm' }, panel: { class: 'tw-text-sm' } }"
               @update:model-value="$emit('update:itemsPerPage', $event)"
             />
           </div>
-          <!-- TODO: grid/list toggle toevoegen -->
+          <div class="tw-flex tw-items-center tw-gap-2">
+            <label class="tw-text-sm tw-text-[var(--color-text-organization)]" :for="viewModeInputId">Weergave:</label>
+            <Dropdown
+              :model-value="viewMode"
+              :options="viewModeOptions"
+              option-label="label"
+              option-value="value"
+              :input-id="viewModeInputId"
+              :pt="{ input: { class: 'tw-text-sm' }, panel: { class: 'tw-text-sm' } }"
+              @update:model-value="$emit('update:viewMode', $event)"
+            />
+          </div>
         </div>
       </div>
 
       <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
+
+      <!-- Error State -->
+      <div
+        v-else-if="error"
+        class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-16 tw-text-center"
+      >
+        <i
+          class="pi pi-exclamation-triangle tw-w-16 tw-h-16 tw-text-amber-500 tw-mx-auto tw-mb-4"
+          aria-hidden="true"
+        ></i>
+        <h3 class="tw-text-xl tw-text-[var(--color-text-organization)] tw-mb-2 tw-font-medium">Laden mislukt</h3>
+        <p class="tw-text-[var(--color-text-organization)] tw-max-w-md tw-mx-auto">
+          {{ error }}
+        </p>
+      </div>
 
       <!-- Results -->
       <template v-else-if="hasResults">
@@ -106,8 +133,8 @@
         class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-16 tw-text-center"
       >
         <i :class="emptyIcon" class="tw-w-16 tw-h-16 tw-text-gray-300 tw-mx-auto tw-mb-4" aria-hidden="true"></i>
-        <h3 class="tw-text-xl tw-text-gray-900 tw-mb-2 tw-font-medium">{{ emptyTitle }}</h3>
-        <p class="tw-text-gray-600 tw-max-w-md tw-mx-auto">
+        <h3 class="tw-text-xl tw-text-[var(--color-text-organization)] tw-mb-2 tw-font-medium">{{ emptyTitle }}</h3>
+        <p class="tw-text-[var(--color-text-organization)] tw-max-w-md tw-mx-auto">
           {{ emptyMessage }}
         </p>
       </div>
@@ -119,6 +146,7 @@
 import Spinner from "@/components/Spinner.vue";
 import Dropdown from "primevue/dropdown";
 import Paginator from "primevue/paginator";
+import { LayoutMode } from "@/portal/components/shared/portalCardShared";
 
 export interface ItemsPerPageOption {
   label: string;
@@ -135,9 +163,11 @@ withDefaults(
     totalRecords: number;
     itemsPerPage: number;
     itemsPerPageOptions?: ItemsPerPageOption[];
+    viewMode?: LayoutMode;
     page: number;
     hasResults: boolean;
     loading?: boolean;
+    error?: string | null;
     emptyIcon?: string;
     emptyTitle?: string;
     emptyMessage?: string;
@@ -149,17 +179,27 @@ withDefaults(
       { label: "36", value: 36 },
       { label: "48", value: 48 },
     ],
+    viewMode: LayoutMode.Grid,
     loading: false,
+    error: null,
     emptyIcon: "pi pi-inbox",
     emptyTitle: "Geen resultaten gevonden",
     emptyMessage: "Probeer andere zoektermen of filters om resultaten te vinden.",
   },
 );
 
+const viewModeOptions = [
+  { label: "Grid", value: LayoutMode.Grid },
+  { label: "Lijst", value: LayoutMode.List },
+];
+
+const itemsPerPageInputId = "portal-items-per-page";
+const viewModeInputId = "portal-view-mode";
 defineEmits<{
   (e: "update:searchQuery", value: string): void;
   (e: "search"): void;
   (e: "update:itemsPerPage", value: number): void;
+  (e: "update:viewMode", value: LayoutMode): void;
   (e: "page", value: import("primevue/paginator").PageState): void;
 }>();
 </script>

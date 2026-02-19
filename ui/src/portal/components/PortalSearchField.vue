@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- TODO: zoeken binnen andere objecttypen toevoegen -->
     <div class="tw-relative">
       <i
         class="pi pi-search tw-absolute tw-left-4 tw-top-1/2 -tw-translate-y-1/2 tw-text-lg tw-text-gray-400"
@@ -16,7 +15,7 @@
       />
     </div>
     <button
-      class="tw-mt-5 tw-px-8 tw-py-3 tw-rounded-xl tw-bg-[var(--color-primary-organization)] hover:tw-opacity-90 tw-text-white tw-font-medium tw-transition-colors"
+      class="tw-mt-5 tw-px-8 tw-py-3 tw-rounded-xl tw-bg-[var(--color-primary-organization)] hover:tw-opacity-90 tw-text-white tw-font-medium tw-transition-colors focus-visible:tw-outline-none focus-visible:tw-ring-2 focus-visible:tw-ring-[var(--color-primary-organization)] focus-visible:tw-ring-offset-2"
       aria-label="Zoeken"
       @click="onSearch"
     >
@@ -31,7 +30,7 @@ export default {
   props: {
     initialSearchQuery: { default: "", type: String },
     placeholder: {
-      default: "Zoek naar metadatasets...",
+      default: "Zoek naar metadatasets, kaarten en tabellen...",
       type: String,
     },
   },
@@ -40,6 +39,11 @@ export default {
     return {
       searchQuery: "",
     };
+  },
+  watch: {
+    initialSearchQuery(value) {
+      this.searchQuery = value;
+    },
   },
   created() {
     this.searchQuery = this.initialSearchQuery;

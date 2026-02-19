@@ -1,15 +1,16 @@
+import type { IConfigPosition } from "@/types/ConfigType";
 import { ILayer } from "@/types/layer";
 import { IPosition } from "@/types/map";
 
 export type Position = IPosition;
 
-export function pushHistoryState(
+export const pushHistoryState = (
   position: IPosition,
   baseLayer: ILayer,
   visibleLayers: ILayer[],
   drawing?: string,
   isEmbed?: boolean,
-): void {
+): void => {
   const basePath = /(.*?)(@|$)/.exec(window.location.pathname);
 
   if (!basePath) {
@@ -42,4 +43,15 @@ export function pushHistoryState(
   }
 
   window.history.replaceState({}, "", urlParts.join("/"));
-}
+};
+
+/**
+ * Build a URL to the atlas map with the given layer IDs visible.
+ * Uses Atlas path format (@x,y,zoomz/layers=...) with configured municipality center.
+ * Layer IDs are layer slugs from the API.
+ */
+export const getMapUrlWithLayers = (layerIds: string[], position: IConfigPosition): string => {
+  const { center, zoom } = position;
+  const pos = `@${center.x.toFixed(2)},${center.y.toFixed(2)},${Math.round(zoom * 100) / 100}z`;
+  return `${window.location.origin}/atlas/${pos}/layers=${layerIds.map(encodeURIComponent).join(",")}`;
+};

@@ -5,7 +5,7 @@
     </div>
     <div v-else-if="error" class="tw-flex tw-justify-center tw-items-center tw-min-h-[60vh]">
       <div class="tw-text-center">
-        <p class="tw-text-gray-600 tw-text-lg">{{ error }}</p>
+        <p class="tw-text-[var(--color-text-organization)] tw-text-lg">{{ error }}</p>
       </div>
     </div>
     <div v-else>
@@ -18,8 +18,14 @@
               <i class="pi pi-database tw-text-2xl tw-text-gray-700" aria-hidden="true"></i>
             </div>
             <div class="tw-flex-1">
-              <h1 class="tw-text-4xl tw-my-3">{{ metadataset?.title }}</h1>
-              <p v-if="metadataset?.abstract" class="tw-text-gray-600 tw-text-lg tw-leading-relaxed tw-max-w-3xl">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <h1 class="tw-text-4xl tw-my-3">{{ metadataset?.title }}</h1>
+                <VisibilityIndicator v-if="!metadataset?.show_in_overview" visibility="Intern" />
+              </div>
+              <p
+                v-if="metadataset?.abstract"
+                class="tw-text-[var(--color-text-organization)] tw-text-lg tw-leading-relaxed tw-max-w-3xl"
+              >
                 {{ metadataset?.abstract }}
               </p>
             </div>
@@ -27,16 +33,16 @@
         </div>
       </header>
 
-      <main class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-10 tw-space-y-6">
+      <main id="main-content" class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-10 tw-space-y-6">
         <section
           v-if="metadataset?.description"
           class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-6"
         >
-          <h2 class="tw-text-xl tw-mb-3">
+          <h2 class="tw-text-xl tw-mb-3 tw-mt-0">
             Beschrijving
             <VisibilityIndicator visibility="Intern" />
           </h2>
-          <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed tw-text-gray-700">
+          <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed tw-text-[var(--color-text-organization)]">
             {{ metadataset?.description }}
           </p>
         </section>
@@ -48,23 +54,25 @@
             :key="section.title"
             class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-6"
           >
-            <h2 class="tw-text-xl tw-mb-4">{{ section.title }}</h2>
+            <h2 class="tw-text-xl tw-mb-4 tw-mt-0">{{ section.title }}</h2>
             <table class="tw-w-full tw-border-collapse">
               <tbody class="tw-divide-y tw-divide-gray-200">
                 <tr v-for="row in section.rows" v-show="row.show" :key="row.label">
-                  <td class="tw-text-gray-600 tw-pr-4 tw-py-3 tw-w-[12rem] lg:tw-w-[16rem] tw-align-top">
+                  <td
+                    class="tw-text-[var(--color-text-organization)] tw-pr-4 tw-py-3 tw-w-[12rem] lg:tw-w-[16rem] tw-align-top"
+                  >
                     <div class="tw-flex tw-items-center tw-gap-2">
                       <span>{{ row.label }}</span>
                       <VisibilityIndicator v-if="row.hasVisibilityIndicator" visibility="Intern" />
                     </div>
                   </td>
-                  <td class="tw-py-3 tw-text-gray-800">
+                  <td class="tw-py-3 tw-text-[var(--color-text-organization)]">
                     <!-- Keywords type -->
                     <div v-if="row.type === 'keywords' && row.value" class="tw-flex tw-flex-wrap tw-gap-2">
                       <span
                         v-for="keyword in row.value.split('\n').filter((k) => k.trim())"
                         :key="keyword"
-                        class="tw-bg-gray-100 tw-text-gray-800 tw-px-2 tw-py-1 tw-rounded-lg tw-text-sm tw-border tw-border-gray-200"
+                        class="tw-bg-gray-100 tw-text-[var(--color-text-organization)] tw-px-2 tw-py-1 tw-rounded-lg tw-text-sm tw-border tw-border-gray-200"
                       >
                         {{ keyword.trim() }}
                       </span>
@@ -72,7 +80,7 @@
                     <!-- Email type -->
                     <a
                       v-else-if="row.type === 'email' && row.value"
-                      class="tw-text-[var(--color-primary-organization)] tw-no-underline hover:tw-underline"
+                      class="tw-text-[var(--color-primary-organization)] tw-no-underline hover:tw-underline focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-[var(--color-primary-organization)] focus:tw-ring-offset-2"
                       :href="`mailto:${row.value.toLowerCase()}`"
                     >
                       {{ row.value.toLowerCase() }}
@@ -84,6 +92,47 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <section
+          v-if="metadataset?.layers?.length"
+          class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-6"
+        >
+          <h2 class="tw-text-xl tw-mb-2 tw-mt-0">Bekijk op de kaart</h2>
+
+          <h3 class="tw-text-sm tw-font-semibold tw-text-[var(--color-text-organization)] tw-mb-2 tw-mt-0">
+            {{ metadataset.layers.length > 1 ? "Kaartlagen" : "Kaartlaag" }} met deze metadata
+          </h3>
+          <ul class="tw-list-none tw-flex tw-flex-row tw-gap-2">
+            <li v-for="layer in metadataset.layers" :key="layer.slug">
+              <a
+                :href="getMapUrl([layer.slug])"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open deze laag op de kaart (opent in nieuw tabblad)"
+                class="tw-border tw-border-gray-200 tw-border-solid tw-inline-flex tw-items-center tw-gap-2 tw-px-3 tw-py-2 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium tw-no-underline focus-visible:tw-outline-none focus-visible:tw-ring-2 focus-visible:tw-ring-[var(--color-primary-organization)] focus-visible:tw-ring-offset-2 tw-text-[var(--color-text-organization)] hover:tw-bg-gray-100 hover:tw-text-[var(--color-primary-organization)]"
+              >
+                <i class="pi pi-external-link tw-text-sm" aria-hidden="true"></i>
+                {{ layer.title }}
+              </a>
+            </li>
+          </ul>
+
+          <div v-if="metadataset.layers.length > 1" class="tw-my-5">
+            <h3 class="tw-text-sm tw-font-semibold tw-text-[var(--color-text-organization)] tw-mb-2 tw-mt-0">
+              Of bekijk alle lagen op de kaart
+            </h3>
+            <a
+              :href="getMapUrl(metadataset.layers.map((l) => l.slug))"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open alle lagen op de kaart (opent in nieuw tabblad)"
+              class="tw-border tw-border-gray-200 tw-border-solid tw-inline-flex tw-items-center tw-gap-2 tw-px-3 tw-py-2 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium tw-no-underline focus-visible:tw-outline-none focus-visible:tw-ring-2 focus-visible:tw-ring-[var(--color-primary-organization)] focus-visible:tw-ring-offset-2 tw-text-[var(--color-text-organization)] hover:tw-bg-gray-100 hover:tw-text-[var(--color-primary-organization)]"
+            >
+              <i class="pi pi-external-link tw-text-sm" aria-hidden="true"></i>
+              <span>Open {{ metadataset.layers.length }} lagen op de kaart</span>
+            </a>
           </div>
         </section>
       </main>
@@ -108,8 +157,11 @@ import { roleTypeLabels } from "@/types/RoleType";
 import { topicCategoryLabels } from "@/types/TopicCategory";
 import { updateMethodTypeLabels } from "@/types/UpdateMethodType";
 import { formatDateValue } from "@/utils/date-formatter";
+import { useMapUrl } from "@/portal/composables/useMapUrl";
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+
+const { getMapUrl } = useMapUrl();
 
 interface TableRow {
   label: string;
