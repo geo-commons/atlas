@@ -142,6 +142,7 @@ import Spinner from "@/components/Spinner.vue";
 import { useGlobalStore } from "@/stores";
 import { getAllObjects } from "@/utils/api-helpers";
 import { mapState } from "pinia";
+import { useQueryCache } from "@pinia/colada";
 
 export default {
   name: "LayerCreateUpdate",
@@ -153,6 +154,10 @@ export default {
     TemplateForm,
     LinkedDataForm,
     AdminFormSections,
+  },
+  setup() {
+    const queryCache = useQueryCache();
+    return { queryCache };
   },
   data() {
     return {
@@ -330,6 +335,7 @@ export default {
       try {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
         if (result.ok) {
+          await this.queryCache.invalidateQueries(["layers"]);
           this.$toast.add({
             severity: "success",
             summary: "Laag opgeslagen",

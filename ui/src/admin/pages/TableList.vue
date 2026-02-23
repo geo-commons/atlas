@@ -16,28 +16,6 @@ const childRef: Ref<null | {
 
 const sources: Ref<Array<object>> = ref([]);
 
-const getTables = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  // todo: niet vergeten url aan ta passen
-  const url = new URL("/atlas/api/v1/tables/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch tables");
-  }
-
-  const items = await result.json();
-
-  return items;
-};
-
 const getSources = async () => {
   const url = getAllObjects("/atlas/api/v1/sources/");
   const result = await fetch(url, {
@@ -131,9 +109,9 @@ const tableHeaders: Array<TableHeader> = [
 
 // onMounted
 onMounted(() => {
-  Promise.all([getTables(), getSources()]).then((result) => {
+  Promise.all([getSources()]).then((result) => {
     loading.value = false;
-    sources.value = result[1];
+    sources.value = result[0];
   });
 });
 </script>
@@ -151,7 +129,6 @@ onMounted(() => {
     :get-create-object-dialog-sections="getCreateTableSections"
     :initial-create-object-dialog-data="initialCreateTableData"
     :save-create-object-dialog-data="saveTable"
-    :get-objects="getTables"
     :table-headers="tableHeaders"
   />
 </template>

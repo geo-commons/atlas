@@ -39,6 +39,7 @@ import { useToast } from "primevue/usetoast";
 import { onMounted, ref, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { formatDateForInput } from "@/utils/date-formatter";
+import { useQueryCache } from "@pinia/colada";
 
 // Types
 interface Layer {
@@ -54,6 +55,7 @@ interface LayersApiResponse {
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
+const queryCache = useQueryCache();
 
 // Reactive data
 const sections: Ref<AdminFormConfig> = ref({});
@@ -92,6 +94,8 @@ const saveMetadataset = async (currentValues: Partial<IMetadataset>, continueEdi
     const result = await formSections.value.sendSaveRequest(url, "PATCH", payload);
 
     if (result.ok) {
+      await queryCache.invalidateQueries(["metadatasets"]);
+
       if (!continueEditing) {
         router.push(`/metadatasets`);
       }

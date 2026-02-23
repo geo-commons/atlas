@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { onMounted, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { useRouter } from "vue-router";
 import { EDialogTypes } from "@/types/dialog";
@@ -11,7 +11,6 @@ const childRef: Ref<null | {
   toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
 
-const categories: Ref<Array<object>> = ref([]);
 const loading: Ref<boolean> = ref(true);
 
 const tableHeaders: Array<TableHeader> = [
@@ -25,27 +24,6 @@ const tableHeaders: Array<TableHeader> = [
 const initialCategoryData = {
   title: "",
   authenticate: false,
-};
-
-const getCategories = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/categories/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch categories");
-  }
-
-  const items = await result.json();
-
-  return items;
 };
 
 const getCreateCategorySections = () => {
@@ -95,14 +73,6 @@ const saveCategory = async (
     console.error("An unexpected error occurred:", e);
   }
 };
-
-// onMounted
-onMounted(() => {
-  Promise.all([getCategories()]).then((result) => {
-    categories.value = result[0].results;
-    loading.value = false;
-  });
-});
 </script>
 
 <template>
@@ -118,7 +88,6 @@ onMounted(() => {
     :get-create-object-dialog-sections="getCreateCategorySections"
     :initial-create-object-dialog-data="initialCategoryData"
     :save-create-object-dialog-data="saveCategory"
-    :get-objects="getCategories"
     :table-headers="tableHeaders"
   />
 </template>

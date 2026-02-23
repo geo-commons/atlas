@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { onMounted, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { useRouter } from "vue-router";
 import { EDialogTypes } from "@/types/dialog";
@@ -11,7 +11,6 @@ const childRef: Ref<null | {
   toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
 
-const maps: Ref<Array<object>> = ref([]);
 const loading: Ref<boolean> = ref(true);
 
 const tableHeaders: Array<TableHeader> = [
@@ -40,27 +39,6 @@ const initialMapData = {
   title: "",
   authenticate: false,
   layers: [],
-};
-
-const getMaps = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/maps/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch maps");
-  }
-
-  const items = await result.json();
-
-  return items;
 };
 
 const getCreateMapSections = () => {
@@ -110,14 +88,6 @@ const saveMap = async (
     console.error("An unexpected error occurred:", e);
   }
 };
-
-// onMounted
-onMounted(() => {
-  Promise.all([getMaps()]).then((result) => {
-    maps.value = result[0].results;
-    loading.value = false;
-  });
-});
 </script>
 
 <template>
@@ -132,7 +102,6 @@ onMounted(() => {
     :save-create-object-dialog-data="saveMap"
     :enable-import-export="true"
     :enable-delete-multiple="true"
-    :get-objects="getMaps"
     :table-headers="tableHeaders"
     :view-base-url="'/atlas/maps'"
   />

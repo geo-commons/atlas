@@ -19,10 +19,15 @@ import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
 import { getAllObjects } from "@/utils/api-helpers";
 import Spinner from "@/components/Spinner.vue";
+import { useQueryCache } from "@pinia/colada";
 
 export default {
   name: "UserCreateUpdateComponent",
   components: { Spinner, AdminFormSections },
+  setup() {
+    const queryCache = useQueryCache();
+    return { queryCache };
+  },
   data() {
     return {
       sections: {},
@@ -98,6 +103,8 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
+          await this.queryCache.invalidateQueries(["users"]);
+
           if (!continueEditing) {
             this.$router.push(`/users`);
           }

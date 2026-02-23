@@ -19,12 +19,17 @@ import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
+import { useQueryCache } from "@pinia/colada";
 
 export default {
   name: "AuthorizationCreateUpdate",
   components: {
     Spinner,
     AdminFormSections,
+  },
+  setup() {
+    const queryCache = useQueryCache();
+    return { queryCache };
   },
   data() {
     return {
@@ -75,6 +80,8 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
+          await this.queryCache.invalidateQueries(["authorizations"]);
+
           if (!continueEditing) {
             this.$router.push(`/authorizations`);
           }

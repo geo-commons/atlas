@@ -17,10 +17,15 @@
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
+import { useQueryCache } from "@pinia/colada";
 
 export default {
   name: "GroupCreateUpdateComponent",
   components: { Spinner, AdminFormSections },
+  setup() {
+    const queryCache = useQueryCache();
+    return { queryCache };
+  },
   props: {},
   data() {
     return {
@@ -58,6 +63,8 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
+          await this.queryCache.invalidateQueries(["groups"]);
+
           if (!continueEditing) {
             this.$router.push(`/groups`);
           }

@@ -14,7 +14,6 @@ const childRef: Ref<null | {
 }> = ref(null);
 
 const categories: Ref<Array<object>> = ref([]);
-const layers: Ref<Array<object>> = ref([]);
 const loading: Ref<boolean> = ref(true);
 const sources: Ref<Array<object>> = ref([]);
 
@@ -56,27 +55,6 @@ const tableHeaders: Array<TableHeader> = [
   },
 ];
 
-const getLayers = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/layers/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch layers");
-  }
-
-  const items = await result.json();
-
-  return items;
-};
-
 const getCategories = async (): Promise<Array<object>> => {
   const url = getAllObjects("/atlas/api/v1/categories/");
   const result = await fetch(url, {
@@ -117,11 +95,10 @@ const getSources = async (): Promise<Array<object>> => {
 
 // onMounted
 onMounted(() => {
-  Promise.all([getSources(), getLayers(), getCategories()]).then((result) => {
+  Promise.all([getSources(), getCategories()]).then((result) => {
     sources.value = result[0];
-    layers.value = result[1].results;
 
-    categories.value = result[2];
+    categories.value = result[1];
     loading.value = false;
   });
 });
@@ -143,8 +120,6 @@ const saveLayer = async (
         const response = await result.json();
         await router.push(`/layers/update/${response.id}`);
       }
-
-      await getLayers();
     }
   } catch (e) {
     console.error("An unexpected error occurred:", e);
@@ -222,7 +197,6 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-duplicate="true"
     :enable-import-export="true"
     :enable-delete-multiple="true"
-    :get-objects="getLayers"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"
   />

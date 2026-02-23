@@ -18,12 +18,17 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import { getAllObjects } from "@/utils/api-helpers";
 import Spinner from "@/components/Spinner.vue";
+import { useQueryCache } from "@pinia/colada";
 
 export default {
   name: "SourceCreateUpdate",
   components: {
     Spinner,
     AdminFormSections,
+  },
+  setup() {
+    const queryCache = useQueryCache();
+    return { queryCache };
   },
   data() {
     return {
@@ -69,6 +74,8 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
+          await this.queryCache.invalidateQueries(["sources"]);
+
           if (!continueEditing) {
             this.$router.push(`/sources`);
           }

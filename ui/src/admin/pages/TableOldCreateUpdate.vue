@@ -18,12 +18,17 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
+import { useQueryCache } from "@pinia/colada";
 
 export default {
   name: "TableCreateUpdate",
   components: {
     Spinner,
     AdminFormSections,
+  },
+  setup() {
+    const queryCache = useQueryCache();
+    return { queryCache };
   },
   data() {
     return {
@@ -91,6 +96,8 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
 
         if (result.ok) {
+          this.queryCache.invalidateQueries(["tables_old"]);
+
           if (!continueEditing) {
             this.$router.push(`/tables_old`);
           }

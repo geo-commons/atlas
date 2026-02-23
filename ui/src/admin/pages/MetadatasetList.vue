@@ -4,7 +4,7 @@ import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { EDialogTypes } from "@/types/dialog";
 import slugify from "slugify";
-import { onMounted, ref, Ref } from "vue";
+import { ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { statusTypeLabels, statusTypeOptions, topicCategoryLabels, topicCategoryOptions } from "@/types";
 import { IMetadataset } from "@/types/metadataset";
@@ -16,27 +16,6 @@ const loading: Ref<boolean> = ref(true);
 const childRef: Ref<null | {
   toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
-
-const getMetadatasets = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/metadatasets/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch metadatasets");
-  }
-
-  const items = await result.json();
-
-  return items;
-};
 
 const saveMetadataset = async (
   currentValues: any,
@@ -143,13 +122,6 @@ const getTableFilters = (): Array<TableFilter> => {
     },
   ];
 };
-
-// onMounted
-onMounted(() => {
-  Promise.all([getMetadatasets()]).then(() => {
-    loading.value = false;
-  });
-});
 </script>
 
 <template>
@@ -162,7 +134,6 @@ onMounted(() => {
     :get-create-object-dialog-sections="getCreateMetadatasetSections"
     :initial-create-object-dialog-data="initialCreateMetadatasetData"
     :save-create-object-dialog-data="saveMetadataset"
-    :get-objects="getMetadatasets"
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :enable-duplicate="true"
