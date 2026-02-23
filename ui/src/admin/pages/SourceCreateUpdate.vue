@@ -31,6 +31,11 @@ export default {
       initialValues: {},
       groups: [],
       loading: false,
+      sourceTypes: [
+        { id: "OWS", label: "OWS" },
+        { id: "WMTS", label: "WMTS" },
+        { id: "REST", label: "REST" },
+      ],
     };
   },
   created() {
@@ -114,6 +119,14 @@ export default {
               required: true,
             },
             {
+              label: "Kort kenmerk",
+              id: "slug",
+              name: "Slug",
+              type: "text",
+              required: false,
+              infoText: "Een uniek kort kenmerk voor de bron in Atlas.",
+            },
+            {
               label: "URL",
               id: "url",
               name: "URL",
@@ -121,11 +134,13 @@ export default {
               required: true,
             },
             {
-              label: "Verstuur authenticatie-informatie naar bron",
-              id: "authenticate",
-              name: "Authenticate",
-              type: "checkbox",
-              required: false,
+              label: "Type bron",
+              id: "source_type",
+              name: "SourceType",
+              type: "dropdown",
+              required: true,
+              placeholder: "type bron",
+              options: this.sourceTypes,
             },
           ],
         },
@@ -139,6 +154,14 @@ export default {
               type: "checkbox",
               required: false,
               infoText: "De inhoud van deze bron kan alleen bekeken worden door ingelogde gebruikers.",
+            },
+            {
+              label: "Verstuur authenticatie-informatie naar bron",
+              id: "authenticate",
+              name: "Authenticate",
+              type: "checkbox",
+              required: false,
+              infoText: "Configureer dit alleen voor vertrouwde bronnen",
             },
             {
               label: "Groepen",
