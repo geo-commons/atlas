@@ -2,7 +2,8 @@
   <div>
     <p>
       Weet u zeker dat u de volgende
-      {{ props.selectedItems.length === 1 ? props.singularName : props.pluralName }} wilt verwijderen?
+      {{ props.selectedItems.length === 1 ? props.singularName.toLowerCase() : props.pluralName.toLowerCase() }} wilt
+      verwijderen?
     </p>
     <ul class="selected-rows">
       <li v-for="row in props.selectedItems" :key="row.id">- {{ row.title }}</li>

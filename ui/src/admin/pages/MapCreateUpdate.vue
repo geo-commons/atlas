@@ -82,6 +82,7 @@ import { useGlobalStore } from "@/stores";
 import ThumbnailPanelAdmin from "@/admin/components/ThumbnailPanelAdmin.vue";
 import { useToast } from "primevue";
 import MapRenderer from "@/components/MapRenderer/MapRenderer.vue";
+import { useQueryCache } from "@pinia/colada";
 
 export default {
   name: "MapCreateUpdate",
@@ -95,6 +96,10 @@ export default {
     FiltersPanelAdmin,
     LayerListPanel,
     MapAbout,
+  },
+  setup() {
+    const queryCache = useQueryCache();
+    return { queryCache };
   },
   data() {
     return {
@@ -242,6 +247,8 @@ export default {
       }
 
       if (result.ok) {
+        await this.queryCache.invalidateQueries(["maps"]);
+
         this.toast.add({
           severity: "success",
           summary: "Kaart succesvol opgeslagen",

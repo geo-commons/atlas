@@ -12,7 +12,6 @@ type AdminListViewDialogProps = {
   singularName: string;
   pluralName: string;
   showDialog: ShowDialogType;
-  getObjects: () => void;
   getCreateObjectDialogSections?: () => object;
   initialCreateObjectDialogData?: object;
   saveCreateObjectDialogData?: (

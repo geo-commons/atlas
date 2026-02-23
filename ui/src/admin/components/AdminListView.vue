@@ -8,10 +8,11 @@ import { useRoute, useRouter } from "vue-router";
 import { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
 import AdminListViewPaginator, { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
 import { PageState } from "primevue/paginator";
-import Cookies from "js-cookie";
 import SpinnerComponent from "@/components/Spinner.vue";
 import { EDialogTypes, ShowDialogType } from "@/types/dialog";
 import { useToast } from "primevue";
+import { useMutation, useQuery, useQueryCache } from "@pinia/colada";
+import { apiFetch, ApiMethod } from "@/utils/api-helpers";
 
 // Properties
 type AdminListViewProps = {
@@ -26,7 +27,6 @@ type AdminListViewProps = {
   pluralName: string;
   apiName: string;
   loading: boolean;
-  getObjects: (searchParams?: URLSearchParams) => Promise<{ results: Array<object>; count: number }>;
   tableHeaders: Array<TableHeader>;
   getTableFilters?: () => Array<TableFilter>;
   viewBaseUrl?: string;
@@ -53,7 +53,23 @@ const props = withDefaults(defineProps<AdminListViewProps>(), {
 });
 
 const router = useRouter();
+const route = useRoute();
+const queryCache = useQueryCache();
 const toast = useToast();
+
+// Query logic
+const { state } = useQuery({
+  key: () => [props.apiName, route.query],
+  query: async () => {
+    const url = new URL(`/atlas/api/v1/${props.apiName}/`, window.location.origin);
+    const searchParams = new URLSearchParams(route.query);
+    url.search = searchParams.toString();
+    const res = await apiFetch(url);
+    return await res.json();
+  },
+  staleTime: 1000 * 60,
+  placeholderData: (previousData) => previousData,
+});
 
 // Dialog logic
 const showDialog: Ref<ShowDialogType> = ref({
@@ -74,120 +90,92 @@ const enableActions = computed(() => {
 });
 
 // Duplicate logic
+const duplicateMutation = useMutation({
+  mutation: async (ids: number[]) => {
+    await apiFetch(`/atlas/api/v1/${props.apiName}/duplicate/`, ApiMethod.POST, { ids });
+  },
+  onSuccess: async () => {
+    await queryCache.invalidateQueries({ key: [props.apiName] });
+    toast.add({
+      severity: "success",
+      summary: `Dupliceren gelukt`,
+      detail: `Het dupliceren van ${props.pluralName.toLowerCase()} is gelukt`,
+      life: 5000,
+    });
+  },
+});
+
 const duplicateSelectedItems = async () => {
   if (selectedItems.value.length) {
-    const data = {
-      ids: selectedItems.value.map((selectedItem) => selectedItem.id),
-    };
-
-    try {
-      const result = await fetch(`/atlas/api/v1/${props.apiName}/duplicate/`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "X-CSRFToken": Cookies.get("csrftoken"),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!result.ok) {
-        throw new Error("something went wrong");
-      }
-
-      toast.add({
-        severity: "success",
-        summary: `Dupliceren gelukt`,
-        detail: `Het dupliceren van ${props.pluralName.toLowerCase()} is gelukt`,
-        life: 5000,
-      });
-
-      await refreshAndResetItems();
-    } catch (e) {
-      toast.add({
-        severity: "error",
-        summary: `Dupliceren niet gelukt`,
-        detail: `Het dupliceren van ${props.pluralName.toLowerCase()} is niet gelukt`,
-        life: 5000,
-      });
-
-      console.error(e);
-    }
+    const ids = selectedItems.value.map((selectedItem) => selectedItem.id);
+    duplicateMutation.mutate(ids);
   }
 };
 
 // Delete logic
+const deleteMutation = useMutation({
+  mutation: async (ids: number[]) => {
+    await apiFetch(`/atlas/api/v1/${props.apiName}/delete/`, ApiMethod.POST, { ids });
+  },
+  onSuccess: async () => {
+    await queryCache.invalidateQueries({ key: [props.apiName] });
+    adminListViewTableRef?.value?.resetSelection();
+    toast.add({
+      severity: "success",
+      summary: `Verwijderen gelukt`,
+      detail: `Het verwijderen van ${props.pluralName.toLowerCase()} is gelukt`,
+      life: 5000,
+    });
+    toggleDialog(showDialog.value.type);
+  },
+});
+
+const deleteRowMutation = useMutation({
+  mutation: async (id: number) => {
+    await apiFetch(`/atlas/api/v1/${props.apiName}/${id}/`, ApiMethod.DELETE);
+  },
+  onSuccess: async () => {
+    await queryCache.invalidateQueries({ key: [props.apiName] });
+    adminListViewTableRef?.value?.resetSelection();
+    toast.add({
+      severity: "success",
+      summary: `Verwijderen gelukt`,
+      detail: `Het verwijderen van ${props.singularName.toLowerCase()} is gelukt`,
+      life: 5000,
+    });
+  },
+});
+
 const deleteSelectedItems = async () => {
   if (selectedItems.value.length) {
-    const data = {
-      ids: selectedItems.value.map((selectedItem) => selectedItem.id),
-    };
+    const ids = selectedItems.value.map((selectedItem) => selectedItem.id);
+    deleteMutation.mutate(ids);
+  }
+};
 
-    try {
-      const result = await fetch(`/atlas/api/v1/${props.apiName}/delete/`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "X-CSRFToken": Cookies.get("csrftoken"),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!result.ok) {
-        throw new Error("something went wrong");
-      }
-
-      toast.add({
-        severity: "success",
-        summary: `Verwijderen gelukt`,
-        detail: `Het verwijderen van ${props.pluralName.toLowerCase()} is gelukt`,
-        life: 5000,
-      });
-
-      toggleDialog(showDialog.value.type);
-
-      await refreshAndResetItems();
-    } catch (e) {
-      toast.add({
-        severity: "error",
-        summary: `Verwijderen mislukt`,
-        detail: `Het verwijderen van ${props.pluralName.toLowerCase()} is niet gelukt`,
-        life: 5000,
-      });
-
-      toggleDialog(showDialog.value.type);
-
-      console.error(e);
-    }
+const deleteRow = async (row: any) => {
+  const acknowledged = confirm(`Weet je zeker dat je de ${props.singularName.toLowerCase()} wilt verwijderen?`);
+  if (acknowledged) {
+    deleteRowMutation.mutate(row.id);
   }
 };
 
 // Table logic
 let params: URLSearchParams = new URLSearchParams();
-const items: Ref<{ results: Array<object>; count: number }> = ref({
-  results: [],
-  count: 0,
-});
 const sort: Ref<TableHeaderRef> = ref({ sortKey: "", sortAscending: true });
 const pagination: Ref<PaginationRef> = ref({ page: 0, rows: 20 });
 const selectedItems: Ref<Array<{ id: number; title: string }>> = ref([]);
-const route = useRoute();
 
-const doRequestAndUpdateRouter = async (params: URLSearchParams) => {
+const updateRouter = async (params: URLSearchParams) => {
+  // Reset selection to avoid having selected invisible items
+  adminListViewTableRef?.value?.resetSelection();
   await router.replace({
     path: route.path,
     query: {
       ...Object.fromEntries(params),
     },
   });
-
-  const result = await props.getObjects(params);
-
-  items.value = {
-    results: result.results,
-    count: result.count,
-  };
+  // List is automatically updated
 };
 
 const updateSearchTerm = async (value: string) => {
@@ -200,7 +188,7 @@ const updateSearchTerm = async (value: string) => {
   params.set("page", "1");
   params.set("page_size", pagination.value.rows.toString());
 
-  await doRequestAndUpdateRouter(params);
+  await updateRouter(params);
 };
 
 const updateListFilters = async (value: any, key: string) => {
@@ -213,7 +201,7 @@ const updateListFilters = async (value: any, key: string) => {
   params.set("page", "1");
   params.set("page_size", pagination.value.rows.toString());
 
-  await doRequestAndUpdateRouter(params);
+  await updateRouter(params);
 };
 
 const updateListSort = async (key: string) => {
@@ -231,7 +219,7 @@ const updateListSort = async (key: string) => {
 
   params.set("ordering", `${sort.value.sortAscending ? "" : "-"}${sort.value.sortKey}`);
 
-  await doRequestAndUpdateRouter(params);
+  await updateRouter(params);
 };
 
 const updateListPagination = async (pageState: PageState) => {
@@ -243,27 +231,7 @@ const updateListPagination = async (pageState: PageState) => {
   params.set("page", (pagination.value.page + 1).toString());
   params.set("page_size", pagination.value.rows.toString());
 
-  await doRequestAndUpdateRouter(params);
-};
-
-const deleteRow = async (row: any) => {
-  const acknowledged = confirm(`Weet je zeker dat je de ${props.singularName} wilt verwijderen?`);
-  if (!acknowledged) {
-    return;
-  }
-
-  const result = await fetch(`/atlas/api/v1/${props.apiName}/${row.id}/`, {
-    method: "DELETE",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": Cookies.get("csrftoken"),
-    },
-  });
-
-  if (result.ok) {
-    items.value = await props.getObjects(params);
-  }
+  await updateRouter(params);
 };
 
 const updateSelectedItems = (updatedSelectedItems: Array<{ id: number; title: string }>) => {
@@ -304,14 +272,6 @@ onMounted(async () => {
     sortKey: order ? order.replace("-", "") : "",
     sortAscending: order ? !order.startsWith("-") : true,
   };
-
-  // Set items
-  const result = await props.getObjects(params);
-
-  items.value = {
-    results: result.results,
-    count: result.count,
-  };
 });
 
 const handleSaveCreateObjectDialogData = async (
@@ -325,13 +285,7 @@ const handleSaveCreateObjectDialogData = async (
 
   await props.saveCreateObjectDialogData(currentValues, continueEditing, sendSaveRequest);
 
-  // Set items
-  const newItems = await props.getObjects(params);
-
-  items.value = {
-    results: newItems.results,
-    count: newItems.count,
-  };
+  await queryCache.invalidateQueries({ key: [props.apiName] });
 };
 
 const adminListViewTableRef: Ref<null | {
@@ -339,7 +293,7 @@ const adminListViewTableRef: Ref<null | {
 }> = ref(null);
 
 const refreshAndResetItems = async () => {
-  items.value = await props.getObjects(params);
+  await queryCache.invalidateQueries({ key: [props.apiName] });
   adminListViewTableRef?.value?.resetSelection();
 };
 
@@ -364,10 +318,10 @@ defineExpose({ toggleDialog });
       @duplicate="duplicateSelectedItems"
       @delete="deleteSelectedItems"
     />
-    <div v-if="loading">
+    <div v-if="state.status === 'pending'">
       <SpinnerComponent />
     </div>
-    <div v-else>
+    <div v-else-if="state.data">
       <AdminListViewFilter
         :params="params"
         :get-table-filters="props.getTableFilters"
@@ -377,7 +331,7 @@ defineExpose({ toggleDialog });
       />
       <AdminListViewTable
         ref="adminListViewTableRef"
-        :items="items.results"
+        :items="state.data.results"
         :api-name="props.apiName"
         :pagination="pagination"
         :table-headers="props.tableHeaders"
@@ -392,7 +346,7 @@ defineExpose({ toggleDialog });
         @delete-row="deleteRow"
       />
       <AdminListViewPaginator
-        :total-results="items.count"
+        :total-results="state.data.count"
         :pagination="pagination"
         @update-list-pagination="updateListPagination"
       />
@@ -405,7 +359,6 @@ defineExpose({ toggleDialog });
         :save-create-object-dialog-data="handleSaveCreateObjectDialogData"
         :initial-create-object-dialog-data="props.initialCreateObjectDialogData"
         :api-name="props.apiName"
-        :get-objects="props.getObjects"
         :selected-items="selectedItems"
         @update-dialog="toggleDialog"
         @reset-selection="refreshAndResetItems"

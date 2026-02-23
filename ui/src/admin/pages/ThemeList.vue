@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { onMounted, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { useRouter } from "vue-router";
 import { EDialogTypes } from "@/types/dialog";
@@ -11,7 +11,6 @@ const childRef: Ref<null | {
   toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
 
-const themes: Ref<Array<object>> = ref([]);
 const loading: Ref<boolean> = ref(true);
 
 const tableHeaders: Array<TableHeader> = [
@@ -25,27 +24,6 @@ const tableHeaders: Array<TableHeader> = [
 const initialThemeData = {
   title: "",
   authenticate: false,
-};
-
-const getThemes = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/themes/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch themes");
-  }
-
-  const items = await result.json();
-
-  return items;
 };
 
 const getCreateThemeSections = () => {
@@ -89,14 +67,6 @@ const saveTheme = async (
     console.error("An unexpected error occurred:", e);
   }
 };
-
-// onMounted
-onMounted(() => {
-  Promise.all([getThemes()]).then((result) => {
-    themes.value = result[0].results;
-    loading.value = false;
-  });
-});
 </script>
 
 <template>
@@ -111,7 +81,6 @@ onMounted(() => {
     :enable-delete-multiple="true"
     :initial-create-object-dialog-data="initialThemeData"
     :save-create-object-dialog-data="saveTheme"
-    :get-objects="getThemes"
     :table-headers="tableHeaders"
   />
 </template>

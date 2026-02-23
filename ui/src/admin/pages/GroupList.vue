@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { onMounted, ref, Ref } from "vue";
+import { ref, Ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { useRouter } from "vue-router";
 import { EDialogTypes } from "@/types/dialog";
@@ -12,27 +12,6 @@ const loading: Ref<boolean> = ref(true);
 const childRef: Ref<null | {
   toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
-
-const getGroups = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/groups/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch groups");
-  }
-
-  const items = await result.json();
-
-  return items;
-};
 
 const saveGroup = async (
   currentValues: any,
@@ -86,13 +65,6 @@ const tableHeaders: Array<TableHeader> = [
     enableLink: true,
   },
 ];
-
-// onMounted
-onMounted(() => {
-  Promise.all([getGroups()]).then(() => {
-    loading.value = false;
-  });
-});
 </script>
 
 <template>
@@ -105,7 +77,6 @@ onMounted(() => {
     :get-create-object-dialog-sections="getCreateGroupSections"
     :initial-create-object-dialog-data="initialCreateGroupData"
     :save-create-object-dialog-data="saveGroup"
-    :get-objects="getGroups"
     :table-headers="tableHeaders"
   />
 </template>

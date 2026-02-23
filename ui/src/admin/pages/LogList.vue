@@ -4,7 +4,6 @@ import { onMounted, Ref, ref, unref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 
-const logs: Ref<Array<object>> = ref([]);
 const loading: Ref<boolean> = ref(true);
 const sources: Ref<Array<object>> = ref([]);
 const resources: Ref<Array<object>> = ref([]);
@@ -22,27 +21,6 @@ const tableHeaders: Array<TableHeader> = [
     enableLink: true,
   },
 ];
-
-const getLogs = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/logs/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch logs");
-  }
-
-  const items = await result.json();
-
-  return items;
-};
 
 const getUniqueFields = async () => {
   const result = await fetch("/atlas/api/v1/logs/unique-fields/", {
@@ -65,12 +43,10 @@ const getUniqueFields = async () => {
 
 // onMounted
 onMounted(() => {
-  Promise.all([getLogs(), getUniqueFields()]).then((result) => {
-    logs.value = result[0].results;
-    users.value = result[1].usernames;
-    resources.value = result[1].resources;
-    sources.value = result[1].sources;
-    loading.value = false;
+  getUniqueFields().then((result) => {
+    users.value = result.usernames;
+    resources.value = result.resources;
+    sources.value = result.sources;
   });
 });
 
@@ -93,7 +69,6 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-delete="false"
     :enable-edit="false"
     :enable-create-object="false"
-    :get-objects="getLogs"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"
     :view-base-url="'/atlas/admin/#/logs/update'"

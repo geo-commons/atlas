@@ -22,10 +22,12 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
 import { getAllObjects } from "@/utils/api-helpers";
 import { useToast } from "primevue";
+import { useQueryCache } from "@pinia/colada";
 
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
+const queryCache = useQueryCache();
 
 const formSections = ref();
 const sources = ref([]);
@@ -147,6 +149,8 @@ async function saveTable(currentValues, continueEditing = false) {
     const result = await formSections.value.sendSaveRequest(url, "PATCH", currentValues);
 
     if (result.ok) {
+      queryCache.invalidateQueries(["tables"]);
+
       if (!continueEditing) {
         router.push(`/tables`);
       }

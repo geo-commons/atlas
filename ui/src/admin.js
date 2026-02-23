@@ -48,6 +48,8 @@ import { AtlasPresetAdmin } from "@/utils/theme-preset";
 import { ConfirmationService, ToastService } from "primevue";
 import TableOldCreateUpdate from "@/admin/pages/TableOldCreateUpdate.vue";
 import TableOldList from "@/admin/pages/TableOldList.vue";
+import { PiniaColada, PiniaColadaQueryHooksPlugin } from "@pinia/colada";
+import { showApiFetchError } from "@/utils/api-helpers";
 
 defineRule("required", (value) => {
   if (!required(value)) {
@@ -306,6 +308,22 @@ document.addEventListener("DOMContentLoaded", () => {
     .use(ConfirmationService)
     .use(ToastService)
     .use(pinia)
+    .use(PiniaColada, {
+      plugins: [
+        PiniaColadaQueryHooksPlugin({
+          onError(error) {
+            console.error(error);
+            showApiFetchError(app, error);
+          },
+        }),
+      ],
+      mutationOptions: {
+        onError(error) {
+          console.error(error);
+          showApiFetchError(app, error);
+        },
+      },
+    })
     .use(router)
     .use(VueTippy, {
       directive: "tippy",

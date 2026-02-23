@@ -10,7 +10,6 @@ const childRef: Ref<null | {
   toggleDialog: (type: EDialogTypes) => void;
 }> = ref(null);
 
-const authorizations: Ref<Array<object>> = ref([]);
 const sources: Ref<Array<object>> = ref([]);
 const loading: Ref<boolean> = ref(true);
 
@@ -28,27 +27,6 @@ const tableHeaders: Array<TableHeader> = [
     enableLink: true,
   },
 ];
-
-const getAuthorizations = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/authorizations/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch authorizations");
-  }
-
-  const items = await result.json();
-
-  return items;
-};
 
 const getSources = async () => {
   const url = getAllObjects("/atlas/api/v1/sources/");
@@ -128,10 +106,8 @@ const getCreateAuthorizationSections = () => {
 
 // onMounted
 onMounted(() => {
-  Promise.all([getAuthorizations(), getSources()]).then((result) => {
-    authorizations.value = result[0].results;
-    sources.value = result[1];
-    loading.value = false;
+  getSources().then((result) => {
+    sources.value = result;
   });
 });
 </script>
@@ -144,7 +120,6 @@ onMounted(() => {
     plural-name="Autorisaties"
     api-name="authorizations"
     :enable-import-export="true"
-    :get-objects="getAuthorizations"
     :get-create-object-dialog-sections="getCreateAuthorizationSections"
     :initial-create-object-dialog-data="newAuthorizationData"
     :save-create-object-dialog-data="saveAuthorization"

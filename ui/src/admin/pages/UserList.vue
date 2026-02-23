@@ -7,7 +7,6 @@ import { useGlobalStore } from "@/stores";
 import { getAllObjects } from "@/utils/api-helpers";
 
 const loading: Ref<boolean> = ref(true);
-const users: Ref<Array<object>> = ref([]);
 const groups: Ref<Array<object>> = ref([]);
 const store = useGlobalStore();
 
@@ -55,27 +54,6 @@ const tableHeaders: Array<TableHeader> = [
   },
 ];
 
-const getUsers = async (params?: URLSearchParams): Promise<{ results: Array<object>; count: number }> => {
-  const url = new URL("/atlas/api/v1/users/", window.location.origin);
-
-  if (params) {
-    url.search = params.toString();
-  }
-
-  const result = await fetch(url.toString(), {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch users");
-  }
-
-  const items = await result.json();
-
-  return items;
-};
-
 const getGroups = async (): Promise<Array<object>> => {
   const url = getAllObjects("/atlas/api/v1/groups/");
 
@@ -99,9 +77,8 @@ const getGroups = async (): Promise<Array<object>> => {
 
 // onMounted
 onMounted(() => {
-  Promise.all([getUsers(), getGroups()]).then((result) => {
-    users.value = result[0].results;
-    groups.value = result[1];
+  Promise.all([getGroups()]).then((result) => {
+    groups.value = result[0];
     loading.value = false;
   });
 });
@@ -120,7 +97,6 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-sort="false"
     :enable-create-object="false"
     :block-delete="[store?.user?.id]"
-    :get-objects="getUsers"
     :table-headers="tableHeaders"
     :get-table-filters="getTableFilters"
   />
