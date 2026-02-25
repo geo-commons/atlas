@@ -346,10 +346,6 @@ class Metadataset(models.Model):
         'E-mailadres verantwoordelijke', null=True, blank=True,
         help_text="Het e-mailadres van de verantwoordelijke organisatie van de bron.")
 
-    source_email_person_responsible = models.EmailField(
-        'E-mailadres verantwoordelijke', null=True, blank=True,
-        help_text="Het e-mailadres van de verantwoordelijke van de bron.")
-
     source_role_person_responsible = models.CharField(
         'Rol verantwoordelijke', max_length=128, null=True, blank=True, choices=RoleType.choices,
         help_text="De rol van de verantwoordelijke van de bron.")
