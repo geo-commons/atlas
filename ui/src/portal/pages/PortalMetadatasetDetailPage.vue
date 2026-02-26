@@ -43,7 +43,7 @@
             <VisibilityIndicator visibility="Intern" />
           </h2>
           <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed tw-text-[var(--color-text-organization)]">
-            {{ metadataset?.description }}
+            <RichValue :data-value="metadataset?.description" />
           </p>
         </section>
 
@@ -86,7 +86,7 @@
                       {{ row.value.toLowerCase() }}
                     </a>
                     <!-- Text type -->
-                    <span v-else-if="row.value">{{ row.value }}</span>
+                    <span v-else-if="row.value"><RichValue :data-value="row.value" /></span>
                     <span v-else class="tw-text-gray-400">N/A</span>
                   </td>
                 </tr>
@@ -160,6 +160,7 @@ import { formatDateValue } from "@/utils/date-formatter";
 import { useMapUrl } from "@/portal/composables/useMapUrl";
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import RichValue from "@/components/RichValue.vue";
 
 const { getMapUrl } = useMapUrl();
 

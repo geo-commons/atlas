@@ -200,6 +200,6 @@ Per template zijn de volgende instellingen:
 - _Tabel veld met lijst_: het veld in het HTTP response dat gebruikt wordt voor de lijstweergave
 - _Tabel kopjes_: de kopjes van de tabel
 - _Toon deze velden_: de velden van de tabel
-- _Vrij veld template_: gebruik dit veld om géén tabelweergave maar een vrij template te tonen (optioneel)
+- _Vrij veld template_: gebruik dit veld om géén tabelweergave maar een vrij template te tonen. Het is mogelijk om tekst op te maken met Markdown in dit veld. Dit is geen inline markdown veld. (optioneel)
 
 Sla de gegevens op na het aanmaken van een gekoppelde laag.

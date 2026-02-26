@@ -30,29 +30,29 @@ De lijst toont:
 
 1. Klik op **Toevoegen** in de metadatasets lijst
 2. Vul de verplichte velden in:
-    - **Titel**: Beschrijvende naam van de dataset
-    - **Beschrijving**: Beschrijving voor intern gebruik
+   - **Titel**: Beschrijvende naam van de dataset
+   - **Beschrijving**: Beschrijving voor intern gebruik
 
 ## Metadataset velden
 
 ### Algemene informatie
 
-**Naam** *(Publiek)*
+**Naam** _(Publiek)_
 De naam van de metadataset. Dit is de naam die wordt weergegeven in de interface. Gebruik een duidelijke, beschrijvende
 naam.
 
-**Kort kenmerk** *(Publiek)*
+**Kort kenmerk** _(Publiek)_
 Een uniek kort kenmerk voor de metadataset in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes. Dit
 wordt gebruikt in URLs en koppelingen. Maximaal 255 karakters.
 
-**Beschrijving** *(Intern)*
+**Beschrijving** _(Intern)_
 Beschrijving voor intern gebruik. [Markdown](markdown.md) opmaak is toegestaan.
 
-**Toelichting dataset** *(Publiek)*
+**Toelichting dataset** _(Publiek)_
 Een beschrijving van de inhoud van de dataset. Geef in deze samenvatting publieksvriendelijke informatie over de inhoud
 van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).
 
-**Onderwerp** *(Publiek)*
+**Onderwerp** _(Publiek)_
 Het belangrijkste onderwerp van de dataset uit een voorgedefinieerde lijst:
 
 - Landbouw en Veeteelt
@@ -75,39 +75,39 @@ Het belangrijkste onderwerp van de dataset uit een voorgedefinieerde lijst:
 - Transport en Vervoer
 - Nutsvoorzieningen en Communicatie
 
-**Trefwoorden** *(Publiek)*
+**Trefwoorden** _(Publiek)_
 In het algemeen gebruikte woorden of geformaliseerde zinnen om een dataset of datasetserie te beschrijven. Voeg één
 trefwoord per regel toe.
 
-**Doel van de vervaardiging** *(Publiek)*
+**Doel van de vervaardiging** _(Publiek)_
 De reden waarom de dataset is gemaakt.
 
 ### Bron
 
-**Oorspronkelijke bron** *(Publiek)*
+**Oorspronkelijke bron** _(Publiek)_
 Algemene beschrijving herkomst. Dit is de bron waar de dataset vandaan komt, dat kan een URL zijn of een beschrijving
 van de bron.
 
-**Bronlocatie** *(Intern)*
+**Bronlocatie** _(Intern)_
 Bijvoorbeeld Objectstore (COG), S3, etc.
 
-**Naam contactpersoon aanspreekpunt** *(Intern)*
+**Naam contactpersoon aanspreekpunt** _(Intern)_
 De naam van het interne aanspreekpunt van de bron.
 
-**E-mailadres aanspreekpunt** *(Intern)*
+**E-mailadres aanspreekpunt** _(Intern)_
 Het e-mailadres van het interne aanspreekpunt van de bron.
 
-**Verantwoordelijke organisatie** *(Publiek)*
+**Verantwoordelijke organisatie** _(Publiek)_
 De organisatie van de verantwoordelijke van de bron, bijvoorbeeld de gemeente, provincie, Nederlandse organisatie voor
 toegepast-natuurwetenschappelijk onderzoek (TNO), etc.
 
-**Naam contactpersoon aanspreekpunt** *(Publiek)*
+**Naam contactpersoon aanspreekpunt** _(Publiek)_
 De naam van de verantwoordelijke contactpersoon van de bron.
 
-**E-mailadres verantwoordelijke** *(Publiek)*
+**E-mailadres verantwoordelijke** _(Publiek)_
 Het e-mailadres van de verantwoordelijke organisatie van de bron.
 
-**Rol verantwoordelijke** *(Publiek)*
+**Rol verantwoordelijke** _(Publiek)_
 De rol van de verantwoordelijke over de bron:
 
 - Data verstrekker
@@ -124,16 +124,16 @@ De rol van de verantwoordelijke over de bron:
 
 ### Status
 
-**Updatemethode** *(Intern)*
+**Updatemethode** _(Intern)_
 De methode waarmee de dataset wordt bijgewerkt:
 
 - Manueel
 - Automatisch
 
-**Updatefrequentie** *(Publiek)*
+**Updatefrequentie** _(Publiek)_
 De frequentie waarmee de dataset wordt bijgewerkt. Bijvoorbeeld: dagelijks, wekelijks, maandelijks, jaarlijks.
 
-**Laatst bijgewerkt** *(Publiek)*
+**Laatst bijgewerkt** _(Publiek)_
 De datum waarop de dataset voor het laatst is bijgewerkt.
 
 **Status**
@@ -149,7 +149,7 @@ gepubliceerde metadatasets altijd.
 
 ### Beperkingen
 
-**Juridische toegangsrestricties** *(Publiek)*
+**Juridische toegangsrestricties** _(Publiek)_
 Juridische toegangsrestricties die van toepassing zijn op de dataset:
 
 - Licentie - Formele toestemming om iets te doen met de data
@@ -158,7 +158,7 @@ Juridische toegangsrestricties die van toepassing zijn op de dataset:
 - Beperkt - Verbod op distributie en gebruik
 - Overige beperkingen - Restrictie niet opgenomen in lijst
 
-**Overige beperkingen** *(Publiek)*
+**Overige beperkingen** _(Publiek)_
 Selecteer een optie wanneer je bij juridische toegangsrestricties 'Overige beperkingen' hebt gekozen:
 
 - Open data (publiek)
@@ -177,17 +177,17 @@ navigatie.
 
 ### Verantwoordelijke metadata
 
-**E-mailadres aanspreekpunt** *(Intern)*
+**E-mailadres aanspreekpunt** _(Intern)_
 Het e-mailadres van het interne aanspreekpunt van de verantwoordelijke van de metadata.
 
-**Organisatie** *(Publiek)*
+**Organisatie** _(Publiek)_
 De naam van de organisatie verantwoordelijk voor de metadata. Gebruik de volledig uitgeschreven naam van de
 verantwoordelijke organisatie. Bijvoorbeeld: Gemeente Purmerend.
 
-**E-mailadres verantwoordelijke** *(Publiek)*
+**E-mailadres verantwoordelijke** _(Publiek)_
 Het e-mailadres van de organisatie verantwoordelijk voor de metadata. Gebruik bij voorkeur een functioneel e-mailadres.
 
-**Rol verantwoordelijke** *(Publiek)*
+**Rol verantwoordelijke** _(Publiek)_
 De rol van de verantwoordelijke over de metadata:
 
 - Data verstrekker

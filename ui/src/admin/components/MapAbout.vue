@@ -73,7 +73,8 @@
         <div class="tw-my-3 tw-flex tw-flex-col">
           <label for="editor" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold"
             >Zijbalk tekst
-            <AdminFormInfoText :info-text="'Het is mogelijk om tekst op te maken met Markdown in dit veld.'"
+            <AdminFormInfoText
+              :info-text="'Het is mogelijk om tekst op te maken met Markdown in dit veld. Dit is geen inline markdown veld.'"
           /></label>
           <Textarea
             :model-value="data.about"
