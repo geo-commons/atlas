@@ -1,10 +1,14 @@
 # Markdown notatie
 
-In verschillende invoervelden binnen de applicatie is het mogelijk om **Markdown** te gebruiken.
-Met Markdown kun je tekst eenvoudig opmaken, zoals koppen, lijsten, links en codeblokken.
+In verschillende invoervelden binnen Atlas is het mogelijk om **Markdown** te gebruiken. Met Markdown kun je tekst eenvoudig opmaken, zoals koppen, lijsten, links en codeblokken.
+
+> **Belangrijk**:<br>
+> Op vrijwel alle plekken binnen Atlas wordt inline Markdown verwacht.
+> Dat betekent dat je vooral opmaak kunt gebruiken die binnen een lopende tekstregel past (zoals vet, cursief, links en inline code).
+> Grote structuur-elementen zoals koppen, tabellen of horizontale lijnen werken niet binnen inline Markdown. Wanneer het veld geen inline Markdown veld is wordt dit benoemd.
 
 Onderstaand vind je een aantal **veelgebruikte voorbeelden** van wat er mogelijk is met Markdown.
-Deze *cheat sheet* is bedoeld als snelle referentie.
+Deze _cheat sheet_ is bedoeld als snelle referentie.
 
 Voor een volledige en uitgebreide uitleg van alle Markdown-functionaliteit, zie:
 [Markdown guide](https://www.markdownguide.org/basic-syntax/)
@@ -72,7 +76,7 @@ Dit is regel twee
 
 ```md
 **Dit is vet**
-*Dit is cursief*
+_Dit is cursief_
 ```
 
 ---
@@ -109,9 +113,9 @@ Geordend:
 
 ```md
 | Kolom 1 | Kolom 2 |
-|--------|--------|
-| Waarde | Waarde |
-| Waarde | Waarde |
+| ------- | ------- |
+| Waarde  | Waarde  |
+| Waarde  | Waarde  |
 ```
 
 ---

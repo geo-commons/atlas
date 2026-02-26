@@ -19,12 +19,16 @@
 
       <div v-if="layer.metadataset?.abstract" class="tw-mb-6">
         <h3 class="tw-m-0">Over deze dataset</h3>
-        <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">{{ layer.metadataset?.abstract }}</p>
+        <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">
+          {{ layer.metadataset?.abstract }}
+        </p>
       </div>
 
       <div v-if="layer.metadataset?.description && isLoggedIn" class="tw-mb-6">
         <h3 class="tw-m-0">Beschrijving <VisibilityIndicator visibility="Intern" /></h3>
-        <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">{{ layer.metadataset?.description }}</p>
+        <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">
+          <RichValue :data-value="layer.metadataset?.description" />
+        </p>
       </div>
 
       <div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-12 lg:tw-gap-10">
@@ -60,7 +64,9 @@
                       {{ row.value.toLowerCase() }}
                     </a>
                     <!-- Text type -->
-                    <span v-else-if="row.value">{{ row.value }}</span>
+                    <span v-else-if="row.value">
+                      <RichValue :data-value="row.value" />
+                    </span>
                     <span v-else>N/A</span>
                   </td>
                 </tr>
@@ -83,6 +89,7 @@ import { updateMethodTypeLabels, type UpdateMethodTypeId } from "@/types/UpdateM
 import { computed } from "vue";
 import type { LayerInfoLayer } from "./LayerInfo.vue";
 import Markdown from "./Markdown";
+import RichValue from "@/components/RichValue.vue";
 
 interface Props {
   modelValue: boolean;

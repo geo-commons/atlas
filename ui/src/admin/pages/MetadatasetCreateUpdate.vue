@@ -172,7 +172,7 @@ const getSections = (): AdminFormConfig => {
           multiLine: true,
           required: false,
           visibility: "Intern",
-          infoText: "Beschrijving voor intern gebruik.",
+          infoText: "Beschrijving voor intern gebruik. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
         },
         {
           label: "Toelichting dataset",
