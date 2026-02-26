@@ -135,6 +135,18 @@ Deploy acceptance:
       --set geoserver.ingress.tls[0].hosts[0]=geoserver-acc.$REVIEW_BASE_DOMAIN \
       --set geoserver.ingress.annotations.kubernetes\\.io/ingress\\.class=nginx \
       --set geoserver.ingress.annotations.cert-manager\\.io/cluster-issuer=letsencrypt-prod \
+      --set filter-proxy.enabled=true \
+      --set filter-proxy.ingress.enabled=true \
+      --set filter-proxy.ingress.hosts[0].host=atlas-acc.$REVIEW_BASE_DOMAIN \
+      --set filter-proxy.ingress.hosts[0].paths[0].path=/api \
+      --set filter-proxy.ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
+      --set filter-proxy.ingress.tls[0].secretName=geoserver-tls \
+      --set filter-proxy.ingress.tls[0].hosts[0]=atlas-acc.$REVIEW_BASE_DOMAIN \
+      --set filter-proxy.ingress.annotations.kubernetes\\.io/ingress\\.class=nginx \
+      --set filter-proxy.ingress.annotations.cert-manager\\.io/cluster-issuer=letsencrypt-prod \
+      --set-string filter-proxy.config.authorizationServiceUrl=https://atlas-acc.$REVIEW_BASE_DOMAIN/atlas/api/v1/authorize/ \
+      --set-string filter-proxy.config.cors.allowedOrigins[0]=https://atlas-acc.$REVIEW_BASE_DOMAIN \
+      --set-string filter-proxy.config.backends.geoserver.baseUrl=https://geoserver-acc.$REVIEW_BASE_DOMAIN/geoserver
   environment:
     name: review/acc
     url: https://atlas-acc.$REVIEW_BASE_DOMAIN/atlas/

@@ -19,3 +19,9 @@ dependencies:
     condition: geoserver.enabled
     tags:
       - geoserver
+  - name: filter-proxy
+    version: 0.8.2
+    repository: https://delta10.github.io/helm-charts
+    condition: filter-proxy.enabled
+    tags:
+      - filter-proxy
