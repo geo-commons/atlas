@@ -5,5 +5,8 @@ dependencies:
 - name: geoserver
   repository: https://delta10.github.io/helm-charts
   version: 2.27.3
-digest: sha256:2c2dd6bfc94cf6e70672a334a2f0a6b0dbc61c44a3ecde3451090373a064dfff
-generated: "2026-02-16T10:38:27.947268+01:00"
+- name: filter-proxy
+  repository: https://delta10.github.io/helm-charts
+  version: 0.8.2
+digest: sha256:c9cce60885e12e53faaba2b1760612cfed0e959ab9d7e6c3d470fac45af4993a
+generated: "2026-02-24T09:22:15.265416+01:00"
