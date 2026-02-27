@@ -78,6 +78,7 @@ import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
 import ArrowRightIcon from "@/assets/icons/arrow-right-icon.svg";
 import { getResolvedKey } from "@/utils/string-helpers";
+import { pickTemplateValues } from "@/components/related-tables/utils";
 
 const { layerFeature, tableFeature, fieldMapping, relatedTable, position } = defineProps<{
   layerFeature?: Record<string, string>;
@@ -158,7 +159,17 @@ const getRestData = async (table: IRelatedTable) => {
     }
 
     const data = await response.json();
-    relatedTableData.value = table.list_property ? fetchDot(table.list_property, data) : data;
+    const result = table.list_property ? fetchDot(table.list_property, data) : data;
+
+    // Ensure the result is always an array for easier handling in the template
+    const arrayResult = Array.isArray(result) ? result : result != null ? [result] : [];
+
+    const templateUsedValues = pickTemplateValues(fullUrl, fieldMappingValues.value);
+
+    relatedTableData.value = arrayResult.map((item) => ({
+      ...templateUsedValues,
+      ...item,
+    }));
 
     // If pagination is enabled set total items
     if (table.total_items_page_property) {

@@ -455,6 +455,19 @@
     }
   },
   {
+    "model": "webservice.source",
+    "pk": 21,
+    "fields": {
+      "title": "KVKV1",
+      "slug": "kvkv1",
+      "source_type": "REST",
+      "url": "http://localhost:8000/api/kvk/v1",
+      "login_required": false,
+      "authenticate": false,
+      "atlas_groups": []
+    }
+  },
+  {
     "model": "webservice.theme",
     "pk": 1,
     "fields": {
@@ -20421,6 +20434,91 @@
     }
   },
   {
+    "model": "authz.authorization",
+    "pk": 5,
+    "fields": {
+      "source": 21,
+      "ordering": 0,
+      "resource": "/basisprofielen/{kvkNummer:[0-9]+}",
+      "description": "KVK /basisprofielen/{kvkNummer:[0-9]+} authorisatie",
+      "login_required": false,
+      "only_internal": false,
+      "authenticated_can_mutate": false,
+      "audit_log": false,
+      "response_filter": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
+    "model": "authz.authorization",
+    "pk": 6,
+    "fields": {
+      "source": 21,
+      "ordering": 0,
+      "resource": "/basisprofielen/{kvkNummer:[0-9]+}/eigenaar",
+      "description": "KVK /basisprofielen/{kvkNummer:[0-9]+}/eigenaar authorisatie",
+      "login_required": false,
+      "only_internal": false,
+      "authenticated_can_mutate": false,
+      "audit_log": false,
+      "response_filter": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
+    "model": "authz.authorization",
+    "pk": 7,
+    "fields": {
+      "source": 21,
+      "ordering": 0,
+      "resource": "/basisprofielen/{kvkNummer:[0-9]+}/hoofdvestiging",
+      "description": "KVK /basisprofielen/{kvkNummer:[0-9]+}/hoofdvestiging authorisatie",
+      "login_required": false,
+      "only_internal": false,
+      "authenticated_can_mutate": false,
+      "audit_log": false,
+      "response_filter": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
+    "model": "authz.authorization",
+    "pk": 8,
+    "fields": {
+      "source": 21,
+      "ordering": 0,
+      "resource": "/basisprofielen/{kvkNummer:[0-9]+}/vestigingen",
+      "description": "KVK /basisprofielen/{kvkNummer:[0-9]+}/vestigingen authorisatie",
+      "login_required": false,
+      "only_internal": false,
+      "authenticated_can_mutate": false,
+      "audit_log": false,
+      "response_filter": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
+    "model": "authz.authorization",
+    "pk": 9,
+    "fields": {
+      "source": 21,
+      "ordering": 0,
+      "resource": "/vestigingsprofielen/{vestigingsnummer:[0-9]+}",
+      "description": "KVK /vestigingsprofielen/{vestigingsnummer:[0-9]+} authorisatie",
+      "login_required": false,
+      "only_internal": false,
+      "authenticated_can_mutate": false,
+      "audit_log": false,
+      "response_filter": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
     "model": "table.table",
     "pk": 1,
     "fields": {
@@ -20652,6 +20750,286 @@
     }
   },
   {
+    "model": "table.table",
+    "pk": 20,
+    "fields": {
+      "title": "KVK registraties op adres",
+      "slug": "kvk-zoeken",
+      "source": 16,
+      "source_type": "REST",
+      "fields": ["kvkNummer", "type", "naam", "adres", "vestigingsnummer"],
+      "list_endpoint": "/zoeken?postcode={{postcode.replaceAll(' ', '')}}&huisnummer={{huisnummer}}&type=hoofdvestiging&type=nevenvestiging",
+      "detail_endpoint": "/zoeken?kvkNummer={{kvkNummer}}&type=hoofdvestiging&type=nevenvestiging",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "resultaten",
+      "detail_property": "resultaten[0]",
+      "page_param": "pagina",
+      "start_page_index": 1,
+      "items_per_page_param": "resultatenPerPagina",
+      "total_items_page_property": "totaal",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": [
+        "kvkNummer",
+        "type",
+        "naam",
+        "adres",
+        "vestigingsnummer"
+      ],
+      "detail_display_properties": [
+        "kvkNummer",
+        "type",
+        "naam",
+        "adres",
+        "vestigingsnummer"
+      ]
+    }
+  },
+  {
+    "model": "table.table",
+    "pk": 21,
+    "fields": {
+      "title": "KVK basisprofiel",
+      "slug": "kvk-basisprofiel",
+      "source": 21,
+      "source_type": "REST",
+      "fields": [
+        "kvkNummer",
+        "naam",
+        "totaalWerkzamePersonen",
+        "statutaireNaam",
+        "sbiActiviteiten",
+        "handelsnamen",
+        "_embedded"
+      ],
+      "list_endpoint": "/basisprofielen/{{kvkNummer}}",
+      "detail_endpoint": "/basisprofielen/{{kvkNummer}}",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "",
+      "detail_property": "",
+      "page_param": "",
+      "start_page_index": 0,
+      "items_per_page_param": "",
+      "total_items_page_property": "",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": [
+        "kvkNummer",
+        "naam",
+        "totaalWerkzamePersonen",
+        "statutaireNaam",
+        "_embedded"
+      ],
+      "detail_display_properties": [
+        "kvkNummer",
+        "naam",
+        "totaalWerkzamePersonen",
+        "statutaireNaam",
+        "sbiActiviteiten",
+        "handelsnamen",
+        "_embedded"
+      ]
+    }
+  },
+  {
+    "model": "table.table",
+    "pk": 22,
+    "fields": {
+      "title": "KVK basisprofiel eigenaar",
+      "slug": "kvk-basisprofiel-eigenaar",
+      "source": 21,
+      "source_type": "REST",
+      "fields": ["rsin", "rechtsvorm"],
+      "list_endpoint": "/basisprofielen/{{kvkNummer}}/eigenaar",
+      "detail_endpoint": "/basisprofielen/{{kvkNummer}}/eigenaar",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "",
+      "detail_property": "",
+      "page_param": "",
+      "start_page_index": 0,
+      "items_per_page_param": "",
+      "total_items_page_property": "",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": ["rsin", "rechtsvorm"],
+      "detail_display_properties": ["rsin", "rechtsvorm"]
+    }
+  },
+  {
+    "model": "table.table",
+    "pk": 23,
+    "fields": {
+      "title": "KVK basisprofiel hoofdvestiging",
+      "slug": "kvk-basisprofiel-hoofdvestiging",
+      "source": 21,
+      "source_type": "REST",
+      "fields": [
+        "kvkNummer",
+        "eersteHandelsnaam",
+        "vestigingsnummer",
+        "rsin",
+        "indHoofdvestiging",
+        "totaalWerkzamePersonen",
+        "handelsnamen",
+        "adressen",
+        "websites"
+      ],
+      "list_endpoint": "/basisprofielen/{{kvkNummer}}/hoofdvestiging",
+      "detail_endpoint": "/basisprofielen/{{kvkNummer}}/hoofdvestiging",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "",
+      "detail_property": "",
+      "page_param": "",
+      "start_page_index": 0,
+      "items_per_page_param": "",
+      "total_items_page_property": "",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": [
+        "kvkNummer",
+        "eersteHandelsnaam",
+        "totaalWerkzamePersonen",
+        "rsin",
+        "vestigingsnummer",
+        "indHoofdvestiging"
+      ],
+      "detail_display_properties": [
+        "kvkNummer",
+        "eersteHandelsnaam",
+        "vestigingsnummer",
+        "rsin",
+        "indHoofdvestiging",
+        "totaalWerkzamePersonen",
+        "handelsnamen",
+        "adressen",
+        "websites"
+      ]
+    }
+  },
+  {
+    "model": "table.table",
+    "pk": 24,
+    "fields": {
+      "title": "KVK basisprofiel vestigingen",
+      "slug": "kvk-basisprofiel-vestigingen",
+      "source": 21,
+      "source_type": "REST",
+      "fields": [
+        "kvkNummer",
+        "aantalCommercieleVestigingen",
+        "aantalNietCommercieleVestigingen",
+        "totaalAantalVestigingen",
+        "vestigingen"
+      ],
+      "list_endpoint": "/basisprofielen/{{kvkNummer}}/vestigingen",
+      "detail_endpoint": "/basisprofielen/{{kvkNummer}}/vestigingen",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "",
+      "detail_property": "",
+      "page_param": "",
+      "start_page_index": 0,
+      "items_per_page_param": "",
+      "total_items_page_property": "",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": [
+        "kvkNummer",
+        "aantalCommercieleVestigingen",
+        "aantalNietCommercieleVestigingen",
+        "totaalAantalVestigingen"
+      ],
+      "detail_display_properties": [
+        "kvkNummer",
+        "aantalCommercieleVestigingen",
+        "aantalNietCommercieleVestigingen",
+        "totaalAantalVestigingen",
+        "vestigingen"
+      ]
+    }
+  },
+  {
+    "model": "table.table",
+    "pk": 25,
+    "fields": {
+      "title": "KVK vestigingsprofiel",
+      "slug": "kvk-vestigingsprofiel",
+      "source": 21,
+      "source_type": "REST",
+      "fields": [
+        "kvkNummer",
+        "vestigingsnummer",
+        "rsin",
+        "materieleRegistratie",
+        "indHoofdvestiging",
+        "indCommercieleVestiging",
+        "voltijdWerkzamePersonen",
+        "totaalWerkzamePersonen",
+        "deeltijdWerkzamePersonen",
+        "handelsnamen",
+        "adressen",
+        "websites",
+        "sbiActiviteiten"
+      ],
+      "list_endpoint": "/vestigingsprofielen/{{vestigingsnummer}}",
+      "detail_endpoint": "/vestigingsprofielen/{{vestigingsnummer}}",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "",
+      "detail_property": "",
+      "page_param": "",
+      "start_page_index": 1,
+      "items_per_page_param": "",
+      "total_items_page_property": "",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": ["kvkNummer", "vestigingsnummer", "rsin"],
+      "detail_display_properties": [
+        "kvkNummer",
+        "vestigingsnummer",
+        "rsin",
+        "materieleRegistratie",
+        "indHoofdvestiging",
+        "indCommercieleVestiging",
+        "voltijdWerkzamePersonen",
+        "totaalWerkzamePersonen",
+        "deeltijdWerkzamePersonen",
+        "handelsnamen",
+        "adressen",
+        "websites",
+        "sbiActiviteiten"
+      ]
+    }
+  },
+  {
     "model": "table.tabletotable",
     "pk": 1,
     "fields": {
@@ -20756,6 +21134,51 @@
     "fields": { "from_table": 8, "to_table": 18, "field_mapping": {} }
   },
   {
+    "model": "table.tabletotable",
+    "pk": 12,
+    "fields": {
+      "from_table": 20,
+      "to_table": 21,
+      "field_mapping": { "kvkNummer": "kvkNummer" }
+    }
+  },
+  {
+    "model": "table.tabletotable",
+    "pk": 13,
+    "fields": {
+      "from_table": 20,
+      "to_table": 22,
+      "field_mapping": { "kvkNummer": "kvkNummer" }
+    }
+  },
+  {
+    "model": "table.tabletotable",
+    "pk": 14,
+    "fields": {
+      "from_table": 20,
+      "to_table": 23,
+      "field_mapping": { "kvkNummer": "kvkNummer" }
+    }
+  },
+  {
+    "model": "table.tabletotable",
+    "pk": 15,
+    "fields": {
+      "from_table": 20,
+      "to_table": 24,
+      "field_mapping": { "kvkNummer": "kvkNummer" }
+    }
+  },
+  {
+    "model": "table.tabletotable",
+    "pk": 16,
+    "fields": {
+      "from_table": 20,
+      "to_table": 25,
+      "field_mapping": { "vestigingsnummer": "vestigingsnummer" }
+    }
+  },
+  {
     "model": "table.layertotable",
     "pk": 1,
     "fields": {
@@ -20780,6 +21203,15 @@
       "from_layer": 292,
       "to_table": 19,
       "field_mapping": {}
+    }
+  },
+  {
+    "model": "table.layertotable",
+    "pk": 4,
+    "fields": {
+      "from_layer": 8,
+      "to_table": 20,
+      "field_mapping": { "postcode": "postcode", "huisnummer": "huisnummer" }
     }
   },
   {
