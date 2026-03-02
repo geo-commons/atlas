@@ -36,6 +36,7 @@
           :class="{ isActive: panel === 'activeLayers' }"
           content="Zichtbare lagen"
           aria-label="Toon zichtbare lagen"
+          data-testid="toggle-visible-layers"
           :aria-expanded="String(panel === 'activeLayers')"
           aria-controls="visibleLayers"
           @click="() => togglePanel('activeLayers')"

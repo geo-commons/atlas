@@ -198,3 +198,46 @@ mkdocs serve
 cd docs/user
 mkdocs serve
 ```
+
+## Frontend E2E tests (Playwright)
+
+Run these from `ui/` after `npm install`. The app should be available at
+`http://localhost:8000/atlas/` unless you set a different base URL.
+
+```bash
+cd ui
+npm run test:e2e
+```
+
+Runs all Playwright E2E tests headlessly.
+
+```bash
+npm run test:e2e:ui
+```
+
+Opens Playwright's interactive test runner UI.
+
+```bash
+npm run test:e2e:record
+```
+
+Launches Playwright codegen to record a new test while you click through the app.
+
+To use `test:e2e:ui` or `test:e2e:record`, install browser binaries once:
+
+```bash
+npx playwright install
+```
+
+Creating tests with codegen (Playwright record):
+- Run `npm run test:e2e:record` and interact with the app to generate actions.
+- Copy the generated test into your `ui/` Playwright test file(s), then run `npm run test:e2e`.
+- For full usage details, see the Playwright codegen docs:
+
+```
+https://playwright.dev/docs/codegen
+```
+
+Optional environment variables:
+- `PW_SKIP_WEBSERVER=1` to skip the Playwright webserver.
+- `E2E_BASE_URL=http://localhost:8000/atlas/` for `test:e2e:record` to point codegen at a different URL.

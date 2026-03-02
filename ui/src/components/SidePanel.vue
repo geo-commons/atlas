@@ -5,6 +5,7 @@
       class="wrapper"
       :class="{ large, medium, fullScreen }"
       :style="{ width: fullScreen ? '100%' : large && !resizable ? '50%' : panelWidth }"
+      :data-testid="testId"
     >
       <div class="wrapper-content tw-max-h-full">
         <template v-if="$slots.header">
@@ -83,6 +84,10 @@ export default {
     expandable: {
       type: Boolean,
       default: true,
+    },
+    testId: {
+      type: String,
+      default: null,
     },
   },
   emits: ["expand-side-panel", "toggle-full-side-panel", "resize"],

@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" data-testid="app">
     <header-menu v-if="!isEmbed && config.features.portal" />
     <outdated-map-alert v-if="outdated_map_slug" :theme-slug="outdated_map_slug" />
     <map-renderer

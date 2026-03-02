@@ -6,6 +6,7 @@
     type="button"
     :content="showDataPanel ? 'Verberg data' : 'Toon data'"
     :aria-label="showDataPanel ? 'Verberg data' : 'Toon data'"
+    data-testid="toggle-data-panel"
     @click="toggleDataPanel"
   >
     <FormIcon />

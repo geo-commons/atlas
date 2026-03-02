@@ -57,6 +57,7 @@
             class="iconbutton __xs __round"
             content="Sluit"
             aria-label="Sluit laag"
+            :data-testid="`visible-layer-close-${layer.id}`"
             @click="toggleLayer"
           >
             <CloseCircleIcon />

@@ -288,6 +288,7 @@
               :class="{ isActive: showBaseLayersPanel }"
               content="Basislagen"
               aria-label="Toon basislagen"
+              data-testid="toggle-base-layers"
               :aria-expanded="showBaseLayersPanel.toString()"
               aria-controls="baseLayers"
               @click="toggleBaseLayersPanel"
