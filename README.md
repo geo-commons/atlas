@@ -8,6 +8,8 @@ and [Delta10](https://www.delta10.nl).
 
 ## Run Atlas locally
 
+(For setting up a development environment, refer to the instructions below.)
+
 Make sure you installed [Docker](https://www.docker.com/) on your local machine.
 
 Download Atlas from [GitLab](https://gitlab.com/purmerend/atlas) and unpack the downloaded file on your computer.
@@ -50,18 +52,25 @@ npm run generate-metadata-types
 
 This regenerates the frontend TypeScript enums and options so they stay in sync with the backend.
 
-Want me to also add a one-liner about committing the regenerated file to Git so others don’t have to rerun it?
-
 ## Set up a development environment on Linux or macOS
 
 Make sure you installed the following requirements:
 
-- [Python 3](https://www.python.org)
+- [Python 3](https://www.python.org) (version 3.13, other versions may work)
 - [Docker](https://www.docker.com)
+- [Node.js](https://nodejs.org/) (version 22, other versions may work)
 
-Atlas can work with any WMS, WFS and WMTS server as a source of geospatial data. Datalab Purmerend relies
-on [Geoserver](https://github.com/geoserver/geoserver) for viewing geospatial data. Since Geoserver is one possible
-choice, it is not listed as a requirement to set up a development environment.
+Apart from these requirements, Atlas works with the following services, which we suggest running
+using Docker Compose:
+
+- PostgreSQL
+- [Geoserver](https://github.com/geoserver/geoserver) for serving geospatial data
+- [filter-proxy](https://github.com/delta10/filter-proxy) to proxy requests to external APIs that need authorization (see below)
+- The [Dex](https://dexidp.io) identity provider for user authentication
+
+Apart from PostgreSQL, these are no hard dependencies, because Atlas can work with alternatives for these services. Atlas 
+can work with any WMS, WFS and WMTS server as a source of geospatial data. However, this setup
+is common across Atlas installations and our demo data assumes that these services are running.
 
 GeoServer is an open source software server written in Java that allows users to share and edit geospatial data.
 Designed for interoperability, it publishes data from any major spatial data source using open standards.
@@ -77,10 +86,10 @@ source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-Run a Postgres database server, filter-proxy and dex with:
+Run a Postgres database server, filter-proxy, dex and GeoServer with:
 
 ```bash
-docker compose up -d postgres dex filter-proxy
+docker compose up -d postgres dex filter-proxy geoserver
 ```
 
 The above uses the same persistent volume `atlas_postgres-data` as used in [Run Atlas locally](#run-atlas-locally)
@@ -135,6 +144,15 @@ proxy can be used to authorize requests on OWS and REST services. When a request
 authorization endpoint of Atlas to see of the request is authorized. Atlas will look up the specific permissions of the
 user and returns the decision. Based on the authorization, filter-proxy grants or denies access. Atlas also keeps an
 audit log of successful authorization responses.
+
+The setup using Docker Compose assumes that the host, which runs the Django application, can be
+reached from the container running filter-proxy. Check firewall rules if this access appears to be blocked.
+On Linux, you will have to add the following to the `filter-proxy` service in `docker-compose.yml`:
+
+```yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+```
 
 ## Conventional Commits / [Commitizen](https://commitizen-tools.github.io/commitizen/)
 
