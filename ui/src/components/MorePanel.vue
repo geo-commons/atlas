@@ -6,6 +6,7 @@
       :class="{ isOpen, isActive: isOpen }"
       content="Opties"
       aria-label="Toon meer opties"
+      data-testid="more-options-button"
       @click="toggle"
     >
       <EllipsesVertIcon class="icon" />
@@ -21,12 +22,14 @@
             <a href="/">Portaal</a>
           </li>
 
-          <li><button @click="() => toggleModal('embed')">Embed</button></li>
+          <li><button data-testid="more-menu-embed" @click="() => toggleModal('embed')">Embed</button></li>
           <li v-if="map?.features?.showAbout"><button @click="toggleAbout">Informatie</button></li>
           <li v-if="config.features.print">
             <button @click="() => toggleModal('print')">Print</button>
           </li>
-          <li><a href="/atlas/docs/" target="_blank" rel="noopener noreferrer">Help</a></li>
+          <li>
+            <a href="/atlas/docs/" target="_blank" rel="noopener noreferrer" data-testid="more-menu-help">Help</a>
+          </li>
           <li v-if="showDisclaimer">
             <a href="/atlas/disclaimer" target="_blank" rel="noopener noreferrer">Disclaimer</a>
           </li>

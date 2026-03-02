@@ -1,6 +1,13 @@
 <template>
   <div class="wrapper">
-    <button v-tippy="{ placement: 'left' }" class="iconbutton" content="Zoom in" aria-label="Zoom in" @click="zoomIn">
+    <button
+      v-tippy="{ placement: 'left' }"
+      class="iconbutton"
+      content="Zoom in"
+      aria-label="Zoom in"
+      data-testid="zoom-in-button"
+      @click="zoomIn"
+    >
       <svg
         width="10px"
         height="10px"
@@ -19,6 +26,7 @@
       class="iconbutton"
       content="Zoom uit"
       aria-label="Zoom uit"
+      data-testid="zoom-out-button"
       @click="zoomOut"
     >
       <svg

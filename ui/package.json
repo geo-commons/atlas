@@ -11,6 +11,9 @@
     "format": "prettier .  --write",
     "test:unit": "vitest --project unit",
     "test:browser": "vitest --project browser",
+    "test:e2e": "playwright test --config=playwright.config.ts",
+    "test:e2e:ui": "playwright test --config=playwright.config.ts --ui --ui-host 127.0.0.1",
+    "test:e2e:record": "sh -c 'playwright codegen ${E2E_BASE_URL:-http://localhost:8000/atlas/}'",
     "generate-metadata-types": "node scripts/generate-enums.js"
   },
   "dependencies": {
