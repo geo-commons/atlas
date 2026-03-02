@@ -4,13 +4,13 @@
     <span v-if="valueType === 'UNKNOWN'">{{ dataValue }}</span>
     <span v-if="valueType === 'DATE'">{{ friendlyDate(dataValue) }}</span>
     <markdown v-if="valueType === 'STRING'" :source="dataValue" />
-    <a v-if="valueType === 'URL'" :href="dataValue" target="_blank" rel="noopener">{{
+    <a v-if="valueType === 'URL'" :href="normalizeUrlValue(dataValue)" target="_blank" rel="noopener">{{
       dataValue.length >= 75
         ? `${dataValue.substring(0, 36)}...${dataValue.substring(dataValue.length - 36)}`
         : dataValue
     }}</a>
-    <a v-if="valueType === 'IMAGE'" :href="dataValue" target="_blank" rel="noopener">
-      <img :src="dataValue" :alt="`Afbeelding ${dataKey}`" :style="{ maxWidth: '100%' }" />
+    <a v-if="valueType === 'IMAGE'" :href="normalizeUrlValue(dataValue)" target="_blank" rel="noopener">
+      <img :src="normalizeUrlValue(dataValue)" :alt="`Afbeelding ${dataKey}`" :style="{ maxWidth: '100%' }" />
     </a>
     <span v-if="valueType === 'ARRAY' || valueType === 'OBJECT'">
       <Button
@@ -61,6 +61,7 @@
 
 <script>
 import Markdown from "./Markdown";
+import { normalizeUrlValue } from "@/utils/rich-value";
 import { formatRawString } from "@/utils/string-helpers";
 
 const imageRegex = /^(http|https).*(\.jpg|\.jpeg|\.png|\.gif)/;
@@ -135,6 +136,7 @@ export default {
     },
   },
   methods: {
+    normalizeUrlValue,
     friendlyDate(value) {
       const parsedDate = dateRegex.exec(value);
       return `${parsedDate[3]}-${parsedDate[2]}-${parsedDate[1]}`;
