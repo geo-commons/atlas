@@ -21,6 +21,7 @@
         ref="splitter"
         style="height: 100vh"
         layout="vertical"
+        @resizeend="onSplitterResizeEnd"
       >
         <SplitterPanel v-if="showPanoramaPanel" class="flex items-center justify-center panorama-splitter">
           <PanoramaPanel
@@ -718,7 +719,9 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.onResizeWindow);
-    this.setViewportHeight();
+    this.$nextTick(() => {
+      this.setViewportHeight();
+    });
     this.showAbout = this.features.showAbout ? this.features.showAbout : false;
   },
   unmounted() {
@@ -756,8 +759,16 @@ export default {
     onResizeWindow() {
       this.setViewportHeight();
     },
+    onSplitterResizeEnd() {
+      this.$nextTick(() => {
+        this.setViewportHeight();
+      });
+    },
     setViewportHeight() {
-      this.computedStyle["--vh"] = this.$refs.mapContainer.clientHeight / 100 + "px";
+      const mapViewportHeight = this.$refs.map?.$el?.clientHeight;
+      const fallbackContainerHeight = this.$refs.mapContainer?.clientHeight ?? window.innerHeight;
+      const resolvedHeight = Number.isFinite(mapViewportHeight) ? mapViewportHeight : fallbackContainerHeight;
+      this.computedStyle["--vh"] = `${resolvedHeight / 100}px`;
     },
     async setPosition(position, animateFast = false, animate = true) {
       this.position = {
@@ -943,9 +954,17 @@ export default {
       if (!this.showPanoramaPanel) {
         this.showPanoramaPanelFullScreen = false;
       }
+
+      this.$nextTick(() => {
+        this.setViewportHeight();
+      });
     },
     togglePanoramaPanelFullScreen(fullscreen) {
       this.showPanoramaPanelFullScreen = fullscreen;
+
+      this.$nextTick(() => {
+        this.setViewportHeight();
+      });
     },
     toggleDataPanel() {
       this.showDataPanel = !this.showDataPanel;
