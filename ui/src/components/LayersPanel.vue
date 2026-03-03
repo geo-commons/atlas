@@ -99,7 +99,7 @@
                     type="checkbox"
                     :name="layer.id"
                     :checked="layer.is_visible"
-                    :disabled="layer.is_disabled || (layer.login_required && (!user || !user.token))"
+                    :disabled="isLayerDisabled(layer) || (layer.login_required && (!user || !user.token))"
                     @click="() => onSelectLayer(layer)"
                   />
                   <label :for="layer.id">
@@ -143,7 +143,7 @@
                   type="checkbox"
                   :name="layer.id"
                   :checked="layer.is_visible"
-                  :disabled="layer.is_disabled || (layer.login_required && (!user || !user.token))"
+                  :disabled="isLayerDisabled(layer) || (layer.login_required && (!user || !user.token))"
                   @click="() => onSelectLayer(layer)"
                 />
                 <label :for="layer.id">
@@ -215,7 +215,6 @@
 </template>
 
 <script>
-import { toRaw } from "vue";
 import { intersects } from "ol/extent";
 import ExpandButton from "./ExpandButton";
 import VisibleLayer from "./VisibleLayer";
@@ -273,11 +272,7 @@ export default {
     ...mapState(useGlobalStore, ["config"]),
     categories() {
       let categories = [];
-
-      this.layers.forEach((mutableLayer) => {
-        // Create a non-reactive copy of the layer to avoid mutating props
-        const layer = toRaw(mutableLayer);
-
+      this.layers.forEach((layer) => {
         if (!layer.category) {
           return;
         }
@@ -311,19 +306,6 @@ export default {
         }
 
         const existingCategory = categories.find((c) => c.id === layer.category.id);
-
-        layer.is_disabled = false;
-        if (layer.zoom_min && this.position.zoom < layer.zoom_min) {
-          layer.is_disabled = true;
-        }
-
-        if (layer.zoom_max && this.position.zoom > layer.zoom_max) {
-          layer.is_disabled = true;
-        }
-
-        if (layer.extent && this.position.extent && !intersects(layer.extent, this.position.extent)) {
-          layer.is_disabled = true;
-        }
 
         if (existingCategory) {
           existingCategory.layers.push(layer);
@@ -368,6 +350,21 @@ export default {
           this.$refs.searchLayerInput?.focus();
         });
       }
+    },
+    isLayerDisabled(layer) {
+      if (layer.zoom_min && this.position.zoom < layer.zoom_min) {
+        return true;
+      }
+
+      if (layer.zoom_max && this.position.zoom > layer.zoom_max) {
+        return true;
+      }
+
+      if (layer.extent && this.position.extent && !intersects(layer.extent, this.position.extent)) {
+        return true;
+      }
+
+      return false;
     },
     onSelectLayer(selectedLayer) {
       this.mapStore.toggleLayer({ selectedLayerId: selectedLayer.id, is_visible: !selectedLayer.is_visible });

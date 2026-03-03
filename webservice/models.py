@@ -502,6 +502,7 @@ class Layer(models.Model):
         'Templatevelden', default=dict, help_text='Velden die samengesteld worden vanuit een template', blank=True,
         null=True)
 
+    # This is the category
     layer_type = models.ForeignKey(
         Category, verbose_name='Categorie', on_delete=models.SET_NULL,
         blank=True, null=True)
@@ -904,12 +905,15 @@ class MapLayer(models.Model):
         'Layer', on_delete=models.CASCADE, related_name='maps_layer')
     map = models.ForeignKey(
         'Map', on_delete=models.CASCADE, related_name='map_layers')
+    map_category = models.ForeignKey(
+        'MapCategory', on_delete=models.CASCADE, null=True, blank=True, related_name='map_layers')
     settings = models.JSONField()
+    ordering = models.PositiveIntegerField('Sortering', default=0, db_index=True)
 
     class Meta:
         verbose_name = 'Kaartlaag'
         verbose_name_plural = 'Kaartlagen'
-        ordering = ['layer__layer_type__ordering', 'layer__ordering', 'layer__title']
+        ordering = ['map_category__ordering', 'ordering', 'layer__title']
         constraints = [
             models.UniqueConstraint(fields=["layer", "map"], name='unique_map_layer'),
         ]
@@ -920,7 +924,34 @@ class MapLayer(models.Model):
     def to_dict(self):
         return {
             'layer': self.layer.id,
-            'settings': self.settings
+            'settings': self.settings,
+            'map_category': self.map_category.id if self.map_category else None,
+            'ordering': self.ordering,
+        }
+
+
+class MapCategory(models.Model):
+    category = models.ForeignKey(
+        'Category', on_delete=models.CASCADE, related_name='maps_category')
+    map = models.ForeignKey(
+        'Map', on_delete=models.CASCADE, related_name='map_categories')
+    ordering = models.PositiveIntegerField('Sortering', default=0, db_index=True)
+
+    class Meta:
+        verbose_name = 'Kaartcategorie'
+        verbose_name_plural = 'Kaartcategorieën'
+        ordering = ['ordering', 'category__title']
+        constraints = [
+            models.UniqueConstraint(fields=["category", "map"], name='unique_map_category'),
+        ]
+
+    def __str__(self):
+        return f"{self.map} - {self.category}"
+
+    def to_dict(self):
+        return {
+            'category': self.category.id,
+            'ordering': self.ordering,
         }
 
 

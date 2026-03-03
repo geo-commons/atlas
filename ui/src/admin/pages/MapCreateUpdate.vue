@@ -6,6 +6,7 @@
       @show-form="() => showSidebar('form')"
       @show-layer="showLayerSettings"
       @update-layers="updateLayers"
+      @update-categories="updateCategories"
     />
     <MapLayer
       v-if="sidebar === 'layer'"
@@ -123,11 +124,48 @@ export default {
     },
     configuredLayers() {
       if (this.data.layers) {
-        let configuredLayers = [];
+        const mapCategoryOrderingById = new Map(
+          (this.data.categories || []).map((mapCategory) => [mapCategory.id, mapCategory.ordering ?? 0]),
+        );
+        const mapCategoryOrderingByCategoryId = new Map(
+          (this.data.categories || []).map((mapCategory) => [mapCategory.category, mapCategory.ordering ?? 0]),
+        );
+        const availableLayerByInternalId = new Map(this.layers.map((layer) => [layer.internal_id, layer]));
+
+        const sortedSelectedLayers = [...this.data.layers].sort((a, b) => {
+          const layerA = availableLayerByInternalId.get(a.layer);
+          const layerB = availableLayerByInternalId.get(b.layer);
+
+          const categoryOrderA =
+            mapCategoryOrderingById.get(a.map_category) ??
+            mapCategoryOrderingByCategoryId.get(layerA?.category?.id) ??
+            Number.MAX_SAFE_INTEGER;
+          const categoryOrderB =
+            mapCategoryOrderingById.get(b.map_category) ??
+            mapCategoryOrderingByCategoryId.get(layerB?.category?.id) ??
+            Number.MAX_SAFE_INTEGER;
+          if (categoryOrderA !== categoryOrderB) {
+            return categoryOrderA - categoryOrderB;
+          }
+
+          const layerOrderA = a.ordering ?? Number.MAX_SAFE_INTEGER;
+          const layerOrderB = b.ordering ?? Number.MAX_SAFE_INTEGER;
+          if (layerOrderA !== layerOrderB) {
+            return layerOrderA - layerOrderB;
+          }
+
+          return 0;
+        });
+
+        const configuredLayers = [];
 
         // Get configured layers.
-        this.data.layers.forEach((selectedLayer) => {
+        sortedSelectedLayers.forEach((selectedLayer) => {
           const layer = this.layers.find((l) => l.internal_id === selectedLayer.layer);
+
+          if (!layer) {
+            return;
+          }
 
           // Push default layer settings if current layer has no custom settings.
           if (!selectedLayer.settings?.customSettings) {
@@ -192,7 +230,6 @@ export default {
 
         this.data = await result.json();
         this.checkBaseLayersConfigured();
-
         return;
       }
 
@@ -321,7 +358,10 @@ export default {
       this.showSidebar("layer");
     },
     updateLayers(layers) {
-      this.data.layers = layers;
+      this.data.layers = [...layers];
+    },
+    updateCategories(categories) {
+      this.data.categories = [...categories];
     },
     handleAboutUpdate(aboutData) {
       this.data.about = aboutData?.about;

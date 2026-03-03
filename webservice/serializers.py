@@ -4,63 +4,156 @@ from rest_framework import serializers
 from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, Source, Layer, Template, Dataset, Theme, Viewer, \
-    Metadataset
+from .models import Category, Drawing, LinkedData, Map, MapLayer, MapCategory, Source, Layer, Template, Dataset, Theme, \
+    Viewer, Metadataset
 from .util import safe_float_or_null
 
 
 class MapLayerSerializer(serializers.ModelSerializer):
+    map_category = serializers.PrimaryKeyRelatedField(
+        queryset=MapCategory.objects.none(),
+        allow_null=True,
+        required=False
+    )
+
     class Meta:
         model = MapLayer
-        fields = ['layer', 'settings']
+        fields = ['layer', 'settings', 'ordering', 'map_category']
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'title', 'slug', 'ordering']
+
+
+class MapCategorySerializer(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MapCategory
+        fields = ['id', 'category', 'title', 'ordering']
+
+    def get_title(self, obj):
+        return obj.category.title if obj.category else ""
 
 
 class MapSerializer(serializers.ModelSerializer):
     layers = MapLayerSerializer(many=True, source='map_layers')
+    categories = MapCategorySerializer(many=True, source='map_categories')
 
     class Meta:
         model = Map
-        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'thumbnail', 'description', 'keywords',
+        fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'categories', 'thumbnail', 'description',
+                  'keywords',
                   'published', 'show_in_overview', 'about', 'about_title']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # 'child' is the MapLayerSerializer instance.
+        layer_serializer = self.fields['layers'].child
+
+        # Only apply queryset scoping during writes.
+        # On read/list endpoints `self.instance` can be a queryset/list, not a single Map.
+        if not hasattr(self, 'initial_data'):
+            return
+
+        # Scope the allowed 'map_category' ids to the current map on updates.
+        # This prevents cross-map references (e.g., assigning a category from map B to a layer on map A).
+        if isinstance(self.instance, Map):
+            layer_serializer.fields['map_category'].queryset = self.instance.map_categories.all()
+            return
+
+        # During create there is no map yet, so there cannot be valid existing MapCategory ids.
+        # We therefore disallow explicit ids here and rely on fallback resolution in create()
+        # (`layer.layer_type_id` -> matching map category created in this request).
+        layer_serializer.fields['map_category'].queryset = MapCategory.objects.none()
+
     def create(self, validated_data):
-        try:
-            map_layers = validated_data.pop('map_layers')
-        except KeyError:
-            map_layers = None
+        map_layers = validated_data.pop('map_layers', [])
+        map_categories = validated_data.pop('map_categories', [])
 
         created_map = Map.objects.create(**validated_data)
 
-        if map_layers is not None:
-            for map_layer in map_layers:
-                created_map.map_layers.create(
-                    layer=map_layer.get('layer'),
-                    settings=map_layer.get('settings')
-                )
+        for map_category in map_categories:
+            category = map_category.get('category')
+            MapCategory.objects.create(
+                map=created_map,
+                category=category,
+                ordering=map_category.get('ordering', 0),
+            )
+
+        # Create map layers with category references
+        for map_layer in map_layers:
+            layer = map_layer.get('layer')
+
+            map_category = map_layer.get('map_category')
+
+            if map_category is None and getattr(layer, "layer_type", None):
+                map_category = MapCategory.objects.filter(
+                    map=created_map,
+                    category_id=layer.layer_type_id,
+                ).first()
+
+            MapLayer.objects.create(
+                map=created_map,
+                layer=layer,
+                map_category=map_category,
+                ordering=map_layer.get('ordering', 0),
+                settings=map_layer.get('settings', {})
+            )
 
         return created_map
 
     def update(self, instance, validated_data):
-        try:
-            map_layers = validated_data.pop('map_layers')
-        except KeyError:
-            map_layers = None
+        has_layers = "map_layers" in validated_data
+        has_categories = "map_categories" in validated_data
+        map_layers = validated_data.pop("map_layers", [])
+        map_categories = validated_data.pop("map_categories", [])
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-
         instance.save()
 
-        if map_layers is not None:
-            map_layers_to_create = []
-            for map_layer in map_layers:
-                map_layers_to_create.append(MapLayer(
-                    layer=map_layer.get('layer'),
-                    settings=map_layer.get('settings')
-                ))
+        if has_categories:
+            kept_category_ids = []
+            for map_category in map_categories:
+                category = map_category.get("category")
+                defaults = {
+                    "category": category,
+                    "ordering": map_category.get("ordering", 0),
+                    "map": instance,
+                }
 
-            instance.map_layers.all().delete()
-            instance.map_layers.set(map_layers_to_create, bulk=False)
+                obj, _ = MapCategory.objects.update_or_create(map=instance, category=category, defaults=defaults)
+
+                kept_category_ids.append(obj.id)
+
+            instance.map_categories.exclude(id__in=kept_category_ids).delete()
+
+        if has_layers:
+            kept_layer_ids = []
+            for map_layer in map_layers:
+                layer = map_layer.get("layer")
+                map_category = map_layer.get("map_category")
+
+                if map_category is None and getattr(layer, "layer_type", None):
+                    map_category = instance.map_categories.filter(category_id=layer.layer_type_id).first()
+
+                defaults = {
+                    "layer": layer,
+                    "map_category": map_category,
+                    "ordering": map_layer.get("ordering", 0),
+                    "settings": map_layer.get("settings", {}),
+                    "map": instance,
+                }
+
+                obj, _ = MapLayer.objects.update_or_create(map=instance, layer=layer, defaults=defaults)
+
+                kept_layer_ids.append(obj.id)
+
+            instance.map_layers.exclude(id__in=kept_layer_ids).delete()
 
         return instance
 
@@ -69,12 +162,6 @@ class SourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Source
         fields = ['id', 'title', 'slug', 'url', 'authenticate', 'source_type', 'atlas_groups', 'login_required']
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'title', 'slug', 'ordering']
 
 
 class LinkedDataSerializer(serializers.ModelSerializer):
