@@ -39,6 +39,7 @@ const initialMapData = {
   title: "",
   authenticate: false,
   layers: [],
+  categories: [],
 };
 
 const getCreateMapSections = () => {
