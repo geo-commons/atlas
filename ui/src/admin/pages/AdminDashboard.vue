@@ -88,12 +88,6 @@
             </span>
             Kaartlagen
           </router-link>
-          <router-link to="/themes" class="button __tertiary __large" type="button" aria-label="Thema's">
-            <span class="button-icon tw-bg-amber-100">
-              <BookIcon class="icon tw-text-amber-800" />
-            </span>
-            Thema's
-          </router-link>
           <router-link to="/viewers" class="button __tertiary __large" type="button" aria-label="Viewers">
             <span class="button-icon tw-bg-amber-100">
               <ViewIcon class="icon tw-text-amber-800" />

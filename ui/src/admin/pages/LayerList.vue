@@ -20,7 +20,6 @@ const sources: Ref<Array<object>> = ref([]);
 const initialCreateLayerData = {
   title: "",
   authenticate: false,
-  metadata: { name: "", description: "", organization: "", updated: "", link: "", lineage: "", contact: "" },
 };
 const tableHeaders: Array<TableHeader> = [
   {

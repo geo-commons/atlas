@@ -233,13 +233,6 @@ export default {
       this.initialValues.source_id = response.source.id;
 
       // Internal fields used for v-model binding
-      this.initialValues.metadata_name = response.metadata.name;
-      this.initialValues.metadata_description = response.metadata.description;
-      this.initialValues.metadata_organization = response.metadata.organization;
-      this.initialValues.metadata_updated = response.metadata.updated;
-      this.initialValues.metadata_lineage = response.metadata.lineage;
-      this.initialValues.metadata_contact = response.metadata.contact;
-      this.initialValues.metadata_link = response.metadata.link;
       this.initialValues.client_style = JSON.stringify(response.client_style, null, 2);
       this.initialValues.friendly_fields = JSON.stringify(response.friendly_fields, null, 2);
       this.initialValues.templated_properties = JSON.stringify(response.templated_properties, null, 2);
@@ -277,15 +270,7 @@ export default {
         currentValues.layer_name = null;
       }
 
-      currentValues.metadata = {};
       // Convert internal fields back to layer model.
-      currentValues.metadata.name = currentValues.metadata_name;
-      currentValues.metadata.description = currentValues.metadata_description;
-      currentValues.metadata.organization = currentValues.metadata_organization;
-      currentValues.metadata.updated = currentValues.metadata_updated;
-      currentValues.metadata.lineage = currentValues.metadata_lineage;
-      currentValues.metadata.contact = currentValues.metadata_contact;
-      currentValues.metadata.link = currentValues.metadata_link;
       currentValues.atlas_groups = currentValues.atlas_groups?.[1]?.map((group) => group.id) || [];
       currentValues.atlas_write_groups = currentValues.atlas_write_groups?.[1]?.map((group) => group.id) || [];
 
@@ -926,78 +911,6 @@ export default {
               multiLine: true,
               infoText:
                 "Deze worden gebruikt om de laag beter vindbaar te maken in het lagenpaneel. Voer één zoekterm per regel in.",
-            },
-          ],
-        },
-        metadata: {
-          label: "Metadata",
-          questions: [
-            {
-              label: "Naam",
-              id: "metadata_name",
-              name: "Name",
-              type: "text",
-              required: false,
-              isNested: true,
-              disabled: true,
-            },
-            {
-              label: "Omschrijving",
-              id: "metadata_description",
-              name: "metadataDescription",
-              type: "text",
-              required: false,
-              multiLine: true,
-              isNested: true,
-              infoText: "Het is mogelijk om tekst op te maken met Markdown in dit veld.",
-              disabled: true,
-            },
-            {
-              label: "Organisatie",
-              id: "metadata_organization",
-              name: "metadataOrganisation",
-              type: "text",
-              required: false,
-              isNested: true,
-              disabled: true,
-            },
-            {
-              label: "Contactpersoon",
-              id: "metadata_contact",
-              name: "metadataContact",
-              type: "text",
-              required: false,
-              isNested: true,
-              disabled: true,
-            },
-            {
-              label: "Herkomst data",
-              id: "metadata_lineage",
-              name: "metadataLineage",
-              type: "text",
-              multiLine: true,
-              required: false,
-              isNested: true,
-              infoText:
-                "Beschrijft de herkomst van de metadataset. Het is mogelijk om tekst op te maken met Markdown in dit veld.",
-              disabled: true,
-            },
-            {
-              label: "Laatst bijgewerkt",
-              id: "metadata_updated",
-              name: "metadataUpdated",
-              type: "text",
-              required: false,
-              disabled: true,
-            },
-            {
-              label: "Meer informatie",
-              id: "metadata_link",
-              name: "MetadataLink",
-              type: "text",
-              required: false,
-              infoText: "Link naar metadatacatalogus met meer informatie",
-              disabled: true,
             },
           ],
         },

@@ -1,26 +1,12 @@
 import json
 
 from import_export import resources, fields, widgets
-from .models import Category, Source, Layer, Map, Theme, Viewer, Dataset, Metadataset, MapLayer, MapCategory
+from .models import Category, Source, Layer, Map, Viewer, Metadataset, MapLayer, MapCategory
 
 
 class CategoryResource(resources.ModelResource):
     class Meta:
         model = Category
-        exclude = ('id', )
-        import_id_fields = ('slug', )
-
-
-class ThemeResource(resources.ModelResource):
-    class Meta:
-        model = Theme
-        exclude = ('id', )
-        import_id_fields = ('slug', )
-
-
-class DatasetResource(resources.ModelResource):
-    class Meta:
-        model = Dataset
         exclude = ('id', )
         import_id_fields = ('slug', )
 
@@ -49,12 +35,6 @@ class LayerResource(resources.ModelResource):
         column_name='layer_type',
         attribute='layer_type',
         widget=widgets.ForeignKeyWidget(Category, field='slug'))
-
-    dataset = fields.Field(
-        column_name='dataset',
-        attribute='dataset',
-        widget=widgets.ForeignKeyWidget(Dataset, field='slug')
-    )
 
     class Meta:
         model = Layer

@@ -1,16 +1,5 @@
-import django_filters
 from django.db.models import Q
 from rest_framework import filters
-
-from webservice.models import Dataset
-
-
-class DatasetFilter(django_filters.FilterSet):
-    theme_id = django_filters.NumberFilter(field_name='themes__id', lookup_expr='exact')
-
-    class Meta:
-        model = Dataset
-        fields = ['theme_id']
 
 
 class MultipleFieldsFilter(filters.BaseFilterBackend):
