@@ -217,7 +217,8 @@ def _get_config(request):
             'sortLayer': config.get('FEATURE_SORT_LAYER'),
             'compareLayers': config.get('FEATURE_COMPARE_LAYERS'),
             'newTables': config.get('FEATURE_NEW_TABLES'),
-            'oldLinkedDataAndTemplate': config.get('FEATURE_OLD_LINKED_DATA_AND_TEMPLATE')
+            'oldLinkedDataAndTemplate': config.get('FEATURE_OLD_LINKED_DATA_AND_TEMPLATE'),
+            'featureLayerInternalVisibility': config.get('FEATURE_LAYER_INTERNAL_VISIBILITY'),
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
     }

@@ -1,6 +1,7 @@
 import uuid
 from os import path
 
+from constance import config
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -687,9 +688,12 @@ source: new ol.source.TileWMS({{
         return self.layer_source.url if self.layer_source else ''
 
     def is_accessible_by(self, user, request):
-        if not is_internal(request):
-            if self.closed_dataset:
-                return False
+        if (
+                config.FEATURE_LAYER_INTERNAL_VISIBILITY and  # noqa
+                self.closed_dataset and
+                not is_internal(request)
+        ):
+            return False
 
         if not user.is_authenticated:
             if not self.login_required and not self.atlas_groups.exists():
@@ -704,7 +708,11 @@ source: new ol.source.TileWMS({{
         return any(group for group in self.atlas_groups.all() if group in user_groups)
 
     def is_mutable_by(self, user, request):
-        if not is_internal(request) and self.closed_dataset:
+        if (
+                config.FEATURE_LAYER_INTERNAL_VISIBILITY and  # noqa
+                self.closed_dataset and
+                not is_internal(request)
+        ):
             return False
 
         if not user.is_authenticated:
