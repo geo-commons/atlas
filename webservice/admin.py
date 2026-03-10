@@ -4,9 +4,8 @@ from import_export.formats import base_formats
 from reversion.admin import VersionAdmin
 
 from .forms import LayerForm, LinkedDataForm
-from .models import Source, Category, Layer, Template, Map, MapLayer, LinkedData, Viewer, Dataset, Theme
-from .resources import CategoryResource, LayerResource, SourceResource, MapResource, ThemeResource, \
-    DatasetResource
+from .models import Source, Category, Layer, Template, Map, MapLayer, LinkedData, Viewer
+from .resources import CategoryResource, LayerResource, SourceResource, MapResource
 
 
 class LinkedDataInline(admin.TabularInline):
@@ -125,14 +124,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
         }),
         ('Metadata', {
             'fields': (
-                'meta_name',
-                'meta_description',
-                'meta_lineage',
-                'meta_org',
-                'meta_contact',
-                'meta_updated',
-                'meta_link',
-                'dataset'
+                'metadataset',
             )
         }),
         ('Toegang', {
@@ -172,26 +164,8 @@ class ViewerAdmin(VersionAdmin, admin.ModelAdmin):
     list_editable = ('ordering',)
 
 
-class DatasetAdmin(VersionAdmin, admin.ModelAdmin):
-    list_display = ('title',)
-    list_display_links = ('title',)
-
-    resource_classes = [DatasetResource]
-    prepopulated_fields = {'slug': ('title',)}
-
-
-class ThemeAdmin(VersionAdmin, admin.ModelAdmin):
-    list_display = ('title',)
-    list_display_links = ('title',)
-
-    resource_classes = [ThemeResource]
-    prepopulated_fields = {'slug': ('title',)}
-
-
 admin.site.register(Source, SourceAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Map, MapAdmin)
 admin.site.register(Viewer, ViewerAdmin)
-admin.site.register(Dataset, DatasetAdmin)
-admin.site.register(Theme, ThemeAdmin)

@@ -34,9 +34,6 @@ api_router.register(
     r'metadatasets', viewsets.MetadatasetViewSet, basename='metadatasets'
 )
 api_router.register(
-    r'themes', viewsets.ThemeViewSet, basename='themes'
-)
-api_router.register(
     r'logs', viewsets.LogViewSet, basename='logs'
 )
 

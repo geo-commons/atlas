@@ -19,12 +19,12 @@ from user_management.models import AtlasGroup, AtlasUser
 from webservice.mixins import DataExportImportMixin, DuplicateMixin, DeleteMixin, FileUploadMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
-from .models import Category, Drawing, Source, Layer, Theme, Viewer, Map, Metadataset, TopicCategory, RoleType, \
+from .models import Category, Drawing, Source, Layer, Viewer, Map, Metadataset, TopicCategory, RoleType, \
     UpdateMethodType, AuthorizationLevelType, StatusType, AccessConstraintsType, OtherConstraintsType
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, \
-    ThemeSerializer, ThemePatchOrCreateSerializer, LogSerializer, ViewerSerializer, \
-    UserCreateUpdateSerializer, MetadatasetSerializer, MetadatasetPublicSerializer
+    LogSerializer, ViewerSerializer, UserCreateUpdateSerializer, MetadatasetSerializer, \
+    MetadatasetPublicSerializer
 
 
 class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.ModelViewSet):
@@ -156,21 +156,6 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
             raise NotFound(f"No Metadataset matches the given query: {lookup_field_value}")
 
         return obj
-
-
-class ThemeViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'patch', 'delete']
-    permission_classes = [permissions.IsAdminUser]
-    queryset = Theme.objects.all()
-    serializer_class = ThemeSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
-
-    search_fields = ['title']
-
-    def get_serializer_class(self):
-        if self.action in ['partial_update', 'update', 'create']:
-            return ThemePatchOrCreateSerializer
-        return ThemeSerializer
 
 
 class ViewerViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):

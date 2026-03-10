@@ -29,8 +29,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
-import ThemeCreateUpdate from "@/admin/pages/ThemeCreateUpdate.vue";
-import ThemeList from "@/admin/pages/ThemeList.vue";
 import MetadatasetList from "@/admin/pages/MetadatasetList.vue";
 import MetadatasetCreateUpdate from "@/admin/pages/MetadatasetCreateUpdate.vue";
 import LogList from "@/admin/pages/LogList.vue";
@@ -214,16 +212,6 @@ const routes = [
     path: "/authorizations/update/:id",
     component: AuthorizationCreateUpdate,
     meta: { title: "Autorisatie bewerken", menu: true, breadcrumb: { authorizations: { title: "Autorisaties" } } },
-  },
-  {
-    path: "/themes",
-    component: ThemeList,
-    meta: { title: "Thema's", menu: true },
-  },
-  {
-    path: "/themes/update/:id",
-    component: ThemeCreateUpdate,
-    meta: { title: "Thema bewerken", menu: true, breadcrumb: { themes: { title: "Thema's" } } },
   },
   {
     path: "/metadatasets",

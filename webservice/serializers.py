@@ -1,10 +1,9 @@
-from django.utils.text import slugify
 from rest_framework import serializers
 
 from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, MapCategory, Source, Layer, Template, Dataset, Theme, \
+from .models import Category, Drawing, LinkedData, Map, MapLayer, MapCategory, Source, Layer, Template, \
     Viewer, Metadataset
 from .util import safe_float_or_null
 
@@ -231,31 +230,6 @@ class TemplateSerializer(serializers.ModelSerializer):
                   'headers', 'fields', 'template', 'ordering', 'source_id']
 
 
-class MetadataSerializerField(serializers.Field):
-
-    def to_representation(self, value):
-        return {
-            'name': value.meta_name,
-            'description': value.meta_description,
-            'organization': value.meta_org,
-            'updated': value.meta_updated,
-            'link': value.meta_link,
-            'lineage': value.meta_lineage,
-            'contact': value.meta_contact
-        }
-
-    def to_internal_value(self, data):
-        return {
-            'meta_name': data['name'],
-            'meta_description': data['description'],
-            'meta_org': data['organization'],
-            'meta_updated': data['updated'],
-            'meta_lineage': data['lineage'],
-            'meta_contact': data['contact'],
-            'meta_link': data['link'],
-        }
-
-
 class MetadatasetPublicSerializer(serializers.ModelSerializer):
     """Serializer for external/public API calls - excludes internal email addresses and sensitive fields"""
     layers = serializers.SerializerMethodField()
@@ -348,7 +322,6 @@ class LayerSerializer(serializers.ModelSerializer):
         'get_search_properties')
     search_terms = serializers.SerializerMethodField(
         'get_search_terms')
-    metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True)
     related_tables = serializers.SerializerMethodField('get_related_tables')
     templates = TemplateSerializer(many=True)
@@ -423,14 +396,12 @@ class LayerSerializer(serializers.ModelSerializer):
             'display_properties',
             'search_properties',
             'search_terms',
-            'metadata',
             'linked_data',
             'templates',
             'atlas_groups',
             'atlas_write_groups',
             'published',
             'templated_properties',
-            'dataset',
             'metadataset',
             'is_filterable_in_legend',
             'authenticated_can_mutate',
@@ -444,7 +415,6 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         source='layer_type', queryset=Category.objects.all(), allow_null=True)
     source_id = serializers.PrimaryKeyRelatedField(
         source='layer_source', queryset=Source.objects.all())
-    metadata = MetadataSerializerField(source='*')
     linked_data = LinkedDataSerializer(many=True, required=False)
     templates = TemplateSerializer(many=True, required=False)
     display_properties = serializers.ListField(
@@ -606,7 +576,6 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'templated_properties',
             'legend_url',
             'search_terms',
-            'metadata',
             'login_required',
             'closed_dataset',
             'ordering',
@@ -615,7 +584,6 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'published',
             'linked_data',
             'templates',
-            'dataset',
             'metadataset',
             'is_filterable_in_legend',
             'is_exportable',
@@ -691,76 +659,6 @@ class DuplicateSettingsSerializer(serializers.Serializer):
 
 class DeleteSettingsSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField())
-
-
-class BasicThemeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Theme
-        fields = ['id', 'title', 'slug']
-
-
-class DatasetSerializer(serializers.ModelSerializer):
-    layers = LayerSerializer(many=True)
-    themes = BasicThemeSerializer(many=True, read_only=True)
-    dataset_category = CategorySerializer(many=False, read_only=True)
-
-    class Meta:
-        model = Dataset
-        fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture',
-                  'description',
-                  'title', 'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers',
-                  'themes', 'slug', 'thumbnail', 'published', 'show_in_overview']
-
-
-class DatasetPatchOrCreateSerializer(serializers.ModelSerializer):
-    themes = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), many=True)
-
-    class Meta:
-        model = Dataset
-        fields = ['organization', 'dataset_category', 'source_description', 'purpose_of_manufacture', 'description',
-                  'title',
-                  'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'themes', 'id',
-                  'slug', 'published', 'show_in_overview']
-        read_only_fields = ['id']
-
-
-class BasicDatasetSerializer(serializers.ModelSerializer):
-    layers = LayerSerializer(many=True)
-
-    class Meta:
-        model = Dataset
-        fields = ['id', 'organization', 'dataset_category', 'source_description', 'purpose_of_manufacture',
-                  'description', 'title',
-                  'contact', 'data_owner', 'data_controller', 'last_updated', 'update_frequency', 'layers', 'slug',
-                  'published', 'show_in_overview']
-
-
-class ThemeSerializer(serializers.ModelSerializer):
-    datasets = BasicDatasetSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Theme
-        fields = ['id', 'title', 'datasets', 'slug']
-
-
-class ThemePatchOrCreateSerializer(serializers.ModelSerializer):
-    datasets = serializers.PrimaryKeyRelatedField(queryset=Dataset.objects.all(), many=True)
-
-    class Meta:
-        model = Theme
-        fields = ['title', 'datasets', 'id', 'slug']
-        read_only_fields = ['slug', 'id']
-
-    def update(self, instance, validated_data):
-        if 'title' in validated_data and validated_data['title'] != instance.title:
-            instance.slug = slugify(validated_data['title'])
-
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
-
-        return instance
 
 
 class ViewerSerializer(serializers.ModelSerializer):

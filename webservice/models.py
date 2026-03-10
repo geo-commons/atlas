@@ -8,7 +8,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
-from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
 
@@ -111,97 +110,6 @@ class Source(models.Model):
             'source_type': self.source_type,
             'url': self.url,
         }
-
-
-class Theme(models.Model):
-    title = models.CharField('Naam', max_length=128, null=False)
-    slug = models.SlugField('Kort kenmerk', null=False, unique=True,
-                            help_text='Een uniek kort kenmerk voor het Thema in Atlas', editable=True)
-
-    class Meta:
-        verbose_name = 'Theme'
-        verbose_name_plural = 'Themes'
-        ordering = ['title']
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-
-
-class DatasetManager(models.Manager):
-    def for_request(self, request):
-        if request.user.is_anonymous:
-            return self.filter(published=True, show_in_overview=True)
-
-        if request.user.is_authenticated and request.user.is_superuser:
-            return self.all()
-
-        return self.filter(published=True)
-
-
-class Dataset(models.Model):
-    objects = models.Manager()
-    authorized = DatasetManager()
-
-    title = models.CharField('Naam', max_length=128,
-                             help_text="De naam van de dataset")
-    slug = models.SlugField('Kort kenmerk', null=False, unique=True,
-                            help_text='Een uniek kort kenmerk voor de Dataset in Atlas', editable=True)
-    description = models.TextField(
-        'Beschrijving', null=True, help_text="Het is mogelijk om tekst op te maken met Markdown in dit veld",
-        blank=True)
-    source_description = models.TextField(
-        'Bron omschrijving', null=True,
-        help_text="Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld",
-        blank=True)
-    organization = models.CharField(
-        'Organisatie', max_length=128, null=True, blank=True)
-    contact = models.CharField(
-        'Contactpersoon', max_length=128, null=True, blank=True)
-    data_owner = models.CharField(
-        'Eigenaar van de data', max_length=128, null=True, blank=True)
-    data_controller = models.CharField(
-        'Data beheerder', max_length=128, null=True, blank=True)
-    last_updated = models.DateTimeField(
-        'Laatste update', null=True, blank=True)
-    update_frequency = models.CharField(
-        'Update hoeveelheid', max_length=128, null=True, blank=True)
-    purpose_of_manufacture = models.CharField(
-        'Doel van de vervaardiging', max_length=128, null=True, blank=True)
-    themes = models.ManyToManyField(Theme, related_name='datasets')
-    dataset_category = models.ForeignKey(
-        Category, verbose_name='Categorie', on_delete=models.SET_NULL,
-        blank=True, null=True)
-    thumbnail = models.ImageField(
-        upload_to='thumbnails/',
-        blank=True,
-        null=True,
-        help_text="Selecteer een afbeelding om als thumbnail te gebruiken"
-    )
-
-    published = models.BooleanField('Gepubliceerd',
-                                    help_text="Markeer dit veld als Gepubliceerd om de dataset te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de dataset te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.",
-                                    default=False)
-    show_in_overview = models.BooleanField('Toon in overzicht weergave',
-                                           help_text="Schakel dit veld in om de dataset weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de dataset te verbergen in het overzicht, zelfs als deze gepubliceerd is.",
-                                           default=True)
-
-    class Meta:
-        verbose_name = 'Dataset'
-        verbose_name_plural = 'Datasets'
-        ordering = ['title']
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
 
 
 class MetadatasetManager(models.Manager):
@@ -465,25 +373,6 @@ class Layer(models.Model):
     format = models.CharField(
         'Formaat', max_length=128, choices=FORMAT_TYPES, default=FORMAT_PNG)
 
-    # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on the meta_* fields
-    # so inform them when changing.
-    meta_name = models.CharField(
-        'Naam', max_length=128, blank=True, null=True, )
-    meta_description = models.TextField('Omschrijving', blank=True, null=True,
-                                        help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
-    meta_lineage = models.TextField('Bron', blank=True, null=True,
-                                    help_text='Beschrijft de herkomst van de dataset. Het is mogelijk om tekst op te maken met Markdown in dit veld')
-    meta_org = models.CharField('Organisatie', max_length=128, blank=True, null=True,
-                                help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
-    meta_contact = models.CharField(
-        'Contactpersoon', max_length=200, blank=True, null=True)
-    meta_updated = models.CharField(
-        'Laatst bijgewerkt', max_length=128, blank=True, null=True,
-        help_text='Het is mogelijk om tekst op te maken met Markdown in dit veld')
-    meta_link = models.URLField(
-        'Meer informatie', max_length=200, blank=True, null=True,
-        help_text='Link naar metadatacatalogus met meer informatie')
-
     opacity = models.DecimalField(
         'Transparantie', max_digits=2, decimal_places=1, default=0.9,
         validators=[MinValueValidator(0), MaxValueValidator(1)])
@@ -591,9 +480,6 @@ class Layer(models.Model):
         help_text='Vul in om de laag inactief te maken wanneer de weergave buiten het zoomniveau ligt.')
     zoom_max = models.DecimalField(
         'Zoomniveau maximum', blank=True, default=None, null=True, max_digits=5, decimal_places=2)
-
-    dataset = models.ForeignKey(
-        Dataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
 
     metadataset = models.ForeignKey(
         Metadataset, on_delete=models.SET_NULL, null=True, related_name="layers", blank=True)
@@ -775,14 +661,6 @@ source: new ol.source.TileWMS({{
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
             'search_terms': self._search_terms.split('\r\n') if self._search_terms else [],
-            'metadata': {
-                'description': self.meta_description,
-                'lineage': self.meta_lineage,
-                'organization': self.meta_org,
-                'contact': self.meta_contact,
-                'updated': self.meta_updated,
-                'link': self.meta_link
-            },
             'metadataset': {
                 'id': self.metadataset.id,
                 'title': self.metadataset.title,

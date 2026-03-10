@@ -16,10 +16,9 @@ from authz.models import Authorization
 from authz.resources import AuthorizationResource
 from tables.models import Table as OldTable
 from tables.resources import TableResource as OldTableResource
-from webservice.models import Category, Layer, Map, Source, Theme, Viewer, Dataset as Datasets, Metadataset
+from webservice.models import Category, Layer, Map, Source, Viewer, Metadataset
 from table.models import Table
-from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ThemeResource, ViewerResource, \
-    DatasetResource, MetadatasetResource
+from .resources import CategoryResource, LayerResource, MapResource, SourceResource, ViewerResource, MetadatasetResource
 from table.resources import TableResource
 from .serializers import DataExportSettingsSerializer, DuplicateSettingsSerializer, DeleteSettingsSerializer
 
@@ -33,8 +32,6 @@ class ResourceMappingMixin:
         Source: SourceResource,
         Map: MapResource,
         Category: CategoryResource,
-        Theme: ThemeResource,
-        Datasets: DatasetResource,
         Metadataset: MetadatasetResource,
         Viewer: ViewerResource,
         OldTable: OldTableResource,
