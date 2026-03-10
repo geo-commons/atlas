@@ -720,6 +720,18 @@ source: new ol.source.TileWMS({{
         return any(group for group in self.atlas_write_groups.all() if group in user_groups)
 
     def to_dict(self, user, request):
+        from table.models import Table
+
+        related_tables = list(self.related_tables.all())
+        if request is not None:
+            authorized_table_ids = Table.authorized.ids_for_request(request)
+            related_tables = [table for table in related_tables if table.pk in authorized_table_ids]
+
+        layer_table_mappings = {
+            relation.to_table_id: relation.field_mapping
+            for relation in self.layer_table_relations.all()
+        }
+        
         return {
             'id': self.slug,
             'internal_id': self.id,
@@ -800,7 +812,15 @@ source: new ol.source.TileWMS({{
             'is_filterable_in_legend': self.is_filterable_in_legend,
             'can_write': self.is_mutable_by(user, request),
             'is_exportable': self.is_exportable,
-            'related_tables': [item.to_dict(from_layer=self) for item in self.related_tables.all()],
+            'related_tables': [
+                item.to_dict(
+                    from_layer=self,
+                    request=request,
+                    field_mapping=layer_table_mappings.get(item.pk),
+                    field_mapping_resolved=True,
+                )
+                for item in related_tables
+            ],
         }
 
     class Meta:

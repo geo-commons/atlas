@@ -382,6 +382,32 @@ function getSections() {
         },
       ],
     },
+    portal: {
+      label: "Portaal",
+      questions: [
+        {
+          label: "Toon in Portaal",
+          id: "show_in_portal",
+          name: "ShowInPortal",
+          type: "checkbox",
+          required: false,
+        },
+      ],
+    },
+    access: {
+      label: "Toegang",
+      questions: [
+        {
+          label: "Vereis inlog voor deze tabel",
+          id: "login_required",
+          name: "LoginRequired",
+          type: "checkbox",
+          required: false,
+          infoText:
+            "De tabel is alleen zichtbaar voor ingelogde gebruikers, ook als deze gekoppeld is aan andere tabellen.",
+        },
+      ],
+    },
     tables: {
       label: "Relaties",
       questions: [

@@ -161,14 +161,17 @@
                 <PortalCard
                   :object-type="PortalCardObjectType.Table"
                   :title="table.title"
-                  :summary="table.description"
+                  :summary="null"
                   :thumbnail="null"
                   :show-thumbnail="false"
                   :object-url="`/tables/${table.slug}`"
                   :last-updated="null"
                   :category="null"
                 />
-                <span v-if="isInternalTable(table) && user" class="tw-absolute tw-top-3 tw-right-3 tw-z-10">
+                <span
+                  v-if="table.show_in_portal && table.login_required && user"
+                  class="tw-absolute tw-top-3 tw-right-3 tw-z-10"
+                >
                   <VisibilityIndicator visibility="Intern" />
                 </span>
               </div>
@@ -190,9 +193,9 @@ import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
 import { PortalCardObjectType } from "@/portal/components/shared/portalCardShared";
 import { useGlobalStore, type PortalAvailableLinks } from "@/stores";
 import { APIResponseType } from "@/types/APIResponseType";
-import type { IPortalTable } from "@/types/table";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { IRelatedTable } from "@/types/related-table";
 
 interface Map {
   id: number;
@@ -235,7 +238,7 @@ const errors = ref({
 });
 const metadatasets = ref<Metadataset[]>([]);
 const maps = ref<Map[]>([]);
-const tables = ref<IPortalTable[]>([]);
+const tables = ref<IRelatedTable[]>([]);
 const maxNrItems = ref(4);
 const embedUrl = ref("");
 
@@ -301,10 +304,9 @@ const getMaps = async (): Promise<APIResponseType<Map> | null> => {
   }
 };
 
-const getTables = async (): Promise<APIResponseType<IPortalTable> | null> => {
+const getTables = async (): Promise<APIResponseType<IRelatedTable> | null> => {
   try {
-    // TODO: replace with new tables
-    const result = await fetch("/atlas/api/v1/tables_old/?page_size=12", {
+    const result = await fetch("/atlas/api/v1/tables/?page_size=12&show_in_portal=True", {
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
     });
@@ -325,10 +327,6 @@ const getTables = async (): Promise<APIResponseType<IPortalTable> | null> => {
 
 const isInternalMetadataset = (metadataset: Metadataset): boolean => {
   return metadataset.authorization_level === "internal" || !metadataset.show_in_overview;
-};
-
-const isInternalTable = (table: IPortalTable): boolean => {
-  return !!table.login_required || !!table.only_internal;
 };
 
 const onSearch = (searchQuery: string): void => {

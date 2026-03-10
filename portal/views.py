@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from constance import config
 from homepage.views import _get_config, _get_user
-from tables.models import Table
+from table.models import Table
 from webservice.models import Map, Metadataset
 
 
@@ -20,7 +20,7 @@ def _get_portal_available_links(request):
     else:
         metadatasets = Metadataset.authorized.for_request(request).exists()
 
-    tables = Table.authorized.for_request(request).exists()
+    tables = Table.authorized.for_request(request).filter(show_in_portal=True).exists()
 
     return {'maps': maps, 'metadatasets': metadatasets, 'tables': tables}
 

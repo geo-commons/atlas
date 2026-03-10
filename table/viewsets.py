@@ -11,11 +11,14 @@ from webservice.mixins import DataExportImportMixin, DeleteMixin, DuplicateMixin
 class TableViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = TableSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    queryset = Table.objects.all()
     search_fields = ['title']
+    filterset_fields = ['show_in_portal']
+    
+    def get_queryset(self):
+        return Table.authorized.for_request(self.request)
 
     def get_object(self):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         lookup_field_value = self.kwargs.get('pk')
 
         # first check if the lookup field is a slug

@@ -58,6 +58,6 @@ if settings.DEBUG:
 
 urlpatterns += [
     path('atlas/', include('homepage.urls'), name='homepage'),
-    path('tables/', include('tables.urls'), name='tables'),
+    path('tables-old/', include('tables.urls'), name='tables_old'),
     path('', include('portal.urls'), name='portal')
 ]

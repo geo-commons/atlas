@@ -17,9 +17,23 @@ from webservice.models import Layer, Map, Viewer
 logger = logging.getLogger(__name__)
 
 
+LAYER_PREFETCH_FIELDS = (
+    'layer_source',
+    'layer_type',
+    'linked_data',
+    'templates',
+    'related_tables',
+    'related_tables__source',
+    'related_tables__tables',
+    'related_tables__tables__source',
+    'related_tables__outgoing_table_relations',
+    'layer_table_relations',
+)
+
+
 @xframe_options_exempt
 def embed(request):
-    authorized_layers = Layer.authorized.for_request(request).select_related('metadataset')
+    authorized_layers = _layers_with_prefetch(request).select_related('metadataset')
     visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
     user = _get_user(request)
 
@@ -38,9 +52,7 @@ def embed(request):
 @xframe_options_exempt
 @ensure_csrf_cookie
 def v3(request, theme_slug=''):
-    authorized_layers = Layer.authorized.for_request(request).prefetch_related(
-        'layer_source', 'layer_type', 'linked_data', 'templates'
-    ).select_related('metadataset')
+    authorized_layers = _layers_with_prefetch(request).select_related('metadataset')
     user = _get_user(request)
 
     context = {}
@@ -102,9 +114,7 @@ def v3_admin(request):
     if not request.user.is_superuser:
         return redirect(reverse('admin:login'))
 
-    visible_layers = Layer.authorized.for_request(request).prefetch_related(
-        'layer_source', 'layer_type', 'linked_data', 'templates'
-    )
+    visible_layers = _layers_with_prefetch(request)
 
     config = _get_config(request)
     config = {
@@ -126,9 +136,7 @@ def v3_admin(request):
 
 @xframe_options_exempt
 def v3_map(request, slug):
-    visible_layers = Layer.authorized.for_request(request).prefetch_related(
-        'layer_source', 'layer_type', 'linked_data', 'templates'
-    )
+    visible_layers = _layers_with_prefetch(request)
     visible_map = get_object_or_404(
         Map.authorized.for_request(request), slug=slug)
     user = _get_user(request)
@@ -183,6 +191,10 @@ def _default_layers():
             }
         },
     ]
+
+
+def _layers_with_prefetch(request):
+    return Layer.authorized.for_request(request).prefetch_related(*LAYER_PREFETCH_FIELDS)
 
 
 def _get_config(request):

@@ -20531,7 +20531,9 @@
       "detail_endpoint": "api/cities?id={{id}}",
       "list_property": "results",
       "detail_property": "results[0]",
-      "list_display_properties": ["city"]
+      "list_display_properties": ["city"],
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -20549,7 +20551,9 @@
       "page_param": "_page",
       "items_per_page_param": "_limit",
       "total_items_page_property": "total",
-      "list_display_properties": ["city", "district"]
+      "list_display_properties": ["city", "district"],
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
@@ -20564,7 +20568,9 @@
       "list_endpoint": "nested/streets?city={{city}}&district={{district}}",
       "detail_endpoint": "nested/streets/{{id}}",
       "list_property": "results.data[0]",
-      "list_display_properties": ["city", "district", "street"]
+      "list_display_properties": ["city", "district", "street"],
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -20585,7 +20591,9 @@
         "street",
         "firstName",
         "lastName"
-      ]
+      ],
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
@@ -20633,7 +20641,9 @@
         "huisnummer",
         "postcode",
         "woonplaats"
-      ]
+      ],
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -20652,7 +20662,9 @@
       "detail_cql_filters": [
         { "key": "subbuurt", "cql_filter": "subbuurt in ('{{subbuurt}}')" }
       ],
-      "list_display_properties": ["wijk", "buurt", "subbuurt"]
+      "list_display_properties": ["wijk", "buurt", "subbuurt"],
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
@@ -20665,7 +20677,9 @@
       "source_type": "REST",
       "fields": ["id", "city", "district", "street", "houseNumber"],
       "list_endpoint": "raw/addresses?city={{city}}&district={{district}}&street={{street}}",
-      "detail_endpoint": "raw/addresses/{{id}}"
+      "detail_endpoint": "raw/addresses/{{id}}",
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -20690,7 +20704,9 @@
       "list_property": "results",
       "detail_property": "results[0]",
       "list_display_properties": ["adressen[0].type", "rsin", "street"],
-      "detail_display_properties": ["adressen[0].type", "adressen"]
+      "detail_display_properties": ["adressen[0].type", "adressen"],
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
@@ -20710,7 +20726,9 @@
       "items_per_page_param": "resultatenPerPagina",
       "total_items_page_property": "totaal",
       "list_display_properties": ["kvkNummer", "type", "naam"],
-      "detail_display_properties": ["kvkNummer", "type", "naam"]
+      "detail_display_properties": ["kvkNummer", "type", "naam"],
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -20746,7 +20764,9 @@
       "request_body": "{\n  \"latitude\": \"{{x}}\", \n  \"longitude\": \"{{y}}\"\n}",
       "template_fields": {
         "Regels op de kaart": "https://omgevingswet.overheid.nl/regels-op-de-kaart/documenten/{{uriIdentificatie}}"
-      }
+      },
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
@@ -20787,7 +20807,9 @@
         "naam",
         "adres",
         "vestigingsnummer"
-      ]
+      ],
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -20838,7 +20860,9 @@
         "sbiActiviteiten",
         "handelsnamen",
         "_embedded"
-      ]
+      ],
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
@@ -20867,7 +20891,9 @@
       "list_cql_filters": {},
       "detail_cql_filters": {},
       "list_display_properties": ["rsin", "rechtsvorm"],
-      "detail_display_properties": ["rsin", "rechtsvorm"]
+      "detail_display_properties": ["rsin", "rechtsvorm"],
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -20923,7 +20949,9 @@
         "handelsnamen",
         "adressen",
         "websites"
-      ]
+      ],
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
@@ -20969,7 +20997,9 @@
         "aantalNietCommercieleVestigingen",
         "totaalAantalVestigingen",
         "vestigingen"
-      ]
+      ],
+      "login_required": false,
+      "show_in_portal": true
     }
   },
   {
@@ -21026,7 +21056,9 @@
         "adressen",
         "websites",
         "sbiActiviteiten"
-      ]
+      ],
+      "login_required": true,
+      "show_in_portal": true
     }
   },
   {
