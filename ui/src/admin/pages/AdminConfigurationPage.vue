@@ -254,6 +254,14 @@ export default {
               infoText:
                 "Zet deze feature aan om gebruik te maken van de oude gekoppelde data en templates functionaliteit. Zet deze uit om over te stappen op de nieuwe tabellen functionaliteit.",
             },
+            {
+              label: "Interne zichtbaarheid lagen",
+              id: "FEATURE_LAYER_INTERNAL_VISIBILITY",
+              name: "featureLayerInternalVisibility",
+              type: "checkbox",
+              infoText:
+                "Sta toe dat lagen ingesteld worden als alleen binnen het interne netwerk zichtbaar (door middel van IP-ranges). De IP-ranges moeten buiten het beheerpaneel om geconfigureerd worden. Let op: bij uitschakelen van deze functionaliteit verdwijnt bij alle lagen de markering ‘intern zichtbaar’.",
+            },
           ],
         },
       };

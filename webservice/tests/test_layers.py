@@ -2,6 +2,7 @@ from unittest.mock import patch, Mock
 
 from django.test import TestCase
 from django.test.client import RequestFactory
+from constance.test import override_config
 
 from webservice.models import Layer, Category
 from webservice.tests.utils import create_test_user, create_test_group, create_test_layer
@@ -130,6 +131,14 @@ class TestLayerReadAuthorizations(TestCase):
                 "expected": False,
             },
             {
+                "desc": "Internal layer accessible by external user if feature flag is off",
+                "mock_is_internal": False,
+                "closed_dataset": True,
+                "user_authenticated": False,
+                "internal_layer_feature_flag": False,
+                "expected": True,
+            },
+            {
                 "desc": "Layer accessible by anonymous user if public and no login required",
                 "user_authenticated": False,
                 "login_required": False,
@@ -190,6 +199,7 @@ class TestLayerReadAuthorizations(TestCase):
                 else:
                     request.user = Mock(is_authenticated=False)
 
+
                 self.layer.closed_dataset = case.get("closed_dataset", False)
                 self.layer.login_required = case.get("login_required", False)
                 self.layer.atlas_groups.set(
@@ -197,7 +207,9 @@ class TestLayerReadAuthorizations(TestCase):
                 )
                 self.layer.save()
 
-                accessible = self.layer.is_accessible_by(request.user, request)
+                internal_layer_feature_flag = case.get("internal_layer_feature_flag", True)
+                with override_config(FEATURE_LAYER_INTERNAL_VISIBILITY=internal_layer_feature_flag):
+                    accessible = self.layer.is_accessible_by(request.user, request)
                 self.assertEqual(accessible, case["expected"])
 
 

@@ -317,6 +317,7 @@ CONSTANCE_CONFIG = {
     'FEATURE_COMPARE_LAYERS': (True, ('Kaartlaagvergelijk functionaliteit op hoofdkaart')),
     'FEATURE_NEW_TABLES': (False, ('Gebruik de nieuwe tabellen functionaliteit')),
     'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE': (True, ('Gebruik de oude gekoppelde data en templates')),
+    'FEATURE_LAYER_INTERNAL_VISIBILITY': (True, ('Interne zichtbaarheid lagen')),
     'ORGANIZATION_IMAGE': (
         '', 'Organisatie header afbeelding', 'image_field'),
     'ORGANIZATION_PRIMARY_COLOR': (
@@ -356,7 +357,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'FEATURE_DISABLE_ADMIN1',
         'FEATURE_COMPARE_LAYERS',
         'FEATURE_NEW_TABLES',
-        'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE'
+        'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE',
+        'FEATURE_LAYER_INTERNAL_VISIBILITY',
     ),
     '5. Portaal configuratie': (
         'ORGANIZATION_IMAGE',
