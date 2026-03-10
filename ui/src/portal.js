@@ -16,10 +16,20 @@ import PortalMapsPage from "@/portal/pages/PortalMapsPage.vue";
 import PortalMetadatasetsPage from "@/portal/pages/PortalMetadatasetsPage.vue";
 import PortalMetadatasetDetailPage from "@/portal/pages/PortalMetadatasetDetailPage.vue";
 import PortalTablesPage from "@/portal/pages/PortalTablesPage.vue";
+import PortalTableDetailPage from "@/portal/pages/PortalTableDetailPage.vue";
 import PortalSearchPage from "@/portal/pages/PortalSearchPage.vue";
 import PrimeVue from "primevue/config";
-import { AtlasPresetApp } from "@/utils/theme-preset";
+import { createAtlasPresetPortal } from "@/utils/theme-preset";
 import { ToastService } from "primevue";
+import { defineRule } from "vee-validate";
+import { required } from "@vee-validate/rules";
+
+defineRule("required", (value) => {
+  if (!required(value)) {
+    return "dit veld is verplicht";
+  }
+  return true;
+});
 
 const routes = [
   {
@@ -32,6 +42,16 @@ const routes = [
   },
   { path: "/maps", component: PortalMapsPage, meta: { breadcrumb: "Kaarten", menu: true } },
   { path: "/tables", component: PortalTablesPage, meta: { breadcrumb: "Tabellen", menu: true } },
+  {
+    path: "/tables/:slug",
+    name: "table-details",
+    component: PortalTableDetailPage,
+    meta: {
+      breadcrumb: "Tabel",
+      menu: true,
+      parentName: "Tabellen",
+    },
+  },
   { path: "/search", component: PortalSearchPage, meta: { breadcrumb: "Zoeken", menu: true } },
   {
     path: "/metadatasets",
@@ -65,11 +85,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = JSON.parse(document.querySelector("#app-data").innerHTML);
   const pinia = createPinia();
 
+  const { organization_primary_color, organization_text_color, organization_title_color } = data.config;
+
   // Note: darkModeSelector is set to "light" until we implement dark mode.
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPresetApp,
+        preset: createAtlasPresetPortal(organization_primary_color, organization_title_color, organization_text_color),
         options: {
           prefix: "prime",
           darkModeSelector: "light",

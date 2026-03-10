@@ -171,14 +171,17 @@
                 :object-type="PortalCardObjectType.Table"
                 :layout-mode="viewMode"
                 :title="table.title"
-                :summary="table.description"
+                :summary="null"
                 :thumbnail="null"
                 :show-thumbnail="false"
                 :object-url="`/tables/${table.slug}`"
                 :last-updated="null"
                 :category="null"
               />
-              <span v-if="isInternalTable(table) && user" class="tw-absolute tw-top-3 tw-right-3 tw-z-10">
+              <span
+                v-if="table.show_in_portal && table.login_required && user"
+                class="tw-absolute tw-top-3 tw-right-3 tw-z-10"
+              >
                 <VisibilityIndicator visibility="Intern" />
               </span>
             </div>
@@ -235,8 +238,8 @@ import { usePortalQueryParams } from "@/portal/composables/usePortalQueryParams"
 import { useGlobalStore } from "@/stores";
 import { topicCategoryLabels } from "@/types/TopicCategory";
 import type { TopicCategoryId } from "@/types/TopicCategory";
-import type { IPortalTable } from "@/types/table";
 import { LayoutMode, PortalCardObjectType } from "@/portal/components/shared/portalCardShared";
+import { IRelatedTable } from "@/types/related-table";
 
 interface Map {
   id: number;
@@ -252,7 +255,7 @@ const globalStore = useGlobalStore();
 
 const metadatasets = ref<IMetadataset[]>([]);
 const maps = ref<Map[]>([]);
-const tables = ref<IPortalTable[]>([]);
+const tables = ref<IRelatedTable[]>([]);
 const metadatasetsCount = ref<number>(0);
 const mapsCount = ref<number>(0);
 const tablesCount = ref<number>(0);
@@ -363,8 +366,7 @@ const getTables = async (): Promise<void> => {
   params.set("page", "1");
   params.set("page_size", "12");
 
-  // TODO: replace with new tables
-  const res = await fetch(`/atlas/api/v1/tables_old/?${params.toString()}`, {
+  const res = await fetch(`/atlas/api/v1/tables/?${params.toString()}&show_in_portal=True`, {
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
   });
@@ -407,10 +409,6 @@ const onSearchFromField = (q: string) => {
 
 const isInternal = (metadataset: IMetadataset): boolean => {
   return metadataset.authorization_level === "internal" || !metadataset.show_in_overview;
-};
-
-const isInternalTable = (table: IPortalTable): boolean => {
-  return !!table.login_required || !!table.only_internal;
 };
 
 const getTopicCategoryLabel = (topicId: string): string => {

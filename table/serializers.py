@@ -97,10 +97,25 @@ class TableSerializer(serializers.ModelSerializer):
             'detail_display_properties',
             'template_fields',
             'layer_to_table_id',
+            'show_in_portal',
+            'login_required',
         ]
 
     def get_related_tables(self, obj):
-        return TableToTableSerializer(obj.outgoing_table_relations, many=True).data
+        request = self.context.get("request")
+        assert request is not None, (
+            "Request context is required to filter related tables based on permissions."
+        )
+
+        relations_qs = obj.outgoing_table_relations.select_related("to_table")
+
+        authorized_tables = Table.authorized.for_request(
+            request,
+            qs=Table.objects.all()
+        )
+        relations_qs = relations_qs.filter(to_table__in=authorized_tables)
+        
+        return TableToTableSerializer(relations_qs, many=True).data
 
     def to_internal_value(self, data):
         ret = super().to_internal_value(data)

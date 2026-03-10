@@ -4,6 +4,24 @@ from django_extensions.db.fields import AutoSlugField
 from webservice.models import Source
 
 
+class TableManager(models.Manager):
+    def for_request(self, request, qs=None):
+        qs = qs or self.get_queryset()
+
+        if request.user.is_anonymous:
+            qs = qs.filter(login_required=False)
+
+        return qs
+
+    def ids_for_request(self, request):
+        cached_ids = getattr(request, '_authorized_table_ids_cache', None)
+        if cached_ids is None:
+            cached_ids = set(self.for_request(request).values_list('id', flat=True))
+            request._authorized_table_ids_cache = cached_ids
+
+        return cached_ids
+
+
 class Table(models.Model):
     METHOD_GET = 'GET'
     METHOD_POST = 'POST'
@@ -12,6 +30,9 @@ class Table(models.Model):
         (METHOD_GET, 'GET'),
         (METHOD_POST, 'POST'),
     ]
+
+    objects = models.Manager()
+    authorized = TableManager()
 
     title = models.CharField('Naam', max_length=128,
                              help_text="De naam van de tabel")
@@ -57,6 +78,14 @@ class Table(models.Model):
                                                help_text='Lijst van kolomnamen die getoond worden in de lijstweergave')
     detail_display_properties = models.JSONField('Kolommen voor detailweergave', default=list,
                                                  help_text='Lijst van kolomnamen die getoond worden in de detailweergave')
+    
+    # Portal
+    show_in_portal = models.BooleanField('Toon in portal', default=False)
+    
+    # Access
+    login_required = models.BooleanField(
+        'Vereis inlog voor deze tabel', default=False,
+        help_text='De tabel is alleen zichtbaar voor ingelogde gebruikers, ook als deze gekoppeld is aan andere tabellen.')
 
     tables = models.ManyToManyField(
         'self',
@@ -79,7 +108,17 @@ class Table(models.Model):
     def __str__(self):
         return f"{self.title}"
 
-    def to_dict(self, from_layer=None):
+    def to_dict(self, from_layer=None, request=None, field_mapping=None, field_mapping_resolved=False):
+        related_tables = list(self.tables.all())
+        if request is not None:
+            authorized_table_ids = Table.authorized.ids_for_request(request)
+            related_tables = [table for table in related_tables if table.pk in authorized_table_ids]
+
+        table_mappings = {
+            relation.to_table_id: relation.field_mapping
+            for relation in self.outgoing_table_relations.all()
+        }
+        
         data = {
             'id': self.pk,
             'title': self.title,
@@ -105,19 +144,31 @@ class Table(models.Model):
             'list_display_properties': self.list_display_properties,
             'detail_display_properties': self.detail_display_properties,
             'template_fields': self.template_fields,
-            'related_tables': [item.simple_to_dict(self) for item in self.tables.all()],
+            'related_tables': [
+                item.simple_to_dict(
+                    from_table=self,
+                    field_mapping=table_mappings.get(item.pk),
+                    field_mapping_resolved=True,
+                )
+                for item in related_tables
+            ],
+            'show_in_portal': self.show_in_portal,
+            'login_required': self.login_required,
         }
 
         if from_layer:
-            try:
-                layer_to_table = LayerToTable.objects.get(from_layer=from_layer, to_table=self)
-                data['field_mapping'] = layer_to_table.field_mapping
-            except LayerToTable.DoesNotExist:
-                data['field_mapping'] = None
+            if field_mapping_resolved:
+                data['field_mapping'] = field_mapping
+            else:
+                try:
+                    layer_to_table = LayerToTable.objects.get(from_layer=from_layer, to_table=self)
+                    data['field_mapping'] = layer_to_table.field_mapping
+                except LayerToTable.DoesNotExist:
+                    data['field_mapping'] = None
 
         return data
 
-    def simple_to_dict(self, from_table=None):
+    def simple_to_dict(self, from_table=None, field_mapping=None, field_mapping_resolved=False):
         """
         A simpler version without related tables to prevent loops.
         """
@@ -149,11 +200,14 @@ class Table(models.Model):
         }}
 
         if from_table:
-            try:
-                table_to_table = TableToTable.objects.get(from_table=from_table, to_table=self)
-                data['field_mapping'] = table_to_table.field_mapping
-            except TableToTable.DoesNotExist:
-                data['field_mapping'] = None
+            if field_mapping_resolved:
+                data['field_mapping'] = field_mapping
+            else:
+                try:
+                    table_to_table = TableToTable.objects.get(from_table=from_table, to_table=self)
+                    data['field_mapping'] = table_to_table.field_mapping
+                except TableToTable.DoesNotExist:
+                    data['field_mapping'] = None
 
         return data
 

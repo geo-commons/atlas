@@ -53,14 +53,17 @@
             :object-type="PortalCardObjectType.Table"
             :layout-mode="viewMode"
             :title="table.title"
-            :summary="table.description"
+            :summary="null"
             :thumbnail="null"
             :show-thumbnail="false"
             :object-url="`/tables/${table.slug}`"
             :last-updated="null"
             :category="null"
           />
-          <span v-if="isInternal(table) && user" class="tw-absolute tw-top-3 tw-right-3 tw-z-10">
+          <span
+            v-if="table.show_in_portal && table.login_required && user"
+            class="tw-absolute tw-top-3 tw-right-3 tw-z-10"
+          >
             <VisibilityIndicator visibility="Intern" />
           </span>
         </div>
@@ -72,15 +75,14 @@
 <script setup lang="ts">
 import PortalCard from "@/portal/components/PortalCard.vue";
 import PortalOverviewTemplate from "@/portal/components/PortalOverviewTemplate.vue";
-import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
 import { LayoutMode, PortalCardObjectType, SortOrder } from "@/portal/components/shared/portalCardShared";
-import type { IPortalTable } from "@/types/table";
-import { useGlobalStore } from "@/stores";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import type { PageState } from "primevue/paginator";
 import Dropdown from "primevue/dropdown";
 import { usePortalQueryParams } from "@/portal/composables/usePortalQueryParams";
+import { IRelatedTable } from "@/types/related-table";
+import { useGlobalStore } from "@/stores";
 
 interface SortOption {
   label: string;
@@ -89,11 +91,9 @@ interface SortOption {
 
 const route = useRoute();
 const { parseFromUrl, syncToUrl } = usePortalQueryParams();
-const globalStore = useGlobalStore();
-const user = computed(() => globalStore.user);
 const loading = ref(false);
 const error = ref<string | null>(null);
-const tables = ref<IPortalTable[]>([]);
+const tables = ref<IRelatedTable[]>([]);
 const searchQuery = ref("");
 const selectedSort = ref<SortOrder>(SortOrder.TitleAsc);
 const page = ref(1);
@@ -101,14 +101,13 @@ const itemsPerPage = ref(12);
 const totalItems = ref(0);
 const viewMode = ref<LayoutMode>(LayoutMode.Grid);
 
+const globalStore = useGlobalStore();
+const user = computed(() => globalStore.user);
+
 const sortOptions: SortOption[] = [
   { label: "Titel (A-Z)", value: SortOrder.TitleAsc },
   { label: "Titel (Z-A)", value: SortOrder.TitleDesc },
 ];
-
-const isInternal = (table: IPortalTable): boolean => {
-  return !!table.login_required || !!table.only_internal;
-};
 
 const getTables = async () => {
   loading.value = true;
@@ -120,8 +119,7 @@ const getTables = async () => {
   if (selectedSort.value) params.set("ordering", selectedSort.value as string);
 
   try {
-    // TODO: replace with new tables
-    const res = await fetch(`/atlas/api/v1/tables_old/?${params.toString()}`, {
+    const res = await fetch(`/atlas/api/v1/tables/?${params.toString()}&show_in_portal=True`, {
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
     });

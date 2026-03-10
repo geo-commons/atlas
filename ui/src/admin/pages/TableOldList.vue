@@ -129,6 +129,6 @@ onMounted(() => {
     :initial-create-object-dialog-data="initialCreateTableData"
     :save-create-object-dialog-data="saveTable"
     :table-headers="tableHeaders"
-    :view-base-url="'/tables'"
+    :view-base-url="'/tables-old'"
   />
 </template>

@@ -85,6 +85,24 @@ Het configureren van tabellen verloopt via de Atlas admin. In dit artikel wordt 
 | **Lijst CQL filters**  | CQL (Common Query Language) filters voor het filteren van resultaten bij verzoeken naar een OWS bron voor de lijstweergave. Je kunt template tags gebruiken: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`. | Optioneel (alleen relevant bij OWS bron) | `null` (niet van toepassing bij REST) |
 | **Detail CQL filters** | CQL filters voor het filteren van resultaten bij verzoeken naar een OWS bron voor de detailweergave. Je kunt template tags gebruiken: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`.                        | Optioneel (alleen relevant bij OWS bron) | `null` (niet van toepassing bij REST) |
 
+## Portaal configuratie
+
+Het is mogelijk om een tabel via het Atlas Portaal te raadplegen. Hiervoor hoeft op de tabel zelf alleen de optie “Toon in Portaal” te worden ingeschakeld.
+
+De zoekingangen van een tabel op Portaal, waarmee data kan worden opgehaald, worden automatisch bepaald door slimme logica in Atlas. Deze logica analyseert de parameters die worden gebruikt tussen de blokhaken ({{ ... }}) op het Lijst endpoint veld, binnen het Lijst CQL filters object, of in het Request body (voor POST) veld. Op basis daarvan worden de beschikbare zoekingangen gegenereerd.
+
+Net als op de kaart worden eventuele gerelateerde tabellen ook in het Portaal weergegeven.
+
+| Veld                | Uitleg                                                                   | Validatie                      | Voorbeeld (KVK) |
+| ------------------- | ------------------------------------------------------------------------ | ------------------------------ | --------------- |
+| **Toon in Portaal** | Met deze optie kies je ervoor om de tabel in het Atlas portaal te tonen. | Niet verplicht, standaard uit. | False           |
+
+## Toegang
+
+| Veld                             | Uitleg                                                                                                   | Validatie                      | Voorbeeld (KVK) |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------ | --------------- |
+| **Vereis inlog voor deze tabel** | De tabel is alleen zichtbaar voor ingelogde gebruikers, , ook als deze gekoppeld is aan andere tabellen. | Niet verplicht, standaard uit. | False           |
+
 ## Relaties tussen tabellen
 
 Een kracht van tabellen is dat je ze aan elkaar kan verbinden, waardoor je in de detailweergave van een tabel de lijstweergaves van andere tabellen kan tonen. Dit noemen wij ook wel een relatie tussen tabellen.
