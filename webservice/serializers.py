@@ -331,10 +331,11 @@ class LayerSerializer(serializers.ModelSerializer):
         return can_request_access_layer(request, obj)
 
     def get_related_tables(self, obj):
+        request = self.context['request']
         from table.serializers import TableSerializer
 
         tables = obj.related_tables.all()
-        return TableSerializer(tables, many=True, context={'from_layer': obj}).data
+        return TableSerializer(tables, many=True, context={'from_layer': obj, 'request': request}).data
 
     def get_opacity(self, obj):
         return float(obj.opacity)

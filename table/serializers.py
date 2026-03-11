@@ -50,14 +50,6 @@ class TableToTableSerializer(serializers.ModelSerializer):
         ]
 
 
-class LayerToTableSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LayerToTable
-        fields = [
-            'field_mapping',
-        ]
-
-
 class TableSerializer(serializers.ModelSerializer):
     source = SourceSerializer(read_only=True)
     source_id = serializers.PrimaryKeyRelatedField(
