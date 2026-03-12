@@ -71,8 +71,7 @@ service:
 
 ingress:
   enabled: false
-  annotations:
-    {}
+  annotations: {}
   # cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
     - host: atlas.example.com
@@ -137,8 +136,7 @@ geoserver:
   ingress:
     enabled: true
     className: ""
-    annotations:
-      {}
+    annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     hosts:
@@ -203,6 +201,26 @@ filter-proxy:
           path: /{uriIdentificatie}
         allowedMethods:
           - GET
+      - path: /api/kvk/v1/basisprofielen/{kvkNummer:[0-9]+}
+        backend:
+          slug: kvkv1
+          path: /basisprofielen/{kvkNummer:[0-9]+}
+      - path: /api/kvk/v1/basisprofielen/{kvkNummer:[0-9]+}/eigenaar
+        backend:
+          slug: kvkv1
+          path: /basisprofielen/{kvkNummer:[0-9]+}/eigenaar
+      - path: /api/kvk/v1/basisprofielen/{kvkNummer:[0-9]+}/hoofdvestiging
+        backend:
+          slug: kvkv1
+          path: /basisprofielen/{kvkNummer:[0-9]+}/hoofdvestiging
+      - path: /api/kvk/v1/basisprofielen/{kvkNummer:[0-9]+}/vestigingen
+        backend:
+          slug: kvkv1
+          path: /basisprofielen/{kvkNummer:[0-9]+}/vestigingen
+      - path: /api/kvk/v1/vestigingsprofielen/{vestigingsnummer:[0-9]+}
+        backend:
+          slug: kvkv1
+          path: /vestigingsprofielen/{vestigingsnummer:[0-9]+}
     backends:
       geoserver:
         type: OWS
@@ -210,6 +228,12 @@ filter-proxy:
       kvk:
         type: REST
         baseUrl: https://api.kvk.nl/test/api/v2
+        auth:
+          header:
+            apikey: l7xx1f2691f2520d487b902f4e0b57a0b197
+      kvkv1:
+        type: REST
+        baseUrl: https://api.kvk.nl/test/api/v1
         auth:
           header:
             apikey: l7xx1f2691f2520d487b902f4e0b57a0b197
