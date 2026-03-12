@@ -1,24 +1,17 @@
 <template>
-  <div class="tw-min-w-[200px] tw-flex tw-gap-2">
+  <div class="tw-flex tw-gap-2">
     <Dropdown
       v-model="selectedTopic"
       :options="topicCategories"
       option-label="label"
       option-value="value"
       placeholder="Selecteer een onderwerp"
-      class="tw-flex-1"
+      class="tw-max-w-full"
       :loading="loading"
       :disabled="loading"
+      show-clear
       @change="onTopicChange"
     />
-    <button
-      v-if="hasSelectedTopic"
-      class="tw-px-3 tw-py-2 tw-text-sm tw-bg-gray-100 hover:tw-bg-gray-200 focus:tw-bg-gray-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 tw-text-gray-700 tw-rounded-md tw-border tw-border-gray-300 tw-transition-colors tw-duration-200 tw-whitespace-nowrap"
-      title="Wis onderwerp filter"
-      @click="clearTopic"
-    >
-      ✕
-    </button>
   </div>
 </template>
 
@@ -83,13 +76,5 @@ const selectedTopic = computed({
 
 const onTopicChange = (event: DropdownChangeEvent) => {
   emit("on-topic-change", event.value);
-};
-
-const hasSelectedTopic = computed(() => {
-  return props.selectedTopic !== "";
-});
-
-const clearTopic = () => {
-  emit("on-topic-change", "");
 };
 </script>
