@@ -20,123 +20,131 @@
     </header>
 
     <!-- Main Content -->
-    <main id="main-content" class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-12">
-      <!-- Search -->
-      <div class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8 tw-mb-6">
-        <div class="tw-relative">
+    <main
+      id="main-content"
+      class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-py-12 tw-grid tw-grid-cols-1 lg:tw-grid-cols-4 tw-gap-8"
+    >
+      <div>
+        <!-- Search -->
+        <div class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8 tw-mb-6">
+          <div class="tw-flex tw-flex-col tw-gap-2">
+            <label class="tw-text-sm tw-text-[var(--color-text-organization)]" :for="itemsPerPageInputId">Zoeken</label>
+            <InputText
+              :placeholder="searchPlaceholder"
+              :model-value="searchQuery"
+              class="tw-w-full"
+              @update:model-value="(value) => $emit('update:searchQuery', value ?? '')"
+              @keydown.enter="$emit('search')"
+            />
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div
+          v-if="$slots.filters"
+          class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8 tw-mb-10"
+        >
+          <h3 class="tw-text-lg tw-font-medium tw-mb-4 tw-mt-0">Filters</h3>
+          <slot name="filters" />
+        </div>
+      </div>
+
+      <div class="lg:tw-col-span-3">
+        <!-- Results count and controls -->
+        <div class="tw-flex tw-items-center tw-justify-between tw-mb-6">
+          <p class="tw-text-[var(--color-text-organization)]">
+            <span class="tw-font-medium tw-text-[var(--color-text-organization)]">{{ totalRecords }}</span>
+            {{ totalRecords === 1 ? "resultaat" : "resultaten" }} gevonden
+          </p>
+          <div class="tw-flex tw-items-center tw-gap-4">
+            <div class="tw-flex tw-items-center tw-gap-2">
+              <label class="tw-text-sm tw-text-[var(--color-text-organization)]" :for="itemsPerPageInputId"
+                >Toon:</label
+              >
+              <Dropdown
+                :model-value="itemsPerPage"
+                :options="itemsPerPageOptions"
+                option-label="label"
+                option-value="value"
+                :input-id="itemsPerPageInputId"
+                :pt="{ input: { class: 'tw-text-sm' }, panel: { class: 'tw-text-sm' } }"
+                @update:model-value="$emit('update:itemsPerPage', $event)"
+              />
+            </div>
+            <div class="tw-flex tw-items-center tw-gap-2">
+              <label class="tw-text-sm tw-text-[var(--color-text-organization)]" :for="viewModeInputId"
+                >Weergave:</label
+              >
+              <Dropdown
+                :model-value="viewMode"
+                :options="viewModeOptions"
+                option-label="label"
+                option-value="value"
+                :input-id="viewModeInputId"
+                :pt="{ input: { class: 'tw-text-sm' }, panel: { class: 'tw-text-sm' } }"
+                @update:model-value="$emit('update:viewMode', $event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
+
+        <!-- Error State -->
+        <div
+          v-else-if="error"
+          class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-16 tw-text-center"
+        >
           <i
-            class="pi pi-search tw-absolute tw-left-4 tw-top-1/2 -tw-translate-y-1/2 tw-text-lg tw-text-gray-400"
+            class="pi pi-exclamation-triangle tw-w-16 tw-h-16 tw-text-amber-500 tw-mx-auto tw-mb-4"
             aria-hidden="true"
           ></i>
-          <input
-            type="search"
-            :value="searchQuery"
-            class="tw-w-full tw-pl-12 tw-pr-4 tw-py-3.5 !tw-border !tw-border-solid !tw-border-gray-300 tw-rounded-xl focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-[var(--color-primary-organization)] focus:!tw-border-[var(--color-primary-organization)] tw-text-base tw-bg-white"
-            :placeholder="searchPlaceholder"
-            @input="(e) => $emit('update:searchQuery', (e.target as HTMLInputElement).value)"
-            @keydown.enter="$emit('search')"
-          />
+          <h3 class="tw-text-xl tw-text-[var(--color-text-organization)] tw-mb-2 tw-font-medium">Laden mislukt</h3>
+          <p class="tw-text-[var(--color-text-organization)] tw-max-w-md tw-mx-auto">
+            {{ error }}
+          </p>
         </div>
-      </div>
 
-      <!-- Filters -->
-      <div
-        v-if="$slots.filters"
-        class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-8 tw-mb-10"
-      >
-        <h3 class="tw-text-lg tw-font-medium tw-mb-4 tw-mt-0">Filters</h3>
-        <slot name="filters" />
-      </div>
+        <!-- Results -->
+        <template v-else-if="hasResults">
+          <slot />
 
-      <!-- Results count and controls -->
-      <div class="tw-flex tw-items-center tw-justify-between tw-mb-6">
-        <p class="tw-text-[var(--color-text-organization)]">
-          <span class="tw-font-medium tw-text-[var(--color-text-organization)]">{{ totalRecords }}</span>
-          {{ totalRecords === 1 ? "resultaat" : "resultaten" }} gevonden
-        </p>
-        <div class="tw-flex tw-items-center tw-gap-4">
-          <div class="tw-flex tw-items-center tw-gap-2">
-            <label class="tw-text-sm tw-text-[var(--color-text-organization)]" :for="itemsPerPageInputId">Toon:</label>
-            <Dropdown
-              :model-value="itemsPerPage"
-              :options="itemsPerPageOptions"
-              option-label="label"
-              option-value="value"
-              :input-id="itemsPerPageInputId"
-              :pt="{ input: { class: 'tw-text-sm' }, panel: { class: 'tw-text-sm' } }"
-              @update:model-value="$emit('update:itemsPerPage', $event)"
+          <!-- Pagination -->
+          <div class="tw-flex tw-flex-row tw-items-start">
+            <Paginator
+              class="tw-mx-auto"
+              :first="(page - 1) * itemsPerPage"
+              :rows="itemsPerPage"
+              :total-records="totalRecords"
+              :pt="{
+                root: { class: '!tw-bg-transparent' },
+                page: ({ context }) => ({
+                  class: context?.active
+                    ? '!tw-bg-[var(--color-primary-organization)] !tw-text-white'
+                    : 'hover:!tw-text-[var(--color-primary-organization)]',
+                }),
+                first: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
+                prev: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
+                next: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
+                last: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
+              }"
+              @page="$emit('page', $event)"
             />
           </div>
-          <div class="tw-flex tw-items-center tw-gap-2">
-            <label class="tw-text-sm tw-text-[var(--color-text-organization)]" :for="viewModeInputId">Weergave:</label>
-            <Dropdown
-              :model-value="viewMode"
-              :options="viewModeOptions"
-              option-label="label"
-              option-value="value"
-              :input-id="viewModeInputId"
-              :pt="{ input: { class: 'tw-text-sm' }, panel: { class: 'tw-text-sm' } }"
-              @update:model-value="$emit('update:viewMode', $event)"
-            />
-          </div>
+        </template>
+
+        <!-- Empty State -->
+        <div
+          v-else-if="!loading"
+          class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-16 tw-text-center"
+        >
+          <i :class="emptyIcon" class="tw-w-16 tw-h-16 tw-text-gray-300 tw-mx-auto tw-mb-4" aria-hidden="true"></i>
+          <h3 class="tw-text-xl tw-text-[var(--color-text-organization)] tw-mb-2 tw-font-medium">{{ emptyTitle }}</h3>
+          <p class="tw-text-[var(--color-text-organization)] tw-max-w-md tw-mx-auto">
+            {{ emptyMessage }}
+          </p>
         </div>
-      </div>
-
-      <Spinner v-if="loading" class="spinner" :style-type="'portal'" />
-
-      <!-- Error State -->
-      <div
-        v-else-if="error"
-        class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-16 tw-text-center"
-      >
-        <i
-          class="pi pi-exclamation-triangle tw-w-16 tw-h-16 tw-text-amber-500 tw-mx-auto tw-mb-4"
-          aria-hidden="true"
-        ></i>
-        <h3 class="tw-text-xl tw-text-[var(--color-text-organization)] tw-mb-2 tw-font-medium">Laden mislukt</h3>
-        <p class="tw-text-[var(--color-text-organization)] tw-max-w-md tw-mx-auto">
-          {{ error }}
-        </p>
-      </div>
-
-      <!-- Results -->
-      <template v-else-if="hasResults">
-        <slot />
-
-        <!-- Pagination -->
-        <div class="tw-flex tw-flex-row tw-items-start tw-py-8">
-          <Paginator
-            class="tw-mx-auto"
-            :first="(page - 1) * itemsPerPage"
-            :rows="itemsPerPage"
-            :total-records="totalRecords"
-            :pt="{
-              root: { class: '!tw-bg-transparent' },
-              page: ({ context }) => ({
-                class: context?.active
-                  ? '!tw-bg-[var(--color-primary-organization)] !tw-text-white'
-                  : 'hover:!tw-text-[var(--color-primary-organization)]',
-              }),
-              first: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
-              prev: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
-              next: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
-              last: { class: 'hover:!tw-text-[var(--color-primary-organization)]' },
-            }"
-            @page="$emit('page', $event)"
-          />
-        </div>
-      </template>
-
-      <!-- Empty State -->
-      <div
-        v-else-if="!loading"
-        class="tw-bg-white tw-rounded-2xl tw-border tw-border-gray-200 tw-shadow-sm tw-p-16 tw-text-center"
-      >
-        <i :class="emptyIcon" class="tw-w-16 tw-h-16 tw-text-gray-300 tw-mx-auto tw-mb-4" aria-hidden="true"></i>
-        <h3 class="tw-text-xl tw-text-[var(--color-text-organization)] tw-mb-2 tw-font-medium">{{ emptyTitle }}</h3>
-        <p class="tw-text-[var(--color-text-organization)] tw-max-w-md tw-mx-auto">
-          {{ emptyMessage }}
-        </p>
       </div>
     </main>
   </div>

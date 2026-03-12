@@ -21,7 +21,7 @@
     @page="updatePageState"
   >
     <template #filters>
-      <div class="tw-grid md:tw-grid-cols-2 tw-gap-6">
+      <div class="tw-flex tw-flex-col tw-gap-6">
         <div>
           <label class="tw-block tw-text-sm tw-font-medium tw-text-[var(--color-text-organization)] tw-mb-2"
             >Sorteren op</label
