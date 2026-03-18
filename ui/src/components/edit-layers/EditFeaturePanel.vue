@@ -3,7 +3,8 @@
     :visible="showEditFeaturePanel"
     header="Object bewerken"
     :dismissable="false"
-    @update:visible="toggleShowCancelModal"
+    :modal="false"
+    @update:visible="onCancel"
   >
     <div class="tw-flex tw-flex-col tw-gap-0">
       <span class="tw-font-[var(--font-weight-bold)]">Actieve laag</span>
@@ -22,13 +23,7 @@
 
     <template #footer>
       <div class="tw-flex tw-flex-col tw-items-stretch tw-gap-2">
-        <Button
-          label="Annuleren"
-          icon="pi pi-times"
-          class="tw-flex-auto"
-          outlined
-          @click="toggleShowCancelModal"
-        ></Button>
+        <Button label="Annuleren" icon="pi pi-times" class="tw-flex-auto" outlined @click="onCancel"></Button>
         <Button
           label="Verwijder object"
           severity="danger"
@@ -43,18 +38,6 @@
   </Drawer>
 
   <EditLayerActionModal
-    :visible="showSaveModal"
-    header="Opslaan"
-    :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
-    cancel-label="Annuleren"
-    cancel-icon="pi pi-times"
-    confirm-label="Opslaan"
-    confirm-icon="pi pi-save"
-    :on-cancel="cancelSaveModal"
-    :on-confirm="save"
-  />
-
-  <EditLayerActionModal
     :visible="showDeleteModal"
     header="Verwijderen"
     :message="`Wanneer u verwijdert, gaan dit object verloren op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
@@ -63,17 +46,6 @@
     confirm-icon="pi pi-times"
     :on-cancel="cancelDeleteModal"
     :on-confirm="onDelete"
-  />
-
-  <EditLayerActionModal
-    :visible="showCancelModal"
-    header="Annuleren"
-    :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
-    cancel-label="Verder met bewerken"
-    confirm-label="Bewerken sluiten"
-    confirm-icon="pi pi-times"
-    :on-cancel="cancelCancelModal"
-    :on-confirm="proceed"
   />
 </template>
 
@@ -113,9 +85,7 @@ const editLayerStore = useEditLayerStore();
 
 // References
 const showEditFeaturePanel = ref<boolean>(false);
-const showSaveModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
-const showCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const geoServerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
@@ -190,7 +160,7 @@ defineRule("required", (value: string) => {
 const handleSubmit = (values: any) => {
   featureValues.value = values;
 
-  toggleShowEditLayerSaveModal();
+  handleSaveFeature();
 };
 
 const submitFormManually = () => {
@@ -207,21 +177,11 @@ const handleDrawerClose = (value: boolean) => {
   editLayerStore.resetEditLayerProperties();
 };
 
-const toggleShowEditLayerSaveModal = () => {
-  showSaveModal.value = !showSaveModal.value;
-};
-
-const toggleShowCancelModal = () => {
-  showCancelModal.value = !showCancelModal.value;
-};
-
 const toggleShowDeleteModal = () => {
   showDeleteModal.value = !showDeleteModal.value;
 };
 
-const proceed = () => {
-  toggleShowCancelModal();
-
+const onCancel = () => {
   handleDrawerClose(false);
 };
 
@@ -233,20 +193,6 @@ const onDelete = () => {
 
 const cancelDeleteModal = () => {
   toggleShowDeleteModal();
-};
-
-const cancelCancelModal = () => {
-  toggleShowCancelModal();
-};
-
-const save = () => {
-  toggleShowEditLayerSaveModal();
-
-  handleSaveFeature();
-};
-
-const cancelSaveModal = () => {
-  toggleShowEditLayerSaveModal();
 };
 
 const handleDeleteFeature = async () => {
