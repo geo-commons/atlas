@@ -9,6 +9,7 @@ export const useEditLayerStore = defineStore("editLayer", {
   state: (): IEditLayerStore => ({
     editLayerMode: EditLayerMode.NONE,
     feature: null,
+    modifiedFeature: null,
     selectedLayer: null,
     geometryType: null,
     editableLayers: [],
@@ -21,6 +22,9 @@ export const useEditLayerStore = defineStore("editLayer", {
     },
     setFeature(feature: Feature) {
       this.feature = feature;
+    },
+    setModifiedFeature(modifiedFeature: Feature) {
+      this.modifiedFeature = modifiedFeature;
     },
     toggleHideOtherPanels() {
       this.hideOtherPanels = !this.hideOtherPanels;
@@ -36,13 +40,16 @@ export const useEditLayerStore = defineStore("editLayer", {
     },
     setHighlightedFeatureAndLayer(highlightedFeatureAndLayer: { feature: Feature; layer: ILayer } | null) {
       this.highlightedFeatureAndLayer = highlightedFeatureAndLayer;
+      this.modifiedFeature = highlightedFeatureAndLayer ? highlightedFeatureAndLayer.feature : null;
     },
     resetFeature() {
       this.feature = null;
+      this.modifiedFeature = null;
     },
     resetEditLayerProperties() {
       this.editLayerMode = EditLayerMode.NONE;
       this.feature = null;
+      this.modifiedFeature = null;
       this.geometryType = null;
       this.selectedLayer = null;
       this.highlightedFeatureAndLayer = null;

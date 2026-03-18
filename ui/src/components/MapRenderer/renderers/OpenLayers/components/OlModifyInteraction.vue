@@ -49,6 +49,11 @@ const syncModifyInteraction = () => {
     style: () => undefined,
   });
 
+  modify.on("modifyend", (event) => {
+    const modifiedFeature = event.features.getArray()[0];
+    editLayerStore.setModifiedFeature(modifiedFeature);
+  });
+
   map.addInteraction(modify);
 
   snap = new Snap({

@@ -5,6 +5,7 @@ import { IGeometryType, ILayer } from "@/types/layer";
 export interface IEditLayerStore {
   editLayerMode: EditLayerMode;
   feature: Feature | null;
+  modifiedFeature: Feature | null;
   editableLayers: ILayer[];
   geometryType: IGeometryType | null;
   selectedLayer: ILayer | null;
