@@ -218,6 +218,10 @@ export default {
       );
     },
     editableFeatures() {
+      if (this.editLayerStore.isRedrawingFeature && this.editLayerStore.draftFeature) {
+        return [this.editLayerStore.draftFeature];
+      }
+
       if (this.isEditingFeature) {
         return [this.editLayerStore.highlightedFeatureAndLayer.feature];
       }

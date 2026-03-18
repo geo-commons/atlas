@@ -17,6 +17,7 @@ export const useEditLayerStore = defineStore("editLayer", {
     highlightedFeatureAndLayer: null,
     hideOtherPanels: false,
     isDrawingFeaturePart: false,
+    isRedrawingFeature: false,
   }),
   actions: {
     setEditLayerMode(editLayerMode: EditLayerMode) {
@@ -45,6 +46,9 @@ export const useEditLayerStore = defineStore("editLayer", {
       // Tracks whether the current MultiPoint/MultiLineString/MultiPolygon part is still being drawn.
       this.isDrawingFeaturePart = isDrawingFeaturePart;
     },
+    setIsRedrawingFeature(isRedrawingFeature: boolean) {
+      this.isRedrawingFeature = isRedrawingFeature;
+    },
     setEditableLayers(editableLayers: ILayer[]) {
       this.editableLayers = editableLayers;
     },
@@ -57,6 +61,7 @@ export const useEditLayerStore = defineStore("editLayer", {
       this.draftFeature = null;
       this.modifiedFeature = null;
       this.isDrawingFeaturePart = false;
+      this.isRedrawingFeature = false;
     },
     resetEditLayerProperties() {
       this.editLayerMode = EditLayerMode.NONE;
@@ -68,6 +73,7 @@ export const useEditLayerStore = defineStore("editLayer", {
       this.highlightedFeatureAndLayer = null;
       this.hideOtherPanels = false;
       this.isDrawingFeaturePart = false;
+      this.isRedrawingFeature = false;
     },
   },
   getters: {

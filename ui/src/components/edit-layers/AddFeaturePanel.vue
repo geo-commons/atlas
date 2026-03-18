@@ -197,6 +197,7 @@ const handleSaveFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
+      unref(layerProperties).map((property) => property.name),
       user,
     );
 

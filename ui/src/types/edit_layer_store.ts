@@ -12,6 +12,7 @@ export interface IEditLayerStore {
   selectedLayer: ILayer | null;
   hideOtherPanels: boolean;
   isDrawingFeaturePart: boolean;
+  isRedrawingFeature: boolean;
   highlightedFeatureAndLayer: {
     feature: Feature;
     layer: ILayer;

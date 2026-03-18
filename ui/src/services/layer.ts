@@ -68,11 +68,37 @@ const getGeometryName = async (featureTypes: IFeatureTypes): Promise<string> => 
   return geometryFeatureProperties.length ? geometryFeatureProperties[0].name : "geometry";
 };
 
+const sanitizeFeatureForWfsTransaction = (feature: Feature, allowedPropertyNames: string[]): Feature => {
+  const sanitizedFeature = new Feature();
+  const geometry = feature.getGeometry();
+  const allowedPropertyNameSet = new Set(allowedPropertyNames);
+
+  if (geometry) {
+    sanitizedFeature.setGeometry(geometry.clone());
+  }
+
+  if (feature.getId()) {
+    sanitizedFeature.setId(feature.getId());
+  }
+
+  // Only send properties that exist in the layer schema.
+  sanitizedFeature.setProperties(
+    Object.fromEntries(
+      Object.entries(feature.getProperties()).filter(
+        ([key, value]) => allowedPropertyNameSet.has(key) && value != null,
+      ),
+    ),
+  );
+
+  return sanitizedFeature;
+};
+
 const performWfsTransaction = async (
   layer: ILayer,
   features: { toInsert?: Feature[]; toUpdate?: Feature[]; toDelete?: Feature[] },
   featureProperties: IFeatureProperties,
   geometryName: string,
+  allowedPropertyNames: string[],
   user: IUser,
 ) => {
   if (layer.source_type !== ELayerTypes.WFS && layer.source_type !== ELayerTypes.WMS_WFS) {
@@ -83,8 +109,14 @@ const performWfsTransaction = async (
   // supports multiple transactions at once. However, we have decided to limit it to performing only one operation at a time,
   // whether it's an insert, update, or delete.
   const { toInsert = [], toUpdate = [], toDelete = [] } = features;
+  const sanitizedInsertFeatures = toInsert.map((feature) =>
+    sanitizeFeatureForWfsTransaction(feature, allowedPropertyNames),
+  );
+  const sanitizedUpdateFeatures = toUpdate.map((feature) =>
+    sanitizeFeatureForWfsTransaction(feature, allowedPropertyNames),
+  );
 
-  const transactionNode = new WFS().writeTransaction(toInsert, toUpdate, toDelete, {
+  const transactionNode = new WFS().writeTransaction(sanitizedInsertFeatures, sanitizedUpdateFeatures, toDelete, {
     featureNS: featureProperties.targetNamespace,
     featurePrefix: featureProperties.targetPrefix,
     featureType: layer.name,
@@ -118,9 +150,17 @@ const addFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
+  allowedPropertyNames: string[],
   user: IUser,
 ) => {
-  await performWfsTransaction(layer, { toInsert: [feature] }, featureProperties, geometryName, user);
+  await performWfsTransaction(
+    layer,
+    { toInsert: [feature] },
+    featureProperties,
+    geometryName,
+    allowedPropertyNames,
+    user,
+  );
 };
 
 // Performs a WFS-Transaction request to update a specific feature on a layer
@@ -129,9 +169,17 @@ const editFeatureOnLayer = async (
   feature: Feature,
   featureProperties: IFeatureProperties,
   geometryName: string,
+  allowedPropertyNames: string[],
   user: IUser,
 ) => {
-  await performWfsTransaction(layer, { toUpdate: [feature] }, featureProperties, geometryName, user);
+  await performWfsTransaction(
+    layer,
+    { toUpdate: [feature] },
+    featureProperties,
+    geometryName,
+    allowedPropertyNames,
+    user,
+  );
 };
 
 // Performs a WFS-Transaction request to delete a specific feature on a layer
@@ -142,7 +190,7 @@ const deleteFeatureOnLayer = async (
   geometryName: string,
   user: IUser,
 ) => {
-  await performWfsTransaction(layer, { toDelete: [feature] }, featureProperties, geometryName, user);
+  await performWfsTransaction(layer, { toDelete: [feature] }, featureProperties, geometryName, [], user);
 };
 
 export {

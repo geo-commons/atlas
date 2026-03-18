@@ -166,7 +166,7 @@
       @set-tool="setTool"
       @set-selected-area="setSelectedArea"
     />
-    <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" />
+    <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" @set-tool="setTool" />
 
     <CompareLayersPanel
       :map-id="mapId"
@@ -798,7 +798,7 @@ export default {
       }
 
       if (
-        this.editLayerStore.editLayerMode !== EditLayerMode.ADD ||
+        (this.editLayerStore.editLayerMode !== EditLayerMode.ADD && !this.editLayerStore.isRedrawingFeature) ||
         !this.isMultipartGeometryTool(this.tool) ||
         !this.editLayerStore.draftFeature ||
         this.editLayerStore.isDrawingFeaturePart
@@ -806,14 +806,35 @@ export default {
         return;
       }
 
-      // Enter confirms the full multipart geometry and opens the save flow.
-      this.editLayerStore.setFeature(this.editLayerStore.draftFeature.clone());
+      const finalizedFeature = this.editLayerStore.draftFeature.clone();
+
+      if (this.editLayerStore.isRedrawingFeature && this.editLayerStore.highlightedFeatureAndLayer) {
+        const geometry = finalizedFeature.getGeometry();
+        const redrawnFeature = geometry ? this.createRedrawnFeature(geometry) : null;
+
+        if (!redrawnFeature) {
+          return;
+        }
+
+        this.editLayerStore.setHighlightedFeatureAndLayer({
+          feature: redrawnFeature,
+          layer: this.editLayerStore.highlightedFeatureAndLayer.layer,
+        });
+        this.editLayerStore.setIsRedrawingFeature(false);
+      } else {
+        // Enter confirms the full multipart geometry and opens the save flow.
+        this.editLayerStore.setFeature(finalizedFeature);
+      }
+
       this.editLayerStore.setDraftFeature(null);
       this.tool = "";
       event.preventDefault();
     },
     onToolStarted() {
-      if (this.editLayerStore.editLayerMode === EditLayerMode.ADD && this.isMultipartGeometryTool(this.tool)) {
+      if (
+        (this.editLayerStore.editLayerMode === EditLayerMode.ADD || this.editLayerStore.isRedrawingFeature) &&
+        this.isMultipartGeometryTool(this.tool)
+      ) {
         // Prevent Enter from finalizing while a part is still actively being drawn.
         this.editLayerStore.setIsDrawingFeaturePart(true);
       }
@@ -1099,6 +1120,43 @@ export default {
     setTool(tool) {
       this.tool = tool;
     },
+    createRedrawnFeature(geometry) {
+      const sourceFeature =
+        this.editLayerStore.modifiedFeature || this.editLayerStore.highlightedFeatureAndLayer?.feature;
+
+      if (!sourceFeature) {
+        return null;
+      }
+
+      const redrawnFeature = sourceFeature.clone();
+      redrawnFeature.setGeometry(geometry.clone());
+
+      if (sourceFeature.getId()) {
+        redrawnFeature.setId(sourceFeature.getId());
+      }
+
+      return redrawnFeature;
+    },
+    finishRedrawingFeature(result) {
+      if (!this.editLayerStore.highlightedFeatureAndLayer) {
+        return;
+      }
+
+      const geometry = result.sketch.getGeometry();
+      const redrawnFeature = geometry ? this.createRedrawnFeature(geometry) : null;
+
+      if (!redrawnFeature) {
+        return;
+      }
+
+      this.editLayerStore.setHighlightedFeatureAndLayer({
+        feature: redrawnFeature,
+        layer: this.editLayerStore.highlightedFeatureAndLayer.layer,
+      });
+      this.editLayerStore.setDraftFeature(null);
+      this.editLayerStore.setIsRedrawingFeature(false);
+      this.tool = "";
+    },
     toolUsed(result) {
       if (result && result.sketch) {
         this.editLayerStore.setIsDrawingFeaturePart(false);
@@ -1132,6 +1190,11 @@ export default {
         case "LineString":
         case "LinearRing":
         case "Circle":
+          if (this.editLayerStore.isRedrawingFeature) {
+            this.finishRedrawingFeature(result);
+            break;
+          }
+
           this.editLayerStore.setDraftFeature(null);
           this.editLayerStore.setFeature(result.sketch);
           this.tool = "";

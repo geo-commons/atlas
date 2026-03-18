@@ -10,6 +10,11 @@
       <span class="tw-font-[var(--font-weight-bold)]">Actieve laag</span>
       <p class="tw-mt-0">{{ editLayerStore.highlightedFeatureAndLayer?.layer.name }}</p>
     </div>
+    <Message v-if="editLayerStore.isRedrawingFeature" severity="info" class="tw-mt-3">{{
+      isMultipartGeometry
+        ? "Teken de geometrie opnieuw en druk op Enter om af te ronden."
+        : "Teken de geometrie opnieuw."
+    }}</Message>
     <div class="tw-flex tw-flex-col">
       <ErrorAccordion :error="geoServerError" />
       <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
@@ -25,6 +30,15 @@
       <div class="tw-flex tw-flex-col tw-items-stretch tw-gap-2">
         <Button label="Annuleren" icon="pi pi-times" class="tw-flex-auto" outlined @click="onCancel"></Button>
         <Button
+          v-if="currentGeometryType"
+          label="Opnieuw tekenen"
+          icon="pi pi-refresh"
+          class="tw-flex-auto"
+          outlined
+          :disabled="editLayerStore.isRedrawingFeature"
+          @click="startRedrawingFeature"
+        ></Button>
+        <Button
           label="Verwijder object"
           severity="danger"
           icon="pi pi-times"
@@ -32,7 +46,13 @@
           outlined
           @click="toggleShowDeleteModal"
         ></Button>
-        <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="submitFormManually"></Button>
+        <Button
+          label="Opslaan"
+          icon="pi pi-save"
+          class="tw-flex-auto"
+          :disabled="editLayerStore.isRedrawingFeature"
+          @click="submitFormManually"
+        ></Button>
       </div>
     </template>
   </Drawer>
@@ -51,7 +71,7 @@
 
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import { ref, unref, watch } from "vue";
+import { computed, ref, unref, watch } from "vue";
 import { IFeatureProperties, ILayerProperties } from "@/types/layer";
 import { IUser } from "@/types/user";
 import { useToast } from "primevue";
@@ -77,6 +97,10 @@ interface AddFeaturePanelProps {
 // Props
 const { user, refreshLayer } = defineProps<AddFeaturePanelProps>();
 
+const emit = defineEmits<{
+  (e: "set-tool", tool: string): void;
+}>();
+
 // Toast
 const toast = useToast();
 
@@ -96,6 +120,16 @@ const featureProperties = ref<IFeatureProperties>({
   targetPrefix: "",
 });
 const form = ref(null);
+
+const multipartGeometryTypes = ["MultiPoint", "MultiLineString", "MultiPolygon"];
+
+const currentGeometryType = computed(() =>
+  editLayerStore.highlightedFeatureAndLayer?.feature?.getGeometry()?.getType(),
+);
+
+const isMultipartGeometry = computed(() => {
+  return currentGeometryType.value ? multipartGeometryTypes.includes(currentGeometryType.value) : false;
+});
 
 watch(
   () => editLayerStore.highlightedFeatureAndLayer?.feature,
@@ -185,6 +219,19 @@ const onCancel = () => {
   handleDrawerClose(false);
 };
 
+const startRedrawingFeature = () => {
+  if (!currentGeometryType.value) {
+    return;
+  }
+
+  editLayerStore.setDraftFeature(null);
+  editLayerStore.setIsRedrawingFeature(true);
+  editLayerStore.setIsDrawingFeaturePart(false);
+  geoServerError.value = null;
+
+  emit("set-tool", currentGeometryType.value);
+};
+
 const onDelete = () => {
   toggleShowDeleteModal();
 
@@ -238,6 +285,7 @@ const handleSaveFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
+      unref(layerProperties).map((property) => property.name),
       user,
     );
 

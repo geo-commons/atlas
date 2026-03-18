@@ -36,7 +36,11 @@ const syncModifyInteraction = () => {
 
   destroyModifyInteraction();
 
-  if (editLayerStore.editLayerMode !== EditLayerMode.EDIT || !editLayerStore.highlightedFeatureAndLayer?.feature) {
+  if (
+    editLayerStore.editLayerMode !== EditLayerMode.EDIT ||
+    editLayerStore.isRedrawingFeature ||
+    !editLayerStore.highlightedFeatureAndLayer?.feature
+  ) {
     return;
   }
 
@@ -66,7 +70,11 @@ const syncModifyInteraction = () => {
 };
 
 watch(
-  () => [editLayerStore.editLayerMode, editLayerStore.highlightedFeatureAndLayer?.feature],
+  () => [
+    editLayerStore.editLayerMode,
+    editLayerStore.highlightedFeatureAndLayer?.feature,
+    editLayerStore.isRedrawingFeature,
+  ],
   () => {
     syncModifyInteraction();
   },
