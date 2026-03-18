@@ -9,12 +9,14 @@ export const useEditLayerStore = defineStore("editLayer", {
   state: (): IEditLayerStore => ({
     editLayerMode: EditLayerMode.NONE,
     feature: null,
+    draftFeature: null,
     modifiedFeature: null,
     selectedLayer: null,
     geometryType: null,
     editableLayers: [],
     highlightedFeatureAndLayer: null,
     hideOtherPanels: false,
+    isDrawingFeaturePart: false,
   }),
   actions: {
     setEditLayerMode(editLayerMode: EditLayerMode) {
@@ -22,6 +24,10 @@ export const useEditLayerStore = defineStore("editLayer", {
     },
     setFeature(feature: Feature) {
       this.feature = feature;
+    },
+    setDraftFeature(draftFeature: Feature | null) {
+      // Stores a multipart feature while the user is still adding parts.
+      this.draftFeature = draftFeature;
     },
     setModifiedFeature(modifiedFeature: Feature) {
       this.modifiedFeature = modifiedFeature;
@@ -35,6 +41,10 @@ export const useEditLayerStore = defineStore("editLayer", {
     setGeometryType(geometryType: GeometryType | null) {
       this.geometryType = geometryType;
     },
+    setIsDrawingFeaturePart(isDrawingFeaturePart: boolean) {
+      // Tracks whether the current MultiPoint/MultiLineString/MultiPolygon part is still being drawn.
+      this.isDrawingFeaturePart = isDrawingFeaturePart;
+    },
     setEditableLayers(editableLayers: ILayer[]) {
       this.editableLayers = editableLayers;
     },
@@ -44,16 +54,20 @@ export const useEditLayerStore = defineStore("editLayer", {
     },
     resetFeature() {
       this.feature = null;
+      this.draftFeature = null;
       this.modifiedFeature = null;
+      this.isDrawingFeaturePart = false;
     },
     resetEditLayerProperties() {
       this.editLayerMode = EditLayerMode.NONE;
       this.feature = null;
+      this.draftFeature = null;
       this.modifiedFeature = null;
       this.geometryType = null;
       this.selectedLayer = null;
       this.highlightedFeatureAndLayer = null;
       this.hideOtherPanels = false;
+      this.isDrawingFeaturePart = false;
     },
   },
   getters: {
