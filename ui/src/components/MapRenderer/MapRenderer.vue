@@ -671,6 +671,15 @@ export default {
       },
       deep: true,
     },
+    // Don't highlight features on the map after editing
+    "editLayerStore.modifiedFeature": {
+      handler(value) {
+        if (value) {
+          this.highlightedFeatures = [];
+        }
+      },
+      deep: true,
+    },
     initialLayers: {
       handler(value) {
         const layersCopy = value.map((layer) => ({ ...layer }));
