@@ -7,8 +7,8 @@
         'tools-panel__button--active': showEditFeatureMenu,
       }"
       :disabled="editLayerStore.editableLayers.length < 1"
-      content="Laag objecten bewerken"
-      aria-label="Laag objecten bewerken"
+      content="Laag objecten toevoegen"
+      aria-label="Laag objecten toevoegen"
       @click="toggleEditLayerMenu"
     >
       <EditLocationIcon class="icon" />
@@ -17,20 +17,6 @@
     <div>
       <transition name="fade">
         <div v-if="showEditFeatureMenu" class="tools-panel__draw-bar">
-          <div class="tools-panel__draw-menu">
-            <button
-              v-tippy="{ placement: 'bottom' }"
-              aria-label="Object bewerken"
-              class="tools-panel__button"
-              :class="{
-                'tools-panel__button--active': editLayerStore.editLayerMode === EditLayerMode.EDIT,
-              }"
-              content="Object bewerken"
-              @click="() => toggleEditFeatureMode()"
-            >
-              <EditIcon />
-            </button>
-          </div>
           <div class="tools-panel__draw-menu">
             <button
               v-tippy="{ placement: 'bottom' }"
@@ -102,7 +88,6 @@ import LineIcon from "@/assets/icons/line-icon.svg";
 import PolyGonIcon from "@/assets/icons/polygon-icon.svg";
 import DotIcon from "@/assets/icons/dot-icon.svg";
 import AddIcon from "@/assets/icons/add-icon.svg";
-import EditIcon from "@/assets/icons/edit-icon.svg";
 import MultiPointIcon from "@/assets/icons/multipoint-icon.svg";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { EditLayerMode } from "@/types/map";
@@ -184,19 +169,6 @@ const toggleAddEditFeatureMode = () => {
     editLayerStore.setEditLayerMode(EditLayerMode.ADD);
     editLayerStore.setSelectedLayer(null);
     showDialogOrProceed();
-    setTool("");
-
-    return;
-  }
-
-  editLayerStore.resetEditLayerProperties();
-  setTool("");
-};
-
-const toggleEditFeatureMode = () => {
-  if (editLayerStore.editLayerMode !== EditLayerMode.EDIT) {
-    editLayerStore.setEditLayerMode(EditLayerMode.EDIT);
-    editLayerStore.setGeometryType(null);
     setTool("");
 
     return;

@@ -19,6 +19,7 @@
       @draw-end="toolUsed"
       @on-fit="onFit"
     />
+    <ol-modify-interaction v-if="isEditingFeature" />
     <ol-drag-zoom />
     <component
       :is="getComponent(layer.source_type)"
@@ -86,6 +87,7 @@
       :z-index="mapObjectsIndex"
     />
     <ol-vector-layer
+      v-if="!isEditingFeature"
       ref="highlightedSelection"
       name="highlightedSelection"
       :selectable="true"
@@ -108,7 +110,7 @@
       name="editLayerFeatures"
       :selectable="true"
       :is-visible="true"
-      :features="editLayerStore.feature ? [editLayerStore.feature] : []"
+      :features="editableFeatures"
       :vector-style="DRAW_STYLE"
       :z-index="mapObjectsIndex"
     />
@@ -148,6 +150,8 @@ import { mapStores } from "pinia";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import { useMapStore } from "@/stores/map_store";
 import { clearMeasurementTooltips } from "@/utils/measure-tooltip";
+import OlModifyInteraction from "./components/OlModifyInteraction.vue";
+import { EditLayerMode } from "@/types/map";
 
 const MAP_AREA_STYLE = new Style({
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 2 }),
@@ -169,6 +173,7 @@ export default {
     OlMap,
     OlView,
     OlDrawInteraction,
+    OlModifyInteraction,
     OlDragZoom,
     OlWmtsLayer,
     OlWmsLayer,
@@ -206,6 +211,19 @@ export default {
   },
   computed: {
     ...mapStores(useEditLayerStore),
+    isEditingFeature() {
+      return (
+        this.editLayerStore.editLayerMode === EditLayerMode.EDIT &&
+        !!this.editLayerStore.highlightedFeatureAndLayer?.feature
+      );
+    },
+    editableFeatures() {
+      if (this.isEditingFeature) {
+        return [this.editLayerStore.highlightedFeatureAndLayer.feature];
+      }
+
+      return this.editLayerStore.feature ? [this.editLayerStore.feature] : [];
+    },
     DRAW_STYLE() {
       return (feature) =>
         new Style({
