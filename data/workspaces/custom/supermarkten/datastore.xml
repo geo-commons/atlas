@@ -8,15 +8,16 @@
     <id>WorkspaceInfoImpl--2ba3e498:195378d8346:-7fe3</id>
   </workspace>
   <connectionParameters>
+    <entry key="Batch insert size">1</entry>
+    <entry key="database">file:workspaces/custom/supermarkten.gpkg</entry>
     <entry key="fetch size">1000</entry>
     <entry key="Expose primary keys">false</entry>
-    <entry key="Batch insert size">1</entry>
-    <entry key="database">file:///opt/apache-tomcat-9.0.75/webapps/geoserver/data/workspaces/custom/supermarkten.gpkg</entry>
     <entry key="read_only">false</entry>
     <entry key="dbtype">geopkg</entry>
     <entry key="namespace">custom</entry>
   </connectionParameters>
   <__default>false</__default>
   <dateCreated>2025-03-27 09:33:16.365 UTC</dateCreated>
+  <dateModified>2026-03-19 10:00:41.31 UTC</dateModified>
   <disableOnConnFailure>false</disableOnConnFailure>
 </dataStore>

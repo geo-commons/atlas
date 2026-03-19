@@ -21,7 +21,7 @@
     AXIS[&quot;Geodetic longitude&quot;, EAST], 
     AXIS[&quot;Geodetic latitude&quot;, NORTH], 
     AUTHORITY[&quot;EPSG&quot;,&quot;4289&quot;]], 
-  PROJECTION[&quot;Oblique_Stereographic&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9809&quot;]], 
+  PROJECTION[&quot;Oblique_Stereographic&quot;], 
   PARAMETER[&quot;central_meridian&quot;, 5.387638888888891], 
   PARAMETER[&quot;latitude_of_origin&quot;, 52.15616055555556], 
   PARAMETER[&quot;scale_factor&quot;, 0.9999079], 
@@ -53,8 +53,6 @@
   </store>
   <serviceConfiguration>false</serviceConfiguration>
   <simpleConversionEnabled>false</simpleConversionEnabled>
-  <internationalTitle/>
-  <internationalAbstract/>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
   <padWithZeros>false</padWithZeros>
