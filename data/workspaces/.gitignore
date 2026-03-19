@@ -1,0 +1,6 @@
+# Ignore every workspace
+*
+
+# But NOT the custom workspace
+!custom/
+!.gitignore
