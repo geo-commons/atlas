@@ -386,7 +386,6 @@ import { useMapStore } from "@/stores/map_store";
 import { isMobile } from "@/utils/helpers";
 import nunjucks from "nunjucks";
 import GeoJSON from "ol/format/GeoJSON";
-import { MultiLineString, MultiPoint, MultiPolygon } from "ol/geom";
 import { transform } from "ol/proj";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
@@ -423,7 +422,11 @@ import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
 import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import { ELayerTypes } from "@/types/layer";
-import { EditLayerMode } from "@/types/map";
+import {
+  finalizeMultipartFeatureOnEnter,
+  handleEditLayerToolUsed,
+  onEditLayerToolStarted,
+} from "@/components/MapRenderer/services/edit-layer";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -732,112 +735,16 @@ export default {
     document.removeEventListener("keydown", this.finalizeMultipartFeatureOnEnter);
   },
   methods: {
-    isMultipartGeometryTool(tool) {
-      return ["MultiPoint", "MultiLineString", "MultiPolygon"].includes(tool);
-    },
-    getMultipartGeometry(tool, geometry) {
-      switch (tool) {
-        case "MultiPoint":
-          return geometry.getType() === "MultiPoint" ? geometry.clone() : new MultiPoint([geometry.getCoordinates()]);
-        case "MultiLineString":
-          return geometry.getType() === "MultiLineString"
-            ? geometry.clone()
-            : new MultiLineString([geometry.getCoordinates()]);
-        case "MultiPolygon":
-          return geometry.getType() === "MultiPolygon"
-            ? geometry.clone()
-            : new MultiPolygon([geometry.getCoordinates()]);
-        default:
-          return geometry.clone();
-      }
-    },
-    appendGeometryToDraftFeature(tool, sketch) {
-      const sketchGeometry = sketch.getGeometry();
-
-      if (!sketchGeometry) {
-        return;
-      }
-
-      const nextGeometry = this.getMultipartGeometry(tool, sketchGeometry);
-
-      if (!this.editLayerStore.draftFeature) {
-        // The first finished part starts the multipart draft.
-        const draftFeature = sketch.clone();
-        draftFeature.setGeometry(nextGeometry);
-        this.editLayerStore.setDraftFeature(draftFeature);
-        return;
-      }
-
-      // Every next finished part is appended to the existing multipart draft.
-      const draftFeature = this.editLayerStore.draftFeature.clone();
-      const currentGeometry = this.getMultipartGeometry(tool, this.editLayerStore.draftFeature.getGeometry());
-
-      switch (tool) {
-        case "MultiPoint":
-          draftFeature.setGeometry(
-            new MultiPoint([...currentGeometry.getCoordinates(), ...nextGeometry.getCoordinates()]),
-          );
-          break;
-        case "MultiLineString":
-          draftFeature.setGeometry(
-            new MultiLineString([...currentGeometry.getCoordinates(), ...nextGeometry.getCoordinates()]),
-          );
-          break;
-        case "MultiPolygon":
-          draftFeature.setGeometry(
-            new MultiPolygon([...currentGeometry.getCoordinates(), ...nextGeometry.getCoordinates()]),
-          );
-          break;
-      }
-
-      this.editLayerStore.setDraftFeature(draftFeature);
-    },
     finalizeMultipartFeatureOnEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-
-      if (
-        (this.editLayerStore.editLayerMode !== EditLayerMode.ADD && !this.editLayerStore.isRedrawingFeature) ||
-        !this.isMultipartGeometryTool(this.tool) ||
-        !this.editLayerStore.draftFeature ||
-        this.editLayerStore.isDrawingFeaturePart
-      ) {
-        return;
-      }
-
-      const finalizedFeature = this.editLayerStore.draftFeature.clone();
-
-      if (this.editLayerStore.isRedrawingFeature && this.editLayerStore.highlightedFeatureAndLayer) {
-        const geometry = finalizedFeature.getGeometry();
-        const redrawnFeature = geometry ? this.createRedrawnFeature(geometry) : null;
-
-        if (!redrawnFeature) {
-          return;
-        }
-
-        this.editLayerStore.setHighlightedFeatureAndLayer({
-          feature: redrawnFeature,
-          layer: this.editLayerStore.highlightedFeatureAndLayer.layer,
-        });
-        this.editLayerStore.setIsRedrawingFeature(false);
-      } else {
-        // Enter confirms the full multipart geometry and opens the save flow.
-        this.editLayerStore.setFeature(finalizedFeature);
-      }
-
-      this.editLayerStore.setDraftFeature(null);
-      this.tool = "";
-      event.preventDefault();
+      finalizeMultipartFeatureOnEnter({
+        event,
+        editLayerStore: this.editLayerStore,
+        tool: this.tool,
+        clearTool: () => this.setTool(""),
+      });
     },
     onToolStarted() {
-      if (
-        (this.editLayerStore.editLayerMode === EditLayerMode.ADD || this.editLayerStore.isRedrawingFeature) &&
-        this.isMultipartGeometryTool(this.tool)
-      ) {
-        // Prevent Enter from finalizing while a part is still actively being drawn.
-        this.editLayerStore.setIsDrawingFeaturePart(true);
-      }
+      onEditLayerToolStarted(this.editLayerStore, this.tool);
     },
     notifyIframeParentOfStateChange() {
       // Notifies the parent window of active layer, zoom, and position changes
@@ -1120,43 +1027,6 @@ export default {
     setTool(tool) {
       this.tool = tool;
     },
-    createRedrawnFeature(geometry) {
-      const sourceFeature =
-        this.editLayerStore.modifiedFeature || this.editLayerStore.highlightedFeatureAndLayer?.feature;
-
-      if (!sourceFeature) {
-        return null;
-      }
-
-      const redrawnFeature = sourceFeature.clone();
-      redrawnFeature.setGeometry(geometry.clone());
-
-      if (sourceFeature.getId()) {
-        redrawnFeature.setId(sourceFeature.getId());
-      }
-
-      return redrawnFeature;
-    },
-    finishRedrawingFeature(result) {
-      if (!this.editLayerStore.highlightedFeatureAndLayer) {
-        return;
-      }
-
-      const geometry = result.sketch.getGeometry();
-      const redrawnFeature = geometry ? this.createRedrawnFeature(geometry) : null;
-
-      if (!redrawnFeature) {
-        return;
-      }
-
-      this.editLayerStore.setHighlightedFeatureAndLayer({
-        feature: redrawnFeature,
-        layer: this.editLayerStore.highlightedFeatureAndLayer.layer,
-      });
-      this.editLayerStore.setDraftFeature(null);
-      this.editLayerStore.setIsRedrawingFeature(false);
-      this.tool = "";
-    },
     toolUsed(result) {
       if (result && result.sketch) {
         this.editLayerStore.setIsDrawingFeaturePart(false);
@@ -1190,20 +1060,14 @@ export default {
         case "LineString":
         case "LinearRing":
         case "Circle":
-          if (this.editLayerStore.isRedrawingFeature) {
-            this.finishRedrawingFeature(result);
-            break;
-          }
-
-          this.editLayerStore.setDraftFeature(null);
-          this.editLayerStore.setFeature(result.sketch);
-          this.tool = "";
-          break;
         case "MultiPoint":
         case "MultiLineString":
         case "MultiPolygon":
-          // Multipart layers stay in draft mode until the user presses Enter.
-          this.appendGeometryToDraftFeature(result.tool, result.sketch);
+          handleEditLayerToolUsed({
+            editLayerStore: this.editLayerStore,
+            result,
+            clearTool: () => this.setTool(""),
+          });
           break;
       }
     },
