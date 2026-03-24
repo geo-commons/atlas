@@ -164,7 +164,7 @@
       @set-tool="setTool"
       @set-selected-area="setSelectedArea"
     />
-    <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" />
+    <EditFeaturePanel :user="user" :refresh-layer="refreshLayer" @set-tool="setTool" />
 
     <CompareLayersPanel
       :map-id="mapId"
@@ -369,15 +369,6 @@
       </div>
     </transition>
     <AlertMessage :alert="alert" />
-
-    <EditLayerActionModal
-      :visible="showNotAllowedToEditLayerModal"
-      header="Bewerken niet toegestaan"
-      :message="`Je kan geen aanpassingen maken op de **${editLayerName}** laag.`"
-      confirm-label="Sluit"
-      confirm-icon="pi pi-check"
-      :on-confirm="toggleShowNotAllowedtoEditLayerModal"
-    />
   </div>
 </template>
 
@@ -428,9 +419,8 @@ import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
 import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
 import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 import { pushHistoryState } from "@/utils/map-url-utils";
-import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
-import { EditLayerMode } from "@/types/map";
 import { ELayerTypes } from "@/types/layer";
+import { finalizeMultipartFeatureOnEnter, handleEditLayerToolUsed } from "@/components/MapRenderer/utils/edit-layer";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -439,7 +429,6 @@ const DEFAULT_PANEL_WIDTH = 280;
 export default {
   name: "MapRenderer",
   components: {
-    EditLayerActionModal,
     CompareLayersSlider,
     CompareLayersPanel,
     EditFeaturePanel,
@@ -683,6 +672,15 @@ export default {
       },
       deep: true,
     },
+    // Don't highlight features on the map after editing
+    "editLayerStore.modifiedFeature": {
+      handler(value) {
+        if (value) {
+          this.highlightedFeatures = [];
+        }
+      },
+      deep: true,
+    },
     initialLayers: {
       handler(value) {
         const layersCopy = value.map((layer) => ({ ...layer }));
@@ -720,6 +718,7 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.onResizeWindow);
+    document.addEventListener("keydown", this.finalizeMultipartFeatureOnEnter);
     this.$nextTick(() => {
       this.setViewportHeight();
     });
@@ -727,8 +726,22 @@ export default {
   },
   unmounted() {
     window.removeEventListener("resize", this.onResizeWindow);
+    document.removeEventListener("keydown", this.finalizeMultipartFeatureOnEnter);
   },
   methods: {
+    finalizeMultipartFeatureOnEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+
+      finalizeMultipartFeatureOnEnter({
+        editLayerStore: this.editLayerStore,
+        tool: this.tool,
+        clearTool: () => this.setTool(""),
+      });
+
+      event.preventDefault();
+    },
     notifyIframeParentOfStateChange() {
       // Notifies the parent window of active layer, zoom, and position changes
       // while configuring the embed, so it can update the embed URL accordingly.
@@ -836,7 +849,6 @@ export default {
     },
     async getFeatureInfo(position) {
       this.highlightedFeatures = [];
-      this.editLayerStore.setHighlightedFeatureAndLayer(null);
 
       this.mapStore.visibleLayersForFeatures.forEach(async (layer) => {
         if (layer.source_type === ELayerTypes.WMTS) {
@@ -867,33 +879,6 @@ export default {
           const data = await result.json();
           const features = data.features.map((feature) => new GeoJSON().readFeature(feature));
           this.highlightedFeatures = [...this.highlightedFeatures, ...features];
-
-          /*
-            If highlightedFeatureAndLayer is null and there is at least one highlighted feature,
-            set it to the first highlighted feature along with its corresponding layer.
-            This is necessary to enable edit and delete functionality for layers.
-
-            Currently, if multiple features are highlighted, the edit and delete functionality
-            only supports the first highlighted feature. If a user wants to edit a specific highlighted feature
-            but has selected multiple features simultaneously,
-            they will need to temporarily disable the layers containing other highlighted features.
-           */
-          if (
-            !this.editLayerStore.highlightedFeatureAndLayer &&
-            features.length &&
-            layer.can_write &&
-            this.editLayerStore.editLayerMode === EditLayerMode.EDIT
-          ) {
-            this.editLayerStore.setHighlightedFeatureAndLayer({ feature: features[0], layer: layer });
-          } else if (
-            !this.editLayerStore.highlightedFeatureAndLayer &&
-            features.length &&
-            !layer.can_write &&
-            this.editLayerStore.editLayerMode === EditLayerMode.EDIT
-          ) {
-            this.editLayerName = layer.name;
-            this.showNotAllowedToEditLayerModal = true;
-          }
 
           if (this.$refs.map && this.$refs.map.map) {
             const tooltip = createMeasurementTooltip(features[0], this.$refs.map.map, { isStatic: true });
@@ -1066,12 +1051,15 @@ export default {
         case "Polygon":
         case "LineString":
         case "LinearRing":
+        case "Circle":
         case "MultiPoint":
         case "MultiLineString":
         case "MultiPolygon":
-        case "Circle":
-          this.editLayerStore.setFeature(result.sketch);
-          this.tool = "";
+          handleEditLayerToolUsed({
+            editLayerStore: this.editLayerStore,
+            result,
+            clearTool: () => this.setTool(""),
+          });
           break;
       }
     },

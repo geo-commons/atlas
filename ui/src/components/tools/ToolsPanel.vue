@@ -139,7 +139,7 @@ export default {
     "editLayerStore.editLayerMode": {
       handler(value) {
         if (value === EditLayerMode.EDIT) {
-          this.showEditFeatureMenu = true;
+          this.showEditFeatureMenu = false;
         }
       },
     },

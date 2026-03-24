@@ -17807,7 +17807,7 @@
       "server_type": "geoserver",
       "closed_dataset": false,
       "login_required": false,
-      "authenticated_can_mutate": false,
+      "authenticated_can_mutate": true,
       "published": true,
       "is_exportable": true,
       "source_type": "WMS_WFS",
@@ -17857,7 +17857,7 @@
       "server_type": "geoserver",
       "closed_dataset": false,
       "login_required": false,
-      "authenticated_can_mutate": false,
+      "authenticated_can_mutate": true,
       "published": true,
       "is_exportable": true,
       "source_type": "WMS_WFS",
@@ -17907,7 +17907,7 @@
       "server_type": "geoserver",
       "closed_dataset": false,
       "login_required": false,
-      "authenticated_can_mutate": false,
+      "authenticated_can_mutate": true,
       "published": true,
       "is_exportable": true,
       "source_type": "WMS_WFS",
@@ -19398,6 +19398,38 @@
     "fields": {
       "key": "FAVICON_URL",
       "value": "{\"__type__\": \"default\", \"__value__\": \"\"}"
+    }
+  },
+  {
+    "model": "constance.constance",
+    "pk": 4,
+    "fields": {
+      "key": "FEATURE_PORTAL",
+      "value": "{\"__type__\": \"default\", \"__value__\": true}"
+    }
+  },
+  {
+    "model": "constance.constance",
+    "pk": 5,
+    "fields": {
+      "key": "FEATURE_EDIT_LAYER_FEATURES",
+      "value": "{\"__type__\": \"default\", \"__value__\": true}"
+    }
+  },
+  {
+    "model": "constance.constance",
+    "pk": 6,
+    "fields": {
+      "key": "FEATURE_NEW_TABLES",
+      "value": "{\"__type__\": \"default\", \"__value__\": true}"
+    }
+  },
+  {
+    "model": "constance.constance",
+    "pk": 7,
+    "fields": {
+      "key": "FEATURE_DRAW",
+      "value": "{\"__type__\": \"default\", \"__value__\": true}"
     }
   }
 ]

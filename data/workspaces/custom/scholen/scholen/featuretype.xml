@@ -82,14 +82,19 @@
       <minOccurs>0</minOccurs>
       <maxOccurs>1</maxOccurs>
       <nillable>true</nillable>
-      <binding>java.lang.String</binding>
+      <binding>java.lang.Boolean</binding>
     </attribute>
     <attribute>
       <name>soort_inst</name>
       <minOccurs>0</minOccurs>
       <maxOccurs>1</maxOccurs>
-      <nillable>true</nillable>
+      <nillable>false</nillable>
       <binding>java.lang.String</binding>
+      <options>
+        <string>BO</string>
+        <string>SBO</string>
+        <string>ROC</string>
+      </options>
     </attribute>
     <attribute>
       <name>naam_vesti</name>
@@ -123,8 +128,8 @@
       <name>huisnummer</name>
       <minOccurs>0</minOccurs>
       <maxOccurs>1</maxOccurs>
-      <nillable>true</nillable>
-      <binding>java.lang.String</binding>
+      <nillable>false</nillable>
+      <binding>java.lang.Integer</binding>
     </attribute>
     <attribute>
       <name>toevoeging</name>
@@ -141,18 +146,23 @@
       <binding>java.lang.String</binding>
     </attribute>
     <attribute>
-      <name>bestuur</name>
+      <name>laatst_geupdated</name>
       <minOccurs>0</minOccurs>
       <maxOccurs>1</maxOccurs>
-      <nillable>true</nillable>
-      <binding>java.lang.String</binding>
+      <nillable>false</nillable>
+      <binding>java.sql.Date</binding>
+      <source>bestuur</source>
     </attribute>
     <attribute>
       <name>bouwjaar</name>
       <minOccurs>0</minOccurs>
       <maxOccurs>1</maxOccurs>
       <nillable>true</nillable>
-      <binding>java.lang.String</binding>
+      <binding>java.lang.Integer</binding>
+      <range>
+        <min>0</min>
+        <max>2026</max>
+      </range>
     </attribute>
     <attribute>
       <name>uitbreidin</name>

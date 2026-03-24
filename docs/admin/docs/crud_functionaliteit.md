@@ -26,12 +26,12 @@ Als je geen toegangsregels op kaartlaagniveau wilt instellen, kun je de CRUD-fun
 
 ### 2.4 Samenvatting
 
-| Stap | Actie                                                                                   |
-|------|------------------------------------------------------------------------------------------|
-| 1    | Zorg dat de gebruiker **FILTER_PROXY** schrijfrechten heeft in GeoServer.               |
-| 2    | Zet de feature flag **"Bewerkfunctionaliteit"** aan in de admin-omgeving van Atlas.     |
-| 3    | Gebruik een kaartlaag met **filter-proxy** als gegevensbron.                            |
-| 4    | Stel toegangsregel
+| Stap | Actie                                                                               |
+| ---- | ----------------------------------------------------------------------------------- |
+| 1    | Zorg dat de gebruiker **FILTER_PROXY** schrijfrechten heeft in GeoServer.           |
+| 2    | Zet de feature flag **"Bewerkfunctionaliteit"** aan in de admin-omgeving van Atlas. |
+| 3    | Gebruik een kaartlaag met **filter-proxy** als gegevensbron.                        |
+| 4    | Stel toegangsregel                                                                  |
 
 ## 3. Het gebruik van de CRUD-functionaliteit
 
@@ -50,34 +50,40 @@ Zodra de gewenste laag actief is, kun je op de knop drukken. Dan verschijnt het 
 ![Object toevoegen of bewerken](../images/object_toevoegen_knop.png)
 
 - Klik op het **plus-icoon** om een object toe te voegen.
-- Klik op het **pen-icoon** om een bestaand object te bewerken.
 
 ### 3.2 Een object toevoegen
 
-Wanneer je op het **plus-icoon** klikt, krijg je direct de mogelijkheid om een object op de kaart te tekenen. Atlas bepaalt automatisch of het hierbij gaat om een punt, lijn of polygoon – afhankelijk van het type kaartlaag.
+Wanneer je op het **plus-icoon** klikt, kun je direct een object op de kaart tekenen. Atlas bepaalt automatisch het type geometrie op basis van de geselecteerde kaartlaag.
+
+#### Toevoegen: Point, Polygon, LineString, LinearRing of Circle
 
 1. Teken het gewenste object op de kaart.
-2. Rond de tekening af door op **Enter** of dubbel te klikken.
-3. Er opent zich nu een invoerpaneel aan de linkerzijde (desktop) of onderzijde (mobiel/tablet):
+2. Rond de tekening af door op **Enter** te drukken of te dubbelklikken.
 
-![Object toevoegen paneel](../images/toevoeg_paneel_crud.png)
+#### Toevoegen: MultiPoint, MultiPolygon of MultiLineString
 
-4. In dit paneel zie je automatisch de velden die bij de laag horen. Vul de relevante gegevens in.
-5. Klik op **Opslaan** om het object op te slaan.
+1. Teken de gewenste objecten op de kaart. Gebruik een dubbelklik om één onderdeel van het multi-object af te ronden. Herhaal dit proces om meerdere onderdelen toe te voegen aan hetzelfde object.
+2. Rond de volledige tekening af door op **Enter** te drukken.
+
+#### Afronden en opslaan (geldt voor alle objecttypen)
+
+1. Er opent automatisch een invoerpaneel aan de linkerzijde op desktop en aan de onderzijde op mobiel/tablet.
+
+   ![Object toevoegen paneel](../images/toevoeg_paneel_crud.png)
+
+2. In dit paneel worden automatisch de velden getoond die bij de laag horen. Vul de relevante gegevens in.
+3. Klik op **Opslaan** om het object op te slaan.
 
 > ✅ De mutatie wordt uitgevoerd op de GeoServer en opgeslagen in de gekoppelde datastore.
 
 ### 3.3 Een object bewerken of verwijderen
 
-Je kunt een object op twee manieren bewerken of verwijderen:
+Je kunt een object op deze manier bewerken of verwijderen:
 
-1. **Via de detailweergave**:
-   - Klik het object aan.
-   - Druk op de knop **"Bewerk"** in de detailweergave.
+**Via de detailweergave**:
 
-2. **Via het pen-icoon**:
-   - Activeer het pen-icoon.
-   - Klik op het object dat je wilt aanpassen.
+- Klik het object aan.
+- Druk op de knop **"Bewerk"** in de detailweergave.
 
 Hierna opent zich het volgende paneel:
 
@@ -85,9 +91,11 @@ Hierna opent zich het volgende paneel:
 
 In dit paneel kun je:
 
-- Gegevens van het object aanpassen.
-- Wijzigingen opslaan door op **"Opslaan"** te klikken.
+- Gegevens van het object aanpassen
+- Het opject opnieuw tekenen door op **"Opnieuw tekenen"** te klikken.
 - Het object volledig verwijderen door op **"Verwijderen"** te klikken.
+- Wijzigingen opslaan door op **"Opslaan"** te klikken.
+
+Ook kan je in de kaart de geometrie van het object bewerken, door het object te selecteren en punt(en) van het object te slepen naar de gewenste locatie.
 
 > 🔁 Alle bewerkingen en verwijderingen worden direct doorgevoerd in GeoServer en de gekoppelde datastore.
-
