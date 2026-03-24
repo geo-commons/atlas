@@ -924,7 +924,7 @@ export default {
               type: "checkbox",
               required: false,
               infoText: "Laag is alleen zichtbaar binnen het interne netwerk.",
-              showIf: this.config?.features?.featureLayerInternalVisibility || true,
+              showIf: this.config?.features?.featureLayerInternalVisibility,
             },
             {
               label: "Vereis inlog voor deze kaartlaag",
