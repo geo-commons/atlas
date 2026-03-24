@@ -202,7 +202,7 @@ export default {
     fontSize: Number,
     showCompareSlider: Boolean,
   },
-  emits: ["position-changed", "tool-started", "tool-used", "on-fit", "features-selected", "loading-print-to-pdf"],
+  emits: ["position-changed", "tool-used", "on-fit", "features-selected", "loading-print-to-pdf"],
   data() {
     return {
       undoRedoInteraction: null,
@@ -437,7 +437,6 @@ export default {
     },
     startUsingTool() {
       this.$refs.selectedArea.clear();
-      this.$emit("tool-started");
     },
     toolUsed(result) {
       this.$emit("tool-used", result);

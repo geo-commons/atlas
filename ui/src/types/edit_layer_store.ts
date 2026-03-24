@@ -11,7 +11,6 @@ export interface IEditLayerStore {
   geometryType: IGeometryType | null;
   selectedLayer: ILayer | null;
   hideOtherPanels: boolean;
-  isDrawingFeaturePart: boolean;
   isRedrawingFeature: boolean;
   highlightedFeatureAndLayer: {
     feature: Feature;

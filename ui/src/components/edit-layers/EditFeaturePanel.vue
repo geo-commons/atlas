@@ -10,7 +10,10 @@
       <span class="tw-font-[var(--font-weight-bold)]">Actieve laag</span>
       <p class="tw-mt-0">{{ editLayerStore.highlightedFeatureAndLayer?.layer.name }}</p>
     </div>
-    <Message v-if="editLayerStore.isRedrawingFeature" severity="info" class="tw-mt-3">{{
+    <Message v-if="!editLayerStore.isRedrawingFeature && hasMultipleVertices" severity="info" class="tw-mb-3">
+      Gebruik Alt+klik om punten te verwijderen.
+    </Message>
+    <Message v-if="editLayerStore.isRedrawingFeature" severity="info" class="tw-mb-3">{{
       isMultipartGeometry
         ? "Teken de geometrie opnieuw en druk op Enter om af te ronden."
         : "Teken de geometrie opnieuw."
@@ -123,12 +126,18 @@ const form = ref(null);
 
 const multipartGeometryTypes = ["MultiPoint", "MultiLineString", "MultiPolygon"];
 
+const geometryTypesWithMultipleVertices = ["LineString", "Polygon", "MultiLineString", "MultiPolygon"];
+
 const currentGeometryType = computed(() =>
   editLayerStore.highlightedFeatureAndLayer?.feature?.getGeometry()?.getType(),
 );
 
 const isMultipartGeometry = computed(() => {
   return currentGeometryType.value ? multipartGeometryTypes.includes(currentGeometryType.value) : false;
+});
+
+const hasMultipleVertices = computed(() => {
+  return currentGeometryType.value ? geometryTypesWithMultipleVertices.includes(currentGeometryType.value) : false;
 });
 
 watch(
@@ -226,7 +235,6 @@ const startRedrawingFeature = () => {
 
   editLayerStore.setDraftFeature(null);
   editLayerStore.setIsRedrawingFeature(true);
-  editLayerStore.setIsDrawingFeaturePart(false);
   geoServerError.value = null;
 
   emit("set-tool", currentGeometryType.value);

@@ -80,9 +80,10 @@ Wanneer je op het **plus-icoon** klikt, kun je direct een object op de kaart tek
 
 Je kunt een object op deze manier bewerken of verwijderen:
 
-1. **Via de detailweergave**:
-   - Klik het object aan.
-   - Druk op de knop **"Bewerk"** in de detailweergave.
+**Via de detailweergave**:
+
+- Klik het object aan.
+- Druk op de knop **"Bewerk"** in de detailweergave.
 
 Hierna opent zich het volgende paneel:
 

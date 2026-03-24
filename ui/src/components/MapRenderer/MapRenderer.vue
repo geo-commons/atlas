@@ -56,7 +56,6 @@
             :font-size="fontSize"
             :show-compare-slider="compareLayers"
             @position-changed="setPosition"
-            @tool-started="onToolStarted"
             @tool-used="toolUsed"
             @features-selected="featuresSelected"
             @on-fit="(position) => onFit(position)"
@@ -87,7 +86,6 @@
         :stroke-width="strokeWidth"
         :font-size="fontSize"
         @position-changed="setPosition"
-        @tool-started="onToolStarted"
         @tool-used="toolUsed"
         @features-selected="featuresSelected"
         @on-fit="(position) => onFit(position)"
@@ -422,11 +420,7 @@ import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
 import { createMeasurementTooltip } from "@/utils/measure-tooltip";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import { ELayerTypes } from "@/types/layer";
-import {
-  finalizeMultipartFeatureOnEnter,
-  handleEditLayerToolUsed,
-  onEditLayerToolStarted,
-} from "@/components/MapRenderer/services/edit-layer";
+import { finalizeMultipartFeatureOnEnter, handleEditLayerToolUsed } from "@/components/MapRenderer/utils/edit-layer";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -736,15 +730,17 @@ export default {
   },
   methods: {
     finalizeMultipartFeatureOnEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+
       finalizeMultipartFeatureOnEnter({
-        event,
         editLayerStore: this.editLayerStore,
         tool: this.tool,
         clearTool: () => this.setTool(""),
       });
-    },
-    onToolStarted() {
-      onEditLayerToolStarted(this.editLayerStore, this.tool);
+
+      event.preventDefault();
     },
     notifyIframeParentOfStateChange() {
       // Notifies the parent window of active layer, zoom, and position changes
@@ -1028,10 +1024,6 @@ export default {
       this.tool = tool;
     },
     toolUsed(result) {
-      if (result && result.sketch) {
-        this.editLayerStore.setIsDrawingFeaturePart(false);
-      }
-
       if (result && result.sketch && (result.tool === "SELECT_AREA" || result.tool === "SELECT_CIRCLE")) {
         this.selectedArea = result.sketch.getGeometry();
       }

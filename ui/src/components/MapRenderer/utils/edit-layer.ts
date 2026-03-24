@@ -126,16 +126,11 @@ const finishRedrawingFeature = ({ editLayerStore, result, clearTool }: HandleToo
   return true;
 };
 
-const finalizeMultipartFeatureOnEnter = ({ event, editLayerStore, tool, clearTool }: FinalizeMultipartOptions) => {
-  if (event.key !== "Enter") {
-    return false;
-  }
-
+const finalizeMultipartFeatureOnEnter = ({ editLayerStore, tool, clearTool }: FinalizeMultipartOptions) => {
   if (
     (editLayerStore.editLayerMode !== EditLayerMode.ADD && !editLayerStore.isRedrawingFeature) ||
     !isMultipartGeometryTool(tool) ||
-    !editLayerStore.draftFeature ||
-    editLayerStore.isDrawingFeaturePart
+    !editLayerStore.draftFeature
   ) {
     return false;
   }
@@ -161,18 +156,8 @@ const finalizeMultipartFeatureOnEnter = ({ event, editLayerStore, tool, clearToo
 
   editLayerStore.setDraftFeature(null);
   clearTool();
-  event.preventDefault();
 
   return true;
-};
-
-const onEditLayerToolStarted = (editLayerStore: EditLayerStore, tool: string) => {
-  if (
-    (editLayerStore.editLayerMode === EditLayerMode.ADD || editLayerStore.isRedrawingFeature) &&
-    isMultipartGeometryTool(tool)
-  ) {
-    editLayerStore.setIsDrawingFeaturePart(true);
-  }
 };
 
 const handleEditLayerToolUsed = ({ editLayerStore, result, clearTool }: HandleToolUsedOptions) => {
@@ -206,5 +191,4 @@ export {
   finishRedrawingFeature,
   handleEditLayerToolUsed,
   isMultipartGeometryTool,
-  onEditLayerToolStarted,
 };

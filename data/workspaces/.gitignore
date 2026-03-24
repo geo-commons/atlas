@@ -4,3 +4,4 @@
 # But NOT the custom workspace
 !custom/
 !.gitignore
+!default.xml
