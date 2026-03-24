@@ -52,14 +52,18 @@ services:
     ports:
       - 8050:8050
   geoserver:
-    image: ghcr.io/delta10/geoserver:2.26.3
+    image: ghcr.io/delta10/geoserver:2.27.3
+    user: root
+    command: /opt/geoserver-dev-init.sh
     ports:
       - 8080:8080
     environment:
       - EXTRA_JAVA_OPTS=-Xms1G -Xmx2G
     volumes:
       - geoserver-data:/opt/geoserver_data
-      - ./data/workspaces/custom:/opt/apache-tomcat-9.0.75/webapps/geoserver/data/workspaces/custom
+      - ./data/workspaces:/opt/geoserver_data/workspaces
+      - ./data/security:/opt/dev-security:ro
+      - ./docker/geoserver-dev-init.sh:/opt/geoserver-dev-init.sh:ro
 volumes:
   postgres-data:
   geoserver-data:

@@ -12,6 +12,7 @@ export interface ILayer {
   projection: string;
   can_write: boolean;
   opacity: number;
+  friendly_fields: { [key: string]: string };
   is_selectable: boolean;
   is_base: boolean;
   category: string;
@@ -35,13 +36,20 @@ export interface ILayer {
 
 export type IGeometryType = GeometryType | "Geometry";
 
+export type IGeoserverType = IGeometryType | "boolean" | "date" | "number" | "int" | "string" | "time" | "date-time";
+
 export type ILayerProperties = Array<{
   name: string;
   maxOccurs: number;
   minOccurs: number;
   nillable: boolean;
   type: string;
-  localType: IGeometryType;
+  localType: IGeoserverType;
+  restriction?: {
+    minInclusive?: number;
+    maxInclusive?: number;
+    enumeration?: string[] | number[];
+  };
 }>;
 
 export type IFeatureProperties = {

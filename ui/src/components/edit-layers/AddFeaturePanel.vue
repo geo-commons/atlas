@@ -3,7 +3,8 @@
     :visible="showAddFeaturePanel"
     header="Object toevoegen"
     :dismissable="false"
-    @update:visible="toggleShowCancelModal"
+    class="!tw-w-2/3 sm:!tw-w-1/2 md:!tw-w-[400px]"
+    @update:visible="onCancel"
   >
     <div v-if="editLayerStore.selectedLayer" class="tw-py-4">
       <div class="tw-flex tw-flex-col tw-gap-0">
@@ -14,7 +15,12 @@
       <div v-if="layerTypeIsWFSOrWMSWFS && !drawerError" class="tw-flex tw-flex-col">
         <ErrorAccordion :error="geoServerError" />
         <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
-        <LayerCrudForm ref="form" :layer-properties="layerProperties" :handle-submit="handleSubmit" />
+        <LayerCrudForm
+          ref="form"
+          :layer-properties="layerProperties"
+          :handle-submit="handleSubmit"
+          :layer="editLayerStore.selectedLayer"
+        />
       </div>
       <!-- Write transactions are restricted to layers of type 'WFS' and 'WMS_WFS'.
       Display an error message if the selected layer's source type is anything other than these two.
@@ -30,13 +36,7 @@
 
     <template #footer>
       <div class="tw-flex tw-flex-col tw-items-stretch tw-gap-2">
-        <Button
-          label="Annuleren"
-          icon="pi pi-times"
-          class="tw-flex-auto"
-          outlined
-          @click="toggleShowCancelModal"
-        ></Button>
+        <Button label="Annuleren" icon="pi pi-times" class="tw-flex-auto" outlined @click="onCancel"></Button>
         <Button
           :disabled="isSaveButtonDisabled"
           label="Opslaan"
@@ -47,30 +47,6 @@
       </div>
     </template>
   </Drawer>
-
-  <EditLayerActionModal
-    :visible="showSaveModal"
-    header="Opslaan"
-    :message="`Wanneer u doorgaat met opslaan, worden alle eigenschappen en uw getekende object opgeslagen op de laag **${editLayerStore.selectedLayer?.name}** in GeoServer.`"
-    cancel-label="Annuleren"
-    cancel-icon="pi pi-times"
-    confirm-label="Opslaan"
-    confirm-icon="pi pi-save"
-    :on-cancel="cancelSaveModal"
-    :on-confirm="save"
-  />
-
-  <EditLayerActionModal
-    :visible="showCancelModal"
-    header="Annuleren"
-    :message="`Wanneer u annuleert, wordt het door u getekende object, inclusief alle bijbehorende eigenschappen, niet opgeslagen
-      op de laag **${editLayerStore.selectedLayer?.name}** in GeoServer. Alle onopgeslagen wijzigingen gaan verloren.`"
-    cancel-label="Verder met bewerken"
-    confirm-label="Bewerken sluiten"
-    confirm-icon="pi pi-times"
-    :on-cancel="cancelCancelModal"
-    :on-confirm="proceed"
-  />
 </template>
 
 <script setup lang="ts">
@@ -84,7 +60,6 @@ import { required } from "@vee-validate/rules";
 import Feature from "ol/Feature";
 import { useToast } from "primevue";
 import LayerCrudForm from "@/components/edit-layers/LayerCrudForm.vue";
-import EditLayerActionModal from "@/components/edit-layers/EditLayerActionModal.vue";
 import ErrorAccordion from "@/components/ErrorAccordion.vue";
 
 interface AddFeaturePanelProps {
@@ -109,8 +84,6 @@ const editLayerStore = useEditLayerStore();
 
 // References
 const showAddFeaturePanel = ref<boolean>(false);
-const showSaveModal = ref<boolean>(false);
-const showCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const geoServerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
@@ -197,7 +170,7 @@ defineRule("required", (value: string) => {
 const handleSubmit = (values: any) => {
   featureValues.value = values;
 
-  toggleShowEditLayerSaveModal();
+  handleSaveFeature();
 };
 
 const submitFormManually = () => {
@@ -217,32 +190,8 @@ const handleDrawerClose = (value: boolean) => {
   emit("set-tool", "");
 };
 
-const toggleShowEditLayerSaveModal = () => {
-  showSaveModal.value = !showSaveModal.value;
-};
-
-const toggleShowCancelModal = () => {
-  showCancelModal.value = !showCancelModal.value;
-};
-
-const proceed = () => {
-  toggleShowCancelModal();
-
+const onCancel = () => {
   handleDrawerClose(false);
-};
-
-const cancelCancelModal = () => {
-  toggleShowCancelModal();
-};
-
-const save = () => {
-  toggleShowEditLayerSaveModal();
-
-  handleSaveFeature();
-};
-
-const cancelSaveModal = () => {
-  toggleShowEditLayerSaveModal();
 };
 
 const handleSaveFeature = async () => {
@@ -259,6 +208,7 @@ const handleSaveFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
+      unref(layerProperties).map((property) => property.name),
       user,
     );
 

@@ -9,6 +9,7 @@
     :disabled="
       editLayerStore.editLayerMode !== EditLayerMode.ADD ||
       Boolean(editLayerStore.feature) ||
+      Boolean(editLayerStore.draftFeature) ||
       editLayerStore.selectedLayer === null
     "
     :content="tool.translation"

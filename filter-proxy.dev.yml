@@ -5,6 +5,7 @@ authorizationServiceUrl: http://host.docker.internal:8000/atlas/api/v1/authorize
 cors:
   allowedOrigins:
     - http://host.docker.internal:8000
+    - http://localhost:8000
   allowedHeaders:
     - Accept
     - Authorization
@@ -73,6 +74,10 @@ backends:
   geoserver:
     type: OWS
     baseUrl: http://host.docker.internal:8080/geoserver
+    auth:
+      basic:
+        username: filter-proxy
+        password: password
   kvk:
     type: REST
     baseUrl: https://api.kvk.nl/test/api/v2

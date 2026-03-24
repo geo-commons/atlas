@@ -3,12 +3,22 @@
     :visible="showEditFeaturePanel"
     header="Object bewerken"
     :dismissable="false"
-    @update:visible="toggleShowCancelModal"
+    :modal="false"
+    class="!tw-w-2/3 sm:!tw-w-1/2 md:!tw-w-[400px]"
+    @update:visible="onCancel"
   >
     <div class="tw-flex tw-flex-col tw-gap-0">
       <span class="tw-font-[var(--font-weight-bold)]">Actieve laag</span>
       <p class="tw-mt-0">{{ editLayerStore.highlightedFeatureAndLayer?.layer.name }}</p>
     </div>
+    <Message v-if="!editLayerStore.isRedrawingFeature && hasMultipleVertices" severity="info" class="tw-mb-3">
+      Gebruik Alt+klik om punten te verwijderen.
+    </Message>
+    <Message v-if="editLayerStore.isRedrawingFeature" severity="info" class="tw-mb-3">{{
+      isMultipartGeometry
+        ? "Teken de geometrie opnieuw en druk op Enter om af te ronden."
+        : "Teken de geometrie opnieuw."
+    }}</Message>
     <div class="tw-flex tw-flex-col">
       <ErrorAccordion :error="geoServerError" />
       <label class="form__label" for="edit-layer-panel-choose-layer">Objectgegevens</label>
@@ -17,17 +27,23 @@
         :layer-properties="layerProperties"
         :handle-submit="handleSubmit"
         :initial-values="featureValues"
+        :layer="
+          editLayerStore.highlightedFeatureAndLayer?.layer ? editLayerStore.highlightedFeatureAndLayer.layer : null
+        "
       />
     </div>
 
     <template #footer>
       <div class="tw-flex tw-flex-col tw-items-stretch tw-gap-2">
+        <Button label="Annuleren" icon="pi pi-times" class="tw-flex-auto" outlined @click="onCancel"></Button>
         <Button
-          label="Annuleren"
-          icon="pi pi-times"
+          v-if="currentGeometryType"
+          label="Opnieuw tekenen"
+          icon="pi pi-refresh"
           class="tw-flex-auto"
           outlined
-          @click="toggleShowCancelModal"
+          :disabled="editLayerStore.isRedrawingFeature"
+          @click="startRedrawingFeature"
         ></Button>
         <Button
           label="Verwijder object"
@@ -37,22 +53,16 @@
           outlined
           @click="toggleShowDeleteModal"
         ></Button>
-        <Button label="Opslaan" icon="pi pi-save" class="tw-flex-auto" @click="submitFormManually"></Button>
+        <Button
+          label="Opslaan"
+          icon="pi pi-save"
+          class="tw-flex-auto"
+          :disabled="editLayerStore.isRedrawingFeature"
+          @click="submitFormManually"
+        ></Button>
       </div>
     </template>
   </Drawer>
-
-  <EditLayerActionModal
-    :visible="showSaveModal"
-    header="Opslaan"
-    :message="`Wanneer u doorgaat met opslaan, worden alle aangepaste eigenschappen overschreven op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
-    cancel-label="Annuleren"
-    cancel-icon="pi pi-times"
-    confirm-label="Opslaan"
-    confirm-icon="pi pi-save"
-    :on-cancel="cancelSaveModal"
-    :on-confirm="save"
-  />
 
   <EditLayerActionModal
     :visible="showDeleteModal"
@@ -64,22 +74,11 @@
     :on-cancel="cancelDeleteModal"
     :on-confirm="onDelete"
   />
-
-  <EditLayerActionModal
-    :visible="showCancelModal"
-    header="Annuleren"
-    :message="`Wanneer u annuleert, gaan alle onopgeslagen wijzigingen verloren op de laag **${editLayerStore.highlightedFeatureAndLayer?.layer.name}**.`"
-    cancel-label="Verder met bewerken"
-    confirm-label="Bewerken sluiten"
-    confirm-icon="pi pi-times"
-    :on-cancel="cancelCancelModal"
-    :on-confirm="proceed"
-  />
 </template>
 
 <script setup lang="ts">
 import { useEditLayerStore } from "@/stores/edit_layer_store";
-import { ref, unref, watch } from "vue";
+import { computed, ref, unref, watch } from "vue";
 import { IFeatureProperties, ILayerProperties } from "@/types/layer";
 import { IUser } from "@/types/user";
 import { useToast } from "primevue";
@@ -105,6 +104,10 @@ interface AddFeaturePanelProps {
 // Props
 const { user, refreshLayer } = defineProps<AddFeaturePanelProps>();
 
+const emit = defineEmits<{
+  (e: "set-tool", tool: string): void;
+}>();
+
 // Toast
 const toast = useToast();
 
@@ -113,9 +116,7 @@ const editLayerStore = useEditLayerStore();
 
 // References
 const showEditFeaturePanel = ref<boolean>(false);
-const showSaveModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
-const showCancelModal = ref<boolean>(false);
 const drawerError = ref<string | null>(null);
 const geoServerError = ref<string | null>(null);
 const layerProperties = ref<ILayerProperties>([]);
@@ -126,6 +127,22 @@ const featureProperties = ref<IFeatureProperties>({
   targetPrefix: "",
 });
 const form = ref(null);
+
+const multipartGeometryTypes = ["MultiPoint", "MultiLineString", "MultiPolygon"];
+
+const geometryTypesWithMultipleVertices = ["LineString", "Polygon", "MultiLineString", "MultiPolygon"];
+
+const currentGeometryType = computed(() =>
+  editLayerStore.highlightedFeatureAndLayer?.feature?.getGeometry()?.getType(),
+);
+
+const isMultipartGeometry = computed(() => {
+  return currentGeometryType.value ? multipartGeometryTypes.includes(currentGeometryType.value) : false;
+});
+
+const hasMultipleVertices = computed(() => {
+  return currentGeometryType.value ? geometryTypesWithMultipleVertices.includes(currentGeometryType.value) : false;
+});
 
 watch(
   () => editLayerStore.highlightedFeatureAndLayer?.feature,
@@ -190,7 +207,7 @@ defineRule("required", (value: string) => {
 const handleSubmit = (values: any) => {
   featureValues.value = values;
 
-  toggleShowEditLayerSaveModal();
+  handleSaveFeature();
 };
 
 const submitFormManually = () => {
@@ -207,22 +224,24 @@ const handleDrawerClose = (value: boolean) => {
   editLayerStore.resetEditLayerProperties();
 };
 
-const toggleShowEditLayerSaveModal = () => {
-  showSaveModal.value = !showSaveModal.value;
-};
-
-const toggleShowCancelModal = () => {
-  showCancelModal.value = !showCancelModal.value;
-};
-
 const toggleShowDeleteModal = () => {
   showDeleteModal.value = !showDeleteModal.value;
 };
 
-const proceed = () => {
-  toggleShowCancelModal();
-
+const onCancel = () => {
   handleDrawerClose(false);
+};
+
+const startRedrawingFeature = () => {
+  if (!currentGeometryType.value) {
+    return;
+  }
+
+  editLayerStore.setDraftFeature(null);
+  editLayerStore.setIsRedrawingFeature(true);
+  geoServerError.value = null;
+
+  emit("set-tool", currentGeometryType.value);
 };
 
 const onDelete = () => {
@@ -233,20 +252,6 @@ const onDelete = () => {
 
 const cancelDeleteModal = () => {
   toggleShowDeleteModal();
-};
-
-const cancelCancelModal = () => {
-  toggleShowCancelModal();
-};
-
-const save = () => {
-  toggleShowEditLayerSaveModal();
-
-  handleSaveFeature();
-};
-
-const cancelSaveModal = () => {
-  toggleShowEditLayerSaveModal();
 };
 
 const handleDeleteFeature = async () => {
@@ -280,9 +285,9 @@ const handleDeleteFeature = async () => {
 
 const handleSaveFeature = async () => {
   try {
-    const feature = editLayerStore.highlightedFeatureAndLayer!.feature as Feature;
+    const feature = editLayerStore.modifiedFeature as Feature;
     const featureValuesToSubmit = Object.fromEntries(
-      Object.entries(unref(featureValues.value)).filter(([, value]) => value != null),
+      Object.entries(unref(featureValues.value)).filter(([key]) => key !== "geometry"),
     );
 
     feature.setProperties(featureValuesToSubmit);
@@ -292,6 +297,7 @@ const handleSaveFeature = async () => {
       feature,
       unref(featureProperties),
       unref(geometryNameRef),
+      unref(layerProperties).map((property) => property.name),
       user,
     );
 
