@@ -15,12 +15,12 @@ class TestLayerModel(TestCase):
             title="Stembureaus",
             layer_name="topp:Purm_Stembureaus_2018",
             published=False,
+            closed_dataset=True,
             layer_type=Category.objects.create(
                 title='theme_layer'))
         self.open_dataset = Layer.objects.create(
             title="Purm",
             layer_name="",
-            closed_dataset=False,
             _popup_attributes="test\ntest1",
             layer_type=Category.objects.create(
                 title='base_layer'))

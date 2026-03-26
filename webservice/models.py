@@ -416,7 +416,7 @@ class Layer(models.Model):
         'Servertype', max_length=50, default='geoserver')
 
     closed_dataset = models.BooleanField(
-        'Alleen intern zichtbaar', default=True, help_text='Laag is alleen zichtbaar binnen interne omgeving.')
+        'Alleen intern zichtbaar', default=False, help_text='Laag is alleen zichtbaar binnen interne omgeving.')
 
     login_required = models.BooleanField(
         'Vereis inlog voor deze dataset', default=False,
