@@ -864,7 +864,7 @@ class MapCategory(models.Model):
 class MapManager(models.Manager):
     def for_request(self, request):
         if request.user.is_anonymous:
-            return self.filter(published=True, show_in_overview=True)
+            return self.filter(published=True)
 
         if request.user.is_authenticated and request.user.is_superuser:
             return self.all()
