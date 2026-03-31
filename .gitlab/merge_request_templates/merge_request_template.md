@@ -1,17 +1,46 @@
-## Summary of Changes
-- **Issue Reference**: [#ISSUE_NUMBER](URL-to-Issue)
-- Briefly describe the changes made in this PR.
+## Samenvatting van de wijzigingen
 
-## Why These Changes Were Made
-- Explain the motivation or reasoning behind the changes (if applicable).
+- **Issue referentie**: [#ISSUE_NUMBER](URL-naar-issue)
+- Beschrijf kort wat er in deze PR is aangepast.
 
-## How to Test
-1. Steps to reproduce or verify the changes.
-2. Mention any required setup, dependencies, or test data.
-3. Highlight expected outcomes.
+## Waarom zijn deze wijzigingen gedaan?
 
-## Checks
-- [ ] Updated documentation when implementing new features or modifying existing ones. 
+- Leg uit wat de aanleiding is voor deze wijziging.
+- Beschrijf eventueel het probleem dat wordt opgelost of de feature die wordt toegevoegd.
 
-## Additional Notes (Optional)
-- Include any relevant notes, edge cases, or potential impacts.
+## Hoe te testen
+
+1. Beschrijf de stappen om de wijzigingen te verifiëren.
+2. Benoem eventuele benodigde setup, afhankelijkheden of testdata.
+3. Wat is het verwachte resultaat?
+
+## Checklist
+
+- [ ] Code is in het Engels geschreven
+- [ ] PR beschrijving is in het Nederlands
+- [ ] Geen onnodige dependencies toegevoegd
+- [ ] Naamgeving is duidelijk en omschrijvend
+
+### Frontend
+
+- [ ] Composition API gebruikt voor nieuwe componenten
+- [ ] TypeScript gebruikt (en zo strict mogelijk)
+- [ ] Geen onnodige `any` types gebruikt
+- [ ] Geen gebruik gemaakt van `storeToRefs`
+- [ ] Nieuwe utility functies hebben unit tests
+
+### Backend
+
+- [ ] Gebruik gemaakt van bestaande Django / library functionaliteit
+- [ ] Wijzigingen zijn voorzien van testen
+- [ ] Type annotaties toegevoegd waar mogelijk
+
+### Algemeen
+
+- [ ] Documentatie bijgewerkt indien nodig
+- [ ] Kritische onderdelen (auth/authz) voldoende getest
+
+## Aanvullende opmerkingen
+
+- Eventuele edge cases, beperkingen of aandachtspunten.
+- Mogelijke impact op andere onderdelen van het systeem.
