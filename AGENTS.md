@@ -38,11 +38,7 @@ When generating or modifying code, always follow:
 
 ## Install Commands
 
-- Backend:
-
-  ```bash
-  python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
-  ```
+- Backend: make sure `uv` is installed.
 
 - Frontend:
 
@@ -73,7 +69,7 @@ When generating or modifying code, always follow:
 - Backend:
 
   ```bash
-  python3 manage.py runserver
+  uv run manage.py runserver
   ```
 
 - Frontend:
@@ -101,7 +97,7 @@ When generating or modifying code, always follow:
 - Backend:
 
   ```bash
-  ruff check
+  uv run ruff check
   ```
 
 - Frontend:
@@ -115,7 +111,7 @@ When generating or modifying code, always follow:
 - Migration drift:
 
   ```bash
-  python3 manage.py makemigrations --check --dry-run
+  uv run manage.py makemigrations --check --dry-run
   ```
 
 ## Test Commands
@@ -123,9 +119,9 @@ When generating or modifying code, always follow:
 - Backend:
 
   ```bash
-  python3 manage.py test
-  python3 -m coverage run manage.py test
-  python3 -m coverage report
+  uv run manage.py test
+  uv run coverage run manage.py test
+  uv run coverage report
   ```
 
 - Frontend:
@@ -139,7 +135,7 @@ When generating or modifying code, always follow:
 ## High-Value Verification Workflow
 
 - **Backend-only changes**
-  - Run: `ruff check`, backend tests
+  - Run: `uv run ruff check`, backend tests
   - Check migrations if models changed
 
 - **Frontend-only changes**

@@ -56,7 +56,7 @@ This regenerates the frontend TypeScript enums and options so they stay in sync 
 
 Make sure you installed the following requirements:
 
-- [Python 3](https://www.python.org) (version 3.13, other versions may work)
+- [uv](https://docs.astral.sh/uv/) (the Python package manager, which will automatically install Python if required)
 - [Docker](https://www.docker.com)
 - [Node.js](https://nodejs.org/) (version 22, other versions may work)
 
@@ -78,13 +78,8 @@ The default development environment of Atlas uses the Purmerend Datalab Geoserve
 own geospatial data (and you do), you will need to run you own Geoserver.
 There is a lot of very good [documentation](https://docs.geoserver.org/stable/en/user/) about Geoserver on the Internet.
 
-First set up a new virtual environment for Atlas with:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip3 install -r requirements.txt
-```
+We use the `uv` package manager in this project. Instead of activating a virtual environment
+and installing the requirements, run `manage.py` with `uv run manage.py`.
 
 Run a Postgres database server, filter-proxy, dex and GeoServer with:
 
@@ -96,13 +91,13 @@ The above uses the same persistent volume `atlas_postgres-data` as used in [Run 
 above. If it did not exist yet, run the database migrations with:
 
 ```bash
-python3 manage.py migrate
+uv run manage.py migrate
 ```
 
 And run the development server with:
 
 ```bash
-python3 manage.py runserver
+uv run manage.py runserver
 ```
 
 Now install the npm dependencies:
@@ -129,7 +124,7 @@ Browse to [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
 You can easily load demo data into the local backend with:
 
 ```bash
-python3 manage.py loaddata data/demo.json
+uv run manage.py loaddata data/demo.json
 ```
 
 This dump contains a demo user with the following credentials:
@@ -207,7 +202,7 @@ The Atlas documentation is built using **MkDocs** and is split into two variants
 
 ```bash
 cd docs/admin
-mkdocs serve
+uv run mkdocs serve
 ```
 
 **User docs**
