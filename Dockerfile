@@ -11,35 +11,40 @@ COPY ui /app/ui
 RUN npm run build
 
 # API
+
+# Following the example of uv in Docker from
+# https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile
+
 FROM python:3.13-slim AS api-build
 WORKDIR /app
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential libgdal-dev
 
-RUN python -m venv /app/venv && /app/venv/bin/pip install --upgrade pip
+RUN pip install uv
 
-COPY requirements.txt /app
-RUN /app/venv/bin/pip3 install -r requirements.txt
+COPY pyproject.toml uv.lock /app/
+
+# Install Python to a place that we can copy in the final container
+ENV UV_PYTHON_INSTALL_DIR=/python
+ENV UV_PYTHON_PREFERENCE=only-managed
+
+RUN uv sync --frozen --no-dev --group prod --link-mode copy
 
 # Docs & Admin Docs
 FROM python:3.13-slim AS docs-build
 WORKDIR /app/docs
 
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    build-essential libgdal-dev
-
-RUN python -m venv /app/venv && /app/venv/bin/pip install --upgrade pip mkdocs
-
-COPY requirements.txt /app/docs
-RUN /app/venv/bin/pip3 install -r requirements.txt
+COPY --from=api-build /app/.venv /app/.venv
+COPY --from=api-build /python /python
+ENV PATH="/app/.venv/bin:${PATH}"
 
 COPY docs/user /app/docs/user
 COPY docs/admin /app/docs/admin
 COPY docs/user/mkdocs.yml /app/docs/user/mkdocs.yml
 COPY docs/admin/mkdocs.yml /app/docs/admin/mkdocs.yml
 
-RUN cd  /app/docs/user && /app/venv/bin/mkdocs build && cd /app/docs/admin && /app/venv/bin/mkdocs build
+RUN cd  /app/docs/user && python -m mkdocs build && cd /app/docs/admin && python -m mkdocs build
 
 # Final container
 FROM python:3.13-slim
@@ -57,8 +62,9 @@ COPY . /app
 
 RUN sed -i "s/unknown/${ATLAS_VERSION}/g" /app/atlas/__init__.py
 
-COPY --from=api-build /app/venv /app/venv
-ENV PATH="/app/venv/bin:${PATH}"
+COPY --from=api-build /app/.venv /app/.venv
+COPY --from=api-build /python /python
+ENV PATH="/app/.venv/bin:${PATH}"
 
 COPY --from=ui-build /app/homepage/static/dist /app/homepage/static/dist
 COPY --from=docs-build /app/docs/user/site /app/docs/user/site
