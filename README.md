@@ -149,16 +149,6 @@ On Linux, you will have to add the following to the `filter-proxy` service in `d
       - "host.docker.internal:host-gateway"
 ```
 
-## Conventional Commits / [Commitizen](https://commitizen-tools.github.io/commitizen/)
-
-To commit use `cz commit` or use the commit conventions
-
-Run `cz --help` for usage
-
-To install:
-
-pip3 install -r requirements.txt
-
 ## Settings
 
 The default settings can be used for testing purposes, but are not suitable for production usage. Atlas can be
