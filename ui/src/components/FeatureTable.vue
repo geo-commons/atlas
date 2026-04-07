@@ -117,6 +117,7 @@ import Spinner from "@/components/Spinner.vue";
 import { useMapStore } from "@/stores/map_store";
 import { WKT } from "ol/format";
 import { useToast } from "primevue";
+import { getGeometryName } from "@/services/layer";
 
 export default {
   name: "FeatureTable",
@@ -361,9 +362,11 @@ export default {
         const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
         const data = await result.json();
 
+        const geometryName = await getGeometryName(data.featureTypes);
+
         const featureType = data.featureTypes[0];
 
-        const fetchedProperties = featureType.properties.map((p) => p.name);
+        const fetchedProperties = featureType.properties.filter((p) => p.name !== geometryName).map((p) => p.name);
         this.displayProperties =
           this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
 
