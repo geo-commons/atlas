@@ -5,7 +5,7 @@ Welcome to Atlas! This document outlines the guidelines and conventions for cont
 Please read this guide carefully before submitting changes. It covers expectations around code style, architecture, testing, and collaboration. In general:
 
 - Code is written in English
-- Communication (PRs, issues, discussions) is in Dutch
+- Communication (MRs, issues, discussions) is in Dutch
 - We favor clarity, consistency, and minimal complexity
 
 By contributing, you agree to follow these guidelines to ensure smooth collaboration between developers, reviewers, and stakeholders.
@@ -17,7 +17,14 @@ By contributing, you agree to follow these guidelines to ensure smooth collabora
 - Minimize adding new dependencies
 - Use descriptive naming for functions, variables, and classes
 - Code must be written in English
-- PR descriptions, issues, and discussions must be written in Dutch (for stakeholder visibility)
+
+### Use of Git and GitLab
+
+- Write commit messages using the conventions of [Commitizen](https://commitizen-tools.github.io/commitizen/). To commit use `cz commit` or use the commit conventions. The `cz` command is part of the development dependencies; see `cz --help` for usage.
+- Write commit messages in English
+- MR descriptions (not the title), issues, and discussions must be written in Dutch (for stakeholder visibility)
+- Use the GitLab feature to squash commits of one MR into one commit
+  - Since GitLab uses the MR title as the commit message, write the MR title in English using the Commitizen conventions, in such a way that it describes the full MR
 
 ### Frontend Guidelines
 
