@@ -354,6 +354,17 @@
             />
             <label for="features.panoramaViewers">Rondkijkfoto</label>
           </div>
+
+          <div class="setting __hover">
+            <Checkbox
+              input-id="features.resetButton"
+              :model-value="data.features.resetButton"
+              name="features.resetButton"
+              binary
+              @update:model-value="(value) => (data.features.resetButton = value)"
+            />
+            <label for="features.resetButton">Herstelknop</label>
+          </div>
         </div>
       </vee-form>
     </template>
