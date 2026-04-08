@@ -177,11 +177,8 @@ def _get_config(request):
         'show_disclaimer': config.get('DISCLAIMER') != '',
         'features': {
             'print': config.get('FEATURE_PRINT'),
-            'draw': config.get('FEATURE_DRAW'),
             'portal': config.get('FEATURE_PORTAL'),
-            'edit_layer_features': config.get('FEATURE_EDIT_LAYER_FEATURES'),
             'sortLayer': config.get('FEATURE_SORT_LAYER'),
-            'compareLayers': config.get('FEATURE_COMPARE_LAYERS'),
             'newTables': config.get('FEATURE_NEW_TABLES'),
             'oldLinkedDataAndTemplate': config.get('FEATURE_OLD_LINKED_DATA_AND_TEMPLATE'),
             'featureLayerInternalVisibility': config.get('FEATURE_LAYER_INTERNAL_VISIBILITY'),

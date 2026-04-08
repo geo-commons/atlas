@@ -19410,25 +19410,9 @@
   },
   {
     "model": "constance.constance",
-    "pk": 5,
-    "fields": {
-      "key": "FEATURE_EDIT_LAYER_FEATURES",
-      "value": "{\"__type__\": \"default\", \"__value__\": true}"
-    }
-  },
-  {
-    "model": "constance.constance",
     "pk": 6,
     "fields": {
       "key": "FEATURE_NEW_TABLES",
-      "value": "{\"__type__\": \"default\", \"__value__\": true}"
-    }
-  },
-  {
-    "model": "constance.constance",
-    "pk": 7,
-    "fields": {
-      "key": "FEATURE_DRAW",
       "value": "{\"__type__\": \"default\", \"__value__\": true}"
     }
   }
