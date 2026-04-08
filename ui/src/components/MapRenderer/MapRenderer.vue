@@ -201,6 +201,7 @@
           </PrimaryButton>
           <PrimaryButton
             v-if="
+              features.resetButton &&
               !isEmbed &&
               !hideResetButton &&
               (countOfLayersWithActiveFilters > 0 ||
