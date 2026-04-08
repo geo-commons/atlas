@@ -45,7 +45,8 @@ class MapSerializer(serializers.ModelSerializer):
         model = Map
         fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'categories', 'thumbnail', 'description',
                   'keywords',
-                  'published', 'show_in_overview', 'about', 'about_title']
+                  'published', 'show_in_overview', 'about', 'about_title', 'is_main']
+        read_only_fields = ['is_main']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

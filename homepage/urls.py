@@ -18,9 +18,6 @@ urlpatterns = [
     path('api/v1/token', webservice_views.v3_token, name='v3_token'),
     path('api/v1/', include(urls.api_router.urls)),
     path('api/v1/', include(tables_urls.tables_api_router.urls)),
-    # This embed route is retained for backward compatibility with legacy /atlas/embed/* URLs.
-    # New embedded maps should use /atlas/maps/{slug} or /atlas/.
-    re_path(r'embed/.*$', views.embed, name='embed'),
-    re_path(r'maps\/((?P<slug>[a-z0-9\-]+)?)', views.v3_map, name='v3_map'),
-    re_path(r'((?P<theme_slug>[a-z0-9\-]+)?)', views.v3, name='v3'),
+    re_path(r'maps\/((?P<slug>[a-z0-9\-]+)?)', views.v3, name='v3_map'),
+    re_path(r'', views.v3, name='v3'),
 ]

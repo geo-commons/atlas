@@ -20,7 +20,6 @@ export default defineConfig({
     assetsInlineLimit: 0,
     rollupOptions: {
       input: {
-        app: path.resolve(__dirname, "src/app.js"),
         admin: path.resolve(__dirname, "src/admin.js"),
         map: path.resolve(__dirname, "src/map.js"),
         tables: path.resolve(__dirname, "src/tables.js"),

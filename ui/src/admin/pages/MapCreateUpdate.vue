@@ -57,7 +57,7 @@
         :features="data.features"
         :settings="data.settings"
         :config="config"
-        :map-id="data.slug || 'primary'"
+        :map-id="data.is_main ? 'primary' : data.slug || 'primary'"
         :admin-map="true"
         :hide-reset-button="true"
         :about="data.about"
@@ -245,6 +245,11 @@ export default {
     async saveMap(data, continueEditing = false) {
       let result;
       this.errors = null;
+
+      if (data.is_main) {
+        data.published = true;
+        data.show_in_overview = false;
+      }
 
       if (!data.features.list) {
         data.settings.listLayerId = null;

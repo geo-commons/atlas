@@ -9,7 +9,7 @@
 
     <template #default>
       <vee-form ref="mapForm" method="POST" class="map-form" :initial-values="initialData" @submit="submitForm">
-        <div class="tw-mx-4">
+        <div v-if="!data.is_main" class="tw-mx-4">
           <div class="input-wrapper">
             <label for="title" class="tw-font-bold">Titel</label>
             <vee-field id="title" v-slot="{ value, handleChange, handleBlur }" name="title" rules="required">
@@ -64,7 +64,7 @@
         </div>
 
         <div class="settings">
-          <div class="setting __hover">
+          <div v-if="!data.is_main" class="setting __hover">
             <Checkbox
               input-id="published"
               :model-value="data.published"
@@ -77,7 +77,7 @@
               :info-text="'Markeer dit veld als Gepubliceerd om de kaart te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de kaart te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.'"
             />
           </div>
-          <div class="setting __hover">
+          <div v-if="!data.is_main" class="setting __hover">
             <Checkbox
               input-id="show_in_overview"
               :model-value="data.show_in_overview"
@@ -89,6 +89,12 @@
             <AdminFormInfoText
               :info-text="'Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.'"
             />
+          </div>
+          <div class="tw-p-4">
+            <Message v-if="data.is_main">
+              Dit is de hoofdkaart. Deze is altijd gepubliceerd, wordt niet in het dataportaal getoond en is alleen via
+              /atlas/ bereikbaar.
+            </Message>
           </div>
           <button
             type="button"
@@ -417,6 +423,11 @@ export default {
     };
   },
   watch: {
+    initialData: {
+      handler(newInitialData) {
+        this.data = newInitialData || { features: {} };
+      },
+    },
     errors: {
       handler(newErrors) {
         if (newErrors) {

@@ -29,6 +29,15 @@ const tableHeaders: Array<TableHeader> = [
     },
   },
   {
+    header: "Hoofdkaart",
+    key: "is_main",
+    enableLink: false,
+    mapValues: {
+      true: "Ja",
+      false: "Nee",
+    },
+  },
+  {
     header: "Tonen op portal",
     key: "show_in_overview",
     enableLink: false,

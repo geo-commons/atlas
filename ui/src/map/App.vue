@@ -11,7 +11,7 @@
       :settings="map.settings"
       :config="config"
       :is-embed="isEmbed"
-      :map-id="map.slug || 'primary'"
+      :map-id="map.is_main ? 'primary' : map.slug || 'primary'"
     />
   </div>
 </template>
