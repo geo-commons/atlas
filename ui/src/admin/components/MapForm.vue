@@ -9,57 +9,97 @@
 
     <template #default>
       <vee-form ref="mapForm" method="POST" class="map-form" :initial-values="initialData" @submit="submitForm">
-        <div v-if="!data.is_main" class="tw-mx-4">
-          <div class="input-wrapper">
-            <label for="title" class="tw-font-bold">Titel</label>
-            <vee-field id="title" v-slot="{ value, handleChange, handleBlur }" name="title" rules="required">
-              <InputText id="title" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
-            </vee-field>
-            <span class="warning-text">
-              <vee-error-message name="title" />
-            </span>
+        <div>
+          <div v-if="data.is_main" class="tw-px-4 tw-pt-4">
+            <Message>
+              Dit is de hoofdkaart. Deze is altijd gepubliceerd, wordt niet in het dataportaal getoond en is alleen via
+              /atlas/ bereikbaar.
+            </Message>
           </div>
-          <div class="input-wrapper">
-            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
-              Kort kenmerk
-              <AdminFormInfoText
-                :info-text="'Dit is een korte, unieke naam voor de kaart die in de URL zal worden gebruikt. Het mag geen spaties en speciale tekens bevatten.'"
-              />
-            </label>
-            <vee-field id="slug" v-slot="{ value, handleChange, handleBlur }" name="slug" rules="required">
-              <InputText id="slug" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
-            </vee-field>
-            <span class="warning-text">
-              <vee-error-message name="slug" />
-            </span>
+          <div v-if="!data.is_main" class="tw-mx-4">
+            <div class="input-wrapper">
+              <label for="title" class="tw-font-bold">Titel</label>
+              <vee-field id="title" v-slot="{ value, handleChange, handleBlur }" name="title" rules="required">
+                <InputText id="title" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
+              </vee-field>
+              <span class="warning-text">
+                <vee-error-message name="title" />
+              </span>
+            </div>
+            <div class="input-wrapper">
+              <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
+                Kort kenmerk
+                <AdminFormInfoText
+                  :info-text="'Dit is een korte, unieke naam voor de kaart die in de URL zal worden gebruikt. Het mag geen spaties en speciale tekens bevatten.'"
+                />
+              </label>
+              <vee-field id="slug" v-slot="{ value, handleChange, handleBlur }" name="slug" rules="required">
+                <InputText id="slug" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
+              </vee-field>
+              <span class="warning-text">
+                <vee-error-message name="slug" />
+              </span>
+            </div>
+            <div class="input-wrapper">
+              <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
+                Portaal beschrijving
+                <AdminFormInfoText
+                  :info-text="'Dit is de beschrijving van de kaart die in het dataportaal wordt getoond.'"
+                />
+              </label>
+              <vee-field id="description" v-slot="{ value, handleChange, handleBlur }" name="description">
+                <Textarea id="description" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
+              </vee-field>
+              <span class="warning-text">
+                <vee-error-message name="description" />
+              </span>
+            </div>
+            <div class="input-wrapper">
+              <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
+                Zoektermen
+                <AdminFormInfoText
+                  :info-text="'Dit is de lijst van zoektermen die gebruikt worden om de kaart te vinden in het dataportaal. Voer één zoekterm per regel in.'"
+                />
+              </label>
+              <vee-field id="keywords" v-slot="{ value, handleChange, handleBlur }" name="keywords">
+                <Textarea id="keywords" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
+              </vee-field>
+              <span class="warning-text">
+                <vee-error-message name="keywords" />
+              </span>
+            </div>
           </div>
-          <div class="input-wrapper">
-            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
-              Portaal beschrijving
-              <AdminFormInfoText
-                :info-text="'Dit is de beschrijving van de kaart die in het dataportaal wordt getoond.'"
+          <div class="tw-px-4 tw-flex tw-flex-col">
+            <div class="input-wrapper">
+              <label class="tw-font-bold" for="position_center_x">Centrum X-coördinaat</label>
+              <InputNumber
+                input-id="position_center_x"
+                :model-value="data.settings.position.center.x"
+                :step="0.1"
+                fluid
+                @update:model-value="(value) => (data.settings.position.center.x = value)"
               />
-            </label>
-            <vee-field id="description" v-slot="{ value, handleChange, handleBlur }" name="description">
-              <Textarea id="description" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
-            </vee-field>
-            <span class="warning-text">
-              <vee-error-message name="description" />
-            </span>
-          </div>
-          <div class="input-wrapper">
-            <label for="slug" class="setting-label tw-flex tw-items-center tw-gap-2 tw-font-bold">
-              Zoektermen
-              <AdminFormInfoText
-                :info-text="'Dit is de lijst van zoektermen die gebruikt worden om de kaart te vinden in het dataportaal. Voer één zoekterm per regel in.'"
+            </div>
+            <div class="input-wrapper">
+              <label class="tw-font-bold" for="position_center_y">Centrum Y-coördinaat</label>
+              <InputNumber
+                input-id="position_center_y"
+                :model-value="data.settings.position.center.y"
+                :step="0.1"
+                fluid
+                @update:model-value="(value) => (data.settings.position.center.y = value)"
               />
-            </label>
-            <vee-field id="keywords" v-slot="{ value, handleChange, handleBlur }" name="keywords">
-              <Textarea id="keywords" :model-value="value" @update:model-value="handleChange" @blur="handleBlur" />
-            </vee-field>
-            <span class="warning-text">
-              <vee-error-message name="keywords" />
-            </span>
+            </div>
+            <div class="input-wrapper">
+              <label class="tw-font-bold" for="position_zoom">Zoomniveau</label>
+              <InputNumber
+                input-id="position_zoom"
+                :model-value="data.settings.position.zoom"
+                :step="0.1"
+                fluid
+                @update:model-value="(value) => (data.settings.position.zoom = value)"
+              />
+            </div>
           </div>
         </div>
 
@@ -89,12 +129,6 @@
             <AdminFormInfoText
               :info-text="'Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.'"
             />
-          </div>
-          <div class="tw-p-4">
-            <Message v-if="data.is_main">
-              Dit is de hoofdkaart. Deze is altijd gepubliceerd, wordt niet in het dataportaal getoond en is alleen via
-              /atlas/ bereikbaar.
-            </Message>
           </div>
           <button
             type="button"

@@ -12,6 +12,15 @@ class HomepageViewsTest(TestCase):
                 'slug': 'main-map',
                 'published': True,
                 'show_in_overview': False,
+                'settings': {
+                    'position': {
+                        'zoom': 7,
+                        'center': {
+                            'x': 11,
+                            'y': 22,
+                        },
+                    },
+                },
             },
         )
 
@@ -21,3 +30,4 @@ class HomepageViewsTest(TestCase):
         self.assertTemplateUsed(response, 'v3/map.html')
         self.assertEqual(response.context['data']['map']['slug'], main_map.slug)
         self.assertTrue(response.context['data']['map']['is_main'])
+        self.assertEqual(response.context['data']['config']['position'], main_map.settings['position'])

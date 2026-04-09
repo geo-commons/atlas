@@ -1,4 +1,5 @@
 import logging
+import math
 import os
 
 from constance.admin import get_values
@@ -44,7 +45,7 @@ def v3(request, slug=None):
     
     context = {
         'data': {
-            'config': _get_config(request),
+            'config': _get_config(request, visible_map),
             'user': user,
             'map': visible_map.to_dict(),
             'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in authorized_layers]
@@ -151,10 +152,10 @@ def _layers_with_prefetch(request):
     return Layer.authorized.for_request(request).prefetch_related(*LAYER_PREFETCH_FIELDS)
 
 
-def _get_config(request):
+def _get_config(request, visible_map=None):
     config = get_values()
 
-    return {
+    result = {
         'organization_name': config.get('ORGANIZATION_NAME'),
         'organization_logo': settings.MEDIA_URL + config.get('ORGANIZATION_LOGO') if config.get(
             'ORGANIZATION_LOGO') else None,
@@ -184,6 +185,33 @@ def _get_config(request):
             'featureLayerInternalVisibility': config.get('FEATURE_LAYER_INTERNAL_VISIBILITY'),
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
+    }
+    
+    map_position = _normalize_position((visible_map.settings or {}).get('position')) if visible_map else None
+
+    if map_position:
+        result['position'] = map_position
+        
+    return result
+
+
+def _normalize_position(position):
+    try:
+        zoom = float(position['zoom'])
+        center_x = float(position['center']['x'])
+        center_y = float(position['center']['y'])
+    except (KeyError, TypeError, ValueError):
+        return None
+
+    if not all(math.isfinite(value) for value in (zoom, center_x, center_y)):
+        return None
+
+    return {
+        'zoom': zoom,
+        'center': {
+            'x': center_x,
+            'y': center_y,
+        }
     }
 
 

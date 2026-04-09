@@ -29,15 +29,23 @@ export default {
     position(value, oldValue) {
       const view = this.map.getView();
 
-      if (value.center !== oldValue.center) {
+      const centerChanged =
+        !oldValue?.center || value.center?.[0] !== oldValue.center[0] || value.center?.[1] !== oldValue.center[1];
+
+      if (centerChanged) {
         view.setCenter(value.center);
       }
 
-      if (value.zoom !== oldValue.zoom && value.animate) {
-        view.animate({
-          zoom: value.zoom,
-          duration: value.animateFast ? 300 : 1500,
-        });
+      if (value.zoom !== oldValue.zoom) {
+        if (value.animate) {
+          view.animate({
+            zoom: value.zoom,
+            duration: value.animateFast ? 300 : 1500,
+          });
+          return;
+        }
+
+        view.setZoom(value.zoom);
       }
     },
     padding: {
