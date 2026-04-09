@@ -30,7 +30,7 @@ from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer,
 class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = MapSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
-    multiple_lookup_fields = ['published', 'show_in_overview']
+    multiple_lookup_fields = ['published', 'show_in_overview', 'is_main']
 
     search_fields = ['title', 'description', 'keywords', 'about']
 

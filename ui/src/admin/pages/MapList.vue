@@ -29,15 +29,6 @@ const tableHeaders: Array<TableHeader> = [
     },
   },
   {
-    header: "Hoofdkaart",
-    key: "is_main",
-    enableLink: false,
-    mapValues: {
-      true: "Ja",
-      false: "Nee",
-    },
-  },
-  {
     header: "Tonen op portal",
     key: "show_in_overview",
     enableLink: false,
@@ -113,6 +104,7 @@ const saveMap = async (
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :table-headers="tableHeaders"
+    :fixed-query-params="{ is_main: 'False' }"
     :view-base-url="'/atlas/maps'"
   />
 </template>

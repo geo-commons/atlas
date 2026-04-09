@@ -58,6 +58,18 @@
       <div>
         <h3>Kaarten</h3>
         <div class="buttons tw-mb-12">
+          <router-link
+            v-if="mainMapId"
+            :to="`/maps/update/${mainMapId}`"
+            class="button __tertiary __large"
+            type="button"
+            aria-label="Hoofdkaart"
+          >
+            <span class="button-icon tw-bg-amber-100">
+              <MapIcon class="icon tw-text-amber-800" />
+            </span>
+            Hoofdkaart
+          </router-link>
           <router-link to="/sources" class="button __tertiary __large" type="button" aria-label="Bronnen">
             <span class="button-icon tw-bg-amber-100">
               <SourceIcon class="icon tw-text-amber-800" />
@@ -154,6 +166,7 @@
 <script>
 import CogIcon from "@/assets/icons/cog-icon.svg";
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
+import { apiFetch } from "@/utils/api-helpers";
 import BookIcon from "../../assets/icons/book-icon.svg";
 import CategoryIcon from "../../assets/icons/category-icon.svg";
 import GroupIcon from "../../assets/icons/group-icon.svg";
@@ -182,6 +195,25 @@ export default {
     TableIcon,
     LogIcon,
     ShieldIcon,
+  },
+  data() {
+    return {
+      mainMapId: null,
+    };
+  },
+  async created() {
+    try {
+      const response = await apiFetch("/atlas/api/v1/maps/?is_main=True&page_size=1");
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+      this.mainMapId = data.results?.[0]?.id ?? null;
+    } catch (error) {
+      console.error("Could not fetch main map", error);
+    }
   },
 };
 </script>
