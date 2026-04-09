@@ -508,8 +508,6 @@ export default {
     },
     showEditLayerButton(layer) {
       return (
-        this.config &&
-        this.config.features.edit_layer_features &&
         this.atlasFeatures.edit_layer_features &&
         this.user &&
         layer.can_write &&
