@@ -41,6 +41,16 @@ This dump contains a demo user with the following credentials:
 - Username: admin@example.com
 - Password: password
 
+### Creating main map
+
+Before Atlas works, you still need to create a main map. This can be done using the following command:
+
+```bash
+python manage.py ensure_main_map
+```
+
+If you have loaded the demo data, this will create a main map with the different map layers and categories from your demo data. If you have not yet loaded any data into Atlas / are starting with a fresh installation, this will create a main map without map layers, etc.
+
 ### Updating frontend enums
 
 If you make changes to the **metadataset option fields** in the Django models (e.g. `TextChoices` like topic categories,
@@ -68,7 +78,7 @@ using Docker Compose:
 - [filter-proxy](https://github.com/delta10/filter-proxy) to proxy requests to external APIs that need authorization (see below)
 - The [Dex](https://dexidp.io) identity provider for user authentication
 
-Apart from PostgreSQL, these are no hard dependencies, because Atlas can work with alternatives for these services. Atlas 
+Apart from PostgreSQL, these are no hard dependencies, because Atlas can work with alternatives for these services. Atlas
 can work with any WMS, WFS and WMTS server as a source of geospatial data. However, this setup
 is common across Atlas installations and our demo data assumes that these services are running.
 
@@ -145,8 +155,8 @@ reached from the container running filter-proxy. Check firewall rules if this ac
 On Linux, you will have to add the following to the `filter-proxy` service in `docker-compose.yml`:
 
 ```yaml
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+extra_hosts:
+  - "host.docker.internal:host-gateway"
 ```
 
 ## Settings
@@ -180,7 +190,7 @@ default: False)
 
 The Atlas documentation is built using **MkDocs** and is split into two variants:
 
-- **Admin documentation** – for configurators (*geo-beheerders*), covering the admin environment  
+- **Admin documentation** – for configurators (_geo-beheerders_), covering the admin environment  
   Location: `docs/admin`
 
 - **User documentation** – for end users of the Atlas application  
@@ -233,6 +243,7 @@ npx playwright install
 ```
 
 Creating tests with codegen (Playwright record):
+
 - Run `npm run test:e2e:record` and interact with the app to generate actions.
 - Copy the generated test into your `ui/` Playwright test file(s), then run `npm run test:e2e`.
 - For full usage details, see the Playwright codegen docs:
@@ -242,5 +253,6 @@ https://playwright.dev/docs/codegen
 ```
 
 Optional environment variables:
+
 - `PW_SKIP_WEBSERVER=1` to skip the Playwright webserver.
 - `E2E_BASE_URL=http://localhost:8000/atlas/` for `test:e2e:record` to point codegen at a different URL.
