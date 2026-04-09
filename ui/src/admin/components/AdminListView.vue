@@ -22,7 +22,6 @@ type AdminListViewProps = {
   enableDeleteMultiple?: boolean;
   enableDelete?: boolean;
   enableEdit?: boolean;
-  enableSort?: boolean;
   singularName: string;
   pluralName: string;
   apiName: string;
@@ -46,7 +45,6 @@ const props = withDefaults(defineProps<AdminListViewProps>(), {
   enableCreateObject: true,
   enableDuplicate: false,
   enableDeleteMultiple: false,
-  enableSort: false,
   enableDelete: true,
   enableEdit: true,
   blockDelete: () => [],
@@ -306,7 +304,6 @@ defineExpose({ toggleDialog });
     <AdminListViewHeader
       :name="props.pluralName"
       :singular-name="props.singularName"
-      :enable-sort="props.enableSort"
       :enable-create-object="props.enableCreateObject"
       :enable-duplicate="props.enableDuplicate"
       :enable-import-export="props.enableImportExport"
