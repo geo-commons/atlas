@@ -126,6 +126,7 @@ E2E test frontend (Playwright):
     - cd ..
     - uv run manage.py migrate
     - uv run manage.py loaddata data/demo.json
+    - uv run manage.py ensure_main_map
     - uv run manage.py collectstatic --noinput
   script:
     - uv run manage.py runserver 127.0.0.1:8000 --insecure &
