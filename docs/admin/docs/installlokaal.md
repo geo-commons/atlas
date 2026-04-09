@@ -1,8 +1,6 @@
-Atlas lokaal installeren
-========================
+# Atlas lokaal installeren
 
 Zorg dat [Docker](https://www.docker.com/) op de lokale machine geïnstalleerd is.
-
 
 Download Atlas van [GitLab](https://gitlab.com/purmerend/atlas) en pak het bestand uit op de computer.
 Start Atlas met het volgende commando binnen de locatie waar de software is uitgepakt:
@@ -19,7 +17,7 @@ De standaard instellingen zijn geschikt om Atlas mee te testen maar zijn niet ge
 - SECRET_KEY: Django [secret key](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-SECRET_KEY). Vervang door een gegenereerd wachtwoord in een productieomgeving. (standaard: changemetosomethingsecret)
 - ALLOWED_HOSTS: Django [allowed hosts](https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts) setting. Een komma-gescheiden lijst van hosts waar de applicatie mag draaien. (standaard: localhost,127.0.0.1,[::1])
 - ADMIN_IPS: Een komma-gescheiden lijst van hosts die toegang hebben tot de admin.
-- INTERNAL_IPS: Een komma-gescheiden lijst van IP adressen die als intern gezien worden. 
+- INTERNAL_IPS: Een komma-gescheiden lijst van IP adressen die als intern gezien worden.
 - DB_HOST: De host van de [Postgres](https://https://www.postgresql.org/) database. (standaard: postgres)
 - DB_USER: De gebruikersnaam binnen de Postgres database. (standaard: atlas)
 - DB_PASSWORD: Het wachtwoord van de Postgres database. Vervang door een gegenereerd wachtwoord in een productieomgeving. (standaard: atlas)
@@ -31,7 +29,6 @@ De standaard instellingen zijn geschikt om Atlas mee te testen maar zijn niet ge
 - SENTRY_DSN: De [Sentry](https://sentry.io/) DSN om app statisitieken te verzamelen. (optioneel)
 
 ## Installeer een evaluatie-omgeving op Linux of MacOS
-
 
 Zorg ervoor dat de volgende benodigdheden geïnstalleerd zijn:
 
@@ -112,3 +109,13 @@ python3 manage.py createsuperuser
 ```
 
 Na het uitvoeren van de instructies kun je inloggen in de "backend" via: [http://localhost:8000/atlas/admin/](http://localhost:8000/atlas/admin/).
+
+## Maak een hoofdkaart aan
+
+Maak op de volgende wijze een hoofdkaart aan:
+
+```bash
+python3 manage.py ensure_main_map
+```
+
+Na het uitvoeren van dit commando is er een hoofdkaart in Atlas.
