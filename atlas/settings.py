@@ -27,6 +27,7 @@ DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
 DEBUG_API_PROXY = os.getenv('DEBUG_API_PROXY', DEBUG_API_PROXY_DEFAULT)
 
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+RUNNING_TESTS = 'test' in sys.argv
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ALLOWED_HOSTS_DEFAULT).split(',')
 INTERNAL_IPS = list(filter(None, os.getenv('INTERNAL_IPS', '').split(',')))
@@ -364,7 +365,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     )
 }
 
-DJANGO_VITE_DEV_MODE = DEBUG
+DJANGO_VITE_DEV_MODE = DEBUG or RUNNING_TESTS
 DJANGO_VITE_MANIFEST_PATH = os.path.join(
     BASE_DIR, 'homepage/static/dist/manifest.json')
 
@@ -372,6 +373,5 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Add the build.outDir from vite.config.mjs to STATICFILES_DIRS
 # so that collectstatic can collect your compiled vite assets.
-STATICFILES_DIRS = [
-    BASE_DIR / "homepage/static/dist"
-]
+vite_dist_dir = BASE_DIR / "homepage/static/dist"
+STATICFILES_DIRS = [vite_dist_dir] if vite_dist_dir.exists() else []
