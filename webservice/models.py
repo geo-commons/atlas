@@ -446,11 +446,6 @@ class Layer(models.Model):
     is_filterable_in_legend = models.BooleanField(
         'Laag is filterbaar in legenda', default=False)
 
-    not_in_atlas = models.BooleanField(
-        'Toon laag alleen in een themakaart',
-        default=False,
-        help_text='De laag wordt niet getoond in de standaardkaart')
-
     atlas_groups = models.ManyToManyField(
         AtlasGroup, blank=True, verbose_name='Groepen',
         help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')

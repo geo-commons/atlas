@@ -157,7 +157,7 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
                 'layers', 
                 queryset=
                     Layer.authorized.for_request(self.request)
-                    .filter(not_in_atlas=False, published=True)
+                    .filter(published=True)
                     .order_by('title')
                 )
             )
