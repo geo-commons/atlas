@@ -48,8 +48,7 @@
         :position="position"
         :selected-area="selectedArea"
         :user="user"
-        @set-position="setPosition"
-        @on-fit="onFit"
+        @show-feature-on-map="showFeatureOnMap"
         @show-layers="() => resetSelectedLayer()"
       />
       <div v-else>
@@ -104,7 +103,7 @@ export default {
     user: Object,
     fullSizeWindow: Boolean,
   },
-  emits: ["toggle-data-panel", "set-position", "on-fit", "toggle-full-side-panel"],
+  emits: ["toggle-data-panel", "toggle-full-side-panel", "show-feature-on-map"],
   data() {
     return {
       selectedLayerId: null,
@@ -146,11 +145,8 @@ export default {
     toggleDataPanel() {
       this.$emit("toggle-data-panel");
     },
-    setPosition(position, animateFast, animate) {
-      this.$emit("set-position", position, animateFast, animate);
-    },
-    onFit(value) {
-      this.$emit("on-fit", value);
+    showFeatureOnMap(feature) {
+      this.$emit("show-feature-on-map", feature);
     },
     toggleFullScreen() {
       this.$emit("toggle-full-side-panel");

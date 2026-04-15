@@ -112,7 +112,7 @@
       :title-template="settings.title"
       :short-description-template="settings.short_description"
       @hide-panel="toggleList"
-      @on-fit="(feature) => $refs.map.fit(feature, { maxZoom: 19 })"
+      @show-feature-on-map="showFeatureOnMap"
     />
     <FilterPanel
       v-if="showFilters"
@@ -136,6 +136,7 @@
       @on-fit="onFit"
       @expanded-info-panel="toggleInfoPanel"
       @select-feature="selectFeature"
+      @show-feature-on-map="showFeatureOnMap"
     />
     <DetailPanel
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
@@ -153,8 +154,7 @@
       :user="user"
       :map-id="mapId"
       :full-size-window="showDataPanelFullScreen"
-      @set-position="setPosition"
-      @on-fit="onFit"
+      @show-feature-on-map="showFeatureOnMap"
       @toggle-data-panel="toggleDataPanel"
       @toggle-full-side-panel="toggleDataPanelFullScreen"
     />
@@ -419,6 +419,7 @@ import { useEditLayerStore } from "@/stores/edit_layer_store";
 import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
 import EditFeaturePanel from "@/components/edit-layers/EditFeaturePanel.vue";
 import { createMeasurementTooltip } from "@/utils/measure-tooltip";
+import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import { ELayerTypes } from "@/types/layer";
 import { finalizeMultipartFeatureOnEnter, handleEditLayerToolUsed } from "@/components/MapRenderer/utils/edit-layer";
@@ -815,7 +816,13 @@ export default {
       this.setWindowInnerWidth();
 
       this.reverseGeocode(position);
-      this.getFeatureInfo(position);
+
+      // Skip `getFeatureInfo` when the position change came from the map itself (`ol-view`)
+      // or from `showFeatureOnMap` (`show-feature`). Those flows update the view or display
+      // an already known feature, so they should not trigger a new feature-info lookup.
+      if (position.source !== "ol-view" && position.source !== "show-feature") {
+        this.getFeatureInfo(position);
+      }
     },
     async reverseGeocode(position) {
       try {
@@ -1094,6 +1101,26 @@ export default {
     },
     onFit(position) {
       this.$refs.map.fit(position, { maxZoom: 19, duration: 1000 });
+    },
+    async showFeatureOnMap(feature) {
+      const geoFeature = new GeoJSON().readFeature(feature);
+      const center = getFeatureCenterCoordinates(feature);
+
+      await this.setPosition(
+        {
+          ...this.position,
+          center,
+          marker: center,
+          zoom: 19,
+          source: "show-feature",
+        },
+        false,
+        false,
+      );
+
+      this.selectedFeatures = [];
+      this.highlightedFeatures = [geoFeature];
+      this.onFit(geoFeature.getGeometry());
     },
     setColor(color) {
       this.color = color;
