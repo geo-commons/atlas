@@ -84,7 +84,7 @@
           :position="position"
           :config="config"
           :atlas-features="features"
-          @show-selected-feature="onFeatureSelect"
+          @show-feature-on-map="showFeatureOnMap"
           @set-position="setPosition"
           @on-fit="onFit"
           @select-feature="selectFeature"
@@ -98,8 +98,6 @@
 <script>
 import SidePanel from "./SidePanel";
 import FeatureInfo from "./FeatureInfo";
-import GeoJSON from "ol/format/GeoJSON";
-import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import CloseIcon from "@/assets/icons/close-icon.svg";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import { Tippy } from "vue-tippy";
@@ -126,7 +124,7 @@ export default {
     showPanel: Boolean,
     mapId: String,
   },
-  emits: ["expanded-info-panel", "set-position", "on-fit", "select-feature"],
+  emits: ["expanded-info-panel", "set-position", "on-fit", "show-feature-on-map", "select-feature"],
   data() {
     return {
       resetSidePanel: null,
@@ -170,23 +168,8 @@ export default {
       this.selectedFeatureDetails = null;
       this.$emit("set-position", { ...this.position, marker: null });
     },
-    onFeatureSelect(feature) {
-      const geometry = new GeoJSON().readFeature(feature).getGeometry();
-      const geometryExtend = geometry.getExtent();
-      const center = getFeatureCenterCoordinates(feature);
-
-      this.$emit(
-        "set-position",
-        {
-          ...this.position,
-          marker: center,
-          zoom: 19,
-        },
-        false,
-        false,
-      );
-
-      this.$emit("on-fit", geometryExtend);
+    showFeatureOnMap(feature) {
+      this.$emit("show-feature-on-map", feature);
     },
     onFit(value) {
       this.$emit("on-fit", value);
@@ -197,9 +180,6 @@ export default {
     toggleSidePanelSize(value) {
       this.resetSidePanel = value;
       this.$emit("expanded-info-panel", value);
-    },
-    onSelectFeatureDetails(selectedFeature) {
-      this.selectedFeatureDetails = selectedFeature;
     },
     onSelectRelatedTableObject(attributes) {
       if (attributes) {

@@ -7,7 +7,7 @@
     <p v-if="!layer" class="info-text">De lijstweergave is nog niet geconfigureerd.</p>
 
     <ul v-if="layer">
-      <li v-for="feature in filteredFeatures" :key="feature.id" class="list-item" @click="selectFeature(feature)">
+      <li v-for="feature in filteredFeatures" :key="feature.id" class="list-item" @click="showFeatureOnMap(feature)">
         <div class="header">
           <span class="name">
             <MarkdownTemplate :source="titleTemplate" :data="feature.properties" />
@@ -23,8 +23,6 @@
 
 <script>
 import MarkdownTemplate from "./MarkdownTemplate";
-import GeoJSON from "ol/format/GeoJSON";
-
 import PanelDisplay from "./PanelDisplay";
 import { useMapStore } from "@/stores/map_store";
 
@@ -40,7 +38,7 @@ export default {
     shortDescriptionTemplate: String,
     mapId: String,
   },
-  emits: ["hidePanel", "on-fit"],
+  emits: ["hidePanel", "show-feature-on-map"],
   data() {
     return {
       features: [],
@@ -88,9 +86,8 @@ export default {
     }
   },
   methods: {
-    selectFeature(feature) {
-      const geometry = new GeoJSON().readFeature(feature).getGeometry();
-      this.$emit("on-fit", geometry.getExtent());
+    showFeatureOnMap(feature) {
+      this.$emit("show-feature-on-map", feature);
     },
     hidePanel() {
       this.$emit("hidePanel");

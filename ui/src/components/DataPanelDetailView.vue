@@ -95,9 +95,8 @@
       :map-id="mapId"
       :selected-area="selectedArea"
       :user="user"
-      @set-position="onSetPosition"
-      @on-fit="onFit"
       @download-pending="onDownloadPending"
+      @show-feature-on-map="showFeatureOnMap"
     />
   </div>
 </template>
@@ -120,7 +119,7 @@ export default {
     position: Object,
     user: Object,
   },
-  emits: ["set-position", "on-fit"],
+  emits: ["show-feature-on-map"],
   data() {
     return {
       features: [],
@@ -153,11 +152,8 @@ export default {
         this.$refs.downloadMenu?.hide?.();
       }
     },
-    onSetPosition(position, animateFast, animate) {
-      this.$emit("set-position", position, animateFast, animate);
-    },
-    onFit(value) {
-      this.$emit("on-fit", value);
+    showFeatureOnMap(feature) {
+      this.$emit("show-feature-on-map", feature);
     },
     onSearch() {
       this.searchValue = this.$refs.queryInput.value;

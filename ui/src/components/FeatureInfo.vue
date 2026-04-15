@@ -65,7 +65,7 @@
           class="!tw-text-sm !tw-font-medium"
           aria-haspopup="true"
           aria-controls="overlay_menu"
-          @click="() => $emit('show-selected-feature', feature)"
+          @click="() => $emit('show-feature-on-map', feature)"
         >
           Bekijk
           <MarkerIcon class="icon __marker __smedium" />
@@ -178,7 +178,7 @@ export default {
     "set-position",
     "on-fit",
     "select-feature-details",
-    "show-selected-feature",
+    "show-feature-on-map",
     "select-feature",
     "select-related-linked-data",
     "select-related-table-object",
@@ -423,9 +423,6 @@ export default {
     },
     onFit(value) {
       this.$emit("on-fit", value);
-    },
-    onSelectFeatureDetails(selectedFeature) {
-      this.$emit("select-feature-details", selectedFeature);
     },
     onSelectRelatedLinkedData(linkedDataIdAttributes) {
       this.$emit("select-related-linked-data", linkedDataIdAttributes);

@@ -104,8 +104,6 @@
 
 <script>
 import TableList from "./TableList.vue";
-import GeoJSON from "ol/format/GeoJSON";
-import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import FilterSelect from "./FilterSelect.vue";
 import SwitchSlider from "./SwitchSlider.vue";
 import MarkerIcon from "../assets/icons/marker-icon.svg";
@@ -138,7 +136,7 @@ export default {
     selectedArea: Object,
     user: Object,
   },
-  emits: ["set-position", "on-fit", "download-pending"],
+  emits: ["download-pending", "show-feature-on-map"],
   data() {
     return {
       featureCollection: {
@@ -565,21 +563,7 @@ export default {
       }
     },
     showFeature(feature) {
-      const geometry = new GeoJSON().readFeature(feature).getGeometry();
-      const center = getFeatureCenterCoordinates(feature);
-
-      this.$emit(
-        "set-position",
-        {
-          ...this.position,
-          marker: center,
-          zoom: 19,
-        },
-        false,
-        false,
-      );
-
-      this.$emit("on-fit", geometry.getExtent());
+      this.$emit("show-feature-on-map", feature);
     },
     sortColumn(column, ascending) {
       const index = this.sortStack.findIndex((item) => item.id === column);
