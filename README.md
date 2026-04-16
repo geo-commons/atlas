@@ -47,7 +47,7 @@ If you make changes to the **metadataset option fields** in the Django models (e
 roles, update methods), run:
 
 ```bash
-npm run generate-metadata-types
+pnpm run generate-metadata-types
 ```
 
 This regenerates the frontend TypeScript enums and options so they stay in sync with the backend.
@@ -59,6 +59,9 @@ Make sure you installed the following requirements:
 - [uv](https://docs.astral.sh/uv/) (the Python package manager, which will automatically install Python if required)
 - [Docker](https://www.docker.com)
 - [Node.js](https://nodejs.org/) (version 22, other versions may work)
+- [pnpm](https://pnpm.io/) (the Node.js package manager)
+  - To install `pnpm`, we suggest using `corepack enable`, so that the correct version is 
+    automatically installed according to `package.json`.
 
 Apart from these requirements, Atlas works with the following services, which we suggest running
 using Docker Compose:
@@ -100,17 +103,17 @@ And run the development server with:
 uv run manage.py runserver
 ```
 
-Now install the npm dependencies:
+Now install the Node.js dependencies:
 
 ```bash
 cd ui/
-npm install
+pnpm install
 ```
 
 And start a watch server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Run the mock api server:
@@ -204,24 +207,24 @@ mkdocs serve
 
 ## Frontend E2E tests (Playwright)
 
-Run these from `ui/` after `npm install`. The app should be available at
+Run these from `ui/` after `pnpm install`. The app should be available at
 `http://localhost:8000/atlas/` unless you set a different base URL.
 
 ```bash
 cd ui
-npm run test:e2e
+pnpm run test:e2e
 ```
 
 Runs all Playwright E2E tests headlessly.
 
 ```bash
-npm run test:e2e:ui
+pnpm run test:e2e:ui
 ```
 
 Opens Playwright's interactive test runner UI.
 
 ```bash
-npm run test:e2e:record
+pnpm run test:e2e:record
 ```
 
 Launches Playwright codegen to record a new test while you click through the app.
@@ -229,13 +232,12 @@ Launches Playwright codegen to record a new test while you click through the app
 To use `test:e2e:ui` or `test:e2e:record`, install browser binaries once:
 
 ```bash
-npx playwright install
+pnpx playwright install
 ```
 
 Creating tests with codegen (Playwright record):
-
-- Run `npm run test:e2e:record` and interact with the app to generate actions.
-- Copy the generated test into your `ui/` Playwright test file(s), then run `npm run test:e2e`.
+- Run `pnpm run test:e2e:record` and interact with the app to generate actions.
+- Copy the generated test into your `ui/` Playwright test file(s), then run `pnpm run test:e2e`.
 - For full usage details, see the Playwright codegen docs:
 
 ```

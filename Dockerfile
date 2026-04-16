@@ -1,14 +1,18 @@
 # UI
 FROM node:22.19.0-alpine AS ui-build
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 WORKDIR /app/ui
 
 COPY ui/package.json \
-    ui/package-lock.json \
+    ui/pnpm-lock.yaml \
+    ui/pnpm-workspace.yaml \
     /app/ui/
-RUN npm install
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
 
 COPY ui /app/ui
-RUN npm run build
+RUN pnpm run build
 
 # API
 

@@ -34,6 +34,7 @@ Zorg ervoor dat de volgende benodigdheden geïnstalleerd zijn:
 
 - [Python 3](https://www.python.org)
 - [Docker](https://www.docker.com)
+- [pnpm](https://pnpm.io/) (installeer via `corepack enable`)
 
 Atlas werkt met elke WMS, WFS en WMTS server als bron voor geo-ruimtelijke data. Datalab Purmerend gebruikt [Geoserver](https://github.com/geoserver/geoserver) om geo-ruimtelijke data te publiceren. Geoserver is slechts een mogelijke keus en is daarom niet als verplicht genoemd in een ontwikkelomgeving.
 
@@ -67,17 +68,17 @@ en activeer de ontwikkelomgeving:
 python3 manage.py runserver
 ```
 
-Installeer nu de npm afhankelijkheden:
+Installeer nu de Node.js-afhankelijkheden:
 
 ```bash
 cd ui/
-npm install
+pnpm install
 ```
 
 en start een watch server:
 
 ```bash
-npm run serve
+pnpm run serve
 ```
 
 Ga naar: [http://localhost:8000/atlas/](http://localhost:8000/atlas/).
