@@ -40,16 +40,16 @@ When generating or modifying code, always follow:
 
 - Backend: make sure `uv` is installed.
 
-- Frontend:
+- Frontend (make sure `pnpm` is installed):
 
   ```bash
-  cd ui && npm install
+  cd ui && pnpm install
   ```
 
 - Mock API:
 
   ```bash
-  cd mock && npm install
+  cd mock && pnpm install
   ```
 
 - Services:
@@ -75,21 +75,21 @@ When generating or modifying code, always follow:
 - Frontend:
 
   ```bash
-  cd ui && npm run dev
-  cd ui && npm run serve
-  cd ui && npm run build
+  cd ui && pnpm run dev
+  cd ui && pnpm run serve
+  cd ui && pnpm run build
   ```
 
 - Metadata types:
 
   ```bash
-  cd ui && npm run generate-metadata-types
+  cd ui && pnpm run generate-metadata-types
   ```
 
 - Mock API:
 
   ```bash
-  cd mock && npm run dev
+  cd mock && pnpm run dev
   ```
 
 ## Lint & Format
@@ -103,9 +103,9 @@ When generating or modifying code, always follow:
 - Frontend:
 
   ```bash
-  cd ui && npm run lint
-  cd ui && npm run lint:fix
-  cd ui && npm run format
+  cd ui && pnpm run lint
+  cd ui && pnpm run lint:fix
+  cd ui && pnpm run format
   ```
 
 - Migration drift:
@@ -127,9 +127,9 @@ When generating or modifying code, always follow:
 - Frontend:
 
   ```bash
-  cd ui && npm run test:unit
-  cd ui && npm run test:browser
-  cd ui && npm run test:e2e
+  cd ui && pnpm run test:unit
+  cd ui && pnpm run test:browser
+  cd ui && pnpm run test:e2e
   ```
 
 ## High-Value Verification Workflow

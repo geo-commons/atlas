@@ -8,7 +8,7 @@ It simulates a real backend with filtering, pagination, so frontend development 
 Install dependencies once:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Running the server
@@ -16,7 +16,7 @@ npm install
 Start the mock API:
 
 ```bash
-npm run start
+pnpm run start
 ```
 
 The API will be available at http://localhost:4444/api

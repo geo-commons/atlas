@@ -23,7 +23,7 @@ function generateTs(typeName, items) {
   // Labels record (id -> label)
   const labelsRecord = items.map((i) => `  ${JSON.stringify(i.value)}: ${JSON.stringify(i.label)}`).join(",\n");
 
-  return `/* AUTO-GENERATED FILE — do not edit, rather run npm install to get the most recent version of the types.
+  return `/* AUTO-GENERATED FILE — do not edit, rather run pnpm install to get the most recent version of the types.
    * Source: ${new Date().toISOString()}
    * From: ${typeName} at build-time
    */

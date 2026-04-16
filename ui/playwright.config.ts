@@ -54,7 +54,7 @@ export default defineConfig({
           reuseExistingServer: !isCI,
         },
         {
-          command: `npm run dev -- --host ${frontendHost} --port ${frontendPort}`,
+          command: `pnpm run dev -- --host ${frontendHost} --port ${frontendPort}`,
           cwd: ".",
           url: `http://${frontendHost}:${frontendPort}`,
           timeout: 120_000,
