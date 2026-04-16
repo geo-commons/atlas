@@ -94,7 +94,6 @@ const getTableFilters = (): Array<TableFilter> => {
     singular-name="Gebruiker"
     plural-name="Gebruikers"
     api-name="users"
-    :enable-sort="false"
     :enable-create-object="false"
     :block-delete="[store?.user?.id]"
     :table-headers="tableHeaders"

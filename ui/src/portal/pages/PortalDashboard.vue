@@ -225,7 +225,10 @@ interface Config {
   organization_title_color?: string;
   organization_text_color?: string;
   position: {
-    center: [number, number];
+    center: {
+      x: number;
+      y: number;
+    };
     zoom: number;
   };
 }
@@ -337,9 +340,10 @@ const getEmbedUrl = (): string => {
   if (!config.value) {
     return "";
   }
-  return `${encodeURI(window.location.origin)}/atlas/embed/@${encodeURIComponent(
-    config.value.position.center[0],
-  )},${encodeURIComponent(config.value.position.center[1])},${encodeURIComponent(Math.round(config.value.position.zoom * 100) / 100)}z/`;
+
+  return `${encodeURI(window.location.origin)}/atlas/@${encodeURIComponent(
+    config.value.position.center.x,
+  )},${encodeURIComponent(config.value.position.center.y)},${encodeURIComponent(Math.round(config.value.position.zoom * 100) / 100)}z/.../.../is_embed=true`;
 };
 
 const loadData = async (): Promise<void> => {

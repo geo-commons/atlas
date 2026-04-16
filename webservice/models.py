@@ -445,7 +445,7 @@ class Layer(models.Model):
         'Toon laag in detail- en dataweergave', default=True)
     is_filterable_in_legend = models.BooleanField(
         'Laag is filterbaar in legenda', default=False)
-
+    
     not_in_atlas = models.BooleanField(
         'Toon laag alleen in een themakaart',
         default=False,
@@ -921,6 +921,12 @@ class Map(models.Model):
     published = models.BooleanField('Gepubliceerd',
                                     help_text="Markeer dit veld als Gepubliceerd om de kaart te publiceren en beschikbaar te maken voor andere gebruikers. Zet dit veld uit om de kaart te bewaren als concept en nog niet beschikbaar te maken voor andere gebruikers.",
                                     default=False)
+    is_main = models.BooleanField(
+        'Hoofdkaart',
+        default=False,
+        db_index=True,
+        help_text='Markeert deze kaart als de hoofdkaart die op /atlas/ wordt getoond.',
+    )
     show_in_overview = models.BooleanField('Toon in overzicht weergave',
                                            help_text="Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.",
                                            default=True)
@@ -932,6 +938,13 @@ class Map(models.Model):
         verbose_name = 'Kaart'
         verbose_name_plural = 'Kaarten'
         ordering = ['title']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['is_main'],
+                condition=models.Q(is_main=True),
+                name='unique_main_map',
+            ),
+        ]
 
     def __str__(self):
         return f"{self.title}"
@@ -945,7 +958,8 @@ class Map(models.Model):
             'settings': self.settings,
             'about': self.about,
             'about_title': self.about_title,
-            'thumbnail': self.thumbnail.url if self.thumbnail else None
+            'thumbnail': self.thumbnail.url if self.thumbnail else None,
+            'is_main': self.is_main,
         }
 
 

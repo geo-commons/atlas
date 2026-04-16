@@ -70,6 +70,7 @@ type IMapGlobalStore = {
   about_title?: string;
   thumbnail?: string;
   slug?: string;
+  is_main?: boolean;
   features?: {
     showAbout?: boolean;
     showAboutButton?: boolean;
@@ -87,7 +88,8 @@ const copyButtonLabel = ref("Kaart delen");
 const copyButtonIcon = ref("pi pi-upload");
 
 const copyMapLink = () => {
-  const mapLink = `${window.location.origin}/atlas/maps/${map.value?.slug}`;
+  const mapPath = map.value?.is_main ? "/atlas/" : `/atlas/maps/${map.value?.slug}`;
+  const mapLink = `${window.location.origin}${mapPath}`;
   navigator.clipboard.writeText(mapLink);
 
   copyButtonLabel.value = "Kaartlink gekopieerd";

@@ -161,6 +161,38 @@ class MapSerializerTest(APITestCase):
 
         self.assertEqual(map_instance.map_layers.count(), 2)
 
+    def test_create_map_with_position_settings(self):
+        data = {
+            'title': 'Map With Position',
+            'slug': 'map-with-position',
+            'settings': {
+                'position': {
+                    'zoom': 9,
+                    'center': {
+                        'x': 123,
+                        'y': 456,
+                    },
+                },
+            },
+            'categories': [],
+            'layers': [],
+        }
+
+        serializer = MapSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        map_instance = serializer.save()
+
+        self.assertEqual(
+            map_instance.settings['position'],
+            {
+                'zoom': 9,
+                'center': {
+                    'x': 123,
+                    'y': 456,
+                },
+            },
+        )
+
     def test_create_map_with_layer_category_references(self):
         """Test MapSerializer creates map where layers reference categories"""
         data = {

@@ -189,7 +189,6 @@ const getTableFilters = (): Array<TableFilter> => {
     singular-name="Kaartlaag"
     plural-name="Kaartlagen"
     api-name="layers"
-    :enable-sort="true"
     :get-create-object-dialog-sections="getCreateLayerSections"
     :initial-create-object-dialog-data="initialCreateLayerData"
     :save-create-object-dialog-data="saveLayer"

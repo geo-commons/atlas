@@ -20,7 +20,6 @@ import AdminNotFound from "./admin/AdminNotFound.vue";
 import detectKeyboard from "@/utils/detect-keyboard";
 import CategoryList from "@/admin/pages/CategoryList.vue";
 import CategoryCreateUpdate from "@/admin/pages/CategoryCreateUpdate.vue";
-import AdminSortPage from "@/admin/pages/AdminSortPage.vue";
 import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
 import GroupList from "@/admin/pages/GroupList.vue";
 import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
@@ -227,20 +226,6 @@ const routes = [
     path: "/general-information",
     component: AdminGeneralInformationPage,
     meta: { title: "Algemene informatie", menu: true },
-  },
-  {
-    path: "/:parentRoute/sort",
-    name: "sort",
-    props: true,
-    component: AdminSortPage,
-    meta: {
-      title: "Sortering",
-      menu: true,
-      breadcrumb: {
-        layers: { url: "/layers", title: "Kaartlagen" },
-        categories: { url: "/categories", title: "Categorieën" },
-      },
-    },
   },
   { path: "/:pathMatch(.*)*", name: "not-found", component: AdminNotFound },
 ];

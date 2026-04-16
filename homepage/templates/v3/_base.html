@@ -1,47 +1,63 @@
-{% load django_vite %}
-{% load static %}
-<!DOCTYPE html>
+{% load django_vite %} {% load static %}
+<!doctype html>
 <html lang="nl">
   <head>
-    <title>{% if title %}{{ title }} · {% endif %}Atlas · {{ config.ORGANIZATION_NAME }}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" >
+    <title>Atlas · {{ config.ORGANIZATION_NAME }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
-    <link rel="shortcut icon" href="{% if config.FAVICON_URL %}{{ config.FAVICON_URL }}{% else %}{% static 'img/favicon.ico' %}{% endif %}" />
-    {% vite_hmr_client %}
-    {% vite_asset 'src/app.js' %}
-</head>
+    <link
+      rel="shortcut icon"
+      href="{% if config.FAVICON_URL %}{{ config.FAVICON_URL }}{% else %}{% static 'img/favicon.ico' %}{% endif %}"
+    />
+    {% vite_hmr_client %} {% vite_asset 'src/map.js' %}
+  </head>
   <body>
-    {% block content %}{% endblock %}
-
-    {% if google_maps %}
-      <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps.api_key }}"></script>
-    {% endif %}
-
-    {% if street_smart %}
-      <script type="text/javascript" src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
-      <script type="text/javascript" src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-      <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@main/dist/en/v6.12.0/build/ol.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-      <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v25.4/StreetSmartApi.js" ></script>
-    {% endif %}
-
-
-    {% if config.MATOMO_URL %}
-      <script type="text/javascript">
-          var _paq = window._paq || [];
-          _paq.push(['trackPageView']);
-          _paq.push(['enableLinkTracking']);
-          (function() {
-              var u="{{ config.MATOMO_URL }}/";
-              _paq.push(['setTrackerUrl', u+'matomo.php']);
-              _paq.push(['setSiteId', {{ config.MATOMO_SITE_ID }}]);
-              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-              g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-          })();
-      </script>
+    {% block content %}{% endblock %} {% if google_maps %}
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key={{ google_maps.api_key }}"
+    ></script>
+    {% endif %} {% if street_smart %}
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@main/dist/en/v6.12.0/build/ol.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://streetsmart.cyclomedia.com/api/v25.4/StreetSmartApi.js"
+    ></script>
+    {% endif %} {% if config.MATOMO_URL %}
+    <script type="text/javascript">
+      var _paq = window._paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+          var u="{{ config.MATOMO_URL }}/";
+          _paq.push(['setTrackerUrl', u+'matomo.php']);
+          _paq.push(['setSiteId', {{ config.MATOMO_SITE_ID }}]);
+          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+          g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
     {% endif %}
   </body>
 </html>

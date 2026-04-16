@@ -65,7 +65,6 @@ const getTableFilters = (): Array<TableFilter> => {
     singular-name="Log"
     plural-name="Logs"
     api-name="logs"
-    :enable-sort="false"
     :enable-delete="false"
     :enable-edit="false"
     :enable-create-object="false"

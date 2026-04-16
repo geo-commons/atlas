@@ -104,6 +104,7 @@ const saveMap = async (
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :table-headers="tableHeaders"
+    :fixed-query-params="{ is_main: 'False' }"
     :view-base-url="'/atlas/maps'"
   />
 </template>

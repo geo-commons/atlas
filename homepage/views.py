@@ -1,10 +1,10 @@
 import logging
+import math
 import os
 
 from constance.admin import get_values
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
@@ -32,53 +32,27 @@ LAYER_PREFETCH_FIELDS = (
 
 
 @xframe_options_exempt
-def embed(request):
+@ensure_csrf_cookie
+def v3(request, slug=None):
     authorized_layers = _layers_with_prefetch(request).select_related('metadataset')
-    visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
     user = _get_user(request)
-
+    
+    if slug:
+        visible_map = get_object_or_404(
+            Map.authorized.for_request(request), slug=slug)
+    else:
+        visible_map = get_object_or_404(Map.authorized.for_request(request), is_main=True)
+    
     context = {
         'data': {
-            'is_embed': True,
-            'config': _get_config(request),
+            'config': _get_config(request, visible_map),
             'user': user,
-            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
+            'map': visible_map.to_dict(),
+            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in authorized_layers]
         }
     }
 
-    return render(request, 'v3/app.html', context)
-
-
-@xframe_options_exempt
-@ensure_csrf_cookie
-def v3(request, theme_slug=''):
-    authorized_layers = _layers_with_prefetch(request).select_related('metadataset')
-    user = _get_user(request)
-
-    context = {}
-
-    # We set outdated_map_slug to None by default. If the user is on an outdated map (i.e., when theme_slug is set)
-    # we update it to that slug. This allows us to later display a message in the frontend
-    # letting the user know they are using an old map view, along with a redirect to the new map view.
-    outdated_map_slug = None
-
-    if theme_slug:
-        theme = get_object_or_404(Map, slug=theme_slug)
-        visible_layers = authorized_layers.filter(map=theme)
-        outdated_map_slug = theme_slug
-        context['title'] = theme.title
-    else:
-        visible_layers = authorized_layers.filter(~Q(not_in_atlas=True))
-
-    context['data'] = {
-        'is_embed': False,
-        'config': _get_config(request),
-        'user': user,
-        'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers],
-        'outdated_map_slug': outdated_map_slug,
-    }
-
-    return render(request, 'v3/app.html', context)
+    return render(request, 'v3/map.html', context)
 
 
 def v3_disclaimer(request):
@@ -134,25 +108,6 @@ def v3_admin(request):
     return render(request, 'v3/admin.html', context)
 
 
-@xframe_options_exempt
-def v3_map(request, slug):
-    visible_layers = _layers_with_prefetch(request)
-    visible_map = get_object_or_404(
-        Map.authorized.for_request(request), slug=slug)
-    user = _get_user(request)
-
-    context = {
-        'data': {
-            'config': _get_config(request),
-            'user': user,
-            'map': visible_map.to_dict(),
-            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
-        }
-    }
-
-    return render(request, 'v3/map.html', context)
-
-
 def _default_layers():
     if Layer.objects.filter(is_base=True).count() > 0:
         # Do not return default base layers when the database contains base layers
@@ -197,10 +152,10 @@ def _layers_with_prefetch(request):
     return Layer.authorized.for_request(request).prefetch_related(*LAYER_PREFETCH_FIELDS)
 
 
-def _get_config(request):
+def _get_config(request, visible_map=None):
     config = get_values()
 
-    return {
+    result = {
         'organization_name': config.get('ORGANIZATION_NAME'),
         'organization_logo': settings.MEDIA_URL + config.get('ORGANIZATION_LOGO') if config.get(
             'ORGANIZATION_LOGO') else None,
@@ -223,16 +178,40 @@ def _get_config(request):
         'show_disclaimer': config.get('DISCLAIMER') != '',
         'features': {
             'print': config.get('FEATURE_PRINT'),
-            'draw': config.get('FEATURE_DRAW'),
             'portal': config.get('FEATURE_PORTAL'),
-            'edit_layer_features': config.get('FEATURE_EDIT_LAYER_FEATURES'),
             'sortLayer': config.get('FEATURE_SORT_LAYER'),
-            'compareLayers': config.get('FEATURE_COMPARE_LAYERS'),
             'newTables': config.get('FEATURE_NEW_TABLES'),
             'oldLinkedDataAndTemplate': config.get('FEATURE_OLD_LINKED_DATA_AND_TEMPLATE'),
             'featureLayerInternalVisibility': config.get('FEATURE_LAYER_INTERNAL_VISIBILITY'),
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
+    }
+    
+    map_position = _normalize_position((visible_map.settings or {}).get('position')) if visible_map else None
+
+    if map_position:
+        result['position'] = map_position
+        
+    return result
+
+
+def _normalize_position(position):
+    try:
+        zoom = float(position['zoom'])
+        center_x = float(position['center']['x'])
+        center_y = float(position['center']['y'])
+    except (KeyError, TypeError, ValueError):
+        return None
+
+    if not all(math.isfinite(value) for value in (zoom, center_x, center_y)):
+        return None
+
+    return {
+        'zoom': zoom,
+        'center': {
+            'x': center_x,
+            'y': center_y,
+        }
     }
 
 

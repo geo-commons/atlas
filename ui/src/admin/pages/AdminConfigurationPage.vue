@@ -222,24 +222,6 @@ export default {
               type: "checkbox",
             },
             {
-              label: "Kaartlaagvergelijk functionaliteit op hoofdkaart",
-              id: "FEATURE_COMPARE_LAYERS",
-              name: "featureCompareLayers",
-              type: "checkbox",
-            },
-            {
-              label: "Tekenfunctionaliteit op hoofdkaart",
-              id: "FEATURE_DRAW",
-              name: "featureDraw",
-              type: "checkbox",
-            },
-            {
-              label: "CRUD functionaliteit op hoofdkaart",
-              id: "FEATURE_EDIT_LAYER_FEATURES",
-              name: "featureAddFeature",
-              type: "checkbox",
-            },
-            {
               label: "Nieuwe tabellen functionaliteit",
               id: "FEATURE_NEW_TABLES",
               name: "featureNewTables",
