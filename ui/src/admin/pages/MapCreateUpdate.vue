@@ -51,13 +51,13 @@
     <div class="editor-map-wrapper">
       <map-renderer
         ref="map"
-        :initial-position="position"
+        :initial-position="mapPosition"
         :initial-layers="configuredLayers"
         :user="user"
         :features="data.features"
         :settings="data.settings"
         :config="config"
-        :map-id="data.slug || 'primary'"
+        :map-id="data.is_main ? 'primary' : data.slug || 'primary'"
         :admin-map="true"
         :hide-reset-button="true"
         :about="data.about"
@@ -116,6 +116,23 @@ export default {
   },
   computed: {
     ...mapState(useGlobalStore, ["position", "layers", "config", "map", "user"]),
+    mapPosition() {
+      const normalizedPosition = this.normalizePosition(this.data?.settings?.position);
+
+      if (!normalizedPosition) {
+        return this.position;
+      }
+
+      return {
+        ...this.position,
+        zoom: normalizedPosition.zoom,
+        center: [normalizedPosition.center.x, normalizedPosition.center.y],
+        marker: null,
+        geolocation: null,
+        animate: true,
+        animateFast: true,
+      };
+    },
     showEnvironmentIndicator() {
       return this.config.application_environment !== "production";
     },
@@ -229,6 +246,7 @@ export default {
         }
 
         this.data = await result.json();
+        this.ensureMapPositionSettings();
         this.checkBaseLayersConfigured();
         return;
       }
@@ -236,6 +254,7 @@ export default {
       this.data = {
         features: {},
         settings: {
+          position: this.getDefaultPosition(),
           facets: [],
           filterLayerId: null,
           listLayerId: null,
@@ -245,6 +264,14 @@ export default {
     async saveMap(data, continueEditing = false) {
       let result;
       this.errors = null;
+
+      data.settings = data.settings || {};
+      data.settings.position = this.normalizePosition(data.settings.position) || this.getDefaultPosition();
+
+      if (data.is_main) {
+        data.published = true;
+        data.show_in_overview = false;
+      }
 
       if (!data.features.list) {
         data.settings.listLayerId = null;
@@ -294,7 +321,7 @@ export default {
         });
 
         if (!continueEditing) {
-          this.$router.push(`/maps`);
+          this.$router.push(data.is_main ? "/" : "/maps");
         }
       } else {
         this.errors = await result.json();
@@ -349,6 +376,41 @@ export default {
           },
         });
       }
+    },
+    ensureMapPositionSettings() {
+      if (!this.data.settings) {
+        this.data.settings = {};
+      }
+
+      if (!this.data.settings.position) {
+        this.data.settings.position = this.getDefaultPosition();
+      }
+    },
+    normalizePosition(position) {
+      const zoom = Number(position?.zoom);
+      const centerX = Number(position?.center?.x);
+      const centerY = Number(position?.center?.y);
+
+      if (![zoom, centerX, centerY].every(Number.isFinite)) {
+        return null;
+      }
+
+      return {
+        zoom,
+        center: {
+          x: centerX,
+          y: centerY,
+        },
+      };
+    },
+    getDefaultPosition() {
+      return {
+        zoom: this.config.position.zoom,
+        center: {
+          x: this.config.position.center.x,
+          y: this.config.position.center.y,
+        },
+      };
     },
     showSidebar(sidebar) {
       this.sidebar = sidebar;

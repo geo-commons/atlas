@@ -45,7 +45,8 @@ class MapSerializer(serializers.ModelSerializer):
         model = Map
         fields = ['id', 'title', 'slug', 'features', 'settings', 'layers', 'categories', 'thumbnail', 'description',
                   'keywords',
-                  'published', 'show_in_overview', 'about', 'about_title']
+                  'published', 'show_in_overview', 'about', 'about_title', 'is_main']
+        read_only_fields = ['is_main']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -374,7 +375,6 @@ class LayerSerializer(serializers.ModelSerializer):
             'is_selectable',
             'show_in_detail_panel',
             'use_html_info_format',
-            'not_in_atlas',
             'extent_min_x',
             'extent_min_y',
             'extent_max_x',
@@ -562,7 +562,6 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'is_selectable',
             'use_html_info_format',
             'show_in_detail_panel',
-            'not_in_atlas',
             'display_properties',
             'search_properties',
             'extent_min_x',

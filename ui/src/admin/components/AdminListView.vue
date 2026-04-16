@@ -22,7 +22,6 @@ type AdminListViewProps = {
   enableDeleteMultiple?: boolean;
   enableDelete?: boolean;
   enableEdit?: boolean;
-  enableSort?: boolean;
   singularName: string;
   pluralName: string;
   apiName: string;
@@ -30,6 +29,7 @@ type AdminListViewProps = {
   tableHeaders: Array<TableHeader>;
   getTableFilters?: () => Array<TableFilter>;
   viewBaseUrl?: string;
+  fixedQueryParams?: Record<string, string>;
   blockDelete?: Array<number>;
   // These 3 props are only necessary if enableCreateObject is true
   getCreateObjectDialogSections?: () => object;
@@ -46,9 +46,9 @@ const props = withDefaults(defineProps<AdminListViewProps>(), {
   enableCreateObject: true,
   enableDuplicate: false,
   enableDeleteMultiple: false,
-  enableSort: false,
   enableDelete: true,
   enableEdit: true,
+  fixedQueryParams: () => ({}),
   blockDelete: () => [],
 });
 
@@ -57,12 +57,22 @@ const route = useRoute();
 const queryCache = useQueryCache();
 const toast = useToast();
 
+const getQueryParams = (query: URLSearchParams | Record<string, any>) => {
+  const searchParams = new URLSearchParams(query instanceof URLSearchParams ? query : query);
+
+  Object.entries(props.fixedQueryParams).forEach(([key, value]) => {
+    searchParams.set(key, value);
+  });
+
+  return searchParams;
+};
+
 // Query logic
 const { state } = useQuery({
-  key: () => [props.apiName, route.query],
+  key: () => [props.apiName, route.query, props.fixedQueryParams],
   query: async () => {
     const url = new URL(`/atlas/api/v1/${props.apiName}/`, window.location.origin);
-    const searchParams = new URLSearchParams(route.query);
+    const searchParams = getQueryParams(route.query as Record<string, any>);
     url.search = searchParams.toString();
     const res = await apiFetch(url);
     return await res.json();
@@ -306,7 +316,6 @@ defineExpose({ toggleDialog });
     <AdminListViewHeader
       :name="props.pluralName"
       :singular-name="props.singularName"
-      :enable-sort="props.enableSort"
       :enable-create-object="props.enableCreateObject"
       :enable-duplicate="props.enableDuplicate"
       :enable-import-export="props.enableImportExport"

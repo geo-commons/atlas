@@ -771,13 +771,6 @@ export default {
               required: false,
             },
             {
-              label: "Toon laag alleen in een themakaart",
-              id: "not_in_atlas",
-              name: "NotInAtlas",
-              type: "checkbox",
-              required: false,
-            },
-            {
               label: "Maak laag filterbaar in legenda",
               id: "is_filterable_in_legend",
               name: "IsFilterableInLegend",

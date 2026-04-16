@@ -6,7 +6,7 @@ from django.core.files.storage import default_storage
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -23,20 +23,42 @@ from .models import Category, Drawing, Source, Layer, Viewer, Map, Metadataset, 
     UpdateMethodType, AuthorizationLevelType, StatusType, AccessConstraintsType, OtherConstraintsType
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, \
-    LogSerializer, ViewerSerializer, UserCreateUpdateSerializer, MetadatasetSerializer, \
+    LogSerializer, ViewerSerializer, UserCreateUpdateSerializer, MetadatasetSerializer, DeleteSettingsSerializer, \
     MetadatasetPublicSerializer
 
 
 class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = MapSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
-    multiple_lookup_fields = ['published', 'show_in_overview']
+    multiple_lookup_fields = ['published', 'show_in_overview', 'is_main']
 
     search_fields = ['title', 'description', 'keywords', 'about']
 
     def get_queryset(self):
         return Map.authorized.for_request(self.request)
 
+    def destroy(self, request, *args, **kwargs):
+        map_instance = self.get_object()
+        if map_instance.is_main:
+            raise ValidationError({'detail': 'De hoofdkaart kan niet worden verwijderd.'})
+
+        return super().destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=['post'], url_path='delete', permission_classes=[permissions.IsAdminUser])
+    def data_delete(self, request):
+        serializer = DeleteSettingsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        ids_to_delete = serializer.validated_data.get('ids', [])
+        protected_ids = list(Map.objects.filter(id__in=ids_to_delete, is_main=True).values_list('id', flat=True))
+        if protected_ids:
+            raise ValidationError({'detail': 'De hoofdkaart kan niet worden verwijderd.', 'ids': protected_ids})
+
+        Map.objects.filter(id__in=ids_to_delete).delete()
+
+        return Response({
+            'message': 'Successfully deleted objects',
+        })
 
 class SourceViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
@@ -135,7 +157,7 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
                 'layers', 
                 queryset=
                     Layer.authorized.for_request(self.request)
-                    .filter(not_in_atlas=False, published=True)
+                    .filter(published=True)
                     .order_by('title')
                 )
             )

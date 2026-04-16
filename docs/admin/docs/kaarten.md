@@ -1,74 +1,89 @@
-Kaarten zijn verzamelingen kaartlagen die samen over een bepaald onderwerp gaan. Om een kaart samen te stellen worden kaartlagen geselecteerd die bij die kaart horen.
-Een kaart verschijnt niet in het Atlas hoofdscherm scherm. Bij het aanmaken van een kaart wordt als het ware een aparte instantie van Atlas gecreëerd met een beperkter aantal kaartlagen en beperktere functionaliteit. Wanneer bijvoorbeeld een kaart 'hondenbeleid' is aangemaakt waarin de kaartlagen 'hondenuitlaatplekken' en 'hondenbakken' zitten, dan kan de url om de kaart op te vragen er bijvoorbeeld zo uitzien: https://mijngemeentewebsite.nl/atlas/maps/hondenbeleid
+Kaarten zijn verzamelingen van kaartlagen die samen een onderwerp vormen. Een kaart is in Atlas een configureerbare viewer met een eigen selectie lagen, eigen kaartinstellingen en eigen functionaliteit.
+
+Ook de **hoofdkaart** is een kaart. Het verschil is dat de hoofdkaart de standaardkaart van Atlas is:
+
+- de hoofdkaart is bereikbaar via `/atlas/`
+- de hoofdkaart is altijd gepubliceerd
+- de hoofdkaart wordt niet in het dataportaal getoond
+- de hoofdkaart kan niet worden verwijderd
+- de hoofdkaart is configureerbaar via een losse knop op het admin dashboard
+
+Een thematische kaart is bereikbaar via een eigen URL, bijvoorbeeld:
+`https://mijngemeentewebsite.nl/atlas/maps/hondenbeleid`
 
 <img src="../images/hondenbeleid.png" alt="hondenbeleid" width="500"/>
 
-Om een kaart aan te maken klik je in het Kaarten menu op de knop Nieuwe kaart.
-Vul de vereiste velden in (Titel en Kort kenmerk). Klik op Opslaan en openen wanneer deze velden zijn ingevuld.
+Om een kaart aan te maken klik je in het menu **Kaarten** op **Nieuwe kaart**. Vul de verplichte velden in en klik op **Opslaan en openen**.
 
-### Basisinformatie
+## Kaartinstellingen
 
-| Veld                   | Uitleg                                                                                                                                 | Validatie                                      |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| **Titel**              | De titel van de kaart. Mag uit meerdere woorden bestaan.                                                                               | Verplicht                                      |
-| **Kort kenmerk**       | Een korte, unieke naam voor de kaart die in de URL wordt gebruikt. Mag geen spaties en speciale tekens bevatten, wel (liggende)streepjes. | Verplicht, unieke waarde                        |
-| **Portaal beschrijving** | De beschrijving van de kaart die in het dataportaal wordt getoond.                                                                   | Optioneel                                       |
-| **Zoektermen**         | De lijst van zoektermen die gebruikt worden om de kaart te vinden in het dataportaal. Voer één zoekterm per regel in.                  | Optioneel                                       |
+In het kaartmenu kunnen de verschillende onderdelen van een kaart worden ingesteld. Aangevinkte opties zijn direct zichtbaar in het voorbeeldscherm.
 
-<img src="../images/nieuwe_kaart.png" alt="Kaart Toevoegen" width="800"/>
+### Algemene instellingen
 
-In het kaartmenu kunnen de verschillende opties voor een kaart geconfigureerd worden.  
-Een optie die aangeklikt wordt, is direct in het voorbeeldscherm te zien.
-Sommige opties hebben een submenu met keuzes, dit wordt zichtbaar nadat de optie is aangevinkt.
+| Veld                              | Uitleg                                                                                                                                     | Opmerking                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| **Titel**                         | De titel van de kaart. Deze naam wordt in Atlas getoond.                                                                                   | Verplicht. Niet instelbaar voor de hoofdkaart.                                    |
+| **Kort kenmerk**                  | Een korte, unieke naam voor de kaart die in de URL wordt gebruikt. Gebruik geen spaties of speciale tekens. Streepjes zijn wel toegestaan. | Verplicht, uniek. Niet instelbaar voor de hoofdkaart.                             |
+| **Portaal beschrijving**          | De beschrijving van de kaart zoals die in het dataportaal wordt getoond.                                                                   | Optioneel. Niet instelbaar voor de hoofdkaart.                                    |
+| **Zoektermen**                    | Zoektermen waarmee de kaart in het dataportaal gevonden kan worden. Voer een zoekterm per regel in.                                        | Optioneel. Niet instelbaar voor de hoofdkaart.                                    |
+| **Centrum X-coördinaat**          | Het X-coördinaat van de startpositie van de kaart.                                                                                         | Overschrijft voor deze kaart de globale standaardpositie.                         |
+| **Centrum Y-coördinaat**          | Het Y-coördinaat van de startpositie van de kaart.                                                                                         | Overschrijft voor deze kaart de globale standaardpositie.                         |
+| **Zoomniveau**                    | Het zoomniveau waarmee de kaart opent.                                                                                                     | Overschrijft voor deze kaart het globale standaardzoomniveau.                     |
+| **Publiceer kaart**               | Publiceert de kaart zodat deze beschikbaar is voor gebruikers.                                                                             | Alleen zichtbaar bij thematische kaarten. Bij de hoofdkaart altijd ingeschakeld.  |
+| **Toon kaart in het dataportaal** | Bepaalt of de kaart zichtbaar is in het overzicht van het dataportaal.                                                                     | Alleen zichtbaar bij thematische kaarten. Bij de hoofdkaart altijd uitgeschakeld. |
 
-### Kaart lagen
+### Onderdelen van de kaart
 
-<img src="../images/kaartmenu.png" alt="Kaart Toevoegen" width="500"/>
+| Onderdeel                                   | Uitleg                                                           | Opmerking                                                           |
+| ------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [**Lagen**](#lagen)                         | Hier selecteer en orden je de kaartlagen van de kaart.           | Per laag kunnen ook kaartspecifieke instellingen worden gedaan.     |
+| **Thumbnail**                               | Hier kun je een thumbnail uploaden, wijzigen of verwijderen.     | De thumbnail kan optioneel worden gebruikt in de kaartomschrijving. |
+| [**Kaartomschrijving**](#kaartomschrijving) | Hier stel je de inhoud van de informatiezijbalk van de kaart in. | Zie ook [Kaartomschrijving](#kaartomschrijving).                    |
 
-- **Titel**. Deze kan eventueel nog worden aangepast. Let hierbij op dat de URL wel de originele naam zal bevatten.
-- [**Lagen**](#kaart-lagen). Hier kunnen de beschikbare kaartlagen worden gekozen en geconfigureerd.
-- **Toon** zoekbalk  
-  De zoekbalk zoals die linksboven in het Atlas scherm getoond wordt.  
-  <img src="../images/zoekbalk.png" alt="zoekbalk" width="400"/>
-- **Toon** dataweergave  
-  <img src="../images/dataweergave.png" alt="zoekbalk" width="50"/>
-- **Selecteer** gebied  
-  <img src="../images/selecteer_gebied.png" alt="zoekbalk" width="50"/>
-- **Opmeten**  
-  <img src="../images/opmeten.png" alt="zoekbalk" width="50"/>
-- **Meer opties**  
-  <img src="../images/meer_opties.png" alt="zoekbalk" width="50"/>
-- **GPS knop**  
-  <img src="../images/gps_knop.png" alt="zoekbalk" width="50"/>
-- **Zoomfunctie**  
-  <img src="../images/zoomfunctie.png" alt="zoekbalk" width="50"/>
-- **Toon schaal**  
-  <img src="../images/toon_schaal.png" alt="zoekbalk" width="100"/>
-- **Prikker bij klik**  
-  Toont het 'prikker' symbool wanneer ergens op de kaart geklikt wordt.  
-  <img src="../images/prikker_bij_klik.png" alt="zoekbalk" width="50"/>
-- **Basislagen**  
-  <img src="../images/basislagen.png" alt="zoekbalk" width="50"/>
-- **Lagenlijst**  
-  Bij lagenlijst kan na aanvinken gekozen worden om de zoekbalk lagenlijst te verbergen en om een versimpelde weergave van de lagenlijst te laten zien.  
-  <img src="../images/lagenlijst.png" alt="zoekbalk" width="50"/>
-- **Legenda**  
-  <img src="../images/legenda.png" alt="zoekbalk" width="50"/>
-- **Lagenlijst en legenda standaard gesloten**\
-  Met de optie "lagenlijst en legenda standaard gesloten" kunnen de lagenlijst en de legenda standaard gesloten worden getoond bij het openen van de kaart
-- **Lijstweergave**  
-  De lijstweergave kan na aanvinken in het submenu verder geconfigureerd worden.  
-  <img src="../images/lijstweergave.png" alt="zoekbalk" width="100"/>
-- **Filters**  
-  De filterfunctie kan na aanvinken in het submenu verder geconfigureerd worden.  
-  <img src="../images/filters.png" alt="zoekbalk" width="100"/>
-- **Kaartlagen vergelijken**\
-  Met de optie "kaartlagen vergelijken" kun je ervoor kiezen de kaartvergelijk functionaliteit wel of niet te laten zien op kaartniveau.
-- **Tekenen**\
-  Met de optie "tekenen" kun je ervoor kiezen de tekenfunctionaliteit wel of niet te laten zien op kaartniveau.
-- **CRUD functionaliteit**\
-  Met de optie "CRUD functionaliteit" kun je ervoor kiezen de CRUD functionaliteit wel of niet te laten zien op kaartniveau.
-- **Rondkijkfoto**\
-  Met de optie "rondkijkfoto" kun je ervoor kiezen de rondkijkfoto functionaliteit wel of niet te laten zien op kaartniveau.
+### Beschikbare functies
 
-Klik op opslaan om de gemaakte keuzes te bewaren.
+| Functie                                      | Uitleg                                                              | Opmerking                                                                                                                                                                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Toon zoekbalk**                            | Toont de zoekbalk linksboven in de kaart.                           | Geen                                                                                                                                                                                                              |
+| **Toon dataweergave**                        | Toont de dataweergave.                                              | Geen                                                                                                                                                                                                              |
+| **Selecteer gebied**                         | Toont de functie om een gebied te selecteren.                       | Geen                                                                                                                                                                                                              |
+| **Opmeten**                                  | Toont de meetfunctionaliteit.                                       | Geen                                                                                                                                                                                                              |
+| **Meer opties**                              | Toont het menu met extra kaartopties.                               | Wordt automatisch ingeschakeld wanneer **Toon kaartomschrijving** wordt aangezet.                                                                                                                                 |
+| **GPS knop**                                 | Toont de knop om de huidige locatie te gebruiken.                   | Geen                                                                                                                                                                                                              |
+| **Zoomfunctie**                              | Toont de zoomknoppen.                                               | Geen                                                                                                                                                                                                              |
+| **Toon schaal**                              | Toont de schaalaanduiding.                                          | Geen                                                                                                                                                                                                              |
+| **Prikker bij klik**                         | Toont een prikker op de plek waar op de kaart is geklikt.           | Deze functionaliteit zorgt er ook voor dat er een detailweergave wordt getoond voor de aangeklikte plek.                                                                                                          |
+| **Basislagen**                               | Toont de basislagenknop.                                            | Geen                                                                                                                                                                                                              |
+| **Lagenlijst**                               | Toont de lagenlijst.                                                | Extra instellingen: **Verberg zoekbalk lagenlijst** en **Versimpelde weergave lagenlijst**.                                                                                                                       |
+| **Legenda**                                  | Toont de legenda.                                                   | Geen                                                                                                                                                                                                              |
+| **Lagenlijst en legenda standaard gesloten** | Opent de kaart met lagenlijst en legenda standaard ingeklapt.       | Geen                                                                                                                                                                                                              |
+| **Lijstweergave**                            | Toont de lijstweergave.                                             | Kies een kaartlaag. Alleen lagen van type `WMS_WFS` zijn beschikbaar. Extra velden: **Template naam** en **Korte beschrijving**. In teksten kunnen kolomnamen uit de laag gebruikt worden met `{{ kolom_naam }}`. |
+| **Filters**                                  | Toont de filterfunctionaliteit.                                     | Kies een kaartlaag. Alleen lagen van type `WMS_WFS` zijn beschikbaar. Selecteer vervolgens welke tekstvelden als filteroptie beschikbaar moeten zijn.                                                             |
+| **Kaartlagen vergelijken**                   | Maakt de vergelijkfunctionaliteit voor kaartlagen beschikbaar.      | Geen                                                                                                                                                                                                              |
+| **Tekenen**                                  | Maakt de tekenfunctionaliteit beschikbaar.                          | Geen                                                                                                                                                                                                              |
+| **CRUD functionaliteit**                     | Maakt toevoegen, wijzigen en verwijderen van objecten mogelijk.     | Vereist aanvullende inrichting op kaartlaag- en autorisatieniveau. Zie ook [CRUD functionaliteit](crud_functionaliteit.md).                                                                                       |
+| **Rondkijkfoto**                             | Toont de knop voor gekoppelde externe viewers voor rondkijkfoto's.  | Vereist geconfigureerde viewers.                                                                                                                                                                                  |
+| **Herstelknop**                              | Toont een knop om terug te gaan naar de beginweergave van de kaart. | Geen                                                                                                                                                                                                              |
+
+### Kaartomschrijving
+
+Bij **Kaartomschrijving** configureer je de informatiezijbalk van de kaart.
+
+| Veld                         | Uitleg                                                       | Opmerking                                                  |
+| ---------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| **Toon kaartomschrijving**   | Toont een informatiezijbalk met extra context over de kaart. | Schakelt automatisch **Meer opties** in.                   |
+| **Toon thumbnail in header** | Toont de geuploade thumbnail bovenaan de kaartomschrijving.  | Alleen beschikbaar als er eerst een thumbnail is geüpload. |
+| **Toon 'Kaart delen' knop**  | Toont in de kaartomschrijving een knop om de kaart te delen. | Alleen relevant als de kaartomschrijving wordt getoond.    |
+| **Header titel**             | De titel bovenaan de kaartomschrijving.                      | Optioneel.                                                 |
+| **Zijbalk tekst**            | De inhoud van de kaartomschrijving.                          | Ondersteunt Markdown.                                      |
+
+De kaartomschrijving is sluitbaar in de viewer en daarna opnieuw te openen via **Meer opties**.
+
+### Lagen
+
+Onder **Lagen** kies je welke kaartlagen in de kaart beschikbaar zijn. Je kunt hier ook de volgorde van lagen en categorieën bepalen. Per laag kan worden ingesteld of de standaardinstellingen van de hoofdkaart worden overgenomen of dat de kaart een eigen laagconfiguratie gebruikt.
+
+Meer informatie over kaartlagen staat in [kaartlagen](kaartlagen.md).
+
+Klik op **Opslaan** om de gemaakte keuzes te bewaren.

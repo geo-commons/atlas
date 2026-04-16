@@ -27,6 +27,7 @@ DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
 DEBUG_API_PROXY = os.getenv('DEBUG_API_PROXY', DEBUG_API_PROXY_DEFAULT)
 
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+RUNNING_TESTS = 'test' in sys.argv
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ALLOWED_HOSTS_DEFAULT).split(',')
 INTERNAL_IPS = list(filter(None, os.getenv('INTERNAL_IPS', '').split(',')))
@@ -310,11 +311,8 @@ CONSTANCE_CONFIG = {
     'MAP_AREA': ('', ('Configureer een gebied dat standaard uitgelicht wordt op de kaart')),
     'FEATURE_PORTAL': (False, ('Portaalfunctionaliteit')),
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
-    'FEATURE_DRAW': (False, ('Tekenfunctionaliteit')),
-    'FEATURE_EDIT_LAYER_FEATURES': (False, ('Bewerkfunctionaliteit')),
     'FEATURE_SORT_LAYER': (False, 'Sorteer kaartlagen in de viewer'),
     'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
-    'FEATURE_COMPARE_LAYERS': (True, ('Kaartlaagvergelijk functionaliteit op hoofdkaart')),
     'FEATURE_NEW_TABLES': (False, ('Gebruik de nieuwe tabellen functionaliteit')),
     'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE': (True, ('Gebruik de oude gekoppelde data en templates')),
     'FEATURE_LAYER_INTERNAL_VISIBILITY': (True, ('Interne zichtbaarheid lagen')),
@@ -351,11 +349,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     '4. Features': (
         'FEATURE_PORTAL',
         'FEATURE_PRINT',
-        'FEATURE_DRAW',
         'FEATURE_SORT_LAYER',
-        'FEATURE_EDIT_LAYER_FEATURES',
         'FEATURE_DISABLE_ADMIN1',
-        'FEATURE_COMPARE_LAYERS',
         'FEATURE_NEW_TABLES',
         'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE',
         'FEATURE_LAYER_INTERNAL_VISIBILITY',
@@ -370,7 +365,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     )
 }
 
-DJANGO_VITE_DEV_MODE = DEBUG
+DJANGO_VITE_DEV_MODE = DEBUG or RUNNING_TESTS
 DJANGO_VITE_MANIFEST_PATH = os.path.join(
     BASE_DIR, 'homepage/static/dist/manifest.json')
 
@@ -378,6 +373,5 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Add the build.outDir from vite.config.mjs to STATICFILES_DIRS
 # so that collectstatic can collect your compiled vite assets.
-STATICFILES_DIRS = [
-    BASE_DIR / "homepage/static/dist"
-]
+vite_dist_dir = BASE_DIR / "homepage/static/dist"
+STATICFILES_DIRS = [vite_dist_dir] if vite_dist_dir.exists() else []
