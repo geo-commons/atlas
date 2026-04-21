@@ -41,7 +41,7 @@ import LogView from "@/admin/pages/LogView.vue";
 import AdminConfigurationPage from "@/admin/pages/AdminConfigurationPage.vue";
 import AdminPortalConfigurationPage from "@/admin/pages/AdminPortalConfigurationPage.vue";
 import AdminGeneralInformationPage from "@/admin/pages/AdminGeneralInformationPage.vue";
-import { AtlasPresetAdmin } from "@/utils/theme-preset";
+import { AtlasPreset } from "@/utils/theme-preset";
 import { ConfirmationService, ToastService } from "primevue";
 import TableOldCreateUpdate from "@/admin/pages/TableOldCreateUpdate.vue";
 import TableOldList from "@/admin/pages/TableOldList.vue";
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPresetAdmin,
+        preset: AtlasPreset("#424bff"),
         options: {
           prefix: "prime",
           darkModeSelector: "light",

@@ -394,6 +394,19 @@ function getSections() {
         },
       ],
     },
+    general_settings: {
+      label: "Algemene instellingen",
+      questions: [
+        {
+          label: "Detailweergave uitschakelen",
+          id: "disable_detail_view",
+          name: "DisableDetailView",
+          type: "checkbox",
+          required: false,
+          infoText: "Schakel doorklikken naar detailweergave voor individuele rijen uit bij deze tabel.",
+        },
+      ],
+    },
     access: {
       label: "Toegang",
       questions: [

@@ -12,7 +12,7 @@ import { useGlobalStore } from "@/stores";
 import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
 import { ConfirmationService, ToastService } from "primevue";
-import { AtlasPresetApp } from "@/utils/theme-preset";
+import { AtlasPreset } from "@/utils/theme-preset";
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: AtlasPresetApp,
+        preset: AtlasPreset(),
         options: {
           prefix: "prime",
           darkModeSelector: "light",

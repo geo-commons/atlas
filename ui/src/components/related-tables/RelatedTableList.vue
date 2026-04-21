@@ -3,38 +3,38 @@
     <template #default>
       <div>
         <div v-if="!loading && relatedTableData.length > 0">
-          <div class="table-wrapper tw-mb-2">
-            <table class="related-table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th v-for="(property, i) in tableHeaders" :key="i" class="related-header">
-                    {{ getResolvedKey(property) }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, i) in relatedTableData" :key="i">
-                  <td>
-                    <button
-                      v-tippy="{ placement: 'bottom' }"
-                      aria-label="Bekijk details"
-                      content="Bekijk"
-                      @click="onSelectRelatedData(item)"
-                    >
-                      <ArrowRightIcon class="icon __smedium" />
-                    </button>
-                  </td>
+          <DataTable
+            :value="relatedTableData"
+            size="small"
+            scrollable
+            responsive-layout="scroll"
+            class="tw-w-full !tw-text-black"
+          >
+            <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
+              <template #body="{ data }">
+                <Button
+                  v-tippy
+                  content="Bekijk details"
+                  icon="pi pi-arrow-right"
+                  text
+                  rounded
+                  size="small"
+                  aria-label="Bekijk details"
+                  @click="onSelectRelatedData(data)"
+                />
+              </template>
+            </Column>
 
-                  <td v-for="(property, index) in tableHeaders" :key="index" class="related-cell">
-                    <div class="tw-flex tw-items-center">
-                      <RichValue :data-key="property" :data-value="fetchDot(property, item)" />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            <Column v-for="col in tableHeaders" :key="col" :field="col" :header="getResolvedKey(col)">
+              <template #body="{ data }">
+                <RichValue :data-key="col" :data-value="data?.[col]" />
+              </template>
+            </Column>
+
+            <template #empty>
+              <span class="tw-text-gray-400">Geen items</span>
+            </template>
+          </DataTable>
           <div class="tw-flex tw-items-start">
             <Paginator
               v-if="showPaginator"
@@ -76,7 +76,6 @@ import { computed, onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
-import ArrowRightIcon from "@/assets/icons/arrow-right-icon.svg";
 import { getResolvedKey } from "@/utils/string-helpers";
 import { pickTemplateValues } from "@/components/related-tables/utils";
 
@@ -291,57 +290,3 @@ const onSelectRelatedData = (item: any) => {
   emit("select-related-table-object", { relatedTableId: relatedTable.id, item });
 };
 </script>
-
-<style scoped>
-.table-wrapper {
-  word-wrap: break-word;
-  overflow: auto;
-  flex: 1 1 auto;
-}
-
-.related-table {
-  font-size: var(--font-size-small);
-  overflow-x: auto;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.related-cell {
-  padding: 4px;
-  text-align: left;
-  height: 30px;
-  border-bottom: 1px solid var(--color-grey-60);
-}
-
-.related-table tbody tr td:first-child {
-  width: 24px;
-  height: 16px;
-}
-
-.related-table tbody tr:hover {
-  background-color: var(--color-grey-40);
-
-  button {
-    background-color: transparent;
-  }
-}
-
-.related-header {
-  font-weight: var(--font-weight-normal);
-  color: var(--color-text-grey);
-  padding: 8px 4px;
-  border-bottom: 1px solid var(--color-grey-60);
-  text-align: left;
-}
-
-.related-table button {
-  background-color: white;
-  width: 16px;
-  height: 16px;
-  margin-top: 6px;
-
-  &:hover {
-    background-color: transparent;
-  }
-}
-</style>
