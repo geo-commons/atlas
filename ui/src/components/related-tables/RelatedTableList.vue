@@ -1,82 +1,77 @@
 <template>
-  <ExpandButton :title="relatedTableTitle" :is-open="true" class="feature">
-    <template #default>
-      <div>
-        <div v-if="!loading && relatedTableData.length > 0">
-          <DataTable
-            :value="relatedTableData"
-            size="small"
-            scrollable
-            responsive-layout="scroll"
-            class="tw-w-full !tw-text-black"
-          >
-            <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
-              <template #body="{ data }">
-                <Button
-                  v-tippy
-                  content="Bekijk details"
-                  icon="pi pi-arrow-right"
-                  text
-                  rounded
-                  size="small"
-                  aria-label="Bekijk details"
-                  @click="onSelectRelatedData(data)"
-                />
-              </template>
-            </Column>
+  <div>
+    <div v-if="!loading && relatedTableData.length > 0">
+      <DataTable
+        :value="relatedTableData"
+        size="small"
+        scrollable
+        responsive-layout="scroll"
+        class="tw-w-full !tw-text-black"
+      >
+        <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
+          <template #body="{ data }">
+            <Button
+              v-tippy
+              content="Bekijk details"
+              icon="pi pi-arrow-right"
+              text
+              rounded
+              size="small"
+              aria-label="Bekijk details"
+              @click="onSelectRelatedData(data)"
+            />
+          </template>
+        </Column>
 
-            <Column
-              v-for="col in tableHeaders"
-              :key="col"
-              :field="col"
-              :header="formatFriendlyFieldLabel(col, relatedTable.friendly_fields)"
-            >
-              <template #body="{ data }">
-                <RichValue :data-key="col" :data-value="fetchDot(col, data)" position="left" />
-              </template>
-            </Column>
+        <Column
+          v-for="col in tableHeaders"
+          :key="col"
+          :field="col"
+          :header="formatFriendlyFieldLabel(col, relatedTable.friendly_fields)"
+        >
+          <template #body="{ data }">
+            <RichValue :data-key="col" :data-value="fetchDot(col, data)" position="left" />
+          </template>
+        </Column>
 
-            <template #empty>
-              <span class="tw-text-gray-400">Geen items</span>
-            </template>
-          </DataTable>
-          <div class="tw-flex tw-items-start">
-            <Paginator
-              v-if="showPaginator"
-              :template="{
-                default: 'PrevPageLink CurrentPageReport NextPageLink RowsPerPageDropdown',
-              }"
-              class="tw-mb-4 tw-mt-2"
-              :rows="pageState.rows"
-              :total-records="totalItems"
-              current-page-report-template="Pagina {currentPage} van {totalPages}"
-              :first="pageState.page * pageState.rows - 1 + pageState.rows"
-              :rows-per-page-options="[10, 20, 30, 50, 100]"
-              :pt="{
-                root: '!tw-p-0',
-              }"
-              @page="updatePageState"
-            ></Paginator>
-          </div>
-        </div>
-        <div v-else-if="loading" class="tw-flex tw-justify-center tw-items-center tw-mt-2 tw-mb-2">
-          <ProgressSpinner stroke-width="2" style="width: 48px; height: 48px" />
-        </div>
-        <div v-else-if="errorMessage" class="tw-mt-2 tw-mb-2 tw-mb-0">
-          <Message severity="error">{{ errorMessage }}</Message>
-        </div>
-        <div v-else class="tw-mt-2 tw-mb-0 tw-mb-2">
-          <Message severity="secondary">Geen resultaten gevonden</Message>
-        </div>
+        <template #empty>
+          <span class="tw-text-gray-400">Geen items</span>
+        </template>
+      </DataTable>
+      <div class="tw-flex tw-items-start">
+        <Paginator
+          v-if="showPaginator"
+          :template="{
+            default: 'PrevPageLink CurrentPageReport NextPageLink RowsPerPageDropdown',
+          }"
+          class="tw-mb-4 tw-mt-2"
+          :rows="pageState.rows"
+          :total-records="totalItems"
+          current-page-report-template="Pagina {currentPage} van {totalPages}"
+          :first="pageState.page * pageState.rows - 1 + pageState.rows"
+          :rows-per-page-options="[10, 20, 30, 50, 100]"
+          :pt="{
+            root: '!tw-p-0',
+          }"
+          @page="updatePageState"
+        ></Paginator>
       </div>
-    </template>
-  </ExpandButton>
+    </div>
+    <div v-else-if="loading" class="tw-flex tw-justify-center tw-items-center tw-mt-2 tw-mb-2">
+      <ProgressSpinner stroke-width="2" style="width: 48px; height: 48px" />
+    </div>
+    <div v-else-if="errorMessage" class="tw-mt-2 tw-mb-2 tw-mb-0">
+      <Message severity="error">{{ errorMessage }}</Message>
+    </div>
+    <div v-else class="tw-mt-2 tw-mb-0 tw-mb-2">
+      <Message severity="secondary">Geen resultaten gevonden</Message>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import { IPosition } from "@/types/map";
-import ExpandButton from "@/components/ExpandButton.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";

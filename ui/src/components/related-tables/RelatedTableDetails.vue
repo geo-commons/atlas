@@ -50,18 +50,24 @@
         </table-list>
       </div>
 
-      <div v-if="feature !== null && relatedTables.length > 0" class="">
-        <div v-for="(table, key) in relatedTables" :key="key" class="tw-pt-4 tw-ml-2">
-          <RelatedTableList
-            :table-feature="feature"
-            :related-table="table.to_table"
-            :field-mapping="table.field_mapping"
-            :related-table-title="table.related_table_title ? table.related_table_title : table.to_table.title"
-            :position="position"
-            @select-related-table-object="onSelectRelatedTableObject"
-          />
-        </div>
-      </div>
+      <Accordion v-if="feature !== null && relatedTables.length > 0" :value="[0]" multiple class="tw-ml-2">
+        <AccordionPanel v-for="(table, key) in relatedTables" :key="key" :value="key">
+          <AccordionHeader class="!tw-text-base">
+            {{ table.related_table_title ? table.related_table_title : table.to_table.title }}
+          </AccordionHeader>
+
+          <AccordionContent>
+            <RelatedTableList
+              :table-feature="feature"
+              :related-table="table.to_table"
+              :field-mapping="table.field_mapping"
+              :related-table-title="table.related_table_title ? table.related_table_title : table.to_table.title"
+              :position="position"
+              @select-related-table-object="onSelectRelatedTableObject"
+            />
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
     </div>
     <div v-else-if="loading" class="tw-px-2 tw-mt-4 tw-flex tw-justify-center tw-items-center">
       <ProgressSpinner stroke-width="2" style="width: 48px; height: 48px" />

@@ -108,20 +108,26 @@
         />
       </div>
 
-      <div v-if="layer.related_tables.length > 0 && showNewTables">
-        <div v-for="(relatedTable, key) in layer.related_tables" :key="key" class="tw-ml-2">
-          <RelatedTableList
-            :layer-feature="feature"
-            :position="position"
-            :related-table="relatedTable"
-            :related-table-title="
-              relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title
-            "
-            :field-mapping="relatedTable.field_mapping"
-            @select-related-table-object="onSelectRelatedTableObject"
-          />
-        </div>
-      </div>
+      <Accordion v-if="layer.related_tables.length > 0 && showNewTables" :value="[0]" multiple class="tw-ml-2">
+        <AccordionPanel v-for="(relatedTable, key) in layer.related_tables" :key="key" :value="key">
+          <AccordionHeader class="!tw-text-base">{{
+            relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title
+          }}</AccordionHeader>
+
+          <AccordionContent>
+            <RelatedTableList
+              :layer-feature="feature"
+              :position="position"
+              :related-table="relatedTable"
+              :related-table-title="
+                relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title
+              "
+              :field-mapping="relatedTable.field_mapping"
+              @select-related-table-object="onSelectRelatedTableObject"
+            />
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
     </div>
   </ExpandButton>
 </template>
