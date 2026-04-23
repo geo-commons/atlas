@@ -82,6 +82,12 @@ class Table(models.Model):
     # Portal
     show_in_portal = models.BooleanField('Toon in portal', default=False)
     
+    # General
+    disable_detail_view = models.BooleanField(
+        'Detailweergave uitschakelen', default=False,
+        help_text='Schakel de detailweergave uit voor deze tabel'
+    )
+    
     # Access
     login_required = models.BooleanField(
         'Vereis inlog voor deze tabel', default=False,
@@ -153,6 +159,7 @@ class Table(models.Model):
                 for item in related_tables
             ],
             'show_in_portal': self.show_in_portal,
+            'disable_detail_view': self.disable_detail_view,
             'login_required': self.login_required,
         }
 
@@ -197,6 +204,7 @@ class Table(models.Model):
             'list_display_properties': self.list_display_properties,
             'detail_display_properties': self.detail_display_properties,
             'template_fields': self.template_fields,
+            'disable_detail_view': self.disable_detail_view,
         }}
 
         if from_table:

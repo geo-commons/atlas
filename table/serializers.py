@@ -35,6 +35,7 @@ class SimpleTableSerializer(serializers.ModelSerializer):
             'list_display_properties',
             'detail_display_properties',
             'template_fields',
+            'disable_detail_view',
         ]
 
 
@@ -90,6 +91,7 @@ class TableSerializer(serializers.ModelSerializer):
             'template_fields',
             'layer_to_table_id',
             'show_in_portal',
+            'disable_detail_view',
             'login_required',
         ]
 

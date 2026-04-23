@@ -45,5 +45,6 @@ export interface IRelatedTable {
   detail_display_properties: string[];
   template_fields: Record<string, string>;
   show_in_portal?: boolean;
+  disable_detail_view: boolean;
   login_required?: boolean;
 }

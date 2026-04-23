@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading && tableData.length > 0">
     <DataTable :value="tableData" size="small" scrollable responsive-layout="scroll" class="tw-w-full">
-      <Column header="" style="width: 3rem">
+      <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
         <template #body="{ data }">
           <Button
             v-tippy

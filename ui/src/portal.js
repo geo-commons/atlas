@@ -19,7 +19,7 @@ import PortalTablesPage from "@/portal/pages/PortalTablesPage.vue";
 import PortalTableDetailPage from "@/portal/pages/PortalTableDetailPage.vue";
 import PortalSearchPage from "@/portal/pages/PortalSearchPage.vue";
 import PrimeVue from "primevue/config";
-import { createAtlasPresetPortal } from "@/utils/theme-preset";
+import { AtlasPreset } from "@/utils/theme-preset";
 import { ToastService } from "primevue";
 import { defineRule } from "vee-validate";
 import { required } from "@vee-validate/rules";
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = createApp(App)
     .use(PrimeVue, {
       theme: {
-        preset: createAtlasPresetPortal(organization_primary_color, organization_title_color, organization_text_color),
+        preset: AtlasPreset(organization_primary_color, organization_title_color, organization_text_color),
         options: {
           prefix: "prime",
           darkModeSelector: "light",

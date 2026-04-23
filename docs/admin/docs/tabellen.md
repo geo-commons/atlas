@@ -97,6 +97,12 @@ Net als op de kaart worden eventuele gerelateerde tabellen ook in het Portaal we
 | ------------------- | ------------------------------------------------------------------------ | ------------------------------ | --------------- |
 | **Toon in Portaal** | Met deze optie kies je ervoor om de tabel in het Atlas portaal te tonen. | Niet verplicht, standaard uit. | False           |
 
+## Algemene instellingen
+
+| Veld                            | Uitleg                                                                             | Validatie                      | Voorbeeld (KVK) |
+| ------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------ | --------------- |
+| **Detailweergave uitschakelen** | Schakel doorklikken naar detailweergave voor individuele rijen uit bij deze tabel. | Niet verplicht, standaard uit. | False           |
+
 ## Toegang
 
 | Veld                             | Uitleg                                                                                                   | Validatie                      | Voorbeeld (KVK) |
