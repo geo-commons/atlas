@@ -25,9 +25,14 @@
               </template>
             </Column>
 
-            <Column v-for="col in tableHeaders" :key="col" :field="col" :header="getResolvedKey(col)">
+            <Column
+              v-for="col in tableHeaders"
+              :key="col"
+              :field="col"
+              :header="formatFriendlyFieldLabel(col, relatedTable.friendly_fields)"
+            >
               <template #body="{ data }">
-                <RichValue :data-key="col" :data-value="data?.[col]" position="left" />
+                <RichValue :data-key="col" :data-value="fetchDot(col, data)" position="left" />
               </template>
             </Column>
 
@@ -76,7 +81,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
-import { getResolvedKey } from "@/utils/string-helpers";
+import { formatFriendlyFieldLabel } from "@/utils/string-helpers";
 import { pickTemplateValues } from "@/components/related-tables/utils";
 
 const { layerFeature, tableFeature, fieldMapping, relatedTable, position } = defineProps<{

@@ -21,7 +21,7 @@
             <tbody>
               <tr v-for="(value, index) in tableItems" :key="index">
                 <td>
-                  {{ formatRawString(getResolvedKey(value) || "") }}
+                  {{ formatFriendlyFieldLabel(value, relatedTable?.friendly_fields) }}
                 </td>
                 <td>
                   <RichValue
@@ -73,7 +73,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import nunjucks from "nunjucks";
 import TableList from "@/components/TableList.vue";
-import { formatRawString, getResolvedKey } from "@/utils/string-helpers";
+import { formatFriendlyFieldLabel, formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import fetchDot from "fetch-dot";

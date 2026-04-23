@@ -4,7 +4,7 @@
     <div class="tw-flex tw-flex-col tw-gap-2">
       <div v-for="(value, index) in tableItems" :key="index" class="tw-grid tw-grid-cols-3">
         <div class="tw-col-span-1 tw-font-bold header">
-          {{ formatRawString(getResolvedKey(value) || "") }}
+          {{ formatFriendlyFieldLabel(value, selectedRelatedTable?.friendly_fields) }}
         </div>
         <div class="tw-col-span-2">
           <RichValue :data-key="getResolvedKey(value)" :data-value="fetchDot(value, feature)" />
@@ -55,7 +55,7 @@ import { watch, ref, computed } from "vue";
 import nunjucks from "nunjucks";
 import fetchDot from "fetch-dot";
 import ListTable from "./ListTable.vue";
-import { formatRawString, getResolvedKey } from "@/utils/string-helpers";
+import { formatFriendlyFieldLabel, formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import RichValue from "@/components/RichValue.vue";
 

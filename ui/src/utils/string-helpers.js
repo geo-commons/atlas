@@ -34,6 +34,27 @@ export function formatRawString(string) {
 }
 
 /**
+ * Formats a field key into a readable label and prefers configured friendly labels.
+ *
+ * @param {string} key - The raw key or path to format.
+ * @param {Record<string, string> | null | undefined} friendlyFields - Optional map of friendly labels.
+ * @returns {string} - A friendly label for display.
+ */
+export function formatFriendlyFieldLabel(key, friendlyFields) {
+  if (friendlyFields?.[key]) {
+    return friendlyFields[key];
+  }
+
+  const resolvedKey = getResolvedKey(key);
+
+  if (resolvedKey) {
+    return formatRawString(resolvedKey);
+  }
+
+  return key;
+}
+
+/**
  * Resolves the logical property key from a dot/bracket notation path.
  *
  * Rules:
