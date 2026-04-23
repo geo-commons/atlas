@@ -23,7 +23,7 @@
     /></span>
   </div>
 
-  <Dialog v-model:visible="visible" modal :header="dialogTitle" :style="{ width: 'min(980px, 96vw)' }">
+  <Drawer v-model:visible="visible" modal :header="dialogTitle" :position="position" class="!tw-w-full md:!tw-w-1/2">
     <div class="tw-mb-4">
       <DataTable
         v-if="isComplexArray(dataValue) || valueType === 'OBJECT'"
@@ -37,7 +37,7 @@
         <Column v-for="col in objectTableColumns" :key="col" :field="col" :header="prettyHeader(col)">
           <template #body="{ data }">
             <!-- render nested values compactly -->
-            <RichValue :data-key="col" :data-value="data?.[col]" />
+            <RichValue :data-key="col" :data-value="data?.[col]" :position="position" />
           </template>
         </Column>
 
@@ -49,14 +49,14 @@
       <div v-else-if="isSimpleArray(dataValue)" class="tw-mb-4">
         <ul class="tw-list-disc tw-ml-5 tw-space-y-1">
           <li v-for="(item, i) in dataValue" :key="i" class="tw-break-words">
-            <RichValue :data-key="i" :data-value="item" />
+            <RichValue :data-key="i" :data-value="item" :position="position" />
           </li>
         </ul>
       </div>
 
       <div v-else class="tw-mb-4">Kan de waarde niet weergeven. Ongeldig formaat.</div>
     </div>
-  </Dialog>
+  </Drawer>
 </template>
 
 <script>
@@ -76,6 +76,10 @@ export default {
   props: {
     dataKey: String,
     dataValue: [String, Number, Object, Array, Boolean, null],
+    position: {
+      type: String,
+      default: "right",
+    },
   },
   data() {
     return {

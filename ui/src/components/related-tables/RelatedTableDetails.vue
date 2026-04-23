@@ -24,7 +24,11 @@
                   {{ formatRawString(getResolvedKey(value) || "") }}
                 </td>
                 <td>
-                  <RichValue :data-key="getResolvedKey(value)" :data-value="fetchDot(value, relatedTableData)" />
+                  <RichValue
+                    :data-key="getResolvedKey(value)"
+                    :data-value="fetchDot(value, relatedTableData)"
+                    position="left"
+                  />
                 </td>
               </tr>
               <tr v-for="property in Object.keys(templateFields)" :key="property">
