@@ -27,7 +27,7 @@
 
             <Column v-for="col in tableHeaders" :key="col" :field="col" :header="getResolvedKey(col)">
               <template #body="{ data }">
-                <RichValue :data-key="col" :data-value="data?.[col]" />
+                <RichValue :data-key="col" :data-value="data?.[col]" position="left" />
               </template>
             </Column>
 
