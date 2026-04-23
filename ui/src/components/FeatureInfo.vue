@@ -114,6 +114,9 @@
             :layer-feature="feature"
             :position="position"
             :related-table="relatedTable"
+            :related-table-title="
+              relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title
+            "
             :field-mapping="relatedTable.field_mapping"
             @select-related-table-object="onSelectRelatedTableObject"
           />

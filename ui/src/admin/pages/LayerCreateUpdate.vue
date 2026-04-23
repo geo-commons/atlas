@@ -301,6 +301,7 @@ export default {
             from_layer: currentValues.id,
             to_table: related_table.id,
             field_mapping: related_table.field_mapping,
+            related_table_title: related_table.related_table_title,
           };
           relatedTables.push(layerToTable);
         });

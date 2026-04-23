@@ -9,6 +9,16 @@
             <div>Naar de tabel: {{ table.title }}</div>
 
             <div>
+              <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">Aangepaste titel</label>
+              <InputText
+                :model-value="table.related_table_title"
+                class="tw-block tw-w-full tw-border tw-border-gray-300 tw-rounded tw-px-2 tw-py-1"
+                :value="table.related_table_title"
+                @update:model-value="(value) => updateTitle(table.id, value)"
+              />
+            </div>
+
+            <div>
               <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2"> Field Mapping (JSON) </label>
               <CodeMirror
                 :id="`field-mapping-${table.id}`"
@@ -121,6 +131,18 @@ function updateFieldMapping(tableId: number, value: string | Text | undefined) {
     } catch {
       // Ignore JSON parse errors.
     }
+    emit("related-tables-changed", relatedTables.value);
+  }
+}
+
+function updateTitle(tableId: number, value: string | null | undefined) {
+  if (!relatedTables.value || typeof value !== "string") return;
+
+  const relatedTable = relatedTables.value.find((table) => tableId === table.id);
+
+  if (relatedTable) {
+    relatedTable.related_table_title = value;
+
     emit("related-tables-changed", relatedTables.value);
   }
 }

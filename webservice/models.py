@@ -626,6 +626,11 @@ source: new ol.source.TileWMS({{
             for relation in self.layer_table_relations.all()
         }
         
+        layer_title_mappings = {
+            relation.to_table_id: relation.related_table_title
+            for relation in self.layer_table_relations.all()
+        }
+        
         return {
             'id': self.slug,
             'internal_id': self.id,
@@ -703,6 +708,7 @@ source: new ol.source.TileWMS({{
                     from_layer=self,
                     request=request,
                     field_mapping=layer_table_mappings.get(item.pk),
+                    related_table_title=layer_title_mappings.get(item.pk),
                     field_mapping_resolved=True,
                 )
                 for item in related_tables

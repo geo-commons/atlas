@@ -523,10 +523,14 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
                         existing_relation = LayerToTable.objects.get(id=relation_id)
 
                         field_mapping = item.get('field_mapping')
-
                         if field_mapping is not None:
                             existing_relation.field_mapping = field_mapping
-                            existing_relation.save()
+                            
+                        related_table_title = item.get('related_table_title')
+                        if related_table_title is not None:
+                            existing_relation.related_table_title = related_table_title
+                            
+                        existing_relation.save()
                     else:
                         # Create new relation
                         LayerToTable.objects.create(

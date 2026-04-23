@@ -49,6 +49,7 @@ class TableToTableSerializer(serializers.ModelSerializer):
             'id',
             'to_table',
             'field_mapping',
+            'related_table_title',
         ]
 
 
@@ -59,6 +60,7 @@ class TableSerializer(serializers.ModelSerializer):
     field_mapping = serializers.SerializerMethodField()
     layer_to_table_id = serializers.SerializerMethodField()
     related_tables = serializers.SerializerMethodField()
+    related_table_title = serializers.SerializerMethodField()
 
     class Meta:
         model = Table
@@ -86,6 +88,7 @@ class TableSerializer(serializers.ModelSerializer):
             'detail_cql_filters',
             'related_tables',
             'field_mapping',
+            'related_table_title',
             'layer_name',
             'list_display_properties',
             'detail_display_properties',
@@ -140,12 +143,18 @@ class TableSerializer(serializers.ModelSerializer):
                         field_mapping = item.get('field_mapping')
                         if field_mapping is not None:
                             existing_relation.field_mapping = field_mapping
-                            existing_relation.save()
+                            
+                        related_table_title = item.get('related_table_title')
+                        if related_table_title is not None:
+                            existing_relation.related_table_title = related_table_title
+                            
+                        existing_relation.save()
                     else:
                         TableToTable.objects.create(
                             from_table=instance,
                             to_table_id=item.get('to_table'),
-                            field_mapping=item.get('field_mapping')
+                            field_mapping=item.get('field_mapping'),
+                            related_table_title=item.get('related_table_title', '')
                         )
             except Exception as e:
                 raise serializers.ValidationError({
@@ -168,6 +177,11 @@ class TableSerializer(serializers.ModelSerializer):
         """Include field_mapping from LayerToTable if called from a Layer context"""
         layer_to_table = self._get_layer_to_table(obj)
         return layer_to_table.field_mapping if layer_to_table else None
+    
+    def get_related_table_title(self, obj):
+        """Include title from LayerToTable if called from a Layer context"""
+        layer_to_table = self._get_layer_to_table(obj)
+        return layer_to_table.related_table_title if layer_to_table else None
 
     def get_layer_to_table_id(self, obj):
         """Include LayerToTable ID for editing relations"""

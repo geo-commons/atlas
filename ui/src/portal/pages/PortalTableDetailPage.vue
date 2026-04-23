@@ -79,6 +79,7 @@
     v-model:visible="visible"
     :selected-related-table-attributes="selectedRelatedTableAttributes"
     :selected-related-table-id="selectedRelatedTableId"
+    :selected-related-table-title="selectedRelatedTableTitle"
     @select-related-table-object="onSelectRelatedTableObject"
     @back="back"
     @close-related-table-details="closeRelatedTableDetails"
@@ -105,12 +106,14 @@ const fieldMapping = ref<Record<string, string>>({});
 
 const selectedRelatedTableAttributes = ref<Record<string, string> | null>(null);
 const selectedRelatedTableId = ref<number | null>(null);
-const history = ref<{ relatedTableId: number; item: any }[]>([]);
+const selectedRelatedTableTitle = ref<string | null>(null);
+const history = ref<{ relatedTableId: number; item: any; relatedTableTitle: string }[]>([]);
 const visible = ref<boolean>(false);
 
-const onSelectRelatedTableObject = (data: { relatedTableId: number; item: any }) => {
+const onSelectRelatedTableObject = (data: { relatedTableId: number; item: any; relatedTableTitle: string }) => {
   selectedRelatedTableAttributes.value = data.item;
   selectedRelatedTableId.value = data.relatedTableId;
+  selectedRelatedTableTitle.value = data.relatedTableTitle;
   visible.value = true;
   history.value.push(data);
 };
@@ -123,6 +126,7 @@ const back = () => {
       const lastHistoryItem = history.value[history.value.length - 1];
       selectedRelatedTableAttributes.value = lastHistoryItem.item;
       selectedRelatedTableId.value = lastHistoryItem.relatedTableId;
+      selectedRelatedTableTitle.value = lastHistoryItem.relatedTableTitle;
       return;
     }
   }
@@ -136,6 +140,7 @@ const back = () => {
 const closeRelatedTableDetails = () => {
   selectedRelatedTableAttributes.value = null;
   selectedRelatedTableId.value = null;
+  selectedRelatedTableTitle.value = null;
   history.value = [];
   visible.value = false;
 };

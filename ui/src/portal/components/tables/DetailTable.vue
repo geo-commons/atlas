@@ -1,5 +1,5 @@
 <template>
-  <h3 class="tw-mt-0 tw-mb-2">{{ selectedRelatedTable?.title }}</h3>
+  <h3 class="tw-mt-0 tw-mb-2">{{ selectedRelatedTableTitle }}</h3>
   <div v-if="feature">
     <div class="tw-flex tw-flex-col tw-gap-2">
       <div v-for="(value, index) in tableItems" :key="index" class="tw-grid tw-grid-cols-3">
@@ -23,7 +23,7 @@
     <Accordion :value="[0]" multiple>
       <AccordionPanel v-for="(table, key) in selectedRelatedTable?.related_tables ?? []" :key="key" :value="key">
         <AccordionHeader class="!tw-text-base">
-          {{ table.to_table.title }}
+          {{ table.related_table_title ? table.related_table_title : table.to_table.title }}
         </AccordionHeader>
 
         <AccordionContent>
@@ -31,7 +31,13 @@
             <ListTable
               :related-table="table.to_table"
               :field-mapping="getFieldMapping(table.field_mapping, feature)"
-              @select-related-table-object="onSelectRelatedData($event.item, $event.relatedTableId)"
+              @select-related-table-object="
+                onSelectRelatedData(
+                  $event.item,
+                  $event.relatedTableId,
+                  table.related_table_title ? table.related_table_title : table.to_table.title,
+                )
+              "
             />
           </div>
         </AccordionContent>
@@ -62,10 +68,11 @@ import RichValue from "@/components/RichValue.vue";
 const { selectedRelatedTableAttributes, selectedRelatedTable } = defineProps<{
   selectedRelatedTableAttributes: Record<string, string> | null;
   selectedRelatedTable: IRelatedTable | null;
+  selectedRelatedTableTitle: string | null;
 }>();
 
 const emit = defineEmits<{
-  (e: "select-related-table-object", type: { relatedTableId: number; item: any }): void;
+  (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
 }>();
 
 const loading = ref<boolean>(false);
@@ -102,12 +109,12 @@ const getFieldMapping = (fieldMapping: Record<string, string>, item: any): Recor
   return mapping;
 };
 
-const onSelectRelatedData = (item: any, relatedTableId: number) => {
+const onSelectRelatedData = (item: any, relatedTableId: number, relatedTableTitle: string) => {
   // Emit event or handle related data selection
   feature.value = null;
   loading.value = true;
   errorMessage.value = null;
-  emit("select-related-table-object", { relatedTableId: relatedTableId, item });
+  emit("select-related-table-object", { relatedTableId: relatedTableId, item, relatedTableTitle });
 };
 
 const getRestData = async (table: IRelatedTable, item: any) => {
