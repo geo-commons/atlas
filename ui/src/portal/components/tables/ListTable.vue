@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading && tableData.length > 0">
-    <DataTable :value="tableData" size="small" scrollable responsive-layout="scroll" class="tw-w-full">
+    <DataTable :value="tableData" size="small" scrollable responsive-layout="scroll" class="tw-w-full" removable-sort>
       <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
         <template #body="{ data }">
           <Button
@@ -21,6 +21,7 @@
         :key="col"
         :field="col"
         :header="formatFriendlyFieldLabel(col, relatedTable.friendly_fields)"
+        sortable
       >
         <template #body="{ data }">
           <RichValue :data-key="col" :data-value="fetchDot(col, data)" />
