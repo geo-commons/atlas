@@ -132,6 +132,14 @@ const getRestData = async (table: IRelatedTable) => {
     });
 
     if (!response.ok) {
+      if (response.status === 404) {
+        tableData.value = [];
+        totalItems.value = 0;
+        errorMessage.value = null;
+        loading.value = false;
+        return;
+      }
+
       let error = `Er is een onbekende fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${response.status}`;
 
       try {
