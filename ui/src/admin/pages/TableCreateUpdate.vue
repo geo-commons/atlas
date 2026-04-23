@@ -61,6 +61,7 @@ async function getTable() {
   initialValues.value.list_cql_filters = JSON.stringify(data.list_cql_filters, null, 2);
   initialValues.value.detail_cql_filters = JSON.stringify(data.detail_cql_filters, null, 2);
   initialValues.value.template_fields = JSON.stringify(data.template_fields, null, 2);
+  initialValues.value.list_template_fields = JSON.stringify(data.list_template_fields, null, 2);
   initialValues.value.request_body = JSON.stringify(data.request_body, null, 2);
   initialValues.value.friendly_fields = JSON.stringify(data.friendly_fields, null, 2);
 
@@ -129,6 +130,7 @@ async function saveTable(currentValues, continueEditing = false) {
     currentValues.list_cql_filters = validateAndParseJsonString(currentValues.list_cql_filters);
     currentValues.detail_cql_filters = validateAndParseJsonString(currentValues.detail_cql_filters);
     currentValues.template_fields = validateAndParseJsonString(currentValues.template_fields);
+    currentValues.list_template_fields = validateAndParseJsonString(currentValues.list_template_fields);
     currentValues.request_body = validateAndParseJsonString(currentValues.request_body);
     currentValues.friendly_fields = validateAndParseJsonString(currentValues.friendly_fields);
 
@@ -355,6 +357,13 @@ function getSections() {
           label: "Templatevelden",
           id: "template_fields",
           name: "TemplateFields",
+          type: "json",
+          required: false,
+        },
+        {
+          label: "Templatevelden voor lijstweergave",
+          id: "list_template_fields",
+          name: "ListTemplateFields",
           type: "json",
           required: false,
         },
