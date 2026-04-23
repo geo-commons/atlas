@@ -133,7 +133,7 @@ Een kracht van tabellen is dat je ze aan elkaar kan verbinden, waardoor je in de
 
 ### Het configureren van een relatie
 
-Voeg een nieuwe relatie toe door op "Nieuwe relatie" te drukken. Kies een tabel die je wil koppelen aan de huidige tabel en klik op "Toevoegen". Nu zie je dat er een relatie voor de tabel is toegevoegd. Via het veld "Field Mapping" configureer je welke velden uit de huidige tabel kunnen worden gebruikt om data op te vragen in de gerelateerde tabel.
+Voeg een nieuwe relatie toe door op "Nieuwe relatie" te drukken. Kies een tabel die je wil koppelen aan de huidige tabel en klik op "Toevoegen". Nu zie je dat er een relatie voor de tabel is toegevoegd. Via het veld "Field Mapping" configureer je welke velden uit de huidige tabel kunnen worden gebruikt om data op te vragen in de gerelateerde tabel. Via het veld "Aangepaste titel" kan je de tabel een andere titel geven dan de standaard tabel titel.
 
 **Een voorbeeld:**
 <img src="../images/gerelateerde-tabel.png" alt="Voorbeeld van geconfigureerde tabel" width="800"/>

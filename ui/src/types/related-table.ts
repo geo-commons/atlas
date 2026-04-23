@@ -48,4 +48,5 @@ export interface IRelatedTable {
   show_in_portal?: boolean;
   disable_detail_view: boolean;
   login_required?: boolean;
+  related_table_title?: string;
 }

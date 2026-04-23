@@ -116,7 +116,7 @@ class Table(models.Model):
     def __str__(self):
         return f"{self.title}"
 
-    def to_dict(self, from_layer=None, request=None, field_mapping=None, field_mapping_resolved=False):
+    def to_dict(self, from_layer=None, request=None, field_mapping=None, related_table_title=None, field_mapping_resolved=False):
         related_tables = list(self.tables.all())
         if request is not None:
             authorized_table_ids = Table.authorized.ids_for_request(request)
@@ -124,6 +124,11 @@ class Table(models.Model):
 
         table_mappings = {
             relation.to_table_id: relation.field_mapping
+            for relation in self.outgoing_table_relations.all()
+        }
+        
+        table_title_mappings = {
+            relation.to_table_id: relation.related_table_title
             for relation in self.outgoing_table_relations.all()
         }
         
@@ -157,6 +162,7 @@ class Table(models.Model):
                 item.simple_to_dict(
                     from_table=self,
                     field_mapping=table_mappings.get(item.pk),
+                    related_table_title=table_title_mappings.get(item.pk),
                     field_mapping_resolved=True,
                 )
                 for item in related_tables
@@ -169,16 +175,19 @@ class Table(models.Model):
         if from_layer:
             if field_mapping_resolved:
                 data['field_mapping'] = field_mapping
+                data['related_table_title'] = related_table_title
             else:
                 try:
                     layer_to_table = LayerToTable.objects.get(from_layer=from_layer, to_table=self)
                     data['field_mapping'] = layer_to_table.field_mapping
+                    data['related_table_title'] = layer_to_table.related_table_title
                 except LayerToTable.DoesNotExist:
                     data['field_mapping'] = None
-
+                    data['related_table_title'] = None
+                    
         return data
 
-    def simple_to_dict(self, from_table=None, field_mapping=None, field_mapping_resolved=False):
+    def simple_to_dict(self, from_table=None, field_mapping=None, related_table_title=None, field_mapping_resolved=False):
         """
         A simpler version without related tables to prevent loops.
         """
@@ -214,13 +223,16 @@ class Table(models.Model):
         if from_table:
             if field_mapping_resolved:
                 data['field_mapping'] = field_mapping
+                data['related_table_title'] = related_table_title
             else:
                 try:
                     table_to_table = TableToTable.objects.get(from_table=from_table, to_table=self)
                     data['field_mapping'] = table_to_table.field_mapping
+                    data['related_table_title'] = table_to_table.related_table_title
                 except TableToTable.DoesNotExist:
                     data['field_mapping'] = None
-
+                    data['related_table_title'] = None
+                    
         return data
 
 
@@ -228,6 +240,7 @@ class TableToTable(models.Model):
     from_table = models.ForeignKey('Table', related_name='outgoing_table_relations', on_delete=models.CASCADE)
     to_table = models.ForeignKey('Table', related_name='incoming_table_relations', on_delete=models.CASCADE)
     field_mapping = models.JSONField('Mapping van kolomnamen')
+    related_table_title = models.CharField('Titel van gerelateerde tabel', max_length=255, blank=True, null=True)
 
     class Meta:
         unique_together = ('from_table', 'to_table')
@@ -237,6 +250,8 @@ class LayerToTable(models.Model):
     from_layer = models.ForeignKey('webservice.Layer', related_name='layer_table_relations', on_delete=models.CASCADE)
     to_table = models.ForeignKey('Table', related_name='layer_table_relations', on_delete=models.CASCADE)
     field_mapping = models.JSONField('Mapping van kolomnamen')
+    related_table_title = models.CharField('Titel van gerelateerde tabel', max_length=255, blank=True, null=True)
+    
     '''
         from = adres
         to = ligplaats

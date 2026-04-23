@@ -71,6 +71,7 @@ async function getTable() {
         ...table.to_table,
         table_to_table_id: table_to_table_id,
         field_mapping: table.field_mapping,
+        related_table_title: table.related_table_title,
       };
     });
   }
@@ -141,6 +142,7 @@ async function saveTable(currentValues, continueEditing = false) {
           from_table: currentValues.id,
           to_table: related_table.id,
           field_mapping: related_table.field_mapping,
+          related_table_title: related_table.related_table_title,
         };
         relatedTables.push(tableToTable);
       });

@@ -75,7 +75,7 @@ const { relatedTable, fieldMapping } = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "select-related-table-object", type: { relatedTableId: number; item: any }): void;
+  (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
 }>();
 
 const tableData = ref<Record<string, string>[]>([]);
@@ -111,7 +111,7 @@ const showPaginator = computed(() => {
 
 const onSelectRelatedData = (item: any) => {
   // Emit event or handle related data selection
-  emit("select-related-table-object", { relatedTableId: relatedTable.id, item });
+  emit("select-related-table-object", { relatedTableId: relatedTable.id, item, relatedTableTitle: relatedTable.title });
 };
 
 const getRestData = async (table: IRelatedTable) => {

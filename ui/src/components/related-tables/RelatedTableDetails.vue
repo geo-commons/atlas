@@ -15,7 +15,13 @@
 
     <div v-if="!loading && !errorMessage">
       <div class="tw-px-2">
-        <p class="tw-font-bold tw-mb-2">{{ relatedTable?.title }}</p>
+        <p class="tw-font-bold tw-mb-2">
+          {{
+            selectedRelatedTableAttributes.relatedTableTitle
+              ? selectedRelatedTableAttributes.relatedTableTitle
+              : relatedTable?.title
+          }}
+        </p>
         <table-list>
           <table>
             <tbody>
@@ -50,6 +56,7 @@
             :table-feature="feature"
             :related-table="table.to_table"
             :field-mapping="table.field_mapping"
+            :related-table-title="table.related_table_title ? table.related_table_title : table.to_table.title"
             :position="position"
             @select-related-table-object="onSelectRelatedTableObject"
           />
@@ -81,14 +88,14 @@ import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import { IPosition } from "@/types/map";
 
 const { selectedRelatedTableAttributes, position } = defineProps<{
-  selectedRelatedTableAttributes: { relatedTableId: number; item: any };
+  selectedRelatedTableAttributes: { relatedTableId: number; item: any; relatedTableTitle: string };
   position: IPosition;
 }>();
 
 const emit = defineEmits<{
   (e: "back"): void;
   (e: "close-related-table-details"): void;
-  (e: "select-related-table-object", type: { relatedTable: IRelatedTable; item: any }): void;
+  (e: "select-related-table-object", type: { relatedTable: IRelatedTable; item: any; relatedTableTitle: string }): void;
 }>();
 
 const relatedTableData = ref<Record<string, string>>({});

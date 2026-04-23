@@ -27,6 +27,7 @@
         v-if="selectedRelatedTable"
         :selected-related-table-attributes="selectedRelatedTableAttributes"
         :selected-related-table="selectedRelatedTable"
+        :selected-related-table-title="selectedRelatedTableTitle"
         @select-related-table-object="emit('select-related-table-object', $event)"
       />
       <div v-else-if="loading" class="tw-px-2 tw-mt-4 tw-flex tw-justify-center tw-items-center">
@@ -50,12 +51,13 @@ import { watch, ref, onMounted } from "vue";
 const { selectedRelatedTableAttributes, selectedRelatedTableId, visible } = defineProps<{
   selectedRelatedTableAttributes: Record<string, string> | null;
   selectedRelatedTableId: number | null;
+  selectedRelatedTableTitle: string | null;
   visible: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "update:visible", value: boolean): void;
-  (e: "select-related-table-object", type: { relatedTableId: number; item: any }): void;
+  (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
   (e: "back"): void;
   (e: "close-related-table-details"): void;
 }>();

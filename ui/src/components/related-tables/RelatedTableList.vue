@@ -1,5 +1,5 @@
 <template>
-  <ExpandButton :title="relatedTable.title" :is-open="true" class="feature">
+  <ExpandButton :title="relatedTableTitle" :is-open="true" class="feature">
     <template #default>
       <div>
         <div v-if="!loading && relatedTableData.length > 0">
@@ -84,16 +84,17 @@ import fetchDot from "fetch-dot";
 import { formatFriendlyFieldLabel } from "@/utils/string-helpers";
 import { pickTemplateValues } from "@/components/related-tables/utils";
 
-const { layerFeature, tableFeature, fieldMapping, relatedTable, position } = defineProps<{
+const { layerFeature, tableFeature, fieldMapping, relatedTable, relatedTableTitle, position } = defineProps<{
   layerFeature?: Record<string, string>;
   tableFeature?: Record<string, string>;
   fieldMapping: Record<string, string>;
   relatedTable: IRelatedTable;
+  relatedTableTitle: string;
   position: IPosition;
 }>();
 
 const emit = defineEmits<{
-  (e: "select-related-table-object", type: { relatedTableId: number; item: any }): void;
+  (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
 }>();
 
 const fieldMappingValues = ref<Record<string, string>>({});
@@ -292,6 +293,6 @@ watch(
 
 const onSelectRelatedData = (item: any) => {
   // Emit event or handle related data selection
-  emit("select-related-table-object", { relatedTableId: relatedTable.id, item });
+  emit("select-related-table-object", { relatedTableId: relatedTable.id, item, relatedTableTitle: relatedTableTitle });
 };
 </script>
