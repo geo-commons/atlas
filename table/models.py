@@ -78,6 +78,8 @@ class Table(models.Model):
                                                help_text='Lijst van kolomnamen die getoond worden in de lijstweergave')
     detail_display_properties = models.JSONField('Kolommen voor detailweergave', default=list,
                                                  help_text='Lijst van kolomnamen die getoond worden in de detailweergave')
+    friendly_fields = models.JSONField(
+        'Vriendelijke veldnamen', default=dict, help_text='Maak veldnamen vriendelijk', blank=True, null=True)
     
     # Portal
     show_in_portal = models.BooleanField('Toon in portal', default=False)
@@ -149,6 +151,7 @@ class Table(models.Model):
             'detail_cql_filters': self.detail_cql_filters,
             'list_display_properties': self.list_display_properties,
             'detail_display_properties': self.detail_display_properties,
+            'friendly_fields': self.friendly_fields,
             'template_fields': self.template_fields,
             'related_tables': [
                 item.simple_to_dict(
@@ -203,6 +206,7 @@ class Table(models.Model):
             'detail_cql_filters': self.detail_cql_filters,
             'list_display_properties': self.list_display_properties,
             'detail_display_properties': self.detail_display_properties,
+            'friendly_fields': self.friendly_fields,
             'template_fields': self.template_fields,
             'disable_detail_view': self.disable_detail_view,
         }}

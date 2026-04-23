@@ -99,9 +99,27 @@ Net als op de kaart worden eventuele gerelateerde tabellen ook in het Portaal we
 
 ## Algemene instellingen
 
-| Veld                            | Uitleg                                                                             | Validatie                      | Voorbeeld (KVK) |
-| ------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------ | --------------- |
-| **Detailweergave uitschakelen** | Schakel doorklikken naar detailweergave voor individuele rijen uit bij deze tabel. | Niet verplicht, standaard uit. | False           |
+### Vriendelijke veldnamen
+
+Voor tabellen kun je `Vriendelijke veldnamen` configureren. Hiermee overschrijf je de technische veldnamen die standaard in de lijstweergave en detailweergave worden getoond, zowel in de kaartviewer als in het Portaal.
+
+Dit is vooral handig wanneer:
+
+- veldnamen uit een externe bron lastig leesbaar zijn;
+- je puntnotatie gebruikt zoals `adres.binnenlandsAdres.straatnaam`;
+- je kolomtitels en labels gebruiksvriendelijker wilt maken voor eindgebruikers.
+
+Je configureert dit veld als een JSON-object, waarbij:
+
+- de sleutel de oorspronkelijke veldnaam is;
+- de waarde het label is dat in de interface moet worden getoond.
+
+Als voor een veld geen vriendelijke naam is geconfigureerd, dan probeert Atlas automatisch een leesbare titel te maken op basis van de veldnaam.
+
+| Veld                            | Uitleg                                                                                                  | Validatie                         | Voorbeeld (KVK)                                                                                                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Vriendelijke veldnamen**      | JSON-object waarmee je technische veldnamen vervangt door leesbare labels in lijst- en detailweergaves. | Optioneel, moet geldige JSON zijn | `{ "kvkNummer": "KvK-nummer", "naam": "Naam", "adres.binnenlandsAdres.straatnaam": "Straatnaam", "adres.binnenlandsAdres.huisnummer": "Huisnummer", "adres.binnenlandsAdres.huisletter": "Huisletter"}` |
+| **Detailweergave uitschakelen** | Schakel doorklikken naar detailweergave voor individuele rijen uit bij deze tabel.                      | Niet verplicht, standaard uit.    | False                                                                                                                                                                                                   |
 
 ## Toegang
 

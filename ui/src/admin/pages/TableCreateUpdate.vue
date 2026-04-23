@@ -62,6 +62,7 @@ async function getTable() {
   initialValues.value.detail_cql_filters = JSON.stringify(data.detail_cql_filters, null, 2);
   initialValues.value.template_fields = JSON.stringify(data.template_fields, null, 2);
   initialValues.value.request_body = JSON.stringify(data.request_body, null, 2);
+  initialValues.value.friendly_fields = JSON.stringify(data.friendly_fields, null, 2);
 
   if (initialValues.value.related_tables && initialValues.value.related_tables.length > 0) {
     initialValues.value.related_tables = initialValues.value.related_tables.map((table) => {
@@ -128,6 +129,7 @@ async function saveTable(currentValues, continueEditing = false) {
     currentValues.detail_cql_filters = validateAndParseJsonString(currentValues.detail_cql_filters);
     currentValues.template_fields = validateAndParseJsonString(currentValues.template_fields);
     currentValues.request_body = validateAndParseJsonString(currentValues.request_body);
+    currentValues.friendly_fields = validateAndParseJsonString(currentValues.friendly_fields);
 
     if (currentValues.related_tables && currentValues.related_tables.length > 0) {
       const relatedTables = [];
@@ -397,6 +399,16 @@ function getSections() {
     general_settings: {
       label: "Algemene instellingen",
       questions: [
+        {
+          label: "Vriendelijke veldnamen",
+          id: "friendly_fields",
+          name: "FriendlyFields",
+          type: "json",
+          required: false,
+          isNested: true,
+          infoText:
+            "JSON-object waarmee je technische veldnamen vervangt door leesbare labels in lijst- en detailweergaves.",
+        },
         {
           label: "Detailweergave uitschakelen",
           id: "disable_detail_view",

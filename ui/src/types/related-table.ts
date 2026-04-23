@@ -43,6 +43,7 @@ export interface IRelatedTable {
   to_table: IRelatedTable;
   list_display_properties: string[];
   detail_display_properties: string[];
+  friendly_fields: Record<string, string> | null;
   template_fields: Record<string, string>;
   show_in_portal?: boolean;
   disable_detail_view: boolean;

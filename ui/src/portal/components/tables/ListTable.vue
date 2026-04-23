@@ -16,9 +16,14 @@
         </template>
       </Column>
 
-      <Column v-for="col in tableHeaders" :key="col" :field="col" :header="prettyHeader(col)">
+      <Column
+        v-for="col in tableHeaders"
+        :key="col"
+        :field="col"
+        :header="formatFriendlyFieldLabel(col, relatedTable.friendly_fields)"
+      >
         <template #body="{ data }">
-          <RichValue :data-key="col" :data-value="data?.[col]" />
+          <RichValue :data-key="col" :data-value="fetchDot(col, data)" />
         </template>
       </Column>
 
@@ -62,7 +67,7 @@ import nunjucks from "nunjucks";
 import fetchDot from "fetch-dot";
 import { ref, watch, computed } from "vue";
 import { pickTemplateValues } from "@/components/related-tables/utils";
-import { formatRawString, getResolvedKey } from "@/utils/string-helpers";
+import { formatFriendlyFieldLabel } from "@/utils/string-helpers";
 
 const { relatedTable, fieldMapping } = defineProps<{
   relatedTable: IRelatedTable;
@@ -91,16 +96,6 @@ const tableHeaders = computed(() => {
   const firstItem = tableData.value[0];
   return firstItem ? Object.keys(firstItem) : [];
 });
-
-const prettyHeader = (key: string): string => {
-  const header = getResolvedKey(key);
-
-  if (header) {
-    return formatRawString(header);
-  }
-
-  return key;
-};
 
 const showPaginator = computed(() => {
   // Don't show paginator if pagination is not enabled for REST source type
