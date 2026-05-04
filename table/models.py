@@ -66,6 +66,7 @@ class Table(models.Model):
     list_error_property = models.CharField('Veldnaam van foutmelding in lijstweergave', max_length=255, blank=True, null=True)
     detail_error_property = models.CharField('Veldnaam van foutmelding detailweergave', max_length=255, blank=True, null=True)
     template_fields = models.JSONField('Templatevelden', default=dict)
+    list_template_fields = models.JSONField('Templatevelden voor lijstweergave', default=dict)
 
     # ows tables
     layer_name = models.CharField(
@@ -158,6 +159,7 @@ class Table(models.Model):
             'detail_display_properties': self.detail_display_properties,
             'friendly_fields': self.friendly_fields,
             'template_fields': self.template_fields,
+            'list_template_fields': self.list_template_fields,
             'related_tables': [
                 item.simple_to_dict(
                     from_table=self,
@@ -217,6 +219,7 @@ class Table(models.Model):
             'detail_display_properties': self.detail_display_properties,
             'friendly_fields': self.friendly_fields,
             'template_fields': self.template_fields,
+            'list_template_fields': self.list_template_fields,
             'disable_detail_view': self.disable_detail_view,
         }}
 

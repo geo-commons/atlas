@@ -27,6 +27,17 @@
         </template>
       </Column>
 
+      <Column
+        v-for="property in Object.keys(templateFields)"
+        :key="property"
+        :field="property"
+        :header="formatRawString(property)"
+      >
+        <template #body="{ data }">
+          <MarkdownTemplate :source="templateFields[property]" :data="data" />
+        </template>
+      </Column>
+
       <template #empty>
         <span class="tw-text-gray-400">Geen items</span>
       </template>
@@ -67,7 +78,8 @@ import nunjucks from "nunjucks";
 import fetchDot from "fetch-dot";
 import { ref, watch, computed } from "vue";
 import { pickTemplateValues } from "@/components/related-tables/utils";
-import { formatFriendlyFieldLabel } from "@/utils/string-helpers";
+import { formatFriendlyFieldLabel, formatRawString } from "@/utils/string-helpers";
+import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 
 const { relatedTable, fieldMapping } = defineProps<{
   relatedTable: IRelatedTable;
@@ -107,6 +119,16 @@ const showPaginator = computed(() => {
   }
 
   return totalItems.value !== null;
+});
+
+const templateFields = computed<Record<string, string>>(() => {
+  if (relatedTable?.list_template_fields) {
+    return {
+      ...relatedTable.list_template_fields,
+    };
+  }
+
+  return {};
 });
 
 const onSelectRelatedData = (item: any) => {

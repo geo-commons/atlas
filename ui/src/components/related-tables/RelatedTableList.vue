@@ -34,6 +34,17 @@
           </template>
         </Column>
 
+        <Column
+          v-for="property in Object.keys(templateFields)"
+          :key="property"
+          :field="property"
+          :header="formatRawString(property)"
+        >
+          <template #body="{ data }">
+            <MarkdownTemplate :source="templateFields[property]" :data="data" />
+          </template>
+        </Column>
+
         <template #empty>
           <span class="tw-text-gray-400">Geen items</span>
         </template>
@@ -76,7 +87,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import nunjucks from "nunjucks";
 import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
-import { formatFriendlyFieldLabel } from "@/utils/string-helpers";
+import { formatFriendlyFieldLabel, formatRawString } from "@/utils/string-helpers";
 import { pickTemplateValues } from "@/components/related-tables/utils";
 
 const { layerFeature, tableFeature, fieldMapping, relatedTable, relatedTableTitle, position } = defineProps<{
@@ -123,6 +134,16 @@ const tableHeaders = computed(() => {
 
   const firstItem = relatedTableData.value[0];
   return firstItem ? Object.keys(firstItem) : [];
+});
+
+const templateFields = computed<Record<string, string>>(() => {
+  if (relatedTable?.list_template_fields) {
+    return {
+      ...relatedTable.list_template_fields,
+    };
+  }
+
+  return {};
 });
 
 const getRestData = async (table: IRelatedTable) => {

@@ -36,6 +36,7 @@ class SimpleTableSerializer(serializers.ModelSerializer):
             'detail_display_properties',
             'friendly_fields',
             'template_fields',
+            'list_template_fields',
             'disable_detail_view',
         ]
 
@@ -94,6 +95,7 @@ class TableSerializer(serializers.ModelSerializer):
             'detail_display_properties',
             'friendly_fields',
             'template_fields',
+            'list_template_fields',
             'layer_to_table_id',
             'show_in_portal',
             'disable_detail_view',
