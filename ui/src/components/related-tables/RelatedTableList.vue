@@ -7,6 +7,7 @@
         scrollable
         responsive-layout="scroll"
         class="tw-w-full !tw-text-black"
+        removable-sort
       >
         <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
           <template #body="{ data }">
@@ -28,6 +29,7 @@
           :key="col"
           :field="col"
           :header="formatFriendlyFieldLabel(col, relatedTable.friendly_fields)"
+          sortable
         >
           <template #body="{ data }">
             <RichValue :data-key="col" :data-value="fetchDot(col, data)" position="left" />
