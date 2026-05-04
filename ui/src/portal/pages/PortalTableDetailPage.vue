@@ -38,7 +38,7 @@
               <label
                 :class="['tw-block tw-text-sm tw-font-medium tw-mb-2', errors[searchField] ? 'tw-text-red-600' : '']"
               >
-                {{ searchField }}
+                {{ friendlySearchFields[searchField] ? friendlySearchFields[searchField] : searchField }}
                 <span v-if="errors[searchField]" class="tw-text-red-600"> - {{ errors[searchField] }}</span>
               </label>
 
@@ -220,6 +220,16 @@ const searchFields = computed<string[]>(() => {
   for (const p of extractTemplateParams(table.value?.list_cql_filters)) params.add(p);
 
   return [...params];
+});
+
+const friendlySearchFields = computed<Record<string, string>>(() => {
+  if (table.value?.friendly_search_fields) {
+    return {
+      ...table.value.friendly_search_fields,
+    };
+  }
+
+  return {};
 });
 
 const isSearchEnabled = computed(() => {

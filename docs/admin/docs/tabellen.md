@@ -90,13 +90,14 @@ Het configureren van tabellen verloopt via de Atlas admin. In dit artikel wordt 
 
 Het is mogelijk om een tabel via het Atlas Portaal te raadplegen. Hiervoor hoeft op de tabel zelf alleen de optie “Toon in Portaal” te worden ingeschakeld.
 
-De zoekingangen van een tabel op Portaal, waarmee data kan worden opgehaald, worden automatisch bepaald door slimme logica in Atlas. Deze logica analyseert de parameters die worden gebruikt tussen de blokhaken ({{ ... }}) op het Lijst endpoint veld, binnen het Lijst CQL filters object, of in het Request body (voor POST) veld. Op basis daarvan worden de beschikbare zoekingangen gegenereerd.
+De zoekingangen van een tabel op Portaal, waarmee data kan worden opgehaald, worden automatisch bepaald door slimme logica in Atlas. Deze logica analyseert de parameters die worden gebruikt tussen de blokhaken ({{ ... }}) op het Lijst endpoint veld, binnen het Lijst CQL filters object, of in het Request body (voor POST) veld. Op basis daarvan worden de beschikbare zoekingangen gegenereerd. De labels van deze zoekingangen kan je via het veld **Vriendelijke zoekingangen** overschrijven.
 
 Net als op de kaart worden eventuele gerelateerde tabellen ook in het Portaal weergegeven.
 
-| Veld                | Uitleg                                                                   | Validatie                      | Voorbeeld (KVK) |
-| ------------------- | ------------------------------------------------------------------------ | ------------------------------ | --------------- |
-| **Toon in Portaal** | Met deze optie kies je ervoor om de tabel in het Atlas portaal te tonen. | Niet verplicht, standaard uit. | False           |
+| Veld                          | Uitleg                                                                   | Validatie                      | Voorbeeld (KVK)                            |
+| ----------------------------- | ------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------ |
+| **Vriendelijke zoekingangen** | JSON-object waarmee je zoekingang labels vervangt met leesbare labels.   | Niet verplicht, standaard `{}` | `{ "postcode": "Postcode zonder spatie" }` |
+| **Toon in Portaal**           | Met deze optie kies je ervoor om de tabel in het Atlas portaal te tonen. | Niet verplicht, standaard uit. | False                                      |
 
 ## Algemene instellingen
 
