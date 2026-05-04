@@ -98,6 +98,7 @@ class TableSerializer(serializers.ModelSerializer):
             'list_template_fields',
             'layer_to_table_id',
             'show_in_portal',
+            'friendly_search_fields',
             'disable_detail_view',
             'login_required',
         ]

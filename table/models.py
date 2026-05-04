@@ -84,6 +84,8 @@ class Table(models.Model):
     
     # Portal
     show_in_portal = models.BooleanField('Toon in portal', default=False)
+    friendly_search_fields = models.JSONField(
+        'Vriendelijke zoekingangen', default=dict, help_text='Vriendelijke zoekingangen', blank=True, null=True)
     
     # General
     disable_detail_view = models.BooleanField(
@@ -170,6 +172,7 @@ class Table(models.Model):
                 for item in related_tables
             ],
             'show_in_portal': self.show_in_portal,
+            'friendly_search_fields': self.friendly_search_fields,
             'disable_detail_view': self.disable_detail_view,
             'login_required': self.login_required,
         }

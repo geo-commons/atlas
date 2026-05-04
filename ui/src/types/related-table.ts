@@ -47,6 +47,7 @@ export interface IRelatedTable {
   template_fields: Record<string, string>;
   list_template_fields: Record<string, string>;
   show_in_portal?: boolean;
+  friendly_search_fields?: Record<string, string>;
   disable_detail_view: boolean;
   login_required?: boolean;
   related_table_title?: string;

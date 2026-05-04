@@ -64,6 +64,7 @@ async function getTable() {
   initialValues.value.list_template_fields = JSON.stringify(data.list_template_fields, null, 2);
   initialValues.value.request_body = JSON.stringify(data.request_body, null, 2);
   initialValues.value.friendly_fields = JSON.stringify(data.friendly_fields, null, 2);
+  initialValues.value.friendly_search_fields = JSON.stringify(data.friendly_search_fields, null, 2);
 
   if (initialValues.value.related_tables && initialValues.value.related_tables.length > 0) {
     initialValues.value.related_tables = initialValues.value.related_tables.map((table) => {
@@ -133,6 +134,7 @@ async function saveTable(currentValues, continueEditing = false) {
     currentValues.list_template_fields = validateAndParseJsonString(currentValues.list_template_fields);
     currentValues.request_body = validateAndParseJsonString(currentValues.request_body);
     currentValues.friendly_fields = validateAndParseJsonString(currentValues.friendly_fields);
+    currentValues.friendly_search_fields = validateAndParseJsonString(currentValues.friendly_search_fields);
 
     if (currentValues.related_tables && currentValues.related_tables.length > 0) {
       const relatedTables = [];
@@ -398,6 +400,15 @@ function getSections() {
     portal: {
       label: "Portaal",
       questions: [
+        {
+          label: "Vriendelijke zoekingangen",
+          id: "friendly_search_fields",
+          name: "FriendlySearchFields",
+          type: "json",
+          required: false,
+          isNested: true,
+          infoText: "JSON-object waarmee je zoekingang labels vervangt met leesbare labels.",
+        },
         {
           label: "Toon in Portaal",
           id: "show_in_portal",
