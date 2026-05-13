@@ -934,8 +934,8 @@ export default {
               name: "AuthenticatedCanMutate",
               type: "checkbox",
               required: false,
-              infoText: "Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren",
-              showIf: this.config?.features?.edit_layer_features || false,
+              infoText:
+                "Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat de kaartlaag muteren voor kaarten waar de CRUD-functionaliteit is ingeschakeld.",
             },
             {
               label: "Lees groepen",
@@ -950,7 +950,6 @@ export default {
               id: "atlas_write_groups",
               name: "atlasWriteGroups",
               type: "picklist",
-              showIf: this.config?.features?.edit_layer_features || false,
             },
           ],
         },

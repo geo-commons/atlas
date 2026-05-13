@@ -551,7 +551,7 @@ export default {
         // Check if any field has specified this field in its contains_colon property
         const hasColonValidation = !!question.contains_colon;
 
-        if (hasColonValidation && shouldApplyColonValidation && this.config?.features?.edit_layer_features) {
+        if (hasColonValidation && shouldApplyColonValidation) {
           rules.push("contains-colon");
         }
 

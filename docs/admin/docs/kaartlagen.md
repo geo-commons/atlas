@@ -144,6 +144,8 @@ Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een 
 - **Lees groepen:** Onder "beschikbare groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot de kaartlaag.
 - **Schrijf groepen:** Onder "schrijf groepen" staat een lijst met groepen die beschikbaar zijn binnen de Atlas omgeving, onder "geselecteerde groepen" staat een lijst met groepen die toegang hebben tot het muteren van objecten op de kaartlaag (toevoegen, bewerken en/of verwijderen van objecten).
 
+Let op: het bewerken van objecten is alleen mogelijk als op de kaart waarop de laag wordt afgebeeld de CRUD-functionaliteit is ingeschakeld. Zie ook [CRUD-functionaliteit](crud_functionaliteit.md).
+
 ## Relaties tussen kaartlaag en tabellen
 
 Een kracht van tabellen is dat je ze kan verbinden aan kaartlagen, waardoor je in de detailweergave van een object op een kaartlaag de lijstweergaves van andere tabellen kan tonen. Dit noemen wij ook wel een relatie tussen kaartlaag en tabellen.
