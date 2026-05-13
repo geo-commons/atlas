@@ -12,9 +12,9 @@ Om mutaties mogelijk te maken, is het essentieel dat de gebruiker **FILTER_PROXY
 
 > ⚠️ **Let op:** De mutatiefunctie werkt alleen met kaartlagen die worden geraadpleegd via **filter-proxy** (of de naam die deze bron bij jullie binnen GeoServer heeft).
 
-### 2.1 Feature flag activeren
+### 2.1 Activeren op kaartniveau
 
-De CRUD-functionaliteit (Create, Read, Update, Delete) is alleen beschikbaar als je in de **Configuratie module** binnen de admin-omgeving de feature flag **"Bewerkfunctionaliteit"** hebt ingeschakeld.
+De CRUD-functionaliteit (Create, Read, Update, Delete) is alleen beschikbaar als de optie **CRUD-functionaliteit** is ingeschakeld in de configuratie van de kaart waarvoor bewerken gewenst is.
 
 ### 2.2 Configuratie op kaartlaagniveau
 
