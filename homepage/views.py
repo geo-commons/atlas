@@ -174,7 +174,8 @@ def _get_config(request, visible_map=None):
             }
         },
         'map_area': config.get('MAP_AREA'),
-        'suggest_municipalities': config.get('SUGGEST_MUNICIPALITIES'),
+        'suggest_municipalities_brk': config.get('SUGGEST_MUNICIPALITIES_BRK'),
+        'suggest_municipalities_bag': config.get('SUGGEST_MUNICIPALITIES_BAG'),
         'show_disclaimer': config.get('DISCLAIMER') != '',
         'features': {
             'print': config.get('FEATURE_PRINT'),

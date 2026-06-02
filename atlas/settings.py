@@ -303,8 +303,11 @@ CONSTANCE_CONFIG = {
     'POSITION_ZOOM': (13, 'Het zoomniveau van de opstartpositie'),
     'POSITION_CENTER_X': (126910, 'Het centrum X-coordinaat van de opstartpositie'),
     'POSITION_CENTER_Y': (505834, 'Het centrum Y-coordinaat van de opstartpositie'),
-    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster',
-                               'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
+    'SUGGEST_MUNICIPALITIES': ('purmerend,beemster', 'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit)'),
+    'SUGGEST_MUNICIPALITIES_BRK': ('purmerend,beemster',
+                               'Een komma-gescheiden lijst van gemeenten om percelen in te zoeken (voor auto-aanvul functionaliteit). Het gaat hier om kadastrale gemeenten: https://standaarden.overheid.nl/owms/terms/KadastraleGemeente.html'),
+    'SUGGEST_MUNICIPALITIES_BAG': ('purmerend,beemster',
+                               'Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvul functionaliteit). Het gaat hier om gemeenten: https://standaarden.overheid.nl/owms/4.0/doc/waardelijsten/overheid.gemeente'),
     'FAVICON_URL': ('', ('Configureer een eigen favicon via een URL\nbijv. http://www.organization.com/favicon.ico')),
     'MATOMO_URL': ('', ('Configureer de URL van Matomo om statistieken bij te houden')),
     'MATOMO_SITE_ID': ('', ('Configureer het site ID van Matomo om statistieken bij te houden')),
@@ -340,6 +343,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'POSITION_CENTER_Y',
         'POSITION_ZOOM',
         'SUGGEST_MUNICIPALITIES',
+        'SUGGEST_MUNICIPALITIES_BRK',
+        'SUGGEST_MUNICIPALITIES_BAG',
         'MAP_AREA'
     ),
     '3. Matomo': (
