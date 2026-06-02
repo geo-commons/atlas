@@ -12,10 +12,10 @@
     placement="auto"
     :flip="true"
     :shift="true"
+    :on-show="onTippyShow"
   >
     <button
-      v-tippy
-      content="Meer informatie"
+      v-tippy="{ content: 'Meer informatie', touch: false }"
       :class="{ iconbutton: true, showAlways: showAlways }"
       aria-label="Toon meer informatie"
     >
@@ -110,6 +110,7 @@
 import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
 import { useGlobalStore } from "@/stores";
 import type { IMetadataset } from "@/types/metadataset";
+import { isMobile } from "@/utils/helpers";
 import { computed, onMounted, ref } from "vue";
 import { Tippy } from "vue-tippy";
 import InformationCircleIcon from "../assets/icons/information-circle-icon.svg";
@@ -149,6 +150,17 @@ const openModal = () => {
     tippyRef.value.tippy.hide();
   }
   showModal.value = true;
+};
+
+// On mobile the popover does not fit well, so open the full modal directly and
+// cancel the popover by returning false from this tippy lifecycle hook.
+const onTippyShow = (): false | void => {
+  const mobile = isMobile();
+
+  if (mobile) {
+    showModal.value = true;
+    return false;
+  }
 };
 
 onMounted(() => {
@@ -216,5 +228,6 @@ onMounted(() => {
 
 .value {
   font-weight: var(--font-weight-normal);
+  overflow-wrap: break-word;
 }
 </style>

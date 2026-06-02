@@ -12,21 +12,21 @@
     <div v-if="layer.metadataset" class="modal-content">
       <div v-if="layer.description" class="tw-mb-6">
         <h3 class="tw-m-0">Beschrijving laag</h3>
-        <div class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">
+        <div class="tw-m-0 tw-whitespace-pre-wrap tw-break-words tw-leading-relaxed">
           <markdown :source="layer.description" />
         </div>
       </div>
 
       <div v-if="layer.metadataset?.abstract" class="tw-mb-6">
         <h3 class="tw-m-0">Over deze dataset</h3>
-        <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">
+        <p class="tw-m-0 tw-whitespace-pre-wrap tw-break-words tw-leading-relaxed">
           {{ layer.metadataset?.abstract }}
         </p>
       </div>
 
       <div v-if="layer.metadataset?.description && isLoggedIn" class="tw-mb-6">
         <h3 class="tw-m-0">Beschrijving <VisibilityIndicator visibility="Intern" /></h3>
-        <p class="tw-m-0 tw-whitespace-pre-wrap tw-leading-relaxed">
+        <p class="tw-m-0 tw-whitespace-pre-wrap tw-break-words tw-leading-relaxed">
           <RichValue :data-value="layer.metadataset?.description" />
         </p>
       </div>
@@ -35,29 +35,19 @@
         <div class="lg:tw-col-span-7">
           <div v-for="section in tableData" v-show="section.show" :key="section.title" class="tw-mb-8">
             <h3 class="tw-m-0">{{ section.title }}</h3>
-            <table class="tw-border-collapse">
+            <table class="tw-w-full tw-border-collapse">
               <tbody>
-                <tr v-for="row in section.rows" v-show="row.show" :key="row.label" class="">
+                <tr v-for="row in section.rows" v-show="row.show" :key="row.label" class="tw-block sm:tw-table-row">
                   <td
-                    class="tw-text-gray-600 tw-pr-3 lg:tw-pr-8 tw-w-[12rem] tw-min-w-[12rem] lg:tw-w-[18rem] lg:tw-min-w-[18rem] tw-py-3 tw-px-1"
+                    class="tw-block sm:tw-table-cell tw-pr-3 lg:tw-pr-8 sm:tw-w-[12rem] sm:tw-min-w-[12rem] lg:tw-w-[18rem] lg:tw-min-w-[18rem] tw-pt-3 tw-pb-0 tw-px-1 sm:tw-py-3"
                   >
-                    {{ row.label }}
+                    <span class="tw-text-[var(--color-text-grey)]">{{ row.label }}</span>
                     <VisibilityIndicator v-if="row.hasVisibilityIndicator" visibility="Intern" />
                   </td>
-                  <td class="tw-py-3 tw-px-1">
-                    <!-- Keywords type -->
-                    <div v-if="row.type === 'keywords' && row.value" class="tw-flex tw-flex-wrap tw-gap-2">
-                      <span
-                        v-for="keyword in row.value.split('\n').filter((k: string) => k.trim())"
-                        :key="keyword"
-                        class="tw-bg-gray-100 tw-text-gray-800 tw-px-2 tw-py-1 tw-rounded tw-text-sm tw-border tw-border-gray-300"
-                      >
-                        {{ keyword.trim() }}
-                      </span>
-                    </div>
+                  <td class="tw-block sm:tw-table-cell tw-break-words tw-pb-3 tw-pt-0 tw-px-1 sm:tw-py-3">
                     <!-- Email type -->
                     <a
-                      v-else-if="row.type === 'email' && row.value"
+                      v-if="row.type === 'email' && row.value"
                       class="tw-text-blue-600 tw-no-underline hover:tw-underline"
                       :href="`mailto:${row.value.toLowerCase()}`"
                     >
@@ -173,12 +163,6 @@ const tableData = computed(() => {
           value: getTopicCategoryLabel(md?.topic_category),
           show: !!md?.topic_category,
           type: "text",
-        },
-        {
-          label: "Trefwoorden",
-          value: md?.keyword || "",
-          show: !!md?.keyword,
-          type: "keywords",
         },
         {
           label: "Doel van de vervaardiging",
@@ -333,5 +317,14 @@ const tableData = computed(() => {
 table tbody tr:not(:last-child) td {
   border-bottom: 1px solid;
   @apply tw-border-gray-300;
+}
+
+/* Matches Tailwind's `sm` breakpoint (640px). Below it the label/value cells
+   stack vertically (sm:tw-table-row), so only the value cell keeps the divider
+   instead of drawing a line between the stacked label and value. */
+@media (max-width: 639px) {
+  table tbody tr:not(:last-child) td:first-child {
+    border-bottom: none;
+  }
 }
 </style>
