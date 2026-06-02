@@ -24,8 +24,11 @@ Hier kunnen de globale instellingen gedaan worden die in Atlas getoond worden.
 - **Zoomniveau**  
   Het zoomniveau van de opstartpositie. Is het standaard zoomniveau voor de hoofdkaart en themakaarten, kan op themakaart en hoofdkaart niveau per kaart los ingesteld worden.
 
-- **Doorzoek deze gemeentes**  
-  Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit).
+- **Doorzoek deze (kadastrale) gemeenten**  
+  Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit). Het gaat hier om kadastrale gemeenten: https://standaarden.overheid.nl/owms/terms/KadastraleGemeente.html.
+
+- **Doorzoek deze gemeentes**
+  Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit). Het gaat hier om niet-kadastrale gemeenten: https://standaarden.overheid.nl/owms/4.0/doc/waardelijsten/overheid.gemeente.
 
 - **Standaard kaartgebied**  
   Configureer een gebied dat standaard uitgelicht wordt op de kaart.

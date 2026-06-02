@@ -159,12 +159,20 @@ export default {
               infoText: "Het zoomniveau van de opstart-positie",
             },
             {
-              label: "Doorzoek deze gemeentes",
-              id: "SUGGEST_MUNICIPALITIES",
-              name: "suggestMunicipalities",
+              label: "Doorzoek deze kadastrale gemeenten",
+              id: "SUGGEST_MUNICIPALITIES_BRK",
+              name: "suggestMunicipalitiesBRK",
               required: true,
               infoText:
-                "Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvul functionaliteit)",
+                "Een komma-gescheiden lijst van gemeenten om percelen in te zoeken (voor auto-aanvulfunctionaliteit). Het gaat hier om kadastrale gemeenten: https://standaarden.overheid.nl/owms/terms/KadastraleGemeente.html",
+            },
+            {
+              label: "Doorzoek deze gemeentes",
+              id: "SUGGEST_MUNICIPALITIES_BAG",
+              name: "suggestMunicipalitiesBAG",
+              required: true,
+              infoText:
+                "Een komma-gescheiden lijst van gemeenten om adressen in te zoeken (voor auto-aanvulfunctionaliteit). Het gaat hier om niet-kadastrale gemeenten: https://standaarden.overheid.nl/owms/4.0/doc/waardelijsten/overheid.gemeente",
             },
             {
               label: "Standaard kaartgebied",

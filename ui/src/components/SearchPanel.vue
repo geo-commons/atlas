@@ -125,10 +125,12 @@ export default {
       if (this.query.match(/[a-zA-Z]{3}[0-9]{2}/)) {
         // Check if the user searches a registry numbers (e.g. PMR00)
         source = "DKK";
-        municipalityName = `kadastrale_gemeentenaam:(${encodeURIComponent(this.globalStore.config.suggest_municipalities)})`;
+        const municipalityInput = encodeURIComponent(this.globalStore.config.suggest_municipalities_brk);
+        municipalityName = `kadastrale_gemeentenaam:${municipalityInput.includes(",") ? `(${municipalityInput})` : municipalityInput}`;
       } else {
         source = "BAG";
-        municipalityName = `gemeentenaam:(${encodeURIComponent(this.globalStore.config.suggest_municipalities)})`;
+        const municipalityInput = encodeURIComponent(this.globalStore.config.suggest_municipalities_bag);
+        municipalityName = `gemeentenaam:${municipalityInput.includes(",") ? `(${municipalityInput})` : municipalityInput}`;
       }
 
       try {
