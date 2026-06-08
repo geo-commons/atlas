@@ -9,15 +9,16 @@
       "
     />
     <admin-breadcrumb v-if="$route.meta.menu" />
-    <router-view></router-view>
+    <router-view v-if="readyToRenderAdmin"></router-view>
   </div>
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import AppMenu from "./components/MainMenu.vue";
 import AdminBreadcrumb from "./components/AdminBreadcrumb.vue";
 import AdminEnvironmentIndicator from "@/admin/components/AdminEnvironmentIndicator.vue";
-import { mapState } from "pinia";
+import { mapState, mapStores } from "pinia";
 import { useGlobalStore } from "@/stores";
 import "primeicons/primeicons.css";
 
@@ -28,8 +29,50 @@ export default {
     AdminBreadcrumb,
     AppMenu,
   },
+  data() {
+    return {
+      readyToRenderAdmin: false,
+    };
+  },
   computed: {
-    ...mapState(useGlobalStore, ["config"]),
+    ...mapState(useGlobalStore, ["config", "user"]),
+    ...mapStores(useGlobalStore),
+  },
+  created() {
+    this.fetchAccessToken();
+
+    this.fetchInterval = setInterval(
+      () => {
+        this.fetchAccessToken();
+      },
+      1000 * 60 * 5,
+    ); // every 5 minutes
+  },
+  unmounted() {
+    clearInterval(this.fetchInterval);
+  },
+  methods: {
+    async fetchAccessToken() {
+      const response = await fetch("/atlas/api/v1/token", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+      });
+
+      if (!response.ok) {
+        this.readyToRenderAdmin = true;
+        return false;
+      }
+
+      const data = await response.json();
+
+      this.globalStore.setUser({ ...this.user, token: data.token });
+
+      this.readyToRenderAdmin = true;
+    },
   },
 };
 </script>
