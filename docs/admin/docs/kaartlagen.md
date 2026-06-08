@@ -5,7 +5,7 @@ Klik op Nieuwe laag in het kaartlagen scherm om een nieuwe kaartlaag aan te make
 Vul de drie velden in en klik daarna op Opslaan en openen om de nieuwe kaartlaag te configureren.
 
 - **Titel** is het veld dat getoond gaat worden in het kaartlagenmenu van Atlas. De invoer mag geen 'speciale' tekens bevatten.
-- [**Categorie**](categorie.md) is de groep waaronder de kaartlaag zichtbaar zal zijn in het kaartlagenmenu van Atlas. Kies hier vanuit het pull-down menu een categorie.
+- [**Categorie**](categorie.md) is de groep waaronder de kaartlaag zichtbaar zal zijn in het kaartlagenmenu van Atlas. Kies hier vanuit het pull-down menu een hoofdcategorie of subcategorie.
 - [**Bron**](bronnen.md) is een eerder aangemaakt endpoint waarvanuit de laag geserveerd wordt. Dit kan vanuit een eigen Geoserver zijn maar ook een externe bron.
 
 <img src="../images/configureer_nieuwe_kaartlaag.png" alt="Kaart Toevoegen" width="700"/>
@@ -18,7 +18,7 @@ Onder algemene gegevens van de kaartlaag kent Atlas diverse velden, dat zijn de 
 
 - **Titel**
 - **Kort kenmerk:** (Een uniek ID dat de layer onderscheid van andere. Wordt gebruikt als slug voor betreffende kaartlaag.
-- **Categorie:** De categorie waar toe de kaartlaag behoort. (selecteer onder welke categorie deze layer komt)
+- **Categorie:** De categorie waar toe de kaartlaag behoort. (selecteer onder welke hoofdcategorie of subcategorie deze kaartlaag komt)
 - **Metadataset:** Selecteer de metadataset die aan deze kaartlaag gekoppeld moet worden. De metadataset bevat alle metadata informatie conform ISO 19115 standaard. Deze koppeling is verplicht voor publicatie van de kaartlaag.
 
 !!! info "Publicatie vereiste"

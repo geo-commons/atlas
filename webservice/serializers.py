@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
 from authz.lib import can_request_access_layer
@@ -21,9 +22,47 @@ class MapLayerSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    parent_id = serializers.PrimaryKeyRelatedField(
+        source='parent',
+        queryset=Category.objects.all(),
+        allow_null=True,
+        required=False,
+    )
+    parent = serializers.SerializerMethodField()
+    full_title = serializers.SerializerMethodField()
+
+    def get_parent(self, obj):
+        if not obj.parent:
+            return None
+
+        return {
+            'id': obj.parent.id,
+            'title': obj.parent.title,
+            'slug': obj.parent.slug,
+        }
+
+    def get_full_title(self, obj):
+        return obj.full_title
+
+    def validate(self, attrs):
+        category = self.instance if self.instance else Category()
+        
+        for attr, value in attrs.items():
+            setattr(category, attr, value)
+
+        try:
+            category.clean()
+        except DjangoValidationError as exc:
+            errors = exc.message_dict
+            if "parent" in errors:
+                errors["parent_id"] = errors.pop("parent")
+            raise serializers.ValidationError(errors) from exc
+        
+        return attrs
+
     class Meta:
         model = Category
-        fields = ['id', 'title', 'slug', 'ordering']
+        fields = ['id', 'title', 'slug', 'ordering', 'parent', 'parent_id', 'full_title']
 
 
 class MapCategorySerializer(serializers.ModelSerializer):
@@ -38,8 +77,8 @@ class MapCategorySerializer(serializers.ModelSerializer):
 
 
 class MapSerializer(serializers.ModelSerializer):
-    layers = MapLayerSerializer(many=True, source='map_layers')
-    categories = MapCategorySerializer(many=True, source='map_categories')
+    layers = MapLayerSerializer(many=True, source='map_layers', required=False)
+    categories = MapCategorySerializer(many=True, source='map_categories', required=False)
 
     class Meta:
         model = Map
@@ -76,33 +115,8 @@ class MapSerializer(serializers.ModelSerializer):
 
         created_map = Map.objects.create(**validated_data)
 
-        for map_category in map_categories:
-            category = map_category.get('category')
-            MapCategory.objects.create(
-                map=created_map,
-                category=category,
-                ordering=map_category.get('ordering', 0),
-            )
-
-        # Create map layers with category references
-        for map_layer in map_layers:
-            layer = map_layer.get('layer')
-
-            map_category = map_layer.get('map_category')
-
-            if map_category is None and getattr(layer, "layer_type", None):
-                map_category = MapCategory.objects.filter(
-                    map=created_map,
-                    category_id=layer.layer_type_id,
-                ).first()
-
-            MapLayer.objects.create(
-                map=created_map,
-                layer=layer,
-                map_category=map_category,
-                ordering=map_layer.get('ordering', 0),
-                settings=map_layer.get('settings', {})
-            )
+        self._sync_categories(created_map, map_categories)
+        self._sync_layers(created_map, map_layers)
 
         return created_map
 
@@ -117,45 +131,64 @@ class MapSerializer(serializers.ModelSerializer):
         instance.save()
 
         if has_categories:
-            kept_category_ids = []
-            for map_category in map_categories:
-                category = map_category.get("category")
-                defaults = {
-                    "category": category,
-                    "ordering": map_category.get("ordering", 0),
-                    "map": instance,
-                }
-
-                obj, _ = MapCategory.objects.update_or_create(map=instance, category=category, defaults=defaults)
-
-                kept_category_ids.append(obj.id)
-
-            instance.map_categories.exclude(id__in=kept_category_ids).delete()
+            self._sync_categories(instance, map_categories)
 
         if has_layers:
-            kept_layer_ids = []
-            for map_layer in map_layers:
-                layer = map_layer.get("layer")
-                map_category = map_layer.get("map_category")
-
-                if map_category is None and getattr(layer, "layer_type", None):
-                    map_category = instance.map_categories.filter(category_id=layer.layer_type_id).first()
-
-                defaults = {
-                    "layer": layer,
-                    "map_category": map_category,
-                    "ordering": map_layer.get("ordering", 0),
-                    "settings": map_layer.get("settings", {}),
-                    "map": instance,
-                }
-
-                obj, _ = MapLayer.objects.update_or_create(map=instance, layer=layer, defaults=defaults)
-
-                kept_layer_ids.append(obj.id)
-
-            instance.map_layers.exclude(id__in=kept_layer_ids).delete()
+            self._sync_layers(instance, map_layers)
 
         return instance
+
+    def _sync_categories(self, map_instance, map_categories):
+        kept_category_ids = []
+        for map_category in map_categories:
+            category = map_category.get("category")
+            defaults = {
+                "category": category,
+                "ordering": map_category.get("ordering", 0),
+                "map": map_instance,
+            }
+
+            obj, _ = MapCategory.objects.update_or_create(map=map_instance, category=category, defaults=defaults)
+
+            kept_category_ids.append(obj.id)
+
+            if category.parent_id:
+                # Legacy payloads can submit only the subcategory. Keep the parent MapCategory
+                # persisted so map-specific parent ordering can exist before the next tree save.
+                parent_obj, _ = MapCategory.objects.get_or_create(
+                    map=map_instance,
+                    category=category.parent,
+                    defaults={'ordering': category.parent.ordering},
+                )
+                kept_category_ids.append(parent_obj.id)
+
+        map_instance.map_categories.exclude(id__in=kept_category_ids).delete()
+
+    def _sync_layers(self, map_instance, map_layers):
+        kept_layer_ids = []
+        for map_layer in map_layers:
+            obj = self._update_or_create_map_layer(map_instance, map_layer)
+            kept_layer_ids.append(obj.id)
+
+        map_instance.map_layers.exclude(id__in=kept_layer_ids).delete()
+
+    def _update_or_create_map_layer(self, map_instance, map_layer):
+        layer = map_layer.get("layer")
+        map_category = map_layer.get("map_category")
+
+        if map_category is None and getattr(layer, "layer_type", None):
+            map_category = map_instance.map_categories.filter(category_id=layer.layer_type_id).first()
+
+        defaults = {
+            "layer": layer,
+            "map_category": map_category,
+            "ordering": map_layer.get("ordering", 0),
+            "settings": map_layer.get("settings", {}),
+            "map": map_instance,
+        }
+
+        obj, _ = MapLayer.objects.update_or_create(map=map_instance, layer=layer, defaults=defaults)
+        return obj
 
 
 class SourceSerializer(serializers.ModelSerializer):

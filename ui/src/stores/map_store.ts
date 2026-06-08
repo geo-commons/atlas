@@ -1,5 +1,12 @@
 import { defineStore } from "pinia";
-import { ELayerTypes, ILayer, ILayerOrderDetails, ISelectedLayerProps } from "@/types/layer";
+import {
+  ELayerTypes,
+  ILayer,
+  ILayerOrderDetails,
+  IToggleLayerProps,
+  ISetLayerOpacityProps,
+  IToggleLayerSelectableProps,
+} from "@/types/layer";
 import { ICycloView, IMapStore } from "@/types/mapStore";
 import { Geometry } from "ol/geom";
 
@@ -76,7 +83,7 @@ export function useMapStore(mapName: string) {
           updater(layer);
         }
       },
-      toggleBaseLayer(selectedLayerProps: ISelectedLayerProps) {
+      toggleBaseLayer(selectedLayerProps: IToggleLayerProps) {
         const layer = this.layers.find((l) => l.id === selectedLayerProps.selectedLayerId);
 
         if (layer) {
@@ -88,19 +95,19 @@ export function useMapStore(mapName: string) {
           this.selectedBaseLayer = layer;
         }
       },
-      toggleLayer(selectedLayerProps: ISelectedLayerProps) {
+      toggleLayer(selectedLayerProps: IToggleLayerProps) {
         this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
           layer.is_visible = selectedLayerProps.is_visible;
         });
 
         this.resetFiltersForLayer(selectedLayerProps.selectedLayerId);
       },
-      setLayerOpacity(selectedLayerProps: ISelectedLayerProps) {
+      setLayerOpacity(selectedLayerProps: ISetLayerOpacityProps) {
         this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
           layer.opacity = selectedLayerProps.opacity;
         });
       },
-      toggleLayerisSelectable(selectedLayerProps: ISelectedLayerProps) {
+      toggleLayerisSelectable(selectedLayerProps: IToggleLayerSelectableProps) {
         this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
           layer.is_selectable = selectedLayerProps.is_selectable;
         });

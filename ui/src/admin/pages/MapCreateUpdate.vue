@@ -5,14 +5,14 @@
       :initial-data="data"
       @show-form="() => showSidebar('form')"
       @show-layer="showLayerSettings"
-      @update-layers="updateLayers"
-      @update-categories="updateCategories"
+      @update-layer-config="updateLayerConfig"
     />
     <MapLayer
       v-if="sidebar === 'layer'"
       :initial-data="selectedLayerData"
       :initial-configured-layers="data.layers"
       @show-layers="() => showSidebar('layers')"
+      @update-base-layer-status="handleBaseLayerStatusUpdate"
     />
     <MapAbout
       v-if="sidebar === 'about'"
@@ -52,7 +52,8 @@
       <map-renderer
         ref="map"
         :initial-position="mapPosition"
-        :initial-layers="configuredLayers"
+        :initial-layers="configuredRenderLayers"
+        :layer-tree="configuredLayerTree"
         :user="user"
         :features="data.features"
         :settings="data.settings"
@@ -84,6 +85,7 @@ import ThumbnailPanelAdmin from "@/admin/components/ThumbnailPanelAdmin.vue";
 import { useToast } from "primevue";
 import MapRenderer from "@/components/MapRenderer/MapRenderer.vue";
 import { useQueryCache } from "@pinia/colada";
+import { buildCategoryTree, flattenCategoryTreeLayers } from "@/utils/map-layer-tree";
 
 export default {
   name: "MapCreateUpdate",
@@ -141,76 +143,22 @@ export default {
     },
     configuredLayers() {
       if (this.data.layers) {
-        const mapCategoryOrderingById = new Map(
-          (this.data.categories || []).map((mapCategory) => [mapCategory.id, mapCategory.ordering ?? 0]),
-        );
-        const mapCategoryOrderingByCategoryId = new Map(
-          (this.data.categories || []).map((mapCategory) => [mapCategory.category, mapCategory.ordering ?? 0]),
-        );
-        const availableLayerByInternalId = new Map(this.layers.map((layer) => [layer.internal_id, layer]));
-
-        const sortedSelectedLayers = [...this.data.layers].sort((a, b) => {
-          const layerA = availableLayerByInternalId.get(a.layer);
-          const layerB = availableLayerByInternalId.get(b.layer);
-
-          const categoryOrderA =
-            mapCategoryOrderingById.get(a.map_category) ??
-            mapCategoryOrderingByCategoryId.get(layerA?.category?.id) ??
-            Number.MAX_SAFE_INTEGER;
-          const categoryOrderB =
-            mapCategoryOrderingById.get(b.map_category) ??
-            mapCategoryOrderingByCategoryId.get(layerB?.category?.id) ??
-            Number.MAX_SAFE_INTEGER;
-          if (categoryOrderA !== categoryOrderB) {
-            return categoryOrderA - categoryOrderB;
-          }
-
-          const layerOrderA = a.ordering ?? Number.MAX_SAFE_INTEGER;
-          const layerOrderB = b.ordering ?? Number.MAX_SAFE_INTEGER;
-          if (layerOrderA !== layerOrderB) {
-            return layerOrderA - layerOrderB;
-          }
-
-          return 0;
-        });
-
-        const configuredLayers = [];
-
-        // Get configured layers.
-        sortedSelectedLayers.forEach((selectedLayer) => {
-          const layer = this.layers.find((l) => l.internal_id === selectedLayer.layer);
-
-          if (!layer) {
-            return;
-          }
-
-          // Push default layer settings if current layer has no custom settings.
-          if (!selectedLayer.settings?.customSettings) {
-            configuredLayers.push({ ...layer });
-          } else {
-            configuredLayers.push({
-              ...layer,
-              is_visible: selectedLayer.settings.is_visible,
-              is_base: selectedLayer.settings.is_base,
-              opacity: selectedLayer.settings.opacity,
-              zoom_min: selectedLayer.settings.zoom_min,
-              zoom_max: selectedLayer.settings.zoom_max,
-              display_properties: selectedLayer.settings.display_properties,
-              search_fields: selectedLayer.settings.search_fields,
-              server_style: selectedLayer.settings.server_style,
-              client_style: selectedLayer.settings.client_style,
-              friendly_fields: selectedLayer.settings.friendly_fields,
-              templated_properties: selectedLayer.settings.templated_properties,
-              linked_data: selectedLayer.settings.linked_data,
-              templates: selectedLayer.settings.templates,
-            });
-          }
-        });
-
-        return configuredLayers;
+        return this.configuredLegacyLayers(this.data.layers);
       }
 
       return this.layers;
+    },
+    configuredLayerTree() {
+      const orderingByLayerId = new Map((this.data.layers || []).map((layer) => [layer.layer, layer.ordering]));
+      return buildCategoryTree(
+        this.configuredLayers.filter((layer) => !layer.is_base),
+        this.getCategoriesFromLayers(),
+        this.data.categories || [],
+        orderingByLayerId,
+      );
+    },
+    configuredRenderLayers() {
+      return [...this.configuredBaseLayers(), ...flattenCategoryTreeLayers(this.configuredLayerTree)];
     },
   },
   watch: {
@@ -253,6 +201,8 @@ export default {
 
       this.data = {
         features: {},
+        layers: [],
+        categories: [],
         settings: {
           position: this.getDefaultPosition(),
           facets: [],
@@ -260,6 +210,57 @@ export default {
           listLayerId: null,
         },
       };
+    },
+    getConfiguredLayer(selectedLayer) {
+      const layer = this.layers.find((candidate) => candidate.internal_id === selectedLayer.layer);
+
+      if (!layer) {
+        return null;
+      }
+
+      if (!selectedLayer.settings?.customSettings) {
+        return { ...layer };
+      }
+
+      return {
+        ...layer,
+        is_visible: selectedLayer.settings.is_visible,
+        is_base: selectedLayer.settings.is_base,
+        opacity: selectedLayer.settings.opacity,
+        zoom_min: selectedLayer.settings.zoom_min,
+        zoom_max: selectedLayer.settings.zoom_max,
+        display_properties: selectedLayer.settings.display_properties,
+        search_fields: selectedLayer.settings.search_fields,
+        server_style: selectedLayer.settings.server_style,
+        client_style: selectedLayer.settings.client_style,
+        friendly_fields: selectedLayer.settings.friendly_fields,
+        templated_properties: selectedLayer.settings.templated_properties,
+        linked_data: selectedLayer.settings.linked_data,
+        templates: selectedLayer.settings.templates,
+      };
+    },
+    configuredLegacyLayers(selectedLayers) {
+      return selectedLayers.map(this.getConfiguredLayer).filter(Boolean);
+    },
+    configuredBaseLayers() {
+      return this.configuredLegacyLayers(this.data.layers || []).filter((layer) => layer.is_base);
+    },
+    getCategoriesFromLayers() {
+      const categoriesById = new Map();
+
+      this.layers.forEach((layer) => {
+        if (!layer.category) {
+          return;
+        }
+
+        categoriesById.set(layer.category.id, layer.category);
+
+        if (layer.category.parent) {
+          categoriesById.set(layer.category.parent.id, layer.category.parent);
+        }
+      });
+
+      return [...categoriesById.values()];
     },
     async saveMap(data, continueEditing = false) {
       let result;
@@ -417,13 +418,69 @@ export default {
     },
     showLayerSettings(selectedLayerId) {
       this.selectedLayerData = this.data.layers.find((layer) => layer.layer === selectedLayerId);
+
+      if (!this.selectedLayerData) {
+        this.selectedLayerData = {
+          layer: selectedLayerId,
+          settings: { customSettings: false },
+        };
+        this.data.layers.push(this.selectedLayerData);
+      }
+
       this.showSidebar("layer");
     },
-    updateLayers(layers) {
-      this.data.layers = [...layers];
+    updateLayerConfig(config) {
+      this.data.layers = [...config.layers];
+      this.data.categories = [...config.categories];
     },
-    updateCategories(categories) {
-      this.data.categories = [...categories];
+    ensureCategoryConfig(category) {
+      if (!category || this.data.categories?.some((mapCategory) => mapCategory.category === category.id)) {
+        return;
+      }
+
+      this.data.categories = [
+        ...(this.data.categories || []),
+        {
+          category: category.id,
+          title: category.title,
+          ordering: category.ordering ?? this.data.categories?.length ?? 0,
+        },
+      ];
+    },
+    removeUnusedCategoryConfigs() {
+      const usedCategoryIds = new Set(
+        this.configuredLayers.filter((layer) => !layer.is_base && layer.category).map((layer) => layer.category.id),
+      );
+
+      this.configuredLayers.forEach((layer) => {
+        if (!layer.is_base && layer.category?.parent) {
+          usedCategoryIds.add(layer.category.parent.id);
+        }
+      });
+
+      this.data.categories = (this.data.categories || []).filter((category) => usedCategoryIds.has(category.category));
+    },
+    handleBaseLayerStatusUpdate(mapLayerConfig) {
+      const layer = this.layers.find(
+        (candidate) => candidate.internal_id === mapLayerConfig.layer || candidate.id === mapLayerConfig.layer,
+      );
+
+      if (!layer) {
+        return;
+      }
+
+      const isBaseLayer = mapLayerConfig.settings.customSettings ? mapLayerConfig.settings.is_base : layer.is_base;
+
+      if (isBaseLayer) {
+        this.removeUnusedCategoryConfigs();
+        return;
+      }
+
+      if (layer.category?.parent) {
+        this.ensureCategoryConfig(layer.category.parent);
+      }
+
+      this.ensureCategoryConfig(layer.category);
     },
     handleAboutUpdate(aboutData) {
       this.data.about = aboutData?.about;

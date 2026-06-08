@@ -6,6 +6,7 @@
       ref="map"
       :initial-position="position"
       :initial-layers="layers"
+      :layer-tree="layerTree"
       :user="user"
       :features="map.features"
       :settings="map.settings"
@@ -36,7 +37,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useGlobalStore, ["position", "layers", "config", "map", "user", "isEmbed"]),
+    ...mapState(useGlobalStore, ["position", "layers", "layerTree", "config", "map", "user", "isEmbed"]),
     ...mapStores(useGlobalStore),
   },
   created() {

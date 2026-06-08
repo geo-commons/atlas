@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { Ref, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { useRouter } from "vue-router";
 import { EDialogTypes } from "@/types/dialog";
+import { getAllObjects } from "@/utils/api-helpers";
 
 const router = useRouter();
 
@@ -12,6 +13,7 @@ const childRef: Ref<null | {
 }> = ref(null);
 
 const loading: Ref<boolean> = ref(true);
+const categories: Ref<Array<{ id: number; label: string }>> = ref([]);
 
 const tableHeaders: Array<TableHeader> = [
   {
@@ -19,11 +21,35 @@ const tableHeaders: Array<TableHeader> = [
     key: "title",
     enableLink: true,
   },
+  {
+    header: "Hoofdcategorie",
+    key: "parent.title",
+    enableLink: false,
+  },
 ];
 
 const initialCategoryData = {
   title: "",
   authenticate: false,
+  slug: "",
+  parent_id: null,
+};
+
+const getCategories = async (): Promise<Array<{ id: number; label: string }>> => {
+  const result = await fetch(getAllObjects("/atlas/api/v1/categories/"), {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!result.ok) {
+    console.error("Could not fetch categories");
+  }
+
+  const response = await result.json();
+
+  return response.results
+    .filter((category: any) => !category.parent)
+    .map((category: any) => ({ id: category.id, label: category.title }));
 };
 
 const getCreateCategorySections = () => {
@@ -46,10 +72,25 @@ const getCreateCategorySections = () => {
           required: false,
           infoText: "Een uniek kort kenmerk voor de categorie in Atlas.",
         },
+        {
+          label: "Hoofdcategorie",
+          id: "parent_id",
+          name: "ParentId",
+          type: "dropdown",
+          required: false,
+          placeholder: "hoofdcategorie",
+          options: categories,
+          infoText: "Laat leeg voor een hoofdcategorie. Kies een hoofdcategorie om een subcategorie aan te maken.",
+        },
       ],
     },
   };
 };
+
+onMounted(async () => {
+  categories.value = await getCategories();
+  loading.value = false;
+});
 
 const saveCategory = async (
   currentValues: any,

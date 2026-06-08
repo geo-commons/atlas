@@ -53,6 +53,59 @@ class Category(models.Model):
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 
+    parent = models.ForeignKey(
+        'self',
+        verbose_name='Hoofdcategorie',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        related_name='children',
+    )
+
+    @property
+    def full_title(self):
+        if not self.parent:
+            return self.title
+
+        return f"{self.parent.title} / {self.title}"
+
+    def clean(self):
+        super().clean()
+
+        if self.parent_id == self.id:
+            raise ValidationError({'parent': 'Het is niet mogelijk om een categorie zichzelf als hoofdcategorie te selecteren.'})
+
+        if self.parent and self.parent.parent_id:
+            raise ValidationError({'parent': 'Het is niet mogelijk om een subcategorie als hoofdcategorie te selecteren.'})
+
+        if self.pk and self.parent and self.children.exists():
+            raise ValidationError({'parent': 'Het is niet mogelijk om een hoofdcategorie met subcategorieën als subcategorie te selecteren.'})
+
+    def save(self, *args, **kwargs):
+        previous_parent_id = None
+        update_fields = kwargs.get('update_fields')
+        parent_is_updated = update_fields is None or 'parent' in update_fields or 'parent_id' in update_fields
+
+        if self.pk and parent_is_updated:
+            previous_parent_id = Category.objects.filter(pk=self.pk).values_list('parent_id', flat=True).first()
+
+        super().save(*args, **kwargs)
+
+        if parent_is_updated and self.parent_id != previous_parent_id:
+            self._sync_parent_map_categories(previous_parent_id)
+
+    def _sync_parent_map_categories(self, previous_parent_id):
+        map_ids = self.maps_category.values_list('map_id', flat=True).distinct()
+
+        # MapCategory stores per-map ordering. When a subcategory moves, keep the
+        # required parent MapCategory in sync and remove parent rows that became empty.
+        for map_id in map_ids:
+            if self.parent_id:
+                _ensure_map_category(map_id, self.parent)
+
+            if previous_parent_id:
+                _delete_map_category_if_unused(map_id, previous_parent_id)
+
     def __str__(self):
         return f"{self.title}"
 
@@ -487,6 +540,37 @@ class Layer(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    def save(self, *args, **kwargs):
+        previous_layer_type_id = None
+        update_fields = kwargs.get('update_fields')
+        category_is_updated = update_fields is None or 'layer_type' in update_fields or 'layer_type_id' in update_fields
+
+        if self.pk and category_is_updated:
+            previous_layer_type_id = Layer.objects.filter(pk=self.pk).values_list('layer_type_id', flat=True).first()
+
+        super().save(*args, **kwargs)
+
+        if category_is_updated and self.layer_type_id != previous_layer_type_id:
+            self._sync_map_layers_category(previous_layer_type_id)
+
+    def _sync_map_layers_category(self, previous_layer_type_id):
+        layer_type = Category.objects.filter(pk=self.layer_type_id).select_related('parent').first()
+
+        # MapLayer stores the per-map category assignment. Keep it aligned when a layer is moved
+        # between global categories, otherwise the map tree and stored map category drift apart.
+        for map_layer in self.maps_layer.select_related('map'):
+            if layer_type:
+                _ensure_parent_map_category(map_layer.map_id, layer_type)
+                map_category = _ensure_map_category(map_layer.map_id, layer_type)
+                map_layer.map_category_id = map_category.id
+            else:
+                map_layer.map_category_id = None
+
+            map_layer.save(update_fields=['map_category'])
+
+            if previous_layer_type_id:
+                _delete_category_branch_if_unused(map_layer.map_id, previous_layer_type_id)
+
     @property
     def popup_attributes(self):
         return self._popup_attributes.split('\r\n') if self._popup_attributes else []
@@ -661,7 +745,13 @@ source: new ol.source.TileWMS({{
             },
             'category': {
                 'id': self.layer_type.id,
-                'title': self.layer_type.title
+                'title': self.layer_type.title,
+                'full_title': self.layer_type.full_title,
+                'parent': {
+                    'id': self.layer_type.parent.id,
+                    'title': self.layer_type.parent.title,
+                    'slug': self.layer_type.parent.slug,
+                } if self.layer_type.parent else None,
             } if self.layer_type else None,
             'display_properties': self._popup_attributes.split('\r\n') if self._popup_attributes else [],
             'search_properties': self._search_fields.split('\r\n') if self._search_fields else [],
@@ -867,6 +957,50 @@ class MapCategory(models.Model):
         }
 
 
+def _ensure_parent_map_category(map_id, category):
+    if not category.parent_id:
+        return None
+
+    return _ensure_map_category(map_id, category.parent)
+
+
+def _ensure_map_category(map_id, category):
+    map_category, _ = MapCategory.objects.get_or_create(
+        map_id=map_id,
+        category=category,
+        defaults={'ordering': category.ordering},
+    )
+    return map_category
+
+
+def _delete_category_branch_if_unused(map_id, category_id):
+    category = Category.objects.filter(pk=category_id).select_related('parent').first()
+
+    if not category:
+        return
+
+    deleted = _delete_map_category_if_unused(map_id, category.id)
+
+    if deleted and category.parent_id:
+        _delete_map_category_if_unused(map_id, category.parent_id)
+
+
+def _delete_map_category_if_unused(map_id, category_id):
+    map_category = MapCategory.objects.filter(map_id=map_id, category_id=category_id).first()
+
+    if not map_category:
+        return False
+
+    if map_category.map_layers.exists():
+        return False
+
+    if MapCategory.objects.filter(map_id=map_id, category__parent_id=category_id).exists():
+        return False
+
+    map_category.delete()
+    return True
+
+
 class MapManager(models.Manager):
     def for_request(self, request):
         if request.user.is_anonymous:
@@ -960,6 +1094,7 @@ class Map(models.Model):
             'title': self.title,
             'slug': self.slug,
             'layers': [layer.to_dict() for layer in self.map_layers.all()],
+            'categories': [category.to_dict() for category in self.map_categories.all()],
             'features': self.features,
             'settings': self.settings,
             'about': self.about,

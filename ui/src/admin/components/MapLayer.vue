@@ -341,7 +341,7 @@ export default {
     initialData: Object,
     initialConfiguredLayers: Object,
   },
-  emits: ["show-layers"],
+  emits: ["show-layers", "update-base-layer-status"],
   data() {
     return {
       mapLayerConfig: null,
@@ -469,6 +469,8 @@ export default {
           title: this.mapLayerConfig.settings.title,
         };
       }
+
+      this.$emit("update-base-layer-status", this.mapLayerConfig);
     },
     toggleSliderField(field) {
       if (field === "is_visible" && !this.mapLayerConfig.settings[field] && this.otherVisibleBaseLayer) {
@@ -476,6 +478,10 @@ export default {
       }
 
       this.mapLayerConfig.settings[field] = !this.mapLayerConfig.settings[field];
+
+      if (field === "is_base") {
+        this.$emit("update-base-layer-status", this.mapLayerConfig);
+      }
     },
     async resetOtherVisibleBaseLayer() {
       if (this.otherVisibleBaseLayer.settings.customSettings) {

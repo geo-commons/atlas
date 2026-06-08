@@ -13,6 +13,25 @@ import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
 import { ConfirmationService, ToastService } from "primevue";
 import { AtlasPreset } from "@/utils/theme-preset";
+import { buildCategoryTree, flattenCategoryTreeLayers } from "@/utils/map-layer-tree";
+
+const getCategoriesFromLayers = (layers) => {
+  const categoriesById = new Map();
+
+  layers.forEach((layer) => {
+    if (!layer?.category) {
+      return;
+    }
+
+    categoriesById.set(layer.category.id, layer.category);
+
+    if (layer.category.parent) {
+      categoriesById.set(layer.category.parent.id, layer.category.parent);
+    }
+  });
+
+  return [...categoriesById.values()];
+};
 
 // Atlas v3
 document.addEventListener("DOMContentLoaded", () => {
@@ -83,12 +102,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  const layerOrdering = new Map(configuredLayers.map((layer) => [layer.layer, layer.ordering]));
+  const layerTree = buildCategoryTree(
+    layers.filter((layer) => layer && !layer.is_base),
+    getCategoriesFromLayers(allAvailableLayers),
+    data.map.categories || [],
+    layerOrdering,
+  );
+  layers = [...layers.filter((layer) => layer?.is_base), ...flattenCategoryTreeLayers(layerTree)];
+
   const initialState = {
     isEmbed: settings.is_embed,
     config: data.config,
     user: data.user,
     position: settings.position,
     layers,
+    layerTree,
     tool: "",
     selectedArea: null,
     searchQuery: "",

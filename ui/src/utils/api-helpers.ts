@@ -32,7 +32,7 @@ export enum ApiMethod {
   DELETE = "DELETE",
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     message: string,
     public statusCode: number,
@@ -77,10 +77,27 @@ export async function apiFetch(
   const newOptions = { ...options, body, headers, credentials, method };
   const response = await fetch(resource, newOptions);
   if (!response.ok) {
-    throw new ApiError(response.statusText, response.status, method);
+    throw new ApiError(await getApiErrorMessage(response), response.status, method);
   }
 
   return response;
+}
+
+async function getApiErrorMessage(response: Response): Promise<string> {
+  try {
+    const data: unknown = await response.json();
+    if (isApiErrorResponse(data) && data.detail) {
+      return data.detail;
+    }
+  } catch {
+    // Fall back to the HTTP status text when the response body is not JSON.
+  }
+
+  return response.statusText;
+}
+
+function isApiErrorResponse(data: unknown): data is { detail?: string } {
+  return typeof data === "object" && data !== null && (!("detail" in data) || typeof data.detail === "string");
 }
 
 /**

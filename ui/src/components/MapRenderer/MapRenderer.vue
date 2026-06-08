@@ -266,6 +266,7 @@
         <LayersPanel
           v-if="features.layerlist || features.legend"
           :layers="regularLayers"
+          :layer-tree="layerTree"
           :position="position"
           :user="user"
           :map-id="mapId"
@@ -481,6 +482,10 @@ export default {
       default: "",
     },
     initialLayers: Array,
+    layerTree: {
+      type: Array,
+      default: () => [],
+    },
     initialPosition: Object,
     user: Object,
     features: {

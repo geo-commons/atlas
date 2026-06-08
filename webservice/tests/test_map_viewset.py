@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 
-from webservice.models import Map
+from webservice.models import Map, Source
 
 
 class MapViewSetTest(APITestCase):
@@ -12,6 +12,11 @@ class MapViewSetTest(APITestCase):
             password='password123',
         )
         self.client.force_authenticate(self.admin_user)
+        self.source = Source.objects.create(
+            title='Source',
+            slug='source',
+            url='https://example.com',
+        )
 
     def test_delete_detail_rejects_main_map(self):
         main_map, _ = Map.objects.update_or_create(

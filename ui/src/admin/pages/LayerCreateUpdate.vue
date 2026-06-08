@@ -351,7 +351,7 @@ export default {
       const response = await result.json();
 
       this.categories = response.results.map((category) => {
-        return { id: category.id, label: category.title };
+        return { id: category.id, label: category.full_title };
       });
       return response;
     },

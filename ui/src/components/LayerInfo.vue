@@ -116,6 +116,7 @@ import { Tippy } from "vue-tippy";
 import InformationCircleIcon from "../assets/icons/information-circle-icon.svg";
 import LayerInfoModal from "./LayerInfoModal.vue";
 import Markdown from "./Markdown";
+import { ILayer } from "@/types/layer";
 
 export interface LayerInfoLayer {
   title: string;
@@ -124,7 +125,7 @@ export interface LayerInfoLayer {
 }
 
 interface Props {
-  layer: LayerInfoLayer;
+  layer: ILayer;
   showAlways?: boolean;
 }
 
