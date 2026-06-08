@@ -518,7 +518,7 @@ export default {
     formObject: String,
   },
   emits: ["update-source", "metadataset-changed", "related-tables-changed", "close"],
-  expose: ["updateFieldValue", "sendSaveRequest"],
+  expose: ["updateFieldValue", "sendSaveRequest", "resetForm"],
   data() {
     return {
       options: {},

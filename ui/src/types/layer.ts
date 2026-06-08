@@ -15,7 +15,7 @@ export interface ILayer {
   friendly_fields: { [key: string]: string };
   is_selectable: boolean;
   is_base: boolean;
-  category: string;
+  category: any;
   show_in_detail_panel: boolean;
   metadataset?: IMetadataset | null;
   metadata?: {
@@ -32,6 +32,9 @@ export interface ILayer {
     authenticate: boolean;
   };
   login_required: boolean;
+  extent: [number, number, number, number] | null;
+  zoom_min: number | null;
+  zoom_max: number | null;
 }
 
 export type IGeometryType = GeometryType | "Geometry";
@@ -64,13 +67,21 @@ export enum ELayerTypes {
   WMTS = "WMTS",
 }
 
-export interface ISelectedLayerProps {
+type SelectedLayerId = {
   selectedLayerId: string;
-  is_visible: boolean;
-  opacity: number;
-  is_selectable: boolean;
-}
+};
 
+export type IToggleLayerProps = SelectedLayerId & {
+  is_visible: boolean;
+};
+
+export type ISetLayerOpacityProps = SelectedLayerId & {
+  opacity: number;
+};
+
+export type IToggleLayerSelectableProps = SelectedLayerId & {
+  is_selectable: boolean;
+};
 export interface ILayerOrderDetails {
   selectedLayerId: string;
   direction: string;

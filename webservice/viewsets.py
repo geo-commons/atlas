@@ -16,6 +16,7 @@ from authz.models import Log
 from tables.models import Table
 from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
+from webservice.exceptions import ProtectedDeleteError
 from webservice.mixins import DataExportImportMixin, DuplicateMixin, DeleteMixin, FileUploadMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
@@ -86,7 +87,12 @@ class LayerViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.
         return LayerSerializer
 
     def get_queryset(self):
-        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups', 'related_tables').select_related('metadataset')
+        return Layer.authorized.for_request(self.request).prefetch_related('atlas_groups', 'related_tables').select_related(
+            'layer_source',
+            'layer_type',
+            'layer_type__parent',
+            'metadataset',
+        )
 
 
 class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -97,12 +103,43 @@ class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewset
 
 class CategoriesViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
-    queryset = Category.objects.all()
+    queryset = Category.objects.select_related('parent').all()
     serializer_class = CategorySerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
 
     search_fields = ['title']
+
+    def destroy(self, request, *args, **kwargs):
+        category = self.get_object()
+        if category.children.exists():
+            raise ProtectedDeleteError(
+                'Het is niet mogelijk om een hoofdcategorie met subcategorieën te verwijderen.'
+            )
+
+        return super().destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=['post'], url_path='delete', permission_classes=[permissions.IsAdminUser])
+    def data_delete(self, request):
+        serializer = DeleteSettingsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        ids_to_delete = serializer.validated_data.get('ids', [])
+        has_parent_categories = Category.objects.filter(
+            id__in=ids_to_delete,
+            children__isnull=False,
+        ).exists()
+        
+        if has_parent_categories:
+            raise ProtectedDeleteError(
+                'Het is niet mogelijk om een hoofdcategorie met subcategorieën te verwijderen.'
+            )
+
+        Category.objects.filter(id__in=ids_to_delete).delete()
+
+        return Response({
+            'message': 'Successfully deleted objects',
+        })
 
 
 class UsersViewSet(viewsets.ModelViewSet):

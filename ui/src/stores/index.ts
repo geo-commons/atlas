@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import type { IConfig } from "@/types/ConfigType";
 import type { IUser } from "@/types/user";
 import type { ILayer } from "@/types/layer";
+import type { ICategoryTreeNode } from "@/types/map-layer-tree";
 
 export interface PortalAvailableLinks {
   maps: boolean;
@@ -18,6 +19,7 @@ export const DEFAULT_PORTAL_AVAILABLE_LINKS: PortalAvailableLinks = {
 export interface IGlobalStoreState {
   position: any;
   layers: ILayer[];
+  layerTree: ICategoryTreeNode[];
   tool: any;
   selectedArea: any;
   searchQuery: any;
@@ -38,6 +40,7 @@ export const useGlobalStore = defineStore("global", {
   state: (): IGlobalStoreState => ({
     position: null,
     layers: [],
+    layerTree: [],
     tool: null,
     selectedArea: null,
     searchQuery: null,

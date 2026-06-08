@@ -5,6 +5,11 @@ from .models import Category, Source, Layer, Map, Viewer, Metadataset, MapLayer,
 
 
 class CategoryResource(resources.ModelResource):
+    parent = fields.Field(
+        column_name='parent',
+        attribute='parent',
+        widget=widgets.ForeignKeyWidget(Category, field='slug'))
+
     class Meta:
         model = Category
         exclude = ('id', )

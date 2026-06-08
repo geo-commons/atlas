@@ -77,13 +77,13 @@ import { roleTypeLabels, type RoleTypeId } from "@/types/RoleType";
 import { topicCategoryLabels, type TopicCategoryId } from "@/types/TopicCategory";
 import { updateMethodTypeLabels, type UpdateMethodTypeId } from "@/types/UpdateMethodType";
 import { computed } from "vue";
-import type { LayerInfoLayer } from "./LayerInfo.vue";
 import Markdown from "./Markdown";
 import RichValue from "@/components/RichValue.vue";
+import { ILayer } from "@/types/layer";
 
 interface Props {
   modelValue: boolean;
-  layer: LayerInfoLayer;
+  layer: ILayer;
   isLoggedIn?: boolean;
 }
 

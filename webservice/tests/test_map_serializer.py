@@ -1,4 +1,6 @@
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.test import APITestCase
+from rest_framework.test import APIRequestFactory
 
 from webservice.models import Map, MapLayer, MapCategory, Layer, Category, Source
 from webservice.serializers import MapSerializer, MapLayerSerializer, MapCategorySerializer
@@ -8,6 +10,7 @@ class MapLayerSerializerTest(APITestCase):
     """Test MapLayerSerializer"""
 
     def setUp(self):
+        self.factory = APIRequestFactory()
         self.source = Source.objects.create(
             slug='test-source',
             title='Test Source',
@@ -95,6 +98,7 @@ class MapSerializerTest(APITestCase):
     """Test MapSerializer create/update operations"""
 
     def setUp(self):
+        self.factory = APIRequestFactory()
         self.source = Source.objects.create(
             slug='test-source',
             title='Test Source',
@@ -219,6 +223,46 @@ class MapSerializerTest(APITestCase):
         map_layer = map_instance.map_layers.first()
         self.assertIsNotNone(map_layer.map_category)
         self.assertEqual(map_layer.map_category.category, self.category1)
+
+    def test_update_map_legacy_categories_creates_parent_for_subcategory(self):
+        parent_category = Category.objects.create(slug='parent-category', title='Parent category', ordering=3)
+        subcategory = Category.objects.create(
+            slug='subcategory',
+            title='Subcategory',
+            ordering=4,
+            parent=parent_category,
+        )
+        layer = Layer.objects.create(
+            slug='subcategory-layer',
+            title='Subcategory layer',
+            layer_source=self.source,
+            layer_type=subcategory,
+        )
+        map_instance = Map.objects.create(title='Existing Map', slug='existing-map')
+        data = {
+            'title': 'Existing Map',
+            'slug': 'existing-map',
+            'categories': [
+                {'category': subcategory.id, 'ordering': 0},
+            ],
+            'layers': [
+                {
+                    'layer': layer.id,
+                    'settings': {},
+                    'ordering': 0,
+                }
+            ],
+        }
+
+        serializer = MapSerializer(map_instance, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        updated_map = serializer.save()
+
+        parent_map_category = updated_map.map_categories.get(category=parent_category)
+        subcategory_map_category = updated_map.map_categories.get(category=subcategory)
+        map_layer = updated_map.map_layers.get(layer=layer)
+        self.assertEqual(parent_map_category.ordering, parent_category.ordering)
+        self.assertEqual(map_layer.map_category, subcategory_map_category)
 
     def test_update_map_adds_new_layers_and_categories(self):
         """Test MapSerializer update adds new layers and categories"""
@@ -435,6 +479,74 @@ class MapSerializerTest(APITestCase):
         self.assertEqual(data['layers'][0]['layer'], self.layer1.id)
         self.assertEqual(data['layers'][0]['settings'], {'test': True})
         self.assertEqual(data['categories'][0]['category'], self.category1.id)
+
+    def test_serialize_map_detail_includes_flat_layers_and_categories(self):
+        parent_category = Category.objects.create(
+            slug='infrastructure',
+            title='Infrastructure',
+            ordering=30,
+        )
+        subcategory = Category.objects.create(
+            slug='roads',
+            title='Roads',
+            ordering=20,
+            parent=parent_category,
+        )
+        direct_layer = Layer.objects.create(
+            slug='public-lights',
+            title='Public lights',
+            layer_name='atlas:public_lights',
+            layer_source=self.source,
+            layer_type=parent_category,
+            published=True,
+            closed_dataset=False,
+            login_required=False,
+        )
+        subcategory_layer = Layer.objects.create(
+            slug='traffic-incidents',
+            title='Traffic incidents',
+            layer_name='atlas:traffic_incidents',
+            layer_source=self.source,
+            layer_type=subcategory,
+            published=True,
+            closed_dataset=False,
+            login_required=False,
+        )
+        map_instance = Map.objects.create(title='Test Map', slug='test-map')
+        parent_map_category = MapCategory.objects.create(map=map_instance, category=parent_category, ordering=3)
+        subcategory_map_category = MapCategory.objects.create(map=map_instance, category=subcategory, ordering=1)
+        MapLayer.objects.create(
+            map=map_instance,
+            layer=direct_layer,
+            map_category=parent_map_category,
+            ordering=2,
+            settings={},
+        )
+        MapLayer.objects.create(
+            map=map_instance,
+            layer=subcategory_layer,
+            map_category=subcategory_map_category,
+            ordering=1,
+            settings={
+                'customSettings': True,
+                'opacity': 0.5,
+            },
+        )
+        request = self.factory.get('/atlas/api/v1/maps/test-map/')
+        request.user = AnonymousUser()
+
+        serializer = MapSerializer(map_instance, context={'request': request})
+        data = serializer.data
+
+        self.assertEqual(
+            data['categories'],
+            [
+                {'id': subcategory_map_category.id, 'category': subcategory.id, 'title': subcategory.title, 'ordering': 1},
+                {'id': parent_map_category.id, 'category': parent_category.id, 'title': parent_category.title, 'ordering': 3},
+            ],
+        )
+        self.assertEqual([layer['layer'] for layer in data['layers']], [subcategory_layer.id, direct_layer.id])
+        self.assertEqual(data['layers'][0]['settings'], {'customSettings': True, 'opacity': 0.5})
 
     def test_serialize_map_list_does_not_crash(self):
         """Test MapSerializer(many=True) works for map list endpoints."""

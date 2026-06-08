@@ -87,47 +87,48 @@
             class="category-wrapper"
           >
             <template #button>
-              <div v-if="category.layers.filter((layer) => layer.is_visible).length > 0" class="counter layer-counter">
-                {{ category.layers.filter((layer) => layer.is_visible).length }}
+              <div v-if="category.visibleLayerCount > 0" class="counter layer-counter">
+                {{ category.visibleLayerCount }}
               </div>
             </template>
             <template #default>
               <ul :id="category.id" class="sublayers">
-                <li v-for="layer in category.layers" :key="layer.id" class="sublayer">
-                  <input
-                    :id="layer.id"
-                    type="checkbox"
-                    :name="layer.id"
-                    :checked="layer.is_visible"
-                    :disabled="isLayerDisabled(layer) || (layer.login_required && (!user || !user.token))"
-                    @click="() => onSelectLayer(layer)"
-                  />
-                  <label :for="layer.id">
-                    {{ layer.title }}
-                  </label>
-                  <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
-                  <button
-                    v-if="layer.zoom_min && position.zoom < layer.zoom_min"
-                    v-tippy="{ placement: 'right' }"
-                    class="zoom-button"
-                    content="Zoom in om deze laag te bekijken"
-                    aria-label="Zoom in om deze laag te bekijken"
-                    @click="(e) => zoomToAndShow(e, layer.zoom_min, layer)"
+                <LayerListItem
+                  v-for="layer in category.layers"
+                  :key="layer.id"
+                  :layer="layer"
+                  :position="position"
+                  :user="user"
+                  :map-id="mapId"
+                  @set-position="onSetPosition"
+                  @on-fit="onFit"
+                />
+                <li v-for="subcategory in category.subcategories" :key="subcategory.id" class="subcategory-wrapper">
+                  <ExpandButton
+                    :title="subcategory.title"
+                    :is-open="searchQuery != ''"
+                    class="subcategory-expand-wrapper"
                   >
-                    <ZoomInIcon />
-                  </button>
-                  <button
-                    v-if="layer.zoom_max && position.zoom > layer.zoom_max"
-                    v-tippy="{ placement: 'right' }"
-                    class="zoom-button"
-                    content="Zoom uit om deze laag te bekijken"
-                    aria-label="Zoom uit om deze laag te bekijken"
-                    @click="(e) => zoomToAndShow(e, layer.zoom_max, layer)"
-                  >
-                    <ZoomOutIcon />
-                  </button>
-                  <LayerFit v-if="layer.extent" :layer="layer" @click="() => onFit(layer)" />
-                  <LayerInfo :layer="layer" />
+                    <template #button>
+                      <div v-if="subcategory.visibleLayerCount > 0" class="counter layer-counter">
+                        {{ subcategory.visibleLayerCount }}
+                      </div>
+                    </template>
+                    <template #default>
+                      <ul :id="subcategory.id" class="sublayers subcategory-sublayers">
+                        <LayerListItem
+                          v-for="layer in subcategory.layers"
+                          :key="layer.id"
+                          :layer="layer"
+                          :position="position"
+                          :user="user"
+                          :map-id="mapId"
+                          @set-position="onSetPosition"
+                          @on-fit="onFit"
+                        />
+                      </ul>
+                    </template>
+                  </ExpandButton>
                 </li>
               </ul>
             </template>
@@ -137,22 +138,28 @@
           <p>Beschikbare lagen</p>
           <div v-for="category in categories" :key="category.id">
             <ul :id="category.id" class="sublayers simple-sublayer">
-              <li v-for="layer in category.layers" :key="layer.id" class="sublayer">
-                <input
-                  :id="layer.id"
-                  type="checkbox"
-                  :name="layer.id"
-                  :checked="layer.is_visible"
-                  :disabled="isLayerDisabled(layer) || (layer.login_required && (!user || !user.token))"
-                  @click="() => onSelectLayer(layer)"
+              <LayerListItem
+                v-for="layer in category.layers"
+                :key="layer.id"
+                :layer="layer"
+                :position="position"
+                :user="user"
+                :map-id="mapId"
+                @set-position="onSetPosition"
+                @on-fit="onFit"
+              />
+              <div v-for="subcategory in category.subcategories" :key="subcategory.id">
+                <LayerListItem
+                  v-for="layer in subcategory.layers"
+                  :key="layer.id"
+                  :layer="layer"
+                  :position="position"
+                  :user="user"
+                  :map-id="mapId"
+                  @set-position="onSetPosition"
+                  @on-fit="onFit"
                 />
-                <label :for="layer.id">
-                  {{ layer.title }}
-                  <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
-                </label>
-                <LayerFit v-if="layer.extent" :layer="layer" @click="() => onFit(layer)" />
-                <LayerInfo :layer="layer" />
-              </li>
+              </div>
             </ul>
           </div>
         </li>
@@ -215,14 +222,9 @@
 </template>
 
 <script>
-import { intersects } from "ol/extent";
 import ExpandButton from "./ExpandButton";
 import VisibleLayer from "./VisibleLayer";
-import LayerAuthentication from "./LayerAuthentication";
-import LayerFit from "./LayerFit";
-import LayerInfo from "./LayerInfo";
-import ZoomInIcon from "../assets/icons/zoom-in-icon.svg";
-import ZoomOutIcon from "../assets/icons/zoom-out-icon.svg";
+import LayerListItem from "./LayerListItem";
 import CollapseAllIcon from "@/assets/icons/collapse-all-icon.svg";
 import OpenAllIcon from "@/assets/icons/open-all-icon.svg";
 import SortIcon from "@/assets/icons/sort-icon.svg";
@@ -238,14 +240,14 @@ export default {
     SortIcon,
     ExpandButton,
     VisibleLayer,
-    LayerAuthentication,
-    LayerFit,
-    LayerInfo,
-    ZoomInIcon,
-    ZoomOutIcon,
+    LayerListItem,
   },
   props: {
     layers: Array,
+    layerTree: {
+      type: Array,
+      default: () => [],
+    },
     position: Object,
     user: Object,
     mapId: String,
@@ -271,56 +273,11 @@ export default {
   computed: {
     ...mapState(useGlobalStore, ["config"]),
     categories() {
-      let categories = [];
-      this.layers.forEach((layer) => {
-        if (!layer.category) {
-          return;
-        }
+      if (this.layerTree.length > 0) {
+        return this.buildTreeCategories();
+      }
 
-        if (this.searchQuery) {
-          const searchTerm = this.searchQuery.trim().toLowerCase();
-
-          // Laag velden
-          const matchesLayerTitle = layer.title.toLowerCase().includes(searchTerm);
-          const matchesLayerDescription = layer.description?.toLowerCase().includes(searchTerm) || false;
-          const matchesLayerSearchTerms =
-            layer.search_terms?.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
-
-          // Metadataset velden
-          const matchesMetadatasetTitle = layer.metadataset?.title.toLowerCase().includes(searchTerm);
-          const matchesMetadatasetAbstract = layer.metadataset?.abstract?.toLowerCase().includes(searchTerm) || false;
-          const metadatasetKeywords = layer.metadataset?.keyword ? layer.metadataset.keyword.split(/\r?\n/) : [];
-          const matchesMetadatasetKeywords =
-            metadatasetKeywords.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
-
-          if (
-            !matchesLayerTitle &&
-            !matchesLayerDescription &&
-            !matchesLayerSearchTerms &&
-            !matchesMetadatasetTitle &&
-            !matchesMetadatasetAbstract &&
-            !matchesMetadatasetKeywords
-          ) {
-            return;
-          }
-        }
-
-        const existingCategory = categories.find((c) => c.id === layer.category.id);
-
-        if (existingCategory) {
-          existingCategory.layers.push(layer);
-          return;
-        }
-
-        const newCategory = {
-          ...layer.category,
-          layers: [layer],
-        };
-
-        categories.push(newCategory);
-      });
-
-      return categories;
+      return [];
     },
     visibleLayers() {
       return this.mapStore ? this.mapStore.visibleLayers : [];
@@ -337,6 +294,79 @@ export default {
     }
   },
   methods: {
+    buildTreeCategories() {
+      return this.layerTree
+        .map((category) => {
+          const layers = this.getTreeLayers(category.layers || []);
+          const subcategories = (category.subcategories || [])
+            .map((subcategory) => ({
+              ...subcategory,
+              layers: this.getTreeLayers(subcategory.layers || []),
+            }))
+            .filter((subcategory) => subcategory.layers.length > 0)
+            .map((subcategory) => ({
+              ...subcategory,
+              visibleLayerCount: this.getVisibleLayerCount(subcategory),
+            }));
+
+          return {
+            ...category,
+            layers,
+            subcategories,
+            visibleLayerCount: this.getVisibleLayerCount({ layers, subcategories }),
+          };
+        })
+        .filter((category) => category.layers.length > 0 || category.subcategories.length > 0);
+    },
+    getTreeLayers(treeLayers) {
+      return treeLayers
+        .map((treeLayer) => this.findLayerForTreeLayer(treeLayer))
+        .filter((layer) => layer && this.layerMatchesSearch(layer));
+    },
+    findLayerForTreeLayer(treeLayer) {
+      return this.layers.find(
+        (layer) =>
+          layer.id === treeLayer.id || layer.internal_id === treeLayer.id || layer.id === treeLayer.internal_id,
+      );
+    },
+    getVisibleLayerCount(category) {
+      const directVisibleLayers = category.layers.filter((layer) => layer.is_visible).length;
+      const subcategoryVisibleLayers = (category.subcategories || []).reduce((total, subcategory) => {
+        return total + subcategory.layers.filter((layer) => layer.is_visible).length;
+      }, 0);
+
+      return directVisibleLayers + subcategoryVisibleLayers;
+    },
+    layerMatchesSearch(layer) {
+      if (!this.searchQuery) {
+        return true;
+      }
+
+      const searchTerm = this.searchQuery.trim().toLowerCase();
+
+      // Laag velden
+      const matchesLayerTitle = layer.title.toLowerCase().includes(searchTerm);
+      const matchesLayerDescription = layer.description?.toLowerCase().includes(searchTerm) || false;
+      const matchesLayerSearchTerms =
+        layer.search_terms?.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
+
+      // Metadataset velden
+      const matchesMetadatasetTitle = layer.metadataset?.title.toLowerCase().includes(searchTerm);
+      const matchesMetadatasetAbstract = layer.metadataset?.abstract?.toLowerCase().includes(searchTerm) || false;
+      const metadatasetKeywords = layer.metadataset?.keyword ? layer.metadataset.keyword.split(/\r?\n/) : [];
+      const matchesMetadatasetKeywords = metadatasetKeywords.some((term) =>
+        term.trim().toLowerCase().includes(searchTerm),
+      );
+
+      return (
+        matchesLayerTitle ||
+        matchesLayerDescription ||
+        matchesLayerSearchTerms ||
+        matchesMetadatasetTitle ||
+        matchesMetadatasetAbstract ||
+        matchesMetadatasetKeywords
+      );
+    },
     togglePanel(selectedPanel) {
       if (this.panel === selectedPanel) {
         this.panel = "";
@@ -351,38 +381,11 @@ export default {
         });
       }
     },
-    isLayerDisabled(layer) {
-      if (layer.zoom_min && this.position.zoom < layer.zoom_min) {
-        return true;
-      }
-
-      if (layer.zoom_max && this.position.zoom > layer.zoom_max) {
-        return true;
-      }
-
-      if (layer.extent && this.position.extent && !intersects(layer.extent, this.position.extent)) {
-        return true;
-      }
-
-      return false;
+    onSetPosition(newPosition) {
+      this.$emit("set-position", newPosition);
     },
-    onSelectLayer(selectedLayer) {
-      this.mapStore.toggleLayer({ selectedLayerId: selectedLayer.id, is_visible: !selectedLayer.is_visible });
-    },
-    onFit(selectedLayer) {
-      this.$emit("on-fit", selectedLayer.extent);
-    },
-    zoomToAndShow(e, zoom, selectedLayer) {
-      e.stopPropagation();
-
-      this.$emit("set-position", {
-        ...this.position,
-        zoom,
-      });
-
-      if (!selectedLayer.is_visible) {
-        this.mapStore.toggleLayer({ selectedLayerId: selectedLayer.id, is_visible: true });
-      }
+    onFit(extent) {
+      this.$emit("on-fit", extent);
     },
     onToggleSortLayers() {
       this.sortLayers = !this.sortLayers;
@@ -506,46 +509,6 @@ export default {
 
 .sublayers {
   padding: 0 4px 4px 30px;
-}
-
-.sublayer {
-  position: relative;
-  display: flex;
-}
-
-.sublayer > input {
-  position: absolute;
-  top: 5px;
-  left: 0;
-  width: 14px;
-  height: 14px;
-  margin: 0;
-}
-
-.sublayer > label {
-  display: flex;
-  position: relative;
-  width: 100%;
-  cursor: pointer;
-  padding: 2px 0 2px 20px;
-  user-select: none;
-  word-break: break-word;
-}
-
-.sublayer > input:disabled + label {
-  color: var(--color-grey-80);
-}
-
-.zoom-button {
-  margin-left: 5px;
-  opacity: 0;
-}
-
-.layer:hover .zoom-button,
-.sublayer:hover .zoom-button,
-.tippy-active > .zoom-button,
-.keyboard-user .zoom-button:focus {
-  opacity: 1;
 }
 
 @media (max-width: 640px) {

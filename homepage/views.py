@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 LAYER_PREFETCH_FIELDS = (
     'layer_source',
     'layer_type',
+    'layer_type__parent',
     'linked_data',
     'templates',
     'related_tables',
@@ -48,7 +49,7 @@ def v3(request, slug=None):
             'config': _get_config(request, visible_map),
             'user': user,
             'map': visible_map.to_dict(),
-            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in authorized_layers]
+            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in authorized_layers],
         }
     }
 

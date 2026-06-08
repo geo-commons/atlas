@@ -29,7 +29,7 @@ const tableHeaders: Array<TableHeader> = [
   },
   {
     header: "Categorie",
-    key: "category.title",
+    key: "category.full_title",
     overrideKeyForFilter: "category",
     enableLink: false,
   },
@@ -68,7 +68,7 @@ const getCategories = async (): Promise<Array<object>> => {
   const response = await result.json();
 
   return response.results.map((category: any) => {
-    return { id: category.id, label: category.title };
+    return { id: category.id, label: category.full_title };
   });
 };
 
