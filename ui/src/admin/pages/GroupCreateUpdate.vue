@@ -22,11 +22,11 @@ import { useQueryCache } from "@pinia/colada";
 export default {
   name: "GroupCreateUpdateComponent",
   components: { Spinner, AdminFormSections },
+  props: {},
   setup() {
     const queryCache = useQueryCache();
     return { queryCache };
   },
-  props: {},
   data() {
     return {
       sections: {},

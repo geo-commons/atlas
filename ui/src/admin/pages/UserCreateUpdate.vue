@@ -17,22 +17,21 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
-import { getAllObjects } from "@/utils/api-helpers";
 import Spinner from "@/components/Spinner.vue";
 import { useQueryCache } from "@pinia/colada";
+import { useGroupList } from "@/admin/queries";
 
 export default {
   name: "UserCreateUpdateComponent",
   components: { Spinner, AdminFormSections },
   setup() {
     const queryCache = useQueryCache();
-    return { queryCache };
+    const { groupsState, refresh: refreshGroups } = useGroupList();
+    return { queryCache, groupsState, refreshGroups };
   },
   data() {
     return {
-      sections: {},
       initialValues: {},
-      groups: [],
       loading: false,
     };
   },
@@ -43,14 +42,17 @@ export default {
     editingCurrentUser() {
       return this.currentUser.id === this.initialValues.id;
     },
+    sections() {
+      return this.getSections();
+    },
   },
   created() {
     this.loading = true;
-    Promise.all([this.getUser(), this.getGroups()]).then(() => {
-      this.setAtlasGroups();
-      this.sections = this.getSections();
-      this.loading = false;
-    });
+    this.getUser()
+      .then(() => this.setAtlasGroups())
+      .finally(() => {
+        this.loading = false;
+      });
   },
   methods: {
     async getUser() {
@@ -69,27 +71,12 @@ export default {
 
       return result;
     },
-    async getGroups() {
-      const url = getAllObjects("/atlas/api/v1/groups/");
-
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch groups");
-      }
-
-      const response = await result.json();
-      this.groups = response.results;
-
-      return result;
-    },
-    setAtlasGroups() {
-      const groups = this.initialValues.atlas_groups.map((group) => group.id);
-      const selectedGroups = this.groups.filter((group) => groups.includes(group.id));
-      const availableGroups = this.groups.filter((group) => !groups.includes(group.id));
+    async setAtlasGroups() {
+      await this.refreshGroups();
+      const groups = this.groupsState.data || [];
+      const groupsFromInitialValues = this.initialValues.atlas_groups.map((group) => group.id);
+      const selectedGroups = groups.filter((group) => groupsFromInitialValues.includes(group.id));
+      const availableGroups = groups.filter((group) => !groupsFromInitialValues.includes(group.id));
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
     async saveUser(currentValues, continueEditing = false) {

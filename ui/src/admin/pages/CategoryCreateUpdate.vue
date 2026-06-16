@@ -19,6 +19,7 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useQueryCache } from "@pinia/colada";
 import { getAllObjects } from "@/utils/api-helpers";
+import { useCategoryList } from "@/admin/queries";
 
 export default {
   name: "CategoryCreateUpdate",
@@ -28,21 +29,25 @@ export default {
   },
   setup() {
     const queryCache = useQueryCache();
-    return { queryCache };
+    const { categoriesState } = useCategoryList();
+    return { queryCache, categoriesState };
   },
   data() {
     return {
       sections: {},
       initialValues: {},
-      parentCategories: [],
       loading: false,
     };
+  },
+  computed: {
+    categoriesExceptCurrent() {
+      return (this.categoriesState.data || []).filter((category) => category.id !== this.initialValues.id);
+    },
   },
   created() {
     this.loading = true;
 
-    Promise.all([this.getCategory(), this.getCategories()]).then(() => {
-      this.parentCategories = this.parentCategories.filter((category) => category.id !== this.initialValues.id);
+    Promise.all([this.getCategory()]).then(() => {
       this.sections = this.getSections();
       this.loading = false;
     });
@@ -129,7 +134,7 @@ export default {
               type: "dropdown",
               required: false,
               placeholder: "hoofdcategorie",
-              options: this.parentCategories,
+              options: this.categoriesExceptCurrent || [],
               infoText: "Laat leeg voor een hoofdcategorie. Kies een hoofdcategorie om een subcategorie van te maken.",
             },
           ],
