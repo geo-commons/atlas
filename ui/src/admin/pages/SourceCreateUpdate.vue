@@ -16,9 +16,9 @@
 
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
-import { getAllObjects } from "@/utils/api-helpers";
 import Spinner from "@/components/Spinner.vue";
 import { useQueryCache } from "@pinia/colada";
+import { useGroupList } from "@/admin/queries";
 
 export default {
   name: "SourceCreateUpdate",
@@ -28,13 +28,12 @@ export default {
   },
   setup() {
     const queryCache = useQueryCache();
-    return { queryCache };
+    const { groupsState, refresh: refreshGroups } = useGroupList();
+    return { queryCache, groupsState, refreshGroups };
   },
   data() {
     return {
-      sections: {},
       initialValues: {},
-      groups: [],
       loading: false,
       sourceTypes: [
         { id: "OWS", label: "OWS" },
@@ -43,14 +42,19 @@ export default {
       ],
     };
   },
+  computed: {
+    sections() {
+      return this.getSections();
+    },
+  },
   created() {
     this.loading = true;
 
-    Promise.all([this.getSource(), this.getGroups()]).then(() => {
-      this.setAtlasGroups();
-      this.sections = this.getSections();
-      this.loading = false;
-    });
+    this.getSource()
+      .then(() => this.setAtlasGroups())
+      .finally(() => {
+        this.loading = false;
+      });
   },
   methods: {
     async getSource() {
@@ -91,26 +95,11 @@ export default {
         console.error("An unexpected error occurred:", e);
       }
     },
-    async getGroups() {
-      const url = getAllObjects("/atlas/api/v1/groups/");
-
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch groups");
-      }
-
-      const response = await result.json();
-      this.groups = response.results;
-
-      return result;
-    },
-    setAtlasGroups() {
-      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+    async setAtlasGroups() {
+      await this.refreshGroups();
+      const groups = this.groupsState.data || [];
+      const selectedGroups = groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
+      const availableGroups = groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
     },
     getSections() {

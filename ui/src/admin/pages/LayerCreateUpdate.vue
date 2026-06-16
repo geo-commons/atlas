@@ -140,9 +140,9 @@ import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import Spinner from "@/components/Spinner.vue";
 import { useGlobalStore } from "@/stores";
-import { getAllObjects } from "@/utils/api-helpers";
 import { mapState } from "pinia";
 import { useQueryCache } from "@pinia/colada";
+import { useCategoryList, useGroupList, useMetadatasetList, useSourceList, useTableList } from "@/admin/queries";
 
 export default {
   name: "LayerCreateUpdate",
@@ -157,17 +157,27 @@ export default {
   },
   setup() {
     const queryCache = useQueryCache();
-    return { queryCache };
+    const { metadatasetsState } = useMetadatasetList();
+    const { categoriesState } = useCategoryList();
+    const { sourcesState } = useSourceList();
+    const { groupsState, refresh: refreshGroups } = useGroupList();
+    const { tablesState } = useTableList();
+    return {
+      queryCache,
+      metadatasetsState,
+      categoriesState,
+      sourcesState,
+      groupsState,
+      refreshGroups,
+      tablesState,
+    };
   },
   data() {
     return {
       categories: [],
       metadatasets: [],
       selectedRelatedTables: [],
-      relatedTables: [],
-      sources: {},
       sourceTypes: [],
-      groups: [],
       formats: [],
       initialValues: {},
       selectedSource: {},
@@ -181,6 +191,12 @@ export default {
   },
   computed: {
     ...mapState(useGlobalStore, ["config"]),
+    categoriesWithFullTitle() {
+      return (this.categoriesState.data || []).map((category) => ({
+        id: category.id,
+        label: category.fullTitle,
+      }));
+    },
     sections() {
       return this.getSections();
     },
@@ -203,17 +219,11 @@ export default {
       { id: "image/vnd.jpeg-png", label: "image/vnd.jpeg-png" },
     ];
 
-    Promise.all([
-      this.getLayer(),
-      this.getGroups(),
-      this.getCategories(),
-      this.getMetadatasets(),
-      this.getSources(),
-      this.getRelatedTables(),
-    ]).then(() => {
-      this.setAtlasGroups();
-      this.loading = false;
-    });
+    this.getLayer()
+      .then(() => this.setAtlasGroups())
+      .finally(() => {
+        this.loading = false;
+      });
   },
   methods: {
     async getLayer() {
@@ -337,109 +347,13 @@ export default {
         console.error("An unexpected error occurred:", e);
       }
     },
-    async getCategories() {
-      const url = getAllObjects("/atlas/api/v1/categories/");
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch categories");
-      }
-
-      const response = await result.json();
-
-      this.categories = response.results.map((category) => {
-        return { id: category.id, label: category.full_title };
-      });
-      return response;
-    },
-    async getMetadatasets() {
-      const url = getAllObjects("/atlas/api/v1/metadatasets/");
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch metadatasets");
-      }
-
-      const response = await result.json();
-
-      this.metadatasets = response.results.map((metadataset) => ({
-        id: metadataset.id,
-        label: metadataset.title,
-        value: metadataset.id,
-        organization: metadataset.organization,
-        description: metadataset.description,
-        last_updated: metadataset.last_updated,
-        update_frequency: metadataset.update_frequency,
-        responsible_email_internal: metadataset.responsible_email_internal,
-      }));
-      return response;
-    },
-    async getSources() {
-      const url = getAllObjects("/atlas/api/v1/sources/");
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch sources");
-      }
-
-      const response = await result.json();
-
-      this.sources = response.results.map((source) => {
-        return { id: source.id, label: source.title, url: source.url, type: source.source_type };
-      });
-
-      return response;
-    },
-    async getGroups() {
-      const url = getAllObjects("/atlas/api/v1/groups/");
-
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch groups");
-      }
-
-      const response = await result.json();
-      this.groups = response.results;
-      return response;
-    },
-    // TODO: fix after https://gitlab.com/purmerend/atlas/-/issues/867 is resolved
-    async getRelatedTables() {
-      const url = getAllObjects("/atlas/api/v1/tables/");
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch related tables");
-      }
-
-      const response = await result.json();
-
-      this.relatedTables = response.results;
-
-      return response;
-    },
-    setAtlasGroups() {
-      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
-      const selectedWritableGroups = this.groups.filter((group) =>
-        this.initialValues.atlas_write_groups.includes(group.id),
-      );
-      const availableWritableGroups = this.groups.filter(
+    async setAtlasGroups() {
+      await this.refreshGroups();
+      const groups = this.groupsState.data || [];
+      const selectedGroups = groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
+      const availableGroups = groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      const selectedWritableGroups = groups.filter((group) => this.initialValues.atlas_write_groups.includes(group.id));
+      const availableWritableGroups = groups.filter(
         (group) => !this.initialValues.atlas_write_groups.includes(group.id),
       );
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
@@ -626,7 +540,7 @@ export default {
               type: "dropdown",
               placeholder: "categorie",
               required: false,
-              options: this.categories,
+              options: this.categoriesWithFullTitle || [],
             },
             {
               label: "Beschrijving",
@@ -644,7 +558,7 @@ export default {
               type: "metadataset-select",
               required: false,
               placeholder: "Metadata",
-              options: this.metadatasets,
+              options: this.metadatasetsState.data,
             },
             {
               label: "Gepubliceerd",
@@ -676,7 +590,7 @@ export default {
               type: "dropdown",
               required: true,
               placeholder: "bron",
-              options: this.sources,
+              options: this.sourcesState.data || [],
             },
             {
               label: "Laagnaam",
@@ -685,7 +599,7 @@ export default {
               type: "layer-select",
               placeholder: "laag",
               sourceField: "source_id",
-              options: this.sources,
+              options: this.sourcesState.data || [],
               infoText: "De naam van de laag op de geoserver.",
               contains_colon: true,
             },
@@ -963,7 +877,7 @@ export default {
               type: "related-tables-select",
               required: false,
               placeholder: "Selecteer gerelateerde tabellen",
-              options: this.relatedTables,
+              options: this.tablesState.data || [],
             },
           ],
           showIf: this.config?.features?.newTables,

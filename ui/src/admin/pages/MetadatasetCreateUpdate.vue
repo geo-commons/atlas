@@ -12,8 +12,8 @@
     />
 
     <div v-if="!loading">
-      <Spinner v-if="layersLoading" style-type="'admin'" />
-      <AssignedLayersList v-else :layers="layers" />
+      <Spinner v-if="layersAsyncStatus == 'loading'" style-type="'admin'" />
+      <AssignedLayersList v-else :layers="layersState.data" />
     </div>
   </div>
 </template>
@@ -22,7 +22,6 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import AssignedLayersList from "@/admin/components/AssignedLayersList.vue";
 import Spinner from "@/components/Spinner.vue";
-import { getAllObjects } from "@/utils/api-helpers";
 import {
   accessConstraintsTypeOptions,
   // authorizationLevelTypeOptions,
@@ -33,23 +32,13 @@ import {
   updateMethodTypeOptions,
   type AdminFormConfig,
 } from "@/types";
-import { ILayer } from "@/types/layer";
 import { IMetadataset } from "@/types/metadataset";
 import { useToast } from "primevue/usetoast";
 import { onMounted, ref, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { formatDateForInput } from "@/utils/date-formatter";
 import { useQueryCache } from "@pinia/colada";
-
-// Types
-interface Layer {
-  id: number;
-  name: string;
-}
-
-interface LayersApiResponse {
-  results: ILayer[];
-}
+import { useLayerList } from "@/admin/queries";
 
 // Composables
 const route = useRoute();
@@ -57,13 +46,16 @@ const router = useRouter();
 const toast = useToast();
 const queryCache = useQueryCache();
 
+// Queries
+const { layersState, layersSearch, asyncStatus: layersAsyncStatus } = useLayerList();
+
 // Reactive data
 const sections: Ref<AdminFormConfig> = ref({});
 const initialValues: Ref<Partial<IMetadataset>> = ref({});
 const loading = ref(false);
-const layers: Ref<Layer[]> = ref([]);
-const layersLoading = ref(false);
 const formSections = ref();
+
+layersSearch.value = route.params.id as string;
 
 // Methods
 const getMetadataset = async (): Promise<void> => {
@@ -110,33 +102,6 @@ const saveMetadataset = async (currentValues: Partial<IMetadataset>, continueEdi
   } catch (e) {
     console.error("An unexpected error occurred:", e);
   }
-};
-
-const getLayers = async (): Promise<void> => {
-  layersLoading.value = true;
-
-  const url = getAllObjects("/atlas/api/v1/layers/");
-  const result = await fetch(url, {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch layers");
-    layersLoading.value = false;
-    return;
-  }
-
-  const response: LayersApiResponse = await result.json();
-
-  layers.value = response.results
-    .filter((layer) => layer.metadataset?.id === parseInt(route.params.id as string))
-    .map((layer) => ({
-      id: parseInt(layer.id),
-      name: layer.title,
-    }));
-
-  layersLoading.value = false;
 };
 
 const getSections = (): AdminFormConfig => {
@@ -454,7 +419,7 @@ const getSections = (): AdminFormConfig => {
 onMounted(async () => {
   loading.value = true;
 
-  await Promise.all([getMetadataset(), getLayers()]);
+  await Promise.all([getMetadataset()]);
 
   sections.value = getSections();
   loading.value = false;

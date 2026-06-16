@@ -20,18 +20,20 @@ import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
-import { getAllObjects } from "@/utils/api-helpers";
 import { useToast } from "primevue";
 import { useQueryCache } from "@pinia/colada";
+import { useSourceList, useTableList } from "@/admin/queries";
 
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 const queryCache = useQueryCache();
 
+// Queries
+const { sourcesState } = useSourceList();
+const { tablesState: availableTablesState } = useTableList();
+
 const formSections = ref();
-const sources = ref([]);
-const availableTables = ref([]);
 const sections = ref({});
 const initialValues = ref({});
 const loading = ref(false);
@@ -87,41 +89,6 @@ async function getTable() {
     url: source.url,
     type: source.source_type,
   };
-}
-
-async function getSources() {
-  const url = getAllObjects("/atlas/api/v1/sources/");
-  const result = await fetch(url, {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch sources");
-    return;
-  }
-
-  const response = await result.json();
-  sources.value = response.results.map((source) => ({
-    id: source.id,
-    label: source.title,
-  }));
-}
-
-async function getAvailableTables() {
-  const url = getAllObjects("/atlas/api/v1/tables/");
-  const result = await fetch(url, {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!result.ok) {
-    console.error("Could not fetch tables");
-    return;
-  }
-
-  const response = await result.json();
-  availableTables.value = response.results;
 }
 
 async function saveTable(currentValues, continueEditing = false) {
@@ -185,7 +152,7 @@ const validateAndParseJsonString = (text) => {
 
 onMounted(async () => {
   loading.value = true;
-  await Promise.all([getTable(), getSources(), getAvailableTables()]);
+  await Promise.all([getTable()]);
   sections.value = getSections();
   loading.value = false;
 });
@@ -221,7 +188,7 @@ function getSections() {
           type: "dropdown",
           required: true,
           placeholder: "bron",
-          options: sources.value,
+          options: sourcesState.value.data,
         },
         {
           label: "Type bron (OWS, WMTS, REST)",
@@ -465,7 +432,7 @@ function getSections() {
           type: "related-tables-select",
           required: false,
           placeholder: "Selecteer gerelateerde tabellen",
-          options: availableTables.value,
+          options: availableTablesState.value.data,
         },
       ],
     },

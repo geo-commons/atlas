@@ -16,10 +16,10 @@
 <script>
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
-import { getAllObjects } from "@/utils/api-helpers";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
 import { useQueryCache } from "@pinia/colada";
+import { useGroupList, useSourceList } from "@/admin/queries";
 
 export default {
   name: "AuthorizationCreateUpdate",
@@ -29,30 +29,30 @@ export default {
   },
   setup() {
     const queryCache = useQueryCache();
-    return { queryCache };
+    const { sourcesState } = useSourceList();
+    const { groupsState, refresh: refreshGroups } = useGroupList();
+    return { queryCache, sourcesState, groupsState, refreshGroups };
   },
   data() {
     return {
-      sources: [],
-      groups: [],
-      sections: {},
       initialValues: {},
-      availableGroups: [],
-      selectedGroups: [],
       loading: false,
     };
   },
   computed: {
     ...mapState(useGlobalStore, ["config"]),
+    sections() {
+      return this.getSections();
+    },
   },
   created() {
     this.loading = true;
 
-    Promise.all([this.getAuthorization(), this.getGroups(), this.getSources()]).then(() => {
-      this.setAtlasGroups();
-      this.sections = this.getSections();
-      this.loading = false;
-    });
+    this.getAuthorization()
+      .then(() => this.setAtlasGroups())
+      .finally(() => {
+        this.loading = false;
+      });
   },
   methods: {
     async getAuthorization() {
@@ -97,48 +97,13 @@ export default {
         console.error("An unexpected error occurred:", e);
       }
     },
-    async getSources() {
-      const url = getAllObjects("/atlas/api/v1/sources/");
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch sources");
-      }
-
-      const response = await result.json();
-
-      this.sources = response.results.map((source) => {
-        return { id: source.id, label: source.title, url: source.url, type: source.source_type };
-      });
-      return response;
-    },
-    async getGroups() {
-      const url = getAllObjects("/atlas/api/v1/groups/");
-
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch groups");
-      }
-
-      const response = await result.json();
-      this.groups = response.results;
-
-      return result;
-    },
-    setAtlasGroups() {
-      const selectedGroups = this.groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
-      const availableGroups = this.groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
-      const selectedWritableGroups = this.groups.filter((group) =>
-        this.initialValues.atlas_write_groups.includes(group.id),
-      );
-      const availableWritableGroups = this.groups.filter(
+    async setAtlasGroups() {
+      await this.refreshGroups();
+      const groups = this.groupsState.data || [];
+      const selectedGroups = groups.filter((group) => this.initialValues.atlas_groups.includes(group.id));
+      const availableGroups = groups.filter((group) => !this.initialValues.atlas_groups.includes(group.id));
+      const selectedWritableGroups = groups.filter((group) => this.initialValues.atlas_write_groups.includes(group.id));
+      const availableWritableGroups = groups.filter(
         (group) => !this.initialValues.atlas_write_groups.includes(group.id),
       );
       this.initialValues.atlas_groups = [availableGroups, selectedGroups];
@@ -156,7 +121,7 @@ export default {
               type: "dropdown",
               required: true,
               placeholder: "bron",
-              options: this.sources,
+              options: this.sourcesState.data,
             },
             {
               label: "Resource",
