@@ -105,6 +105,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'import_export',
+    'inertia',
     'reversion',
     'revproxy',
     'debug_toolbar',
@@ -127,6 +128,7 @@ MIDDLEWARE = [
     'utils.middleware.check_access_admin',
     'utils.middleware.disable_admin1',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'inertia.middleware.InertiaMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -192,6 +194,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'atlas.wsgi.application'
+
+INERTIA_LAYOUT = 'inertia_layout.html'
 
 LAYER_CHOICES = (
     ('base_layer', 'Achtergrond kaart'),

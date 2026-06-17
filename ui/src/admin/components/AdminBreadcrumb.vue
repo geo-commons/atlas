@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 
 export default {
   name: "AdminBreadcrumb",

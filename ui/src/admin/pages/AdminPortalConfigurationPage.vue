@@ -18,7 +18,7 @@ import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
 import type { AdminFormConfig, AdminFormValues } from "@/types/AdminFormType";
 import { useToast } from "primevue/usetoast";
-import { useRouter } from "vue-router";
+import { useRouter } from "@/utils/inertia-routing";
 import Cookies from "js-cookie";
 import { onMounted, ref } from "vue";
 

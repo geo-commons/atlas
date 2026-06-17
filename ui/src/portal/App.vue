@@ -2,7 +2,7 @@
   <div class="portal-app tw-flex tw-min-h-full tw-w-full tw-flex-col" :style="computedStyle">
     <portal-header />
     <portal-breadcrumb />
-    <router-view></router-view>
+    <slot />
   </div>
 </template>
 

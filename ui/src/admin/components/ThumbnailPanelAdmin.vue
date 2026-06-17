@@ -102,7 +102,7 @@ import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import FileUploadAdmin from "@/admin/components/FileUploadAdmin.vue";
 import ImageIcon from "@/assets/icons/image-icon.svg";
 import Cookies from "js-cookie";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import { Cropper } from "vue-advanced-cropper";
 import { useConfirm, useToast } from "primevue";
 

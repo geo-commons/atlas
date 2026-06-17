@@ -1,10 +1,11 @@
-from django.test import TestCase
+from inertia.test import InertiaTestCase
 
 from webservice.models import Category, Layer, Map, MapCategory, MapLayer, Source
 
 
-class HomepageViewsTest(TestCase):
+class HomepageViewsTest(InertiaTestCase):
     def setUp(self):
+        super().setUp()
         self.source = Source.objects.create(
             title='Source',
             slug='source',
@@ -34,10 +35,12 @@ class HomepageViewsTest(TestCase):
         response = self.client.get('/atlas/')
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'v3/map.html')
-        self.assertEqual(response.context['data']['map']['slug'], self.main_map.slug)
-        self.assertTrue(response.context['data']['map']['is_main'])
-        self.assertEqual(response.context['data']['config']['position'], self.main_map.settings['position'])
+        self.assertComponentUsed('Map')
+        self.assertIncludesTemplateData({'title': 'Atlas', 'vite_entry': 'src/map.js'})
+        self.assertContains(response, 'data-page="app"')
+        self.assertEqual(self.props()['map']['slug'], self.main_map.slug)
+        self.assertTrue(self.props()['map']['is_main'])
+        self.assertEqual(self.props()['config']['position'], self.main_map.settings['position'])
 
     def test_v3_includes_flat_map_layers_and_categories_with_subcategories(self):
         parent_category = Category.objects.create(title='Infrastructure', slug='infrastructure', ordering=30)
@@ -79,13 +82,13 @@ class HomepageViewsTest(TestCase):
             settings={},
         )
 
-        response = self.client.get('/atlas/')
+        self.client.get('/atlas/')
 
-        layer_ids = [layer['id'] for layer in response.context['data']['layers']]
+        layer_ids = [layer['id'] for layer in self.props()['layers']]
         self.assertIn('public-lights', layer_ids)
         self.assertIn('traffic-incidents', layer_ids)
 
-        map_data = response.context['data']['map']
+        map_data = self.props()['map']
         self.assertEqual(
             map_data['categories'],
             [
@@ -117,12 +120,12 @@ class HomepageViewsTest(TestCase):
             settings={},
         )
 
-        response = self.client.get('/atlas/')
+        self.client.get('/atlas/')
 
-        layer_ids = [layer['id'] for layer in response.context['data']['layers']]
+        layer_ids = [layer['id'] for layer in self.props()['layers']]
         self.assertIn('traffic-incidents', layer_ids)
 
-        map_data = response.context['data']['map']
+        map_data = self.props()['map']
         self.assertEqual(map_data['categories'], [{'category': subcategory.id, 'ordering': 1}])
 
     def test_v3_map_layers_include_configured_layers_only(self):        
@@ -173,13 +176,13 @@ class HomepageViewsTest(TestCase):
             settings={},
         )
 
-        response = self.client.get('/atlas/')
+        self.client.get('/atlas/')
 
-        layer_ids = [layer['id'] for layer in response.context['data']['layers']]
+        layer_ids = [layer['id'] for layer in self.props()['layers']]
         self.assertIn('public-lights', layer_ids)
         self.assertIn('traffic-incidents', layer_ids)
         self.assertNotIn('road-works', layer_ids)
 
-        map_layer_ids = [layer['layer'] for layer in response.context['data']['map']['layers']]
+        map_layer_ids = [layer['layer'] for layer in self.props()['map']['layers']]
         self.assertEqual(map_layer_ids, [configured_layer.id, unpublished_layer.id])
         self.assertNotIn(unconfigured_layer.id, map_layer_ids)

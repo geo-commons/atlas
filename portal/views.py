@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
 from constance import config
-from homepage.views import _get_config, _get_user
+from django.shortcuts import redirect
+from inertia import render as inertia_render
+
+from homepage.views import _get_config, _get_route_props, _get_user
 from table.models import Table
 from webservice.models import Map, Metadataset
 
@@ -29,12 +31,57 @@ def index(request, slug=None):
     if not config.FEATURE_PORTAL:
         return redirect('/atlas/')
 
-    context = {
-        'data': {
-            'config': _get_config(request),
-            'user': _get_user(request),
-            'portalAvailableLinks': _get_portal_available_links(request),
-        }
+    route = _get_portal_route_props(request, slug)
+    props = {
+        'config': _get_config(request),
+        'user': _get_user(request),
+        'portalAvailableLinks': _get_portal_available_links(request),
+        'route': route,
     }
 
-    return render(request, 'portal/index.html', context)
+    return inertia_render(request, route['component'], props=props, template_data={
+        'title': 'Atlas',
+        'vite_entry': 'src/portal.js',
+    })
+
+
+def _get_portal_route_props(request, slug):
+    url_name = request.resolver_match.url_name
+    route_config = {
+        'portal_index': ('/', 'Portal/Dashboard', {'breadcrumb': 'Home', 'menu': False}, {}),
+        'portal_maps': ('/maps', 'Portal/Maps', {'breadcrumb': 'Kaarten', 'menu': True}, {}),
+        'portal_tables': ('/tables', 'Portal/Tables', {'breadcrumb': 'Tabellen', 'menu': True}, {}),
+        'portal_table_detail': (
+            f'/tables/{slug}',
+            'Portal/TableDetail',
+            {'breadcrumb': 'Tabel', 'menu': True, 'parentName': 'Tabellen'},
+            {'slug': slug},
+        ),
+        'portal_search': ('/search', 'Portal/Search', {'breadcrumb': 'Zoeken', 'menu': True}, {}),
+        'portal_metadatasets': (
+            '/metadatasets',
+            'Portal/Metadatasets',
+            {'breadcrumb': 'Metadatasets', 'menu': True},
+            {},
+        ),
+        'portal_metadataset_detail': (
+            f'/metadatasets/{slug}',
+            'Portal/MetadatasetDetail',
+            {'breadcrumb': 'Metadataset details', 'menu': True, 'parentName': 'Metadatasets'},
+            {'slug': slug},
+        ),
+    }
+    path, component, meta, params = route_config.get(
+        url_name,
+        (request.path, 'Portal/NotFound', {'breadcrumb': 'Niet gevonden', 'menu': False}, {}),
+    )
+
+    return _get_route_props(
+        request,
+        app='portal',
+        path=path,
+        base_path='',
+        component=component,
+        meta=meta,
+        params=params,
+    )

@@ -233,7 +233,7 @@ import Dropdown from "primevue/dropdown";
 import { APIResponseType } from "@/types/APIResponseType";
 import type { IMetadataset } from "@/types/metadataset";
 import { computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import { usePortalQueryParams } from "@/portal/composables/usePortalQueryParams";
 import { useGlobalStore } from "@/stores";
 import { topicCategoryLabels } from "@/types/TopicCategory";

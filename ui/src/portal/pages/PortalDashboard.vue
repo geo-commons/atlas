@@ -194,7 +194,7 @@ import { PortalCardObjectType } from "@/portal/components/shared/portalCardShare
 import { useGlobalStore, type PortalAvailableLinks } from "@/stores";
 import { APIResponseType } from "@/types/APIResponseType";
 import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter } from "@/utils/inertia-routing";
 import { IRelatedTable } from "@/types/related-table";
 
 interface Map {

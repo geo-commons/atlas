@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <header-menu v-if="config.features.portal" />
-    <router-view></router-view>
+    <slot />
   </div>
 </template>
 

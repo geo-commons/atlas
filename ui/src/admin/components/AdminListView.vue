@@ -4,7 +4,7 @@ import AdminListViewDialog from "@/admin/components/AdminListViewDialog.vue";
 import { computed, onMounted, Ref, ref } from "vue";
 import AdminListViewTable, { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import AdminListViewFilter, { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "@/utils/inertia-routing";
 import { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
 import AdminListViewPaginator, { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
 import { PageState } from "primevue/paginator";

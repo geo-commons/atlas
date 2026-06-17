@@ -71,7 +71,7 @@ import PortalCard from "@/portal/components/PortalCard.vue";
 import PortalOverviewTemplate from "@/portal/components/PortalOverviewTemplate.vue";
 import { LayoutMode, PortalCardObjectType, SortOrder } from "@/portal/components/shared/portalCardShared";
 import { computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import type { PageState } from "primevue/paginator";
 import Dropdown from "primevue/dropdown";
 import { usePortalQueryParams } from "@/portal/composables/usePortalQueryParams";

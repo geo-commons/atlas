@@ -3,10 +3,10 @@ import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
-import { createApp } from "vue";
 import PrimeVue from "primevue/config";
 import VueTippy from "vue-tippy";
 import { getSettingsFromPath } from "./utils/router";
+import { createAtlasInertiaApp } from "@/utils/inertia";
 import App from "./admin/App";
 import AdminDashboard from "./admin/pages/AdminDashboard";
 import LayerList from "./admin/pages/LayerList";
@@ -24,7 +24,6 @@ import UserCreateUpdate from "@/admin/pages/UserCreateUpdate.vue";
 import GroupList from "@/admin/pages/GroupList.vue";
 import GroupCreateUpdate from "@/admin/pages/GroupCreateUpdate.vue";
 import { defineRule } from "vee-validate";
-import { createRouter, createWebHistory } from "vue-router";
 import { email, required } from "@vee-validate/rules";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
@@ -90,7 +89,7 @@ defineRule("contains-colon", (value) => {
   return true;
 });
 
-const routes = [
+export const routes = [
   {
     path: "/",
     component: AdminDashboard,
@@ -230,89 +229,119 @@ const routes = [
   { path: "/:pathMatch(.*)*", name: "not-found", component: AdminNotFound },
 ];
 
-const router = createRouter({
-  history: createWebHistory("/atlas/admin/#"),
-  routes: routes,
-});
+const pages = {
+  "Admin/Dashboard": AdminDashboard,
+  "Admin/Configuration": AdminConfigurationPage,
+  "Admin/PortalConfiguration": AdminPortalConfigurationPage,
+  "Admin/Maps": MapList,
+  "Admin/MapUpdate": MapCreateUpdate,
+  "Admin/Sources": SourceList,
+  "Admin/SourceUpdate": SourceCreateUpdate,
+  "Admin/Layers": LayerList,
+  "Admin/LayerUpdate": LayerCreateUpdate,
+  "Admin/Categories": CategoryList,
+  "Admin/CategoryUpdate": CategoryCreateUpdate,
+  "Admin/Tables": TableList,
+  "Admin/TableUpdate": TableCreateUpdate,
+  "Admin/TablesOld": TableOldList,
+  "Admin/TableOldUpdate": TableOldCreateUpdate,
+  "Admin/Users": UserList,
+  "Admin/UserUpdate": UserCreateUpdate,
+  "Admin/Groups": GroupList,
+  "Admin/GroupUpdate": GroupCreateUpdate,
+  "Admin/Viewers": ViewerList,
+  "Admin/ViewerUpdate": ViewerCreateUpdate,
+  "Admin/Logs": LogList,
+  "Admin/LogUpdate": LogView,
+  "Admin/Authorizations": AuthorizationList,
+  "Admin/AuthorizationUpdate": AuthorizationCreateUpdate,
+  "Admin/Metadatasets": MetadatasetList,
+  "Admin/MetadatasetUpdate": MetadatasetCreateUpdate,
+  "Admin/GeneralInformation": AdminGeneralInformationPage,
+  "Admin/NotFound": AdminNotFound,
+};
 
-// Atlas v3
-document.addEventListener("DOMContentLoaded", () => {
-  const el = document.querySelector("#app");
-  if (!el) {
-    return;
-  }
+const resolve = (name) => {
+  const page = pages[name] || AdminNotFound;
+  page.layout = App;
+  return page;
+};
 
-  const data = JSON.parse(document.querySelector("#app-data").innerHTML);
-  const settings = getSettingsFromPath(data.config);
+if (window.location.hash.startsWith("#/")) {
+  window.location.replace(`/atlas/admin${window.location.hash.slice(1)}${window.location.search}`);
+} else {
+  createAtlasInertiaApp({
+    resolve,
+    setup({ app, pageProps: data }) {
+      const settings = getSettingsFromPath(data.config);
 
-  const initialState = {
-    isEmbed: settings.is_embed,
-    config: data.config,
-    position: settings.position,
-    layers: data.layers,
-    tool: "",
-    selectedArea: null,
-    searchQuery: "",
-    alert: "",
-    user: data.user,
-  };
+      const initialState = {
+        isEmbed: settings.is_embed,
+        config: data.config,
+        position: settings.position,
+        layers: data.layers,
+        tool: "",
+        selectedArea: null,
+        searchQuery: "",
+        alert: "",
+        user: data.user,
+      };
 
-  const pinia = createPinia();
+      const pinia = createPinia();
 
-  new detectKeyboard();
+      new detectKeyboard();
 
-  // Note: darkModeSelector is set to "light" until we implement dark mode.
-  const app = createApp(App)
-    .use(PrimeVue, {
-      theme: {
-        preset: AtlasPreset("#424bff"),
-        options: {
-          prefix: "prime",
-          darkModeSelector: "light",
-          cssLayer: false,
-        },
-      },
-      locale: {
-        emptySearchMessage: "Geen resultaten gevonden",
-        emptyFilterMessage: "Geen resultaten gevonden",
-        emptyMessage: "Geen resultaten gevonden",
-      },
-    })
-    .use(ConfirmationService)
-    .use(ToastService)
-    .use(pinia)
-    .use(PiniaColada, {
-      plugins: [
-        PiniaColadaQueryHooksPlugin({
-          onError(error) {
-            console.error(error);
-            showApiFetchError(app, error);
+      // Note: darkModeSelector is set to "light" until we implement dark mode.
+      app
+        .use(PrimeVue, {
+          theme: {
+            preset: AtlasPreset("#424bff"),
+            options: {
+              prefix: "prime",
+              darkModeSelector: "light",
+              cssLayer: false,
+            },
           },
-        }),
-      ],
-      mutationOptions: {
-        onError(error) {
-          console.error(error);
-          showApiFetchError(app, error);
-        },
-      },
-    })
-    .use(router)
-    .use(VueTippy, {
-      directive: "tippy",
-      distance: 5,
-      placement: "top",
-      duration: [200, 175],
-      hideOnClick: true,
-      interactive: true,
-      ignoreAttributes: true,
-      allowHTML: false,
-      boundary: "viewport",
-      delay: [1000, 0],
-    });
+          locale: {
+            emptySearchMessage: "Geen resultaten gevonden",
+            emptyFilterMessage: "Geen resultaten gevonden",
+            emptyMessage: "Geen resultaten gevonden",
+          },
+        })
+        .use(ConfirmationService)
+        .use(ToastService)
+        .use(pinia)
+        .use(PiniaColada, {
+          plugins: [
+            PiniaColadaQueryHooksPlugin({
+              onError(error) {
+                console.error(error);
+                showApiFetchError(app, error);
+              },
+            }),
+          ],
+          mutationOptions: {
+            onError(error) {
+              console.error(error);
+              showApiFetchError(app, error);
+            },
+          },
+        })
+        .use(VueTippy, {
+          directive: "tippy",
+          distance: 5,
+          placement: "top",
+          duration: [200, 175],
+          hideOnClick: true,
+          interactive: true,
+          ignoreAttributes: true,
+          allowHTML: false,
+          boundary: "viewport",
+          delay: [1000, 0],
+        });
 
-  const piniaStore = useGlobalStore();
-  piniaStore.setInitialState(initialState);
-
-  app.mount("#app");
-});
+      const piniaStore = useGlobalStore();
+      piniaStore.setInitialState(initialState);
+    },
+  });
+}

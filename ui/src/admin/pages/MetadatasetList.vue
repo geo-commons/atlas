@@ -5,7 +5,7 @@ import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { EDialogTypes } from "@/types/dialog";
 import slugify from "slugify";
 import { ref, Ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter } from "@/utils/inertia-routing";
 import { statusTypeLabels, statusTypeOptions, topicCategoryLabels, topicCategoryOptions } from "@/types";
 import { IMetadataset } from "@/types/metadataset";
 

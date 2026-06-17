@@ -1,4 +1,4 @@
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "@/utils/inertia-routing";
 import { LayoutMode } from "@/portal/components/shared/portalCardShared";
 
 export interface PortalQueryParams {

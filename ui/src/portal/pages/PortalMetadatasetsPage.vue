@@ -79,7 +79,7 @@ import { IMetadataset } from "@/types/metadataset";
 import { topicCategoryLabels } from "@/types/TopicCategory";
 import type { TopicCategoryId } from "@/types/TopicCategory";
 import { computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import { useGlobalStore } from "@/stores";
 import type { PageState } from "primevue/paginator";
 import { usePortalQueryParams } from "@/portal/composables/usePortalQueryParams";

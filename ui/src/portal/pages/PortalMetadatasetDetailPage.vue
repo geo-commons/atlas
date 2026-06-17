@@ -159,7 +159,7 @@ import { updateMethodTypeLabels } from "@/types/UpdateMethodType";
 import { formatDateValue } from "@/utils/date-formatter";
 import { useMapUrl } from "@/portal/composables/useMapUrl";
 import { computed, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import RichValue from "@/components/RichValue.vue";
 
 const { getMapUrl } = useMapUrl();

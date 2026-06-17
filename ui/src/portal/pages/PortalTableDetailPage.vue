@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import { IRelatedTable } from "@/types/related-table";
 import { onMounted, ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import { Form, Field } from "vee-validate";
 import ListTable from "@/portal/components/tables/ListTable.vue";
 import DetailTableDrawer from "../components/tables/DetailTableDrawer.vue";

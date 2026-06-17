@@ -110,7 +110,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import { useGlobalStore, DEFAULT_PORTAL_AVAILABLE_LINKS } from "@/stores";
 import UserMenu from "@/components/UserMenu.vue";
 import { PORTAL_QUICK_NAV_LINKS, type PortalQuickNavLink } from "./shared/portalQuickNavigationLinks";

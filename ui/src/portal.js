@@ -3,12 +3,11 @@ import "tippy.js/dist/tippy.css";
 import "es6-promise/auto";
 import "whatwg-fetch";
 
-import { createApp } from "vue";
 import VueTippy from "vue-tippy";
 
 import App from "./portal/App";
+import { createAtlasInertiaApp } from "@/utils/inertia";
 import PortalNotFound from "./portal/PortalNotFound.vue";
-import { createRouter, createWebHistory } from "vue-router";
 import { createPinia } from "pinia";
 import { useGlobalStore } from "@/stores";
 import PortalDashboard from "@/portal/pages/PortalDashboard.vue";
@@ -31,92 +30,58 @@ defineRule("required", (value) => {
   return true;
 });
 
-const routes = [
-  {
-    path: "/",
-    component: PortalDashboard,
-    meta: {
-      breadcrumb: "Home",
-      menu: false,
-    },
-  },
-  { path: "/maps", component: PortalMapsPage, meta: { breadcrumb: "Kaarten", menu: true } },
-  { path: "/tables", component: PortalTablesPage, meta: { breadcrumb: "Tabellen", menu: true } },
-  {
-    path: "/tables/:slug",
-    name: "table-details",
-    component: PortalTableDetailPage,
-    meta: {
-      breadcrumb: "Tabel",
-      menu: true,
-      parentName: "Tabellen",
-    },
-  },
-  { path: "/search", component: PortalSearchPage, meta: { breadcrumb: "Zoeken", menu: true } },
-  {
-    path: "/metadatasets",
-    component: PortalMetadatasetsPage,
-    meta: { breadcrumb: "Metadatasets", menu: true },
-  },
-  {
-    path: "/metadatasets/:slug",
-    name: "metadataset-details",
-    component: PortalMetadatasetDetailPage,
-    meta: {
-      breadcrumb: "Metadataset details",
-      menu: true,
-      parentName: "Metadatasets",
-    },
-  },
-  { path: "/:pathMatch(.*)*", name: "not-found", component: PortalNotFound },
-];
+const pages = {
+  "Portal/Dashboard": PortalDashboard,
+  "Portal/Maps": PortalMapsPage,
+  "Portal/Tables": PortalTablesPage,
+  "Portal/TableDetail": PortalTableDetailPage,
+  "Portal/Search": PortalSearchPage,
+  "Portal/Metadatasets": PortalMetadatasetsPage,
+  "Portal/MetadatasetDetail": PortalMetadatasetDetailPage,
+  "Portal/NotFound": PortalNotFound,
+};
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes: routes,
-});
+const resolve = (name) => {
+  const page = pages[name] || PortalNotFound;
+  page.layout = App;
+  return page;
+};
 
-document.addEventListener("DOMContentLoaded", () => {
-  const el = document.querySelector("#app");
-  if (!el) {
-    return;
-  }
+createAtlasInertiaApp({
+  resolve,
+  setup({ app, pageProps: data }) {
+    const pinia = createPinia();
 
-  const data = JSON.parse(document.querySelector("#app-data").innerHTML);
-  const pinia = createPinia();
+    const { organization_primary_color, organization_text_color, organization_title_color } = data.config;
 
-  const { organization_primary_color, organization_text_color, organization_title_color } = data.config;
-
-  // Note: darkModeSelector is set to "light" until we implement dark mode.
-  const app = createApp(App)
-    .use(PrimeVue, {
-      theme: {
-        preset: AtlasPreset(organization_primary_color, organization_title_color, organization_text_color),
-        options: {
-          prefix: "prime",
-          darkModeSelector: "light",
-          cssLayer: false,
+    // Note: darkModeSelector is set to "light" until we implement dark mode.
+    app
+      .use(PrimeVue, {
+        theme: {
+          preset: AtlasPreset(organization_primary_color, organization_title_color, organization_text_color),
+          options: {
+            prefix: "prime",
+            darkModeSelector: "light",
+            cssLayer: false,
+          },
         },
-      },
-    })
-    .use(ToastService)
-    .use(pinia)
-    .use(router)
-    .use(VueTippy, {
-      directive: "tippy",
-      distance: 5,
-      placement: "top",
-      duration: [200, 175],
-      hideOnClick: true,
-      interactive: true,
-      ignoreAttributes: true,
-      allowHTML: false,
-      boundary: "viewport",
-      delay: [1000, 0],
-    });
+      })
+      .use(ToastService)
+      .use(pinia)
+      .use(VueTippy, {
+        directive: "tippy",
+        distance: 5,
+        placement: "top",
+        duration: [200, 175],
+        hideOnClick: true,
+        interactive: true,
+        ignoreAttributes: true,
+        allowHTML: false,
+        boundary: "viewport",
+        delay: [1000, 0],
+      });
 
-  const piniaStore = useGlobalStore();
-  piniaStore.setInitialState(data);
-
-  app.mount("#app");
+    const piniaStore = useGlobalStore();
+    piniaStore.setInitialState(data);
+  },
 });

@@ -35,7 +35,7 @@ import {
 import { IMetadataset } from "@/types/metadataset";
 import { useToast } from "primevue/usetoast";
 import { onMounted, ref, type Ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "@/utils/inertia-routing";
 import { formatDateForInput } from "@/utils/date-formatter";
 import { useQueryCache } from "@pinia/colada";
 import { useLayerList } from "@/admin/queries";

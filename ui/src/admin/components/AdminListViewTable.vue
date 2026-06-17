@@ -2,7 +2,7 @@
 import EditIcon from "@/assets/icons/edit-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import ViewIcon from "@/assets/icons/view-icon.svg";
-import { useRouter } from "vue-router";
+import { useRouter } from "@/utils/inertia-routing";
 import AdminListViewTableHeader, { TableHeaderRef } from "@/admin/components/AdminListViewTableHeader.vue";
 import { Ref, ref, watch } from "vue";
 import { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";

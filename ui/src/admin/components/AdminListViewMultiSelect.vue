@@ -2,7 +2,7 @@
 // Properties
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 
 type AdminListViewFilterProps = {
   filter: TableFilter;

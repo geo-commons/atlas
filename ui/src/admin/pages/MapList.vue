@@ -2,7 +2,7 @@
 import AdminListView from "@/admin/components/AdminListView.vue";
 import { Ref, ref } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
-import { useRouter } from "vue-router";
+import { useRouter } from "@/utils/inertia-routing";
 import { EDialogTypes } from "@/types/dialog";
 
 const router = useRouter();

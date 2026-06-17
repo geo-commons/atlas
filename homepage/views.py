@@ -1,15 +1,17 @@
 import logging
 import math
 import os
+from urllib.parse import urlencode
 
 from constance.admin import get_values
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt, xframe_options_sameorigin
 from django.views.decorators.csrf import ensure_csrf_cookie
+from inertia import render as inertia_render
 
 from homepage.templatetags.app_version import app_version
 from webservice.models import Layer, Map, Viewer
@@ -31,6 +33,40 @@ LAYER_PREFETCH_FIELDS = (
     'layer_table_relations',
 )
 
+ADMIN_ROUTE_DEFINITIONS = (
+    ('/', 'Admin/Dashboard', {'title': 'Dashboard', 'menu': True}),
+    ('/configuration', 'Admin/Configuration', {'title': 'Configuratie', 'menu': True}),
+    ('/portal-configuration', 'Admin/PortalConfiguration', {'title': 'Portaal configuratie', 'menu': True}),
+    ('/maps', 'Admin/Maps', {'title': 'Kaarten', 'menu': True}),
+    ('/sources', 'Admin/Sources', {'title': 'Bronnen', 'menu': True}),
+    ('/layers', 'Admin/Layers', {'title': 'Kaartlagen', 'menu': True}),
+    ('/categories', 'Admin/Categories', {'title': 'Categorieën', 'menu': True}),
+    ('/tables', 'Admin/Tables', {'title': 'Tabellen', 'menu': True}),
+    ('/tables_old', 'Admin/TablesOld', {'title': 'Tabellen (oud)', 'menu': True}),
+    ('/users', 'Admin/Users', {'title': 'Gebruikers', 'menu': True}),
+    ('/groups', 'Admin/Groups', {'title': 'Groepen', 'menu': True}),
+    ('/viewers', 'Admin/Viewers', {'title': 'Viewers', 'menu': True}),
+    ('/logs', 'Admin/Logs', {'title': 'Logs', 'menu': True}),
+    ('/authorizations', 'Admin/Authorizations', {'title': 'Autorisaties', 'menu': True}),
+    ('/metadatasets', 'Admin/Metadatasets', {'title': 'Metadatasets', 'menu': True}),
+    ('/general-information', 'Admin/GeneralInformation', {'title': 'Algemene informatie', 'menu': True}),
+)
+
+ADMIN_UPDATE_ROUTE_DEFINITIONS = (
+    ('/maps/update/', 'Admin/MapUpdate', {'title': 'Kaarten', 'menu': False}),
+    ('/sources/update/', 'Admin/SourceUpdate', {'title': 'Bron bewerken', 'menu': True, 'breadcrumb': {'sources': {'title': 'Bronnen'}}}),
+    ('/layers/update/', 'Admin/LayerUpdate', {'title': 'Kaartlaag bewerken', 'menu': True, 'breadcrumb': {'layers': {'title': 'Kaartlagen'}}}),
+    ('/categories/update/', 'Admin/CategoryUpdate', {'title': 'Categorie bewerken', 'menu': True, 'breadcrumb': {'categories': {'title': 'Categorieën'}}}),
+    ('/tables/update/', 'Admin/TableUpdate', {'title': 'Tabel bewerken', 'menu': True, 'breadcrumb': {'tables': {'title': 'Tabellen'}}}),
+    ('/tables_old/update/', 'Admin/TableOldUpdate', {'title': 'Tabel (oud) bewerken', 'menu': True, 'breadcrumb': {'tables': {'title': 'Tabellen'}}}),
+    ('/users/update/', 'Admin/UserUpdate', {'title': 'Gebruiker bewerken', 'menu': True, 'breadcrumb': {'users': {'title': 'Gebruikers'}}}),
+    ('/groups/update/', 'Admin/GroupUpdate', {'title': 'Groep bewerken', 'menu': True, 'breadcrumb': {'groups': {'title': 'Groepen'}}}),
+    ('/viewers/update/', 'Admin/ViewerUpdate', {'title': 'Viewer bewerken', 'menu': True, 'breadcrumb': {'viewers': {'title': 'Viewers'}}}),
+    ('/logs/update/', 'Admin/LogUpdate', {'title': 'Log Bewerken', 'menu': True, 'breadcrumb': {'viewers': {'title': 'Logs'}}}),
+    ('/authorizations/update/', 'Admin/AuthorizationUpdate', {'title': 'Autorisatie bewerken', 'menu': True, 'breadcrumb': {'authorizations': {'title': 'Autorisaties'}}}),
+    ('/metadatasets/update/', 'Admin/MetadatasetUpdate', {'title': 'Metadataset Bewerken', 'menu': True, 'breadcrumb': {'metadatasets': {'title': 'Metadatasets'}}}),
+)
+
 
 @xframe_options_exempt
 @ensure_csrf_cookie
@@ -44,16 +80,18 @@ def v3(request, slug=None):
     else:
         visible_map = get_object_or_404(Map.authorized.for_request(request), is_main=True)
     
-    context = {
-        'data': {
-            'config': _get_config(request, visible_map),
-            'user': user,
-            'map': visible_map.to_dict(),
-            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in authorized_layers],
-        }
+    props = {
+        'config': _get_config(request, visible_map),
+        'user': user,
+        'map': visible_map.to_dict(),
+        'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in authorized_layers],
+        'route': _get_route_props(request, app='map', path=request.path, base_path=''),
     }
 
-    return render(request, 'v3/map.html', context)
+    return inertia_render(request, 'Map', props=props, template_data={
+        'title': 'Atlas',
+        'vite_entry': 'src/map.js',
+    })
 
 
 def v3_disclaimer(request):
@@ -83,7 +121,7 @@ def v3_login_failure(request):
 @login_required(login_url='admin:login')
 @ensure_csrf_cookie
 @xframe_options_sameorigin
-def v3_admin(request):
+def v3_admin(request, path=''):
     user = _get_user(request)
 
     if not request.user.is_superuser:
@@ -98,15 +136,54 @@ def v3_admin(request):
         'application_environment': os.getenv('ENVIRONMENT'),
     }
 
-    context = {
-        'data': {
-            'config': config,
-            'user': user,
-            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
-        }
+    route = _get_admin_route_props(request, path)
+
+    props = {
+        'config': config,
+        'user': user,
+        'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers],
+        'route': route,
     }
 
-    return render(request, 'v3/admin.html', context)
+    return inertia_render(request, route['component'], props=props, template_data={
+        'title': 'Atlas',
+        'vite_entry': 'src/admin.js',
+    })
+
+
+def _get_admin_route_props(request, path):
+    normalized_path = f"/{path.strip('/')}" if path else '/'
+    if normalized_path != '/' and normalized_path.endswith('/'):
+        normalized_path = normalized_path.rstrip('/')
+
+    component = 'Admin/NotFound'
+    meta = {'title': 'Niet gevonden', 'menu': False}
+    params = {}
+
+    for route_path, route_component, route_meta in ADMIN_ROUTE_DEFINITIONS:
+        if normalized_path == route_path:
+            component = route_component
+            meta = route_meta
+            break
+    else:
+        for route_prefix, route_component, route_meta in ADMIN_UPDATE_ROUTE_DEFINITIONS:
+            if normalized_path.startswith(route_prefix):
+                route_id = normalized_path.replace(route_prefix, '', 1)
+                if route_id and '/' not in route_id:
+                    component = route_component
+                    meta = route_meta
+                    params = {'id': route_id}
+                break
+
+    return _get_route_props(
+        request,
+        app='admin',
+        path=normalized_path,
+        base_path='/atlas/admin',
+        component=component,
+        meta=meta,
+        params=params,
+    )
 
 
 def _default_layers():
@@ -214,6 +291,22 @@ def _normalize_position(position):
             'x': center_x,
             'y': center_y,
         }
+    }
+
+
+def _get_route_props(request, app, path, base_path, component=None, meta=None, params=None):
+    query = {key: request.GET.get(key) for key in request.GET}
+    query_string = urlencode(query)
+
+    return {
+        'app': app,
+        'basePath': base_path,
+        'path': path,
+        'fullPath': f'{path}?{query_string}' if query_string else path,
+        'query': query,
+        'params': params or {},
+        'meta': meta or {},
+        'component': component,
     }
 
 

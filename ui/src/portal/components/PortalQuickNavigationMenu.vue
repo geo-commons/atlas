@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute } from "@/utils/inertia-routing";
 import { useGlobalStore, DEFAULT_PORTAL_AVAILABLE_LINKS } from "@/stores";
 import { PORTAL_QUICK_NAV_LINKS } from "./shared/portalQuickNavigationLinks";
 import { isPortalLinkActive } from "./shared/portalUtils";

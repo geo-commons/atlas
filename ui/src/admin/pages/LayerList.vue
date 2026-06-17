@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
 import { onMounted, Ref, ref, unref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter } from "@/utils/inertia-routing";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { EDialogTypes } from "@/types/dialog";

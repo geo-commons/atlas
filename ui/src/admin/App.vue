@@ -9,7 +9,7 @@
       "
     />
     <admin-breadcrumb v-if="$route.meta.menu" />
-    <router-view v-if="readyToRenderAdmin"></router-view>
+    <slot v-if="readyToRenderAdmin" />
   </div>
 </template>
 
