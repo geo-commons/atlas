@@ -10,7 +10,6 @@
       :form-object="'layers'"
       :object-specific-save="saveLayer"
       @update-source="(source) => (selectedSource = source)"
-      @metadataset-changed="handleMetadatasetChange"
       @related-tables-changed="handleRelatedTablesChange"
     >
       <!-- todo: weghalen wanneer we over zijn naar nieuwe manier van data koppelen.      -->
@@ -186,7 +185,6 @@ export default {
       selectedLinkedData: null,
       selectedTemplate: null,
       loading: false,
-      disabledPublishedField: false,
     };
   },
   computed: {
@@ -256,9 +254,6 @@ export default {
       } else {
         this.initialValues.metadataset = null;
       }
-
-      // Set initial disabledPublishedField state based on metadataset
-      this.setInitialPublishedFieldState(response);
 
       // Set selectedSource
       this.selectedSource = {
@@ -459,56 +454,6 @@ export default {
 
       this.showFormModal = true;
     },
-    /**
-     * Sets the initial state of the disabledPublishedField based on metadataset and published status.
-     *
-     * The published field should be disabled when:
-     * There is no metadataset assigned to the layer AND the layer is not currently published
-     *
-     * This ensures that users cannot publish a layer without first selecting a metadataset,
-     * which is required for proper metadata management and compliance.
-     *
-     * @param {Object} response - The layer response object containing metadataset and published properties
-     */
-    setInitialPublishedFieldState(response) {
-      this.disabledPublishedField = !response.metadataset && !response.published;
-    },
-
-    async handleMetadatasetChange(newValue) {
-      // Update disabledPublishedField based on whether metadataset is selected
-      // This is done to prevent publishing a layer without a metadataset, which is required for proper metadata management and compliance.
-      this.disabledPublishedField = !newValue;
-
-      // If metadataset is cleared, uncheck the published field.
-      // This is done to prevent publishing a layer without a metadataset, which is required for proper metadata management and compliance.
-      if (!newValue && this.$refs.formSections) {
-        this.$nextTick(() => {
-          this.$refs.formSections.updateFieldValue("published", false);
-        });
-      }
-
-      // If metadataset is selected and the layer was previously published, restore published state
-      // This is done to maintain user intent and prevent accidental unpublishing.
-      if (newValue && this.initialValues?.published) {
-        this.$nextTick(() => {
-          this.$refs.formSections.updateFieldValue("published", true);
-        });
-      }
-
-      // Show info message when metadataset is removed and was previously published
-      //
-      if (!newValue && this.initialValues?.published) {
-        this.$nextTick(() => {
-          this.$toast.add({
-            severity: "info",
-            summary: "Metadataset verwijderd",
-            detail: "Selecteer een metadataset om deze laag te kunnen publiceren.",
-            life: 3000,
-          });
-        });
-      }
-    },
-
     handleRelatedTablesChange(newValue) {
       this.initialValues.related_tables = newValue;
     },
@@ -566,8 +511,13 @@ export default {
               name: "Published",
               type: "checkbox",
               required: false,
-              disabled: this.disabledPublishedField,
-              infoText: "Selecteer eerst een metadataset om deze laag te kunnen publiceren.",
+              getHintText: (values) => {
+                const hasMetadataset = values.metadataset != null && values.metadataset !== "";
+                if (values.published && !hasMetadataset) {
+                  return "Let op: er is nog geen metadataset geselecteerd. Metadata maakt de kaartlaag herleidbaar.";
+                }
+                return "";
+              },
             },
             {
               label: "Kaartlaag is exporteerbaar",

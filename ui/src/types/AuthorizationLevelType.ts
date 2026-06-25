@@ -5,18 +5,16 @@
 import { Option } from "./Option";
 
 // AuthorizationLevelType
-export type AuthorizationLevelTypeId = "open_data" | "internal" | "external" | "protected";
+export type AuthorizationLevelTypeId = "open_data" | "internal" | "protected";
 
 export const authorizationLevelTypeOptions: Option<AuthorizationLevelTypeId>[] = [
-  { id: "open_data", label: "Open data" },
-  { id: "internal", label: "Interne toegang" },
-  { id: "external", label: "Externe toegang" },
-  { id: "protected", label: "Beveiligd" },
+  { id: "open_data", label: "Open" },
+  { id: "internal", label: "Intern" },
+  { id: "protected", label: "Extra autorisatie" },
 ];
 
 export const authorizationLevelTypeLabels: Record<AuthorizationLevelTypeId, string> = {
-  open_data: "Open data",
-  internal: "Interne toegang",
-  external: "Externe toegang",
-  protected: "Beveiligd",
+  open_data: "Open",
+  internal: "Intern",
+  protected: "Extra autorisatie",
 };

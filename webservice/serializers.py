@@ -300,8 +300,8 @@ class MetadatasetPublicSerializer(serializers.ModelSerializer):
         ]
 
 
-class MetadatasetSerializer(serializers.ModelSerializer):
-    """Serializer for internal API calls - includes all fields including internal email addresses"""
+class MetadatasetNestedSerializer(serializers.ModelSerializer):
+    """Metadataset fields exposed on layer APIs (excludes admin-only fme_script)."""
     layers = serializers.SerializerMethodField()
 
     def get_layers(self, obj):
@@ -341,6 +341,18 @@ class MetadatasetSerializer(serializers.ModelSerializer):
             'meta_email_person_responsible',
             'meta_role_person_responsible',
         ]
+
+
+class MetadatasetSerializer(serializers.ModelSerializer):
+    """Serializer for internal API calls - includes all fields including internal email addresses"""
+    layers = serializers.SerializerMethodField()
+
+    def get_layers(self, obj):
+        return obj.get_serialized_layers()
+
+    class Meta:
+        model = Metadataset
+        fields = MetadatasetNestedSerializer.Meta.fields + ['fme_script']
 
 
 class LayerSerializer(serializers.ModelSerializer):
@@ -632,7 +644,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
 class LayerListSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')
     category = CategorySerializer(source='layer_type')
-    metadataset = MetadatasetSerializer(read_only=True)
+    metadataset = MetadatasetNestedSerializer(read_only=True)
 
     def get_can_access(self, obj):
         request = self.context['request']

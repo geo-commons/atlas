@@ -128,13 +128,18 @@ De rol van de verantwoordelijke over de bron:
 De methode waarmee de dataset wordt bijgewerkt:
 
 - Manueel
-- Automatisch
+- Automatisch (API)
+- Automatisch (script)
+- Manueel (script)
 
 **Updatefrequentie** _(Publiek)_
 De frequentie waarmee de dataset wordt bijgewerkt. Bijvoorbeeld: dagelijks, wekelijks, maandelijks, jaarlijks.
 
 **Laatst bijgewerkt** _(Publiek)_
 De datum waarop de dataset voor het laatst is bijgewerkt.
+
+**FME-script** _(Intern)_
+Naam of pad van de FME-workspace of script waarmee de dataset wordt bijgewerkt. Alleen zichtbaar en bewerkbaar in Atlas Admin; niet in het dataportaal, kaartinformatie of layer-API.
 
 **Status**
 De huidige status van de dataset:
@@ -212,10 +217,7 @@ De rol van de verantwoordelijke over de metadata:
 4. Selecteer de gewenste metadataset uit de dropdown
 5. Sla de wijzigingen op
 
-!!! info "Publicatie vereiste"
-Een kaartlaag kan alleen worden gepubliceerd als er een metadataset aan is gekoppeld. Dit is nodig zodat gebruikers
-altijd toegang hebben tot de juiste beschrijvende informatie (metadata) over de kaartlaag. Zonder gekoppelde metadataset
-ontbreekt deze informatie en voldoet de publicatie niet aan de kwaliteits- en transparantie-eisen.
+De metadataset is optioneel: een kaartlaag kan gepubliceerd blijven als je de metadataset verwijdert.
 
 ### Gekoppelde kaartlagen bekijken
 
@@ -231,6 +233,8 @@ Gebruikers kunnen metadata bekijken door:
 1. Een kaartlaag te selecteren in het **Zichtbare lagen** menu
 2. Op het ⓘ (informatie) icoon te klikken
 3. De metadata wordt getoond in een popup
+
+Alleen kaartlagen met een gekoppelde metadataset tonen in die popup de uitgebreide ISO-metadata (toelichting, contact, herkomst, enz.). Zonder metadataset zien gebruikers alleen de laagbeschrijving uit **Algemene gegevens**.
 
 ### Metadata pagina
 
