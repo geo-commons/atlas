@@ -19,12 +19,14 @@ Onder algemene gegevens van de kaartlaag kent Atlas diverse velden, dat zijn de 
 - **Titel**
 - **Kort kenmerk:** (Een uniek ID dat de layer onderscheid van andere. Wordt gebruikt als slug voor betreffende kaartlaag.
 - **Categorie:** De categorie waar toe de kaartlaag behoort. (selecteer onder welke hoofdcategorie of subcategorie deze kaartlaag komt)
-- **Metadataset:** Selecteer de metadataset die aan deze kaartlaag gekoppeld moet worden. De metadataset bevat alle metadata informatie conform ISO 19115 standaard. Deze koppeling is verplicht voor publicatie van de kaartlaag.
+- **Metadataset:** Selecteer optioneel de metadataset die aan deze kaartlaag gekoppeld moet worden. De metadataset bevat alle metadata informatie conform ISO 19115 standaard.
 
-!!! info "Publicatie vereiste"
-Een kaartlaag kan alleen worden gepubliceerd als er een metadataset aan is gekoppeld. Dit is nodig zodat gebruikers altijd toegang hebben tot de juiste beschrijvende informatie (metadata) over de kaartlaag. Zonder gekoppelde metadataset ontbreekt deze informatie en voldoet de publicatie niet aan de kwaliteits- en transparantie-eisen.
+- **Gepubliceerd:** Met deze optie bepaal je of de laag wordt gepubliceerd of niet binnen Atlas, deze optie kan gebruikt worden om de laag tijdens het configureren nog niet in Atlas aan te bieden of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden. Een kaartlaag mag gepubliceerd zijn zonder gekoppelde metadataset. _Standaard_: uit.
 
-- **Gepubliceerd:** Met deze optie bepaal je op de laag wordt gepubliceerd of niet binnen Atlas, deze optie kan gebruikt worden om de laag tijdens het configureren nog niet aan Atlas aan te bieden, of om deze snel (tijdelijk) uit Atlas te verwijderen zonder dat de volledige kaartlaagconfiguratie verwijderd hoeft te worden. _Standaard_: uit.
+!!! info "Gepubliceerd zonder metadataset"
+
+    Zonder metadataset wordt voor de kaartlaag en binnen Portaal alleen de laagbeschrijving getoond in het informatievenster (ⓘ), niet de uitgebreide ISO-metadata. Koppel een metadataset als gebruikers contactgegevens, toelichting en overige metadatavelden moeten zien.
+
 - **Kaartlaag is exporteerbaar**: Met deze optie bepaal je of de data achter de kaartlaag wel of niet exporteerbaar is vanuit de dataweergave. _Standaard_: aan.
 
 ### Bron

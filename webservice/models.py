@@ -214,14 +214,15 @@ class RoleType(models.TextChoices):
 
 class UpdateMethodType(models.TextChoices):
     MANUAL = "manual", _("Manueel")
-    AUTOMATIC = "automatic", _("Automatisch")
+    AUTOMATIC = "automatic", _("Automatisch (API)")
+    AUTOMATIC_SCRIPT = "automatic_script", _("Automatisch (script)")
+    MANUAL_SCRIPT = "manual_script", _("Manueel (script)")
 
 
 class AuthorizationLevelType(models.TextChoices):
-    OPEN_DATA = "open_data", _("Open data")
-    INTERNAL = "internal", _("Interne toegang")
-    EXTERNAL = "external", _("Externe toegang")
-    PROTECTED = "protected", _("Beveiligd")
+    OPEN_DATA = "open_data", _("Open")
+    INTERNAL = "internal", _("Intern")
+    PROTECTED = "protected", _("Extra autorisatie")
 
 
 class StatusType(models.TextChoices):
@@ -268,7 +269,7 @@ class Metadataset(models.Model):
 
     abstract = models.TextField(
         'Toelichting dataset', null=True, blank=True,
-        help_text="Een beschrijving van de inhoud van de dataset, geef in deze samenvatting  publieks vriendelijk informatie over de inhoud van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).")
+        help_text="Een beschrijving van de inhoud van de dataset, geef in deze samenvatting publieksvriendelijke informatie over de inhoud van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).")
 
     topic_category = models.CharField(
         'Onderwerp', max_length=128, null=True, blank=True, choices=TopicCategory.choices,
@@ -323,6 +324,10 @@ class Metadataset(models.Model):
     last_updated = models.DateField(
         'Laatst bijgewerkt', null=True, blank=True,
         help_text="De datum waarop de dataset voor het laatst is bijgewerkt.")
+
+    fme_script = models.CharField(
+        'FME-script', max_length=512, null=True, blank=True,
+        help_text="Naam of pad van de FME-workspace of script waarmee de dataset wordt bijgewerkt. Alleen zichtbaar in Atlas Admin.")
 
     authorization_level = models.CharField(
         'Autorisatieniveau', max_length=128, null=True, blank=True, choices=AuthorizationLevelType.choices,

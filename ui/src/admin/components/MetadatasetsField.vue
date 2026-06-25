@@ -142,7 +142,6 @@ interface MetadatasetsFieldProps {
 
 interface Emits {
   "update:modelValue": [value: number | null];
-  metadatasetChanged: [value: number | null];
 }
 
 const props = withDefaults(defineProps<MetadatasetsFieldProps>(), {
@@ -165,7 +164,6 @@ const selectedMetadataset: ComputedRef<IMetadatasetOption | null> = computed(() 
 const handleModelValueUpdate = (value: string | number | null): void => {
   const processedValue = value ? Number(value) : null;
   emit("update:modelValue", processedValue);
-  emit("metadatasetChanged", processedValue);
 };
 
 const formatDate = (dateString: string): string => {
@@ -179,7 +177,6 @@ const formatDate = (dateString: string): string => {
 
 const clearSelection = (): void => {
   emit("update:modelValue", null);
-  emit("metadatasetChanged", null);
 };
 </script>
 

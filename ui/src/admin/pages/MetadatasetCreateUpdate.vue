@@ -24,7 +24,7 @@ import AssignedLayersList from "@/admin/components/AssignedLayersList.vue";
 import Spinner from "@/components/Spinner.vue";
 import {
   accessConstraintsTypeOptions,
-  // authorizationLevelTypeOptions,
+  authorizationLevelTypeOptions,
   otherConstraintsTypeOptions,
   roleTypeOptions,
   statusTypeOptions,
@@ -148,7 +148,7 @@ const getSections = (): AdminFormConfig => {
           required: false,
           visibility: "Publiek",
           infoText:
-            "Een beschrijving van de inhoud van de dataset, geef in deze samenvatting  publieks vriendelijk informatie over de inhoud van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).",
+            "Een beschrijving van de inhoud van de dataset, geef in deze samenvatting publieksvriendelijke informatie over de inhoud van de dataset. Deze is minimaal drie zinnen en maximaal één alinea lang (2000 karakters).",
         },
         {
           label: "Onderwerp",
@@ -298,16 +298,29 @@ const getSections = (): AdminFormConfig => {
           visibility: "Publiek",
           infoText: "De datum waarop de dataset voor het laatst is bijgewerkt.",
         },
-        // TODO: Add back in when we have a way to set the authorization level
-        // {
-        //   label: "Autorisatieniveau",
-        //   id: "authorization_level",
-        //   name: "Authorization Level",
-        //   type: "dropdown",
-        //   required: false,
-        //   options: authorizationLevelTypeOptions,
-        //   infoText: "Het niveau van de autorisatie bepaalt de toegang tot de dataset.",
-        // },
+        {
+          label: "FME-script",
+          id: "fme_script",
+          name: "FME Script",
+          type: "text",
+          required: false,
+          visibility: "Intern",
+          placeholder: "bijv. workspace.fmw",
+          infoText:
+            "Naam of pad van de FME-workspace of script waarmee de dataset wordt bijgewerkt. Alleen zichtbaar in Atlas Admin.",
+        },
+        {
+          label: "Autorisatieniveau",
+          id: "authorization_level",
+          name: "Authorization Level",
+          type: "dropdown",
+          required: false,
+          visibility: "Intern",
+          placeholder: "autorisatieniveau",
+          options: authorizationLevelTypeOptions,
+          infoText:
+            "Open, Intern of Extra autorisatie. De gekozen waarde wordt opgeslagen bij de metadataset en heeft geen invloed op de toegang tot de metadataset.",
+        },
         {
           label: "Status",
           id: "status",

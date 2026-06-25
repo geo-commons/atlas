@@ -39,32 +39,40 @@
                             are decomposed in the OpenLayers.vue component -->
               <slot v-if="question.type === 'custom'" name="custom"></slot>
               <div v-else-if="question.type === 'checkbox'">
-                <div v-if="question.showIf !== undefined ? question.showIf : true" class="tw-flex tw-flex-row tw-gap-2">
-                  <vee-field
-                    :id="question.id"
-                    v-slot="{ value, handleChange, handleBlur }"
-                    :name="question.id"
-                    :disabled="question.disabled"
-                    :rules="getRules(question)"
-                  >
-                    <Checkbox
-                      :model-value="value"
+                <div v-if="question.showIf !== undefined ? question.showIf : true" class="tw-flex tw-flex-col tw-gap-1">
+                  <div class="tw-flex tw-flex-row tw-gap-2">
+                    <vee-field
+                      :id="question.id"
+                      v-slot="{ value, handleChange, handleBlur }"
+                      :name="question.id"
                       :disabled="question.disabled"
-                      :input-id="question.id"
-                      binary
-                      @update:model-value="handleChange"
-                      @blur="handleBlur"
-                    />
-                    <span class="label-info-text-wrapper">
-                      <label :for="question.id">{{ question.label }}</label>
-                      <VisibilityIndicator :visibility="question.visibility" />
-                      <AdminFormInfoText
-                        v-if="question.infoText && question.infoText !== ''"
-                        :info-text="question.infoText"
+                      :rules="getRules(question)"
+                    >
+                      <Checkbox
+                        :model-value="value"
+                        :disabled="question.disabled"
+                        :input-id="question.id"
+                        binary
+                        @update:model-value="handleChange"
+                        @blur="handleBlur"
                       />
-                    </span>
-                  </vee-field>
-                  <span class="warning-text"><vee-error-message :name="question.id" /></span>
+                      <span class="label-info-text-wrapper">
+                        <label :for="question.id">{{ question.label }}</label>
+                        <VisibilityIndicator :visibility="question.visibility" />
+                        <AdminFormInfoText
+                          v-if="question.infoText && question.infoText !== ''"
+                          :info-text="question.infoText"
+                        />
+                      </span>
+                    </vee-field>
+                    <span class="warning-text"><vee-error-message :name="question.id" /></span>
+                  </div>
+                  <template
+                    v-for="hint in [question.getHintText ? question.getHintText(values) : '']"
+                    :key="`${question.id}-${hint}`"
+                  >
+                    <Message v-if="hint" severity="secondary" class="tw-ml-7">{{ hint }}</Message>
+                  </template>
                 </div>
               </div>
               <div v-else-if="question.type === 'image'" class="image-wrapper">
@@ -319,12 +327,7 @@
                   <MetadatasetsField
                     :model-value="value"
                     :options="question.options || []"
-                    @metadataset-changed="
-                      (newValue) => {
-                        handleChange(newValue);
-                        $emit('metadataset-changed', newValue);
-                      }
-                    "
+                    @update:model-value="handleChange"
                   />
                 </vee-field>
                 <vee-field
@@ -517,8 +520,8 @@ export default {
     objectSpecificSave: Function,
     formObject: String,
   },
-  emits: ["update-source", "metadataset-changed", "related-tables-changed", "close"],
-  expose: ["updateFieldValue", "sendSaveRequest", "resetForm"],
+  emits: ["update-source", "related-tables-changed", "close"],
+  expose: ["sendSaveRequest", "resetForm"],
   data() {
     return {
       options: {},
@@ -589,12 +592,6 @@ export default {
     formatDateValue,
     json,
     jsonParseLinter,
-    updateFieldValue(fieldName, value) {
-      // Update the vee-validate form value
-      if (this.$refs.formRef) {
-        this.$refs.formRef.setFieldValue(fieldName, value);
-      }
-    },
     reset(question) {
       if (this.$refs.formRef) {
         this.$refs.formRef.setFieldValue(question.id, "");

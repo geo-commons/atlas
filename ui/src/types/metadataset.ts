@@ -24,6 +24,7 @@ export interface IMetadataset {
   update_method?: string;
   update_frequency: string;
   last_updated: string | null;
+  fme_script?: string | null;
   authorization_level?: string;
   status: string;
   show_in_overview: boolean;
