@@ -1,4 +1,5 @@
 import { GeometryType } from "ol/render/webgl/MixedGeometryBatch";
+import type { ETimeSliderDisplayMode } from "@/types/mapStore";
 import { IMetadataset } from "./metadataset";
 
 export interface ILayer {
@@ -35,6 +36,11 @@ export interface ILayer {
   extent: [number, number, number, number] | null;
   zoom_min: number | null;
   zoom_max: number | null;
+  is_time_enabled: boolean;
+  is_reference_date_enabled: boolean;
+  time_slider_default_display_mode: ETimeSliderDisplayMode;
+  time_slider_start_field: string | null;
+  time_slider_end_field: string | null;
 }
 
 export type IGeometryType = GeometryType | "Geometry";

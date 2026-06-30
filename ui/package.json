@@ -31,6 +31,7 @@
     "@vee-validate/rules": "4.15.1",
     "@vitejs/plugin-vue": "6.0.1",
     "@vue/compat": "3.5.27",
+    "@vueuse/core": "14.3.0",
     "chroma-js": "3.2.0",
     "codemirror": "6.0.2",
     "date-fns": "4.1.0",

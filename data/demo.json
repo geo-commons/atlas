@@ -6304,8 +6304,8 @@
     "model": "webservice.metadataset",
     "pk": 148,
     "fields": {
-      "title": "woningbouwprojecten (openbaar)",
-      "slug": "woningbouwprojecten-openbaar",
+      "title": "Woningbouwprojecten Tijdlijn",
+      "slug": "woningbouwprojecten-tijdlijn",
       "description": "",
       "abstract": "open data",
       "topic_category": null,
@@ -11548,11 +11548,11 @@
     "model": "webservice.layer",
     "pk": 103,
     "fields": {
-      "slug": "id_primavera_projectenkaart_open",
-      "title": "Woningbouwprojecten (openbaar)",
+      "slug": "woningbouwprojecten-tijdlijn",
+      "title": "Woningbouwprojecten Tijdlijn",
       "description": null,
-      "layer_name": "topp:primavera_projectenkaart_open",
-      "layer_source": 1,
+      "layer_name": "custom:woningbouwprojecten",
+      "layer_source": 15,
       "format": "image/png",
       "opacity": "0.8",
       "visible": false,
@@ -11591,7 +11591,9 @@
       "zoom_max": null,
       "metadataset": 147,
       "atlas_groups": [],
-      "atlas_write_groups": []
+      "atlas_write_groups": [],
+      "is_time_enabled": true,
+      "is_reference_date_enabled": true
     }
   },
   {
@@ -19295,6 +19297,57 @@
     }
   },
   {
+    "model": "webservice.layer",
+    "pk": 299,
+    "fields": {
+      "slug": "scholen-timeline",
+      "title": "Scholen Tijdlijn",
+      "description": null,
+      "layer_name": "custom:scholen-tijdlijn",
+      "layer_source": 15,
+      "format": "image/png",
+      "opacity": "0.9",
+      "visible": false,
+      "server_style": null,
+      "client_style": {},
+      "friendly_fields": {},
+      "templated_properties": {},
+      "layer_type": 15,
+      "_popup_attributes": "",
+      "_search_fields": "straatnaam\r\npostcode\r\nhuisnummer\r\ntoevoeging\r\nplaatsnaam\r\nnaam_vesti\r\nsoort_inst",
+      "_search_terms": null,
+      "projection": "EPSG:28992",
+      "server_type": "geoserver",
+      "closed_dataset": false,
+      "login_required": false,
+      "authenticated_can_mutate": false,
+      "published": true,
+      "is_exportable": true,
+      "source_type": "WMS_WFS",
+      "legend_url": null,
+      "is_base": false,
+      "is_visible": false,
+      "is_selectable": true,
+      "use_html_info_format": false,
+      "show_in_detail_panel": true,
+      "is_filterable_in_legend": false,
+      "not_in_atlas": false,
+      "created_at": "2019-07-23T11:56:48.321Z",
+      "updated_at": "2025-10-13T14:23:28.646Z",
+      "ordering": 20900,
+      "extent_min_x": null,
+      "extent_min_y": null,
+      "extent_max_x": null,
+      "extent_max_y": null,
+      "zoom_min": null,
+      "zoom_max": null,
+      "metadataset": 173,
+      "atlas_groups": [],
+      "atlas_write_groups": [],
+      "is_time_enabled": true
+    }
+  },
+  {
     "model": "webservice.linkeddata",
     "pk": 23,
     "fields": {
@@ -21883,6 +21936,17 @@
       "map_category": 17,
       "settings": { "customSettings": false },
       "ordering": 201
+    }
+  },
+  {
+    "model": "webservice.maplayer",
+    "pk": 225,
+    "fields": {
+      "layer": 299,
+      "map": 4,
+      "map_category": 3,
+      "settings": { "customSettings": false },
+      "ordering": 202
     }
   },
   {

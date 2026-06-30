@@ -11,6 +11,7 @@ import { storeToRefs } from "pinia";
 import { useGlobalStore } from "@/stores";
 import { useMapStore } from "@/stores/map_store";
 import { useCompareLayers } from "@/composables/useCompareLayers";
+import { getWmsTimeParameter } from "@/utils/wms-time";
 
 const props = defineProps({
   id: String,
@@ -24,6 +25,7 @@ const props = defineProps({
   zIndex: Number,
   format: String,
   serverStyle: String,
+  isTimeEnabled: Boolean,
   minZoom: Number,
   maxZoom: Number,
 });
@@ -70,11 +72,32 @@ const authenticatedTileLoader = (token) => {
   };
 };
 
+const updateWmsTimeParameter = () => {
+  if (!source) {
+    return;
+  }
+
+  const timeParameter = getWmsTimeParameter(mapStore, props.id, props.isTimeEnabled);
+  const currentTimeParameter = source.getParams().TIME ?? null;
+
+  if (currentTimeParameter === timeParameter) {
+    return;
+  }
+
+  source.updateParams({
+    ...source.getParams(),
+    TIME: timeParameter,
+  });
+  source.refresh();
+};
+
 let source;
 let tileLayer;
 
 // Create source and layer
 onMounted(() => {
+  const timeParameter = getWmsTimeParameter(mapStore, props.id, props.isTimeEnabled);
+
   source = new TileWMSSource({
     url: props.url,
     crossOrigin: "anonymous",
@@ -83,6 +106,7 @@ onMounted(() => {
       FORMAT: props.format,
       LAYERS: props.name,
       STYLES: props.serverStyle ? props.serverStyle : "",
+      ...(timeParameter ? { TIME: timeParameter } : {}),
       tiled: true,
       tilesOrigin: 117000 + "," + 498000.00000000023,
     },
@@ -209,6 +233,22 @@ watch(
     });
 
     source.refresh();
+  },
+  { deep: true },
+);
+
+watch(
+  () => [
+    mapStore.selectedTimeSliderLayerId,
+    mapStore.timeSliderDisplayMode,
+    mapStore.timeSliderStartDate,
+    mapStore.timeSliderStepSize,
+    mapStore.timeSliderReferenceDate,
+    mapStore.timeSliderPeriodDates,
+    props.isTimeEnabled,
+  ],
+  () => {
+    updateWmsTimeParameter();
   },
   { deep: true },
 );

@@ -405,6 +405,13 @@ class Layer(models.Model):
         (FORMAT_JPEG_PNG, 'image/vnd.jpeg-png'),
     ]
 
+    TIME_SLIDER_DISPLAY_MODE_PERIOD = 'period'
+    TIME_SLIDER_DISPLAY_MODE_REFERENCE_DATE = 'referenceDate'
+    TIME_SLIDER_DISPLAY_MODE_TYPES = [
+        (TIME_SLIDER_DISPLAY_MODE_PERIOD, 'Periode'),
+        (TIME_SLIDER_DISPLAY_MODE_REFERENCE_DATE, 'Peildatum'),
+    ]
+
     objects = models.Manager()
     authorized = LayerManager()
 
@@ -486,6 +493,23 @@ class Layer(models.Model):
     published = models.BooleanField('Gepubliceerd', default=False)
 
     is_exportable = models.BooleanField('Kaartlaag is exporteerbaar', default=True)
+    
+    is_time_enabled = models.BooleanField('Tijdlijn inschakelen', default=False)
+    
+    is_reference_date_enabled = models.BooleanField('Peildatumweergave inschakelen', default=False)
+
+    time_slider_default_display_mode = models.CharField(
+        'Standaardweergave tijdlijn',
+        choices=TIME_SLIDER_DISPLAY_MODE_TYPES,
+        default=TIME_SLIDER_DISPLAY_MODE_PERIOD,
+        max_length=20,
+    )
+
+    time_slider_start_field = models.CharField(
+        'Startdatumveld (GeoServer TIME)', max_length=255, blank=True, null=True)
+
+    time_slider_end_field = models.CharField(
+        'Einddatumveld (GeoServer TIME)', max_length=255, blank=True, null=True)
 
     source_type = models.CharField('Brontype', choices=SOURCE_TYPES, default=SOURCE_WMS_WFS, max_length=20,
                                    help_text='"WMS en WFS" en WFS is zichtbaar in zowel het datapaneel als op de kaart. WMS en WMTS toont alleen op de kaart.'
@@ -808,6 +832,11 @@ source: new ol.source.TileWMS({{
                 )
                 for item in related_tables
             ],
+            'is_time_enabled': self.is_time_enabled,
+            'is_reference_date_enabled': self.is_reference_date_enabled,
+            'time_slider_default_display_mode': self.time_slider_default_display_mode,
+            'time_slider_start_field': self.time_slider_start_field,
+            'time_slider_end_field': self.time_slider_end_field,
         }
 
     class Meta:

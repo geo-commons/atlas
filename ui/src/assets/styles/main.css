@@ -150,11 +150,11 @@ svg {
 }
 
 /* If we set the hover state on the svg itself the svg does not change color if the button is hovered. */
-.iconbutton.__inverse.isActive:not([disabled]):hover > svg {
+.iconbutton.__inverse.isActive:not([disabled]):hover > svg, .iconbutton.__inverse.isActive:not([disabled]):hover > i {
   color: var(--color-primary);
 }
 
-.iconbutton.__inverse.isActive > svg {
+.iconbutton.__inverse.isActive > svg, .iconbutton.__inverse.isActive > i {
   color: var(--color-white);
 }
 

@@ -18,6 +18,7 @@ Deze handleiding beschrijft de werking van de Admin Module. In de Admin Module w
 - [KAARTEN](kaarten.md)
 - [VIEWERS](viewers.md)
 - [CRUD FUNCTIONALITEIT](crud_functionaliteit.md)
+- [TIJDLIJNFUNCTIONALITEIT](tijdlijn_functionaliteit.md)
 
 ## INTRODUCTIE
 

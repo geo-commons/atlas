@@ -1,16 +1,34 @@
 import { defineStore } from "pinia";
-import {
-  ELayerTypes,
+import { ELayerTypes } from "@/types/layer";
+import type {
   ILayer,
   ILayerOrderDetails,
-  IToggleLayerProps,
   ISetLayerOpacityProps,
+  IToggleLayerProps,
   IToggleLayerSelectableProps,
 } from "@/types/layer";
-import { ICycloView, IMapStore } from "@/types/mapStore";
+import { ETimeSliderDisplayMode, ETimeSliderStepSize, ICycloView, IMapStore } from "@/types/mapStore";
+import { getFetchParameters } from "@/utils/auth";
+import { getWmsCapabilitiesTimeRange } from "@/utils/wms-time";
+import type { IUser } from "@/types/user";
 import { Geometry } from "ol/geom";
 
 const visibleSourceTypes = [ELayerTypes.WMS_WFS, ELayerTypes.WFS];
+const createDefaultTimeSliderStartDate = () => new Date(1969, 0, 1);
+const createDefaultTimeSliderEndDate = () => new Date();
+
+const cloneDate = (date: Date) => new Date(date);
+
+const getLayerDefaultTimeSliderDisplayMode = (layer: ILayer | undefined) => {
+  if (
+    layer?.is_reference_date_enabled &&
+    layer.time_slider_default_display_mode === ETimeSliderDisplayMode.ReferenceDate
+  ) {
+    return ETimeSliderDisplayMode.ReferenceDate;
+  }
+
+  return ETimeSliderDisplayMode.Period;
+};
 
 export function useMapStore(mapName: string) {
   return defineStore(`map-${mapName}`, {
@@ -19,6 +37,19 @@ export function useMapStore(mapName: string) {
       leftSelectedCompareLayerId: null,
       rightSelectedCompareLayerId: null,
       comparePercentage: 50,
+      timeSlider: false,
+      showTimeSliderPanel: false,
+      selectedTimeSliderLayerId: null,
+      timeSliderDisplayMode: ETimeSliderDisplayMode.Period,
+      timeSliderStartDate: createDefaultTimeSliderStartDate(),
+      timeSliderEndDate: createDefaultTimeSliderEndDate(),
+      timeSliderMinDate: null,
+      timeSliderMaxDate: null,
+      timeSliderCapabilitiesLoading: false,
+      timeSliderCapabilitiesError: null,
+      timeSliderStepSize: ETimeSliderStepSize.Year,
+      timeSliderReferenceDate: createDefaultTimeSliderStartDate(),
+      timeSliderPeriodDates: [createDefaultTimeSliderStartDate(), createDefaultTimeSliderEndDate()],
       cycloView: null,
       measuredAreas: [],
       layers: [],
@@ -56,6 +87,121 @@ export function useMapStore(mapName: string) {
       setComparePercentage(swipe: number) {
         this.comparePercentage = swipe;
       },
+      setSelectedTimeSliderLayerId(selectedLayerId: string | null) {
+        // Here, we reset the timeSlider values to prevent the timeSlider values from a previous layer from being carried over when selecting a new layer.
+        // By passing the selectedLayerId, the selectedTimeSliderLayerId is also set at the same time.
+        this.resetTimeSlider(selectedLayerId);
+      },
+      setTimeSliderDisplayMode(displayMode: ETimeSliderDisplayMode) {
+        this.timeSliderDisplayMode = displayMode;
+      },
+      setTimeSliderStartDate(startDate: Date | null) {
+        this.timeSliderStartDate = startDate;
+      },
+      setTimeSliderEndDate(endDate: Date | null) {
+        this.timeSliderEndDate = endDate;
+      },
+      setTimeSliderStepSize(stepSize: ETimeSliderStepSize) {
+        this.timeSliderStepSize = stepSize;
+      },
+      setTimeSliderCapabilitiesLoading(isLoading: boolean) {
+        this.timeSliderCapabilitiesLoading = isLoading;
+      },
+      setTimeSliderCapabilitiesError(error: string | null) {
+        this.timeSliderCapabilitiesError = error;
+      },
+      setTimeSliderDateRange(minDate: Date, maxDate: Date) {
+        const startDate = cloneDate(minDate);
+        const endDate = cloneDate(maxDate);
+
+        this.timeSliderStartDate = startDate;
+        this.timeSliderEndDate = endDate;
+        this.timeSliderMinDate = cloneDate(minDate);
+        this.timeSliderMaxDate = cloneDate(maxDate);
+        this.timeSliderReferenceDate = cloneDate(startDate);
+        this.timeSliderPeriodDates = [cloneDate(startDate), cloneDate(endDate)];
+        this.timeSliderCapabilitiesError = null;
+      },
+      async loadTimeSliderCapabilitiesRange(layer: ILayer, user: IUser | null) {
+        if (layer.source_type !== ELayerTypes.WMS && layer.source_type !== ELayerTypes.WMS_WFS) {
+          this.setTimeSliderCapabilitiesError("De geselecteerde laag ondersteunt geen WMS capabilities.");
+          return;
+        }
+
+        this.setTimeSliderCapabilitiesLoading(true);
+        this.setTimeSliderCapabilitiesError(null);
+
+        try {
+          const range = await getWmsCapabilitiesTimeRange(layer, getFetchParameters(layer, user));
+
+          if (this.selectedTimeSliderLayerId !== layer.id) {
+            return;
+          }
+
+          if (!range) {
+            this.setTimeSliderCapabilitiesError("Geen bruikbaar tijdslider bereik gevonden in WMS capabilities.");
+            return;
+          }
+
+          this.setTimeSliderDateRange(range.minDate, range.maxDate);
+        } catch (error) {
+          if (this.selectedTimeSliderLayerId !== layer.id) {
+            return;
+          }
+
+          this.setTimeSliderCapabilitiesError(
+            error instanceof Error ? error.message : "WMS capabilities konden niet gelezen worden.",
+          );
+        } finally {
+          if (this.selectedTimeSliderLayerId === layer.id) {
+            this.setTimeSliderCapabilitiesLoading(false);
+          }
+        }
+      },
+      setTimeSliderReferenceDate(referenceDate: Date) {
+        this.timeSliderReferenceDate = referenceDate;
+      },
+      setTimeSliderPeriodDates(periodDates: [Date, Date]) {
+        this.timeSliderPeriodDates = periodDates;
+      },
+      resetTimeSlider(selectedLayerId: string | null = null) {
+        const selectedLayer = this.layers.find((layer) => layer.id === selectedLayerId);
+
+        this.selectedTimeSliderLayerId = selectedLayerId;
+        this.timeSliderDisplayMode = getLayerDefaultTimeSliderDisplayMode(selectedLayer);
+        this.timeSliderStartDate = null;
+        this.timeSliderEndDate = null;
+        this.timeSliderMinDate = null;
+        this.timeSliderMaxDate = null;
+        this.timeSliderCapabilitiesLoading = false;
+        this.timeSliderCapabilitiesError = null;
+        this.timeSliderStepSize = ETimeSliderStepSize.Year;
+        this.timeSliderReferenceDate = createDefaultTimeSliderStartDate();
+        this.timeSliderPeriodDates = [createDefaultTimeSliderStartDate(), createDefaultTimeSliderEndDate()];
+      },
+      toggleTimeSliderPanel() {
+        if (!this.timeSlider) {
+          this.timeSlider = true;
+        }
+
+        this.showTimeSliderPanel = !this.showTimeSliderPanel;
+      },
+      closeTimeSliderPanel() {
+        this.showTimeSliderPanel = false;
+      },
+      disableTimeSlider() {
+        const selectedTimeSliderLayerId = this.selectedTimeSliderLayerId;
+
+        if (selectedTimeSliderLayerId) {
+          this.updateLayer(selectedTimeSliderLayerId, (layer) => {
+            layer.is_visible = false;
+          });
+        }
+
+        this.resetTimeSlider();
+        this.showTimeSliderPanel = false;
+        this.timeSlider = false;
+      },
       setCycloView(cycloView: ICycloView | null) {
         this.cycloView = cycloView;
       },
@@ -67,6 +213,18 @@ export function useMapStore(mapName: string) {
       },
       setLayers(layers: ILayer[]) {
         this.layers = layers;
+      },
+      activateVisibleTimeSliderLayer() {
+        const selectedLayer = this.layers.find((layer) => layer.is_visible && !layer.is_base && layer.is_time_enabled);
+
+        if (!selectedLayer) {
+          return;
+        }
+
+        this.toggleLayer({
+          selectedLayerId: selectedLayer.id,
+          is_visible: true,
+        });
       },
       setBaseLayer(layer: ILayer) {
         this.selectedBaseLayer = layer;
@@ -96,6 +254,49 @@ export function useMapStore(mapName: string) {
         }
       },
       toggleLayer(selectedLayerProps: IToggleLayerProps) {
+        const selectedLayer = this.layers.find((layer) => layer.id === selectedLayerProps.selectedLayerId);
+
+        // Time-enabled layers are mutually exclusive because the time slider can target only one layer at a time.
+        if (selectedLayer?.is_time_enabled) {
+          if (!selectedLayerProps.is_visible) {
+            this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
+              layer.is_visible = false;
+            });
+
+            // Only reset the slider when the currently targeted time-enabled layer is deselected.
+            if (this.selectedTimeSliderLayerId === selectedLayerProps.selectedLayerId) {
+              this.resetTimeSlider();
+              this.showTimeSliderPanel = false;
+              this.timeSlider = false;
+            }
+
+            this.resetFiltersForLayer(selectedLayerProps.selectedLayerId);
+            return;
+          }
+
+          this.layers.forEach((layer) => {
+            if (!layer.is_time_enabled || layer.id === selectedLayerProps.selectedLayerId) {
+              return;
+            }
+
+            this.updateLayer(layer.id, (timeEnabledLayer) => {
+              timeEnabledLayer.is_visible = false;
+            });
+
+            this.resetFiltersForLayer(layer.id);
+          });
+
+          this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
+            layer.is_visible = true;
+          });
+
+          this.resetTimeSlider(selectedLayerProps.selectedLayerId);
+          this.timeSlider = true;
+          this.showTimeSliderPanel = true;
+          this.resetFiltersForLayer(selectedLayerProps.selectedLayerId);
+          return;
+        }
+
         this.updateLayer(selectedLayerProps.selectedLayerId, (layer) => {
           layer.is_visible = selectedLayerProps.is_visible;
         });
@@ -255,6 +456,9 @@ export function useMapStore(mapName: string) {
         return state.layers.filter(
           (layer: ILayer) => layer.is_visible && layer.show_in_detail_panel && !layer.is_base && layer.is_selectable,
         );
+      },
+      visibleLayersForTimeSliderPanel: (state) => {
+        return state.layers.filter((layer: ILayer) => layer.is_visible && !layer.is_base && layer.is_time_enabled);
       },
     },
   })();

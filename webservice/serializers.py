@@ -452,7 +452,12 @@ class LayerSerializer(serializers.ModelSerializer):
             'is_filterable_in_legend',
             'authenticated_can_mutate',
             'is_exportable',
-            'related_tables'
+            'related_tables',
+            'is_time_enabled',
+            'is_reference_date_enabled',
+            'time_slider_default_display_mode',
+            'time_slider_start_field',
+            'time_slider_end_field',
         ]
 
 
@@ -637,7 +642,12 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'is_filterable_in_legend',
             'is_exportable',
             'authenticated_can_mutate',
-            'related_tables'
+            'related_tables',
+            'is_time_enabled',
+            'is_reference_date_enabled',
+            'time_slider_default_display_mode',
+            'time_slider_start_field',
+            'time_slider_end_field',
         ]
 
 

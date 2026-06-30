@@ -56,9 +56,9 @@
 
     <template #footer>
       <div class="tw-flex tw-items-center tw-gap-2">
-        <Button label="Sluit" class="tw-flex-auto" outlined @click="closePanel">
+        <Button label="Verbergen" class="tw-flex-auto" outlined @click="closePanel">
           <ClosePanelIcon />
-          Sluit
+          Verbergen
         </Button>
         <Button class="tw-flex-auto" @click="stopCompareLayers">
           <CompareLayersIcon class="tw-fill-white" />

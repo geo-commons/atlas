@@ -123,6 +123,28 @@ Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarb
 
 - **Zoektermen:** Via het veld "Zoektermen" kun je extra termen opgeven waarop een kaartlaag gevonden kan worden bij gebruik van de zoekfunctie binnen Atlas. Dit is vooral handig wanneer gebruikers verschillende woorden gebruiken voor hetzelfde concept. Bijvoorbeeld: bij een kaartlaag met als titel Scholen kun je de zoektermen onderwijs, educatie en basisschool toevoegen, zodat gebruikers deze kaartlaag ook vinden wanneer ze op die alternatieve termen zoeken. Voeg één zoekterm per regel in.
 
+### Tijdlijn
+
+Onder tijdlijn configureer je of een kaartlaag met de tijdlijn gebruikt kan worden.
+
+De tijdlijn gebruikt de WMS-T-standaard. Deze functionaliteit werkt alleen voor kaartlagen van type `WMS` of `WMS_WFS` waarbij de tijdsdimensie in GeoServer correct is ingesteld. Atlas stuurt de gekozen peildatum of periode door met de parameter `TIME`.
+
+| Veld                                | Uitleg                                                                                              | Opmerking                                                                                                                                                                                                                       |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tijdlijn**                        | Schakelt de tijdlijn in voor deze kaartlaag.                                                        | Alleen gebruiken voor lagen van type `WMS` of `WMS_WFS` met een correcte tijdsdimensie configuratie in GeoServer. De laag is alleen beschikbaar in de tijdlijn wanneer op de kaart ook de functie **Tijdlijn** is ingeschakeld. |
+| **Peildatumweergave**               | Maakt het mogelijk om in de tijdlijn één peildatum te kiezen in plaats van een periode.             | Alleen gebruiken wanneer in GeoServer zowel een startattribuut als een eindattribuut voor de tijdsdimensie is ingesteld.                                                                                                        |
+| **Standaardweergave**               | De weergave waarmee de tijdlijn standaard opent voor deze laag.                                     | Standaard: Periode                                                                                                                                                                                                              |
+| **Startdatumveld (GeoServer TIME)** | Naam van het WFS-attribuut dat in GeoServer als startdatum voor de TIME-dimensie is geconfigureerd. | Alleen gebruiken wanneer de dataweergave ook in combinatie met de tijdlijnlaag gebruikt moet kunnen worden.                                                                                                                     |
+| **Einddatumveld (GeoServer TIME)**  | Naam van het WFS-attribuut dat in GeoServer als einddatum voor de TIME-dimensie is geconfigureerd.  | Alleen gebruiken wanneer de dataweergave ook in combinatie met de tijdlijnlaag gebruikt moet kunnen worden.                                                                                                                     |
+
+Atlas haalt het beschikbare tijdslider bereik automatisch op uit het WMS `GetCapabilities` request van de laag. De WMS-laag moet daarom een correcte `time` dimension of extent publiceren. Dit bereik bepaalt de grenzen waarbinnen gebruikers in de viewer een start- en einddatum kunnen kiezen.
+
+!!! warning "GeoServer dimensies"
+
+    Wanneer in GeoServer alleen een startattribuut voor de tijdsdimensie is geconfigureerd, mag **Peildatumweergave** in Atlas niet worden ingeschakeld. Dat werkt niet goed en geeft onjuiste of lege resultaten. **Peildatumweergave** kan alleen worden gebruikt wanneer in GeoServer zowel een startattribuut als een eindattribuut ingesteld staat.
+
+Er kan in de viewer maar één tijdlijnlaag tegelijk actief zijn. Wanneer een gebruiker een andere tijdlijnlaag selecteert, wordt de eerder geselecteerde tijdlijnlaag uitgezet.
+
 ### Toegang
 
 Via toegang valt te regelen wie wel en geen toegang hebben tot het zien van een kaartlaag, ga hier zorgvuldig mee om.

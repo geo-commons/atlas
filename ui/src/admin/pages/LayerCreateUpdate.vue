@@ -772,6 +772,57 @@ export default {
             },
           ],
         },
+        timeline: {
+          label: "Tijdlijn",
+          questions: [
+            {
+              label: "Tijdlijn",
+              id: "is_time_enabled",
+              name: "IsTimeEnabled",
+              type: "checkbox",
+              required: false,
+              infoText: "Schakel tijdlijn in voor deze laag.",
+            },
+            {
+              label: "Peildatumweergave",
+              id: "is_reference_date_enabled",
+              name: "IsReferenceDateEnabled",
+              type: "checkbox",
+              required: false,
+              infoText: "Maakt het mogelijk om in de tijdlijn één peildatum te kiezen in plaats van een periode.",
+            },
+            {
+              label: "Standaardweergave",
+              id: "time_slider_default_display_mode",
+              name: "TimeSliderDefaultDisplayMode",
+              type: "dropdown",
+              placeholder: "standaardweergave",
+              options: [
+                { id: "period", label: "Periode" },
+                { id: "referenceDate", label: "Peildatum" },
+              ],
+              infoText: "De weergave waarmee de tijdlijn standaard opent voor deze laag.",
+            },
+            {
+              label: "Startdatumveld (GeoServer TIME)",
+              id: "time_slider_start_field",
+              name: "TimeSliderStartField",
+              type: "text",
+              required: false,
+              infoText:
+                "Naam van het WFS-attribuut dat in GeoServer als startdatum voor de TIME-dimensie is geconfigureerd.",
+            },
+            {
+              label: "Einddatumveld (GeoServer TIME)",
+              id: "time_slider_end_field",
+              name: "TimeSliderEndField",
+              type: "text",
+              required: false,
+              infoText:
+                "Naam van het WFS-attribuut dat in GeoServer als einddatum voor de TIME-dimensie is geconfigureerd.",
+            },
+          ],
+        },
         access: {
           label: "Toegang",
           questions: [
