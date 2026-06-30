@@ -81,6 +81,7 @@
           :key="visibleLayer.id"
           :is-open="true"
           :layer="visibleLayer"
+          :map-id="mapId"
           :position="position"
           :config="config"
           :atlas-features="features"

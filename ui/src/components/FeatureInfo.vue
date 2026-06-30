@@ -158,6 +158,8 @@ import { WMTS } from "ol/source";
 import { optionsFromCapabilities } from "ol/source/WMTS";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
+import { useMapStore } from "@/stores/map_store";
+import { getWmsTimeParameter } from "@/utils/wms-time";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -178,6 +180,7 @@ export default {
   },
   props: {
     layer: Object,
+    mapId: String,
     position: Object,
     config: Object,
     atlasFeatures: Object,
@@ -196,6 +199,7 @@ export default {
     return {
       features: [],
       html: "",
+      mapStore: null,
       onCopy: {},
     };
   },
@@ -219,6 +223,15 @@ export default {
   },
   watch: {
     position: "fetchFeatures",
+    "mapStore.selectedTimeSliderLayerId": "fetchFeatures",
+    "mapStore.timeSliderDisplayMode": "fetchFeatures",
+    "mapStore.timeSliderStartDate": "fetchFeatures",
+    "mapStore.timeSliderStepSize": "fetchFeatures",
+    "mapStore.timeSliderReferenceDate": "fetchFeatures",
+    "mapStore.timeSliderPeriodDates": "fetchFeatures",
+  },
+  created() {
+    this.mapStore = useMapStore(this.mapId);
   },
   mounted() {
     this.fetchFeatures();
@@ -240,11 +253,14 @@ export default {
       }
     },
     async fetchFeaturesFromWMS() {
+      const timeParameter = getWmsTimeParameter(this.mapStore, this.layer.id, this.layer.is_time_enabled === true);
+
       const wmsSource = new TileWMS({
         url: this.layer.url,
         servertype: this.layer.server_type,
         params: {
           LAYERS: this.layer.name,
+          ...(timeParameter ? { TIME: timeParameter } : {}),
           TILED: true,
         },
       });

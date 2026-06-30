@@ -31,6 +31,7 @@
       :format="layer.format"
       :is-visible="layer.is_visible === true"
       :is-selectable="layer.is_selectable === true"
+      :is-time-enabled="layer.is_time_enabled === true"
       :send-token-with-request="layer.login_required && layer.source.authenticate && user && user.token ? true : false"
       :selected-features="selectedFeatures"
       :z-index="getZIndex(layer, index)"

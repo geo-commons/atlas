@@ -1,0 +1,22 @@
+<dataStore>
+  <id>DataStoreInfoImpl-307ee419:19ed593ff6f:-8000</id>
+  <name>scholen-tijdlijn</name>
+  <description>scholen tijdlijn</description>
+  <type>GeoPackage</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl--2ba3e498:195378d8346:-7fe3</id>
+  </workspace>
+  <connectionParameters>
+    <entry key="fetch size">1000</entry>
+    <entry key="Expose primary keys">false</entry>
+    <entry key="Batch insert size">1</entry>
+    <entry key="database">file:workspaces/custom/scholen-timeline.gpkg</entry>
+    <entry key="read_only">false</entry>
+    <entry key="dbtype">geopkg</entry>
+    <entry key="namespace">custom</entry>
+  </connectionParameters>
+  <__default>false</__default>
+  <dateCreated>2026-06-17 12:35:06.734 UTC</dateCreated>
+  <disableOnConnFailure>false</disableOnConnFailure>
+</dataStore>

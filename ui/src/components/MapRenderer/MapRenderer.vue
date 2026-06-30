@@ -173,6 +173,13 @@
       @close-panel="closeCompareLayerPanel"
       @stop-compare="stopCompareLayers"
     />
+    <TimeSliderPanel
+      :map-id="mapId"
+      :show-time-slider-panel="mapStore.showTimeSliderPanel"
+      :layers="layers"
+      @close-panel="closeTimeSliderPanel"
+      @disable-time-slider="disableTimeSlider"
+    />
 
     <div v-show="!showDataPanel || !showDataPanelFullScreen" class="ui-container">
       <div class="top-left-panels" :class="{ 'extra-padding': showInfoPanel || showDataPanel }">
@@ -262,7 +269,7 @@
           @toggle-about="toggleAbout"
         />
       </div>
-      <div class="bottom-left-panels" :class="{ 'bottom-panels-padding': compareLayers }">
+      <div class="bottom-left-panels" :class="{ 'bottom-panels-padding': compareLayers || mapStore.timeSlider }">
         <LayersPanel
           v-if="features.layerlist || features.legend"
           :layers="regularLayers"
@@ -281,8 +288,9 @@
       </div>
       <div class="bottom-center-panels">
         <CompareLayersSlider :map-id="mapId" :show-compare-layer-panel="compareLayers" />
+        <TimeSliderSlider :map-id="mapId" :show-time-slider="mapStore.timeSlider" />
       </div>
-      <div class="bottom-right-panels" :class="{ 'bottom-panels-padding': compareLayers }">
+      <div class="bottom-right-panels" :class="{ 'bottom-panels-padding': compareLayers || mapStore.timeSlider }">
         <div v-if="features.baselayer" class="bottom-right-buttons">
           <div class="ui-button-wrapper">
             <button
@@ -302,6 +310,20 @@
           <transition name="fade">
             <BaseLayersPanel v-if="showBaseLayersPanel" :map-id="mapId" />
           </transition>
+        </div>
+        <div v-if="mapStore.visibleLayersForTimeSliderPanel.length > 0" class="bottom-right-buttons">
+          <div class="ui-button-wrapper">
+            <button
+              v-tippy="{ placement: 'left' }"
+              class="iconbutton __inverse"
+              :class="{ isActive: mapStore.timeSlider }"
+              content="Tijdlijn bekijken"
+              aria-label="Tijdlijn bekijken"
+              @click="toggleTimeSliderPanel"
+            >
+              <i class="pi pi-history"></i>
+            </button>
+          </div>
         </div>
         <div v-if="features.compareLayers" class="bottom-right-buttons">
           <div class="ui-button-wrapper">
@@ -415,6 +437,8 @@ import ZoomPanel from "../ZoomPanel";
 import OpenLayersRenderer from "./renderers/OpenLayers/OpenLayers";
 import CompareLayersPanel from "@/components/compare-layers/CompareLayersPanel.vue";
 import CompareLayersSlider from "@/components/compare-layers/CompareLayersSlider.vue";
+import TimeSliderPanel from "@/components/time-slider/TimeSliderPanel.vue";
+import TimeSliderSlider from "@/components/time-slider/TimeSliderSlider.vue";
 import { DEFAULT_DRAWING_COLOR, DEFAULT_DRAWING_FONT_SIZE, DEFAULT_DRAWING_STROKE_WIDTH } from "@/constants/defaults";
 import { useEditLayerStore } from "@/stores/edit_layer_store";
 import AddFeaturePanel from "@/components/edit-layers/AddFeaturePanel.vue";
@@ -424,6 +448,7 @@ import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import { pushHistoryState } from "@/utils/map-url-utils";
 import { ELayerTypes } from "@/types/layer";
 import { finalizeMultipartFeatureOnEnter, handleEditLayerToolUsed } from "@/components/MapRenderer/utils/edit-layer";
+import { getWmsTimeParameter } from "@/utils/wms-time";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -432,6 +457,8 @@ const DEFAULT_PANEL_WIDTH = 280;
 export default {
   name: "MapRenderer",
   components: {
+    TimeSliderSlider,
+    TimeSliderPanel,
     CompareLayersSlider,
     CompareLayersPanel,
     EditFeaturePanel,
@@ -694,6 +721,7 @@ export default {
 
         this.mapStore.setLayers(layersCopy);
         this.mapStore.setBaseLayer(layersCopy.find((l) => l.is_base && l.is_visible));
+        this.mapStore.activateVisibleTimeSliderLayer();
       },
       deep: true,
     },
@@ -717,6 +745,7 @@ export default {
 
     this.mapStore.setLayers(layersCopy);
     this.mapStore.setBaseLayer(initialBaseLayer);
+    this.mapStore.activateVisibleTimeSliderLayer();
 
     if (this.globalStore.drawing) {
       this.mapStore.setDrawingId(this.globalStore.drawing);
@@ -868,11 +897,14 @@ export default {
           return;
         }
 
+        const timeParameter = getWmsTimeParameter(this.mapStore, layer.id, layer.is_time_enabled === true);
+
         const wmsSource = new TileWMS({
           url: layer.url,
           servertype: layer.server_type,
           params: {
             LAYERS: layer.name,
+            ...(timeParameter ? { TIME: timeParameter } : {}),
             TILED: true,
           },
         });
@@ -1190,8 +1222,17 @@ export default {
 
       this.showCompareLayerPanel = !this.showCompareLayerPanel;
     },
+    toggleTimeSliderPanel() {
+      this.mapStore.toggleTimeSliderPanel();
+    },
     closeCompareLayerPanel() {
       this.showCompareLayerPanel = false;
+    },
+    closeTimeSliderPanel() {
+      this.mapStore.closeTimeSliderPanel();
+    },
+    disableTimeSlider() {
+      this.mapStore.disableTimeSlider();
     },
     stopCompareLayers() {
       this.showCompareLayerPanel = false;
@@ -1276,6 +1317,10 @@ export default {
   right: 0;
   margin-inline: auto;
   width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
 }
 
 .top-right-panels {

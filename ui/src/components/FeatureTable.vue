@@ -116,6 +116,7 @@ import { useMapStore } from "@/stores/map_store";
 import { WKT } from "ol/format";
 import { useToast } from "primevue";
 import { getGeometryName } from "@/services/layer";
+import { getWfsTimeCqlFilter } from "@/utils/wms-time";
 
 export default {
   name: "FeatureTable",
@@ -162,6 +163,8 @@ export default {
       error: false,
       errorMessage: null,
       loading: true,
+      store: null,
+      isInitialized: false,
       isDownloadPending: false,
       toast: useToast(),
       WFS_FORMAT_MAP: {
@@ -184,6 +187,18 @@ export default {
       }
     },
     selectedArea: "fetchFeatures",
+    "store.selectedTimeSliderLayerId": "fetchFeaturesForTimeSliderChange",
+    "store.timeSliderDisplayMode": "fetchFeaturesForTimeSliderChange",
+    "store.timeSliderStepSize": "fetchFeaturesForTimeSliderChange",
+    "store.timeSliderReferenceDate": "fetchFeaturesForTimeSliderChange",
+    "store.timeSliderPeriodDates": {
+      handler: "fetchFeaturesForTimeSliderChange",
+      deep: true,
+    },
+    "store.timeSliderMinDate": "fetchFeaturesForTimeSliderChange",
+    "store.timeSliderMaxDate": "fetchFeaturesForTimeSliderChange",
+    "store.timeSliderCapabilitiesLoading": "fetchFeaturesForTimeSliderChange",
+    "store.timeSliderCapabilitiesError": "fetchFeaturesForTimeSliderChange",
     filter: "fetchFeatures",
     fieldFilters: {
       handler() {
@@ -240,6 +255,8 @@ export default {
         this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
       }
     });
+
+    this.isInitialized = true;
 
     await this.fetchFeatures();
   },
@@ -305,6 +322,12 @@ export default {
           this.loading = false;
           return;
         }
+      }
+
+      const timeFilter = getWfsTimeCqlFilter(this.store, this.layer);
+
+      if (timeFilter) {
+        filters.push(timeFilter);
       }
 
       if (filters.length > 0) {
@@ -375,6 +398,21 @@ export default {
         this.displayProperties = [];
         this.searchProperties = [];
       }
+    },
+    fetchFeaturesForTimeSliderChange() {
+      if (!this.store || !this.isInitialized) {
+        return;
+      }
+
+      if (this.pageState.page !== 0) {
+        this.pageState = {
+          ...this.pageState,
+          page: 0,
+        };
+        return;
+      }
+
+      this.fetchFeatures();
     },
     async fetchSearchProperties() {
       if (this.layer.search_properties && this.layer.search_properties.length > 0) {
@@ -460,6 +498,11 @@ export default {
           // Geometry too complex - return null, callers handle UI state
           return null;
         }
+      }
+
+      const timeFilter = getWfsTimeCqlFilter(this.store, this.layer);
+      if (timeFilter) {
+        filters.push(timeFilter);
       }
 
       if (filters.length > 0) {

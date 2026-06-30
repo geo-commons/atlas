@@ -87,7 +87,12 @@
         </template>
       </SearchForm>
     </div>
+    <Message v-if="layer && layer.is_time_enabled && !layer.time_slider_start_field" severity="error">
+      Het Startdatumveld (GeoServer TIME) veld is niet geconfigureerd voor deze kaartlaag. De dataweergave kan daardoor
+      niet voor deze kaartlaag gebruikt worden.
+    </Message>
     <FeatureTable
+      v-else
       ref="featureTable"
       :layer="layer"
       :position="position"
