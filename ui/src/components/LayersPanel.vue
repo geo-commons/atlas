@@ -103,12 +103,8 @@
                   @set-position="onSetPosition"
                   @on-fit="onFit"
                 />
-                <li v-for="subcategory in category.subcategories" :key="subcategory.id" class="subcategory-wrapper">
-                  <ExpandButton
-                    :title="subcategory.title"
-                    :is-open="searchQuery != ''"
-                    class="subcategory-expand-wrapper"
-                  >
+                <li v-for="subcategory in category.subcategories" :key="subcategory.id">
+                  <ExpandButton :title="subcategory.title" :is-open="searchQuery != ''" class="!-tw-ml-2.5">
                     <template #button>
                       <div v-if="subcategory.visibleLayerCount > 0" class="counter layer-counter">
                         {{ subcategory.visibleLayerCount }}

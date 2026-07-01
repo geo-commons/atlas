@@ -18,7 +18,6 @@
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useQueryCache } from "@pinia/colada";
-import { getAllObjects } from "@/utils/api-helpers";
 import { useCategoryList } from "@/admin/queries";
 
 export default {
@@ -34,80 +33,17 @@ export default {
   },
   data() {
     return {
-      sections: {},
       initialValues: {},
       loading: false,
     };
   },
   computed: {
     categoriesExceptCurrent() {
-      return (this.categoriesState.data || []).filter((category) => category.id !== this.initialValues.id);
+      return (this.categoriesState.data || []).filter(
+        (category) => category.id !== this.initialValues.id && !category.parent,
+      );
     },
-  },
-  created() {
-    this.loading = true;
-
-    Promise.all([this.getCategory()]).then(() => {
-      this.sections = this.getSections();
-      this.loading = false;
-    });
-  },
-  methods: {
-    async getCategory() {
-      const result = await fetch(`/atlas/api/v1/categories/${this.$route.params.id}/`, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch category");
-        return;
-      }
-
-      this.initialValues = await result.json();
-      this.initialValues.parent_id = this.initialValues.parent?.id || null;
-    },
-    async getCategories() {
-      const result = await fetch(getAllObjects("/atlas/api/v1/categories/"), {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch categories");
-        return;
-      }
-
-      const response = await result.json();
-      this.parentCategories = response.results
-        .filter((category) => !category.parent)
-        .map((category) => ({ id: category.id, label: category.title }));
-    },
-    async saveCategory(currentValues, continueEditing = false) {
-      const url = `/atlas/api/v1/categories/${this.$route.params.id}/`;
-
-      try {
-        const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
-
-        if (result.ok) {
-          await this.queryCache.invalidateQueries(["categories"]);
-
-          if (!continueEditing) {
-            this.$router.push(`/categories`);
-          }
-
-          this.$toast.add({
-            severity: "success",
-            summary: "Categorie opgeslagen",
-            detail: "De categorie is succesvol opgeslagen.",
-            life: 3000,
-          });
-        }
-      } catch (e) {
-        console.error("An unexpected error occurred:", e);
-      }
-    },
-    getSections() {
+    sections() {
       return {
         general: {
           label: "Algemene gegevens",
@@ -140,6 +76,53 @@ export default {
           ],
         },
       };
+    },
+  },
+  created() {
+    this.loading = true;
+
+    Promise.all([this.getCategory()]).then(() => {
+      this.loading = false;
+    });
+  },
+  methods: {
+    async getCategory() {
+      const result = await fetch(`/atlas/api/v1/categories/${this.$route.params.id}/`, {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!result.ok) {
+        console.error("Could not fetch category");
+        return;
+      }
+
+      this.initialValues = await result.json();
+      this.initialValues.parent_id = this.initialValues.parent?.id || null;
+    },
+    async saveCategory(currentValues, continueEditing = false) {
+      const url = `/atlas/api/v1/categories/${this.$route.params.id}/`;
+
+      try {
+        const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
+
+        if (result.ok) {
+          await this.queryCache.invalidateQueries(["categories"]);
+
+          if (!continueEditing) {
+            this.$router.push(`/categories`);
+          }
+
+          this.$toast.add({
+            severity: "success",
+            summary: "Categorie opgeslagen",
+            detail: "De categorie is succesvol opgeslagen.",
+            life: 3000,
+          });
+        }
+      } catch (e) {
+        console.error("An unexpected error occurred:", e);
+      }
     },
   },
 };

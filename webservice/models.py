@@ -72,7 +72,7 @@ class Category(models.Model):
     def clean(self):
         super().clean()
 
-        if self.parent_id == self.id:
+        if self.parent_id is not None and self.parent_id == self.id:
             raise ValidationError({'parent': 'Het is niet mogelijk om een categorie zichzelf als hoofdcategorie te selecteren.'})
 
         if self.parent and self.parent.parent_id:
