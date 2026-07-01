@@ -36,6 +36,21 @@ class CategoryHierarchyTest(TestCase):
         self.assertEqual(serializer.data['full_title'], 'Infrastructure / Roads')
         self.assertEqual(serializer.data['parent']['id'], self.parent_category.id)
         self.assertEqual(serializer.data['parent']['title'], self.parent_category.title)
+        
+    def test_category_serializer_allows_creating_category_without_parent(self):
+        serializer = CategorySerializer(
+            data={
+                'title': 'New Category',
+                'slug': 'new-category',
+            }
+        )
+
+        self.assertTrue(serializer.is_valid())
+        category = serializer.save()
+
+        self.assertIsNone(category.parent)
+        self.assertEqual(category.title, 'New Category')
+        self.assertEqual(category.slug, 'new-category')
 
     def test_category_serializer_rejects_self_as_parent(self):
         serializer = CategorySerializer(

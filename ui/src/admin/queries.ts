@@ -93,6 +93,7 @@ export const useCategoryList = defineQuery(() => {
         id: category.id,
         label: category.title,
         fullTitle: category.full_title,
+        parent: category.parent,
       }));
     },
   });
