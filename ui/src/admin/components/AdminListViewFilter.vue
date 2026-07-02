@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, Ref } from "vue";
 import AdminListViewMultiSelect from "@/admin/components/AdminListViewMultiSelect.vue";
 
 // Properties
 type AdminListViewFilterProps = {
   params: URLSearchParams;
   singularName: string;
-  getTableFilters?: () => Array<TableFilter>;
+  tableFilters?: Array<TableFilter>;
 };
 
 const props = withDefaults(defineProps<AdminListViewFilterProps>(), {});
@@ -25,15 +24,6 @@ export type TableFilter = {
   label: string;
   dataKey?: string;
 };
-
-const tableFilters: Ref<Array<TableFilter>> = ref([]);
-
-// Lifecycle hooks
-onMounted(async () => {
-  if (props.getTableFilters) {
-    tableFilters.value = props.getTableFilters();
-  }
-});
 </script>
 
 <template>

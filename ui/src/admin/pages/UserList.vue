@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { onMounted, Ref, ref, unref } from "vue";
+import { onMounted, Ref, ref, unref, computed } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { useGlobalStore } from "@/stores";
@@ -83,9 +83,9 @@ onMounted(() => {
   });
 });
 
-const getTableFilters = (): Array<TableFilter> => {
+const tableFilters = computed((): Array<TableFilter> => {
   return [{ options: unref(groups), name: "Groepen", key: "atlas_groups", label: "label", dataKey: "id" }];
-};
+});
 </script>
 
 <template>
@@ -97,6 +97,6 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-create-object="false"
     :block-delete="[store?.user?.id]"
     :table-headers="tableHeaders"
-    :get-table-filters="getTableFilters"
+    :table-filters="tableFilters"
   />
 </template>

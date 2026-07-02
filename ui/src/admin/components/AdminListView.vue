@@ -27,7 +27,7 @@ type AdminListViewProps = {
   apiName: string;
   loading: boolean;
   tableHeaders: Array<TableHeader>;
-  getTableFilters?: () => Array<TableFilter>;
+  tableFilters?: Array<TableFilter>;
   viewBaseUrl?: string;
   fixedQueryParams?: Record<string, string>;
   blockDelete?: Array<number>;
@@ -333,7 +333,7 @@ defineExpose({ toggleDialog });
     <div v-else-if="state.data">
       <AdminListViewFilter
         :params="params"
-        :get-table-filters="props.getTableFilters"
+        :table-filters="props.tableFilters"
         :singular-name="props.singularName"
         @update-search-term="updateSearchTerm"
         @update-list-filters="updateListFilters"

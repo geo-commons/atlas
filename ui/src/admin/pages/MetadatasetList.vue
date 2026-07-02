@@ -4,7 +4,7 @@ import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { EDialogTypes } from "@/types/dialog";
 import slugify from "slugify";
-import { ref, Ref } from "vue";
+import { ref, Ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { statusTypeLabels, statusTypeOptions, topicCategoryLabels, topicCategoryOptions } from "@/types";
 import { IMetadataset } from "@/types/metadataset";
@@ -104,7 +104,7 @@ const tableHeaders: Array<TableHeader> = [
   },
 ];
 
-const getTableFilters = (): Array<TableFilter> => {
+const tableFilters = computed((): Array<TableFilter> => {
   return [
     {
       name: "Selecteer onderwerp",
@@ -121,7 +121,7 @@ const getTableFilters = (): Array<TableFilter> => {
       options: statusTypeOptions,
     },
   ];
-};
+});
 </script>
 
 <template>
@@ -138,6 +138,6 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-delete-multiple="true"
     :enable-duplicate="true"
     :table-headers="tableHeaders"
-    :get-table-filters="getTableFilters"
+    :table-filters="tableFilters"
   />
 </template>

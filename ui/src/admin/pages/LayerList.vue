@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { onMounted, Ref, ref, unref } from "vue";
+import { onMounted, Ref, ref, unref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
@@ -165,7 +165,7 @@ const getCreateLayerSections = () => {
   };
 };
 
-const getTableFilters = (): Array<TableFilter> => {
+const tableFilters = computed((): Array<TableFilter> => {
   return [
     { options: unref(categories), name: "Categorie", key: "layer_type", label: "label", dataKey: "id" },
     {
@@ -179,7 +179,7 @@ const getTableFilters = (): Array<TableFilter> => {
       dataKey: "id",
     },
   ];
-};
+});
 </script>
 
 <template>
@@ -196,6 +196,6 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :table-headers="tableHeaders"
-    :get-table-filters="getTableFilters"
+    :table-filters="tableFilters"
   />
 </template>
