@@ -1,12 +1,12 @@
 <template>
   <div class="tools-panel__button-container">
     <button
+      v-if="editLayerStore.editableLayers.length > 0"
       v-tippy="{ placement: 'bottom' }"
       class="tools-panel__button"
       :class="{
         'tools-panel__button--active': showEditFeatureMenu,
       }"
-      :disabled="editLayerStore.editableLayers.length < 1"
       content="Laag objecten toevoegen"
       aria-label="Laag objecten toevoegen"
       @click="toggleEditLayerMenu"
