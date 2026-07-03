@@ -642,7 +642,7 @@ export default {
               type: "checkbox",
               required: false,
               infoText:
-                "Hiermee zijn specifieke legenda-items te filteren. Let op: Deze functie werkt enkel met WMS, WMS-WFS en WFS bronnen die een JSON response ondersteunen.",
+                "Hiermee kunnen gebruikers filteren op de verschillende waarden die in de legenda worden weergegeven. Let op: Deze functie werkt enkel met WMS-, WMS-WFS- en WFS-bronnen die een JSON-response ondersteunen.",
             },
             {
               label: "Toon deze velden",
