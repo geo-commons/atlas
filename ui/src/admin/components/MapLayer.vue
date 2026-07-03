@@ -56,6 +56,14 @@
                 :info-text="'Er is al een basislaag met de instelling \'kaartlaag standaard zichtbaar\' aanwezig, wanneer u \'kaartlaag standaard zichtbaar\' activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
               />
             </div>
+            <div class="layer-setting-toggle">
+              <ToggleSwitch
+                input-id="is_filterable_in_legend"
+                :model-value="mapLayerConfig.settings.is_filterable_in_legend"
+                @update:model-value="toggleSliderField('is_filterable_in_legend')"
+              />
+              <label for="is_filterable_in_legend">Kaartlaag filterbaar in legenda</label>
+            </div>
 
             <div class="layer-setting tw-flex tw-flex-col">
               <label for="opacity">Transparantie</label>
@@ -415,11 +423,17 @@ export default {
   },
   async created() {
     this.mapLayerConfig = this.initialData;
+    this.layerDefaultSettings = await this.getLayer(this.mapLayerConfig.layer);
     this.selectedMapLayerConfigs = this.initialConfiguredLayers;
-
     await this.getLayers();
-
-    this.layerDefaultSettings = this.allLayers.find((layer) => this.mapLayerConfig.layer === layer.id);
+    if (this.mapLayerConfig.settings.customSettings) {
+      /* If there are custom settings, amend the default settings
+         with any set custom settings. */
+      this.mapLayerConfig.settings = {
+        ...this.layerDefaultSettings,
+        ...this.mapLayerConfig.settings,
+      };
+    }
   },
   methods: {
     jsonParseLinter,
@@ -457,10 +471,9 @@ export default {
     async toggleSettings() {
       if (!this.mapLayerConfig.settings.customSettings) {
         // Get layer settings.
-        const layerData = await this.getLayer(this.mapLayerConfig.layer);
         this.mapLayerConfig.settings = {
           customSettings: true,
-          ...layerData,
+          ...this.layerDefaultSettings,
         };
       } else {
         // Reset layer settings.

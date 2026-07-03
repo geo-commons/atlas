@@ -226,6 +226,7 @@ export default {
         ...layer,
         is_visible: selectedLayer.settings.is_visible,
         is_base: selectedLayer.settings.is_base,
+        is_filterable_in_legend: selectedLayer.settings.is_filterable_in_legend,
         opacity: selectedLayer.settings.opacity,
         zoom_min: selectedLayer.settings.zoom_min,
         zoom_max: selectedLayer.settings.zoom_max,

@@ -50,22 +50,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const defaultLayer = allAvailableLayers.find((layer) => layer.internal_id === configuredLayer.layer);
 
     if (configuredLayer.settings.customSettings) {
+      // Override with custom settings, as far as they are present
+      const overrideKeys = [
+        "is_visible",
+        "is_base",
+        "is_filterable_in_legend",
+        "opacity",
+        "zoom_min",
+        "zoom_max",
+        "display_properties",
+        "search_fields",
+        "server_style",
+        "client_style",
+        "friendly_fields",
+        "templated_properties",
+        "linked_data",
+        "templates",
+      ];
+
+      const configuredSettings = configuredLayer.settings ?? {};
+
       return {
         ...defaultLayer,
-        is_visible: configuredLayer.settings.is_visible,
-        is_base: configuredLayer.settings.is_base,
-        opacity: configuredLayer.settings.opacity,
-        zoom_min: configuredLayer.settings.zoom_min,
-        zoom_max: configuredLayer.settings.zoom_max,
-        display_properties: configuredLayer.settings.display_properties,
-        search_terms: configuredLayer.settings.search_terms,
-        search_fields: configuredLayer.settings.search_fields,
-        server_style: configuredLayer.settings.server_style,
-        client_style: configuredLayer.settings.client_style,
-        friendly_fields: configuredLayer.settings.friendly_fields,
-        templated_properties: configuredLayer.settings.templated_properties,
-        linked_data: configuredLayer.settings.linked_data,
-        templates: configuredLayer.settings.templates,
+        ...Object.fromEntries(
+          overrideKeys
+            .filter((key) => Object.hasOwn(configuredSettings, key))
+            .map((key) => [key, configuredSettings[key]]),
+        ),
       };
     } else {
       return defaultLayer;
