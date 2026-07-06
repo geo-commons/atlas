@@ -84,7 +84,7 @@ Unit test frontend:
 
 Browser test frontend:
   stage: Test
-  image: mcr.microsoft.com/playwright:v1.58.1-noble
+  image: mcr.microsoft.com/playwright:v1.61.1-noble
   cache:
     paths:
       - ui/node_modules/
@@ -97,7 +97,7 @@ Browser test frontend:
 
 E2E test frontend (Playwright):
   stage: Test
-  image: mcr.microsoft.com/playwright:v1.58.1-noble
+  image: mcr.microsoft.com/playwright:v1.61.1-noble
   services:
     - postgres:18.0-alpine
   variables:
