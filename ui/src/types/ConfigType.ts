@@ -7,6 +7,13 @@ export interface IConfigPosition {
   zoom: number;
 }
 
+export enum EComplexDataDisplay {
+  PANEL = "panel",
+  POPUP = "popup",
+}
+export interface IConfigStyle {
+  complex_data_display: EComplexDataDisplay;
+}
 export interface IConfig {
   features: IConfigFeatures;
   position?: IConfigPosition;
@@ -18,4 +25,5 @@ export interface IConfig {
   organization_primary_color?: string;
   organization_title_color?: string;
   organization_text_color?: string;
+  style: IConfigStyle;
 }

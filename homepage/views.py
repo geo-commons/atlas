@@ -187,6 +187,9 @@ def _get_config(request, visible_map=None):
             'featureLayerInternalVisibility': config.get('FEATURE_LAYER_INTERNAL_VISIBILITY'),
         },
         'viewers': [viewer.to_dict() for viewer in Viewer.visible.for_request(request)],
+        'style': {
+            'complex_data_display': config.get('COMPLEX_DATA_DISPLAY'),
+        }
     }
     
     map_position = _normalize_position((visible_map.settings or {}).get('position')) if visible_map else None

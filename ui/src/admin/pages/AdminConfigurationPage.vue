@@ -254,6 +254,23 @@ export default {
             },
           ],
         },
+        style: {
+          label: "Stijl",
+          questions: [
+            {
+              label: "Complexe dataweergave",
+              id: "COMPLEX_DATA_DISPLAY",
+              name: "complexDataDisplay",
+              type: "dropdown",
+              options: [
+                { label: "Paneel", id: "panel" },
+                { label: "Popup", id: "popup" },
+              ],
+              infoText:
+                "Met deze instelling configureer je hoe complexe data weergegeven wordt in de viewer. In een paneel (vanaf de zijkant) of in een popup (in het midden van het scherm).",
+            },
+          ],
+        },
       };
     },
   },
