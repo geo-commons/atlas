@@ -329,6 +329,7 @@ CONSTANCE_CONFIG = {
         '#000000', 'Tekst kleur op het portaal. Leeg = overnemen van standaard. NB: voor nu alleen beschikbaar in HEX'),
     'ORGANIZATION_INTRODUCTION': ('', 'Introductie tekst die wordt laten zien bovenaan de pagina'),
     'ORGANIZATION_HEADER': ('', 'Header tekst die bovenaan de portaal pagina zichtbaar is'),
+    'COMPLEX_DATA_DISPLAY': ('panel', 'Met deze instelling configureer je hoe complexe data weergegeven wordt in de viewer. In een paneel (vanaf de zijkant) of in een popup (in het midden van het scherm).'),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -367,6 +368,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'ORGANIZATION_TEXT_COLOR',
         'ORGANIZATION_INTRODUCTION',
         'ORGANIZATION_HEADER'
+    ),
+    '6. Stijl': (
+        'COMPLEX_DATA_DISPLAY',
     )
 }
 

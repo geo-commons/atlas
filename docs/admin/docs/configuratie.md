@@ -55,3 +55,10 @@ Hier kunnen de globale instellingen gedaan worden die in Atlas getoond worden.
   Met deze tijdelijke feature flag kan de oude gekoppelde data en templates functionaliteit aan/uitgezet worden.
 - **Interne zichtbaarheid lagen**  
   Met deze feature flag kan de optie voor het tonen van de configuratie optie "Alleen intern zichtbaar" voor kaartlagen, autorisaties en tabellen aan/uitgezet worden.
+
+### Stijl
+
+- **Complexe dataweergave**
+  Met deze instelling configureer je hoe complexe data weergegeven wordt in de viewer. In een paneel (vanaf de zijkant) of in een popup (in het midden van het scherm).
+
+  Complexe data (objecten en arrays) wordt niet direct in tabellen of detailweergaven getoond. Via de knop 'Bekijken' open je deze gegevens in het gekozen weergavetype.
