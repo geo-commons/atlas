@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminListView from "@/admin/components/AdminListView.vue";
-import { onMounted, Ref, ref, unref } from "vue";
+import { onMounted, Ref, ref, unref, computed } from "vue";
 import { TableHeader } from "@/admin/components/AdminListViewTable.vue";
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
 
@@ -50,13 +50,13 @@ onMounted(() => {
   });
 });
 
-const getTableFilters = (): Array<TableFilter> => {
+const tableFilters = computed((): Array<TableFilter> => {
   return [
     { options: unref(users), name: "Gebruiker", key: "username", label: "" },
     { options: unref(resources), name: "Resource", key: "resource", label: "" },
     { options: unref(sources), name: "Bron", key: "source", label: "" },
   ];
-};
+});
 </script>
 
 <template>
@@ -69,7 +69,7 @@ const getTableFilters = (): Array<TableFilter> => {
     :enable-edit="false"
     :enable-create-object="false"
     :table-headers="tableHeaders"
-    :get-table-filters="getTableFilters"
+    :table-filters="tableFilters"
     :view-base-url="'/atlas/admin/#/logs/update'"
   />
 </template>

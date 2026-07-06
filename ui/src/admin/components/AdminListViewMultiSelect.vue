@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Properties
 import { TableFilter } from "@/admin/components/AdminListViewFilter.vue";
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 type AdminListViewFilterProps = {
@@ -18,15 +18,12 @@ const emit = defineEmits<{
 // Multiselect logic
 const route = useRoute();
 
-let params: URLSearchParams = new URLSearchParams();
-
 const multiselect = ref();
 
-onMounted(() => {
-  params = new URLSearchParams(route.query as any);
+const updateMultiselectState = () => {
+  const params = new URLSearchParams(route.query as any);
 
   const paramValue = params.get(props.filter.key);
-
   const selectedItems = paramValue ? paramValue.split(",") : [];
 
   const item = props.filter.options.filter((option: any) =>
@@ -36,12 +33,18 @@ onMounted(() => {
   );
 
   multiselect.value = item;
-});
+};
 
-watch(multiselect, (value, oldValue) => {
-  if (!oldValue) {
-    return;
-  }
+watch(
+  () => [route.query, props.filter.options],
+  () => {
+    updateMultiselectState();
+  },
+  { immediate: true, deep: true },
+);
+
+watch(multiselect, (_, oldValue) => {
+  if (!oldValue) return;
 
   emit("update-list-filters", multiselect.value, props.filter.key);
 });
