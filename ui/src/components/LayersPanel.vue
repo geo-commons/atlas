@@ -83,7 +83,7 @@
             v-for="category in categories"
             :key="category.id"
             :title="category.title"
-            :is-open="searchQuery != ''"
+            :is-open="debouncedSearchQuery != ''"
             class="category-wrapper"
           >
             <template #button>
@@ -104,7 +104,7 @@
                   @on-fit="onFit"
                 />
                 <li v-for="subcategory in category.subcategories" :key="subcategory.id">
-                  <ExpandButton :title="subcategory.title" :is-open="searchQuery != ''" class="!-tw-ml-2.5">
+                  <ExpandButton :title="subcategory.title" :is-open="debouncedSearchQuery != ''" class="!-tw-ml-2.5">
                     <template #button>
                       <div v-if="subcategory.visibleLayerCount > 0" class="counter layer-counter">
                         {{ subcategory.visibleLayerCount }}
@@ -225,6 +225,7 @@ import CollapseAllIcon from "@/assets/icons/collapse-all-icon.svg";
 import OpenAllIcon from "@/assets/icons/open-all-icon.svg";
 import SortIcon from "@/assets/icons/sort-icon.svg";
 import { mapState } from "pinia";
+import { useDebounceFn } from "@vueuse/core";
 import { useGlobalStore } from "@/stores";
 import { useMapStore } from "@/stores/map_store";
 
@@ -261,6 +262,8 @@ export default {
     return {
       panel: null,
       searchQuery: "",
+      debouncedSearchQuery: "",
+      updateDebouncedSearchQuery: null,
       mapStore: null,
       sortLayers: false,
       layersOpen: {},
@@ -275,11 +278,49 @@ export default {
 
       return [];
     },
+    searchTerm() {
+      return this.debouncedSearchQuery.trim().toLowerCase();
+    },
+    /**
+     * Maps layer IDs to their full layer objects for quick lookup.
+     * @returns {Map<string, Object>} A Map where the key is the layer ID and the value is the layer object.
+     */
+    layerById() {
+      const layerById = new Map();
+
+      (this.layers || []).forEach((layer) => {
+        layerById.set(layer.id, layer);
+      });
+
+      return layerById;
+    },
+    /**
+     * Stores precomputed searchable text per layer ID.
+     * This avoids rebuilding the combined search string every time a layer is checked against the search term.
+     * @returns {Map<string, string>} A Map where the key is the layer ID and the value is the combined searchable text for that layer.
+     */
+    searchableTextByLayerId() {
+      const searchableTextByLayerId = new Map();
+
+      (this.layers || []).forEach((layer) => {
+        searchableTextByLayerId.set(layer.id, this.buildLayerSearchableText(layer));
+      });
+
+      return searchableTextByLayerId;
+    },
     visibleLayers() {
       return this.mapStore ? this.mapStore.visibleLayers : [];
     },
   },
+  watch: {
+    searchQuery(newValue) {
+      this.updateDebouncedSearchQuery(newValue);
+    },
+  },
   created() {
+    this.updateDebouncedSearchQuery = useDebounceFn((value) => {
+      this.debouncedSearchQuery = value;
+    }, 150);
     this.mapStore = useMapStore(this.mapId);
     this.panel = this.layerPanelCollapsed ? null : this.mapStore.visibleLayers.length > 0 ? "activeLayers" : "layers";
   },
@@ -316,14 +357,8 @@ export default {
     },
     getTreeLayers(treeLayers) {
       return treeLayers
-        .map((treeLayer) => this.findLayerForTreeLayer(treeLayer))
+        .map((treeLayer) => this.layerById.get(treeLayer.id))
         .filter((layer) => layer && this.layerMatchesSearch(layer));
-    },
-    findLayerForTreeLayer(treeLayer) {
-      return this.layers.find(
-        (layer) =>
-          layer.id === treeLayer.id || layer.internal_id === treeLayer.id || layer.id === treeLayer.internal_id,
-      );
     },
     getVisibleLayerCount(category) {
       const directVisibleLayers = category.layers.filter((layer) => layer.is_visible).length;
@@ -334,34 +369,29 @@ export default {
       return directVisibleLayers + subcategoryVisibleLayers;
     },
     layerMatchesSearch(layer) {
-      if (!this.searchQuery) {
+      if (!this.searchTerm) {
         return true;
       }
 
-      const searchTerm = this.searchQuery.trim().toLowerCase();
-
-      // Laag velden
-      const matchesLayerTitle = layer.title.toLowerCase().includes(searchTerm);
-      const matchesLayerDescription = layer.description?.toLowerCase().includes(searchTerm) || false;
-      const matchesLayerSearchTerms =
-        layer.search_terms?.some((term) => term.trim().toLowerCase().includes(searchTerm)) || false;
-
-      // Metadataset velden
-      const matchesMetadatasetTitle = layer.metadataset?.title.toLowerCase().includes(searchTerm);
-      const matchesMetadatasetAbstract = layer.metadataset?.abstract?.toLowerCase().includes(searchTerm) || false;
-      const metadatasetKeywords = layer.metadataset?.keyword ? layer.metadataset.keyword.split(/\r?\n/) : [];
-      const matchesMetadatasetKeywords = metadatasetKeywords.some((term) =>
-        term.trim().toLowerCase().includes(searchTerm),
-      );
-
-      return (
-        matchesLayerTitle ||
-        matchesLayerDescription ||
-        matchesLayerSearchTerms ||
-        matchesMetadatasetTitle ||
-        matchesMetadatasetAbstract ||
-        matchesMetadatasetKeywords
-      );
+      return this.searchableTextByLayerId.get(layer.id)?.includes(this.searchTerm) || false;
+    },
+    /**
+     * Builds the normalized text used for layer search matching.
+     * It combines layer title, description, configured search terms, and metadata title, description (abstract) and keywords, skips empty values,
+     * and lowercases the result so matching can be case-insensitive.
+     */
+    buildLayerSearchableText(layer) {
+      return [
+        layer.title,
+        layer.description,
+        ...(layer.search_terms || []),
+        layer.metadataset?.title,
+        layer.metadataset?.abstract,
+        layer.metadataset?.keyword,
+      ]
+        .filter(Boolean)
+        .join("\n")
+        .toLowerCase();
     },
     togglePanel(selectedPanel) {
       if (this.panel === selectedPanel) {
