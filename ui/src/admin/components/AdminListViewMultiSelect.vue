@@ -35,6 +35,11 @@ const updateMultiselectState = () => {
   multiselect.value = item;
 };
 
+const updateListFilter = (value: any) => {
+  multiselect.value = value;
+  emit("update-list-filters", value, props.filter.key);
+};
+
 watch(
   () => [route.query, props.filter.options],
   () => {
@@ -42,17 +47,11 @@ watch(
   },
   { immediate: true, deep: true },
 );
-
-watch(multiselect, (_, oldValue) => {
-  if (!oldValue) return;
-
-  emit("update-list-filters", multiselect.value, props.filter.key);
-});
 </script>
 
 <template>
   <multi-select
-    v-model="multiselect"
+    :model-value="multiselect"
     :options="filter.options"
     :option-label="filter.label"
     placeholder="Kies waarde"
@@ -60,5 +59,6 @@ watch(multiselect, (_, oldValue) => {
     class="!tw-mt-0 !tw-text-sm md:!tw-max-w-48 md:!tw-min-w-48"
     filter
     :data-key="filter.dataKey"
+    @update:model-value="updateListFilter"
   />
 </template>
