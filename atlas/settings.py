@@ -25,6 +25,7 @@ if os.getenv('USE_SAFE_SETTINGS'):
 SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY_DEFAULT)
 DEBUG = os.getenv('DEBUG', DEBUG_DEFAULT) == 'True'
 DEBUG_API_PROXY = os.getenv('DEBUG_API_PROXY', DEBUG_API_PROXY_DEFAULT)
+SHOW_DJANGO_DEBUG_TOOLBAR = os.getenv('SHOW_DJANGO_DEBUG_TOOLBAR', 'False') == 'True'
 
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 RUNNING_TESTS = 'test' in sys.argv

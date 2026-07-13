@@ -2,9 +2,9 @@ import logging
 import math
 import os
 
-from constance.admin import get_values
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
@@ -12,15 +12,22 @@ from django.views.decorators.clickjacking import xframe_options_exempt, xframe_o
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from homepage.templatetags.app_version import app_version
-from webservice.models import Layer, Map, Viewer
+from utils.constance_config import get_constance_config
+from webservice.models import Layer, Map, MapCategory, MapLayer, Viewer
 
 logger = logging.getLogger(__name__)
 
 
-LAYER_PREFETCH_FIELDS = (
+LAYER_SELECT_RELATED_FIELDS = (
     'layer_source',
     'layer_type',
     'layer_type__parent',
+    'metadataset',
+)
+
+LAYER_PREFETCH_FIELDS = (
+    'atlas_groups',
+    'atlas_write_groups',
     'linked_data',
     'templates',
     'related_tables',
@@ -35,14 +42,15 @@ LAYER_PREFETCH_FIELDS = (
 @xframe_options_exempt
 @ensure_csrf_cookie
 def v3(request, slug=None):
-    authorized_layers = _layers_with_prefetch(request).select_related('metadataset')
+    authorized_layers = _layers_with_prefetch(request)
     user = _get_user(request)
+    authorized_maps = _maps_with_prefetch(request)
     
     if slug:
         visible_map = get_object_or_404(
-            Map.authorized.for_request(request), slug=slug)
+            authorized_maps, slug=slug)
     else:
-        visible_map = get_object_or_404(Map.authorized.for_request(request), is_main=True)
+        visible_map = get_object_or_404(authorized_maps, is_main=True)
     
     context = {
         'data': {
@@ -57,7 +65,7 @@ def v3(request, slug=None):
 
 
 def v3_disclaimer(request):
-    config = get_values()
+    config = get_constance_config(request)
 
     if config.get('DISCLAIMER'):
         return render(request, 'v3/disclaimer.html', {
@@ -150,11 +158,33 @@ def _default_layers():
 
 
 def _layers_with_prefetch(request):
-    return Layer.authorized.for_request(request).prefetch_related(*LAYER_PREFETCH_FIELDS)
+    return Layer.authorized.for_request(request).select_related(
+        *LAYER_SELECT_RELATED_FIELDS
+    ).prefetch_related(*LAYER_PREFETCH_FIELDS)
+
+
+def _maps_with_prefetch(request):
+    return Map.authorized.for_request(request).prefetch_related(
+        Prefetch(
+            'map_layers',
+            queryset=MapLayer.objects.select_related('map_category').order_by(
+                'map_category__ordering',
+                'ordering',
+                'layer__title',
+            ),
+        ),
+        Prefetch(
+            'map_categories',
+            queryset=MapCategory.objects.select_related('category').order_by(
+                'ordering',
+                'category__title',
+            ),
+        ),
+    )
 
 
 def _get_config(request, visible_map=None):
-    config = get_values()
+    config = get_constance_config(request)
 
     result = {
         'organization_name': config.get('ORGANIZATION_NAME'),
