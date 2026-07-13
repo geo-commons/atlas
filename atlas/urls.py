@@ -55,6 +55,11 @@ if settings.DEBUG:
             upstream='http://localhost:8080/geoserver/'
         )),
     ]
+    
+    if settings.SHOW_DJANGO_DEBUG_TOOLBAR and not settings.RUNNING_TESTS:
+        from debug_toolbar.toolbar import debug_toolbar_urls
+        
+        urlpatterns += debug_toolbar_urls()
 
 urlpatterns += [
     path('atlas/', include('homepage.urls'), name='homepage'),

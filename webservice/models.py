@@ -1,7 +1,6 @@
 import uuid
 from os import path
 
-from constance import config
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -12,6 +11,7 @@ from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
 
 from user_management.models import AtlasGroup
+from utils.constance_config import get_constance_config
 from utils.tools import is_internal
 from webservice.util import safe_float_or_null
 from webservice.validators import no_underscore_validator
@@ -688,7 +688,7 @@ source: new ol.source.TileWMS({{
 
     def is_accessible_by(self, user, request):
         if (
-                config.FEATURE_LAYER_INTERNAL_VISIBILITY and  # noqa
+                get_constance_config(request).get('FEATURE_LAYER_INTERNAL_VISIBILITY') and
                 self.closed_dataset and
                 not is_internal(request)
         ):
@@ -708,7 +708,7 @@ source: new ol.source.TileWMS({{
 
     def is_mutable_by(self, user, request):
         if (
-                config.FEATURE_LAYER_INTERNAL_VISIBILITY and  # noqa
+                get_constance_config(request).get('FEATURE_LAYER_INTERNAL_VISIBILITY') and
                 self.closed_dataset and
                 not is_internal(request)
         ):
@@ -959,9 +959,9 @@ class MapLayer(models.Model):
 
     def to_dict(self):
         return {
-            'layer': self.layer.id,
+            'layer': self.layer_id,
             'settings': self.settings,
-            'map_category': self.map_category.id if self.map_category else None,
+            'map_category': self.map_category_id,
             'ordering': self.ordering,
         }
 
@@ -986,7 +986,7 @@ class MapCategory(models.Model):
 
     def to_dict(self):
         return {
-            'category': self.category.id,
+            'category': self.category_id,
             'ordering': self.ordering,
         }
 
