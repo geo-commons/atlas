@@ -7,7 +7,8 @@
       </ul>
     </div>
     <p v-else-if="exportType === EDialogTypes.ExportAll">
-      Alle beschikbare {{ objectName.pluralName.toLowerCase() }} exporteren.
+      Alle beschikbare {{ objectName.pluralName.toLowerCase() }} exporteren (let op: eventuele actieve filters worden
+      niet toegepast).
     </p>
 
     <div class="admin-btn-wrapper">
