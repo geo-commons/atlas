@@ -31,6 +31,11 @@ class ViewerResource(resources.ModelResource):
 
 
 class LayerResource(resources.ModelResource):
+    metadataset = fields.Field(
+        column_name='metadataset',
+        attribute='metadataset',
+        widget=widgets.ForeignKeyWidget(Metadataset, field='slug'))
+
     layer_source = fields.Field(
         column_name='layer_source',
         attribute='layer_source',
