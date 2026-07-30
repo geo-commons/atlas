@@ -498,7 +498,6 @@ class MapSerializerTest(APITestCase):
             layer_name='atlas:public_lights',
             layer_source=self.source,
             layer_type=parent_category,
-            published=True,
             closed_dataset=False,
             login_required=False,
         )
@@ -508,7 +507,6 @@ class MapSerializerTest(APITestCase):
             layer_name='atlas:traffic_incidents',
             layer_source=self.source,
             layer_type=subcategory,
-            published=True,
             closed_dataset=False,
             login_required=False,
         )

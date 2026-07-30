@@ -48,7 +48,6 @@ class HomepageViewsTest(TestCase):
             layer_name='atlas:public_lights',
             layer_source=self.source,
             layer_type=parent_category,
-            published=True,
             closed_dataset=False,
             login_required=False,
         )
@@ -58,7 +57,6 @@ class HomepageViewsTest(TestCase):
             layer_name='atlas:traffic_incidents',
             layer_source=self.source,
             layer_type=subcategory,
-            published=True,
             closed_dataset=False,
             login_required=False,
         )
@@ -104,7 +102,6 @@ class HomepageViewsTest(TestCase):
             layer_name='atlas:traffic_incidents',
             layer_source=self.source,
             layer_type=subcategory,
-            published=True,
             closed_dataset=False,
             login_required=False,
         )
@@ -125,7 +122,7 @@ class HomepageViewsTest(TestCase):
         map_data = response.context['data']['map']
         self.assertEqual(map_data['categories'], [{'category': subcategory.id, 'ordering': 1}])
 
-    def test_v3_map_layers_include_configured_layers_only(self):        
+    def test_v3_map_layers_include_configured_layers_only(self):
         category = Category.objects.create(title='Infrastructure', slug='infrastructure')
         configured_layer = Layer.objects.create(
             title='Public lights',
@@ -133,7 +130,6 @@ class HomepageViewsTest(TestCase):
             layer_name='atlas:public_lights',
             layer_source=self.source,
             layer_type=category,
-            published=True,
             closed_dataset=False,
             login_required=False,
         )
@@ -143,17 +139,15 @@ class HomepageViewsTest(TestCase):
             layer_name='atlas:traffic_incidents',
             layer_source=self.source,
             layer_type=category,
-            published=True,
             closed_dataset=False,
             login_required=False,
         )
-        unpublished_layer = Layer.objects.create(
+        second_configured_layer = Layer.objects.create(
             title='Road works',
             slug='road-works',
             layer_name='atlas:road_works',
             layer_source=self.source,
             layer_type=category,
-            published=False,
             closed_dataset=False,
             login_required=False,
         )
@@ -167,7 +161,7 @@ class HomepageViewsTest(TestCase):
         )
         MapLayer.objects.create(
             map=self.main_map,
-            layer=unpublished_layer,
+            layer=second_configured_layer,
             map_category=map_category,
             ordering=2,
             settings={},
@@ -178,8 +172,8 @@ class HomepageViewsTest(TestCase):
         layer_ids = [layer['id'] for layer in response.context['data']['layers']]
         self.assertIn('public-lights', layer_ids)
         self.assertIn('traffic-incidents', layer_ids)
-        self.assertNotIn('road-works', layer_ids)
+        self.assertIn('road-works', layer_ids)
 
         map_layer_ids = [layer['layer'] for layer in response.context['data']['map']['layers']]
-        self.assertEqual(map_layer_ids, [configured_layer.id, unpublished_layer.id])
+        self.assertEqual(map_layer_ids, [configured_layer.id, second_configured_layer.id])
         self.assertNotIn(unconfigured_layer.id, map_layer_ids)

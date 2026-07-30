@@ -67,12 +67,6 @@
                     </vee-field>
                     <span class="warning-text"><vee-error-message :name="question.id" /></span>
                   </div>
-                  <template
-                    v-for="hint in [question.getHintText ? question.getHintText(values) : '']"
-                    :key="`${question.id}-${hint}`"
-                  >
-                    <Message v-if="hint" severity="secondary" class="tw-ml-7">{{ hint }}</Message>
-                  </template>
                 </div>
               </div>
               <div v-else-if="question.type === 'image'" class="image-wrapper">

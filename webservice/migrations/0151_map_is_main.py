@@ -55,7 +55,7 @@ def create_main_map(apps, schema_editor):
         is_main=True,
     )
 
-    visible_layers = Layer.objects.filter(not_in_atlas=False, published=True).order_by('layer_type__ordering', 'ordering', 'title')
+    visible_layers = Layer.objects.filter(not_in_atlas=False).order_by('layer_type__ordering', 'ordering', 'title')
     category_map = {}
     category_ordering = 0
 
