@@ -389,7 +389,14 @@
           @toggle-modal="toggleModal"
           @print-map-to-pdf="printMapToPdf"
         />
-        <DrawingModal v-if="modal === 'drawing'" :layers="layers" :position="position" @toggle-modal="toggleModal" />
+        <DrawingModal
+          v-if="modal === 'drawing'"
+          :layers="layers"
+          :position="position"
+          :map-id="mapId"
+          :drawing-id="drawingId"
+          @toggle-modal="toggleModal"
+        />
       </div>
     </transition>
     <AlertMessage :alert="alert" />

@@ -47,8 +47,7 @@
 </template>
 
 <script>
-import { mapState } from "pinia";
-import { useGlobalStore } from "@/stores";
+import { getMapShareUrl } from "@/utils/map-share-url";
 
 export default {
   name: "EmbedCode",
@@ -68,39 +67,28 @@ export default {
     };
   },
   computed: {
-    ...mapState(useGlobalStore, ["map"]),
     embedUrl() {
-      const baseLayer = this.currentLayers.filter((l) => l.is_visible && l.is_base).map((l) => l.id);
-      const urlPrefix = this.mapId !== "primary" ? `/atlas/maps/${this.mapId}/` : "/atlas/";
-
-      return `${encodeURI(window.location.origin)}${urlPrefix}@${encodeURIComponent(
-        this.currentPosition.center[0],
-      )},${encodeURIComponent(this.currentPosition.center[1])},${encodeURIComponent(
-        Math.round(this.currentPosition.zoom * 100) / 100,
-      )}z/layers=${this.visibleLayers.map((l) => encodeURIComponent(l.id)).join(",")}/base=${
-        baseLayer.length > 0 ? baseLayer[0] : ""
-      }/is_embed=true`;
+      return getMapShareUrl({
+        origin: window.location.origin,
+        mapId: this.mapId,
+        position: this.currentPosition,
+        layers: this.currentLayers,
+        isEmbed: true,
+      });
     },
     embedCode() {
       return `<iframe src="${this.embedUrl}" width="560" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>`;
     },
-    visibleLayers() {
-      return this.currentLayers.filter((layer) => layer.is_visible && !layer.is_base);
-    },
   },
   mounted() {
     // Set the static iframe src once on mount, based on initial props
-    const baseLayer = this.layers.filter((l) => l.is_visible && l.is_base).map((l) => l.id);
-    const urlPrefix = this.mapId !== "primary" ? `/atlas/maps/${this.mapId}/` : "/atlas/";
-    const visibleLayers = this.layers.filter((layer) => layer.is_visible && !layer.is_base);
-
-    this.staticIframeSrc = `${encodeURI(window.location.origin)}${urlPrefix}@${encodeURIComponent(
-      this.position.center[0],
-    )},${encodeURIComponent(this.position.center[1])},${encodeURIComponent(
-      Math.round(this.position.zoom * 100) / 100,
-    )}z/layers=${visibleLayers.map((l) => encodeURIComponent(l.id)).join(",")}/base=${
-      baseLayer.length > 0 ? baseLayer[0] : ""
-    }/is_embed=true`;
+    this.staticIframeSrc = getMapShareUrl({
+      origin: window.location.origin,
+      mapId: this.mapId,
+      position: this.position,
+      layers: this.layers,
+      isEmbed: true,
+    });
 
     window.addEventListener("message", this.handleIframeMessage);
   },

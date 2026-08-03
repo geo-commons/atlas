@@ -127,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     config: data.config,
     user: data.user,
     position: settings.position,
+    drawing: settings.drawing,
     layers,
     layerTree,
     tool: "",
