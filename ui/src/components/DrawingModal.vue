@@ -22,17 +22,30 @@
 </template>
 
 <script>
+import { getMapShareUrl } from "@/utils/map-share-url";
+
 export default {
   name: "DrawingModal",
   components: {},
   props: {
     layers: Array,
     position: Object,
+    mapId: {
+      type: String,
+      default: "primary",
+    },
+    drawingId: String,
   },
   emits: ["toggle-modal"],
   computed: {
     drawingUrl() {
-      return window.location;
+      return getMapShareUrl({
+        origin: window.location.origin,
+        mapId: this.mapId,
+        position: this.position,
+        layers: this.layers,
+        drawing: this.drawingId,
+      });
     },
   },
   methods: {

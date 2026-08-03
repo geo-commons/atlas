@@ -2,7 +2,50 @@ import type { IConfigPosition } from "@/types/ConfigType";
 import { ILayer } from "@/types/layer";
 import { IPosition } from "@/types/map";
 
-export type Position = IPosition;
+interface IMapStatePathOptions {
+  position: IPosition;
+  baseLayerId?: string | null;
+  visibleLayerIds: string[];
+  drawing?: string | null;
+  isEmbed?: boolean;
+}
+
+export const getMapPositionPath = (position: IPosition): string => {
+  const x = encodeURIComponent(position.center[0].toFixed(2));
+  const y = encodeURIComponent(position.center[1].toFixed(2));
+
+  return `@${x},${y},${Math.round(position.zoom * 100) / 100}z`;
+};
+
+export const buildMapStatePath = ({
+  basePath,
+  position,
+  baseLayerId,
+  visibleLayerIds,
+  drawing,
+  isEmbed,
+}: IMapStatePathOptions & { basePath: string }): string => {
+  const markerCoords = position.marker?.map((coord) => encodeURIComponent(coord.toFixed(2)));
+  const urlParts = [
+    `${basePath}${getMapPositionPath(position)}`,
+    `layers=${visibleLayerIds.map((layerId) => encodeURIComponent(layerId)).join(",")}`,
+    `base=${baseLayerId ? encodeURIComponent(baseLayerId) : ""}`,
+  ];
+
+  if (drawing) {
+    urlParts.push(`drawing=${encodeURIComponent(drawing)}`);
+  }
+
+  if (markerCoords?.length === 2) {
+    urlParts.push(`marker=${markerCoords.join(",")}`);
+  }
+
+  if (isEmbed) {
+    urlParts.push("is_embed=true");
+  }
+
+  return urlParts.join("/");
+};
 
 export const pushHistoryState = (
   position: IPosition,
@@ -17,32 +60,18 @@ export const pushHistoryState = (
     return;
   }
 
-  const x = encodeURIComponent(position.center[0].toFixed(2));
-  const y = encodeURIComponent(position.center[1].toFixed(2));
-
-  const visibleLayerIds = visibleLayers.map((l) => l.id).join(",");
-
-  const markerCoords = position?.marker?.map((coord) => encodeURIComponent(coord.toFixed(2)));
-
-  const urlParts = [
-    `${basePath[1]}@${x},${y},${Math.round(position.zoom * 100) / 100}z`,
-    `layers=${visibleLayerIds}`,
-    `base=${baseLayer?.id || ""}`,
-  ];
-
-  if (drawing) {
-    urlParts.push(`drawing=${drawing}`);
-  }
-
-  if (markerCoords?.length === 2) {
-    urlParts.push(`marker=${markerCoords.join(",")}`);
-  }
-
-  if (isEmbed) {
-    urlParts.push(`is_embed=true`);
-  }
-
-  window.history.replaceState({}, "", urlParts.join("/"));
+  window.history.replaceState(
+    {},
+    "",
+    buildMapStatePath({
+      basePath: basePath[1],
+      position,
+      baseLayerId: baseLayer?.id,
+      visibleLayerIds: visibleLayers.map((layer) => layer.id),
+      drawing,
+      isEmbed,
+    }),
+  );
 };
 
 /**
