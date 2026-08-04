@@ -777,13 +777,15 @@ export default {
         return;
       }
 
-      finalizeMultipartFeatureOnEnter({
+      const finalizedDrawing = finalizeMultipartFeatureOnEnter({
         editLayerStore: this.editLayerStore,
         tool: this.tool,
         clearTool: () => this.setTool(""),
       });
 
-      event.preventDefault();
+      if (finalizedDrawing) {
+        event.preventDefault();
+      }
     },
     notifyIframeParentOfStateChange() {
       // Notifies the parent window of active layer, zoom, and position changes
