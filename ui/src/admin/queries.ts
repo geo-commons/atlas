@@ -83,6 +83,26 @@ export const useMetadatasetList = defineQuery(() => {
   };
 });
 
+export const useMapList = defineQuery(() => {
+  const { state, ...rest } = useQuery({
+    key: () => ["maps"],
+    query: async () => {
+      const url = getAllObjects("/atlas/api/v1/maps/");
+      const res = await (await apiFetch(url)).json();
+      return res.results.map((map: any) => ({
+        id: map.id,
+        label: map.title,
+        slug: map.slug,
+        value: map.id,
+      }));
+    },
+  });
+  return {
+    ...rest,
+    mapsState: state,
+  };
+});
+
 export const useCategoryList = defineQuery(() => {
   const { state, ...rest } = useQuery({
     key: () => ["categories"],

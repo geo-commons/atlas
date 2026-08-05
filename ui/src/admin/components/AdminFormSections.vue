@@ -331,6 +331,19 @@
                   />
                 </vee-field>
                 <vee-field
+                  v-else-if="question.type === 'maps-select'"
+                  v-slot="{ value, handleChange }"
+                  :name="question.id"
+                  :rules="getRules(question)"
+                >
+                  <MapsField
+                    :model-value="value || []"
+                    :options="question.options || []"
+                    :disabled="question.getDisabled(values)"
+                    @update:model-value="handleChange"
+                  />
+                </vee-field>
+                <vee-field
                   v-else-if="question.type === 'related-tables-select'"
                   v-slot="{ value, handleChange }"
                   :name="question.id"
@@ -469,6 +482,7 @@
 <script>
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
 import LayerField from "@/admin/components/LayerField.vue";
+import MapsField from "@/admin/components/MapsField.vue";
 import MetadatasetsField from "@/admin/components/MetadatasetsField.vue";
 import VisibilityIndicator from "@/components/VisibilityIndicator.vue";
 import { useGlobalStore } from "@/stores";
@@ -488,6 +502,7 @@ export default {
   components: {
     RelatedTablesField,
     LayerField,
+    MapsField,
     MetadatasetsField,
     CodeMirror,
     AdminFormInfoText,

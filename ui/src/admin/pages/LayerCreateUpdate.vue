@@ -141,7 +141,14 @@ import Spinner from "@/components/Spinner.vue";
 import { useGlobalStore } from "@/stores";
 import { mapState } from "pinia";
 import { useQueryCache } from "@pinia/colada";
-import { useCategoryList, useGroupList, useMetadatasetList, useSourceList, useTableList } from "@/admin/queries";
+import {
+  useCategoryList,
+  useGroupList,
+  useMapList,
+  useMetadatasetList,
+  useSourceList,
+  useTableList,
+} from "@/admin/queries";
 
 export default {
   name: "LayerCreateUpdate",
@@ -161,6 +168,7 @@ export default {
     const { sourcesState } = useSourceList();
     const { groupsState, refresh: refreshGroups } = useGroupList();
     const { tablesState } = useTableList();
+    const { mapsState } = useMapList();
     return {
       queryCache,
       metadatasetsState,
@@ -169,6 +177,7 @@ export default {
       groupsState,
       refreshGroups,
       tablesState,
+      mapsState,
     };
   },
   data() {
@@ -194,6 +203,9 @@ export default {
         id: category.id,
         label: category.fullTitle,
       }));
+    },
+    mapOptions() {
+      return this.mapsState.data || [];
     },
     sections() {
       return this.getSections();
@@ -238,6 +250,7 @@ export default {
       const response = await result.json();
       this.initialValues = response;
       this.initialValues.category_id = response.category?.id;
+      this.initialValues.map_ids = response.assigned_maps || [];
       this.initialValues.source_id = response.source.id;
 
       // Internal fields used for v-model binding
@@ -327,6 +340,7 @@ export default {
         const result = await this.$refs.formSections.sendSaveRequest(url, "PATCH", currentValues);
         if (result.ok) {
           await this.queryCache.invalidateQueries(["layers"]);
+          await this.queryCache.invalidateQueries(["maps"]);
           this.$toast.add({
             severity: "success",
             summary: "Laag opgeslagen",
@@ -769,6 +783,21 @@ export default {
               multiLine: true,
               infoText:
                 "Deze worden gebruikt om de laag beter vindbaar te maken in het lagenpaneel. Voer één zoekterm per regel in.",
+            },
+          ],
+        },
+        maps: {
+          label: "Gekoppelde kaarten",
+          questions: [
+            {
+              label: "Kaarten",
+              id: "map_ids",
+              name: "Maps",
+              type: "maps-select",
+              required: false,
+              options: this.mapOptions,
+              infoText: "Selecteer op welke kaarten deze kaartlaag wordt getoond.",
+              getDisabled: (values) => !values.category_id || this.mapOptions.length === 0,
             },
           ],
         },
