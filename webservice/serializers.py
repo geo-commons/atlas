@@ -4,8 +4,19 @@ from rest_framework import serializers
 from authz.lib import can_request_access_layer
 from authz.models import Log
 from user_management.models import AtlasGroup, AtlasUser
-from .models import Category, Drawing, LinkedData, Map, MapLayer, MapCategory, Source, Layer, Template, \
-    Viewer, Metadataset
+from .models import (
+    Category,
+    Drawing,
+    Layer,
+    LinkedData,
+    Map,
+    MapLayer,
+    MapCategory,
+    Metadataset,
+    Source,
+    Template,
+    Viewer,
+)
 from .util import safe_float_or_null
 
 
@@ -357,6 +368,7 @@ class MetadatasetSerializer(serializers.ModelSerializer):
 
 class LayerSerializer(serializers.ModelSerializer):
     can_access = serializers.SerializerMethodField('get_can_access')
+    assigned_maps = serializers.SerializerMethodField()
     category = CategorySerializer(source='layer_type')
     source = SourceSerializer(source='layer_source')
     opacity = serializers.SerializerMethodField('get_opacity')
@@ -375,6 +387,9 @@ class LayerSerializer(serializers.ModelSerializer):
     def get_can_access(self, obj):
         request = self.context['request']
         return can_request_access_layer(request, obj)
+
+    def get_assigned_maps(self, obj):
+        return list(obj.maps_layer.values_list('map_id', flat=True))
 
     def get_related_tables(self, obj):
         request = self.context['request']
@@ -458,6 +473,7 @@ class LayerSerializer(serializers.ModelSerializer):
             'time_slider_default_display_mode',
             'time_slider_start_field',
             'time_slider_end_field',
+            'assigned_maps',
         ]
 
 
@@ -474,6 +490,22 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         child=serializers.CharField(), required=False)
     search_terms = serializers.ListField(
         child=serializers.CharField(), required=False)
+    map_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Map.objects.all(), many=True, write_only=True, required=False)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+
+        if 'map_ids' not in attrs or not attrs['map_ids']:
+            return attrs
+
+        layer_type = attrs.get('layer_type') or getattr(self.instance, 'layer_type', None)
+        if not layer_type:
+            raise serializers.ValidationError({
+                'map_ids': 'Selecteer eerst een categorie voordat je deze kaartlaag aan kaarten toevoegt.'
+            })
+
+        return attrs
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -494,8 +526,10 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         from table.models import LayerToTable
 
-        linked_data, templates, related_tables = (validated_data.pop(key, None)
-                                                  for key in ('linked_data', 'templates', 'related_tables'))
+        linked_data, templates, related_tables, maps = (
+            validated_data.pop(key, None)
+            for key in ('linked_data', 'templates', 'related_tables', 'map_ids')
+        )
 
         # Handling many-to-many field 'atlas_groups'
         if 'atlas_groups' in validated_data:
@@ -593,6 +627,9 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
                     'related_tables': 'Er is een onverwachte fout opgretreden bij het opslaan van de gerelateerde tabellen. '
                                       f'Error details: {str(e)}'})
 
+        if maps is not None:
+            instance.sync_map_assignments(maps)
+
         return instance
 
     class Meta:
@@ -648,6 +685,7 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'time_slider_default_display_mode',
             'time_slider_start_field',
             'time_slider_end_field',
+            'map_ids',
         ]
 
 

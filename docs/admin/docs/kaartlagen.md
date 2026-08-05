@@ -123,6 +123,16 @@ Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarb
 
 - **Zoektermen:** Via het veld "Zoektermen" kun je extra termen opgeven waarop een kaartlaag gevonden kan worden bij gebruik van de zoekfunctie binnen Atlas. Dit is vooral handig wanneer gebruikers verschillende woorden gebruiken voor hetzelfde concept. Bijvoorbeeld: bij een kaartlaag met als titel Scholen kun je de zoektermen onderwijs, educatie en basisschool toevoegen, zodat gebruikers deze kaartlaag ook vinden wanneer ze op die alternatieve termen zoeken. Voeg één zoekterm per regel in.
 
+### Gekoppelde kaarten
+
+Onder **Gekoppelde kaarten** kun je bepalen op welke kaarten deze kaartlaag getoond wordt. Selecteer één of meerdere kaarten om de kaartlaag direct aan die kaarten toe te voegen.
+
+Hiervoor moet de kaartlaag een **categorie** hebben. Atlas gebruikt deze categorie om de kaartlaag op de geselecteerde kaarten onder de juiste hoofd- of subcategorie te plaatsen.
+
+Wanneer de benodigde categorie of subcategorie nog niet bestaat op een geselecteerde kaart, maakt Atlas deze automatisch aan. Wanneer je een kaart uit de selectie verwijdert, wordt de kaartlaag van die kaart verwijderd. Als daardoor een categorie of subcategorie op die kaart leeg wordt, ruimt Atlas deze automatisch op.
+
+Je kunt kaartlagen nog steeds beheren via de instellingen van een kaart zelf. Deze optie is vooral handig wanneer je dezelfde kaartlaag in één keer aan meerdere kaarten wilt toevoegen of verwijderen.
+
 ### Tijdlijn
 
 Onder tijdlijn configureer je of een kaartlaag met de tijdlijn gebruikt kan worden.

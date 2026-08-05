@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import Q
+from django.db.models import Max, Q
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
@@ -599,6 +599,91 @@ class Layer(models.Model):
 
             if previous_layer_type_id:
                 _delete_category_branch_if_unused(map_layer.map_id, previous_layer_type_id)
+
+    def sync_map_assignments(self, maps):
+        """Synchronize this layer's map assignments with the selected maps.
+
+        Removes the layer from maps that are no longer selected and adds or moves it
+        in selected maps using the layer's current category. Related map categories
+        are created when needed and unused category branches are cleaned up.
+        """
+        selected_map_ids = {map_instance.id for map_instance in maps}
+        self._remove_from_unselected_maps(selected_map_ids)
+
+        if not self.layer_type_id:
+            return
+
+        self._add_to_selected_maps(maps)
+
+    def _remove_from_unselected_maps(self, selected_map_ids):
+        """Remove this layer from maps that are not in the selected map IDs.
+
+        Cleans up the map category branch that contained the removed layer when
+        that branch is no longer used by other layers or subcategories.
+        """
+        unselected_maps = self.maps_layer.exclude(map_id__in=selected_map_ids).select_related('map_category')
+
+        for map_layer in unselected_maps:
+            map_id = map_layer.map_id
+            map_category = map_layer.map_category
+            category_id = map_category.category_id if map_category else self.layer_type_id
+            map_layer.delete()
+
+            if category_id:
+                _delete_category_branch_if_unused(map_id, category_id)
+
+    def _add_to_selected_maps(self, maps):
+        """Add this layer to the selected maps using its current category.
+
+        Ensures the map category exists for each selected map, creates missing
+        map-layer assignments, and moves existing assignments to the current
+        category when needed.
+        """
+        category = Category.objects.filter(pk=self.layer_type_id).select_related('parent').first()
+
+        if not category:
+            return
+
+        for map_instance in maps:
+            _ensure_parent_map_category(map_instance.id, category)
+            map_category = _ensure_map_category(map_instance.id, category)
+            ordering = self._get_next_map_layer_ordering(map_instance, map_category)
+            map_layer, created = MapLayer.objects.get_or_create(
+                map=map_instance,
+                layer=self,
+                defaults={
+                    'map_category': map_category,
+                    'settings': {'customSettings': False},
+                    'ordering': ordering,
+                },
+            )
+
+            if created or map_layer.map_category_id == map_category.id:
+                continue
+
+            self._move_map_layer_to_map_category(map_layer, map_category)
+
+    def _move_map_layer_to_map_category(self, map_layer, map_category):
+        # _ensure_map_category guarantees the new target category exists, but existing
+        # MapLayer rows can still have no old map_category. Only clean up when there
+        # was an old category branch to remove.
+        old_map_category = map_layer.map_category
+        map_layer.map_category = map_category
+        map_layer.save(update_fields=['map_category'])
+
+        if old_map_category:
+            _delete_category_branch_if_unused(map_layer.map_id, old_map_category.category_id)
+
+    def _get_next_map_layer_ordering(self, map_instance, map_category):
+        highest_ordering = MapLayer.objects.filter(
+            map=map_instance,
+            map_category=map_category,
+        ).aggregate(highest_ordering=Max('ordering'))['highest_ordering']
+
+        if highest_ordering is None:
+            return 0
+
+        return highest_ordering + 1
 
     @property
     def popup_attributes(self):

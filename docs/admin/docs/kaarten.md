@@ -86,4 +86,6 @@ Onder **Lagen** kies je welke kaartlagen in de kaart beschikbaar zijn. Je kunt h
 
 Meer informatie over kaartlagen staat in [kaartlagen](kaartlagen.md).
 
+Kaartlagen kunnen daarnaast ook vanuit de kaartlaaginstellingen aan één of meerdere kaarten worden toegevoegd of daarvan worden verwijderd. Zie [Kaarten bij kaartlagen](kaartlagen.md#kaarten).
+
 Klik op **Opslaan** om de gemaakte keuzes te bewaren.
