@@ -53,7 +53,7 @@
             >
               <i
                 class="pi pi-chevron-down tw-transition-transform tw-duration-200"
-                :class="{ 'tw-rotate-180': !selectedLayerGroupsOpen }"
+                :class="{ 'tw-rotate-180': selectedLayerGroupsOpen }"
               />
             </Button>
           </div>
@@ -160,8 +160,27 @@
           </template>
         </div>
 
-        <div class="tw-py-4">
+        <div class="tw-py-4 tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2">
           <label class="tw-font-bold">Beschikbare kaartlagen</label>
+          <div class="tw-flex tw-gap-1">
+            <Button
+              v-tippy="{ placement: 'bottom' }"
+              text
+              severity="secondary"
+              type="button"
+              :aria-label="
+                availableLayerGroupsOpen ? 'Alle beschikbare kaartlagen verbergen' : 'Alle beschikbare kaartlagen tonen'
+              "
+              :content="availableLayerGroupsOpen ? 'Alles verbergen' : 'Alles tonen'"
+              :disabled="isChangingOrder || unselectedLayers.length === 0"
+              @click="toggleAvailableLayerGroups"
+            >
+              <i
+                class="pi pi-chevron-down tw-transition-transform tw-duration-200"
+                :class="{ 'tw-rotate-180': availableLayerGroupsOpen }"
+              />
+            </Button>
+          </div>
         </div>
 
         <Message v-if="isChangingOrder" severity="info">Sla eerst de nieuwe volgorde op om lagen te wijzigen.</Message>
@@ -171,7 +190,9 @@
           :layers="unselectedLayers"
           :categories="allCategories"
           :map-categories="[]"
+          :is-open="availableLayerGroupsOpen"
           :select-layer="selectLayer"
+          @search="availableLayerGroupsOpen = true"
         />
       </div>
     </template>
@@ -251,6 +272,7 @@ const isChangingOrder = ref<boolean>(false);
 const isSavingOrder = ref<boolean>(false);
 const selectedCategoryTree = ref<ICategoryTreeNode[]>([]);
 const selectedLayerGroupsOpen = ref<boolean>(true);
+const availableLayerGroupsOpen = ref<boolean>(true);
 const data = ref<IMapLayersState>({
   layers: [],
   categories: [],
@@ -260,6 +282,10 @@ const toast = useToast();
 
 const toggleSelectedLayerGroups = (): void => {
   selectedLayerGroupsOpen.value = !selectedLayerGroupsOpen.value;
+};
+
+const toggleAvailableLayerGroups = (): void => {
+  availableLayerGroupsOpen.value = !availableLayerGroupsOpen.value;
 };
 
 const layerById = computed(() => {
