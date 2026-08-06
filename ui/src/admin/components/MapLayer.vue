@@ -97,8 +97,11 @@
                 input-id="zoom_min"
                 name="zoom_min"
                 show-buttons
-                :step="1"
+                :step="0.01"
                 :min="0"
+                :max-fraction-digits="2"
+                :use-grouping="false"
+                locale="en-US"
                 fluid
                 @update:model-value="(value) => handleInput(value, 'zoom_min')"
               />
@@ -110,8 +113,11 @@
                 input-id="zoom_max"
                 name="zoom_max"
                 show-buttons
-                :step="1"
+                :step="0.01"
                 :min="0"
+                :max-fraction-digits="2"
+                :use-grouping="false"
+                locale="en-US"
                 fluid
                 @update:model-value="(value) => handleInput(value, 'zoom_max')"
               />

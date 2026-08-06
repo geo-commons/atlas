@@ -240,6 +240,10 @@
                     mode="decimal"
                     show-buttons
                     :step="question.step"
+                    :min-fraction-digits="question.minFractionDigits"
+                    :max-fraction-digits="question.maxFractionDigits"
+                    :use-grouping="question.useGrouping"
+                    :locale="question.locale"
                     min="0"
                     fluid
                     @blur="handleBlur"

@@ -686,6 +686,10 @@ export default {
               required: false,
               step: 0.01,
               infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              minFractionDigits: 2,
+              maxFractionDigits: 2,
+              useGrouping: false,
+              locale: "en-US",
             },
             {
               label: "Bereik minimum y",
@@ -695,6 +699,10 @@ export default {
               required: false,
               step: 0.01,
               infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              minFractionDigits: 2,
+              maxFractionDigits: 2,
+              useGrouping: false,
+              locale: "en-US",
             },
             {
               label: "Bereik maximum x",
@@ -704,6 +712,10 @@ export default {
               required: false,
               step: 0.01,
               infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              minFractionDigits: 2,
+              maxFractionDigits: 2,
+              useGrouping: false,
+              locale: "en-US",
             },
             {
               label: "Bereik maximum y",
@@ -713,6 +725,10 @@ export default {
               required: false,
               step: 0.01,
               infoText: "Vul in om de laag inactief te maken wanneer de weergave buiten het bereik ligt.",
+              minFractionDigits: 2,
+              maxFractionDigits: 2,
+              useGrouping: false,
+              locale: "en-US",
             },
             {
               label: "Zoomniveau minimum",
@@ -721,6 +737,9 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
+              maxFractionDigits: 2,
+              useGrouping: false,
+              locale: "en-US",
             },
             {
               label: "Zoomniveau maximum",
@@ -729,6 +748,9 @@ export default {
               type: "decimal",
               required: false,
               step: 0.01,
+              maxFractionDigits: 2,
+              useGrouping: false,
+              locale: "en-US",
             },
             {
               label: "Stijlnaam voor WMS / WMTS laag",

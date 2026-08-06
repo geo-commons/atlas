@@ -76,7 +76,12 @@
                 input-id="position_center_x"
                 :model-value="data.settings.position.center.x"
                 :step="0.1"
+                :min-fraction-digits="2"
+                :max-fraction-digits="2"
+                :use-grouping="false"
+                locale="en-US"
                 fluid
+                show-buttons
                 @update:model-value="(value) => (data.settings.position.center.x = value)"
               />
             </div>
@@ -86,7 +91,12 @@
                 input-id="position_center_y"
                 :model-value="data.settings.position.center.y"
                 :step="0.1"
+                :min-fraction-digits="2"
+                :max-fraction-digits="2"
+                :use-grouping="false"
+                locale="en-US"
                 fluid
+                show-buttons
                 @update:model-value="(value) => (data.settings.position.center.y = value)"
               />
             </div>
@@ -95,8 +105,12 @@
               <InputNumber
                 input-id="position_zoom"
                 :model-value="data.settings.position.zoom"
-                :step="0.1"
+                :step="0.01"
+                :max-fraction-digits="2"
+                :use-grouping="false"
+                locale="en-US"
                 fluid
+                show-buttons
                 @update:model-value="(value) => (data.settings.position.zoom = value)"
               />
             </div>
