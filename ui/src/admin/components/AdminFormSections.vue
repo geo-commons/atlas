@@ -245,6 +245,7 @@
                     :use-grouping="question.useGrouping"
                     :locale="question.locale"
                     min="0"
+                    :max="question.max"
                     fluid
                     @blur="handleBlur"
                     @update:model-value="handleChange"

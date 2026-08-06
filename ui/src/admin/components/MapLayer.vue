@@ -69,22 +69,26 @@
               <label for="opacity">Transparantie</label>
               <div class="tw-max-w-full tw-flex tw-items-center tw-gap-4">
                 <InputNumber
-                  :model-value="mapLayerConfig.settings.opacity * 100"
+                  :model-value="mapLayerConfig.settings.opacity"
                   input-id="opacity"
+                  locale="en-US"
                   :min="0"
-                  :max="100"
-                  @update:model-value="(value) => handleInput(value / 100, 'opacity')"
+                  :max="1"
+                  :max-fraction-digits="1"
+                  :step="0.1"
+                  show-buttons
+                  @update:model-value="(value) => handleInput(value, 'opacity')"
                 />
                 <Slider
                   id="opacity"
-                  :model-value="mapLayerConfig.settings.opacity * 100"
+                  :model-value="mapLayerConfig.settings.opacity"
                   name="opacity"
                   :min="0"
                   class="tw-w-full tw-mr-2"
-                  :max="100"
-                  :step="10"
+                  :max="1"
+                  :step="0.1"
                   fluid
-                  @update:model-value="(value) => handleInput(value / 100, 'opacity')"
+                  @update:model-value="(value) => handleInput(value, 'opacity')"
                 />
               </div>
             </div>
@@ -367,8 +371,7 @@ export default {
       selectedLinkedData: null,
       selectedTemplate: null,
       loading: false,
-      toggleSettingsInfo:
-        "Als deze schakelaar uit staat worden de kaartlaag instellingen van de hoofdkaart overgenomen.",
+      toggleSettingsInfo: "Als deze schakelaar uit staat worden de kaartlaaginstellingen van de kaartlaag overgenomen.",
     };
   },
   computed: {
@@ -633,6 +636,11 @@ export default {
       this.$emit("show-layers");
     },
     handleInput(value, question) {
+      // Opacity should always be stored as a number, if opacity is empty save opacity with default value 0
+      if (question === "opacity" && (value === null || value === "")) {
+        value = 0;
+      }
+
       if (value === "") {
         value = null;
       }

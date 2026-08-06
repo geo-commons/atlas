@@ -613,6 +613,9 @@ export default {
               type: "decimal",
               required: true,
               step: 0.1,
+              max: 1,
+              maxFractionDigits: 1,
+              locale: "en-US",
             },
             {
               label: "Is basislaag",

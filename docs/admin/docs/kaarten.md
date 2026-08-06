@@ -82,7 +82,7 @@ De kaartomschrijving is sluitbaar in de viewer en daarna opnieuw te openen via *
 
 ### Lagen
 
-Onder **Lagen** kies je welke kaartlagen in de kaart beschikbaar zijn. Je kunt hier ook de volgorde van lagen en hoofdcategorieën of subcategorieën bepalen. Per laag kan worden ingesteld of de standaardinstellingen van de hoofdkaart worden overgenomen of dat de kaart een eigen laagconfiguratie gebruikt.
+Onder **Lagen** kies je welke kaartlagen in de kaart beschikbaar zijn. Je kunt hier ook de volgorde van lagen en hoofdcategorieën of subcategorieën bepalen. Per laag kan worden ingesteld of de standaardinstellingen van de kaartlaag worden overgenomen of dat de kaart een eigen laagconfiguratie gebruikt.
 
 Meer informatie over kaartlagen staat in [kaartlagen](kaartlagen.md).
 
