@@ -43,21 +43,31 @@
               severity="secondary"
               type="button"
               :aria-label="
-                selectedLayerGroupsOpen
-                  ? 'Alle geselecteerde kaartlagen verbergen'
-                  : 'Alle geselecteerde kaartlagen tonen'
+                isToggleCategoriesOpen
+                  ? 'Alle geselecteerde kaartlagen inklappen'
+                  : 'Alle geselecteerde kaartlagen verbergen'
               "
-              :content="selectedLayerGroupsOpen ? 'Alles verbergen' : 'Alles tonen'"
+              :content="isToggleCategoriesOpen ? 'Alles inklappen' : 'Alles uitklappen'"
               :disabled="selectedCategoryTree.length === 0"
-              @click="toggleSelectedLayerGroups"
+              @click="toggleCategories"
             >
               <i
                 class="pi pi-chevron-down tw-transition-transform tw-duration-200"
-                :class="{ 'tw-rotate-180': selectedLayerGroupsOpen }"
+                :class="{ 'tw-rotate-180': isToggleCategoriesOpen }"
               />
             </Button>
           </div>
         </div>
+
+        <IconField v-if="!isChangingOrder" class="tw-mb-4">
+          <InputIcon class="pi pi-search" />
+          <InputText v-model="selectedLayerSearchQuery" placeholder="Zoek kaartlaag" fluid />
+          <InputIcon
+            v-if="selectedLayerSearchQuery"
+            class="cursor-pointer pi pi-times"
+            @click="selectedLayerSearchQuery = ''"
+          />
+        </IconField>
 
         <div class="tw-flex tw-flex-col tw-gap-4">
           <DragDropProvider v-if="isChangingOrder" @drag-over="handleDragOver" @drag-end="handleDragEnd">
@@ -69,7 +79,11 @@
               group="category"
               :show-drag-handle="selectedCategoryTree.length > 1"
             >
-              <MapCategory :category="category" :is-open="selectedLayerGroupsOpen">
+              <MapCategory
+                :category="category"
+                :is-open="isSelectedCategoryOpen(category.id)"
+                @toggle-open="handleCategoryToggle"
+              >
                 <SortMapLayer
                   v-for="(selectedLayer, layerIndex) in category.layers"
                   :key="selectedLayer.id"
@@ -99,7 +113,11 @@
                   :parent-category-id="category.id"
                   :show-drag-handle="category.subcategories.length > 1"
                 >
-                  <MapCategory :category="subCategory" :is-open="selectedLayerGroupsOpen">
+                  <MapCategory
+                    :category="subCategory"
+                    :is-open="isSelectedCategoryOpen(subCategory.id)"
+                    @toggle-open="handleCategoryToggle"
+                  >
                     <SortMapLayer
                       v-for="(selectedLayer, layerIndex) in subCategory.layers"
                       :key="selectedLayer.id"
@@ -128,10 +146,11 @@
 
           <template v-else>
             <MapCategory
-              v-for="category in selectedCategoryTree"
+              v-for="category in displayedSelectedCategoryTree"
               :key="category.id"
               :category="category"
-              :is-open="selectedLayerGroupsOpen"
+              :is-open="isSelectedCategoryOpen(category.id)"
+              @toggle-open="handleCategoryToggle"
             >
               <MapLayerItem
                 v-for="selectedLayer in category.layers"
@@ -145,7 +164,8 @@
                 v-for="subCategory in category.subcategories"
                 :key="subCategory.id"
                 :category="subCategory"
-                :is-open="selectedLayerGroupsOpen"
+                :is-open="isSelectedCategoryOpen(subCategory.id)"
+                @toggle-open="handleCategoryToggle"
               >
                 <MapLayerItem
                   v-for="selectedLayer in subCategory.layers"
@@ -158,41 +178,18 @@
               </MapCategory>
             </MapCategory>
           </template>
-        </div>
 
-        <div class="tw-py-4 tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2">
-          <label class="tw-font-bold">Beschikbare kaartlagen</label>
-          <div class="tw-flex tw-gap-1">
-            <Button
-              v-tippy="{ placement: 'bottom' }"
-              text
-              severity="secondary"
-              type="button"
-              :aria-label="
-                availableLayerGroupsOpen ? 'Alle beschikbare kaartlagen verbergen' : 'Alle beschikbare kaartlagen tonen'
-              "
-              :content="availableLayerGroupsOpen ? 'Alles verbergen' : 'Alles tonen'"
-              :disabled="isChangingOrder || unselectedLayers.length === 0"
-              @click="toggleAvailableLayerGroups"
-            >
-              <i
-                class="pi pi-chevron-down tw-transition-transform tw-duration-200"
-                :class="{ 'tw-rotate-180': availableLayerGroupsOpen }"
-              />
-            </Button>
-          </div>
+          <Message v-if="selectedLayerSearchQuery.trim() && displayedSelectedCategoryTree.length === 0" severity="info">
+            Geen kaartlagen gevonden.
+          </Message>
         </div>
-
-        <Message v-if="isChangingOrder" severity="info">Sla eerst de nieuwe volgorde op om lagen te wijzigen.</Message>
 
         <MapLayerSelector
-          v-else
+          v-if="!isChangingOrder"
           :layers="unselectedLayers"
           :categories="allCategories"
           :map-categories="[]"
-          :is-open="availableLayerGroupsOpen"
           :select-layer="selectLayer"
-          @search="availableLayerGroupsOpen = true"
         />
       </div>
     </template>
@@ -235,6 +232,7 @@ import {
   buildCategoryTree,
   getTreeLayerId,
   isBaseLayerConfig,
+  matchesLayerSearch,
   removeBaseLayersFromCategoryTree,
   removeLayerFromCategoryTree,
 } from "@/utils/map-layer-tree";
@@ -271,8 +269,8 @@ const loading = ref<boolean>(false);
 const isChangingOrder = ref<boolean>(false);
 const isSavingOrder = ref<boolean>(false);
 const selectedCategoryTree = ref<ICategoryTreeNode[]>([]);
-const selectedLayerGroupsOpen = ref<boolean>(true);
-const availableLayerGroupsOpen = ref<boolean>(true);
+const selectedLayerSearchQuery = ref<string>("");
+const closedCategoryIds = ref<Set<CategoryId>>(new Set());
 const data = ref<IMapLayersState>({
   layers: [],
   categories: [],
@@ -280,12 +278,17 @@ const data = ref<IMapLayersState>({
 
 const toast = useToast();
 
-const toggleSelectedLayerGroups = (): void => {
-  selectedLayerGroupsOpen.value = !selectedLayerGroupsOpen.value;
-};
+watch(selectedLayerSearchQuery, () => {
+  closedCategoryIds.value = new Set();
+});
 
-const toggleAvailableLayerGroups = (): void => {
-  availableLayerGroupsOpen.value = !availableLayerGroupsOpen.value;
+const toggleCategories = (): void => {
+  if (isToggleCategoriesOpen.value) {
+    closedCategoryIds.value = new Set(displayedCategoryIds.value);
+    return;
+  }
+
+  closedCategoryIds.value = new Set();
 };
 
 const layerById = computed(() => {
@@ -361,6 +364,63 @@ const getOrderingByLayerId = (): Map<LayerId, number> => {
       .filter((config) => config.ordering !== undefined)
       .map((config) => [config.layer, config.ordering as number]),
   );
+};
+
+const visibleSelectedLayers = computed(() => {
+  const searchTerm = selectedLayerSearchQuery.value.trim().toLowerCase();
+  const selectedLayers = getSelectedRegularLayers();
+
+  if (!searchTerm) {
+    return selectedLayers;
+  }
+
+  return selectedLayers.filter((layer) => matchesLayerSearch(layer, searchTerm));
+});
+
+const displayedSelectedCategoryTree = computed(() => {
+  if (!selectedLayerSearchQuery.value.trim()) {
+    return selectedCategoryTree.value;
+  }
+
+  return buildCategoryTree(
+    visibleSelectedLayers.value,
+    allCategories.value,
+    data.value.categories || [],
+    getOrderingByLayerId(),
+  );
+});
+
+const getCategoryIdsFromTree = (categoryTree: ICategoryTreeNode[]): CategoryId[] => {
+  return categoryTree.flatMap((category) => [
+    category.id,
+    ...category.subcategories.map((subcategory) => subcategory.id),
+  ]);
+};
+
+const displayedCategoryIds = computed(() => {
+  return getCategoryIdsFromTree(
+    isChangingOrder.value ? selectedCategoryTree.value : displayedSelectedCategoryTree.value,
+  );
+});
+
+const isSelectedCategoryOpen = (categoryId: CategoryId): boolean => {
+  return !closedCategoryIds.value.has(categoryId);
+};
+
+const isToggleCategoriesOpen = computed(() => {
+  return displayedCategoryIds.value.some((categoryId) => isSelectedCategoryOpen(categoryId));
+});
+
+const handleCategoryToggle = (categoryId: CategoryId, isOpen: boolean): void => {
+  const nextClosedCategoryIds = new Set(closedCategoryIds.value);
+
+  if (isOpen) {
+    nextClosedCategoryIds.delete(categoryId);
+  } else {
+    nextClosedCategoryIds.add(categoryId);
+  }
+
+  closedCategoryIds.value = nextClosedCategoryIds;
 };
 
 const rebuildSelectedCategoryTree = (): void => {
