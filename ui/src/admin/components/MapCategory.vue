@@ -5,7 +5,7 @@
     <button
       type="button"
       class="tw-flex tw-items-center tw-justify-between tw-bg-transparent tw-gap-2 tw-border-0 tw-p-0 tw-cursor-pointer"
-      @click="isOpen = !isOpen"
+      @click="toggleOpen"
     >
       <i
         class="pi pi-chevron-down tw-text-gray-400 tw-transition-transform tw-duration-300"
@@ -25,11 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-
 const props = withDefaults(
   defineProps<{
     category: {
+      id: string;
       title: string;
     };
     isOpen?: boolean;
@@ -39,14 +38,13 @@ const props = withDefaults(
   },
 );
 
-const isOpen = ref<boolean>(props.isOpen);
+const emit = defineEmits<{
+  (e: "toggle-open", categoryId: string, isOpen: boolean): void;
+}>();
 
-watch(
-  () => props.isOpen,
-  (newIsOpen) => {
-    isOpen.value = newIsOpen;
-  },
-);
+const toggleOpen = (): void => {
+  emit("toggle-open", props.category.id, !props.isOpen);
+};
 </script>
 
 <style scoped>
