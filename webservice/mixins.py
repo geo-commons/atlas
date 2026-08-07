@@ -2,12 +2,13 @@ import sys
 from io import BytesIO
 
 from PIL import Image
-from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import transaction
 from django.http import HttpResponse
 from django.utils.text import slugify
 from rest_framework.decorators import action
 from rest_framework import permissions, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from tablib import Dataset
@@ -76,7 +77,9 @@ class DataExportImportMixin(ResourceMappingMixin):
         try:
             raw_file = request.FILES['file']
         except KeyError as exc:
-            raise ValidationError('File with name file not found') from exc
+            raise ValidationError({
+                'detail': 'File with name file not found'
+            }) from exc
 
         dataset = Dataset().load(raw_file.read())
 
@@ -238,35 +241,127 @@ class FileUploadMixin(ResourceMappingMixin):
 
 class DuplicateMixin:
     @action(methods=['post'], url_path='duplicate', detail=False, permission_classes=[permissions.IsAdminUser])
+    @transaction.atomic
     def data_duplicate(self, request):
+        """
+        Duplicate all objects for the submitted ids.
+        """
         serializer = DuplicateSettingsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        model_class = self.get_queryset().model
-        ids_to_duplicate = serializer.data.get('ids', [])
+        ids_to_duplicate = serializer.validated_data.get('ids', [])
+        if not ids_to_duplicate:
+            raise ValidationError({'detail': 'No objects were selected for duplication.'})
+
         queryset = self.get_queryset().filter(pk__in=ids_to_duplicate)
+        duplicated_ids = set(queryset.values_list('pk', flat=True))
+        not_duplicated_ids = sorted(set(ids_to_duplicate) - duplicated_ids)
+        if not_duplicated_ids:
+            raise ValidationError({
+                'detail': 'Some objects could not be duplicated.',
+                'ids': not_duplicated_ids,
+            })
 
         for obj in queryset:
-            duplicate = model_class.objects.get(pk=obj.pk)
-            duplicate.pk = None
-
-            # Handle title and slug uniqueness if the model has a title field
-            if hasattr(duplicate, 'title'):
-                i = 2
-                while model_class.objects.filter(title=f'{duplicate.title} ({i})').count() > 0:
-                    i += 1
-
-                new_title = f'{duplicate.title} ({i})'
-                duplicate.title = new_title
-
-                if hasattr(duplicate, 'slug'):
-                    duplicate.slug = slugify(new_title)
-
-            duplicate.save()
+            self.duplicate_object(obj)
 
         return Response({
             'message': 'Successfully duplicated objects',
         }, status=status.HTTP_201_CREATED)
+
+    @transaction.atomic
+    def duplicate_object(self, obj):
+        """
+        Create and save a duplicate of one model instance in a transaction.
+        """
+        model_class = obj.__class__
+        duplicate = model_class.objects.get(pk=obj.pk)
+        many_to_many_values = self.get_many_to_many_values(duplicate)
+
+        self.prepare_duplicate(duplicate)
+        duplicate.save()
+        self.set_many_to_many_values(duplicate, many_to_many_values)
+        self.after_duplicate(obj, duplicate)
+
+        return duplicate
+
+    def prepare_duplicate(self, duplicate):
+        """
+        Reset identity fields and assign duplicate names before saving.
+        """
+        model_class = duplicate.__class__
+        duplicate.pk = None
+
+        duplicate_name_field = self.get_duplicate_name_field(duplicate)
+        if not duplicate_name_field:
+            return duplicate
+
+        original_name = getattr(duplicate, duplicate_name_field)
+        new_name = self.get_unique_duplicate_name(model_class, duplicate_name_field, original_name)
+        setattr(duplicate, duplicate_name_field, new_name)
+
+        if hasattr(duplicate, 'slug'):
+            duplicate.slug = self.get_unique_slug(model_class, slugify(new_name))
+
+        return duplicate
+
+    def get_duplicate_name_field(self, obj):
+        """
+        Return the field used to create a human-readable duplicate name.
+        """
+        if hasattr(obj, 'title'):
+            return 'title'
+
+        if hasattr(obj, 'label'):
+            return 'label'
+
+        return None
+
+    def get_unique_duplicate_name(self, model_class, field_name, value):
+        """
+        Build a unique duplicate name using the "Name (2)" pattern.
+        """
+        i = 2
+        while model_class.objects.filter(**{field_name: f'{value} ({i})'}).exists():
+            i += 1
+
+        return f'{value} ({i})'
+
+    def get_unique_slug(self, model_class, base_slug):
+        """
+        Build a unique slug from a candidate slug value.
+        """
+        slug = base_slug
+        i = 2
+
+        while model_class.objects.filter(slug=slug).exists():
+            slug = f'{base_slug}-{i}'
+            i += 1
+
+        return slug
+
+    def get_many_to_many_values(self, obj):
+        """
+        Collect many-to-many values before the duplicate is saved.
+        """
+        return {
+            field.name: list(getattr(obj, field.name).all())
+            for field in obj._meta.many_to_many
+            if field.remote_field.through._meta.auto_created
+        }
+
+    def set_many_to_many_values(self, obj, values):
+        """
+        Restore many-to-many values on the saved duplicate.
+        """
+        for field_name, field_values in values.items():
+            getattr(obj, field_name).set(field_values)
+
+    def after_duplicate(self, _obj, _duplicate):
+        """
+        Hook for viewsets that need to copy extra relations after saving.
+        """
+        pass
 
 
 class DeleteMixin:

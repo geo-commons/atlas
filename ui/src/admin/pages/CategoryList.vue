@@ -123,6 +123,7 @@ const saveCategory = async (
     singular-name="Categorie"
     plural-name="Categorieën"
     api-name="categories"
+    :enable-duplicate="true"
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :get-create-object-dialog-sections="getCreateCategorySections"

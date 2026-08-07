@@ -1,8 +1,10 @@
+import copy
+
 from constance import config
 from constance import settings as constance_settings
-from django.db.models import Prefetch
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.decorators import action
@@ -20,15 +22,15 @@ from webservice.exceptions import ProtectedDeleteError
 from webservice.mixins import DataExportImportMixin, DuplicateMixin, DeleteMixin, FileUploadMixin
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
-from .models import Category, Drawing, Source, Layer, Viewer, Map, Metadataset, TopicCategory, RoleType, \
-    UpdateMethodType, AuthorizationLevelType, StatusType, AccessConstraintsType, OtherConstraintsType
+from .models import Category, Drawing, Source, Layer, Viewer, Map, MapLayer, MapCategory, Metadataset, TopicCategory, \
+    RoleType, UpdateMethodType, AuthorizationLevelType, StatusType, AccessConstraintsType, OtherConstraintsType
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, \
     LogSerializer, ViewerSerializer, UserCreateUpdateSerializer, MetadatasetSerializer, DeleteSettingsSerializer, \
     MetadatasetPublicSerializer
 
 
-class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.ModelViewSet):
+class MapViewSet(DataExportImportMixin, FileUploadMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = MapSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['published', 'show_in_overview', 'is_main']
@@ -44,6 +46,59 @@ class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.M
             raise ValidationError({'detail': 'De hoofdkaart kan niet worden verwijderd.'})
 
         return super().destroy(request, *args, **kwargs)
+
+    def prepare_duplicate(self, duplicate):
+        """
+        Prepare a duplicated map and ensure it cannot become the main map.
+        """
+        duplicate = super().prepare_duplicate(duplicate)
+        duplicate.is_main = False
+        duplicate.features = copy.deepcopy(duplicate.features)
+        duplicate.settings = copy.deepcopy(duplicate.settings)
+        return duplicate
+
+    def get_many_to_many_values(self, _obj):
+        """
+        Skip generic many-to-many copying because map layers use through models.
+        """
+        return {}
+
+    def after_duplicate(self, obj, duplicate):
+        """
+        Copy map-specific category and layer relations after saving the map.
+        """
+        category_mapping = self._duplicate_map_categories(obj, duplicate)
+        self._duplicate_map_layers(obj, duplicate, category_mapping)
+
+    def _duplicate_map_categories(self, obj, duplicate):
+        """
+        Copy map categories and return old-to-new category mappings.
+        """
+        category_mapping = {}
+        original_categories = MapCategory.objects.filter(map=obj).select_related('category')
+        for original_category in original_categories:
+            duplicated_category = MapCategory.objects.create(
+                map=duplicate,
+                category=original_category.category,
+                ordering=original_category.ordering,
+            )
+            category_mapping[original_category.id] = duplicated_category
+
+        return category_mapping
+
+    def _duplicate_map_layers(self, obj, duplicate, category_mapping):
+        """
+        Copy map layers and link them to duplicated map categories.
+        """
+        original_layers = MapLayer.objects.filter(map=obj).select_related('layer', 'map_category')
+        for original_layer in original_layers:
+            MapLayer.objects.create(
+                map=duplicate,
+                layer=original_layer.layer,
+                map_category=category_mapping.get(original_layer.map_category_id),
+                settings=copy.deepcopy(original_layer.settings),
+                ordering=original_layer.ordering,
+            )
 
     @action(detail=False, methods=['post'], url_path='delete', permission_classes=[permissions.IsAdminUser])
     def data_delete(self, request):
@@ -61,7 +116,8 @@ class MapViewSet(DataExportImportMixin, FileUploadMixin, DeleteMixin, viewsets.M
             'message': 'Successfully deleted objects',
         })
 
-class SourceViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
+
+class SourceViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
@@ -101,7 +157,7 @@ class DrawingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewset
     serializer_class = DrawingSerializer
 
 
-class CategoriesViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
+class CategoriesViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Category.objects.select_related('parent').all()
     serializer_class = CategorySerializer
@@ -217,7 +273,7 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
         return obj
 
 
-class ViewerViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
+class ViewerViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [permissions.IsAdminUser]
     queryset = Viewer.objects.all()

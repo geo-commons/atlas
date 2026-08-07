@@ -90,6 +90,7 @@ const saveSource = async (
     singular-name="Bron"
     plural-name="Bronnen"
     api-name="sources"
+    :enable-duplicate="true"
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :get-create-object-dialog-sections="getCreateSourceSections"

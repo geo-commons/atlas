@@ -119,6 +119,7 @@ onMounted(() => {
     singular-name="Autorisatie"
     plural-name="Autorisaties"
     api-name="authorizations"
+    :enable-duplicate="true"
     :enable-import-export="true"
     :get-create-object-dialog-sections="getCreateAuthorizationSections"
     :initial-create-object-dialog-data="newAuthorizationData"
