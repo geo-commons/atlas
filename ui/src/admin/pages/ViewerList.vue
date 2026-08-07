@@ -108,6 +108,7 @@ onMounted(() => {
     :get-create-object-dialog-sections="getCreateViewerSections"
     :initial-create-object-dialog-data="initialViewerData"
     :save-create-object-dialog-data="saveViewer"
+    :enable-duplicate="true"
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :get-objects="getViewers"

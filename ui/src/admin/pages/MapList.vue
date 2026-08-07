@@ -101,6 +101,7 @@ const saveMap = async (
     :get-create-object-dialog-sections="getCreateMapSections"
     :initial-create-object-dialog-data="initialMapData"
     :save-create-object-dialog-data="saveMap"
+    :enable-duplicate="true"
     :enable-import-export="true"
     :enable-delete-multiple="true"
     :table-headers="tableHeaders"

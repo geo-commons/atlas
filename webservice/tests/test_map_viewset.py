@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 
-from webservice.models import Map, Source
+from webservice.models import Category, Layer, Map, MapCategory, MapLayer, Source
 
 
 class MapViewSetTest(APITestCase):
@@ -92,3 +92,62 @@ class MapViewSetTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['count'], 1)
         self.assertEqual(response.data['results'][0]['id'], main_map.id)
+
+    def test_duplicate_copies_map_with_categories_and_layers(self):
+        category = Category.objects.create(
+            title='Category',
+            slug='category',
+            ordering=1,
+        )
+        layer = Layer.objects.create(
+            title='Layer',
+            slug='layer',
+            layer_source=self.source,
+            layer_type=category,
+        )
+        map_instance, _ = Map.objects.update_or_create(
+            is_main=True,
+            defaults={
+                'title': 'Original Map',
+                'slug': 'original-map',
+                'features': {'search': True},
+                'settings': {'position': {'zoom': 8}},
+            },
+        )
+        map_instance.map_layers.all().delete()
+        map_instance.map_categories.all().delete()
+        map_category = MapCategory.objects.create(
+            map=map_instance,
+            category=category,
+            ordering=3,
+        )
+        MapLayer.objects.create(
+            map=map_instance,
+            layer=layer,
+            map_category=map_category,
+            settings={'opacity': 0.7},
+            ordering=5,
+        )
+
+        response = self.client.post(
+            '/atlas/api/v1/maps/duplicate/',
+            {'ids': [map_instance.id]},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+        duplicated_map = Map.objects.get(title='Original Map (2)')
+        self.assertEqual(duplicated_map.slug, 'original-map-2')
+        self.assertFalse(duplicated_map.is_main)
+        self.assertEqual(duplicated_map.features, {'search': True})
+        self.assertEqual(duplicated_map.settings, {'position': {'zoom': 8}})
+
+        duplicated_category = duplicated_map.map_categories.get(category=category)
+        self.assertEqual(duplicated_category.ordering, 3)
+
+        duplicated_layer = duplicated_map.map_layers.get(layer=layer)
+        self.assertEqual(duplicated_layer.settings, {'opacity': 0.7})
+        self.assertEqual(duplicated_layer.ordering, 5)
+        self.assertEqual(duplicated_layer.map_category, duplicated_category)
+        self.assertNotEqual(duplicated_layer.map_category, map_category)
