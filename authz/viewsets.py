@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions
 from rest_framework.filters import SearchFilter
 
-from webservice.mixins import DataExportImportMixin, DuplicateMixin
+from webservice.mixins import DataExportImportMixin, DeleteMixin, DuplicateMixin
 from webservice.models import Source
 from .lib import can_access_source, authorize_ows_request, authorize_wmts_request, authorize_rest_request
 from .models import Authorization
@@ -63,7 +63,7 @@ class AuthorizeViewSet(viewsets.ViewSet):
         }, status=500)
 
 
-class AuthorizationViewSet(DataExportImportMixin, DuplicateMixin, viewsets.ModelViewSet):
+class AuthorizationViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'patch']
     permission_classes = [permissions.IsAdminUser]
     queryset = Authorization.objects.all()

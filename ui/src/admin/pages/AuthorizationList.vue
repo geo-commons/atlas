@@ -121,6 +121,7 @@ onMounted(() => {
     api-name="authorizations"
     :enable-duplicate="true"
     :enable-import-export="true"
+    :enable-delete-multiple="true"
     :get-create-object-dialog-sections="getCreateAuthorizationSections"
     :initial-create-object-dialog-data="newAuthorizationData"
     :save-create-object-dialog-data="saveAuthorization"

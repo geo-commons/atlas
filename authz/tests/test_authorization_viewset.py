@@ -57,3 +57,28 @@ class AuthorizationViewSetTest(APITestCase):
         self.assertEqual(duplicated_authorization.response_filter, '.features[]')
         self.assertEqual(list(duplicated_authorization.atlas_groups.all()), [read_group])
         self.assertEqual(list(duplicated_authorization.atlas_write_groups.all()), [write_group])
+
+    def test_delete_bulk_deletes_selected_authorizations(self):
+        source = Source.objects.create(
+            title='Source',
+            slug='source',
+            url='https://example.com/ows',
+        )
+        authorization_to_delete = Authorization.objects.create(
+            source=source,
+            resource='atlas:to_delete',
+        )
+        authorization_to_keep = Authorization.objects.create(
+            source=source,
+            resource='atlas:to_keep',
+        )
+
+        response = self.client.post(
+            '/atlas/api/v1/authorizations/delete/',
+            {'ids': [authorization_to_delete.id]},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Authorization.objects.filter(id=authorization_to_delete.id).exists())
+        self.assertTrue(Authorization.objects.filter(id=authorization_to_keep.id).exists())
