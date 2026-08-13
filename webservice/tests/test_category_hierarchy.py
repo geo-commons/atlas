@@ -122,7 +122,6 @@ class CategoryHierarchyTest(TestCase):
             layer_name='atlas:traffic_incidents',
             layer_source=self.source,
             layer_type=self.subcategory,
-            published=True,
         )
         request = self.factory.get('/')
         request.user = AnonymousUser()

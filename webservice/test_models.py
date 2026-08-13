@@ -21,15 +21,15 @@ class TestLayerManager(TestCase):
             username='admin', password='12345')
 
         self.public_layer = Layer.objects.create(
-            closed_dataset=False, login_required=False, published=True)
+            closed_dataset=False, login_required=False)
         self.internal_layer = Layer.objects.create(
-            closed_dataset=True, login_required=False, published=True)
+            closed_dataset=True, login_required=False)
         self.login_required_layer = Layer.objects.create(
-            closed_dataset=False, login_required=True, published=True)
+            closed_dataset=False, login_required=True)
         self.internal_login_required_layer = Layer.objects.create(
-            closed_dataset=True, login_required=True, published=True)
+            closed_dataset=True, login_required=True)
         self.layer_only_for_group = Layer.objects.create(
-            closed_dataset=False, published=True)
+            closed_dataset=False)
         self.layer_only_for_group.atlas_groups.add(self.group)
 
     def test_for_request_authenticated_superuser(self):

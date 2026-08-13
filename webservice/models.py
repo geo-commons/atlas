@@ -22,7 +22,7 @@ class LayerManager(models.Manager):
         if request.user.is_authenticated and request.user.is_superuser:
             return self.distinct()
 
-        query = Q(published=True)
+        query = Q()
 
         if not request.user.is_authenticated and settings.SHOW_LAYERS_ONLY_WHEN_ACCESSIBLE:
             query &= Q(login_required=False)
@@ -490,8 +490,6 @@ class Layer(models.Model):
     authenticated_can_mutate = models.BooleanField('Ingelogde gebruikers kunnen kaartlaag muteren', default=False,
                                                    help_text="Alle ingelogde gebruikers kunnen wanneer deze optie aanstaat kaartlagen muteren")
 
-    published = models.BooleanField('Gepubliceerd', default=False)
-
     is_exportable = models.BooleanField('Kaartlaag is exporteerbaar', default=True)
     
     is_time_enabled = models.BooleanField('Tijdlijn inschakelen', default=False)
@@ -744,10 +742,6 @@ source: new ol.source.TileWMS({{
     params: {self.params},
     serverType: '{self.server_type}'
 }})"""
-
-    @property
-    def is_published(self):
-        return self.published
 
     @property
     def is_closed_dataset(self):

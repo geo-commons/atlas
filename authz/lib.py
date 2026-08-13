@@ -204,9 +204,6 @@ def can_access_source(request, source):
 def can_request_access_layer(request, layer):
     user = request.user
 
-    if not layer.is_published:
-        return False
-
     if layer.closed_dataset and is_internal(request) is not True:
         return False
 

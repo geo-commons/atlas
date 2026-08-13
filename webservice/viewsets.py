@@ -132,7 +132,7 @@ class LayerViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.
     search_fields = ['title']
 
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter, MultipleFieldsFilter]
-    multiple_lookup_fields = ['layer_source', 'layer_type', 'published']
+    multiple_lookup_fields = ['layer_source', 'layer_type']
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -250,7 +250,6 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
                 'layers', 
                 queryset=
                     Layer.authorized.for_request(self.request)
-                    .filter(published=True)
                     .order_by('title')
                 )
             )

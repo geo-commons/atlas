@@ -30,14 +30,12 @@ class Migration0151Test(TransactionTestCase):
             title='Layer A',
             layer_source=self.source,
             layer_type=category_a,
-            published=True,
         )
         layer_b = self.Layer.objects.create(
             slug='layer-b',
             title='Layer B',
             layer_source=self.source,
             layer_type=category_b,
-            published=True,
         )
 
         create_main_map(apps, None)
@@ -60,7 +58,6 @@ class Migration0151Test(TransactionTestCase):
             title='Layer A',
             layer_source=self.source,
             layer_type=None,
-            published=True,
         )
 
         create_main_map(apps, None)

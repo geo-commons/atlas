@@ -1,3 +1,4 @@
+from django.core.exceptions import FieldDoesNotExist
 from django.db import migrations, models
 from django.db.models import Q
 
@@ -55,7 +56,14 @@ def create_main_map(apps, schema_editor):
         is_main=True,
     )
 
-    visible_layers = Layer.objects.filter(not_in_atlas=False, published=True).order_by('layer_type__ordering', 'ordering', 'title')
+    visible_layers = Layer.objects.filter(not_in_atlas=False)
+    try:
+        Layer._meta.get_field('published')
+    except FieldDoesNotExist:
+        pass
+    else:
+        visible_layers = visible_layers.filter(published=True)
+    visible_layers = visible_layers.order_by('layer_type__ordering', 'ordering', 'title')
     category_map = {}
     category_ordering = 0
 
