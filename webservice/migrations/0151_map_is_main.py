@@ -56,6 +56,7 @@ def create_main_map(apps, schema_editor):
         is_main=True,
     )
 
+    # If this migration is run for the first time, the "published" field will still exist, and you'll need to filter for layers that have been published; if that's not the case (for example, in a test), the "not_in_atlas" filter will suffice.
     visible_layers = Layer.objects.filter(not_in_atlas=False)
     try:
         Layer._meta.get_field('published')
