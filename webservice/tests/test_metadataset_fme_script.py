@@ -20,7 +20,6 @@ class TestMetadatasetFmeScriptApi(APITestCase):
         )
         self.layer = create_test_layer(title="FME Test Layer")
         self.layer.metadataset = self.metadataset
-        self.layer.published = True
         self.layer.save()
 
     def test_fme_script_roundtrip_via_metadataset_api(self):

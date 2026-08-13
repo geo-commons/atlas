@@ -520,20 +520,6 @@ export default {
               options: this.metadatasetsState.data,
             },
             {
-              label: "Gepubliceerd",
-              id: "published",
-              name: "Published",
-              type: "checkbox",
-              required: false,
-              getHintText: (values) => {
-                const hasMetadataset = values.metadataset != null && values.metadataset !== "";
-                if (values.published && !hasMetadataset) {
-                  return "Let op: er is nog geen metadataset geselecteerd. Metadata maakt de kaartlaag herleidbaar.";
-                }
-                return "";
-              },
-            },
-            {
               label: "Kaartlaag is exporteerbaar",
               infoText:
                 "Met dit veld configureer je of de data achter een kaartlaag wel/niet exporteerbaar is vanuit de dataweergave.",

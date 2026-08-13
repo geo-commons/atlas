@@ -43,15 +43,6 @@ const tableHeaders: Array<TableHeader> = [
     key: "closed_dataset",
     enableLink: false,
   },
-  {
-    header: "Status",
-    key: "published",
-    enableLink: false,
-    mapValues: {
-      true: "Gepubliceerd",
-      false: "Concept",
-    },
-  },
 ];
 
 const getCategories = async (): Promise<Array<object>> => {
@@ -166,19 +157,7 @@ const getCreateLayerSections = () => {
 };
 
 const tableFilters = computed((): Array<TableFilter> => {
-  return [
-    { options: unref(categories), name: "Categorie", key: "layer_type", label: "label", dataKey: "id" },
-    {
-      options: [
-        { label: "Gepubliceerd", id: "True" },
-        { label: "Concept", id: "False" },
-      ],
-      name: "Status",
-      key: "published",
-      label: "label",
-      dataKey: "id",
-    },
-  ];
+  return [{ options: unref(categories), name: "Categorie", key: "layer_type", label: "label", dataKey: "id" }];
 });
 </script>
 

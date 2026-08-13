@@ -28,7 +28,6 @@ class MapLayerInline(admin.TabularInline):
 def duplicate_layer(_modeladmin, _request, queryset):
     for layer in queryset.all():
         layer.pk = None
-        layer.published = False
 
         i = 2
         while Layer.objects.filter(title=f'{layer.title} ({i})').count() > 0:
@@ -69,8 +68,7 @@ class SourceAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
 class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
     form = LayerForm
 
-    list_display = ('ordering', 'title', 'layer_type', 'closed_dataset', 'login_required',
-                    'published')
+    list_display = ('ordering', 'title', 'layer_type', 'closed_dataset', 'login_required')
     list_display_links = ('title',)
     list_editable = ('ordering',)
     list_filter = ('layer_type', 'closed_dataset', 'login_required')
@@ -91,7 +89,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'slug', 'layer_type', 'published', 'is_exportable')
+            'fields': ('title', 'slug', 'layer_type', 'is_exportable')
         }),
         ('Bron', {
             'fields': ('layer_source', 'layer_name', 'source_type', 'projection', 'server_type', 'format')
