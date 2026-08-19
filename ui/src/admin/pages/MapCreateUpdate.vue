@@ -217,6 +217,7 @@ export default {
       const configuredSettings = selectedLayer.settings || {};
       const mapLayerSettings = {
         is_base: Boolean(configuredSettings.is_base),
+        is_visible: Boolean(configuredSettings.is_visible),
       };
 
       if (!selectedLayer.settings?.customSettings) {
@@ -227,7 +228,6 @@ export default {
       }
 
       const overrideKeys = [
-        "is_visible",
         "is_filterable_in_legend",
         "opacity",
         "zoom_min",

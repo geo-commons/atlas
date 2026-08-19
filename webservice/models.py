@@ -516,7 +516,6 @@ class Layer(models.Model):
     legend_url = models.URLField(
         'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True, max_length=1000)
 
-    is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
     use_html_info_format = models.BooleanField(
         'Haal detailinformatie als HTML op bij de bron', default=False)
@@ -836,7 +835,6 @@ source: new ol.source.TileWMS({{
             'templated_properties': self.templated_properties,
             'url': self.url,
             'server_type': self.server_type,
-            'is_visible': self.is_visible,
             'is_selectable': self.is_selectable,
             'use_html_info_format': self.use_html_info_format,
             'show_in_detail_panel': self.show_in_detail_panel,

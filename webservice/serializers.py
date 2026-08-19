@@ -430,7 +430,6 @@ class LayerSerializer(serializers.ModelSerializer):
             'server_style',
             'client_style',
             'friendly_fields',
-            'is_visible',
             'is_selectable',
             'show_in_detail_panel',
             'use_html_info_format',
@@ -646,7 +645,6 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'server_type',
             'format',
             'opacity',
-            'is_visible',
             'is_selectable',
             'use_html_info_format',
             'show_in_detail_panel',
@@ -705,7 +703,6 @@ class LayerListSerializer(serializers.ModelSerializer):
             'layer_name',
             'category',
             'ordering',
-            'is_visible',
             'login_required',
             'closed_dataset',
             'metadataset'

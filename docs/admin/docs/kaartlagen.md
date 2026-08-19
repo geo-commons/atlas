@@ -38,7 +38,6 @@ Onder weergave vallen alle standaard weergaveopties voor de kaartlaag te configu
 
 - **Transparantie:** Onder het veld transparantie configureer je hoe transparent de kaartlaag is. _Veld eisen_: Dit veld kan een waarde hebben tussen de 0 en 1 en één cijfer achter de komma, bijvoorbeeld: Een waarde van 0.1 is goed, een waarde van 0.21 niet. _Standaard_: 0.9.
 
-- **Is standaard zichtbaar:** Met het aanzetten van de "is standaard zichtbaar" optie, zorg je ervoor dat de betreffende kaartlaag standaard zichtbaar wordt. Deze komt bovenop de basislaag. Hierdoor hoeft de eindgebruiker dus niet de kaartlaag handmatig te selecteren om deze zichtbaar te maken. _Standaard_: uit.
 - **Is selecteerbaar:** Met het aanzetten van de "is selecteerbaar" optie, zorg je ervoor dat de betreffende kaartlaag selecteerbaar is en je features op deze kaartlaag kan selecteren. _Standaard_: aan.
 - **Haal detailinformatie als HTML op bij de bron:** Met het aanzetten van de "haal detailinformatie op als HTML bij de bron" optie, zorg je ervoor dat het getFeatureInfo request wat naar betreffende kaartlaag bron wordt gedaan geen JSON-data formaat terugverwacht maar een HTML-data formaat. _Standaard_: uit.
 - **Toon laag in detail- en dataweergave:** Met het aanzetten van de "toon laag in detail- en dataweergave" optie zorg je ervoor dat de laag zichtbaar is binnen het detail en dataweergave. _Standaard_: aan.

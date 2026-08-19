@@ -452,12 +452,15 @@ export default {
           customSettings: true,
           ...this.layerDefaultSettings,
           is_base: false,
+          is_visible: false,
         };
       } else {
         // Reset layer settings.
         this.mapLayerConfig.settings = {
           customSettings: false,
           title: this.mapLayerConfig.settings.title,
+          is_base: false,
+          is_visible: false,
         };
       }
 

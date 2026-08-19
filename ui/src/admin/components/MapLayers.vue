@@ -783,7 +783,7 @@ const selectLayer = (layer: IAdminLayer): void => {
       ...selectedMapLayerConfigs.value,
       {
         layer: layer.id,
-        settings: { customSettings: false },
+        settings: { customSettings: false, is_base: false, is_visible: false },
         ordering: 0,
       },
     ];
@@ -820,11 +820,7 @@ const toggleLayerSettings = (layerId: LayerId): void => {
 const isLayerVisible = (layer: IAdminLayer): boolean => {
   const layerConfig = selectedMapLayerConfigs.value.find((selectedLayer) => selectedLayer.layer === layer.id);
 
-  if (layerConfig?.settings.customSettings) {
-    return Boolean(layerConfig.settings.is_visible);
-  }
-
-  return layer.is_visible;
+  return Boolean(layerConfig?.settings.is_visible);
 };
 
 const toggleChangingOrder = async (): Promise<void> => {

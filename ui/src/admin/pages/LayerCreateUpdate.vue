@@ -604,13 +604,6 @@ export default {
               locale: "en-US",
             },
             {
-              label: "Is standaard zichtbaar",
-              id: "is_visible",
-              name: "IsVisible",
-              type: "checkbox",
-              required: false,
-            },
-            {
               label: "Is selecteerbaar",
               id: "is_selectable",
               name: "IsSelectable",

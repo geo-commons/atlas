@@ -51,12 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const configuredSettings = configuredLayer.settings ?? {};
     const mapLayerSettings = {
       is_base: Boolean(configuredSettings.is_base),
+      is_visible: Boolean(configuredSettings.is_visible),
     };
 
     if (configuredSettings.customSettings) {
       // Override with custom settings, as far as they are present
       const overrideKeys = [
-        "is_visible",
         "is_filterable_in_legend",
         "opacity",
         "zoom_min",
