@@ -48,12 +48,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // First set custom settings as configured by user.
   let layers = configuredLayers.map((configuredLayer) => {
     const defaultLayer = allAvailableLayers.find((layer) => layer.internal_id === configuredLayer.layer);
+    const configuredSettings = configuredLayer.settings ?? {};
+    const mapLayerSettings = {
+      is_base: Boolean(configuredSettings.is_base),
+    };
 
-    if (configuredLayer.settings.customSettings) {
+    if (configuredSettings.customSettings) {
       // Override with custom settings, as far as they are present
       const overrideKeys = [
         "is_visible",
-        "is_base",
         "is_filterable_in_legend",
         "opacity",
         "zoom_min",
@@ -68,10 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "templates",
       ];
 
-      const configuredSettings = configuredLayer.settings ?? {};
-
       return {
         ...defaultLayer,
+        ...mapLayerSettings,
         ...Object.fromEntries(
           overrideKeys
             .filter((key) => Object.hasOwn(configuredSettings, key))
@@ -79,18 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
         ),
       };
     } else {
-      return defaultLayer;
+      return {
+        ...defaultLayer,
+        ...mapLayerSettings,
+      };
     }
   });
-
-  // Check if there is at least 1 base layer configured.
-  const hasBaseLayer = layers.some((layer) => layer?.is_base);
-
-  if (!hasBaseLayer) {
-    // If there is no base layer configured, get the first available and add it to layers.
-    const baseLayer = allAvailableLayers.find((layer) => layer.is_base);
-    layers.push(baseLayer);
-  }
 
   // Then check if any specific settings are set by the URL settings.
   layers = layers.map((layer) => {

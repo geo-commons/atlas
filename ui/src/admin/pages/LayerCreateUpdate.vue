@@ -604,13 +604,6 @@ export default {
               locale: "en-US",
             },
             {
-              label: "Is basislaag",
-              id: "is_base",
-              name: "IsBase",
-              type: "checkbox",
-              required: false,
-            },
-            {
               label: "Is standaard zichtbaar",
               id: "is_visible",
               name: "IsVisible",

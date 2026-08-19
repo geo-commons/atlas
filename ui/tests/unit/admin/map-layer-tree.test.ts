@@ -39,14 +39,12 @@ const baseLayer: IAdminLayer = {
   id: 2,
   title: "Base layer",
   category: parentCategory,
-  is_base: true,
 } as IAdminLayer;
 
 const subcategoryBaseLayer: IAdminLayer = {
   id: 3,
   title: "Subcategory base layer",
   category: subCategory,
-  is_base: true,
 } as IAdminLayer;
 
 describe("mapLayerTree", () => {
@@ -60,9 +58,9 @@ describe("mapLayerTree", () => {
         subcategories: [],
       },
     ];
-    const configs: IMapLayerConfig[] = [{ layer: baseLayer.id, settings: { customSettings: false } }];
+    const configs: IMapLayerConfig[] = [{ layer: baseLayer.id, settings: { customSettings: true, is_base: true } }];
 
-    expect(removeBaseLayersFromCategoryTree(tree, configs, new Map([[baseLayer.id, baseLayer]]))).toEqual([]);
+    expect(removeBaseLayersFromCategoryTree(tree, configs)).toEqual([]);
   });
 
   it("removes empty subcategories when a base layer is removed", () => {

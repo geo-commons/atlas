@@ -301,9 +301,7 @@ const unselectedLayers = computed(() => {
 
 const selectedLayerIds = computed(() => {
   return new Set<LayerId>([
-    ...selectedMapLayerConfigs.value
-      .filter((selectedLayer) => isBaseLayerConfig(selectedLayer, layerById.value.get(selectedLayer.layer)))
-      .map((selectedLayer) => selectedLayer.layer),
+    ...selectedMapLayerConfigs.value.filter(isBaseLayerConfig).map((selectedLayer) => selectedLayer.layer),
     ...selectedCategoryTree.value.flatMap((category) => [
       ...category.layers.map(getTreeLayerId),
       ...category.subcategories.flatMap((subcategory) => subcategory.layers.map(getTreeLayerId)),
@@ -316,19 +314,14 @@ const selectedBaseLayers = computed(() => {
     .map((config) => layerById.value.get(config.layer))
     .filter(
       (layerData, index): layerData is IAdminLayer =>
-        Boolean(layerData) && isBaseLayerConfig(selectedMapLayerConfigs.value[index], layerData),
+        Boolean(layerData) && isBaseLayerConfig(selectedMapLayerConfigs.value[index]),
     );
 });
 
 const hasMultipleBaseLayersVisible = computed(() => {
   return (
     selectedMapLayerConfigs.value.filter((layerConfig) => {
-      if (layerConfig.settings.customSettings && layerConfig.settings.is_base && layerConfig.settings.is_visible) {
-        return layerConfig;
-      }
-
-      const layerData = allLayers.value.find((layer) => layer.id === layerConfig.layer);
-      if (!layerConfig.settings.customSettings && layerData?.is_base && layerData.is_visible) {
+      if (layerConfig.settings.is_base && layerConfig.settings.is_visible) {
         return layerConfig;
       }
 
@@ -354,7 +347,7 @@ const getSelectedRegularLayers = (): IAdminLayer[] => {
     .map((config) => layerById.value.get(config.layer))
     .filter(
       (layerData, index): layerData is IAdminLayer =>
-        Boolean(layerData) && !isBaseLayerConfig(selectedMapLayerConfigs.value[index], layerData),
+        Boolean(layerData) && !isBaseLayerConfig(selectedMapLayerConfigs.value[index]),
     );
 };
 
@@ -512,11 +505,7 @@ watch(
 );
 
 const removeSelectedBaseLayersFromTree = (shouldEmit: boolean): void => {
-  const normalizedTree = removeBaseLayersFromCategoryTree(
-    selectedCategoryTree.value,
-    selectedMapLayerConfigs.value,
-    layerById.value,
-  );
+  const normalizedTree = removeBaseLayersFromCategoryTree(selectedCategoryTree.value, selectedMapLayerConfigs.value);
 
   if (JSON.stringify(normalizedTree) === JSON.stringify(selectedCategoryTree.value)) {
     return;

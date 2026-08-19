@@ -70,12 +70,8 @@ const sortTreeLayers = (layers: IAdminLayer[], orderingByLayerId?: Map<LayerId, 
   });
 };
 
-export const isBaseLayerConfig = (config: IMapLayerConfig, layerData?: IAdminLayer): boolean => {
-  if (config.settings.customSettings) {
-    return Boolean(config.settings.is_base);
-  }
-
-  return Boolean(layerData?.is_base);
+export const isBaseLayerConfig = (config: IMapLayerConfig): boolean => {
+  return Boolean(config.settings.is_base);
 };
 
 export const removeLayerFromCategoryTree = (
@@ -207,12 +203,9 @@ const addLayerToSubcategory = (
 export const removeBaseLayersFromCategoryTree = (
   categoryTree: ICategoryTreeNode[],
   mapLayerConfigs: IMapLayerConfig[],
-  layerById: Map<LayerId, IAdminLayer>,
 ): ICategoryTreeNode[] => {
   const baseLayerIds = new Set(
-    mapLayerConfigs
-      .filter((config) => isBaseLayerConfig(config, layerById.get(config.layer)))
-      .map((config) => config.layer),
+    mapLayerConfigs.filter((config) => isBaseLayerConfig(config)).map((config) => config.layer),
   );
 
   return [...baseLayerIds].reduce((tree, layerId) => removeLayerFromCategoryTree(tree, layerId), categoryTree);

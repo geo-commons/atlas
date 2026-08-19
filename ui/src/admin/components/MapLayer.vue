@@ -335,7 +335,6 @@ import LinkedDataForm from "@/admin/components/LinkedDataForm.vue";
 import TemplateForm from "@/admin/components/TemplateForm.vue";
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
-import { getAllObjects } from "@/utils/api-helpers";
 import CodeMirror from "vue-codemirror6";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
 import { clouds } from "thememirror";
@@ -363,7 +362,6 @@ export default {
   data() {
     return {
       mapLayerConfig: null,
-      allLayers: [],
       selectedMapLayerConfigs: [],
       layerDefaultSettings: null,
       showFormModal: false,
@@ -404,26 +402,13 @@ export default {
     },
     otherVisibleBaseLayer() {
       // Check if current layer is a base layer.
-      if (
-        !this.selectedMapLayerConfigs ||
-        (!this.mapLayerConfig.settings.customSettings && !this.layerDefaultSettings.is_base) ||
-        (this.mapLayerConfig.settings.customSettings && !this.mapLayerConfig.settings.is_base)
-      ) {
+      if (!this.selectedMapLayerConfigs || !this.mapLayerConfig.settings.is_base) {
         return false;
       }
 
       const otherLayer = this.otherMapLayerConfigs.find((layer) => {
-        // Check if layer has custom settings and is a visible base layer.
-        if (layer.settings.customSettings && layer.settings.is_base && layer.settings.is_visible) {
+        if (layer.settings.is_base && layer.settings.is_visible) {
           return layer;
-        }
-
-        // Check if layer is visible base layer by default
-        if (!layer.settings.customSettings) {
-          const layerData = this.allLayers.find((l) => l.id === layer.layer);
-          if (layerData.is_base && layerData.is_visible) {
-            return layer;
-          }
         }
       });
 
@@ -434,7 +419,6 @@ export default {
     this.mapLayerConfig = this.initialData;
     this.layerDefaultSettings = await this.getLayer(this.mapLayerConfig.layer);
     this.selectedMapLayerConfigs = this.initialConfiguredLayers;
-    await this.getLayers();
     if (this.mapLayerConfig.settings.customSettings) {
       /* If there are custom settings, amend the default settings
          with any set custom settings. */
@@ -461,28 +445,13 @@ export default {
 
       return result.json();
     },
-    async getLayers() {
-      this.loading = true;
-      const url = getAllObjects("/atlas/api/v1/layers/");
-      const result = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!result.ok) {
-        console.error("Could not fetch layers");
-      }
-
-      const response = await result.json();
-      this.allLayers = response.results;
-      this.loading = false;
-    },
     async toggleSettings() {
       if (!this.mapLayerConfig.settings.customSettings) {
         // Get layer settings.
         this.mapLayerConfig.settings = {
           customSettings: true,
           ...this.layerDefaultSettings,
+          is_base: false,
         };
       } else {
         // Reset layer settings.
