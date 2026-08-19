@@ -160,6 +160,7 @@ import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import { useMapStore } from "@/stores/map_store";
 import { getWmsTimeParameter } from "@/utils/wms-time";
+import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -229,6 +230,10 @@ export default {
     "mapStore.timeSliderStepSize": "fetchFeatures",
     "mapStore.timeSliderReferenceDate": "fetchFeatures",
     "mapStore.timeSliderPeriodDates": "fetchFeatures",
+    "mapStore.layerFilters": {
+      handler: "fetchFeatures",
+      deep: true,
+    },
   },
   created() {
     this.mapStore = useMapStore(this.mapId);
@@ -254,6 +259,7 @@ export default {
     },
     async fetchFeaturesFromWMS() {
       const timeParameter = getWmsTimeParameter(this.mapStore, this.layer.id, this.layer.is_time_enabled === true);
+      const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, this.layer.id);
 
       const wmsSource = new TileWMS({
         url: this.layer.url,
@@ -261,6 +267,7 @@ export default {
         params: {
           LAYERS: this.layer.name,
           ...(timeParameter ? { TIME: timeParameter } : {}),
+          ...(cqlFilter ? { CQL_FILTER: cqlFilter } : {}),
           TILED: true,
         },
       });
@@ -310,6 +317,12 @@ export default {
         ["bbox", extent.join(",")],
         ["maxFeatures", "100"],
       ]);
+
+      const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, this.layer.id);
+
+      if (cqlFilter) {
+        params.set("cql_filter", cqlFilter);
+      }
 
       const url = new URL(this.layer.url);
       url.search = params.toString();
