@@ -5,7 +5,6 @@ from django.test.client import RequestFactory
 from constance.test import override_config
 
 from webservice.models import Layer, Category
-from webservice.serializers import LayerListSerializer, LayerSerializer
 from webservice.tests.utils import create_test_user, create_test_group, create_test_layer
 
 
