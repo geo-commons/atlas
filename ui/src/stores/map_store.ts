@@ -7,7 +7,14 @@ import type {
   IToggleLayerProps,
   IToggleLayerSelectableProps,
 } from "@/types/layer";
-import { ETimeSliderDisplayMode, ETimeSliderStepSize, ICycloView, IMapStore } from "@/types/mapStore";
+import {
+  ETimeSliderDisplayMode,
+  ETimeSliderStepSize,
+  type ICycloView,
+  type ILayerPropertyFilter,
+  type IMapStore,
+  type TLayerFilterValue,
+} from "@/types/mapStore";
 import { getFetchParameters } from "@/utils/auth";
 import { getWmsCapabilitiesTimeRange } from "@/utils/wms-time";
 import type { IUser } from "@/types/user";
@@ -18,6 +25,10 @@ const createDefaultTimeSliderStartDate = () => new Date(1969, 0, 1);
 const createDefaultTimeSliderEndDate = () => new Date();
 
 const cloneDate = (date: Date) => new Date(date);
+
+const hasActiveLayerPropertyFilter = (filterValue: TLayerFilterValue[] | ILayerPropertyFilter) => {
+  return Array.isArray(filterValue) ? filterValue.length > 0 : filterValue.values.length > 0;
+};
 
 const getLayerDefaultTimeSliderDisplayMode = (layer: ILayer | undefined) => {
   if (
@@ -63,13 +74,20 @@ export function useMapStore(mapName: string) {
       resetFiltersForLayer(layerId: string) {
         this.layerFilters[layerId] = {
           filters: {},
+          rawCqlFilters: {},
           searchQuery: "",
         };
       },
-      updateFiltersForLayer(layerId: string, filters: any) {
+      updateFiltersForLayer(layerId: string, filters: Record<string, TLayerFilterValue[] | ILayerPropertyFilter>) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
           filters: filters,
+        };
+      },
+      updateRawCqlFiltersForLayer(layerId: string, rawCqlFilters: Record<string, string>) {
+        this.layerFilters[layerId] = {
+          ...this.layerFilters[layerId],
+          rawCqlFilters: rawCqlFilters,
         };
       },
       updateSearchQueryForLayer(layerId: string, searchQuery: string) {
@@ -354,14 +372,20 @@ export function useMapStore(mapName: string) {
       getActiveLayersWithFilterCount(state) {
         const activeFilters = Object.entries(state.layerFilters).filter(
           ([, layer]) =>
-            Object.values(layer.filters || {}).some((filterArray) => filterArray.length > 0) ||
+            Object.values(layer.filters || {}).some((filterValue) => hasActiveLayerPropertyFilter(filterValue)) ||
+            Object.values(layer.rawCqlFilters || {}).some((filter) => filter.trim() !== "") ||
             (layer.searchQuery && layer.searchQuery.trim() !== ""),
         );
 
-        const count = activeFilters.reduce((totalCount, [, { filters, searchQuery }]) => {
-          const hasActiveFilters = filters ? Object.values(filters).some((array) => array.length > 0) : false;
+        const count = activeFilters.reduce((totalCount, [, { filters, rawCqlFilters, searchQuery }]) => {
+          const hasActiveFilters = filters
+            ? Object.values(filters).some((filterValue) => hasActiveLayerPropertyFilter(filterValue))
+            : false;
+          const hasRawCqlFilters = rawCqlFilters
+            ? Object.values(rawCqlFilters).some((filter) => filter.trim() !== "")
+            : false;
           const hasSearchQuery = searchQuery && searchQuery.trim() !== "";
-          const activeCount = hasActiveFilters || hasSearchQuery ? 1 : 0;
+          const activeCount = hasActiveFilters || hasRawCqlFilters || hasSearchQuery ? 1 : 0;
           return totalCount + activeCount;
         }, 0);
 
@@ -388,8 +412,11 @@ export function useMapStore(mapName: string) {
 
           // Get count of filters on specific layer
           let filterCount = layerFilter?.filters
-            ? Object.values(layerFilter.filters).filter((array) => array.length > 0).length
+            ? Object.values(layerFilter.filters).filter((filterValue) => hasActiveLayerPropertyFilter(filterValue))
+                .length
             : 0;
+
+          filterCount += Object.values(layerFilter.rawCqlFilters || {}).filter((filter) => filter.trim() !== "").length;
 
           // If search with value is active on specific layer add this to count of filters
           if (layerFilter.searchQuery && layerFilter.searchQuery !== "") {
@@ -413,7 +440,7 @@ export function useMapStore(mapName: string) {
             const filterItems = Object.values(filtersWithItemsToCount);
 
             filterItems.map((item) => {
-              count += item.length;
+              count += Array.isArray(item) ? item.length : item.values.length;
             });
           }
 

@@ -3,8 +3,16 @@
     <label :for="filterProperty" class="filter-label-padding">{{
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
+    <Select
+      :options="operatorOptions"
+      v-model="selectedOperator"
+      class="operator-select"
+      @change="updateFieldFilters()"
+      option-label="label"
+      option-value="value"
+    />
     <multi-select
-      v-if="!filterOnId"
+      v-if="usesValueSelect && !filterOnId"
       v-model="selectedItems"
       :options="currentFilterOptions"
       :virtual-scroller-options="{ itemSize: 50 }"
@@ -14,7 +22,7 @@
       @update:model-value="updateFieldFilters()"
     />
     <multi-select
-      v-else
+      v-else-if="usesValueSelect"
       v-model="selectedItems"
       :option-label="optionLabel"
       :options="currentFilterOptions"
@@ -24,11 +32,20 @@
       filter
       @update:model-value="updateFieldFilters()"
     />
+    <input
+      v-else-if="usesTypedValue"
+      :id="filterProperty"
+      v-model="selectedValue"
+      class="filter-value-input"
+      placeholder="Vul waarde in"
+      @input="updateFieldFilters()"
+    />
   </div>
 </template>
 
 <script>
 import { useMapStore } from "@/stores/map_store";
+import { ELayerFilterOperator } from "@/types/mapStore";
 
 export default {
   name: "FilterSelect",
@@ -49,9 +66,36 @@ export default {
   data() {
     return {
       selectedItems: [],
+      selectedOperator: ELayerFilterOperator.In,
+      selectedValue: "",
       store: null,
       currentFilterOptions: this.filterOptions,
+      operatorOptions: [
+        { label: "is gelijk aan", value: ELayerFilterOperator.In },
+        { label: "is niet gelijk aan", value: ELayerFilterOperator.NotIn },
+        { label: "groter dan", value: ELayerFilterOperator.GreaterThan },
+        { label: "groter dan of gelijk aan", value: ELayerFilterOperator.GreaterThanOrEqualTo },
+        { label: "kleiner dan", value: ELayerFilterOperator.LessThan },
+        { label: "kleiner dan of gelijk aan", value: ELayerFilterOperator.LessThanOrEqualTo },
+        { label: "bevat", value: ELayerFilterOperator.ILike },
+        { label: "bevat hoofdlettergevoelig", value: ELayerFilterOperator.Like },
+        { label: "is leeg", value: ELayerFilterOperator.IsNull },
+        { label: "is niet leeg", value: ELayerFilterOperator.IsNotNull },
+      ],
     };
+  },
+  computed: {
+    usesValueSelect() {
+      return [ELayerFilterOperator.In, ELayerFilterOperator.NotIn].includes(this.selectedOperator);
+    },
+    usesTypedValue() {
+      return ![
+        ELayerFilterOperator.In,
+        ELayerFilterOperator.NotIn,
+        ELayerFilterOperator.IsNull,
+        ELayerFilterOperator.IsNotNull,
+      ].includes(this.selectedOperator);
+    },
   },
   watch: {
     filterOptions(value) {
@@ -61,11 +105,7 @@ export default {
   created() {
     this.store = useMapStore(this.mapId);
 
-    const filterValues = this.store.layerFilters[this.layerId]?.filters?.[this.filterProperty]
-      ? this.store.layerFilters[this.layerId].filters[this.filterProperty]
-      : [];
-
-    this.selectedItems = filterValues;
+    this.setSelectedFilter(this.store.layerFilters[this.layerId]?.filters?.[this.filterProperty] || []);
 
     this.store.$subscribe((_, state) => {
       // From the moment this store subscription is created,
@@ -73,20 +113,63 @@ export default {
       // are updated to match the active filter values of the currently active filter.
       const filterValues = state.layerFilters[this.layerId]?.filters?.[this.filterProperty] || [];
 
-      this.selectedItems = filterValues;
+      this.setSelectedFilter(filterValues);
     });
   },
   methods: {
+    setSelectedFilter(filterValues) {
+      if (Array.isArray(filterValues)) {
+        this.selectedOperator = ELayerFilterOperator.In;
+        this.selectedItems = filterValues;
+        this.selectedValue = "";
+        return;
+      }
+
+      this.selectedOperator = filterValues.operator;
+      this.selectedItems = this.usesValueSelect ? filterValues.values : [];
+      this.selectedValue = this.usesTypedValue ? filterValues.values[0] || "" : "";
+    },
     updateFieldFilters() {
-      if (this.selectedItems.length > 0) {
+      if (this.usesValueSelect && this.selectedItems.length > 0) {
         this.$emit("onFilterChange", {
           ...this.fieldFilters,
-          [this.filterProperty]: this.selectedItems,
+          [this.filterProperty]: {
+            operator: this.selectedOperator,
+            values: this.selectedItems,
+          },
         });
         return;
       }
 
-      const newFieldFilter = { ...this.fieldFilters, [this.filterProperty]: this.selectedItems };
+      if (this.usesTypedValue && this.selectedValue.trim() !== "") {
+        this.$emit("onFilterChange", {
+          ...this.fieldFilters,
+          [this.filterProperty]: {
+            operator: this.selectedOperator,
+            values: [this.selectedValue.trim()],
+          },
+        });
+        return;
+      }
+
+      if ([ELayerFilterOperator.IsNull, ELayerFilterOperator.IsNotNull].includes(this.selectedOperator)) {
+        this.$emit("onFilterChange", {
+          ...this.fieldFilters,
+          [this.filterProperty]: {
+            operator: this.selectedOperator,
+            values: [this.selectedOperator],
+          },
+        });
+        return;
+      }
+
+      const newFieldFilter = {
+        ...this.fieldFilters,
+        [this.filterProperty]: {
+          operator: this.selectedOperator,
+          values: [],
+        },
+      };
 
       this.$emit("onFilterChange", newFieldFilter);
     },
@@ -101,6 +184,15 @@ export default {
 
 .filter-label-padding {
   padding-left: 8px;
+}
+
+.operator-select,
+.filter-value-input {
+  border: 1px solid var(--color-grey-60);
+  border-radius: 6px;
+  min-height: 38px;
+  padding: 6px 8px;
+  margin-bottom: 4px;
 }
 
 @media (max-width: 576px) {

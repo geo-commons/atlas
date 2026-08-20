@@ -117,6 +117,7 @@ import { WKT } from "ol/format";
 import { useToast } from "primevue";
 import { getGeometryName } from "@/services/layer";
 import { getWfsTimeCqlFilter } from "@/utils/wms-time";
+import { getLayerPropertyCqlFilter } from "@/utils/layer-filter-cql";
 
 export default {
   name: "FeatureTable",
@@ -287,22 +288,10 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          const values = this.fieldFilters[key];
-          if (values.length > 0) {
-            const filterOnEmptyValues = values.includes("Leeg");
-            const nonEmptyValues = values.filter((f) => f !== "Leeg");
-            let valueFilters = [];
+          const propertyFilter = getLayerPropertyCqlFilter(key, this.fieldFilters[key]);
 
-            if (nonEmptyValues.length > 0) {
-              valueFilters.push(`${key} in (${nonEmptyValues.map((f) => this.replaceQuotes(f)).join(",")})`);
-            }
-            if (filterOnEmptyValues) {
-              valueFilters.push(`(${key} IS NULL or ${key} = '')`);
-            }
-
-            if (valueFilters.length > 0) {
-              filters.push(`(${valueFilters.join(" OR ")})`);
-            }
+          if (propertyFilter) {
+            filters.push(propertyFilter);
           }
         });
       }
@@ -466,22 +455,10 @@ export default {
 
       if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
         Object.keys(this.fieldFilters).forEach((key) => {
-          const values = this.fieldFilters[key];
-          if (values.length > 0) {
-            const filterOnEmptyValues = values.includes("Leeg");
-            const nonEmptyValues = values.filter((f) => f !== "Leeg");
-            let valueFilters = [];
+          const propertyFilter = getLayerPropertyCqlFilter(key, this.fieldFilters[key]);
 
-            if (nonEmptyValues.length > 0) {
-              valueFilters.push(`${key} in (${nonEmptyValues.map((f) => this.replaceQuotes(f)).join(",")})`);
-            }
-            if (filterOnEmptyValues) {
-              valueFilters.push(`(${key} IS NULL or ${key} = '')`);
-            }
-
-            if (valueFilters.length > 0) {
-              filters.push(`(${valueFilters.join(" OR ")})`);
-            }
+          if (propertyFilter) {
+            filters.push(propertyFilter);
           }
         });
       }
@@ -596,13 +573,6 @@ export default {
         this.showDownloadError(e.message || "Er is iets fout gegaan bij het downloaden. Probeer het opnieuw.");
       } finally {
         this.isDownloadPending = false;
-      }
-    },
-    replaceQuotes(value) {
-      if (typeof value === "string") {
-        return `'${value.replace(/'/g, "''")}'`;
-      } else {
-        return value;
       }
     },
     showFeature(feature) {

@@ -103,10 +103,10 @@
             <div v-for="legendField in legendJson" :key="legendField.name">
               <div v-if="legendField.filter" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
                 <Checkbox
-                  v-model="checkboxFilters[getFilterParameter(legendField.filter)]"
+                  v-model="selectedLegendFilterRules"
                   :input-id="legendField.name"
-                  :value="getFilterValue(legendField.filter)"
-                  @update:model-value="updateLegendFilters(getFilterParameter(legendField.filter))"
+                  :value="legendField.name"
+                  @update:model-value="updateLegendFilters"
                 />
                 <label :for="legendField.name" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
                   <img :src="getLegendFieldImage(legendField.name)" />{{
@@ -179,6 +179,7 @@ export default {
       isSelectable: null,
       initialIsSelectable: null,
       checkboxFilters: [],
+      selectedLegendFilterRules: [],
     };
   },
   computed: {
@@ -219,9 +220,11 @@ export default {
       if (state.layerFilters[this.layer.id]) {
         setTimeout(() => {
           this.checkboxFilters = state.layerFilters[this.layer.id]?.filters;
+          this.selectedLegendFilterRules = Object.keys(state.layerFilters[this.layer.id]?.rawCqlFilters || {});
         }, 100);
       } else if (!Object.keys(state.layerFilters).length) {
         this.checkboxFilters = [];
+        this.selectedLegendFilterRules = [];
       }
     });
   },
@@ -295,6 +298,7 @@ export default {
         if (result) {
           this.legendJson = result;
           this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
+          this.selectedLegendFilterRules = Object.keys(this.store.layerFilters[this.layer.id]?.rawCqlFilters || {});
           return;
         }
       }
@@ -310,32 +314,27 @@ export default {
         console.error(e);
       }
     },
-    getFilterParameter(filterString) {
-      // Regex to extract the parameter name before '='
-      const match = filterString.match(/\[([a-zA-Z0-9_]+)\s*=/);
+    normalizeLegendFilter(filterString) {
+      const trimmedFilter = filterString.trim();
 
-      return match ? match[1] : null;
-    },
-    getFilterValue(filterString) {
-      // Regex to extract the filter value after '='
-      const match = filterString.match(/\b\w+\s*=\s*'((?:''|[^'])*)'/);
-
-      return match ? match[1] : null;
-    },
-    updateLegendFilters(filterParameter) {
-      const oldLayerFilters = this.store.getFiltersForLayer(this.layer.id);
-
-      const filters = {
-        ...oldLayerFilters,
-        [filterParameter]: this.checkboxFilters[filterParameter],
-      };
-
-      // Remove filter if no checkbox filter values are selected
-      if (!this.checkboxFilters[filterParameter]?.length) {
-        delete filters[filterParameter];
+      if (trimmedFilter.startsWith("[") && trimmedFilter.endsWith("]")) {
+        return trimmedFilter.slice(1, -1).trim();
       }
 
-      this.store.updateFiltersForLayer(this.layer.id, filters);
+      return trimmedFilter;
+    },
+    updateLegendFilters() {
+      const rawCqlFilters = {};
+
+      this.legendJson.forEach((legendField) => {
+        if (!this.selectedLegendFilterRules.includes(legendField.name) || !legendField.filter) {
+          return;
+        }
+
+        rawCqlFilters[legendField.name] = this.normalizeLegendFilter(legendField.filter);
+      });
+
+      this.store.updateRawCqlFiltersForLayer(this.layer.id, rawCqlFilters);
     },
     changeLayerOrder(direction) {
       this.store.changeLayerOrder({ selectedLayerId: this.layer.id, direction: direction });

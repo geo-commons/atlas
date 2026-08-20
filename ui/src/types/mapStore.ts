@@ -3,10 +3,33 @@ import { ILayer } from "@/types/layer";
 
 export interface ILayerFilter {
   filters: {
-    [key: string]: Array<string>;
+    [key: string]: Array<TLayerFilterValue> | ILayerPropertyFilter;
+  };
+  rawCqlFilters?: {
+    [key: string]: string;
   };
   searchQuery: string;
 }
+
+export enum ELayerFilterOperator {
+  In = "IN",
+  NotIn = "NOT IN",
+  GreaterThan = ">",
+  GreaterThanOrEqualTo = ">=",
+  LessThan = "<",
+  LessThanOrEqualTo = "<=",
+  Like = "LIKE",
+  ILike = "ILIKE",
+  IsNull = "IS NULL",
+  IsNotNull = "IS NOT NULL",
+}
+
+export interface ILayerPropertyFilter {
+  operator: ELayerFilterOperator;
+  values: TLayerFilterValue[];
+}
+
+export type TLayerFilterValue = string | number;
 
 export interface ICycloView {
   detail: {
