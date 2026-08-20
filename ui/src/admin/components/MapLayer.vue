@@ -56,7 +56,7 @@
                 :info-text="'Er is al een basislaag met de instelling \'kaartlaag standaard zichtbaar\' aanwezig, wanneer u \'kaartlaag standaard zichtbaar\' activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
               />
             </div>
-            <div class="layer-setting-toggle">
+            <div v-if="!isBaseLayer" class="layer-setting-toggle">
               <ToggleSwitch
                 input-id="is_filterable_in_legend"
                 :model-value="mapLayerConfig.settings.is_filterable_in_legend"
