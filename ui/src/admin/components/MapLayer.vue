@@ -50,7 +50,7 @@
               />
               <label for="is_visible">Kaartlaag standaard zichtbaar</label>
             </div>
-            <div v-if="otherVisibleBaseLayer" class="other-base-layer-visible">
+            <div v-if="hasVisibleOtherBaseLayer" class="other-base-layer-visible">
               Merk op: er is al een basislaag met de instelling 'kaartlaag standaard zichtbaar' aanwezig
               <AdminFormInfoText
                 :info-text="'Er is al een basislaag met de instelling \'kaartlaag standaard zichtbaar\' aanwezig, wanneer u \'kaartlaag standaard zichtbaar\' activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
@@ -401,18 +401,14 @@ export default {
       return this.selectedMapLayerConfigs.filter((layer) => layer.layer !== this.mapLayerConfig.layer);
     },
     otherVisibleBaseLayer() {
-      // Check if current layer is a base layer.
-      if (!this.selectedMapLayerConfigs || !this.mapLayerConfig.settings.is_base) {
-        return false;
+      if (!this.isBaseLayer) {
+        return null;
       }
 
-      const otherLayer = this.otherMapLayerConfigs.find((layer) => {
-        if (layer.settings.is_base && layer.settings.is_visible) {
-          return layer;
-        }
-      });
-
-      return otherLayer;
+      return this.otherMapLayerConfigs.find((layer) => layer.settings.is_base && layer.settings.is_visible) ?? null;
+    },
+    hasVisibleOtherBaseLayer() {
+      return Boolean(this.otherVisibleBaseLayer);
     },
   },
   async created() {
@@ -468,7 +464,7 @@ export default {
     },
     toggleSliderField(field) {
       if (field === "is_visible" && !this.mapLayerConfig.settings[field] && this.otherVisibleBaseLayer) {
-        this.resetOtherVisibleBaseLayer();
+        this.hideVisibleOtherBaseLayer();
       }
 
       this.mapLayerConfig.settings[field] = !this.mapLayerConfig.settings[field];
@@ -477,7 +473,7 @@ export default {
         this.$emit("update-base-layer-status", this.mapLayerConfig);
       }
     },
-    async resetOtherVisibleBaseLayer() {
+    async hideVisibleOtherBaseLayer() {
       if (this.otherVisibleBaseLayer.settings.customSettings) {
         this.otherVisibleBaseLayer.settings.is_visible = false;
       } else {
