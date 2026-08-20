@@ -12,6 +12,8 @@
       {{ layer.title }}
     </label>
     <LayerAuthentication v-if="layer.login_required && (!user || !user.token)" />
+    <LayerFit v-if="layer.extent" :layer="layer" @click="onFit" />
+    <LayerInfo :layer="layer" />
     <button
       v-if="layer.zoom_min && position.zoom < layer.zoom_min"
       v-tippy="{ placement: 'right' }"
@@ -32,8 +34,6 @@
     >
       <ZoomOutIcon />
     </button>
-    <LayerFit v-if="layer.extent" :layer="layer" @click="onFit" />
-    <LayerInfo :layer="layer" />
   </li>
 </template>
 
@@ -161,16 +161,5 @@ const zoomOut = (e: MouseEvent) => {
 
 .sublayer > input:disabled + label {
   color: var(--color-grey-80);
-}
-
-.zoom-button {
-  margin-left: 5px;
-  opacity: 0;
-}
-
-.sublayer:hover .zoom-button,
-.tippy-active > .zoom-button,
-.keyboard-user .zoom-button:focus {
-  opacity: 1;
 }
 </style>
