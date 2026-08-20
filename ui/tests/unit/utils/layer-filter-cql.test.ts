@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getLayerCqlFilter, getLayerPropertyCqlFilter } from "@/utils/layer-filter-cql";
+import { getLayerCqlFilter, getLayerPropertyCqlFilter, normalizeLegendCqlFilter } from "@/utils/layer-filter-cql";
 import { ELayerFilterOperator, type ILayerFilters } from "@/types/mapStore";
 
 describe("getLayerCqlFilter", () => {
@@ -134,5 +134,19 @@ describe("getLayerPropertyCqlFilter", () => {
         values: [],
       }),
     ).toBe("(name IS NULL or name = '')");
+  });
+});
+
+describe("normalizeLegendCqlFilter", () => {
+  it("removes brackets around a single legend filter expression", () => {
+    expect(normalizeLegendCqlFilter("[woningcorp > '80' AND woningcorp <= '100']")).toBe(
+      "woningcorp > '80' AND woningcorp <= '100'",
+    );
+  });
+
+  it("removes brackets around multiple legend filter expressions", () => {
+    expect(normalizeLegendCqlFilter("[status = 'Active'] AND [height > 10]")).toBe(
+      "status = 'Active' AND height > 10",
+    );
   });
 });

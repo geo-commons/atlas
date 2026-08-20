@@ -144,6 +144,7 @@ import { useMapStore } from "@/stores/map_store";
 import { fetchLegendImage } from "@/utils/legend-utils";
 import { getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
 import { ELayerTypes } from "@/types/layer";
+import { normalizeLegendCqlFilter } from "@/utils/layer-filter-cql";
 
 export default {
   name: "VisibleLayer",
@@ -314,15 +315,6 @@ export default {
         console.error(e);
       }
     },
-    normalizeLegendFilter(filterString) {
-      const trimmedFilter = filterString.trim();
-
-      if (trimmedFilter.startsWith("[") && trimmedFilter.endsWith("]")) {
-        return trimmedFilter.slice(1, -1).trim();
-      }
-
-      return trimmedFilter;
-    },
     updateLegendFilters() {
       const rawCqlFilters = {};
 
@@ -331,7 +323,7 @@ export default {
           return;
         }
 
-        rawCqlFilters[legendField.name] = this.normalizeLegendFilter(legendField.filter);
+        rawCqlFilters[legendField.name] = normalizeLegendCqlFilter(legendField.filter);
       });
 
       this.store.updateRawCqlFiltersForLayer(this.layer.id, rawCqlFilters);

@@ -52,6 +52,10 @@ const getValueListFilter = (filterKey: string, filterValues: TLayerFilterValue[]
   return valueFilters.length > 0 ? `(${valueFilters.join(" OR ")})` : null;
 };
 
+export const normalizeLegendCqlFilter = (filterString: string): string => {
+  return filterString.trim().replace(/\[([^\]]+)\]/g, (_, filterExpression: string) => filterExpression.trim());
+};
+
 export const getLayerPropertyCqlFilter = (
   filterKey: string,
   filterValue: Array<TLayerFilterValue> | ILayerPropertyFilter,

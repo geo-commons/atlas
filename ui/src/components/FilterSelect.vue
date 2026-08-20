@@ -4,12 +4,12 @@
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
     <Select
-      :options="operatorOptions"
       v-model="selectedOperator"
-      class="operator-select"
-      @change="updateFieldFilters()"
+      :options="operatorOptions"
       option-label="label"
       option-value="value"
+      class="operator-select"
+      @change="updateFieldFilters()"
     />
     <multi-select
       v-if="usesValueSelect && !filterOnId"

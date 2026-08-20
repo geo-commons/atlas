@@ -117,7 +117,7 @@ import { WKT } from "ol/format";
 import { useToast } from "primevue";
 import { getGeometryName } from "@/services/layer";
 import { getWfsTimeCqlFilter } from "@/utils/wms-time";
-import { getLayerPropertyCqlFilter } from "@/utils/layer-filter-cql";
+import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
 
 export default {
   name: "FeatureTable",
@@ -149,6 +149,7 @@ export default {
       selectedFilterProperties: [],
       showFilters: false,
       filters: {},
+      rawCqlFilters: {},
       filterProperties: [],
       filterOptions: {},
       filterFeatures: {},
@@ -240,6 +241,7 @@ export default {
     await this.fetchSearchProperties();
 
     const filters = this.store.getFiltersForLayer(this.layer.id);
+    this.rawCqlFilters = this.store.layerFilters[this.layer.id]?.rawCqlFilters || {};
 
     this.showFilters = !!Object.keys(this.fieldFilters).length;
 
@@ -252,6 +254,13 @@ export default {
       // when the filters for the relevant layer change, both the
       // filter properties (selectedFilterProperties) and filter values (fieldFilters) are updated.
       if (state.layerFilters[this.layer.id]) {
+        const rawCqlFilters = state.layerFilters[this.layer.id]?.rawCqlFilters || {};
+
+        if (JSON.stringify(this.rawCqlFilters) !== JSON.stringify(rawCqlFilters)) {
+          this.rawCqlFilters = { ...rawCqlFilters };
+          this.fetchFeatures();
+        }
+
         this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
         this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
       }
@@ -280,20 +289,15 @@ export default {
 
       if (this.searchValue && this.searchProperties.length > 0) {
         const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
-
-        filters.push(searchQuery);
-
         this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
+      } else {
+        this.store.updateSearchQueryForLayer(this.layer.id, "");
       }
 
-      if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
-        Object.keys(this.fieldFilters).forEach((key) => {
-          const propertyFilter = getLayerPropertyCqlFilter(key, this.fieldFilters[key]);
+      const layerCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
 
-          if (propertyFilter) {
-            filters.push(propertyFilter);
-          }
-        });
+      if (layerCqlFilter) {
+        filters.push(layerCqlFilter);
       }
 
       if (this.selectedArea) {
@@ -447,20 +451,15 @@ export default {
 
       if (this.searchValue && this.searchProperties.length > 0) {
         const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
-
-        filters.push(searchQuery);
-
         this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
+      } else {
+        this.store.updateSearchQueryForLayer(this.layer.id, "");
       }
 
-      if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
-        Object.keys(this.fieldFilters).forEach((key) => {
-          const propertyFilter = getLayerPropertyCqlFilter(key, this.fieldFilters[key]);
+      const layerCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
 
-          if (propertyFilter) {
-            filters.push(propertyFilter);
-          }
-        });
+      if (layerCqlFilter) {
+        filters.push(layerCqlFilter);
       }
 
       if (this.selectedArea) {
