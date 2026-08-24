@@ -35,7 +35,7 @@ In het tijdlijnpaneel zijn de volgende opties beschikbaar:
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Kaartlaag**    | De tijdlijnlaag die met de slider wordt bediend. Alleen kaartlagen waarbij **Tijdlijn** is ingeschakeld zijn zichtbaar.                                              |
 | **Weergave**     | Kies tussen **Periode** en **Peildatum**. Deze optie is alleen beschikbaar als **Peildatumweergave** op de kaartlaag is ingeschakeld.                                |
-| **Sliderbereik** | De start- en einddatum waarbinnen de gebruiker de slider kan gebruiken. Deze datums kunnen worden aangepast binnen het bereik uit het WMS `GetCapabilities` verzoek. |
+| **Sliderbereik** | De start- en einddatum waarbinnen de gebruiker de slider kan gebruiken. Deze datums kunnen worden aangepast binnen het bereik uit de OGC API collectie metadata. |
 | **Stapgrootte**  | Bepaalt of de slider per **Dag**, **Maand** of **Jaar** verschuift.                                                                                                  |
 
 Er kan maar één tijdlijnlaag tegelijk actief zijn. Wanneer een gebruiker een andere tijdlijnlaag inschakelt, wordt de vorige tijdlijnlaag uitgezet.
@@ -55,10 +55,10 @@ Bij stapgrootte **Jaar** wordt de gekozen stap als volledig jaar gebruikt. Bij s
 
 ## Bereik
 
-Atlas bepaalt het beschikbare tijdslider bereik automatisch op basis van de WMS capabilities van de geselecteerde laag. Hiervoor gebruikt Atlas de `time` dimension of extent uit het WMS `GetCapabilities` request.
+Atlas bepaalt het beschikbare tijdslider bereik automatisch op basis van de metadata van de geselecteerde laag. Hiervoor gebruikt Atlas de `extent.temporal.interval` uit de GeoServer OGC API collectie.
 
-De minimale datum uit de WMS capabilities is de minimale waarde van de startdatum. De maximale datum uit de WMS capabilities is de maximale waarde van de einddatum. Binnen deze grenzen kan de gebruiker het actieve sliderbereik aanpassen.
+De minimale datum uit de metadata is de minimale waarde van de startdatum. De maximale datum uit de metadata is de maximale waarde van de einddatum. Binnen deze grenzen kan de gebruiker het actieve sliderbereik aanpassen.
 
 !!! info
 
-    Wanneer de WMS capabilities geen bruikbaar tijdbereik bevatten, blijft de laag selecteerbaar maar toont Atlas een foutmelding in het tijdlijnpaneel. Er wordt dan geen `TIME` parameter meegestuurd naar de bron.
+    Wanneer de metadata geen bruikbaar tijdbereik bevat, blijft de laag selecteerbaar maar toont Atlas een foutmelding in het tijdlijnpaneel. Er wordt dan geen `TIME` parameter meegestuurd naar de bron.
