@@ -12,6 +12,7 @@ import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import OpenLayersParser from "geostyler-openlayers-parser";
 import { useMapStore } from "@/stores/map_store";
+import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
 
 const olParser = new OpenLayersParser();
 
@@ -206,44 +207,11 @@ watch(
       return;
     }
 
-    const cqlFilters = [];
-
-    Object.keys(value[props.id]).forEach((key) => {
-      if (key === "searchQuery" && value[props.id]["searchQuery"] !== "") {
-        cqlFilters.push(value[props.id][key]);
-        return;
-      }
-
-      if (value[props.id][key].length == 0) {
-        return;
-      }
-
-      Object.keys(value[props.id][key]).map((filterKey) => {
-        const filterValues = value[props.id][key][filterKey];
-        const values = filterValues
-          .filter((filterValue) => filterValue !== "Leeg")
-          .map((filterValue) => `'${filterValue}'`)
-          .join(",");
-
-        let valueFilters = [];
-        if (filterValues.includes("Leeg")) {
-          valueFilters.push(`(${filterKey} IS NULL or ${filterKey} = '')`);
-        }
-
-        // Check to make sure filterKey has values
-        if (values.length > 0) {
-          valueFilters.push(`${filterKey} IN (${values})`);
-        }
-
-        if (valueFilters.length > 0) {
-          cqlFilters.push(`(${valueFilters.join(" OR ")})`);
-        }
-      });
-    });
+    const cqlFilter = getLayerCqlFilter(value, props.id);
 
     source.updateParams({
       ...source.getParams(),
-      CQL_FILTER: cqlFilters.length > 0 ? cqlFilters.join(" AND ") : null,
+      CQL_FILTER: cqlFilter,
     });
 
     source.refresh();

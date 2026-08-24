@@ -456,6 +456,7 @@ import { pushHistoryState } from "@/utils/map-url-utils";
 import { ELayerTypes } from "@/types/layer";
 import { finalizeMultipartFeatureOnEnter, handleEditLayerToolUsed } from "@/components/MapRenderer/utils/edit-layer";
 import { getWmsTimeParameter } from "@/utils/wms-time";
+import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
 
 const reverseGeocodingEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse";
 const MAP_PADDING_RIGHT_INDEX = 3;
@@ -713,6 +714,16 @@ export default {
       },
       deep: true,
     },
+    "mapStore.layerFilters": {
+      handler() {
+        if (!this.position.marker) {
+          return;
+        }
+
+        this.getFeatureInfo(this.position);
+      },
+      deep: true,
+    },
     // Don't highlight features on the map after editing
     "editLayerStore.modifiedFeature": {
       handler(value) {
@@ -907,6 +918,7 @@ export default {
         }
 
         const timeParameter = getWmsTimeParameter(this.mapStore, layer.id, layer.is_time_enabled === true);
+        const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, layer.id);
 
         const wmsSource = new TileWMS({
           url: layer.url,
@@ -914,6 +926,7 @@ export default {
           params: {
             LAYERS: layer.name,
             ...(timeParameter ? { TIME: timeParameter } : {}),
+            ...(cqlFilter ? { CQL_FILTER: cqlFilter } : {}),
             TILED: true,
           },
         });
