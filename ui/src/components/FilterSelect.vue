@@ -4,20 +4,10 @@
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
     <multi-select
-      v-if="!filterOnId"
       v-model="selectedItems"
       :options="currentFilterOptions"
-      :virtual-scroller-options="{ itemSize: 50 }"
-      placeholder="Kies waarde"
-      filter-placeholder="Zoek waarde"
-      filter
-      @update:model-value="updateFieldFilters()"
-    />
-    <multi-select
-      v-else
-      v-model="selectedItems"
-      :option-label="optionLabel"
-      :options="currentFilterOptions"
+      option-label="label"
+      option-value="value"
       :virtual-scroller-options="{ itemSize: 50 }"
       placeholder="Kies waarde"
       filter-placeholder="Zoek waarde"
@@ -39,23 +29,20 @@ export default {
     mapId: String,
     layerId: String,
     filterPropertyDisplayName: String,
-    filterOnId: {
-      type: Boolean,
-      default: false,
-    },
-    optionLabel: String,
   },
   emits: ["onFilterChange"],
   data() {
     return {
       selectedItems: [],
       store: null,
-      currentFilterOptions: this.filterOptions,
     };
   },
-  watch: {
-    filterOptions(value) {
-      this.currentFilterOptions = value;
+  computed: {
+    currentFilterOptions() {
+      return this.filterOptions.map((filterOption) => ({
+        label: String(filterOption),
+        value: filterOption,
+      }));
     },
   },
   created() {
