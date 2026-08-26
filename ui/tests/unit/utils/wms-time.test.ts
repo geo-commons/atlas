@@ -50,22 +50,26 @@ describe("parseOgcTimeRange", () => {
 });
 
 describe("createOgcCollectionUrl", () => {
-  it("creates an OGC API collection URL from a GeoServer workspace WMS URL", () => {
+  it("creates an OGC API collection URL through filter-proxy for authenticated layers", () => {
     const url = createOgcCollectionUrl(
       createLayer({
         name: "custom:scholen-tijdlijn",
-        url: "http://localhost:8080/geoserver/custom/wms?SERVICE=WMS",
+        url: "http://localhost:8000/geoserver/custom/wms?SERVICE=WMS",
+        source: { authenticate: true },
       }),
     );
 
     expect(url.toString()).toBe(
-      "http://localhost:8080/geoserver/ogc/maps/v1/collections/custom:scholen-tijdlijn?f=application%2Fjson",
+      "http://localhost:8000/api/ogc/maps/v1/collections/custom:scholen-tijdlijn?f=application%2Fjson",
     );
   });
 
-  it("uses an unqualified layer name as the OGC API collection id", () => {
+  it("creates an OGC API collection URL through geoserver for non-authenticated layers", () => {
     const url = createOgcCollectionUrl(
-      createLayer({ name: "scholen-tijdlijn", url: "http://localhost:8080/geoserver/custom/wms" }),
+      createLayer({
+        name: "scholen-tijdlijn",
+        url: "http://localhost:8080/geoserver/custom/wms",
+      }),
     );
 
     expect(url.toString()).toBe(
