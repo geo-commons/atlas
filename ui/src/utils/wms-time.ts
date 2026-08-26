@@ -2,6 +2,7 @@ import { endOfMonth, endOfYear, format, isAfter, isValid, parseISO, startOfMonth
 import { ILayer } from "@/types/layer";
 import { ETimeSliderDisplayMode, ETimeSliderStepSize, IMapStore } from "@/types/mapStore";
 import type { IOgcCollection } from "@/types/ogc";
+import { layerRequiresAuthentication } from "@/utils/auth";
 
 export interface ITimeRange {
   minDate: Date;
@@ -39,16 +40,18 @@ const parseOgcTimeDate = (value: string) => {
 };
 
 /**
- * Creates the GeoServer OGC API collection URL for a layer.
+ * Creates the OGC API collection URL for a layer.
+ * Currently only supports direct GeoServer URLs and filter-proxy routes configured for OGC API collections.
  * @param layer - The layer to request the collection document for.
  * @returns The OGC API collection URL.
  */
 export const createOgcCollectionUrl = (layer: ILayer) => {
   const url = new URL(layer.url);
-  const geoserverPathIndex = url.pathname.indexOf("/geoserver");
-  const basePath = geoserverPathIndex === -1 ? "" : url.pathname.slice(0, geoserverPathIndex + "/geoserver".length);
 
-  url.pathname = `${basePath}/ogc/maps/v1/collections/${layer.name}`;
+  // Authenticated layers are expected to be routed through filter-proxy. In that case the base path is `api`; unauthenticated GeoServer requests use `geoserver`.
+  const basePath = layerRequiresAuthentication(layer) ? "api" : "geoserver";
+
+  url.pathname = `/${basePath}/ogc/maps/v1/collections/${layer.name}`;
   url.search = new URLSearchParams({ f: "application/json" }).toString();
 
   return url;
