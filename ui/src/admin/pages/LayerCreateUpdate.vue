@@ -821,7 +821,8 @@ export default {
               name: "IsTimeEnabled",
               type: "checkbox",
               required: false,
-              infoText: "Schakel tijdlijn in voor deze laag.",
+              infoText:
+                "Schakel tijdlijn in voor deze laag. Atlas haalt het beschikbare tijdbereik op uit de GeoServer OGC API collectie op dezelfde host als de OWS-bron: /geoserver/ogc/maps/v1/collections/{laagnaam}. Voor geauthenticeerde bronnen loopt dit via /api/ogc/maps/v1/collections/{laagnaam}.",
             },
             {
               label: "Peildatumweergave",

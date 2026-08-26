@@ -142,6 +142,8 @@ De tijdlijn gebruikt de WMS-T-standaard. Deze functionaliteit werkt alleen voor 
 
 Atlas haalt het beschikbare tijdslider bereik automatisch op uit de GeoServer OGC API collectie van de laag. De laag moet daarom een correcte OGC API temporal extent publiceren. Dit bereik bepaalt de grenzen waarbinnen gebruikers in de viewer een start- en einddatum kunnen kiezen.
 
+Atlas leidt het OGC API collection endpoint af van de OWS-bron van de kaartlaag. Daarbij wordt dezelfde host gebruikt als in de OWS-url. Voor niet-geauthenticeerde bronnen vraagt Atlas de collectie op via `/geoserver/ogc/maps/v1/collections/{laagnaam}`. Voor geauthenticeerde bronnen loopt dit via filter-proxy: `/api/ogc/maps/v1/collections/{laagnaam}`. De `{laagnaam}` is de naam van de kaartlaag zoals die in Atlas is ingesteld.
+
 !!! warning "GeoServer dimensies"
 
     Wanneer in GeoServer alleen een startattribuut voor de tijdsdimensie is geconfigureerd, mag **Peildatumweergave** in Atlas niet worden ingeschakeld. Dat werkt niet goed en geeft onjuiste of lege resultaten. **Peildatumweergave** kan alleen worden gebruikt wanneer in GeoServer zowel een startattribuut als een eindattribuut ingesteld staat.
