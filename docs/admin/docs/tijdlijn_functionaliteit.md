@@ -55,7 +55,7 @@ Bij stapgrootte **Jaar** wordt de gekozen stap als volledig jaar gebruikt. Bij s
 
 ## Bereik
 
-Atlas bepaalt het beschikbare tijdslider bereik automatisch op basis van de metadata van de geselecteerde laag. Hiervoor gebruikt Atlas de `extent.temporal.interval` uit de GeoServer OGC API collectie.
+Atlas bepaalt het beschikbare tijdslider bereik automatisch op basis van de metadata van de geselecteerde laag. Deze automatische bepaling wordt alleen ondersteund voor GeoServer-bronnen, omdat Atlas hiervoor de `extent.temporal.interval` uit de GeoServer OGC API collectie gebruikt.
 
 Atlas leidt het OGC API collection endpoint af van de OWS-bron van de kaartlaag. Daarbij wordt dezelfde host gebruikt als in de OWS-url. Voor niet-geauthenticeerde bronnen vraagt Atlas de collectie op via `/geoserver/ogc/maps/v1/collections/{laagnaam}`. Voor geauthenticeerde bronnen loopt dit via filter-proxy: `/api/ogc/maps/v1/collections/{laagnaam}`. De `{laagnaam}` is de naam van de kaartlaag zoals die in Atlas is ingesteld.
 
