@@ -1019,6 +1019,8 @@ class MapLayer(models.Model):
     map_category = models.ForeignKey(
         'MapCategory', on_delete=models.CASCADE, null=True, blank=True, related_name='map_layers')
     settings = models.JSONField()
+    is_base = models.BooleanField('Is een basislaag', default=False)
+    is_visible = models.BooleanField('Kaartlaag standaard zichtbaar', default=False)
     ordering = models.PositiveIntegerField('Sortering', default=0, db_index=True)
 
     class Meta:
@@ -1036,6 +1038,8 @@ class MapLayer(models.Model):
         return {
             'layer': self.layer_id,
             'settings': self.settings,
+            'is_base': self.is_base,
+            'is_visible': self.is_visible,
             'map_category': self.map_category_id,
             'ordering': self.ordering,
         }

@@ -321,7 +321,7 @@ const selectedBaseLayers = computed(() => {
 const hasMultipleBaseLayersVisible = computed(() => {
   return (
     selectedMapLayerConfigs.value.filter((layerConfig) => {
-      if (layerConfig.settings.is_base && layerConfig.settings.is_visible) {
+      if (layerConfig.is_base && layerConfig.is_visible) {
         return layerConfig;
       }
 
@@ -495,7 +495,11 @@ watch(
       ...newInitialData,
       categories: newInitialData.categories || [],
     };
-    selectedMapLayerConfigs.value = [...(newInitialData.layers || [])];
+    selectedMapLayerConfigs.value = (newInitialData.layers || []).map((layerConfig) => ({
+      ...layerConfig,
+      is_base: Boolean(layerConfig.is_base),
+      is_visible: Boolean(layerConfig.is_visible),
+    }));
     rebuildSelectedCategoryTree();
   },
   {
@@ -783,7 +787,9 @@ const selectLayer = (layer: IAdminLayer): void => {
       ...selectedMapLayerConfigs.value,
       {
         layer: layer.id,
-        settings: { customSettings: false, is_base: false, is_visible: false },
+        settings: { customSettings: false },
+        is_base: false,
+        is_visible: false,
         ordering: 0,
       },
     ];
@@ -820,7 +826,7 @@ const toggleLayerSettings = (layerId: LayerId): void => {
 const isLayerVisible = (layer: IAdminLayer): boolean => {
   const layerConfig = selectedMapLayerConfigs.value.find((selectedLayer) => selectedLayer.layer === layer.id);
 
-  return Boolean(layerConfig?.settings.is_visible);
+  return Boolean(layerConfig?.is_visible);
 };
 
 const toggleChangingOrder = async (): Promise<void> => {

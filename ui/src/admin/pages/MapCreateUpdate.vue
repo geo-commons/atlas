@@ -216,8 +216,8 @@ export default {
 
       const configuredSettings = selectedLayer.settings || {};
       const mapLayerSettings = {
-        is_base: Boolean(configuredSettings.is_base),
-        is_visible: Boolean(configuredSettings.is_visible),
+        is_base: Boolean(selectedLayer.is_base),
+        is_visible: Boolean(selectedLayer.is_visible),
       };
 
       if (!selectedLayer.settings?.customSettings) {
@@ -414,6 +414,8 @@ export default {
         this.selectedLayerData = {
           layer: selectedLayerId,
           settings: { customSettings: false },
+          is_base: false,
+          is_visible: false,
         };
         this.data.layers.push(this.selectedLayerData);
       }
@@ -460,7 +462,7 @@ export default {
         return;
       }
 
-      const isBaseLayer = mapLayerConfig.settings.is_base;
+      const isBaseLayer = mapLayerConfig.is_base;
 
       if (isBaseLayer) {
         this.removeUnusedCategoryConfigs();

@@ -58,7 +58,7 @@ describe("mapLayerTree", () => {
         subcategories: [],
       },
     ];
-    const configs: IMapLayerConfig[] = [{ layer: baseLayer.id, settings: { customSettings: true, is_base: true } }];
+    const configs: IMapLayerConfig[] = [{ layer: baseLayer.id, settings: { customSettings: true }, is_base: true }];
 
     expect(removeBaseLayersFromCategoryTree(tree, configs)).toEqual([]);
   });

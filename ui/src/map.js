@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const defaultLayer = allAvailableLayers.find((layer) => layer.internal_id === configuredLayer.layer);
     const configuredSettings = configuredLayer.settings ?? {};
     const mapLayerSettings = {
-      is_base: Boolean(configuredSettings.is_base),
-      is_visible: Boolean(configuredSettings.is_visible),
+      is_base: Boolean(configuredLayer.is_base),
+      is_visible: Boolean(configuredLayer.is_visible),
     };
 
     if (configuredSettings.customSettings) {

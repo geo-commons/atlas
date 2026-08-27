@@ -35,6 +35,8 @@ class MapLayerSerializerTest(APITestCase):
             map=map_instance,
             layer=self.layer,
             settings={'opacity': 0.8},
+            is_base=True,
+            is_visible=True,
             ordering=1
         )
 
@@ -43,6 +45,8 @@ class MapLayerSerializerTest(APITestCase):
 
         self.assertEqual(data['layer'], self.layer.id)
         self.assertEqual(data['settings'], {'opacity': 0.8})
+        self.assertTrue(data['is_base'])
+        self.assertTrue(data['is_visible'])
         self.assertEqual(data['ordering'], 1)
         self.assertIsNone(data['map_category'])
 
@@ -142,6 +146,8 @@ class MapSerializerTest(APITestCase):
                 {
                     'layer': self.layer1.id,
                     'settings': {'opacity': 0.8},
+                    'is_base': True,
+                    'is_visible': True,
                     'ordering': 0,
                     'map_category': None
                 },
@@ -164,6 +170,9 @@ class MapSerializerTest(APITestCase):
         self.assertEqual(map_instance.map_categories.count(), 2)
 
         self.assertEqual(map_instance.map_layers.count(), 2)
+        map_layer = map_instance.map_layers.get(layer=self.layer1)
+        self.assertTrue(map_layer.is_base)
+        self.assertTrue(map_layer.is_visible)
 
     def test_create_map_with_position_settings(self):
         data = {
@@ -284,6 +293,8 @@ class MapSerializerTest(APITestCase):
                 {
                     'layer': self.layer1.id,
                     'settings': {'new': True},
+                    'is_base': True,
+                    'is_visible': True,
                     'ordering': 3,
                     'map_category': None
                 }
@@ -304,6 +315,8 @@ class MapSerializerTest(APITestCase):
         self.assertEqual(updated_map.map_layers.count(), 1)
         map_layer = updated_map.map_layers.first()
         self.assertEqual(map_layer.settings, {'new': True})
+        self.assertTrue(map_layer.is_base)
+        self.assertTrue(map_layer.is_visible)
         self.assertEqual(map_layer.ordering, 3)
         self.assertEqual(map_layer.map_category, map_category)
 
@@ -396,6 +409,8 @@ class MapSerializerTest(APITestCase):
                 {
                     'layer': self.layer1.id,
                     'settings': {'new': True},
+                    'is_base': True,
+                    'is_visible': True,
                     'ordering': 20,
                     'map_category': map_category.id
                 }
@@ -411,6 +426,8 @@ class MapSerializerTest(APITestCase):
 
         map_layer = updated_map.map_layers.first()
         self.assertEqual(map_layer.settings, {'new': True})
+        self.assertTrue(map_layer.is_base)
+        self.assertTrue(map_layer.is_visible)
         self.assertEqual(map_layer.ordering, 20)
 
     def test_update_map_rejects_map_category_from_other_map(self):
@@ -465,6 +482,7 @@ class MapSerializerTest(APITestCase):
             map=map_instance,
             layer=self.layer1,
             settings={'test': True},
+            is_visible=True,
             ordering=0,
             map_category=map_category
         )
@@ -478,6 +496,8 @@ class MapSerializerTest(APITestCase):
         self.assertEqual(len(data['categories']), 1)
         self.assertEqual(data['layers'][0]['layer'], self.layer1.id)
         self.assertEqual(data['layers'][0]['settings'], {'test': True})
+        self.assertFalse(data['layers'][0]['is_base'])
+        self.assertTrue(data['layers'][0]['is_visible'])
         self.assertEqual(data['categories'][0]['category'], self.category1.id)
 
     def test_serialize_map_detail_includes_flat_layers_and_categories(self):

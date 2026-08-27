@@ -14,14 +14,14 @@ export interface IAdminLayer extends Omit<ILayer, "id"> {
 
 export interface IMapLayerSettings {
   customSettings?: boolean;
-  is_base?: boolean;
-  is_visible?: boolean;
   [key: string]: unknown;
 }
 
 export interface IMapLayerConfig {
   layer: LayerId;
   settings: IMapLayerSettings;
+  is_base?: boolean;
+  is_visible?: boolean;
   map_category?: CategoryId | null;
   ordering?: number;
 }

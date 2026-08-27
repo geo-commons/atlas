@@ -21,41 +21,41 @@
       </h1>
     </template>
     <template #default>
-      <div class="margin-content">
-        <h3>Kaartlaag instellingen bewerken</h3>
+      <div class="margin-content tw-flex tw-flex-col tw-gap-2">
+        <h3 class="tw-mb-0">Kaartlaag instellingen bewerken</h3>
+        <div class="layer-setting-toggle">
+          <ToggleSwitch
+            input-id="is_base"
+            :model-value="mapLayerConfig.is_base"
+            @update:model-value="toggleMapLayerField('is_base')"
+          />
+          <label for="is_base" class="tw-mt-0.5">Is een basislaag</label>
+        </div>
+        <div class="layer-setting-toggle">
+          <ToggleSwitch
+            input-id="is_visible"
+            :model-value="mapLayerConfig.is_visible"
+            @update:model-value="toggleMapLayerField('is_visible')"
+          />
+          <label for="is_visible" class="tw-mt-0.5">Kaartlaag standaard zichtbaar</label>
+        </div>
+        <div v-if="hasVisibleOtherBaseLayer" class="other-base-layer-visible">
+          Merk op: er is al een basislaag met de instelling 'kaartlaag standaard zichtbaar' aanwezig
+          <AdminFormInfoText
+            :info-text="'Er is al een basislaag met de instelling \'kaartlaag standaard zichtbaar\' aanwezig, wanneer u \'kaartlaag standaard zichtbaar\' activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
+          />
+        </div>
         <div class="layer-setting-toggle">
           <ToggleSwitch
             input-id="customSettings"
             :model-value="mapLayerConfig.settings.customSettings"
             @update:model-value="toggleSettings"
           />
-          <label for="customSettings">Kaart specifieke laag instellingen</label>
-          <AdminFormInfoText :info-text="toggleSettingsInfo" />
+          <label for="customSettings" class="tw-mt-0.5">Kaartspecifieke laaginstellingen overschrijven</label>
+          <AdminFormInfoText class="tw-mt-0.5" :info-text="toggleSettingsInfo" />
         </div>
-        <div v-if="mapLayerConfig.settings.customSettings" class="extra-padding-top">
+        <div v-if="mapLayerConfig.settings.customSettings">
           <div class="layer-settings">
-            <div class="layer-setting-toggle">
-              <ToggleSwitch
-                input-id="is_base"
-                :model-value="mapLayerConfig.settings.is_base"
-                @update:model-value="toggleSliderField('is_base')"
-              />
-              <label for="is_base">Is een basislaag</label>
-            </div>
-            <div class="layer-setting-toggle">
-              <ToggleSwitch
-                input-id="is_visible"
-                :model-value="mapLayerConfig.settings.is_visible"
-                @update:model-value="toggleSliderField('is_visible')"
-              />
-              <label for="is_visible">Kaartlaag standaard zichtbaar</label>
-            </div>
-            <div v-if="hasVisibleOtherBaseLayer" class="other-base-layer-visible">
-              Merk op: er is al een basislaag met de instelling 'kaartlaag standaard zichtbaar' aanwezig
-              <AdminFormInfoText
-                :info-text="'Er is al een basislaag met de instelling \'kaartlaag standaard zichtbaar\' aanwezig, wanneer u \'kaartlaag standaard zichtbaar\' activeert wordt deze instelling op de andere basislaag gedeactiveerd.'"
-              />
-            </div>
             <div v-if="!isBaseLayer" class="layer-setting-toggle">
               <ToggleSwitch
                 input-id="is_filterable_in_legend"
@@ -392,7 +392,7 @@ export default {
       return JSON.stringify(this.mapLayerConfig?.settings.templated_properties);
     },
     isBaseLayer() {
-      return this.mapLayerConfig?.settings.is_base;
+      return this.mapLayerConfig?.is_base;
     },
     otherMapLayerConfigs() {
       if (!this.selectedMapLayerConfigs) {
@@ -405,7 +405,7 @@ export default {
         return null;
       }
 
-      return this.otherMapLayerConfigs.find((layer) => layer.settings.is_base && layer.settings.is_visible) ?? null;
+      return this.otherMapLayerConfigs.find((layer) => layer.is_base && layer.is_visible) ?? null;
     },
     hasVisibleOtherBaseLayer() {
       return Boolean(this.otherVisibleBaseLayer);
@@ -413,6 +413,8 @@ export default {
   },
   async created() {
     this.mapLayerConfig = this.initialData;
+    this.mapLayerConfig.is_base = Boolean(this.mapLayerConfig.is_base);
+    this.mapLayerConfig.is_visible = Boolean(this.mapLayerConfig.is_visible);
     this.layerDefaultSettings = await this.getLayer(this.mapLayerConfig.layer);
     this.selectedMapLayerConfigs = this.initialConfiguredLayers;
     if (this.mapLayerConfig.settings.customSettings) {
@@ -447,44 +449,33 @@ export default {
         this.mapLayerConfig.settings = {
           customSettings: true,
           ...this.layerDefaultSettings,
-          is_base: false,
-          is_visible: false,
         };
       } else {
         // Reset layer settings.
         this.mapLayerConfig.settings = {
           customSettings: false,
           title: this.mapLayerConfig.settings.title,
-          is_base: false,
-          is_visible: false,
         };
       }
 
       this.$emit("update-base-layer-status", this.mapLayerConfig);
     },
-    toggleSliderField(field) {
-      if (field === "is_visible" && !this.mapLayerConfig.settings[field] && this.otherVisibleBaseLayer) {
+    toggleMapLayerField(field) {
+      if (field === "is_visible" && !this.mapLayerConfig[field] && this.otherVisibleBaseLayer) {
         this.hideVisibleOtherBaseLayer();
       }
 
-      this.mapLayerConfig.settings[field] = !this.mapLayerConfig.settings[field];
+      this.mapLayerConfig[field] = !this.mapLayerConfig[field];
 
       if (field === "is_base") {
         this.$emit("update-base-layer-status", this.mapLayerConfig);
       }
     },
-    async hideVisibleOtherBaseLayer() {
-      if (this.otherVisibleBaseLayer.settings.customSettings) {
-        this.otherVisibleBaseLayer.settings.is_visible = false;
-      } else {
-        const layerData = await this.getLayer(this.otherVisibleBaseLayer.layer);
-
-        this.otherVisibleBaseLayer.settings = {
-          ...layerData,
-          customSettings: true,
-          is_visible: false,
-        };
-      }
+    toggleSliderField(field) {
+      this.mapLayerConfig.settings[field] = !this.mapLayerConfig.settings[field];
+    },
+    hideVisibleOtherBaseLayer() {
+      this.otherVisibleBaseLayer.is_visible = false;
     },
     updateJsonField(field, value) {
       // Set the corresponding field to an empty object when the user
@@ -632,7 +623,7 @@ export default {
 .layer-setting-toggle {
   display: flex;
   gap: 8px;
-  align-items: center;
+  align-items: start;
 }
 
 .layer-settings {

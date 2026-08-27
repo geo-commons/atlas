@@ -69,13 +69,14 @@ class MapResource(resources.ModelResource):
         import_id_fields = ('slug', )
 
     def dehydrate_layers(self, obj):
-        """Export: Serialize MapLayer relationships with settings, ordering and category."""
+        """Export: Serialize MapLayer relationships with settings, flags, ordering and category."""
         map_layers = MapLayer.objects.filter(map=obj).select_related('layer', 'map_category', 'map_category__category')
         if not map_layers:
             return ''
     
         return '|'.join(
-            f"{ml.layer.slug}::{json.dumps(ml.settings)}::{ml.layer.ordering}::{ml.map_category.category.slug if ml.map_category else 'no-category'}"
+            f"{ml.layer.slug}::{json.dumps(ml.settings)}::{ml.ordering}::"
+            f"{ml.map_category.category.slug if ml.map_category else 'no-category'}::{ml.is_base}::{ml.is_visible}"
             for ml in map_layers
         )
 
@@ -124,14 +125,27 @@ class MapResource(resources.ModelResource):
 
             for item in layer_data:
                 try:
-                    slug, settings_json, ordering_str, map_category_slug = item.split("::", 3)
+                    slug, settings_json, ordering_str, map_category_slug, is_base_str, is_visible_str = item.split(
+                        "::", 5
+                    )
                     ordering = int(ordering_str)
                     settings = json.loads(settings_json)
+                    is_base = is_base_str == 'True'
+                    is_visible = is_visible_str == 'True'
                 except ValueError:
-                    slug = item
-                    ordering = 0
-                    map_category_slug = None
-                    settings = {}
+                    try:
+                        slug, settings_json, ordering_str, map_category_slug = item.split("::", 3)
+                        ordering = int(ordering_str)
+                        settings = json.loads(settings_json)
+                        is_base = bool(settings.pop('is_base', False))
+                        is_visible = bool(settings.pop('is_visible', False))
+                    except ValueError:
+                        slug = item
+                        ordering = 0
+                        map_category_slug = None
+                        settings = {}
+                        is_base = False
+                        is_visible = False
 
                 map_category = None
                 if map_category_slug:
@@ -148,5 +162,11 @@ class MapResource(resources.ModelResource):
                     MapLayer.objects.update_or_create(
                         map=instance,
                         layer=layer,
-                        defaults={"settings": settings, "ordering": ordering, "map_category": map_category}
+                        defaults={
+                            "settings": settings,
+                            "is_base": is_base,
+                            "is_visible": is_visible,
+                            "ordering": ordering,
+                            "map_category": map_category,
+                        }
                     )

@@ -71,7 +71,7 @@ const sortTreeLayers = (layers: IAdminLayer[], orderingByLayerId?: Map<LayerId, 
 };
 
 export const isBaseLayerConfig = (config: IMapLayerConfig): boolean => {
-  return Boolean(config.settings.is_base);
+  return Boolean(config.is_base);
 };
 
 export const removeLayerFromCategoryTree = (

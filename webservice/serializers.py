@@ -29,7 +29,7 @@ class MapLayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MapLayer
-        fields = ['layer', 'settings', 'ordering', 'map_category']
+        fields = ['layer', 'settings', 'is_base', 'is_visible', 'ordering', 'map_category']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -195,6 +195,8 @@ class MapSerializer(serializers.ModelSerializer):
             "map_category": map_category,
             "ordering": map_layer.get("ordering", 0),
             "settings": map_layer.get("settings", {}),
+            "is_base": map_layer.get("is_base", False),
+            "is_visible": map_layer.get("is_visible", False),
             "map": map_instance,
         }
 
