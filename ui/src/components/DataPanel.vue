@@ -145,8 +145,8 @@ export default {
     toggleDataPanel() {
       this.$emit("toggle-data-panel");
     },
-    showFeatureOnMap(feature) {
-      this.$emit("show-feature-on-map", feature);
+    showFeatureOnMap(feature, layer) {
+      this.$emit("show-feature-on-map", feature, layer);
     },
     toggleFullScreen() {
       this.$emit("toggle-full-side-panel");

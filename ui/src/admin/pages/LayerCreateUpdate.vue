@@ -625,6 +625,15 @@ export default {
               required: false,
             },
             {
+              label: "Geselecteerde objecten niet highlighten",
+              id: "disable_highlighted_style",
+              name: "DisableHighlightedStyle",
+              type: "checkbox",
+              required: false,
+              infoText:
+                "Met het aanzetten van deze optie worden features van deze kaartlaag nog steeds opgehaald en getoond in de detail- en dataweergave, maar niet met de blauwe highlightstijl op de kaart weergegeven. Dit geldt ook wanneer een gebruiker vanuit de lijst-, detail- of dataweergave op bekijk klikt.",
+            },
+            {
               label: "Haal detailinformatie als HTML op bij de bron",
               id: "use_html_info_format",
               name: "UseHtmlInfoFormat",

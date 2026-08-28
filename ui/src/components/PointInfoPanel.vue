@@ -169,8 +169,8 @@ export default {
       this.selectedFeatureDetails = null;
       this.$emit("set-position", { ...this.position, marker: null });
     },
-    showFeatureOnMap(feature) {
-      this.$emit("show-feature-on-map", feature);
+    showFeatureOnMap(feature, layer) {
+      this.$emit("show-feature-on-map", feature, layer);
     },
     onFit(value) {
       this.$emit("on-fit", value);

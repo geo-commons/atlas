@@ -158,7 +158,7 @@ export default {
       }
     },
     showFeatureOnMap(feature) {
-      this.$emit("show-feature-on-map", feature);
+      this.$emit("show-feature-on-map", feature, this.layer);
     },
     onSearch() {
       this.searchValue = this.$refs.queryInput.value;

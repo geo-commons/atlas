@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     showFeatureOnMap(feature) {
-      this.$emit("show-feature-on-map", feature);
+      this.$emit("show-feature-on-map", feature, this.layer);
     },
     hidePanel() {
       this.$emit("hidePanel");

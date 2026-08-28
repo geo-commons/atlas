@@ -30,6 +30,7 @@ const createDefaultLayer = (overrides: Partial<ILayer> = {}): ILayer => ({
   time_slider_default_display_mode: ETimeSliderDisplayMode.Period,
   time_slider_start_field: "valid_from",
   time_slider_end_field: "valid_to",
+  disable_highlighted_style: false,
   ...overrides,
 });
 

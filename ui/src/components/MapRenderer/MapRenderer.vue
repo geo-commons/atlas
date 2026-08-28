@@ -945,7 +945,10 @@ export default {
           const result = await fetch(url, getFetchParameters(layer, this.user));
           const data = await result.json();
           const features = data.features.map((feature) => new GeoJSON().readFeature(feature));
-          this.highlightedFeatures = [...this.highlightedFeatures, ...features];
+
+          if (!layer.disable_highlighted_style) {
+            this.highlightedFeatures = [...this.highlightedFeatures, ...features];
+          }
 
           if (this.$refs.map && this.$refs.map.map) {
             const tooltip = createMeasurementTooltip(features[0], this.$refs.map.map, { isStatic: true });
@@ -1161,7 +1164,7 @@ export default {
     onFit(position) {
       this.$refs.map.fit(position, { maxZoom: 19, duration: 1000 });
     },
-    async showFeatureOnMap(feature) {
+    async showFeatureOnMap(feature, layer = null) {
       const geoFeature = new GeoJSON().readFeature(feature);
       const center = getFeatureCenterCoordinates(feature);
 
@@ -1178,7 +1181,7 @@ export default {
       );
 
       this.selectedFeatures = [];
-      this.highlightedFeatures = [geoFeature];
+      this.highlightedFeatures = layer?.disable_highlighted_style ? [] : [geoFeature];
       this.onFit(geoFeature.getGeometry());
     },
     setColor(color) {
