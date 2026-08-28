@@ -65,7 +65,7 @@
           class="!tw-text-sm !tw-font-medium"
           aria-haspopup="true"
           aria-controls="overlay_menu"
-          @click="() => $emit('show-feature-on-map', feature)"
+          @click="() => $emit('show-feature-on-map', feature, layer)"
         >
           Bekijk
           <MarkerIcon class="icon __marker __smedium" />

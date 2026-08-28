@@ -15,6 +15,7 @@ export interface ILayer {
   opacity: number;
   friendly_fields: { [key: string]: string };
   is_selectable: boolean;
+  disable_highlighted_style: boolean;
   is_base: boolean;
   category: any;
   show_in_detail_panel: boolean;
