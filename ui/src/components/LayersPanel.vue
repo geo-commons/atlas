@@ -34,20 +34,14 @@
           class="iconbutton __map"
           :tabindex="visibleLayers.length > 0 ? 0 : -1"
           :class="{ isActive: panel === 'activeLayers' }"
-          content="Zichtbare lagen"
-          aria-label="Toon zichtbare lagen"
+          content="Legenda"
+          aria-label="Toon legenda"
           data-testid="toggle-visible-layers"
           :aria-expanded="String(panel === 'activeLayers')"
           aria-controls="visibleLayers"
           @click="() => togglePanel('activeLayers')"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path
-              fill="currentColor"
-              d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z"
-            />
-          </svg>
+          <i class="pi pi-map" />
         </button>
       </div>
 
@@ -164,9 +158,9 @@
 
     <transition name="fade">
       <ul v-if="visibleLayers.length > 0 && panel === 'activeLayers'" id="visibleLayers" class="visible-layers">
-        <li v-if="config.features.sortLayer" class="tool-bar">
-          <div class="tw-flex tw-justify-between tw-gap-1">
-            <div class="tw-flex">
+        <li v-if="showLegendToolbar" class="tool-bar">
+          <div class="tw-flex tw-gap-1" :class="showToggleAllLayersInLegend ? 'tw-justify-between' : 'tw-justify-end'">
+            <div v-if="showToggleAllLayersInLegend" class="tw-flex">
               <button
                 v-tippy="{ placement: 'right' }"
                 class="iconbutton __xs __round"
@@ -188,6 +182,7 @@
             </div>
 
             <button
+              v-if="showSortLayersInLegendButton"
               v-tippy="{ placement: 'right' }"
               class="iconbutton __xs __round"
               :class="{ isActive: sortLayers }"
@@ -211,6 +206,9 @@
           :user="user"
           :sort-layers="sortLayers"
           :index="i"
+          :show-transparency-in-legend="showTransparencyInLegend"
+          :show-not-selectable-in-legend="showNotSelectableInLegend"
+          :show-information-in-legend="showInformationInLegend"
         />
       </ul>
     </transition>
@@ -251,6 +249,26 @@ export default {
     showSearchBar: Boolean,
     showSimpleLayerList: Boolean,
     showCompareSlider: Boolean,
+    showToggleAllLayersInLegend: {
+      type: Boolean,
+      default: true,
+    },
+    showSortLayersInLegend: {
+      type: Boolean,
+      default: true,
+    },
+    showTransparencyInLegend: {
+      type: Boolean,
+      default: true,
+    },
+    showNotSelectableInLegend: {
+      type: Boolean,
+      default: true,
+    },
+    showInformationInLegend: {
+      type: Boolean,
+      default: true,
+    },
     isEmbed: Boolean,
     layerPanelCollapsed: {
       type: Boolean,
@@ -311,10 +329,21 @@ export default {
     visibleLayers() {
       return this.mapStore ? this.mapStore.visibleLayers : [];
     },
+    showSortLayersInLegendButton() {
+      return this.config.features.sortLayer && this.showSortLayersInLegend;
+    },
+    showLegendToolbar() {
+      return this.showToggleAllLayersInLegend || this.showSortLayersInLegendButton;
+    },
   },
   watch: {
     searchQuery(newValue) {
       this.updateDebouncedSearchQuery(newValue);
+    },
+    showSortLayersInLegendButton(newValue) {
+      if (!newValue) {
+        this.sortLayers = false;
+      }
     },
   },
   created() {
@@ -490,6 +519,12 @@ export default {
   border-radius: var(--radius-small);
   border-bottom-left-radius: 0;
   box-shadow: var(--shadow-normal);
+}
+
+.visible-layers {
+  width: fit-content;
+  min-width: 200px;
+  max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal));
 }
 
 .layers-search {

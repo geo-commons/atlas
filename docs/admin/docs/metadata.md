@@ -230,7 +230,7 @@ gekoppeld.
 
 Gebruikers kunnen metadata bekijken door:
 
-1. Een kaartlaag te selecteren in het **Zichtbare lagen** menu
+1. Een kaartlaag te selecteren in het **Legenda** menu
 2. Op het ⓘ (informatie) icoon te klikken
 3. De metadata wordt getoond in een popup
 

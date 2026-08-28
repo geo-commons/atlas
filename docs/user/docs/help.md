@@ -17,7 +17,7 @@ Selecteer een kaartlaag door er op te klikken. Achter de categorie staat nu het 
 ##Legenda
 ![icoonzichtbarelagen](images/icoonzichtbarelagen.png)
 
-Wanneer 1 of meer lagen geselecteerd zijn, wordt het sybool Zichtbare lagen weergegeven. Klik hierop om de legenda van de actieve kaartlaag te tonen.
+Wanneer 1 of meer lagen geselecteerd zijn, wordt het sybool Legenda weergegeven. Klik hierop om de legenda van de actieve kaartlaag te tonen.
 
 <img src="../images/legenda.png" alt="Legenda" title="Legenda" width="300" /> 
 
@@ -46,7 +46,7 @@ Via het zoekveld van het kaartlagenvenster kun je zoeken naar kaartlagen. Wannee
 
 ##Zichtbaarheid transparantie/opacity
 
-In de lijstweergave van zichtbare lagen kan de transparantie van de laag ingesteld worden. Klik op het transparantie symbool en stel, met de schuifbalk of door het intypen van een getal, de gewenste transparantie van de laag in.
+In de lijstweergave van de legenda kan de transparantie van de laag ingesteld worden. Klik op het transparantie symbool en stel, met de schuifbalk of door het intypen van een getal, de gewenste transparantie van de laag in.
 De waarde 0 is volledig transparant, de waarde 100 is ondoorzichtig.
 
 <img src="../images/zichtbaarheid.png" alt="Zichtbaarheid" title="Zichtbaarheid" width="350" />

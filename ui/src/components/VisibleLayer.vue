@@ -3,7 +3,7 @@
     <ExpandButton :title="layer.title" :is-open="isOpen" @show-content="onToggleOpen">
       <template #header>
         <div v-if="!sortLayers" class="tw-flex tw-items-center">
-          <div v-if="layerOpacityIsChangable" class="opacity-wrapper">
+          <div v-if="showTransparencyControl" class="opacity-wrapper">
             <input
               v-if="showSlider"
               id="opacity"
@@ -41,6 +41,7 @@
             />
           </div>
           <button
+            v-if="showSelectableControl"
             v-tippy="{ placement: 'right' }"
             class="iconbutton __xs __round"
             :content="isSelectable ? 'Laag niet selecteerbaar maken' : 'Laag selecteerbaar maken'"
@@ -50,7 +51,7 @@
             <SelectableIcon v-if="isSelectable" class="icon __smedium" />
             <SelectableDisabledIcon v-if="!isSelectable" class="icon __smedium" />
           </button>
-          <LayerInfo :layer="layer" :show-always="true" />
+          <LayerInfo v-if="showInformationControl" :layer="layer" :show-always="true" />
           <button
             v-if="layerIsClosable"
             v-tippy="{ placement: 'right' }"
@@ -167,6 +168,18 @@ export default {
     mapId: String,
     sortLayers: Boolean,
     index: Number,
+    showTransparencyInLegend: {
+      type: Boolean,
+      default: true,
+    },
+    showNotSelectableInLegend: {
+      type: Boolean,
+      default: true,
+    },
+    showInformationInLegend: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ["toggle-is-open"],
   data() {
@@ -192,6 +205,15 @@ export default {
     },
     visibleLayers() {
       return this.store ? this.store.visibleLayers : [];
+    },
+    showTransparencyControl() {
+      return this.layerOpacityIsChangable && this.showTransparencyInLegend;
+    },
+    showSelectableControl() {
+      return this.showNotSelectableInLegend;
+    },
+    showInformationControl() {
+      return this.showInformationInLegend;
     },
   },
   watch: {
@@ -383,6 +405,12 @@ export default {
 .content {
   padding: 4px 8px 4px;
   overflow-x: auto;
+}
+
+.legend {
+  display: block;
+  max-width: calc(100vw - (var(--padding-screen) * 3) - var(--width-button-normal));
+  height: auto;
 }
 
 input[type="number"] {
