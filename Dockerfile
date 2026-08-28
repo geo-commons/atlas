@@ -1,5 +1,5 @@
 # UI
-FROM node:22.19.0-alpine AS ui-build
+FROM node:24.20.0-alpine AS ui-build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 WORKDIR /app/ui

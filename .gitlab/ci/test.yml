@@ -58,7 +58,7 @@ Test migrations backend:
 
 Lint ui:
   stage: Test
-  image: node:22.19.0-alpine
+  image: node:24.20.0-alpine
   cache:
     paths:
       - ui/node_modules/
@@ -71,7 +71,7 @@ Lint ui:
 
 Unit test frontend:
   stage: Test
-  image: node:22.19.0-alpine
+  image: node:24.20.0-alpine
   cache:
     paths:
       - ui/node_modules/
