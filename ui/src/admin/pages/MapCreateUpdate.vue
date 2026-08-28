@@ -21,6 +21,7 @@
       @update-about="handleAboutUpdate"
     />
     <LayerListPanel v-if="sidebar === 'layerList'" :initial-data="data" @show-form="() => showSidebar('form')" />
+    <LegendPanel v-if="sidebar === 'legend'" :initial-data="data" @show-form="() => showSidebar('form')" />
     <ListPanelAdmin
       v-if="sidebar === 'list'"
       :initial-data="data"
@@ -80,6 +81,7 @@ import FiltersPanelAdmin from "../components/FiltersPanelAdmin";
 import MapLayer from "@/admin/components/MapLayer.vue";
 import LayerListPanel from "../components/LayerListPanel.vue";
 import MapAbout from "../components/MapAbout.vue";
+import LegendPanel from "@/admin/components/LegendPanel.vue";
 import { useGlobalStore } from "@/stores";
 import ThumbnailPanelAdmin from "@/admin/components/ThumbnailPanelAdmin.vue";
 import { useToast } from "primevue";
@@ -97,6 +99,7 @@ export default {
     MapLayers,
     ListPanelAdmin,
     FiltersPanelAdmin,
+    LegendPanel,
     LayerListPanel,
     MapAbout,
   },

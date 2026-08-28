@@ -312,6 +312,14 @@
               @update:model-value="(value) => (data.features.legend = value)"
             />
             <label for="features.legend">Legenda</label>
+            <button
+              v-if="data.features.legend"
+              type="button"
+              class="button __transparent-bg __no-hover __chevron"
+              @click="() => $emit('show-panel', 'legend')"
+            >
+              <ChevronRightIcon class="icon setting-chevron" />
+            </button>
           </div>
 
           <div class="setting __hover">
