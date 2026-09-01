@@ -1,8 +1,8 @@
 Lint and unit test backend:
   stage: Test
-  image: python:3.13
+  image: python:3.14
   services:
-    - postgres:18.0-alpine
+    - postgres:18.6-alpine
   variables:
     DB_HOST: postgres
     DB_NAME: postgres
@@ -32,9 +32,9 @@ Lint and unit test backend:
 
 Test migrations backend:
   stage: Test
-  image: python:3.13
+  image: python:3.14
   services:
-    - postgres:18.0-alpine
+    - postgres:18.6-alpine
   variables:
     DB_HOST: postgres
     DB_NAME: postgres
@@ -58,7 +58,7 @@ Test migrations backend:
 
 Lint ui:
   stage: Test
-  image: node:22.19.0-alpine
+  image: node:22.23.2-alpine
   cache:
     paths:
       - ui/node_modules/
@@ -71,7 +71,7 @@ Lint ui:
 
 Unit test frontend:
   stage: Test
-  image: node:22.19.0-alpine
+  image: node:22.23.2-alpine
   cache:
     paths:
       - ui/node_modules/
@@ -99,7 +99,7 @@ E2E test frontend (Playwright):
   stage: Test
   image: mcr.microsoft.com/playwright:v1.61.1-noble
   services:
-    - postgres:18.0-alpine
+    - postgres:18.6-alpine
   variables:
     DB_HOST: postgres
     DB_NAME: postgres

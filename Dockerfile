@@ -1,5 +1,5 @@
 # UI
-FROM node:22.19.0-alpine AS ui-build
+FROM node:22.23.2-alpine AS ui-build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 WORKDIR /app/ui
@@ -19,7 +19,7 @@ RUN pnpm run build
 # Following the example of uv in Docker from
 # https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile
 
-FROM python:3.13-slim AS api-build
+FROM python:3.14-slim AS api-build
 WORKDIR /app
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -36,7 +36,7 @@ ENV UV_PYTHON_PREFERENCE=only-managed
 RUN uv sync --frozen --no-dev --group prod --link-mode copy
 
 # Docs & Admin Docs
-FROM python:3.13-slim AS docs-build
+FROM python:3.14-slim AS docs-build
 WORKDIR /app/docs
 
 COPY --from=api-build /app/.venv /app/.venv
@@ -51,7 +51,7 @@ COPY docs/admin/mkdocs.yml /app/docs/admin/mkdocs.yml
 RUN cd  /app/docs/user && python -m mkdocs build && cd /app/docs/admin && python -m mkdocs build
 
 # Final container
-FROM python:3.13-slim
+FROM python:3.14-slim
 WORKDIR /app
 
 ARG ATLAS_VERSION=unknown

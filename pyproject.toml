@@ -1,9 +1,9 @@
 [project]
 name = "Atlas"
 version = "3.56.0"
-requires-python = "==3.13.5"
+requires-python = "==3.14.7"
 dependencies = [
-    "coverage==7.14.3",
+    "coverage==7.16.0",
     "django-constance==4.3.5",
     "django-debug-toolbar==6.3.0",
     "django-extensions==4.1",
@@ -11,22 +11,22 @@ dependencies = [
     "django-import-export==4.4.1",
     "djangorestframework-simplejwt==5.5.1",
     "django-reversion==6.3.0",
-    "Django==5.2.15",
-    "djangorestframework==3.17.1",
-    "mistune==3.3.2",
+    "Django==5.2.17",
+    "djangorestframework==3.18.0",
+    "mistune==3.3.4",
     "mozilla-django-oidc==4.0.1",
     "Pillow==12.3.0",
     "django-vite==3.1.0",
     "psycopg2-binary==2.9.12",
     "requests==2.34.2",
-    "mkdocs-material==9.7.6",
+    "mkdocs-material==9.7.7",
     "django-revproxy==0.13.0",
 ]
 
 [dependency-groups]
 dev = [
-    "commitizen==4.16.4",
-    "ruff==0.15.20",
+    "commitizen==4.18.0",
+    "ruff==0.16.5",
 ]
 prod = [
     "uwsgi==2.0.31",
