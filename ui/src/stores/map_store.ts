@@ -9,7 +9,7 @@ import type {
 } from "@/types/layer";
 import { ETimeSliderDisplayMode, ETimeSliderStepSize, ICycloView, IMapStore } from "@/types/mapStore";
 import { getFetchParameters } from "@/utils/auth";
-import { getWmsCapabilitiesTimeRange } from "@/utils/wms-time";
+import { getLayerTimeRange } from "@/utils/wms-time";
 import type { IUser } from "@/types/user";
 import { Geometry } from "ol/geom";
 
@@ -124,7 +124,7 @@ export function useMapStore(mapName: string) {
       },
       async loadTimeSliderCapabilitiesRange(layer: ILayer, user: IUser | null) {
         if (layer.source_type !== ELayerTypes.WMS && layer.source_type !== ELayerTypes.WMS_WFS) {
-          this.setTimeSliderCapabilitiesError("De geselecteerde laag ondersteunt geen WMS capabilities.");
+          this.setTimeSliderCapabilitiesError("De geselecteerde laag ondersteunt geen tijdslider metadata.");
           return;
         }
 
@@ -132,14 +132,14 @@ export function useMapStore(mapName: string) {
         this.setTimeSliderCapabilitiesError(null);
 
         try {
-          const range = await getWmsCapabilitiesTimeRange(layer, getFetchParameters(layer, user));
+          const range = await getLayerTimeRange(layer, getFetchParameters(layer, user));
 
           if (this.selectedTimeSliderLayerId !== layer.id) {
             return;
           }
 
           if (!range) {
-            this.setTimeSliderCapabilitiesError("Geen bruikbaar tijdslider bereik gevonden in WMS capabilities.");
+            this.setTimeSliderCapabilitiesError("Geen bruikbaar tijdslider bereik gevonden in tijdslider metadata.");
             return;
           }
 
@@ -150,7 +150,7 @@ export function useMapStore(mapName: string) {
           }
 
           this.setTimeSliderCapabilitiesError(
-            error instanceof Error ? error.message : "WMS capabilities konden niet gelezen worden.",
+            error instanceof Error ? error.message : "Tijdslider metadata kon niet gelezen worden.",
           );
         } finally {
           if (this.selectedTimeSliderLayerId === layer.id) {

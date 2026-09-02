@@ -140,7 +140,9 @@ De tijdlijn gebruikt de WMS-T-standaard. Deze functionaliteit werkt alleen voor 
 | **Startdatumveld (GeoServer TIME)** | Naam van het WFS-attribuut dat in GeoServer als startdatum voor de TIME-dimensie is geconfigureerd. | Alleen gebruiken wanneer de dataweergave ook in combinatie met de tijdlijnlaag gebruikt moet kunnen worden.                                                                                                                     |
 | **Einddatumveld (GeoServer TIME)**  | Naam van het WFS-attribuut dat in GeoServer als einddatum voor de TIME-dimensie is geconfigureerd.  | Alleen gebruiken wanneer de dataweergave ook in combinatie met de tijdlijnlaag gebruikt moet kunnen worden.                                                                                                                     |
 
-Atlas haalt het beschikbare tijdslider bereik automatisch op uit het WMS `GetCapabilities` request van de laag. De WMS-laag moet daarom een correcte `time` dimension of extent publiceren. Dit bereik bepaalt de grenzen waarbinnen gebruikers in de viewer een start- en einddatum kunnen kiezen.
+Atlas haalt het beschikbare tijdslider bereik automatisch op uit de GeoServer OGC API collectie van de laag. De laag moet daarom een correcte OGC API temporal extent publiceren. Dit bereik bepaalt de grenzen waarbinnen gebruikers in de viewer een start- en einddatum kunnen kiezen.
+
+Atlas leidt het OGC API collection endpoint af van de OWS-bron van de kaartlaag. Daarbij wordt dezelfde host gebruikt als in de OWS-url. Voor niet-geauthenticeerde bronnen vraagt Atlas de collectie op via `/geoserver/ogc/maps/v1/collections/{laagnaam}`. Voor geauthenticeerde bronnen loopt dit via filter-proxy: `/api/ogc/maps/v1/collections/{laagnaam}`. De `{laagnaam}` is de naam van de kaartlaag zoals die in Atlas is ingesteld.
 
 !!! warning "GeoServer dimensies"
 
