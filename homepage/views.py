@@ -57,7 +57,7 @@ def v3(request, slug=None):
             'config': _get_config(request, visible_map),
             'user': user,
             'map': visible_map.to_dict(),
-            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in authorized_layers],
+            'layers': [layer.to_dict(request.user, request) for layer in authorized_layers],
         }
     }
 
@@ -110,51 +110,11 @@ def v3_admin(request):
         'data': {
             'config': config,
             'user': user,
-            'layers': _default_layers() + [layer.to_dict(request.user, request) for layer in visible_layers]
+            'layers': [layer.to_dict(request.user, request) for layer in visible_layers]
         }
     }
 
     return render(request, 'v3/admin.html', context)
-
-
-def _default_layers():
-    if Layer.objects.filter(is_base=True).count() > 0:
-        # Do not return default base layers when the database contains base layers
-        return []
-
-    # TODO: Remove default hardcoded layers
-    return [
-        {
-            'id': 'brt_topo_kaart_totaal',
-            'title': 'Kaart grijs',
-            'name': 'topp:topografische_kaart_grijs',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver',
-            'is_base': True,
-            'is_visible': True,
-            'metadata': {
-                'description': 'Topografische achtergrondkaart',
-                'organization': 'Gemeente Purmerend',
-                'updated': '2020'
-            }
-        },
-        {
-            'id': 'purm_lufo2020',
-            'title': 'Luchtfoto 2020',
-            'name': 'topp:Lufo_Totaal_2020',
-            'opacity': 0.9,
-            'url': 'https://datalab.purmerend.nl/geoserver/topp/wms',
-            'server_type': 'geoserver',
-            'is_base': True,
-            'is_visible': False,
-            'metadata': {
-                'description': 'Luchtfoto',
-                'organization': 'Gemeente Purmerend',
-                'updated': '2020'
-            }
-        },
-    ]
 
 
 def _layers_with_prefetch(request):

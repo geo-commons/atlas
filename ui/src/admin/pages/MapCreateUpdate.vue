@@ -141,9 +141,6 @@ export default {
     showEnvironmentIndicator() {
       return this.config.application_environment !== "production";
     },
-    baseLayers() {
-      return this.layers.filter((layer) => layer.is_base);
-    },
     configuredLayers() {
       if (this.data.layers) {
         return this.configuredLegacyLayers(this.data.layers);
@@ -198,7 +195,6 @@ export default {
 
         this.data = await result.json();
         this.ensureMapPositionSettings();
-        this.checkBaseLayersConfigured();
         return;
       }
 
@@ -221,26 +217,42 @@ export default {
         return null;
       }
 
+      const configuredSettings = selectedLayer.settings || {};
+      const mapLayerSettings = {
+        is_base: Boolean(selectedLayer.is_base),
+        is_visible: Boolean(selectedLayer.is_visible),
+      };
+
       if (!selectedLayer.settings?.customSettings) {
-        return { ...layer };
+        return {
+          ...layer,
+          ...mapLayerSettings,
+        };
       }
+
+      const overrideKeys = [
+        "is_filterable_in_legend",
+        "opacity",
+        "zoom_min",
+        "zoom_max",
+        "display_properties",
+        "search_fields",
+        "server_style",
+        "client_style",
+        "friendly_fields",
+        "templated_properties",
+        "linked_data",
+        "templates",
+      ];
 
       return {
         ...layer,
-        is_visible: selectedLayer.settings.is_visible,
-        is_base: selectedLayer.settings.is_base,
-        is_filterable_in_legend: selectedLayer.settings.is_filterable_in_legend,
-        opacity: selectedLayer.settings.opacity,
-        zoom_min: selectedLayer.settings.zoom_min,
-        zoom_max: selectedLayer.settings.zoom_max,
-        display_properties: selectedLayer.settings.display_properties,
-        search_fields: selectedLayer.settings.search_fields,
-        server_style: selectedLayer.settings.server_style,
-        client_style: selectedLayer.settings.client_style,
-        friendly_fields: selectedLayer.settings.friendly_fields,
-        templated_properties: selectedLayer.settings.templated_properties,
-        linked_data: selectedLayer.settings.linked_data,
-        templates: selectedLayer.settings.templates,
+        ...mapLayerSettings,
+        ...Object.fromEntries(
+          overrideKeys
+            .filter((key) => Object.hasOwn(configuredSettings, key))
+            .map((key) => [key, configuredSettings[key]]),
+        ),
       };
     },
     configuredLegacyLayers(selectedLayers) {
@@ -360,28 +372,6 @@ export default {
         this.$router.push(`/maps`);
       }
     },
-    checkBaseLayersConfigured() {
-      let hasBase = this.data.layers.some((layer) => {
-        if (layer.settings.customSettings && layer.settings.is_base) {
-          return true;
-        }
-
-        const defaultLayerSettings = this.layers.find((l) => l.internal_id === layer.layer);
-
-        return defaultLayerSettings.is_base;
-      });
-
-      if (!hasBase) {
-        const baseLayer = this.baseLayers[0];
-
-        this.data.layers.push({
-          layer: baseLayer.internal_id,
-          settings: {
-            customSettings: false,
-          },
-        });
-      }
-    },
     ensureMapPositionSettings() {
       if (!this.data.settings) {
         this.data.settings = {};
@@ -427,6 +417,8 @@ export default {
         this.selectedLayerData = {
           layer: selectedLayerId,
           settings: { customSettings: false },
+          is_base: false,
+          is_visible: false,
         };
         this.data.layers.push(this.selectedLayerData);
       }
@@ -473,7 +465,7 @@ export default {
         return;
       }
 
-      const isBaseLayer = mapLayerConfig.settings.customSettings ? mapLayerConfig.settings.is_base : layer.is_base;
+      const isBaseLayer = mapLayerConfig.is_base;
 
       if (isBaseLayer) {
         this.removeUnusedCategoryConfigs();
