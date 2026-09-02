@@ -1,7 +1,6 @@
 [project]
 name = "Atlas"
 version = "3.56.0"
-requires-python = "==3.13.5"
 dependencies = [
     "coverage==7.14.3",
     "django-constance==4.3.5",
