@@ -1,29 +1,12 @@
 import { endOfMonth, endOfYear, format, isAfter, isValid, parseISO, startOfMonth, startOfYear } from "date-fns";
-import { WMSCapabilities } from "ol/format";
 import { ILayer } from "@/types/layer";
 import { ETimeSliderDisplayMode, ETimeSliderStepSize, IMapStore } from "@/types/mapStore";
+import type { IOgcCollection } from "@/types/ogc";
+import { layerRequiresAuthentication } from "@/utils/auth";
 
-export interface IWmsTimeRange {
+export interface ITimeRange {
   minDate: Date;
   maxDate: Date;
-}
-
-interface IWmsCapabilitiesLayer {
-  Name?: string;
-  Layer?: IWmsCapabilitiesLayer[];
-  Dimension?: IWmsCapabilitiesTimeEntry[];
-  Extent?: IWmsCapabilitiesTimeEntry[];
-}
-
-interface IWmsCapabilitiesTimeEntry {
-  name?: string;
-  values?: string;
-}
-
-interface IWmsCapabilitiesDocument {
-  Capability?: {
-    Layer?: IWmsCapabilitiesLayer;
-  };
 }
 
 /**
@@ -45,11 +28,11 @@ const formatDateEnd = (date: Date) => {
 };
 
 /**
- * Parses a WMS time value into a date.
- * @param value - The WMS time value to parse.
+ * Parses an OGC API time value into a date.
+ * @param value - The OGC API time value to parse.
  * @returns The parsed date, or null when the value is invalid.
  */
-const parseWmsTimeDate = (value: string) => {
+const parseOgcTimeDate = (value: string) => {
   const trimmedValue = value.trim();
   const date = parseISO(/^\d{4}-\d{2}-\d{2}$/.test(trimmedValue) ? `${trimmedValue}T00:00:00Z` : trimmedValue);
 
@@ -57,87 +40,33 @@ const parseWmsTimeDate = (value: string) => {
 };
 
 /**
- * Creates the WMS GetCapabilities URL for a layer.
- * @param layer - The layer to request capabilities for.
- * @returns The GetCapabilities URL.
+ * Creates the OGC API collection URL for a layer.
+ * Currently only supports direct GeoServer URLs and filter-proxy routes configured for OGC API collections.
+ * @param layer - The layer to request the collection document for.
+ * @returns The OGC API collection URL.
  */
-const createWmsCapabilitiesUrl = (layer: ILayer) => {
+export const createOgcCollectionUrl = (layer: ILayer) => {
   const url = new URL(layer.url);
 
-  url.search = new URLSearchParams({
-    SERVICE: "WMS",
-    REQUEST: "GetCapabilities",
-    VERSION: "1.3.0",
-  }).toString();
+  // Authenticated layers are expected to be routed through filter-proxy. In that case the base path is `api`; unauthenticated GeoServer requests use `geoserver`.
+  const basePath = layerRequiresAuthentication(layer) ? "api" : "geoserver";
+
+  url.pathname = `/${basePath}/ogc/maps/v1/collections/${layer.name}`;
+  url.search = new URLSearchParams({ f: "application/json" }).toString();
 
   return url;
 };
 
 /**
- * Removes the workspace prefix from a layer name.
- * @param layerName - The layer name to normalize.
- * @returns The layer name without workspace prefix.
- */
-const stripWorkspace = (layerName: string) => {
-  return layerName.includes(":") ? layerName.split(":").pop() : layerName;
-};
-
-/**
- * Finds a layer in the WMS capabilities tree by layer name.
- * @param capabilitiesLayer - The capabilities layer to search in.
- * @param layerName - The configured layer name to find.
- * @returns The matching capabilities layer, or null when it is not found.
- */
-const findCapabilitiesLayer = (
-  capabilitiesLayer: IWmsCapabilitiesLayer | undefined,
-  layerName: string,
-): IWmsCapabilitiesLayer | null => {
-  if (!capabilitiesLayer) {
-    return null;
-  }
-
-  const normalizedCapabilityLayerName = stripWorkspace(capabilitiesLayer.Name ?? "");
-  const normalizedLayerName = stripWorkspace(layerName);
-
-  if (normalizedCapabilityLayerName === normalizedLayerName) {
-    return capabilitiesLayer;
-  }
-
-  for (const childLayer of capabilitiesLayer.Layer ?? []) {
-    const matchingLayer = findCapabilitiesLayer(childLayer, layerName);
-
-    if (matchingLayer) {
-      return matchingLayer;
-    }
-  }
-
-  return null;
-};
-
-/**
- * Returns the raw WMS time dimension values from a capabilities layer.
- * @param capabilitiesLayer - The capabilities layer to inspect.
- * @returns The time dimension values, or null when no time dimension exists.
- */
-const getTimeDimensionValues = (capabilitiesLayer: IWmsCapabilitiesLayer) => {
-  const dimensions = [...(capabilitiesLayer.Dimension ?? []), ...(capabilitiesLayer.Extent ?? [])];
-  const timeDimension = dimensions.find((dimension) => dimension.name?.toLowerCase() === "time");
-
-  return timeDimension?.values ?? null;
-};
-
-/**
- * Parses WMS time dimension values into a min and max date range.
- * @param values - The raw WMS time dimension values.
+ * Parses an OGC API collection temporal extent into a min and max date range.
+ * @param collection - The OGC API collection document.
  * @returns The parsed time range, or null when no valid dates exist.
  */
-export const parseWmsTimeRange = (values: string): IWmsTimeRange | null => {
-  const dates = values
-    .split(",")
-    .flatMap((value) => {
-      const [startValue, endValue] = value.split("/");
-      const startDate = startValue ? parseWmsTimeDate(startValue) : null;
-      const endDate = endValue ? parseWmsTimeDate(endValue) : null;
+export const parseOgcTimeRange = (collection: IOgcCollection): ITimeRange | null => {
+  const dates = (collection.extent?.temporal?.interval ?? [])
+    .flatMap(([startValue, endValue]) => {
+      const startDate = startValue ? parseOgcTimeDate(startValue) : null;
+      const endDate = endValue ? parseOgcTimeDate(endValue) : null;
 
       return [startDate, endDate].filter((date): date is Date => date !== null);
     })
@@ -158,37 +87,21 @@ export const parseWmsTimeRange = (values: string): IWmsTimeRange | null => {
 };
 
 /**
- * Fetches WMS capabilities and extracts the time range for a layer.
- * @param layer - The layer to request capabilities for.
+ * Fetches the time range for a layer from the GeoServer OGC API collection document.
+ * @param layer - The layer to request time metadata for.
  * @param fetchOptions - Optional fetch options for authenticated requests.
- * @returns The WMS capabilities time range, or null when no range exists.
+ * @returns The layer time range, or null when no range exists.
  */
-export const getWmsCapabilitiesTimeRange = async (
-  layer: ILayer,
-  fetchOptions?: RequestInit,
-): Promise<IWmsTimeRange | null> => {
-  const response = await fetch(createWmsCapabilitiesUrl(layer), fetchOptions);
+export const getLayerTimeRange = async (layer: ILayer, fetchOptions?: RequestInit): Promise<ITimeRange | null> => {
+  const response = await fetch(createOgcCollectionUrl(layer), fetchOptions);
 
   if (!response.ok) {
-    throw new Error("WMS capabilities konden niet opgehaald worden.");
+    throw new Error("OGC API collectie kon niet opgehaald worden.");
   }
 
-  const body = await response.text();
+  const collection = (await response.json()) as IOgcCollection;
 
-  if (!body) {
-    return null;
-  }
-
-  const capabilities = new WMSCapabilities().read(body) as IWmsCapabilitiesDocument;
-  const capabilitiesLayer = findCapabilitiesLayer(capabilities.Capability?.Layer, layer.name);
-
-  if (!capabilitiesLayer) {
-    return null;
-  }
-
-  const values = getTimeDimensionValues(capabilitiesLayer);
-
-  return values ? parseWmsTimeRange(values) : null;
+  return parseOgcTimeRange(collection);
 };
 
 /**

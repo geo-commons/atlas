@@ -1,33 +1,124 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ETimeSliderDisplayMode, ETimeSliderStepSize } from "@/types/mapStore";
-import { getWfsTimeCqlFilter, getWmsTimeParameter, parseWmsTimeRange } from "@/utils/wms-time";
+import {
+  createOgcCollectionUrl,
+  getLayerTimeRange,
+  getWfsTimeCqlFilter,
+  getWmsTimeParameter,
+  parseOgcTimeRange,
+} from "@/utils/wms-time";
 import { createMapStore } from "../factories/mapStore.factory";
 import { createLayer } from "../factories/layer.factory";
 
-describe("parseWmsTimeRange", () => {
-  it("parses a WMS time interval", () => {
-    const range = parseWmsTimeRange("2020-01-01/2024-12-31/P1D");
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
-    expect(range?.minDate.toISOString()).toBe("2020-01-01T00:00:00.000Z");
-    expect(range?.maxDate.toISOString()).toBe("2024-12-31T00:00:00.000Z");
+describe("parseOgcTimeRange", () => {
+  it("parses an OGC API temporal interval", () => {
+    const range = parseOgcTimeRange({
+      extent: {
+        temporal: {
+          interval: [["1900-06-17T00:00:00Z", "2024-06-18T00:00:00Z"]],
+        },
+      },
+    });
+
+    expect(range?.minDate.toISOString()).toBe("1900-06-17T00:00:00.000Z");
+    expect(range?.maxDate.toISOString()).toBe("2024-06-18T00:00:00.000Z");
   });
 
-  it("parses comma-separated WMS time instants", () => {
-    const range = parseWmsTimeRange("2024-01-01,2020-01-01,2022-01-01");
-
-    expect(range?.minDate.toISOString()).toBe("2020-01-01T00:00:00.000Z");
-    expect(range?.maxDate.toISOString()).toBe("2024-01-01T00:00:00.000Z");
-  });
-
-  it("parses comma-separated WMS time intervals", () => {
-    const range = parseWmsTimeRange("2020-01-01/2020-12-31/P1D,2022-01-01/2022-12-31/P1D");
+  it("parses multiple OGC API temporal intervals", () => {
+    const range = parseOgcTimeRange({
+      extent: {
+        temporal: {
+          interval: [
+            ["2020-01-01T00:00:00Z", "2020-12-31T00:00:00Z"],
+            ["2022-01-01T00:00:00Z", "2022-12-31T00:00:00Z"],
+          ],
+        },
+      },
+    });
 
     expect(range?.minDate.toISOString()).toBe("2020-01-01T00:00:00.000Z");
     expect(range?.maxDate.toISOString()).toBe("2022-12-31T00:00:00.000Z");
   });
 
-  it("returns null when no valid time values exist", () => {
-    expect(parseWmsTimeRange("not-a-date/P1D")).toBeNull();
+  it("returns null when no valid OGC API temporal interval exists", () => {
+    expect(parseOgcTimeRange({ extent: { temporal: { interval: [[null, null]] } } })).toBeNull();
+  });
+});
+
+describe("createOgcCollectionUrl", () => {
+  it("creates an OGC API collection URL through filter-proxy for authenticated layers", () => {
+    const url = createOgcCollectionUrl(
+      createLayer({
+        name: "custom:scholen-tijdlijn",
+        url: "http://localhost:8000/geoserver/custom/wms?SERVICE=WMS",
+        source: { authenticate: true },
+      }),
+    );
+
+    expect(url.toString()).toBe(
+      "http://localhost:8000/api/ogc/maps/v1/collections/custom:scholen-tijdlijn?f=application%2Fjson",
+    );
+  });
+
+  it("creates an OGC API collection URL through geoserver for non-authenticated layers", () => {
+    const url = createOgcCollectionUrl(
+      createLayer({
+        name: "scholen-tijdlijn",
+        url: "http://localhost:8080/geoserver/custom/wms",
+      }),
+    );
+
+    expect(url.toString()).toBe(
+      "http://localhost:8080/geoserver/ogc/maps/v1/collections/scholen-tijdlijn?f=application%2Fjson",
+    );
+  });
+});
+
+describe("getLayerTimeRange", () => {
+  it("uses the OGC API temporal extent when available", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            extent: {
+              temporal: {
+                interval: [["1900-06-17T00:00:00Z", "2024-06-18T00:00:00Z"]],
+              },
+            },
+          }),
+          { status: 200 },
+        ),
+      ),
+    );
+
+    const range = await getLayerTimeRange(createLayer({ name: "custom:scholen-tijdlijn" }));
+
+    expect(range?.minDate.toISOString()).toBe("1900-06-17T00:00:00.000Z");
+    expect(range?.maxDate.toISOString()).toBe("2024-06-18T00:00:00.000Z");
+    expect(fetch).toHaveBeenCalledOnce();
+  });
+
+  it("returns null when the OGC API collection does not contain a usable range", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 })));
+
+    await expect(getLayerTimeRange(createLayer({ name: "custom:scholen-tijdlijn" }))).resolves.toBeNull();
+
+    expect(fetch).toHaveBeenCalledOnce();
+  });
+
+  it("throws when the OGC API collection cannot be fetched", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(new Response("", { status: 500 })));
+
+    await expect(getLayerTimeRange(createLayer({ name: "custom:scholen-tijdlijn" }))).rejects.toThrow(
+      "OGC API collectie kon niet opgehaald worden.",
+    );
+
+    expect(fetch).toHaveBeenCalledOnce();
   });
 });
 
