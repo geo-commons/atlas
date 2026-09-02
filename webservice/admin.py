@@ -97,8 +97,6 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
         ('Weergave', {
             'fields': (
                 'opacity',
-                'is_base',
-                'is_visible',
                 'is_selectable',
                 'use_html_info_format',
                 'show_in_detail_panel',

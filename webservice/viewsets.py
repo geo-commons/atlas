@@ -97,6 +97,8 @@ class MapViewSet(DataExportImportMixin, FileUploadMixin, DuplicateMixin, DeleteM
                 layer=original_layer.layer,
                 map_category=category_mapping.get(original_layer.map_category_id),
                 settings=copy.deepcopy(original_layer.settings),
+                is_base=original_layer.is_base,
+                is_visible=original_layer.is_visible,
                 ordering=original_layer.ordering,
             )
 

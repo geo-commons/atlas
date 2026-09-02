@@ -8572,8 +8572,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8621,8 +8619,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8670,8 +8666,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8719,8 +8713,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8768,8 +8760,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8817,8 +8807,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8866,8 +8854,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8915,8 +8901,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -8964,8 +8948,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9013,8 +8995,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9062,8 +9042,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9111,8 +9089,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9160,8 +9136,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9209,8 +9183,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9258,8 +9230,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9307,8 +9277,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9356,8 +9324,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9405,8 +9371,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9454,8 +9418,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9503,8 +9465,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9552,8 +9512,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9601,8 +9559,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9650,8 +9606,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9699,8 +9653,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9748,8 +9700,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9797,8 +9747,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9846,8 +9794,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9895,8 +9841,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9944,8 +9888,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -9993,8 +9935,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10042,8 +9982,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10091,8 +10029,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10140,8 +10076,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10189,8 +10123,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10238,8 +10170,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10287,8 +10217,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10336,8 +10264,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10385,8 +10311,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10434,8 +10358,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10483,8 +10405,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10532,8 +10452,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10581,8 +10499,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10630,8 +10546,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10679,8 +10593,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10728,8 +10640,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10777,8 +10687,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10826,8 +10734,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10875,8 +10781,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10924,8 +10828,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -10973,8 +10875,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11022,8 +10922,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11071,8 +10969,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11120,8 +11016,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11169,8 +11063,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11218,8 +11110,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11267,8 +11157,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11316,8 +11204,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11365,8 +11251,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11414,8 +11298,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11463,8 +11345,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11512,8 +11392,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11563,8 +11441,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11612,8 +11488,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11661,8 +11535,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11710,8 +11582,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11759,8 +11629,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11808,8 +11676,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11857,8 +11723,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11906,8 +11770,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -11955,8 +11817,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12004,8 +11864,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12053,8 +11911,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12102,8 +11958,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12151,8 +12005,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12200,8 +12052,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12249,8 +12099,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12298,8 +12146,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12347,8 +12193,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12396,8 +12240,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12445,8 +12287,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12494,8 +12334,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12543,8 +12381,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12592,8 +12428,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12641,8 +12475,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12690,8 +12522,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12739,8 +12569,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12788,8 +12616,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12837,8 +12663,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12886,8 +12710,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12935,8 +12757,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -12984,8 +12804,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13033,8 +12851,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13082,8 +12898,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13131,8 +12945,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13180,8 +12992,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13229,8 +13039,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13278,8 +13086,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13327,8 +13133,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13376,8 +13180,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13425,8 +13227,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13474,8 +13274,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13523,8 +13321,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13572,8 +13368,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13621,8 +13415,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13670,8 +13462,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13719,8 +13509,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13768,8 +13556,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13817,8 +13603,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13866,8 +13650,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13915,8 +13697,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -13964,8 +13744,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14013,8 +13791,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14062,8 +13838,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14111,8 +13885,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14160,8 +13932,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14209,8 +13979,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14258,8 +14026,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14307,8 +14073,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14356,8 +14120,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14405,8 +14167,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14454,8 +14214,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14503,8 +14261,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14552,8 +14308,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14601,8 +14355,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14650,8 +14402,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14699,8 +14449,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14748,8 +14496,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14797,8 +14543,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14846,8 +14590,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14895,8 +14637,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14944,8 +14684,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -14993,8 +14731,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15042,8 +14778,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15091,8 +14825,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15140,8 +14872,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15189,8 +14919,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15238,8 +14966,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15287,8 +15013,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15336,8 +15060,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15385,8 +15107,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15434,8 +15154,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15483,8 +15201,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15532,8 +15248,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15581,8 +15295,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15630,8 +15342,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15679,8 +15389,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15728,8 +15436,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15777,8 +15483,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15826,8 +15530,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15875,8 +15577,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15924,8 +15624,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -15973,8 +15671,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16022,8 +15718,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16071,8 +15765,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16120,8 +15812,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16169,8 +15859,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16218,8 +15906,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16267,8 +15953,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16316,8 +16000,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16365,8 +16047,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16414,8 +16094,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16463,8 +16141,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16512,8 +16188,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16561,8 +16235,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16610,8 +16282,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16659,8 +16329,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16708,8 +16376,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16757,8 +16423,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16806,8 +16470,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16855,8 +16517,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16904,8 +16564,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -16953,8 +16611,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17002,8 +16658,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17051,8 +16705,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17100,8 +16752,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17149,8 +16799,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17198,8 +16846,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17247,8 +16893,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17296,8 +16940,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17345,8 +16987,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17394,8 +17034,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17443,8 +17081,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17492,8 +17128,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17541,8 +17175,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17590,8 +17222,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17639,8 +17269,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17688,8 +17316,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": true,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17737,8 +17363,6 @@
       "is_exportable": true,
       "source_type": "WMTS",
       "legend_url": null,
-      "is_base": true,
-      "is_visible": true,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17786,8 +17410,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17835,8 +17457,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17884,8 +17504,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17933,8 +17551,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -17982,8 +17598,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18031,8 +17645,6 @@
       "is_exportable": true,
       "source_type": "WMTS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18080,8 +17692,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18129,8 +17739,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18178,8 +17786,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18227,8 +17833,6 @@
       "is_exportable": true,
       "source_type": "WMS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18276,8 +17880,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18325,8 +17927,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18374,8 +17974,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18423,8 +18021,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18472,8 +18068,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18521,8 +18115,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18570,8 +18162,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18619,8 +18209,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18668,8 +18256,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18717,8 +18303,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18766,8 +18350,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18815,8 +18397,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18864,8 +18444,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18913,8 +18491,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -18962,8 +18538,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -19011,8 +18585,6 @@
       "is_exportable": true,
       "source_type": "WMTS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -19060,8 +18632,6 @@
       "is_exportable": true,
       "source_type": "WMTS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -19109,8 +18679,6 @@
       "is_exportable": true,
       "source_type": "WMS_WFS",
       "legend_url": null,
-      "is_base": false,
-      "is_visible": false,
       "is_selectable": true,
       "use_html_info_format": false,
       "show_in_detail_panel": true,
@@ -19171,6 +18739,8 @@
       "map": 3,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19182,6 +18752,8 @@
       "map": 3,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19193,6 +18765,8 @@
       "map": 3,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19204,6 +18778,8 @@
       "map": 3,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19215,6 +18791,8 @@
       "map": 3,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19226,6 +18804,8 @@
       "map": 3,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19250,7 +18830,6 @@
           "source_type": "OWS",
           "authenticate": false
         },
-        "is_base": false,
         "opacity": 0.9,
         "category": {
           "id": 22,
@@ -19271,7 +18850,6 @@
         "zoom_min": null,
           "templates": [],
         "can_access": true,
-        "is_visible": false,
         "layer_name": "topp:lufo_1980_purm",
         "legend_url": null,
         "projection": "EPSG:28992",
@@ -19296,6 +18874,8 @@
         "templated_properties": {},
         "use_html_info_format": false
       },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19320,7 +18900,6 @@
           "source_type": "OWS",
           "authenticate": false
         },
-        "is_base": true,
         "opacity": 0.9,
         "category": null,
         "metadata": {
@@ -19336,7 +18915,6 @@
         "zoom_min": null,
           "templates": [],
         "can_access": true,
-        "is_visible": true,
         "layer_name": "topp:lufo_2021_purm_beem",
         "legend_url": null,
         "projection": "EPSG:28992",
@@ -19361,6 +18939,8 @@
         "templated_properties": {},
         "use_html_info_format": false
       },
+      "is_base": true,
+      "is_visible": true,
       "ordering": 0
     }
   },
@@ -19372,6 +18952,8 @@
       "map": 2,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": true,
+      "is_visible": true,
       "ordering": 0
     }
   },
@@ -19383,6 +18965,8 @@
       "map": 2,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19394,6 +18978,8 @@
       "map": 2,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19405,6 +18991,8 @@
       "map": 1,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": true,
+      "is_visible": true,
       "ordering": 0
     }
   },
@@ -19429,7 +19017,6 @@
           "source_type": "OWS",
           "authenticate": false
         },
-        "is_base": false,
         "opacity": 0.9,
         "category": {
           "id": 15,
@@ -19450,7 +19037,6 @@
         "zoom_min": null,
           "templates": [],
         "can_access": true,
-        "is_visible": false,
         "layer_name": "topp:scholen",
         "legend_url": null,
         "projection": "EPSG:28992",
@@ -19483,6 +19069,8 @@
         "templated_properties": {},
         "use_html_info_format": false
       },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19494,6 +19082,8 @@
       "map": 1,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 0
     }
   },
@@ -19505,6 +19095,8 @@
       "map": 4,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": true,
+      "is_visible": true,
       "ordering": 0
     }
   },
@@ -19516,6 +19108,8 @@
       "map": 4,
       "map_category": null,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 1
     }
   },
@@ -19527,6 +19121,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 2
     }
   },
@@ -19538,6 +19134,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 3
     }
   },
@@ -19549,6 +19147,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 4
     }
   },
@@ -19560,6 +19160,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 5
     }
   },
@@ -19571,6 +19173,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 6
     }
   },
@@ -19582,6 +19186,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 7
     }
   },
@@ -19593,6 +19199,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 8
     }
   },
@@ -19604,6 +19212,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 9
     }
   },
@@ -19615,6 +19225,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 10
     }
   },
@@ -19626,6 +19238,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 11
     }
   },
@@ -19637,6 +19251,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 12
     }
   },
@@ -19648,6 +19264,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 13
     }
   },
@@ -19659,6 +19277,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 14
     }
   },
@@ -19670,6 +19290,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 15
     }
   },
@@ -19681,6 +19303,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 16
     }
   },
@@ -19692,6 +19316,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 17
     }
   },
@@ -19703,6 +19329,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 18
     }
   },
@@ -19714,6 +19342,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 19
     }
   },
@@ -19725,6 +19355,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 20
     }
   },
@@ -19736,6 +19368,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 21
     }
   },
@@ -19747,6 +19381,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 22
     }
   },
@@ -19758,6 +19394,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 23
     }
   },
@@ -19769,6 +19407,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 24
     }
   },
@@ -19780,6 +19420,8 @@
       "map": 4,
       "map_category": 1,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 25
     }
   },
@@ -19791,6 +19433,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 26
     }
   },
@@ -19802,6 +19446,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 27
     }
   },
@@ -19813,6 +19459,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 28
     }
   },
@@ -19824,6 +19472,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 29
     }
   },
@@ -19835,6 +19485,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 30
     }
   },
@@ -19846,6 +19498,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 31
     }
   },
@@ -19857,6 +19511,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 32
     }
   },
@@ -19868,6 +19524,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 33
     }
   },
@@ -19879,6 +19537,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 34
     }
   },
@@ -19890,6 +19550,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 35
     }
   },
@@ -19901,6 +19563,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 36
     }
   },
@@ -19912,6 +19576,8 @@
       "map": 4,
       "map_category": 2,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 37
     }
   },
@@ -19923,6 +19589,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 38
     }
   },
@@ -19934,6 +19602,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 39
     }
   },
@@ -19945,6 +19615,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 40
     }
   },
@@ -19956,6 +19628,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 41
     }
   },
@@ -19967,6 +19641,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 42
     }
   },
@@ -19978,6 +19654,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 43
     }
   },
@@ -19989,6 +19667,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 44
     }
   },
@@ -20000,6 +19680,8 @@
       "map": 4,
       "map_category": 5,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 45
     }
   },
@@ -20011,6 +19693,8 @@
       "map": 4,
       "map_category": 5,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 46
     }
   },
@@ -20022,6 +19706,8 @@
       "map": 4,
       "map_category": 5,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 47
     }
   },
@@ -20033,6 +19719,8 @@
       "map": 4,
       "map_category": 5,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 48
     }
   },
@@ -20044,6 +19732,8 @@
       "map": 4,
       "map_category": 5,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 49
     }
   },
@@ -20055,6 +19745,8 @@
       "map": 4,
       "map_category": 6,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 50
     }
   },
@@ -20066,6 +19758,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 51
     }
   },
@@ -20077,6 +19771,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 52
     }
   },
@@ -20088,6 +19784,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 53
     }
   },
@@ -20099,6 +19797,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 54
     }
   },
@@ -20110,6 +19810,8 @@
       "map": 4,
       "map_category": 8,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 55
     }
   },
@@ -20121,6 +19823,8 @@
       "map": 4,
       "map_category": 8,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 56
     }
   },
@@ -20132,6 +19836,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 57
     }
   },
@@ -20143,6 +19849,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 58
     }
   },
@@ -20154,6 +19862,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 59
     }
   },
@@ -20165,6 +19875,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 60
     }
   },
@@ -20176,6 +19888,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 61
     }
   },
@@ -20187,6 +19901,8 @@
       "map": 4,
       "map_category": 7,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 62
     }
   },
@@ -20198,6 +19914,8 @@
       "map": 4,
       "map_category": 8,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 63
     }
   },
@@ -20209,6 +19927,8 @@
       "map": 4,
       "map_category": 8,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 64
     }
   },
@@ -20220,6 +19940,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 65
     }
   },
@@ -20231,6 +19953,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 66
     }
   },
@@ -20242,6 +19966,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 67
     }
   },
@@ -20253,6 +19979,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 68
     }
   },
@@ -20264,6 +19992,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 69
     }
   },
@@ -20275,6 +20005,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 70
     }
   },
@@ -20286,6 +20018,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 71
     }
   },
@@ -20297,6 +20031,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 72
     }
   },
@@ -20308,6 +20044,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 73
     }
   },
@@ -20319,6 +20057,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 74
     }
   },
@@ -20330,6 +20070,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 75
     }
   },
@@ -20341,6 +20083,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 76
     }
   },
@@ -20352,6 +20096,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 77
     }
   },
@@ -20363,6 +20109,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 78
     }
   },
@@ -20374,6 +20122,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 79
     }
   },
@@ -20385,6 +20135,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 80
     }
   },
@@ -20396,6 +20148,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 81
     }
   },
@@ -20407,6 +20161,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 82
     }
   },
@@ -20418,6 +20174,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 83
     }
   },
@@ -20429,6 +20187,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 84
     }
   },
@@ -20440,6 +20200,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 85
     }
   },
@@ -20451,6 +20213,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 86
     }
   },
@@ -20462,6 +20226,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 87
     }
   },
@@ -20473,6 +20239,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 88
     }
   },
@@ -20484,6 +20252,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 89
     }
   },
@@ -20495,6 +20265,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 90
     }
   },
@@ -20506,6 +20278,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 91
     }
   },
@@ -20517,6 +20291,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 92
     }
   },
@@ -20528,6 +20304,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 93
     }
   },
@@ -20539,6 +20317,8 @@
       "map": 4,
       "map_category": 10,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 94
     }
   },
@@ -20550,6 +20330,8 @@
       "map": 4,
       "map_category": 12,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 95
     }
   },
@@ -20561,6 +20343,8 @@
       "map": 4,
       "map_category": 12,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 96
     }
   },
@@ -20572,6 +20356,8 @@
       "map": 4,
       "map_category": 12,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 97
     }
   },
@@ -20583,6 +20369,8 @@
       "map": 4,
       "map_category": 12,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 98
     }
   },
@@ -20594,6 +20382,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 99
     }
   },
@@ -20605,6 +20395,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 100
     }
   },
@@ -20616,6 +20408,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 101
     }
   },
@@ -20627,6 +20421,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 102
     }
   },
@@ -20638,6 +20434,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 103
     }
   },
@@ -20649,6 +20447,8 @@
       "map": 4,
       "map_category": 4,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 104
     }
   },
@@ -20660,6 +20460,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 105
     }
   },
@@ -20671,6 +20473,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 106
     }
   },
@@ -20682,6 +20486,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 107
     }
   },
@@ -20693,6 +20499,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 108
     }
   },
@@ -20704,6 +20512,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 109
     }
   },
@@ -20715,6 +20525,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 110
     }
   },
@@ -20726,6 +20538,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 111
     }
   },
@@ -20737,6 +20551,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 112
     }
   },
@@ -20748,6 +20564,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 113
     }
   },
@@ -20759,6 +20577,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 114
     }
   },
@@ -20770,6 +20590,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 115
     }
   },
@@ -20781,6 +20603,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 116
     }
   },
@@ -20792,6 +20616,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 117
     }
   },
@@ -20803,6 +20629,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 118
     }
   },
@@ -20814,6 +20642,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 119
     }
   },
@@ -20825,6 +20655,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 120
     }
   },
@@ -20836,6 +20668,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 121
     }
   },
@@ -20847,6 +20681,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 122
     }
   },
@@ -20858,6 +20694,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 123
     }
   },
@@ -20869,6 +20707,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 124
     }
   },
@@ -20880,6 +20720,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 125
     }
   },
@@ -20891,6 +20733,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 126
     }
   },
@@ -20902,6 +20746,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 127
     }
   },
@@ -20913,6 +20759,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 128
     }
   },
@@ -20924,6 +20772,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 129
     }
   },
@@ -20935,6 +20785,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 130
     }
   },
@@ -20946,6 +20798,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 131
     }
   },
@@ -20957,6 +20811,8 @@
       "map": 4,
       "map_category": 13,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 132
     }
   },
@@ -20968,6 +20824,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 133
     }
   },
@@ -20979,6 +20837,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 134
     }
   },
@@ -20990,6 +20850,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 135
     }
   },
@@ -21001,6 +20863,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 136
     }
   },
@@ -21012,6 +20876,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 137
     }
   },
@@ -21023,6 +20889,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 138
     }
   },
@@ -21034,6 +20902,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 139
     }
   },
@@ -21045,6 +20915,8 @@
       "map": 4,
       "map_category": 11,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 140
     }
   },
@@ -21056,6 +20928,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 141
     }
   },
@@ -21067,6 +20941,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 142
     }
   },
@@ -21078,6 +20954,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 143
     }
   },
@@ -21089,6 +20967,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 144
     }
   },
@@ -21100,6 +20980,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 145
     }
   },
@@ -21111,6 +20993,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 146
     }
   },
@@ -21122,6 +21006,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 147
     }
   },
@@ -21133,6 +21019,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 148
     }
   },
@@ -21144,6 +21032,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 149
     }
   },
@@ -21155,6 +21045,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 150
     }
   },
@@ -21166,6 +21058,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 151
     }
   },
@@ -21177,6 +21071,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 152
     }
   },
@@ -21188,6 +21084,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 153
     }
   },
@@ -21199,6 +21097,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 154
     }
   },
@@ -21210,6 +21110,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 155
     }
   },
@@ -21221,6 +21123,8 @@
       "map": 4,
       "map_category": 14,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 156
     }
   },
@@ -21232,6 +21136,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 157
     }
   },
@@ -21243,6 +21149,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 158
     }
   },
@@ -21254,6 +21162,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 159
     }
   },
@@ -21265,6 +21175,8 @@
       "map": 4,
       "map_category": 15,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 160
     }
   },
@@ -21276,6 +21188,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 161
     }
   },
@@ -21287,6 +21201,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 162
     }
   },
@@ -21298,6 +21214,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 163
     }
   },
@@ -21309,6 +21227,8 @@
       "map": 4,
       "map_category": 16,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 164
     }
   },
@@ -21320,6 +21240,8 @@
       "map": 4,
       "map_category": 16,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 165
     }
   },
@@ -21331,6 +21253,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 166
     }
   },
@@ -21342,6 +21266,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 167
     }
   },
@@ -21353,6 +21279,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 168
     }
   },
@@ -21364,6 +21292,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 169
     }
   },
@@ -21375,6 +21305,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 170
     }
   },
@@ -21386,6 +21318,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 171
     }
   },
@@ -21397,6 +21331,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 172
     }
   },
@@ -21408,6 +21344,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 173
     }
   },
@@ -21419,6 +21357,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 174
     }
   },
@@ -21430,6 +21370,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 175
     }
   },
@@ -21441,6 +21383,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 176
     }
   },
@@ -21452,6 +21396,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 177
     }
   },
@@ -21463,6 +21409,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 178
     }
   },
@@ -21474,6 +21422,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 179
     }
   },
@@ -21485,6 +21435,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 180
     }
   },
@@ -21496,6 +21448,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 181
     }
   },
@@ -21507,6 +21461,8 @@
       "map": 4,
       "map_category": 9,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 182
     }
   },
@@ -21518,6 +21474,8 @@
       "map": 4,
       "map_category": 8,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 183
     }
   },
@@ -21529,6 +21487,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 184
     }
   },
@@ -21540,6 +21500,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 185
     }
   },
@@ -21551,6 +21513,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 186
     }
   },
@@ -21562,6 +21526,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 187
     }
   },
@@ -21573,6 +21539,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 188
     }
   },
@@ -21584,6 +21552,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 189
     }
   },
@@ -21595,6 +21565,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 190
     }
   },
@@ -21606,6 +21578,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 191
     }
   },
@@ -21617,6 +21591,8 @@
       "map": 4,
       "map_category": 17,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 192
     }
   },
@@ -21628,6 +21604,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 193
     }
   },
@@ -21639,6 +21617,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 194
     }
   },
@@ -21650,6 +21630,8 @@
       "map": 4,
       "map_category": 18,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 195
     }
   },
@@ -21661,6 +21643,8 @@
       "map": 4,
       "map_category": 18,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 196
     }
   },
@@ -21672,6 +21656,8 @@
       "map": 4,
       "map_category": 18,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 197
     }
   },
@@ -21683,6 +21669,8 @@
       "map": 4,
       "map_category": 8,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 198
     }
   },
@@ -21694,6 +21682,8 @@
       "map": 4,
       "map_category": 17,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 199
     }
   },
@@ -21705,6 +21695,8 @@
       "map": 4,
       "map_category": 17,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 200
     }
   },
@@ -21716,6 +21708,8 @@
       "map": 4,
       "map_category": 17,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 201
     }
   },
@@ -21727,6 +21721,8 @@
       "map": 4,
       "map_category": 3,
       "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
       "ordering": 202
     }
   },

@@ -516,8 +516,6 @@ class Layer(models.Model):
     legend_url = models.URLField(
         'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True, max_length=1000)
 
-    is_base = models.BooleanField('Is basislaag', default=False)
-    is_visible = models.BooleanField('Is standaard zichtbaar', default=False)
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
     disable_highlighted_style = models.BooleanField('Geselecteerde objecten niet highlighten', default=False)
     use_html_info_format = models.BooleanField(
@@ -838,8 +836,6 @@ source: new ol.source.TileWMS({{
             'templated_properties': self.templated_properties,
             'url': self.url,
             'server_type': self.server_type,
-            'is_base': self.is_base,
-            'is_visible': self.is_visible,
             'is_selectable': self.is_selectable,
             'disable_highlighted_style': self.disable_highlighted_style,
             'use_html_info_format': self.use_html_info_format,
@@ -1025,6 +1021,8 @@ class MapLayer(models.Model):
     map_category = models.ForeignKey(
         'MapCategory', on_delete=models.CASCADE, null=True, blank=True, related_name='map_layers')
     settings = models.JSONField()
+    is_base = models.BooleanField('Is een basislaag', default=False)
+    is_visible = models.BooleanField('Kaartlaag standaard zichtbaar', default=False)
     ordering = models.PositiveIntegerField('Sortering', default=0, db_index=True)
 
     class Meta:
@@ -1042,6 +1040,8 @@ class MapLayer(models.Model):
         return {
             'layer': self.layer_id,
             'settings': self.settings,
+            'is_base': self.is_base,
+            'is_visible': self.is_visible,
             'map_category': self.map_category_id,
             'ordering': self.ordering,
         }

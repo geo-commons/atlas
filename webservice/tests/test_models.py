@@ -164,7 +164,7 @@ class LayerModelTest(TestCase):
         self.assertTrue(MapCategory.objects.filter(pk=parent_map_category.pk).exists())
         self.assertTrue(MapCategory.objects.filter(pk=subcategory_map_category.pk).exists())
 
-    def test_sync_map_assignments_preserves_existing_layer_settings(self):
+    def test_sync_map_assignments_preserves_existing_map_layer_values(self):
         source = Source.objects.create(title='Source', slug='source', url='https://example.com')
         category = Category.objects.create(title='Category', slug='category')
         layer = Layer.objects.create(title='Layer', slug='layer', layer_source=source, layer_type=category)
@@ -174,12 +174,16 @@ class LayerModelTest(TestCase):
             map=map_instance,
             layer=layer,
             map_category=map_category,
-            settings={'customSettings': True, 'is_visible': True},
+            settings={'customSettings': True},
+            is_base=True,
+            is_visible=True,
             ordering=7,
         )
 
         layer.sync_map_assignments([map_instance])
 
         map_layer = MapLayer.objects.get(map=map_instance, layer=layer)
-        self.assertEqual(map_layer.settings, {'customSettings': True, 'is_visible': True})
+        self.assertEqual(map_layer.settings, {'customSettings': True})
+        self.assertTrue(map_layer.is_base)
+        self.assertTrue(map_layer.is_visible)
         self.assertEqual(map_layer.ordering, 7)

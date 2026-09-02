@@ -29,7 +29,7 @@ class MapLayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MapLayer
-        fields = ['layer', 'settings', 'ordering', 'map_category']
+        fields = ['layer', 'settings', 'is_base', 'is_visible', 'ordering', 'map_category']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -195,6 +195,8 @@ class MapSerializer(serializers.ModelSerializer):
             "map_category": map_category,
             "ordering": map_layer.get("ordering", 0),
             "settings": map_layer.get("settings", {}),
+            "is_base": map_layer.get("is_base", False),
+            "is_visible": map_layer.get("is_visible", False),
             "map": map_instance,
         }
 
@@ -430,8 +432,6 @@ class LayerSerializer(serializers.ModelSerializer):
             'server_style',
             'client_style',
             'friendly_fields',
-            'is_base',
-            'is_visible',
             'is_selectable',
             'disable_highlighted_style',
             'show_in_detail_panel',
@@ -648,8 +648,6 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             'server_type',
             'format',
             'opacity',
-            'is_base',
-            'is_visible',
             'is_selectable',
             'disable_highlighted_style',
             'use_html_info_format',
@@ -709,8 +707,6 @@ class LayerListSerializer(serializers.ModelSerializer):
             'layer_name',
             'category',
             'ordering',
-            'is_base',
-            'is_visible',
             'login_required',
             'closed_dataset',
             'metadataset'
