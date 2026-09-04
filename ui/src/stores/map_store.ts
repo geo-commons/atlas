@@ -7,7 +7,13 @@ import type {
   IToggleLayerProps,
   IToggleLayerSelectableProps,
 } from "@/types/layer";
-import { ETimeSliderDisplayMode, ETimeSliderStepSize, ICycloView, IMapStore } from "@/types/mapStore";
+import {
+  ELayerFilterSource,
+  ETimeSliderDisplayMode,
+  ETimeSliderStepSize,
+  ICycloView,
+  IMapStore,
+} from "@/types/mapStore";
 import { getFetchParameters } from "@/utils/auth";
 import { getLayerTimeRange } from "@/utils/wms-time";
 import type { IUser } from "@/types/user";
@@ -64,18 +70,34 @@ export function useMapStore(mapName: string) {
         this.layerFilters[layerId] = {
           filters: {},
           searchQuery: "",
+          legendFilters: [],
         };
       },
+      // Panel/search filters and legend filters are mutually exclusive.
+      // Updating one source clears the other so CQL filters are never combined accidentally.
       updateFiltersForLayer(layerId: string, filters: any) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
           filters: filters,
+          legendFilters: [],
+          source: ELayerFilterSource.Panel,
+        };
+      },
+      updateLegendFiltersForLayer(layerId: string, legendFilters: string[]) {
+        this.layerFilters[layerId] = {
+          ...this.layerFilters[layerId],
+          filters: {},
+          searchQuery: "",
+          legendFilters: legendFilters,
+          source: ELayerFilterSource.Legend,
         };
       },
       updateSearchQueryForLayer(layerId: string, searchQuery: string) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
+          legendFilters: [],
           searchQuery: searchQuery,
+          source: ELayerFilterSource.Panel,
         };
       },
       setLeftSelectedCompareLayerId(selectedLayers: string | null) {
@@ -355,13 +377,15 @@ export function useMapStore(mapName: string) {
         const activeFilters = Object.entries(state.layerFilters).filter(
           ([, layer]) =>
             Object.values(layer.filters || {}).some((filterArray) => filterArray.length > 0) ||
+            (layer.legendFilters || []).length > 0 ||
             (layer.searchQuery && layer.searchQuery.trim() !== ""),
         );
 
-        const count = activeFilters.reduce((totalCount, [, { filters, searchQuery }]) => {
+        const count = activeFilters.reduce((totalCount, [, { filters, legendFilters, searchQuery }]) => {
           const hasActiveFilters = filters ? Object.values(filters).some((array) => array.length > 0) : false;
+          const hasLegendFilters = legendFilters ? legendFilters.length > 0 : false;
           const hasSearchQuery = searchQuery && searchQuery.trim() !== "";
-          const activeCount = hasActiveFilters || hasSearchQuery ? 1 : 0;
+          const activeCount = hasActiveFilters || hasLegendFilters || hasSearchQuery ? 1 : 0;
           return totalCount + activeCount;
         }, 0);
 
@@ -390,6 +414,10 @@ export function useMapStore(mapName: string) {
           let filterCount = layerFilter?.filters
             ? Object.values(layerFilter.filters).filter((array) => array.length > 0).length
             : 0;
+
+          if (layerFilter.legendFilters && layerFilter.legendFilters.length > 0) {
+            filterCount += layerFilter.legendFilters.length;
+          }
 
           // If search with value is active on specific layer add this to count of filters
           if (layerFilter.searchQuery && layerFilter.searchQuery !== "") {

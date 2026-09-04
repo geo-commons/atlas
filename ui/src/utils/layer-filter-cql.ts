@@ -1,3 +1,4 @@
+import { ELayerFilterSource } from "@/types/mapStore";
 import type { ILayerFilters } from "@/types/mapStore";
 
 export const getLayerCqlFilter = (layerFilters: ILayerFilters, layerId: string): string | null => {
@@ -8,6 +9,11 @@ export const getLayerCqlFilter = (layerFilters: ILayerFilters, layerId: string):
   }
 
   const cqlFilters: string[] = [];
+
+  // If layerFilter.source is of type ELayerfilterSource.Legend return legend filters
+  if (layerFilter.source === ELayerFilterSource.Legend && layerFilter.legendFilters?.length) {
+    return layerFilter.legendFilters.map((legendFilter) => `(${legendFilter})`).join(" OR ");
+  }
 
   if (layerFilter.searchQuery) {
     cqlFilters.push(layerFilter.searchQuery);
