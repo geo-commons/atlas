@@ -1,11 +1,18 @@
 import { Geometry } from "ol/geom";
 import { ILayer } from "@/types/layer";
 
+export enum ELayerFilterSource {
+  Legend = "legend",
+  Panel = "panel",
+}
+
 export interface ILayerFilter {
   filters: {
     [key: string]: Array<string>;
   };
   searchQuery: string;
+  legendFilters?: string[];
+  source?: ELayerFilterSource;
 }
 
 export interface ICycloView {

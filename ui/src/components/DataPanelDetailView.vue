@@ -112,6 +112,7 @@ import FeatureTable from "./FeatureTable.vue";
 import SearchForm from "./SearchForm.vue";
 import { Tippy } from "vue-tippy";
 import { useMapStore } from "@/stores/map_store";
+import { ELayerFilterSource } from "@/types/mapStore";
 
 export default {
   name: "DataPanelDetailView",
@@ -148,6 +149,16 @@ export default {
     this.searchValue = value;
 
     this.$refs.queryInput.value = value;
+
+    this.store.$subscribe((_, state) => {
+      // Clear stale local search text while legend filtering is active.
+      if (state.layerFilters[this.layer.id]?.source !== ELayerFilterSource.Legend) {
+        return;
+      }
+
+      this.searchValue = "";
+      this.$refs.queryInput.value = "";
+    });
   },
   methods: {
     onDownloadPending(isPending) {

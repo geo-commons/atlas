@@ -117,6 +117,8 @@ import { WKT } from "ol/format";
 import { useToast } from "primevue";
 import { getGeometryName } from "@/services/layer";
 import { getWfsTimeCqlFilter } from "@/utils/wms-time";
+import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { ELayerFilterSource } from "@/types/mapStore";
 
 export default {
   name: "FeatureTable",
@@ -179,12 +181,18 @@ export default {
   },
   watch: {
     searchValue() {
-      this.fetchFeatures();
+      const layerFilter = this.store.layerFilters[this.layer.id];
 
-      // If searchValue gets deleted or removed, set searchValue to an empty string
-      if (!this.searchValue) {
+      if (this.searchValue && layerFilter?.source === ELayerFilterSource.Legend) {
         this.store.updateSearchQueryForLayer(this.layer.id, "");
       }
+
+      // If searchValue gets deleted or removed, set searchValue to an empty string
+      if (!this.searchValue && layerFilter?.source !== ELayerFilterSource.Legend) {
+        this.store.updateSearchQueryForLayer(this.layer.id, "");
+      }
+
+      this.fetchFeatures();
     },
     selectedArea: "fetchFeatures",
     "store.selectedTimeSliderLayerId": "fetchFeaturesForTimeSliderChange",
@@ -247,9 +255,8 @@ export default {
     this.selectedFilterProperties = Object.keys(filters);
 
     this.store.$subscribe((_, state) => {
-      // From the moment this store subscription is created,
-      // when the filters for the relevant layer change, both the
-      // filter properties (selectedFilterProperties) and filter values (fieldFilters) are updated.
+      // Keep DataPanel controls in sync with panel filters.
+      // Legend filters keep `filters` empty and are applied separately when fetching data.
       if (state.layerFilters[this.layer.id]) {
         this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
         this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
@@ -277,7 +284,17 @@ export default {
 
       const filters = [];
 
-      if (this.searchValue && this.searchProperties.length > 0) {
+      const layerFilter = this.store.layerFilters[this.layer.id];
+
+      if (layerFilter?.source === ELayerFilterSource.Legend) {
+        const legendCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
+
+        if (legendCqlFilter) {
+          filters.push(legendCqlFilter);
+        }
+      }
+
+      if (this.searchValue && this.searchProperties.length > 0 && layerFilter?.source !== ELayerFilterSource.Legend) {
         const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
 
         filters.push(searchQuery);
@@ -285,7 +302,11 @@ export default {
         this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
       }
 
-      if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
+      if (
+        layerFilter?.source !== ELayerFilterSource.Legend &&
+        this.fieldFilters &&
+        Object.keys(this.fieldFilters).length > 0
+      ) {
         Object.keys(this.fieldFilters).forEach((key) => {
           const values = this.fieldFilters[key];
           if (values.length > 0) {
@@ -456,7 +477,17 @@ export default {
 
       const filters = [];
 
-      if (this.searchValue && this.searchProperties.length > 0) {
+      const layerFilter = this.store.layerFilters[this.layer.id];
+
+      if (layerFilter?.source === ELayerFilterSource.Legend) {
+        const legendCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
+
+        if (legendCqlFilter) {
+          filters.push(legendCqlFilter);
+        }
+      }
+
+      if (this.searchValue && this.searchProperties.length > 0 && layerFilter?.source !== ELayerFilterSource.Legend) {
         const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
 
         filters.push(searchQuery);
@@ -464,7 +495,11 @@ export default {
         this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
       }
 
-      if (this.fieldFilters && Object.keys(this.fieldFilters).length > 0) {
+      if (
+        layerFilter?.source !== ELayerFilterSource.Legend &&
+        this.fieldFilters &&
+        Object.keys(this.fieldFilters).length > 0
+      ) {
         Object.keys(this.fieldFilters).forEach((key) => {
           const values = this.fieldFilters[key];
           if (values.length > 0) {
