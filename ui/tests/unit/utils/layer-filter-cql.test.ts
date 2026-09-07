@@ -62,12 +62,12 @@ describe("getLayerCqlFilter", () => {
     expect(getLayerCqlFilter(layerFilters, "layer-a")).toBe("(name ILIKE '%tree%') AND (status IN ('Active'))");
   });
 
-  it("combines selected legend CQL filters with OR", () => {
+  it("combines selected bracketed legend CQL filters with OR", () => {
     const layerFilters: ILayerFilters = {
       "layer-a": {
         filters: {},
         searchQuery: "",
-        legendFilters: ["height >= 10", "status IN ('Protected','Monument')"],
+        legendFilters: ["[height >= 10]", "[status IN ('Protected','Monument')]"],
         source: ELayerFilterSource.Legend,
       },
     };

@@ -290,7 +290,10 @@ export default {
         const legendCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
 
         if (legendCqlFilter) {
-          filters.push(legendCqlFilter);
+          // legendCqlFilter can contain a top-level OR, while this array is later joined with area/time filters using AND.
+          // Without grouping, (ruleA) OR (ruleB) AND timeFilter lets every ruleA feature bypass the area/time constraint
+          // because AND binds more tightly. Wrap the complete legend expression before adding it.
+          filters.push(`(${legendCqlFilter})`);
         }
       }
 
