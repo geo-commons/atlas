@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { ELayerFilterSource } from "@/types/mapStore";
 import type { ILayerFilters } from "@/types/mapStore";
 
 describe("getLayerCqlFilter", () => {
@@ -14,6 +15,8 @@ describe("getLayerCqlFilter", () => {
           status: [],
         },
         searchQuery: "",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 
@@ -27,6 +30,8 @@ describe("getLayerCqlFilter", () => {
           status: ["Active", "Pending"],
         },
         searchQuery: "",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 
@@ -40,6 +45,8 @@ describe("getLayerCqlFilter", () => {
           status: ["Leeg", "Active"],
         },
         searchQuery: "",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 
@@ -55,9 +62,41 @@ describe("getLayerCqlFilter", () => {
           status: ["Active"],
         },
         searchQuery: "(name ILIKE '%tree%')",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 
     expect(getLayerCqlFilter(layerFilters, "layer-a")).toBe("(name ILIKE '%tree%') AND (status IN ('Active'))");
+  });
+
+  it("combines selected bracketed legend CQL filters with OR", () => {
+    const layerFilters: ILayerFilters = {
+      "layer-a": {
+        filters: {},
+        searchQuery: "",
+        legendFilters: ["[height >= 10]", "[status IN ('Protected','Monument')]"],
+        source: ELayerFilterSource.Legend,
+      },
+    };
+
+    expect(getLayerCqlFilter(layerFilters, "layer-a")).toBe(
+      "([height >= 10]) OR ([status IN ('Protected','Monument')])",
+    );
+  });
+
+  it("ignores legend CQL filters when panel filters are active", () => {
+    const layerFilters: ILayerFilters = {
+      "layer-a": {
+        filters: {
+          status: ["Active"],
+        },
+        searchQuery: "",
+        legendFilters: ["height >= 10"],
+        source: ELayerFilterSource.Panel,
+      },
+    };
+
+    expect(getLayerCqlFilter(layerFilters, "layer-a")).toBe("(status IN ('Active'))");
   });
 });
