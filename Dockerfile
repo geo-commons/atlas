@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 RUN pip install uv
 
-COPY pyproject.toml uv.lock /app/
+COPY pyproject.toml uv.lock .python-version /app/
 
 # Install Python to a place that we can copy in the final container
 ENV UV_PYTHON_INSTALL_DIR=/python

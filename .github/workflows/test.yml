@@ -17,7 +17,6 @@ jobs:
   backend_test_and_lint:
     name: Backend tests, migration check and linting
     runs-on: ubuntu-latest
-    if: false
     env:
       DB_HOST: localhost
       DB_NAME: postgres
@@ -88,7 +87,6 @@ jobs:
   frontend_unit_tests:
     name: Frontend unit tests
     runs-on: ubuntu-latest
-    if: false
     defaults:
       run:
         working-directory: ui
@@ -113,7 +111,6 @@ jobs:
   frontend_browser_tests:
     name: Frontend browser tests
     runs-on: ubuntu-latest
-    if: false
     defaults:
       run:
         working-directory: ui
@@ -134,7 +131,6 @@ jobs:
   e2e_tests:
     name: End-to-end tests
     runs-on: ubuntu-latest
-    if: false
     env:
       DB_HOST: localhost
       DB_NAME: postgres
