@@ -30,6 +30,7 @@
       :options="currentFilterOptionsWithoutEmpty"
       option-label="label"
       option-value="value"
+      :virtual-scroller-options="{ itemSize: 50 }"
       placeholder="Kies waarde"
       filter-placeholder="Zoek waarde"
       filter
