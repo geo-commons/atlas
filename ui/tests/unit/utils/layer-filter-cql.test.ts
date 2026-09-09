@@ -15,6 +15,8 @@ describe("getLayerCqlFilter", () => {
           status: [],
         },
         searchQuery: "",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 
@@ -28,6 +30,8 @@ describe("getLayerCqlFilter", () => {
           status: ["Active", "Pending"],
         },
         searchQuery: "",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 
@@ -41,6 +45,8 @@ describe("getLayerCqlFilter", () => {
           status: ["Leeg", "Active"],
         },
         searchQuery: "",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 
@@ -56,6 +62,8 @@ describe("getLayerCqlFilter", () => {
           status: ["Active"],
         },
         searchQuery: "(name ILIKE '%tree%')",
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
       },
     };
 

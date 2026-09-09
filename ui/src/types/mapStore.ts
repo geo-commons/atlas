@@ -6,13 +6,22 @@ export enum ELayerFilterSource {
   Panel = "panel",
 }
 
+/**
+ * Filter state for a single layer.
+ *
+ * @remarks
+ * Panel filters/search and legend filters are mutually exclusive sources for CQL generation.
+ * When `source` is `ELayerFilterSource.Panel`, `filters` and `searchQuery` are used and
+ * `legendFilters` is ignored. When `source` is `ELayerFilterSource.Legend`, `legendFilters`
+ * is used and panel filters/search are cleared.
+ */
 export interface ILayerFilter {
   filters: {
     [key: string]: Array<string>;
   };
   searchQuery: string;
-  legendFilters?: string[];
-  source?: ELayerFilterSource;
+  legendFilters: string[];
+  source: ELayerFilterSource;
 }
 
 export interface ICycloView {

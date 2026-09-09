@@ -71,6 +71,7 @@ export function useMapStore(mapName: string) {
           filters: {},
           searchQuery: "",
           legendFilters: [],
+          source: ELayerFilterSource.Panel,
         };
       },
       // Panel/search filters and legend filters are mutually exclusive.
