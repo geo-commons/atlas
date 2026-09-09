@@ -39,6 +39,7 @@
               :filter-options="filterOptions[property]"
               :field-filters="fieldFilters"
               :filter-property="property"
+              :filter-property-type="filterPropertyTypes[property]"
               @on-filter-change="(v) => setFieldFilters(v, property)"
             />
           </div>
@@ -151,6 +152,7 @@ export default {
       showFilters: false,
       filters: {},
       filterProperties: [],
+      filterPropertyTypes: {},
       filterOptions: {},
       filterFeatures: {},
       numberMatched: null,
@@ -259,7 +261,7 @@ export default {
       // Legend filters keep `filters` empty and are applied separately when fetching data.
       if (state.layerFilters[this.layer.id]) {
         this.fieldFilters = state.layerFilters[this.layer.id]?.filters || {};
-        this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || []);
+        this.selectedFilterProperties = Object.keys(state.layerFilters[this.layer.id]?.filters || {});
       }
     });
 
@@ -286,49 +288,16 @@ export default {
 
       const layerFilter = this.store.layerFilters[this.layer.id];
 
-      if (layerFilter?.source === ELayerFilterSource.Legend) {
-        const legendCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
-
-        if (legendCqlFilter) {
-          // legendCqlFilter can contain a top-level OR, while this array is later joined with area/time filters using AND.
-          // Without grouping, (ruleA) OR (ruleB) AND timeFilter lets every ruleA feature bypass the area/time constraint
-          // because AND binds more tightly. Wrap the complete legend expression before adding it.
-          filters.push(`(${legendCqlFilter})`);
-        }
-      }
-
       if (this.searchValue && this.searchProperties.length > 0 && layerFilter?.source !== ELayerFilterSource.Legend) {
         const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
-
-        filters.push(searchQuery);
-
         this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
       }
 
-      if (
-        layerFilter?.source !== ELayerFilterSource.Legend &&
-        this.fieldFilters &&
-        Object.keys(this.fieldFilters).length > 0
-      ) {
-        Object.keys(this.fieldFilters).forEach((key) => {
-          const values = this.fieldFilters[key];
-          if (values.length > 0) {
-            const filterOnEmptyValues = values.includes("Leeg");
-            const nonEmptyValues = values.filter((f) => f !== "Leeg");
-            let valueFilters = [];
+      const layerCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
 
-            if (nonEmptyValues.length > 0) {
-              valueFilters.push(`${key} in (${nonEmptyValues.map((f) => this.replaceQuotes(f)).join(",")})`);
-            }
-            if (filterOnEmptyValues) {
-              valueFilters.push(`(${key} IS NULL or ${key} = '')`);
-            }
-
-            if (valueFilters.length > 0) {
-              filters.push(`(${valueFilters.join(" OR ")})`);
-            }
-          }
-        });
+      if (layerCqlFilter) {
+        // Legend filters can contain top-level OR. Group the complete layer expression before adding area/time filters.
+        filters.push(`(${layerCqlFilter})`);
       }
 
       if (this.selectedArea) {
@@ -412,6 +381,9 @@ export default {
         const featureType = data.featureTypes[0];
 
         const fetchedProperties = featureType.properties.filter((p) => p.name !== geometryName).map((p) => p.name);
+        this.filterPropertyTypes = Object.fromEntries(
+          featureType.properties.map((property) => [property.name, property.localType]),
+        );
         this.displayProperties =
           this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
 
@@ -482,46 +454,15 @@ export default {
 
       const layerFilter = this.store.layerFilters[this.layer.id];
 
-      if (layerFilter?.source === ELayerFilterSource.Legend) {
-        const legendCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
-
-        if (legendCqlFilter) {
-          filters.push(legendCqlFilter);
-        }
-      }
-
       if (this.searchValue && this.searchProperties.length > 0 && layerFilter?.source !== ELayerFilterSource.Legend) {
         const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
-
-        filters.push(searchQuery);
-
         this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
       }
 
-      if (
-        layerFilter?.source !== ELayerFilterSource.Legend &&
-        this.fieldFilters &&
-        Object.keys(this.fieldFilters).length > 0
-      ) {
-        Object.keys(this.fieldFilters).forEach((key) => {
-          const values = this.fieldFilters[key];
-          if (values.length > 0) {
-            const filterOnEmptyValues = values.includes("Leeg");
-            const nonEmptyValues = values.filter((f) => f !== "Leeg");
-            let valueFilters = [];
+      const layerCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
 
-            if (nonEmptyValues.length > 0) {
-              valueFilters.push(`${key} in (${nonEmptyValues.map((f) => this.replaceQuotes(f)).join(",")})`);
-            }
-            if (filterOnEmptyValues) {
-              valueFilters.push(`(${key} IS NULL or ${key} = '')`);
-            }
-
-            if (valueFilters.length > 0) {
-              filters.push(`(${valueFilters.join(" OR ")})`);
-            }
-          }
-        });
+      if (layerCqlFilter) {
+        filters.push(`(${layerCqlFilter})`);
       }
 
       if (this.selectedArea) {
@@ -636,13 +577,6 @@ export default {
         this.isDownloadPending = false;
       }
     },
-    replaceQuotes(value) {
-      if (typeof value === "string") {
-        return `'${value.replace(/'/g, "''")}'`;
-      } else {
-        return value;
-      }
-    },
     showFeature(feature) {
       this.$emit("show-feature-on-map", feature);
     },
@@ -726,6 +660,7 @@ export default {
     removeFilter(filter) {
       if (filter in this.fieldFilters) {
         delete this.fieldFilters[filter];
+        this.store.updateFiltersForLayer(this.layer.id, this.fieldFilters);
         this.fetchFeatures();
       }
     },
