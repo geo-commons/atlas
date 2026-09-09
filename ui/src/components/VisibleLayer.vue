@@ -104,10 +104,10 @@
             <div v-for="legendField in legendJson" :key="legendField.name">
               <div v-if="legendField.filter" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
                 <Checkbox
-                  v-model="checkboxFilters[getFilterParameter(legendField.filter)]"
+                  v-model="selectedLegendFilters"
                   :input-id="legendField.name"
-                  :value="getFilterValue(legendField.filter)"
-                  @update:model-value="updateLegendFilters(getFilterParameter(legendField.filter))"
+                  :value="legendField.filter"
+                  @update:model-value="updateLegendFilters"
                 />
                 <label :for="legendField.name" class="tw-flex tw-flex-row tw-items-start tw-gap-2">
                   <img :src="getLegendFieldImage(legendField.name)" />{{
@@ -145,6 +145,7 @@ import { useMapStore } from "@/stores/map_store";
 import { fetchLegendImage } from "@/utils/legend-utils";
 import { getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
 import { ELayerTypes } from "@/types/layer";
+import { ELayerFilterSource } from "@/types/mapStore";
 
 export default {
   name: "VisibleLayer",
@@ -191,7 +192,7 @@ export default {
       legendJson: null,
       isSelectable: null,
       initialIsSelectable: null,
-      checkboxFilters: [],
+      selectedLegendFilters: [],
     };
   },
   computed: {
@@ -235,15 +236,17 @@ export default {
     this.store = useMapStore(this.mapId);
 
     this.store.$subscribe((_, state) => {
-      // Subscribes to the store and keeps the layer’s checkbox filters in sync.
-      // Whenever filters for this layer change in the store, the corresponding
-      // checkboxFilters are updated. If no layer filters exist, the filters are reset.
-      if (state.layerFilters[this.layer.id]) {
-        setTimeout(() => {
-          this.checkboxFilters = state.layerFilters[this.layer.id]?.filters;
-        }, 100);
-      } else if (!Object.keys(state.layerFilters).length) {
-        this.checkboxFilters = [];
+      // Legend checkboxes only represent legend filters.
+      // When panel/search filters take over, clear the local checkbox state immediately.
+      const layerFilter = state.layerFilters[this.layer.id];
+
+      if (layerFilter?.source === ELayerFilterSource.Legend) {
+        this.selectedLegendFilters = layerFilter.legendFilters || [];
+        return;
+      }
+
+      if (!layerFilter || layerFilter.source === ELayerFilterSource.Panel) {
+        this.selectedLegendFilters = [];
       }
     });
   },
@@ -316,7 +319,7 @@ export default {
 
         if (result) {
           this.legendJson = result;
-          this.checkboxFilters = this.store.getFiltersForLayer(this.layer.id);
+          this.selectedLegendFilters = this.store.layerFilters[this.layer.id]?.legendFilters || [];
           return;
         }
       }
@@ -332,32 +335,8 @@ export default {
         console.error(e);
       }
     },
-    getFilterParameter(filterString) {
-      // Regex to extract the parameter name before '='
-      const match = filterString.match(/\[([a-zA-Z0-9_]+)\s*=/);
-
-      return match ? match[1] : null;
-    },
-    getFilterValue(filterString) {
-      // Regex to extract the filter value after '='
-      const match = filterString.match(/\b\w+\s*=\s*'((?:''|[^'])*)'/);
-
-      return match ? match[1] : null;
-    },
-    updateLegendFilters(filterParameter) {
-      const oldLayerFilters = this.store.getFiltersForLayer(this.layer.id);
-
-      const filters = {
-        ...oldLayerFilters,
-        [filterParameter]: this.checkboxFilters[filterParameter],
-      };
-
-      // Remove filter if no checkbox filter values are selected
-      if (!this.checkboxFilters[filterParameter]?.length) {
-        delete filters[filterParameter];
-      }
-
-      this.store.updateFiltersForLayer(this.layer.id, filters);
+    updateLegendFilters() {
+      this.store.updateLegendFiltersForLayer(this.layer.id, this.selectedLegendFilters);
     },
     changeLayerOrder(direction) {
       this.store.changeLayerOrder({ selectedLayerId: this.layer.id, direction: direction });
