@@ -1,17 +1,6 @@
 import { ELayerFilterSource } from "@/types/mapStore";
 import type { ILayerFilters } from "@/types/mapStore";
 
-const normalizeLegendFilter = (legendFilter: string): string => {
-  const trimmedLegendFilter = legendFilter.trim();
-
-  // GeoServer JSON legend filters can wrap the full expression in square brackets.
-  if (trimmedLegendFilter.startsWith("[") && trimmedLegendFilter.endsWith("]")) {
-    return trimmedLegendFilter.slice(1, -1).trim();
-  }
-
-  return trimmedLegendFilter;
-};
-
 export const getLayerCqlFilter = (layerFilters: ILayerFilters, layerId: string): string | null => {
   const layerFilter = layerFilters[layerId];
 
@@ -21,8 +10,8 @@ export const getLayerCqlFilter = (layerFilters: ILayerFilters, layerId: string):
 
   const cqlFilters: string[] = [];
 
-  if (layerFilter.source === ELayerFilterSource.Legend && layerFilter.legendFilters?.length) {
-    return layerFilter.legendFilters.map((legendFilter) => `(${normalizeLegendFilter(legendFilter)})`).join(" OR ");
+  if (layerFilter.source === ELayerFilterSource.Legend && layerFilter.legendFilters.length) {
+    return layerFilter.legendFilters.map((legendFilter) => `(${legendFilter})`).join(" OR ");
   }
 
   if (layerFilter.searchQuery) {

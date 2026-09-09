@@ -81,7 +81,7 @@ describe("getLayerCqlFilter", () => {
     };
 
     expect(getLayerCqlFilter(layerFilters, "layer-a")).toBe(
-      "(height >= 10) OR (status IN ('Protected','Monument'))",
+      "([height >= 10]) OR ([status IN ('Protected','Monument')])",
     );
   });
 
