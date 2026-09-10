@@ -51,22 +51,23 @@
       </div>
 
       <Accordion v-if="feature !== null && relatedTables.length > 0" :value="[0]" multiple class="tw-ml-2">
-        <AccordionPanel v-for="(table, key) in relatedTables" :key="key" :value="key">
-          <AccordionHeader class="!tw-text-base">
-            {{ table.related_table_title ? table.related_table_title : table.to_table.title }}
-          </AccordionHeader>
-
-          <AccordionContent>
-            <RelatedTableList
-              :table-feature="feature"
-              :related-table="table.to_table"
-              :field-mapping="table.field_mapping"
-              :related-table-title="table.related_table_title ? table.related_table_title : table.to_table.title"
-              :position="position"
-              @select-related-table-object="onSelectRelatedTableObject"
-            />
-          </AccordionContent>
-        </AccordionPanel>
+        <RelatedTableAccordionPanel
+          v-for="(table, key) in relatedTables"
+          :key="key"
+          v-slot="{ setCount }"
+          :value="key"
+          :title="table.related_table_title ? table.related_table_title : table.to_table.title"
+        >
+          <RelatedTableList
+            :table-feature="feature"
+            :related-table="table.to_table"
+            :field-mapping="table.field_mapping"
+            :related-table-title="table.related_table_title ? table.related_table_title : table.to_table.title"
+            :position="position"
+            @update-count="setCount"
+            @select-related-table-object="onSelectRelatedTableObject"
+          />
+        </RelatedTableAccordionPanel>
       </Accordion>
     </div>
     <div v-else-if="loading" class="tw-px-2 tw-mt-4 tw-flex tw-justify-center tw-items-center">
@@ -88,6 +89,7 @@ import nunjucks from "nunjucks";
 import TableList from "@/components/TableList.vue";
 import { formatFriendlyFieldLabel, formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
+import RelatedTableAccordionPanel from "@/components/related-tables/RelatedTableAccordionPanel.vue";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import fetchDot from "fetch-dot";
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";

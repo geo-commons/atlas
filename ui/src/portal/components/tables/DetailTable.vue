@@ -3,7 +3,7 @@
   <div v-if="feature">
     <div class="tw-flex tw-flex-col tw-gap-2">
       <div v-for="(value, index) in tableItems" :key="index" class="tw-grid tw-grid-cols-3">
-        <div class="tw-col-span-1 tw-font-bold header">
+        <div class="tw-col-span-1 !tw-text-[var(--color-text-grey)] header">
           {{ formatFriendlyFieldLabel(value, selectedRelatedTable?.friendly_fields) }}
         </div>
         <div class="tw-col-span-2">
@@ -21,27 +21,26 @@
     </div>
     <h3 v-if="selectedRelatedTable?.related_tables?.length" class="tw-mt-8 tw-mb-2">Gerelateerde data</h3>
     <Accordion :value="[0]" multiple>
-      <AccordionPanel v-for="(table, key) in selectedRelatedTable?.related_tables ?? []" :key="key" :value="key">
-        <AccordionHeader class="!tw-text-base">
-          {{ table.related_table_title ? table.related_table_title : table.to_table.title }}
-        </AccordionHeader>
-
-        <AccordionContent>
-          <div>
-            <ListTable
-              :related-table="table.to_table"
-              :field-mapping="getFieldMapping(table.field_mapping, feature)"
-              @select-related-table-object="
-                onSelectRelatedData(
-                  $event.item,
-                  $event.relatedTableId,
-                  table.related_table_title ? table.related_table_title : table.to_table.title,
-                )
-              "
-            />
-          </div>
-        </AccordionContent>
-      </AccordionPanel>
+      <RelatedTableAccordionPanel
+        v-for="(table, key) in selectedRelatedTable?.related_tables ?? []"
+        :key="key"
+        v-slot="{ setCount }"
+        :value="key"
+        :title="table.related_table_title ? table.related_table_title : table.to_table.title"
+      >
+        <ListTable
+          :related-table="table.to_table"
+          :field-mapping="getFieldMapping(table.field_mapping, feature)"
+          @update-count="setCount"
+          @select-related-table-object="
+            onSelectRelatedData(
+              $event.item,
+              $event.relatedTableId,
+              table.related_table_title ? table.related_table_title : table.to_table.title,
+            )
+          "
+        />
+      </RelatedTableAccordionPanel>
     </Accordion>
   </div>
   <div v-else-if="loading" class="tw-px-2 tw-mt-4 tw-flex tw-justify-center tw-items-center">
@@ -61,6 +60,7 @@ import { watch, ref, computed } from "vue";
 import nunjucks from "nunjucks";
 import fetchDot from "fetch-dot";
 import ListTable from "./ListTable.vue";
+import RelatedTableAccordionPanel from "@/components/related-tables/RelatedTableAccordionPanel.vue";
 import { formatFriendlyFieldLabel, formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import RichValue from "@/components/RichValue.vue";
