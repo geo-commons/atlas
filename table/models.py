@@ -120,20 +120,12 @@ class Table(models.Model):
         return f"{self.title}"
 
     def to_dict(self, from_layer=None, request=None, field_mapping=None, related_table_title=None, field_mapping_resolved=False):
-        related_tables = list(self.tables.all())
+        related_table_relations = list(self.outgoing_table_relations.select_related('to_table'))
         if request is not None:
             authorized_table_ids = Table.authorized.ids_for_request(request)
-            related_tables = [table for table in related_tables if table.pk in authorized_table_ids]
-
-        table_mappings = {
-            relation.to_table_id: relation.field_mapping
-            for relation in self.outgoing_table_relations.all()
-        }
-        
-        table_title_mappings = {
-            relation.to_table_id: relation.related_table_title
-            for relation in self.outgoing_table_relations.all()
-        }
+            related_table_relations = [
+                relation for relation in related_table_relations if relation.to_table_id in authorized_table_ids
+            ]
         
         data = {
             'id': self.pk,
@@ -163,13 +155,13 @@ class Table(models.Model):
             'template_fields': self.template_fields,
             'list_template_fields': self.list_template_fields,
             'related_tables': [
-                item.simple_to_dict(
+                relation.to_table.simple_to_dict(
                     from_table=self,
-                    field_mapping=table_mappings.get(item.pk),
-                    related_table_title=table_title_mappings.get(item.pk),
+                    field_mapping=relation.field_mapping,
+                    related_table_title=relation.related_table_title,
                     field_mapping_resolved=True,
                 )
-                for item in related_tables
+                for relation in related_table_relations
             ],
             'show_in_portal': self.show_in_portal,
             'friendly_search_fields': self.friendly_search_fields,
@@ -247,9 +239,11 @@ class TableToTable(models.Model):
     to_table = models.ForeignKey('Table', related_name='incoming_table_relations', on_delete=models.CASCADE)
     field_mapping = models.JSONField('Mapping van kolomnamen')
     related_table_title = models.CharField('Titel van gerelateerde tabel', max_length=255, blank=True, null=True)
+    ordering = models.PositiveIntegerField('Volgorde', default=0)
 
     class Meta:
         unique_together = ('from_table', 'to_table')
+        ordering = ['ordering', 'id']
 
 
 class LayerToTable(models.Model):
@@ -257,6 +251,7 @@ class LayerToTable(models.Model):
     to_table = models.ForeignKey('Table', related_name='layer_table_relations', on_delete=models.CASCADE)
     field_mapping = models.JSONField('Mapping van kolomnamen')
     related_table_title = models.CharField('Titel van gerelateerde tabel', max_length=255, blank=True, null=True)
+    ordering = models.PositiveIntegerField('Volgorde', default=0)
     
     '''
         from = adres
@@ -270,3 +265,4 @@ class LayerToTable(models.Model):
 
     class Meta:
         unique_together = ('from_layer', 'to_table')
+        ordering = ['ordering', 'id']

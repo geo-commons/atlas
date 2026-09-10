@@ -807,20 +807,12 @@ source: new ol.source.TileWMS({{
     def to_dict(self, user, request):
         from table.models import Table
 
-        related_tables = list(self.related_tables.all())
+        related_table_relations = list(self.layer_table_relations.select_related('to_table'))
         if request is not None:
             authorized_table_ids = Table.authorized.ids_for_request(request)
-            related_tables = [table for table in related_tables if table.pk in authorized_table_ids]
-
-        layer_table_mappings = {
-            relation.to_table_id: relation.field_mapping
-            for relation in self.layer_table_relations.all()
-        }
-        
-        layer_title_mappings = {
-            relation.to_table_id: relation.related_table_title
-            for relation in self.layer_table_relations.all()
-        }
+            related_table_relations = [
+                relation for relation in related_table_relations if relation.to_table_id in authorized_table_ids
+            ]
         
         return {
             'id': self.slug,
@@ -900,14 +892,14 @@ source: new ol.source.TileWMS({{
             'can_write': self.is_mutable_by(user, request),
             'is_exportable': self.is_exportable,
             'related_tables': [
-                item.to_dict(
+                relation.to_table.to_dict(
                     from_layer=self,
                     request=request,
-                    field_mapping=layer_table_mappings.get(item.pk),
-                    related_table_title=layer_title_mappings.get(item.pk),
+                    field_mapping=relation.field_mapping,
+                    related_table_title=relation.related_table_title,
                     field_mapping_resolved=True,
                 )
-                for item in related_tables
+                for relation in related_table_relations
             ],
             'is_time_enabled': self.is_time_enabled,
             'is_reference_date_enabled': self.is_reference_date_enabled,
