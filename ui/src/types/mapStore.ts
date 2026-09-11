@@ -6,6 +6,23 @@ export enum ELayerFilterSource {
   Panel = "panel",
 }
 
+export enum EPanelFilterOperator {
+  Equals = "equals",
+  NotEquals = "notEquals",
+  GreaterThan = "greaterThan",
+  GreaterThanOrEqual = "greaterThanOrEqual",
+  LessThan = "lessThan",
+  LessThanOrEqual = "lessThanOrEqual",
+  Empty = "empty",
+  NotEmpty = "notEmpty",
+}
+
+export interface IPanelFilterValue {
+  operator: EPanelFilterOperator;
+  values: Array<string | number>;
+  type?: string;
+}
+
 /**
  * Filter state for a single layer.
  *
@@ -17,7 +34,7 @@ export enum ELayerFilterSource {
  */
 export interface ILayerFilter {
   filters: {
-    [key: string]: Array<string>;
+    [key: string]: IPanelFilterValue;
   };
   searchQuery: string;
   legendFilters: string[];

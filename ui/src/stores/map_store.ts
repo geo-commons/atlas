@@ -9,6 +9,7 @@ import type {
 } from "@/types/layer";
 import {
   ELayerFilterSource,
+  EPanelFilterOperator,
   ETimeSliderDisplayMode,
   ETimeSliderStepSize,
   ICycloView,
@@ -18,6 +19,7 @@ import { getFetchParameters } from "@/utils/auth";
 import { getLayerTimeRange } from "@/utils/wms-time";
 import type { IUser } from "@/types/user";
 import { Geometry } from "ol/geom";
+import type { IPanelFilterValue } from "@/types/mapStore";
 
 const visibleSourceTypes = [ELayerTypes.WMS_WFS, ELayerTypes.WFS];
 const createDefaultTimeSliderStartDate = () => new Date(1969, 0, 1);
@@ -34,6 +36,22 @@ const getLayerDefaultTimeSliderDisplayMode = (layer: ILayer | undefined) => {
   }
 
   return ETimeSliderDisplayMode.Period;
+};
+
+const hasActivePanelFilter = (filterValue: IPanelFilterValue): boolean => {
+  if ([EPanelFilterOperator.Empty, EPanelFilterOperator.NotEmpty].includes(filterValue.operator)) {
+    return true;
+  }
+
+  return filterValue.values.length > 0;
+};
+
+const getPanelFilterCount = (filterValue: IPanelFilterValue): number => {
+  if ([EPanelFilterOperator.Empty, EPanelFilterOperator.NotEmpty].includes(filterValue.operator)) {
+    return 1;
+  }
+
+  return filterValue.values.length;
 };
 
 export function useMapStore(mapName: string) {
@@ -76,7 +94,7 @@ export function useMapStore(mapName: string) {
       },
       // Panel/search filters and legend filters are mutually exclusive.
       // Updating one source clears the other so CQL filters are never combined accidentally.
-      updateFiltersForLayer(layerId: string, filters: any) {
+      updateFiltersForLayer(layerId: string, filters: Record<string, IPanelFilterValue>) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
           filters: filters,
@@ -377,13 +395,15 @@ export function useMapStore(mapName: string) {
       getActiveLayersWithFilterCount(state) {
         const activeFilters = Object.entries(state.layerFilters).filter(
           ([, layer]) =>
-            Object.values(layer.filters || {}).some((filterArray) => filterArray.length > 0) ||
+            Object.values(layer.filters || {}).some((filterValue) => hasActivePanelFilter(filterValue)) ||
             (layer.legendFilters || []).length > 0 ||
             (layer.searchQuery && layer.searchQuery.trim() !== ""),
         );
 
         const count = activeFilters.reduce((totalCount, [, { filters, legendFilters, searchQuery }]) => {
-          const hasActiveFilters = filters ? Object.values(filters).some((array) => array.length > 0) : false;
+          const hasActiveFilters = filters
+            ? Object.values(filters).some((filterValue) => hasActivePanelFilter(filterValue))
+            : false;
           const hasLegendFilters = legendFilters ? legendFilters.length > 0 : false;
           const hasSearchQuery = searchQuery && searchQuery.trim() !== "";
           const activeCount = hasActiveFilters || hasLegendFilters || hasSearchQuery ? 1 : 0;
@@ -413,7 +433,7 @@ export function useMapStore(mapName: string) {
 
           // Get count of filters on specific layer
           let filterCount = layerFilter?.filters
-            ? Object.values(layerFilter.filters).filter((array) => array.length > 0).length
+            ? Object.values(layerFilter.filters).filter((filterValue) => hasActivePanelFilter(filterValue)).length
             : 0;
 
           if (layerFilter.legendFilters && layerFilter.legendFilters.length > 0) {
@@ -439,10 +459,10 @@ export function useMapStore(mapName: string) {
               Object.entries(layerFilter.filters).filter(([key]) => selectedFilters.includes(key)),
             );
 
-            const filterItems = Object.values(filtersWithItemsToCount);
+            const filterItems = Object.values(filtersWithItemsToCount) as IPanelFilterValue[];
 
             filterItems.map((item) => {
-              count += item.length;
+              count += getPanelFilterCount(item);
             });
           }
 

@@ -109,8 +109,10 @@
       ref="listPanel"
       :map-id="mapId"
       :layer="getSelectedLayer(settings.listLayerId)"
+      :selected-area="selectedAreaDataPanel"
       :title-template="settings.title"
       :short-description-template="settings.short_description"
+      :user="user"
       @hide-panel="toggleList"
       @show-feature-on-map="showFeatureOnMap"
     />
