@@ -807,7 +807,7 @@ source: new ol.source.TileWMS({{
     def to_dict(self, user, request):
         from table.models import Table
 
-        related_table_relations = list(self.layer_table_relations.select_related('to_table'))
+        related_table_relations = list(self.layer_table_relations.all())
         if request is not None:
             authorized_table_ids = Table.authorized.ids_for_request(request)
             related_table_relations = [

@@ -120,7 +120,7 @@ class Table(models.Model):
         return f"{self.title}"
 
     def to_dict(self, from_layer=None, request=None, field_mapping=None, related_table_title=None, field_mapping_resolved=False):
-        related_table_relations = list(self.outgoing_table_relations.select_related('to_table'))
+        related_table_relations = list(self.outgoing_table_relations.all())
         if request is not None:
             authorized_table_ids = Table.authorized.ids_for_request(request)
             related_table_relations = [
