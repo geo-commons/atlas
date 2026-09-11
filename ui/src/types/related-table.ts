@@ -51,4 +51,5 @@ export interface IRelatedTable {
   disable_detail_view: boolean;
   login_required?: boolean;
   related_table_title?: string;
+  ordering?: number;
 }

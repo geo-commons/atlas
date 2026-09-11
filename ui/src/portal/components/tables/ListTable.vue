@@ -1,6 +1,18 @@
 <template>
   <div v-if="!loading && tableData.length > 0">
-    <DataTable :value="tableData" size="small" scrollable responsive-layout="scroll" class="tw-w-full" removable-sort>
+    <DataTable
+      :value="tableData"
+      size="small"
+      scrollable
+      responsive-layout="scroll"
+      class="tw-w-full"
+      removable-sort
+      :pt="{
+        column: {
+          columnTitle: '!tw-font-normal tw-text-[var(--color-text-grey)]',
+        },
+      }"
+    >
       <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
         <template #body="{ data }">
           <Button
@@ -89,6 +101,7 @@ const { relatedTable, fieldMapping } = defineProps<{
 
 const emit = defineEmits<{
   (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
+  (e: "update-count", count: number): void;
 }>();
 
 const tableData = ref<Record<string, string>[]>([]);
@@ -158,6 +171,7 @@ const getRestData = async (table: IRelatedTable) => {
       if (response.status === 404) {
         tableData.value = [];
         totalItems.value = 0;
+        emit("update-count", 0);
         errorMessage.value = null;
         loading.value = false;
         return;
@@ -193,11 +207,15 @@ const getRestData = async (table: IRelatedTable) => {
 
     // If pagination is enabled set total items
     if (table.total_items_page_property) {
-      totalItems.value = fetchDot(table.total_items_page_property, data);
+      totalItems.value = fetchDot(table.total_items_page_property, data) as number;
     }
+
+    emit("update-count", table.total_items_page_property ? totalItems.value : tableData.value.length);
   } catch (error) {
     errorMessage.value = (error as Error).message;
     tableData.value = [];
+    totalItems.value = 0;
+    emit("update-count", 0);
   }
 
   loading.value = false;
@@ -242,10 +260,17 @@ const getOwsData = async (table: IRelatedTable) => {
       totalItems.value = data.numberMatched;
 
       tableData.value = properties;
+      emit("update-count", totalItems.value ?? tableData.value.length);
     } catch (e) {
       errorMessage.value = (e as Error).message;
       tableData.value = [];
+      totalItems.value = 0;
+      emit("update-count", 0);
     }
+  } else {
+    tableData.value = [];
+    totalItems.value = 0;
+    emit("update-count", 0);
   }
 
   loading.value = false;

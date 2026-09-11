@@ -8,6 +8,11 @@
         responsive-layout="scroll"
         class="tw-w-full !tw-text-black"
         removable-sort
+        :pt="{
+          column: {
+            columnTitle: '!tw-font-normal !tw-text-[var(--color-text-grey)]',
+          },
+        }"
       >
         <Column v-if="!relatedTable.disable_detail_view" header="" style="width: 3rem">
           <template #body="{ data }">
@@ -103,6 +108,7 @@ const { layerFeature, tableFeature, fieldMapping, relatedTable, relatedTableTitl
 
 const emit = defineEmits<{
   (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
+  (e: "update-count", count: number): void;
 }>();
 
 const fieldMappingValues = ref<Record<string, string>>({});
@@ -169,6 +175,7 @@ const getRestData = async (table: IRelatedTable) => {
       if (response.status === 404) {
         relatedTableData.value = [];
         totalItems.value = 0;
+        emit("update-count", 0);
         errorMessage.value = null;
         loading.value = false;
         return;
@@ -204,10 +211,15 @@ const getRestData = async (table: IRelatedTable) => {
 
     // If pagination is enabled set total items
     if (table.total_items_page_property) {
-      totalItems.value = fetchDot(table.total_items_page_property, data);
+      totalItems.value = fetchDot(table.total_items_page_property, data) as number;
     }
+
+    emit("update-count", table.total_items_page_property ? totalItems.value : relatedTableData.value.length);
   } catch (error) {
     errorMessage.value = (error as Error).message;
+    relatedTableData.value = [];
+    totalItems.value = 0;
+    emit("update-count", 0);
   }
 
   loading.value = false;
@@ -252,9 +264,17 @@ const getOwsData = async (table: IRelatedTable) => {
       totalItems.value = data.numberMatched;
 
       relatedTableData.value = properties;
+      emit("update-count", totalItems.value ?? relatedTableData.value.length);
     } catch (e) {
       errorMessage.value = (e as Error).message;
+      relatedTableData.value = [];
+      totalItems.value = 0;
+      emit("update-count", 0);
     }
+  } else {
+    relatedTableData.value = [];
+    totalItems.value = 0;
+    emit("update-count", 0);
   }
 
   loading.value = false;
@@ -274,7 +294,9 @@ const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any
   const mapping: Record<string, string> = {};
   if (fieldMapping) {
     for (const [key, value] of Object.entries(fieldMapping)) {
-      mapping[value] = feature.properties ? fetchDot(key, feature.properties) : fetchDot(key, feature);
+      mapping[value] = feature.properties
+        ? (fetchDot(key, feature.properties) as string)
+        : (fetchDot(key, feature) as string);
     }
   }
 

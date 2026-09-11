@@ -109,24 +109,25 @@
       </div>
 
       <Accordion v-if="layer.related_tables.length > 0 && showNewTables" :value="[0]" multiple class="tw-ml-2">
-        <AccordionPanel v-for="(relatedTable, key) in layer.related_tables" :key="key" :value="key">
-          <AccordionHeader class="!tw-text-base">{{
-            relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title
-          }}</AccordionHeader>
-
-          <AccordionContent>
-            <RelatedTableList
-              :layer-feature="feature"
-              :position="position"
-              :related-table="relatedTable"
-              :related-table-title="
-                relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title
-              "
-              :field-mapping="relatedTable.field_mapping"
-              @select-related-table-object="onSelectRelatedTableObject"
-            />
-          </AccordionContent>
-        </AccordionPanel>
+        <RelatedTableAccordionPanel
+          v-for="(relatedTable, key) in layer.related_tables"
+          :key="key"
+          v-slot="{ setCount }"
+          :value="key"
+          :title="relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title"
+        >
+          <RelatedTableList
+            :layer-feature="feature"
+            :position="position"
+            :related-table="relatedTable"
+            :related-table-title="
+              relatedTable.related_table_title ? relatedTable.related_table_title : relatedTable.title
+            "
+            :field-mapping="relatedTable.field_mapping"
+            @update-count="setCount"
+            @select-related-table-object="onSelectRelatedTableObject"
+          />
+        </RelatedTableAccordionPanel>
       </Accordion>
     </div>
   </ExpandButton>
@@ -157,6 +158,7 @@ import { ELayerTypes } from "@/types/layer";
 import { WMTS } from "ol/source";
 import { optionsFromCapabilities } from "ol/source/WMTS";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
+import RelatedTableAccordionPanel from "@/components/related-tables/RelatedTableAccordionPanel.vue";
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import { useMapStore } from "@/stores/map_store";
 import { getWmsTimeParameter } from "@/utils/wms-time";
@@ -167,6 +169,7 @@ nunjucks.configure({ autoescaping: true });
 export default {
   name: "FeatureInfo",
   components: {
+    RelatedTableAccordionPanel,
     RelatedTableList,
     EditIcon,
     MarkerIcon,

@@ -1,9 +1,44 @@
 <template>
+  <Button
+    class="!tw-text-sm !tw-font-medium tw-mt-4"
+    @click="
+      () => {
+        showAddNewTableDrawer = true;
+      }
+    "
+  >
+    <AddIcon class="tw-w-4 tw-h-4" />
+    Nieuwe relatie
+  </Button>
   <div
     class="tw-mt-4 tw-bg-white tw-rounded-lg tw-border tw-border-gray-200 tw-p-4 tw-border-solid tw-flex tw-flex-col tw-gap-4 tw-items-start"
   >
-    <div v-for="table in relatedTables" :key="table.id" class="tw-w-full">
-      <div class="tw-flex">
+    <div v-for="(table, tableIndex) in relatedTables" :key="table.id" class="tw-w-full">
+      <div class="tw-flex tw-flex-row tw-gap-2">
+        <div v-if="relatedTables">
+          <button
+            v-tippy="{ placement: 'bottom' }"
+            class="iconbutton __normal __round __admin_hover"
+            :disabled="tableIndex === 0"
+            :aria-label="'Omhoog'"
+            content="Omhoog"
+            type="button"
+            @click="moveRelatedTable(tableIndex, -1)"
+          >
+            <ArrowUpIcon class="icon __small" />
+          </button>
+          <button
+            v-tippy="{ placement: 'bottom' }"
+            class="iconbutton __normal __round __admin_hover"
+            :disabled="tableIndex === relatedTables.length - 1"
+            :aria-label="'Omlaag'"
+            content="Omlaag"
+            type="button"
+            @click="moveRelatedTable(tableIndex, 1)"
+          >
+            <ArrowDownIcon class="icon __small" />
+          </button>
+        </div>
         <Panel :header="table.title" toggleable class="tw-flex-1">
           <div class="tw-space-y-4">
             <div>Naar de tabel: {{ table.title }}</div>
@@ -43,17 +78,6 @@
         </button>
       </div>
     </div>
-    <Button
-      class="!tw-text-sm !tw-font-medium tw-mt-3"
-      @click="
-        () => {
-          showAddNewTableDrawer = true;
-        }
-      "
-    >
-      <AddIcon class="tw-w-4 tw-h-4" />
-      Nieuwe relatie
-    </Button>
     <Drawer v-model:visible="showAddNewTableDrawer" position="right" header="Nieuwe relatie naar tabel toevoegen">
       <div class="tw-space-y-4">
         <div>
@@ -85,6 +109,8 @@ import { clouds } from "thememirror";
 import { linter } from "@codemirror/lint";
 import { Text } from "@codemirror/state";
 import AddIcon from "@/assets/icons/add-icon.svg";
+import ArrowDownIcon from "@/assets/icons/arrow-down-icon.svg";
+import ArrowUpIcon from "@/assets/icons/arrow-up-icon.svg";
 import TrashIcon from "@/assets/icons/trash-icon.svg";
 import { IRelatedTable } from "@/types/related-table";
 import { ref, toRefs } from "vue";
@@ -163,6 +189,19 @@ function addRelatedTable() {
   // Reset selection and close drawer
   selectedTable.value = null;
   showAddNewTableDrawer.value = false;
+}
+
+function moveRelatedTable(tableIndex: number, direction: -1 | 1) {
+  if (!relatedTables.value) return;
+
+  const targetIndex = tableIndex + direction;
+  if (targetIndex < 0 || targetIndex >= relatedTables.value.length) return;
+
+  const updatedRelatedTables = [...relatedTables.value];
+  const [table] = updatedRelatedTables.splice(tableIndex, 1);
+  updatedRelatedTables.splice(targetIndex, 0, table);
+
+  emit("related-tables-changed", updatedRelatedTables);
 }
 
 function cancelAddTable() {

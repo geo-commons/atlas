@@ -309,17 +309,18 @@ export default {
       currentValues.friendly_fields = this.validateAndParseJsonString(currentValues.friendly_fields);
       currentValues.templated_properties = this.validateAndParseJsonString(currentValues.templated_properties);
 
-      if (currentValues.related_tables && currentValues.related_tables.length > 0) {
+      if (currentValues.related_tables) {
         const relatedTables = [];
         // Because relatedTables consist of the actual tables we still need to translate it to the relations objects
         // expected by the API.
-        currentValues.related_tables.forEach((related_table) => {
+        currentValues.related_tables.forEach((related_table, index) => {
           const layerToTable = {
             id: related_table.layer_to_table_id,
             from_layer: currentValues.id,
             to_table: related_table.id,
             field_mapping: related_table.field_mapping,
             related_table_title: related_table.related_table_title,
+            ordering: index,
           };
           relatedTables.push(layerToTable);
         });
