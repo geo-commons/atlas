@@ -207,13 +207,14 @@ const getRestData = async (table: IRelatedTable) => {
 
     // If pagination is enabled set total items
     if (table.total_items_page_property) {
-      totalItems.value = fetchDot(table.total_items_page_property, data);
+      totalItems.value = fetchDot(table.total_items_page_property, data) as number;
     }
 
     emit("update-count", table.total_items_page_property ? totalItems.value : tableData.value.length);
   } catch (error) {
     errorMessage.value = (error as Error).message;
     tableData.value = [];
+    totalItems.value = 0;
     emit("update-count", 0);
   }
 
@@ -263,6 +264,7 @@ const getOwsData = async (table: IRelatedTable) => {
     } catch (e) {
       errorMessage.value = (e as Error).message;
       tableData.value = [];
+      totalItems.value = 0;
       emit("update-count", 0);
     }
   } else {

@@ -11,7 +11,7 @@
         </div>
       </div>
       <div v-for="property in Object.keys(templateFields)" :key="property" class="tw-grid tw-grid-cols-3">
-        <div class="tw-col-span-1 tw-font-bold header">
+        <div class="tw-col-span-1 !tw-text-[var(--color-text-grey) header">
           {{ formatRawString(property) }}
         </div>
         <div class="tw-col-span-2">
@@ -102,7 +102,7 @@ const getFieldMapping = (fieldMapping: Record<string, string>, item: any): Recor
   const mapping: Record<string, string> = {};
   if (fieldMapping) {
     for (const [key, value] of Object.entries(fieldMapping)) {
-      mapping[value] = item.properties ? fetchDot(key, item.properties) : fetchDot(key, item);
+      mapping[value] = item.properties ? (fetchDot(key, item.properties) as string) : (fetchDot(key, item) as string);
     }
   }
 

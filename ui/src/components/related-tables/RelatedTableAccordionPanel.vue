@@ -1,6 +1,10 @@
 <template>
   <AccordionPanel :value="value">
-    <AccordionHeader class="!tw-text-base"> {{ title }} {{ count ? `(${count})` : `(0)` }} </AccordionHeader>
+    <AccordionHeader class="!tw-text-base">
+      <span
+        >{{ title }} <span v-if="count !== null">({{ count }})</span></span
+      >
+    </AccordionHeader>
 
     <AccordionContent class="tw-overflow-x-scroll">
       <slot :set-count="setCount" />

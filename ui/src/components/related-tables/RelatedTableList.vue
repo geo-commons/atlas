@@ -211,13 +211,14 @@ const getRestData = async (table: IRelatedTable) => {
 
     // If pagination is enabled set total items
     if (table.total_items_page_property) {
-      totalItems.value = fetchDot(table.total_items_page_property, data);
+      totalItems.value = fetchDot(table.total_items_page_property, data) as number;
     }
 
     emit("update-count", table.total_items_page_property ? totalItems.value : relatedTableData.value.length);
   } catch (error) {
     errorMessage.value = (error as Error).message;
     relatedTableData.value = [];
+    totalItems.value = 0;
     emit("update-count", 0);
   }
 
@@ -267,6 +268,7 @@ const getOwsData = async (table: IRelatedTable) => {
     } catch (e) {
       errorMessage.value = (e as Error).message;
       relatedTableData.value = [];
+      totalItems.value = 0;
       emit("update-count", 0);
     }
   } else {
@@ -292,7 +294,9 @@ const getFieldMappingValue = (fieldMapping: Record<string, string>, feature: any
   const mapping: Record<string, string> = {};
   if (fieldMapping) {
     for (const [key, value] of Object.entries(fieldMapping)) {
-      mapping[value] = feature.properties ? fetchDot(key, feature.properties) : fetchDot(key, feature);
+      mapping[value] = feature.properties
+        ? (fetchDot(key, feature.properties) as string)
+        : (fetchDot(key, feature) as string);
     }
   }
 
