@@ -29,13 +29,9 @@ LAYER_PREFETCH_FIELDS = (
     'atlas_groups',
     'atlas_write_groups',
     'linked_data',
-    'templates',
-    'related_tables',
-    'related_tables__source',
-    'related_tables__tables',
-    'related_tables__tables__source',
-    'related_tables__outgoing_table_relations',
-    'layer_table_relations',
+    'templates__source',
+    'layer_table_relations__to_table__source',
+    'layer_table_relations__to_table__outgoing_table_relations__to_table__source',
 )
 
 

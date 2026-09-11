@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AdminFormSections from "@/admin/components/AdminFormSections.vue";
 import Spinner from "@/components/Spinner.vue";
@@ -34,7 +34,7 @@ const { sourcesState } = useSourceList();
 const { tablesState: availableTablesState } = useTableList();
 
 const formSections = ref();
-const sections = ref({});
+const sections = computed(() => getSections());
 const initialValues = ref({});
 const loading = ref(false);
 const selectedSource = ref({});
@@ -76,6 +76,7 @@ async function getTable() {
         table_to_table_id: table_to_table_id,
         field_mapping: table.field_mapping,
         related_table_title: table.related_table_title,
+        ordering: table.ordering,
       };
     });
   }
@@ -103,17 +104,18 @@ async function saveTable(currentValues, continueEditing = false) {
     currentValues.friendly_fields = validateAndParseJsonString(currentValues.friendly_fields);
     currentValues.friendly_search_fields = validateAndParseJsonString(currentValues.friendly_search_fields);
 
-    if (currentValues.related_tables && currentValues.related_tables.length > 0) {
+    if (currentValues.related_tables) {
       const relatedTables = [];
       // Because relatedTables consist of the actual tables we still need to translate it to the relations objects
       // expected by the API.
-      currentValues.related_tables.forEach((related_table) => {
+      currentValues.related_tables.forEach((related_table, index) => {
         const tableToTable = {
           id: related_table.table_to_table_id,
           from_table: currentValues.id,
           to_table: related_table.id,
           field_mapping: related_table.field_mapping,
           related_table_title: related_table.related_table_title,
+          ordering: index,
         };
         relatedTables.push(tableToTable);
       });
@@ -152,8 +154,7 @@ const validateAndParseJsonString = (text) => {
 
 onMounted(async () => {
   loading.value = true;
-  await Promise.all([getTable()]);
-  sections.value = getSections();
+  await getTable();
   loading.value = false;
 });
 

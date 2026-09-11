@@ -397,7 +397,10 @@ class LayerSerializer(serializers.ModelSerializer):
         request = self.context['request']
         from table.serializers import TableSerializer
 
-        tables = obj.related_tables.all()
+        tables = [
+            relation.to_table
+            for relation in obj.layer_table_relations.select_related('to_table').order_by('ordering', 'id')
+        ]
         return TableSerializer(tables, many=True, context={'from_layer': obj, 'request': request}).data
 
     def get_opacity(self, obj):
@@ -587,10 +590,10 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
             instance.templates.set(templates_data_to_create, bulk=False)
 
         # Handling many-to-many field 'related_tables'
-        if related_tables:
+        if related_tables is not None:
             try:
                 # Get IDs of table relations sent in the request
-                incoming_table_ids = {item.get('id') for item in related_tables}
+                incoming_table_ids = {item.get('id') for item in related_tables if item.get('id')}
 
                 # Get existing relations
                 existing_relations = LayerToTable.objects.filter(from_layer=instance)
@@ -609,18 +612,24 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
                         field_mapping = item.get('field_mapping')
                         if field_mapping is not None:
                             existing_relation.field_mapping = field_mapping
-                            
+
                         related_table_title = item.get('related_table_title')
                         if related_table_title is not None:
                             existing_relation.related_table_title = related_table_title
-                            
+
+                        ordering = item.get('ordering')
+                        if ordering is not None:
+                            existing_relation.ordering = ordering
+
                         existing_relation.save()
                     else:
                         # Create new relation
                         LayerToTable.objects.create(
                             from_layer=instance,
                             to_table_id=item.get('to_table'),
-                            field_mapping=item.get('field_mapping')
+                            field_mapping=item.get('field_mapping'),
+                            related_table_title=item.get('related_table_title', ''),
+                            ordering=item.get('ordering', 0),
                         )
             except Exception as e:
                 raise serializers.ValidationError({
