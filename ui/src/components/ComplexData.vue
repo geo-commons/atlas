@@ -8,6 +8,11 @@
       scroll-height="260px"
       responsive-layout="scroll"
       class="tw-w-full"
+      :pt="{
+        column: {
+          columnTitle: '!tw-font-normal tw-text-[var(--color-text-grey)]',
+        },
+      }"
     >
       <Column v-for="col in objectTableColumns" :key="col" :field="col" :header="prettyHeader(col)">
         <template #body="{ data }">
