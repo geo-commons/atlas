@@ -51,6 +51,7 @@ class TableToTableSerializer(serializers.ModelSerializer):
             'to_table',
             'field_mapping',
             'related_table_title',
+            'ordering',
         ]
 
 
@@ -62,6 +63,7 @@ class TableSerializer(serializers.ModelSerializer):
     layer_to_table_id = serializers.SerializerMethodField()
     related_tables = serializers.SerializerMethodField()
     related_table_title = serializers.SerializerMethodField()
+    ordering = serializers.SerializerMethodField()
 
     class Meta:
         model = Table
@@ -90,6 +92,7 @@ class TableSerializer(serializers.ModelSerializer):
             'related_tables',
             'field_mapping',
             'related_table_title',
+            'ordering',
             'layer_name',
             'list_display_properties',
             'detail_display_properties',
@@ -109,7 +112,7 @@ class TableSerializer(serializers.ModelSerializer):
             "Request context is required to filter related tables based on permissions."
         )
 
-        relations_qs = obj.outgoing_table_relations.select_related("to_table")
+        relations_qs = obj.outgoing_table_relations.select_related("to_table").order_by("ordering", "id")
 
         authorized_tables = Table.authorized.for_request(
             request,
@@ -132,7 +135,7 @@ class TableSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
 
-        if related_tables:
+        if related_tables is not None:
             try:
                 incoming_table_ids = {item.get('id') for item in related_tables if item.get('id')}
                 existing_relations = TableToTable.objects.filter(from_table=instance)
@@ -146,18 +149,23 @@ class TableSerializer(serializers.ModelSerializer):
                         field_mapping = item.get('field_mapping')
                         if field_mapping is not None:
                             existing_relation.field_mapping = field_mapping
-                            
+
                         related_table_title = item.get('related_table_title')
                         if related_table_title is not None:
                             existing_relation.related_table_title = related_table_title
-                            
+
+                        ordering = item.get('ordering')
+                        if ordering is not None:
+                            existing_relation.ordering = ordering
+
                         existing_relation.save()
                     else:
                         TableToTable.objects.create(
                             from_table=instance,
                             to_table_id=item.get('to_table'),
                             field_mapping=item.get('field_mapping'),
-                            related_table_title=item.get('related_table_title', '')
+                            related_table_title=item.get('related_table_title', ''),
+                            ordering=item.get('ordering', 0),
                         )
             except Exception as e:
                 raise serializers.ValidationError({
@@ -185,6 +193,11 @@ class TableSerializer(serializers.ModelSerializer):
         """Include title from LayerToTable if called from a Layer context"""
         layer_to_table = self._get_layer_to_table(obj)
         return layer_to_table.related_table_title if layer_to_table else None
+
+    def get_ordering(self, obj):
+        """Include relation ordering from LayerToTable if called from a Layer context"""
+        layer_to_table = self._get_layer_to_table(obj)
+        return layer_to_table.ordering if layer_to_table else None
 
     def get_layer_to_table_id(self, obj):
         """Include LayerToTable ID for editing relations"""
