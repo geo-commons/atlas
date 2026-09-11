@@ -57,11 +57,14 @@ export default {
     layerDisplayName() {
       return this.layer ? this.layer.title : "";
     },
+    currentLayerFilter() {
+      return this.layer ? this.store?.layerFilters?.[this.layer.id] : null;
+    },
   },
   watch: {
     layer: "fetchFeatures",
     selectedArea: "fetchFeatures",
-    "store.layerFilters": {
+    currentLayerFilter: {
       handler: "fetchFeatures",
       deep: true,
     },

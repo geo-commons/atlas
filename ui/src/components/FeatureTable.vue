@@ -19,7 +19,9 @@
             id="selected_columns"
             v-model="selectedFilterProperties"
             :style="{ maxWidth: 'clamp(200px,100%,400px)', minWidth: 'clamp(200px, 100%, 400px)' }"
-            :options="filterProperties"
+            :options="filterPropertyOptions"
+            option-label="label"
+            option-value="value"
             :placeholder="'Kies kolom(men)'"
             filter
             display="chip"
@@ -40,6 +42,7 @@
               :field-filters="fieldFilters"
               :filter-property="property"
               :filter-property-type="filterPropertyTypes[property]"
+              :filter-property-display-name="headerText(property)"
               @on-filter-change="(v) => setFieldFilters(v, property)"
             />
           </div>
@@ -180,6 +183,14 @@ export default {
         GML: { wfsFormat: "GML3", extension: ".gml" },
       },
     };
+  },
+  computed: {
+    filterPropertyOptions() {
+      return this.filterProperties.map((property) => ({
+        label: this.headerText(property),
+        value: property,
+      }));
+    },
   },
   watch: {
     searchValue() {

@@ -164,7 +164,7 @@ describe("getLayerCqlFilter", () => {
     expect(getLayerCqlFilter(layerFilters, "layer-a")).toBe("active = true");
   });
 
-  it("builds temporal filters without quotes for GeoServer JSON DescribeFeatureType temporal types", () => {
+  it("quotes time filters for GeoServer JSON DescribeFeatureType temporal types", () => {
     const layerFilters: ILayerFilters = {
       "layer-a": {
         filters: {
@@ -191,7 +191,7 @@ describe("getLayerCqlFilter", () => {
     };
 
     expect(getLayerCqlFilter(layerFilters, "layer-a")).toBe(
-      "start_date >= 2024-01-01 AND start_time < 12:30:00 AND updated_at <= 2024-01-01T12:30:00",
+      "start_date >= 2024-01-01 AND start_time < '12:30:00' AND updated_at <= 2024-01-01T12:30:00",
     );
   });
 

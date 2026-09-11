@@ -94,7 +94,7 @@ export function useMapStore(mapName: string) {
       },
       // Panel/search filters and legend filters are mutually exclusive.
       // Updating one source clears the other so CQL filters are never combined accidentally.
-      updateFiltersForLayer(layerId: string, filters: any) {
+      updateFiltersForLayer(layerId: string, filters: Record<string, IPanelFilterValue>) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
           filters: filters,

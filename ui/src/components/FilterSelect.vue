@@ -51,7 +51,7 @@
       :date-format="isTimeFilter ? undefined : 'dd-mm-yy'"
       :show-time="isDateTimeFilter"
       :time-only="isTimeFilter"
-      placeholder="Kies datum"
+      :placeholder="temporalPlaceholder"
       show-icon
       class="filter-control"
       @update:model-value="updateFieldFilters()"
@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import { useMapStore } from "@/stores/map_store";
 import { EPanelFilterOperator } from "@/types/mapStore";
 import { normalizeType, NUMERIC_TYPES, TEMPORAL_TYPES } from "@/utils/layer-filter-cql";
 import { format, isValid, parseISO } from "date-fns";
@@ -109,7 +108,6 @@ export default {
       selectedValues: [],
       selectedOperator: EPanelFilterOperator.Equals,
       selectedSingleValue: null,
-      store: null,
     };
   },
   computed: {
@@ -162,27 +160,35 @@ export default {
     currentFilterOptionsWithoutEmpty() {
       return this.currentFilterOptions.filter((filterOption) => filterOption.value !== "Leeg");
     },
+    currentFilterValue() {
+      return this.fieldFilters?.[this.filterProperty] || null;
+    },
+    temporalPlaceholder() {
+      return this.isTimeFilter ? "Kies tijd" : "Kies datum";
+    },
   },
-  created() {
-    this.store = useMapStore(this.mapId);
+  watch: {
+    currentFilterValue: {
+      handler(filterValue) {
+        this.syncLocalFilter(filterValue);
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+  methods: {
+    syncLocalFilter(filterValue) {
+      if (!filterValue) {
+        this.resetLocalFilter();
+        return;
+      }
 
-    const filterValue = this.store.layerFilters[this.layerId]?.filters?.[this.filterProperty];
-
-    if (filterValue) {
       this.selectedOperator = filterValue.operator;
       this.selectedValues = filterValue.values || [];
       this.selectedSingleValue = this.isTemporalFilter
         ? this.parseTemporalValue(filterValue.values?.[0])
         : (filterValue.values?.[0] ?? null);
-    }
-
-    this.store.$subscribe((_, state) => {
-      if (!state.layerFilters[this.layerId]?.filters?.[this.filterProperty]) {
-        this.resetLocalFilter();
-      }
-    });
-  },
-  methods: {
+    },
     resetLocalFilter() {
       this.selectedOperator = EPanelFilterOperator.Equals;
       this.selectedValues = [];

@@ -36,6 +36,8 @@ const isTemporalType = (type?: string): boolean => {
   return !!normalizedType && TEMPORAL_TYPES.includes(normalizedType);
 };
 
+const isTimeType = (type?: string): boolean => normalizeType(type) === "time";
+
 const formatCqlValue = (value: string | number | null | undefined, type?: string): string | null => {
   if (value === null || value === undefined || value === "") {
     return null;
@@ -43,6 +45,10 @@ const formatCqlValue = (value: string | number | null | undefined, type?: string
 
   if (isBooleanType(type)) {
     return String(value).toLowerCase();
+  }
+
+  if (isTimeType(type)) {
+    return `'${escapeStringValue(String(value))}'`;
   }
 
   if (isTemporalType(type)) {
