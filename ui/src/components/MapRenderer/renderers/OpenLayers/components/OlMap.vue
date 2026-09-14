@@ -35,6 +35,8 @@ import KeyboardPan from "ol/interaction/KeyboardPan";
 import KeyboardZoom from "ol/interaction/KeyboardZoom";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
 import PinchZoom from "ol/interaction/PinchZoom";
+import Select from "ol/interaction/Select";
+import { Fill, Stroke, Style } from "ol/style";
 
 const DEFAULT_DPI = 25.4 / 0.28;
 
@@ -54,6 +56,13 @@ export default {
     register(getDefinitions());
   },
   data() {
+    const selectInteraction = new Select({
+      style: new Style({
+        stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
+        fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
+      }),
+    });
+
     return {
       map: new Map({
         controls: [],
@@ -64,28 +73,16 @@ export default {
           new MouseWheelZoom(),
           new DoubleClickZoom(),
           new PinchZoom(),
+          selectInteraction,
         ],
       }),
       scaleType: "LINE",
       scale: 0,
+      selectInteraction,
     };
   },
   mounted() {
     this.map.setTarget(this.$refs["map"]);
-
-    // show pointer on clickable features
-    this.map.on("pointermove", (e) => {
-      if (e.dragging) {
-        return;
-      }
-
-      const pixel = this.map.getEventPixel(e.originalEvent);
-      const hit = this.map.hasFeatureAtPixel(pixel, {
-        layerFilter: (layer) => layer.get("selectable"),
-      });
-
-      this.map.getTarget().style.cursor = hit ? "pointer" : "";
-    });
 
     this.map.on("moveend", () => {
       const view = this.map.getView();
@@ -102,6 +99,16 @@ export default {
         zoom: view.getZoom(),
         extent: view.calculateExtent(this.map.getSize()),
       });
+    });
+
+    this.selectInteraction.on("select", (e) => {
+      const features = e.target.getFeatures().getArray();
+
+      if (features.length === 0) {
+        return;
+      }
+
+      this.$emit("features-selected", features);
     });
 
     this.scaleline = new ScaleLine({

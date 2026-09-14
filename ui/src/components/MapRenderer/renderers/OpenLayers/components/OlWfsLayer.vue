@@ -4,7 +4,6 @@
 
 <script setup>
 import { inject, onMounted, onUnmounted, toRaw, watch } from "vue";
-import Select from "ol/interaction/Select";
 import VectorLayer from "ol/layer/Vector";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
@@ -52,14 +51,11 @@ const props = defineProps({
   maxZoom: Number,
 });
 
-const emit = defineEmits(["features-selected"]);
-
 const map = inject("map");
 const mapStore = useMapStore(props.mapId);
 
 let source;
 let tileLayer;
-let select;
 
 const getStyle = async (inputStyle) => {
   if (!inputStyle || Object.keys(inputStyle).length === 0) {
@@ -74,15 +70,6 @@ const getStyle = async (inputStyle) => {
   }
 
   return DEFAULT_STYLE;
-};
-
-const onSelectFeatures = (e) => {
-  const features = e.target.getFeatures().getArray();
-  if (features.length === 0) {
-    return;
-  }
-
-  emit("features-selected", features);
 };
 
 onMounted(async () => {
@@ -131,26 +118,9 @@ onMounted(async () => {
     props.clientStyle && props.clientStyle["default"] ? props.clientStyle["default"] : props.clientStyle,
   );
   tileLayer.setStyle(style);
-
-  if (props.isSelectable) {
-    const activeStyle = await getStyle(
-      props.clientStyle && props.clientStyle["active"] ? props.clientStyle["active"] : props.clientStyle,
-    );
-
-    select = new Select({
-      layers: [tileLayer],
-      style: activeStyle,
-    });
-
-    select.on("select", onSelectFeatures);
-    map.addInteraction(select);
-  }
 });
 
 onUnmounted(() => {
-  if (select) {
-    map.removeInteraction(select);
-  }
   map.removeLayer(tileLayer);
 });
 
@@ -195,16 +165,6 @@ watch(
   () => mapStore.layerFilters,
   () => {
     source.refresh();
-  },
-  { deep: true },
-);
-
-watch(
-  () => props.selectedFeatures,
-  (features) => {
-    if (select && features && features.length === 0) {
-      select.getFeatures().clear();
-    }
   },
   { deep: true },
 );
