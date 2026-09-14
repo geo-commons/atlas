@@ -318,7 +318,7 @@ export default {
         ["outputFormat", "application/json"],
         ["srsname", this.layer.projection],
         ["bbox", extent.join(",")],
-        ["maxFeatures", "100"],
+        ["count", "100"],
       ]);
 
       const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, this.layer.id);

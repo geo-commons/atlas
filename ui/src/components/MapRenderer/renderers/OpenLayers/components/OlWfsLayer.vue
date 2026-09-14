@@ -92,13 +92,19 @@ onMounted(async () => {
     url: (extent) => {
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "GetFeature"],
         ["typename", props.name],
         ["outputFormat", "application/json"],
         ["srsname", "EPSG:28992"],
         ["bbox", extent.join(",")],
+        ["count", "1000"],
       ]);
+      const cqlFilter = getLayerCqlFilter(mapStore.layerFilters, props.id);
+
+      if (cqlFilter) {
+        params.set("CQL_FILTER", cqlFilter);
+      }
 
       const url = new URL(props.url);
       url.search = params.toString();
@@ -166,7 +172,7 @@ watch(
 watch(
   () => props.isVisible,
   (value) => {
-    tileLayer.set("visible", value);
+    tileLayer.setVisible(value);
   },
 );
 
@@ -187,33 +193,7 @@ watch(
 
 watch(
   () => mapStore.layerFilters,
-  (value) => {
-    // If filters object is empty, refresh source
-    if (!Object.keys(value).length) {
-      source.updateParams({
-        ...source.getParams(),
-        CQL_FILTER: null,
-      });
-      source.refresh();
-      return;
-    }
-
-    // Don't filter if there are no filters specified for specific layer
-    if (!Object.keys(value).includes(props.id)) {
-      return;
-    }
-
-    if (!value[props.id]) {
-      return;
-    }
-
-    const cqlFilter = getLayerCqlFilter(value, props.id);
-
-    source.updateParams({
-      ...source.getParams(),
-      CQL_FILTER: cqlFilter,
-    });
-
+  () => {
     source.refresh();
   },
   { deep: true },
