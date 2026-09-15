@@ -84,14 +84,13 @@ onMounted(async () => {
         ["typename", props.name],
         ["outputFormat", "application/json"],
         ["srsname", "EPSG:28992"],
-        ["bbox", extent.join(",")],
-        ["count", "1000"],
+        ["count", "5000"],
       ]);
+
+      const bboxFilter = `BBOX(geom, ${extent.join(", ")})`;
       const cqlFilter = getLayerCqlFilter(mapStore.layerFilters, props.id);
 
-      if (cqlFilter) {
-        params.set("CQL_FILTER", cqlFilter);
-      }
+      params.set("CQL_FILTER", cqlFilter ? `(${bboxFilter}) AND (${cqlFilter})` : bboxFilter);
 
       const url = new URL(props.url);
       url.search = params.toString();
