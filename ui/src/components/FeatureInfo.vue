@@ -135,7 +135,6 @@
 
 <script>
 import nunjucks from "nunjucks";
-import { getForViewAndSize } from "ol/extent";
 import LinkedDataTable from "./LinkedDataTable.vue";
 import TableList from "./TableList";
 import TileWMS from "ol/source/TileWMS";
@@ -189,6 +188,10 @@ export default {
     config: Object,
     atlasFeatures: Object,
     isOpen: Boolean,
+    selectedFeatures: {
+      type: Array,
+      default: () => [],
+    },
   },
   emits: [
     "set-position",
@@ -226,6 +229,15 @@ export default {
     },
   },
   watch: {
+    selectedFeatures: {
+      handler(features) {
+        if (this.layer.source_type === ELayerTypes.WFS) {
+          this.features = this.getSelectedWfsFeatures(features);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
     position: "fetchFeatures",
     "mapStore.selectedTimeSliderLayerId": "fetchFeatures",
     "mapStore.timeSliderDisplayMode": "fetchFeatures",
@@ -245,6 +257,16 @@ export default {
     this.fetchFeatures();
   },
   methods: {
+    getSelectedWfsFeatures(selectedFeatures) {
+      return selectedFeatures
+        .filter((feature) => feature.get("layer_id") === this.layer.id)
+        .map((feature) => {
+          const geoJsonFeature = new GeoJSON().writeFeatureObject(feature);
+          delete geoJsonFeature.properties.layer_id;
+
+          return geoJsonFeature;
+        });
+    },
     fetchFeatures() {
       this.onSelectRelatedTableObject(null);
 
@@ -253,7 +275,9 @@ export default {
       }
 
       if (this.layer.source_type === ELayerTypes.WFS) {
-        return this.fetchFeaturesFromWFS();
+        this.html = "";
+        this.features = this.getSelectedWfsFeatures(this.selectedFeatures);
+        return;
       }
 
       if (this.layer.source_type === ELayerTypes.WMTS) {
@@ -301,38 +325,6 @@ export default {
       } catch (e) {
         console.error(e);
       }
-    },
-    async fetchFeaturesFromWFS() {
-      const view = new View({
-        center: this.position.center,
-        zoom: this.position.zoom,
-      });
-
-      const extent = getForViewAndSize(this.position.marker, view.getResolution(), 0, [1, 1]);
-
-      const params = new URLSearchParams([
-        ["service", "WFS"],
-        ["version", "2.0.0"],
-        ["request", "GetFeature"],
-        ["typename", this.layer.name],
-        ["outputFormat", "application/json"],
-        ["srsname", this.layer.projection],
-        ["bbox", extent.join(",")],
-        ["count", "100"],
-      ]);
-
-      const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, this.layer.id);
-
-      if (cqlFilter) {
-        params.set("cql_filter", cqlFilter);
-      }
-
-      const url = new URL(this.layer.url);
-      url.search = params.toString();
-
-      const result = await fetch(url.toString(), this.getFetchParameters());
-      const data = await result.json();
-      this.features = data.features;
     },
     /**
      * Fetches feature information from a WMTS layer at the current map position.

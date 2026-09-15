@@ -57,7 +57,7 @@
             :show-compare-slider="compareLayers"
             @position-changed="setPosition"
             @tool-used="toolUsed"
-            @features-selected="featuresSelected"
+            @set-selected-features="setSelectedFeatures"
             @on-fit="(position) => onFit(position)"
             @loading-print-to-pdf="setLoadingPrint"
           />
@@ -87,7 +87,7 @@
         :font-size="fontSize"
         @position-changed="setPosition"
         @tool-used="toolUsed"
-        @features-selected="featuresSelected"
+        @set-selected-features="setSelectedFeatures"
         @on-fit="(position) => onFit(position)"
         @loading-print-to-pdf="setLoadingPrint"
       />
@@ -132,6 +132,7 @@
       :config="config"
       :features="features"
       :map-id="mapId"
+      :selected-features="selectedFeatures"
       @set-position="setPosition"
       @on-fit="onFit"
       @expanded-info-panel="toggleInfoPanel"
@@ -142,7 +143,7 @@
       v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
       :show-panel="selectedFeatures.length > 0 && !editLayerStore.hideOtherPanels"
       :features="selectedFeatures"
-      @features-selected="featuresSelected"
+      @features-selected="setSelectedFeatures"
     />
     <DataPanel
       v-if="!isEmbed && !showPanoramaPanel"
@@ -917,54 +918,52 @@ export default {
     async getFeatureInfo(position) {
       this.highlightedFeatures = [];
 
-      this.mapStore.visibleLayersForFeatures.forEach(async (layer) => {
-        if (layer.source_type === ELayerTypes.WMTS) {
-          return;
-        }
+      this.mapStore.visibleLayersForFeatures
+        .filter((layer) => layer.source_type !== ELayerTypes.WFS && layer.source_type !== ELayerTypes.WMTS)
+        .map(async (layer) => {
+          const timeParameter = getWmsTimeParameter(this.mapStore, layer.id, layer.is_time_enabled === true);
+          const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, layer.id);
 
-        const timeParameter = getWmsTimeParameter(this.mapStore, layer.id, layer.is_time_enabled === true);
-        const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, layer.id);
+          const wmsSource = new TileWMS({
+            url: layer.url,
+            servertype: layer.server_type,
+            params: {
+              LAYERS: layer.name,
+              ...(timeParameter ? { TIME: timeParameter } : {}),
+              ...(cqlFilter ? { CQL_FILTER: cqlFilter } : {}),
+              TILED: true,
+            },
+          });
 
-        const wmsSource = new TileWMS({
-          url: layer.url,
-          servertype: layer.server_type,
-          params: {
-            LAYERS: layer.name,
-            ...(timeParameter ? { TIME: timeParameter } : {}),
-            ...(cqlFilter ? { CQL_FILTER: cqlFilter } : {}),
-            TILED: true,
-          },
-        });
+          const view = new View({
+            center: this.position.center,
+            zoom: this.position.zoom,
+          });
 
-        const view = new View({
-          center: this.position.center,
-          zoom: this.position.zoom,
-        });
+          const url = wmsSource.getFeatureInfoUrl(position.marker, view.getResolution(), "EPSG:28992", {
+            info_format: "application/json",
+            feature_count: 20,
+          });
 
-        const url = wmsSource.getFeatureInfoUrl(position.marker, view.getResolution(), "EPSG:28992", {
-          info_format: "application/json",
-          feature_count: 20,
-        });
+          try {
+            const result = await fetch(url, getFetchParameters(layer, this.user));
+            const data = await result.json();
+            const features = data.features.map((feature) => new GeoJSON().readFeature(feature));
 
-        try {
-          const result = await fetch(url, getFetchParameters(layer, this.user));
-          const data = await result.json();
-          const features = data.features.map((feature) => new GeoJSON().readFeature(feature));
-
-          if (!layer.disable_highlighted_style) {
-            this.highlightedFeatures = [...this.highlightedFeatures, ...features];
-          }
-
-          if (this.$refs.map && this.$refs.map.map) {
-            const tooltip = createMeasurementTooltip(features[0], this.$refs.map.map, { isStatic: true });
-            if (tooltip) {
-              this.$refs.map.measuredAreaTooltips.push(tooltip);
+            if (!layer.disable_highlighted_style) {
+              this.highlightedFeatures = [...this.highlightedFeatures, ...features];
             }
+
+            if (this.$refs.map && this.$refs.map.map) {
+              const tooltip = createMeasurementTooltip(features[0], this.$refs.map.map, { isStatic: true });
+              if (tooltip) {
+                this.$refs.map.measuredAreaTooltips.push(tooltip);
+              }
+            }
+          } catch (e) {
+            console.error(e);
           }
-        } catch (e) {
-          console.error(e);
-        }
-      });
+        });
     },
     printMapToPdf(settings) {
       this.$refs.map.printToPdf(settings);
@@ -1147,7 +1146,7 @@ export default {
         this.drawFeatures.push(this.removedDrawFeatures.pop());
       }
     },
-    featuresSelected(selectedFeatures) {
+    setSelectedFeatures(selectedFeatures) {
       this.selectedFeatures = selectedFeatures;
     },
     setSelectedArea(selectedArea) {
@@ -1169,7 +1168,7 @@ export default {
     onFit(position) {
       this.$refs.map.fit(position, { maxZoom: 19, duration: 1000 });
     },
-    async showFeatureOnMap(feature, layer = null) {
+    async showFeatureOnMap(feature, layer) {
       const geoFeature = new GeoJSON().readFeature(feature);
       const center = getFeatureCenterCoordinates(feature);
 
@@ -1185,7 +1184,11 @@ export default {
         false,
       );
 
-      this.selectedFeatures = [];
+      if (layer.source_type === ELayerTypes.WFS) {
+        geoFeature.set("layer_id", layer.id, true);
+        this.setSelectedFeatures([geoFeature]);
+      }
+
       this.highlightedFeatures = layer?.disable_highlighted_style ? [] : [geoFeature];
       this.onFit(geoFeature.getGeometry());
     },

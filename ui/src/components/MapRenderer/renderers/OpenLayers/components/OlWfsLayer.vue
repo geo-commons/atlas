@@ -87,7 +87,7 @@ onMounted(async () => {
         ["count", "5000"],
       ]);
 
-      const bboxFilter = `BBOX(geom, ${extent.join(", ")})`;
+      const bboxFilter = `BBOX(geom, ${extent.join(", ")}, EPSG:28992)`;
       const cqlFilter = getLayerCqlFilter(mapStore.layerFilters, props.id);
 
       params.set("CQL_FILTER", cqlFilter ? `(${bboxFilter}) AND (${cqlFilter})` : bboxFilter);
@@ -97,6 +97,10 @@ onMounted(async () => {
 
       return url.toString();
     },
+  });
+
+  source.on("addfeature", ({ feature }) => {
+    feature.set("layer_id", props.id, true);
   });
 
   tileLayer = new VectorLayer({

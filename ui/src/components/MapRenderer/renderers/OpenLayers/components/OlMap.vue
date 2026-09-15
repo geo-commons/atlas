@@ -36,7 +36,7 @@ import KeyboardZoom from "ol/interaction/KeyboardZoom";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
 import PinchZoom from "ol/interaction/PinchZoom";
 import Select from "ol/interaction/Select";
-import { Fill, Stroke, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style } from "ol/style";
 
 const DEFAULT_DPI = 25.4 / 0.28;
 
@@ -51,7 +51,7 @@ export default {
     features: Object,
     showCompareSlider: Boolean,
   },
-  emits: ["set-position"],
+  emits: ["set-position", "set-selected-features"],
   setup() {
     register(getDefinitions());
   },
@@ -60,6 +60,11 @@ export default {
       style: new Style({
         stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
         fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
+        image: new Circle({
+          radius: 10,
+          fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
+          stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
+        }),
       }),
     });
 
@@ -103,12 +108,7 @@ export default {
 
     this.selectInteraction.on("select", (e) => {
       const features = e.target.getFeatures().getArray();
-
-      if (features.length === 0) {
-        return;
-      }
-
-      this.$emit("features-selected", features);
+      this.$emit("set-selected-features", features);
     });
 
     this.scaleline = new ScaleLine({
