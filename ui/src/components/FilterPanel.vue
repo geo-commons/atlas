@@ -17,7 +17,7 @@
                 store.layerFilters &&
                 store.layerFilters[layer.id] &&
                 store.layerFilters[layer.id]['filters'][facet] &&
-                store.layerFilters[layer.id]['filters'][facet].includes(value)
+                isFacetValueSelected(store.layerFilters[layer.id]['filters'][facet], value)
               "
               @click="onChangeFilter"
             />
@@ -30,6 +30,7 @@
 
 <script>
 import { useMapStore } from "@/stores/map_store";
+import { EPanelFilterOperator } from "@/types/mapStore";
 import { formatRawString } from "@/utils/string-helpers";
 import CheckboxField from "./CheckboxField";
 import ExpandButton from "./ExpandButton";
@@ -144,18 +145,21 @@ export default {
     onChangeFilter(e) {
       const { name, value, checked } = e.target;
 
-      let newFilters = this.store.getFiltersForLayer(this.layer.id);
+      let newFilters = { ...this.store.getFiltersForLayer(this.layer.id) };
 
       if (!newFilters[name]) {
-        newFilters[name] = [];
+        newFilters[name] = {
+          operator: EPanelFilterOperator.Equals,
+          values: [],
+        };
       }
 
-      if (checked && !newFilters[name].includes(value)) {
-        newFilters[name].push(value);
+      if (checked && !newFilters[name].values.includes(value)) {
+        newFilters[name].values.push(value);
       }
 
-      if (!checked && newFilters[name].includes(value)) {
-        newFilters[name] = newFilters[name].filter((v) => v !== value);
+      if (!checked && newFilters[name].values.includes(value)) {
+        newFilters[name].values = newFilters[name].values.filter((v) => v !== value);
       }
 
       // somehow there sometimes ends up an element with key "undefined" in newFilters, this breaks Atlas. We also don't want filterKeys in this array with no values.
@@ -169,6 +173,9 @@ export default {
       }
 
       return formatRawString(facet);
+    },
+    isFacetValueSelected(filterValue, value) {
+      return filterValue?.operator === EPanelFilterOperator.Equals && filterValue.values.includes(value);
     },
   },
 };
