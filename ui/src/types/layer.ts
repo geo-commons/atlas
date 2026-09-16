@@ -46,7 +46,7 @@ export interface ILayer {
 
 export type IGeometryType = GeometryType | "Geometry";
 
-export type IGeoserverType = IGeometryType | "boolean" | "date" | "number" | "int" | "string" | "time" | "date-time";
+export type IGeoserverType = IGeometryType | "boolean" | "date" | "date-time" | "int" | "number" | "string" | "time";
 
 export type ILayerProperties = Array<{
   name: string;
