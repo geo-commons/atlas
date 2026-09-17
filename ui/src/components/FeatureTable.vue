@@ -117,7 +117,7 @@ import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useMapStore } from "@/stores/map_store";
-import { within } from "ol/format/filter";
+import { isNull, not, within } from "ol/format/filter";
 import { useToast } from "primevue";
 import { getGeometryName } from "@/services/layer";
 import { getWfsTimeFilter } from "@/utils/wms-time";
@@ -579,14 +579,17 @@ export default {
     async fetchFilterOptionsForProperty(property) {
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "GetFeature"],
-        ["typename", this.layer.name],
+        ["typeNames", this.layer.name],
         ["outputFormat", "application/json"],
-        ["cql_filter", `${property} IS NOT NULL`],
         ["propertyName", property],
         ["sortBy", property],
       ]);
+      const filter = getLayerFilter({}, this.layer.id, undefined, [not(isNull(property))]);
+      if (filter) {
+        params.set("FILTER", filter);
+      }
       try {
         const url = new URL(this.layer.url);
         url.search = params.toString();

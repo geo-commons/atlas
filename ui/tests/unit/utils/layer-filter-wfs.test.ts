@@ -1,6 +1,6 @@
 import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
 import { beforeAll, describe, expect, it } from "vitest";
-import { during, within } from "ol/format/filter";
+import { during, isNull, not, within } from "ol/format/filter";
 import Point from "ol/geom/Point";
 import { getLayerFilter } from "@/utils/layer-filter-wfs";
 import { ELayerFilterSource, EPanelFilterOperator } from "@/types/mapStore";
@@ -22,6 +22,12 @@ describe("getLayerFilter", () => {
 
   it("returns null when there are no active filters", () => {
     expect(getLayerFilter({}, "layer-a")).toBeNull();
+  });
+
+  it("serializes a non-null property filter", () => {
+    expect(getLayerFilter({}, "layer-a", undefined, [not(isNull("owner"))])).toBe(
+      '<Filter xmlns="http://www.opengis.net/fes/2.0"><Not><PropertyIsNull><ValueReference>owner</ValueReference></PropertyIsNull></Not></Filter>',
+    );
   });
 
   it("builds comparisons directly from panel filter state", () => {
