@@ -11,7 +11,7 @@ import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import OpenLayersParser from "geostyler-openlayers-parser";
 import { useMapStore } from "@/stores/map_store";
-import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { getLayerFilter } from "@/utils/layer-filter-wfs";
 
 const olParser = new OpenLayersParser();
 
@@ -81,16 +81,13 @@ onMounted(async () => {
         ["service", "WFS"],
         ["version", "2.0.0"],
         ["request", "GetFeature"],
-        ["typename", props.name],
+        ["typeNames", props.name],
         ["outputFormat", "application/json"],
         ["srsname", "EPSG:28992"],
         ["count", "5000"],
       ]);
 
-      const bboxFilter = `BBOX(geom, ${extent.join(", ")}, EPSG:28992)`;
-      const cqlFilter = getLayerCqlFilter(mapStore.layerFilters, props.id);
-
-      params.set("CQL_FILTER", cqlFilter ? `(${bboxFilter}) AND (${cqlFilter})` : bboxFilter);
+      params.set("FILTER", getLayerFilter(mapStore.layerFilters, props.id, extent) ?? "");
 
       const url = new URL(props.url);
       url.search = params.toString();

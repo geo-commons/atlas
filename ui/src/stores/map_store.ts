@@ -87,13 +87,14 @@ export function useMapStore(mapName: string) {
       resetFiltersForLayer(layerId: string) {
         this.layerFilters[layerId] = {
           filters: {},
-          searchQuery: "",
+          searchProperties: [],
+          searchValue: "",
           legendFilters: [],
           source: ELayerFilterSource.Panel,
         };
       },
       // Panel/search filters and legend filters are mutually exclusive.
-      // Updating one source clears the other so CQL filters are never combined accidentally.
+      // Updating one source clears the other so their filter expressions are never combined accidentally.
       updateFiltersForLayer(layerId: string, filters: Record<string, IPanelFilterValue>) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
@@ -106,16 +107,18 @@ export function useMapStore(mapName: string) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
           filters: {},
-          searchQuery: "",
+          searchProperties: [],
+          searchValue: "",
           legendFilters: legendFilters,
           source: ELayerFilterSource.Legend,
         };
       },
-      updateSearchQueryForLayer(layerId: string, searchQuery: string) {
+      updateSearchFilterForLayer(layerId: string, searchProperties: string[], searchValue: string) {
         this.layerFilters[layerId] = {
           ...this.layerFilters[layerId],
           legendFilters: [],
-          searchQuery: searchQuery,
+          searchProperties: searchProperties,
+          searchValue: searchValue,
           source: ELayerFilterSource.Panel,
         };
       },
@@ -397,16 +400,16 @@ export function useMapStore(mapName: string) {
           ([, layer]) =>
             Object.values(layer.filters || {}).some((filterValue) => hasActivePanelFilter(filterValue)) ||
             (layer.legendFilters || []).length > 0 ||
-            (layer.searchQuery && layer.searchQuery.trim() !== ""),
+            (layer.searchValue && layer.searchValue.trim() !== ""),
         );
 
-        const count = activeFilters.reduce((totalCount, [, { filters, legendFilters, searchQuery }]) => {
+        const count = activeFilters.reduce((totalCount, [, { filters, legendFilters, searchValue }]) => {
           const hasActiveFilters = filters
             ? Object.values(filters).some((filterValue) => hasActivePanelFilter(filterValue))
             : false;
           const hasLegendFilters = legendFilters ? legendFilters.length > 0 : false;
-          const hasSearchQuery = searchQuery && searchQuery.trim() !== "";
-          const activeCount = hasActiveFilters || hasLegendFilters || hasSearchQuery ? 1 : 0;
+          const hasSearchValue = searchValue && searchValue.trim() !== "";
+          const activeCount = hasActiveFilters || hasLegendFilters || hasSearchValue ? 1 : 0;
           return totalCount + activeCount;
         }, 0);
 
@@ -419,11 +422,7 @@ export function useMapStore(mapName: string) {
       },
       getSearchValueForLayer(state) {
         return (layerId: string): string => {
-          const searchQuery = state.layerFilters[layerId]?.searchQuery || "";
-
-          const value = searchQuery.match(/%([^%]+)%/);
-
-          return value?.[1] || "";
+          return state.layerFilters[layerId]?.searchValue || "";
         };
       },
       getActiveFilterCountForLayer(state) {
@@ -441,7 +440,7 @@ export function useMapStore(mapName: string) {
           }
 
           // If search with value is active on specific layer add this to count of filters
-          if (layerFilter.searchQuery && layerFilter.searchQuery !== "") {
+          if (layerFilter.searchValue && layerFilter.searchValue !== "") {
             filterCount += 1;
           }
 

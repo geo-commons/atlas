@@ -61,7 +61,6 @@
 
 <script>
 import { EPanelFilterOperator } from "@/types/mapStore";
-import { normalizeType, NUMERIC_TYPES, TEMPORAL_TYPES } from "@/utils/layer-filter-cql";
 import { format, isValid, parseISO } from "date-fns";
 
 const TEXT_OPERATOR_OPTIONS = [
@@ -112,13 +111,13 @@ export default {
   },
   computed: {
     normalizedFilterPropertyType() {
-      return normalizeType(this.filterPropertyType);
+      return this.filterPropertyType.toLowerCase().replace(/^(xsd|xs):/, "");
     },
     isNumericFilter() {
-      return NUMERIC_TYPES.includes(this.normalizedFilterPropertyType);
+      return ["int", "number"].includes(this.normalizedFilterPropertyType);
     },
     isTemporalFilter() {
-      return TEMPORAL_TYPES.includes(this.normalizedFilterPropertyType);
+      return ["date", "time", "date-time"].includes(this.normalizedFilterPropertyType);
     },
     isDateTimeFilter() {
       return this.normalizedFilterPropertyType === "date-time";

@@ -161,7 +161,7 @@ import RelatedTableAccordionPanel from "@/components/related-tables/RelatedTable
 import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import { useMapStore } from "@/stores/map_store";
 import { getWmsTimeParameter } from "@/utils/wms-time";
-import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { getLayerFilter } from "@/utils/layer-filter-wfs";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -286,7 +286,7 @@ export default {
     },
     async fetchFeaturesFromWMS() {
       const timeParameter = getWmsTimeParameter(this.mapStore, this.layer.id, this.layer.is_time_enabled === true);
-      const cqlFilter = getLayerCqlFilter(this.mapStore.layerFilters, this.layer.id);
+      const filter = getLayerFilter(this.mapStore.layerFilters, this.layer.id);
 
       const wmsSource = new TileWMS({
         url: this.layer.url,
@@ -294,7 +294,7 @@ export default {
         params: {
           LAYERS: this.layer.name,
           ...(timeParameter ? { TIME: timeParameter } : {}),
-          ...(cqlFilter ? { CQL_FILTER: cqlFilter } : {}),
+          ...(filter ? { FILTER: filter } : {}),
           TILED: true,
         },
       });

@@ -117,11 +117,11 @@ import { formatRawString } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
 import Spinner from "@/components/Spinner.vue";
 import { useMapStore } from "@/stores/map_store";
-import { WKT } from "ol/format";
+import { within } from "ol/format/filter";
 import { useToast } from "primevue";
 import { getGeometryName } from "@/services/layer";
-import { getWfsTimeCqlFilter } from "@/utils/wms-time";
-import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { getWfsTimeFilter } from "@/utils/wms-time";
+import { getLayerFilter } from "@/utils/layer-filter-wfs";
 import { ELayerFilterSource } from "@/types/mapStore";
 
 export default {
@@ -197,12 +197,12 @@ export default {
       const layerFilter = this.store.layerFilters[this.layer.id];
 
       if (this.searchValue && layerFilter?.source === ELayerFilterSource.Legend) {
-        this.store.updateSearchQueryForLayer(this.layer.id, "");
+        this.store.updateSearchFilterForLayer(this.layer.id, [], "");
       }
 
       // If searchValue gets deleted or removed, set searchValue to an empty string
       if (!this.searchValue && layerFilter?.source !== ELayerFilterSource.Legend) {
-        this.store.updateSearchQueryForLayer(this.layer.id, "");
+        this.store.updateSearchFilterForLayer(this.layer.id, [], "");
       }
 
       this.fetchFeatures();
@@ -287,55 +287,35 @@ export default {
 
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "GetFeature"],
-        ["typename", this.layer.name],
+        ["typeNames", this.layer.name],
         ["outputFormat", "application/json"],
-        ["maxFeatures", this.pageState.rows],
+        ["count", this.pageState.rows],
         ["startIndex", this.pageState.rows * this.pageState.page],
       ]);
 
-      const filters = [];
+      const additionalFilters = [];
 
       const layerFilter = this.store.layerFilters[this.layer.id];
 
       if (this.searchValue && this.searchProperties.length > 0 && layerFilter?.source !== ELayerFilterSource.Legend) {
-        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
-        this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
-      }
-
-      const layerCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
-
-      if (layerCqlFilter) {
-        // Legend filters can contain top-level OR. Group the complete layer expression before adding area/time filters.
-        filters.push(`(${layerCqlFilter})`);
+        this.store.updateSearchFilterForLayer(this.layer.id, this.searchProperties, this.searchValue);
       }
 
       if (this.selectedArea) {
-        const wkt = new WKT();
-        const geom = wkt.writeGeometry(this.selectedArea);
-
-        const fullFilter = `WITHIN(geom,${geom})`;
-        const encodedLength = encodeURIComponent(fullFilter).length;
-        if (encodedLength <= 32000) {
-          filters.push(fullFilter);
-        } else {
-          this.error = true;
-          this.errorMessage =
-            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.";
-          this.loading = false;
-          return;
-        }
+        additionalFilters.push(within("geom", this.selectedArea, "EPSG:28992"));
       }
 
-      const timeFilter = getWfsTimeCqlFilter(this.store, this.layer);
+      const timeFilter = getWfsTimeFilter(this.store, this.layer);
 
       if (timeFilter) {
-        filters.push(timeFilter);
+        additionalFilters.push(timeFilter);
       }
 
-      if (filters.length > 0) {
-        params.set("cql_filter", filters.join(" AND "));
+      const filter = getLayerFilter(this.store.layerFilters, this.layer.id, undefined, additionalFilters);
+      if (filter) {
+        params.set("FILTER", filter);
       }
 
       if (this.sortStack.length > 0) {
@@ -455,48 +435,32 @@ export default {
     getWFSDownloadUrl(outputFormat) {
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "GetFeature"],
-        ["typename", this.layer.name],
+        ["typeNames", this.layer.name],
         ["outputFormat", outputFormat],
       ]);
 
-      const filters = [];
+      const additionalFilters = [];
 
       const layerFilter = this.store.layerFilters[this.layer.id];
 
       if (this.searchValue && this.searchProperties.length > 0 && layerFilter?.source !== ELayerFilterSource.Legend) {
-        const searchQuery = `(${this.searchProperties.map((key) => `${key} ILIKE '%${this.searchValue}%'`).join(" OR ")})`;
-        this.store.updateSearchQueryForLayer(this.layer.id, searchQuery);
-      }
-
-      const layerCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
-
-      if (layerCqlFilter) {
-        filters.push(`(${layerCqlFilter})`);
+        this.store.updateSearchFilterForLayer(this.layer.id, this.searchProperties, this.searchValue);
       }
 
       if (this.selectedArea) {
-        const wkt = new WKT();
-        const geom = wkt.writeGeometry(this.selectedArea);
-
-        const fullFilter = `WITHIN(geom,${geom})`;
-        const encodedLength = encodeURIComponent(fullFilter).length;
-        if (encodedLength <= 32000) {
-          filters.push(fullFilter);
-        } else {
-          // Geometry too complex - return null, callers handle UI state
-          return null;
-        }
+        additionalFilters.push(within("geom", this.selectedArea, "EPSG:28992"));
       }
 
-      const timeFilter = getWfsTimeCqlFilter(this.store, this.layer);
+      const timeFilter = getWfsTimeFilter(this.store, this.layer);
       if (timeFilter) {
-        filters.push(timeFilter);
+        additionalFilters.push(timeFilter);
       }
 
-      if (filters.length > 0) {
-        params.set("cql_filter", filters.join(" AND "));
+      const filter = getLayerFilter(this.store.layerFilters, this.layer.id, undefined, additionalFilters);
+      if (filter) {
+        params.set("FILTER", filter);
       }
 
       if (this.sortStack.length > 0) {
