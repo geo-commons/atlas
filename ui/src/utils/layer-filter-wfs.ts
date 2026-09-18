@@ -268,6 +268,8 @@ export const getLayerFilter = (
   ensureRdProjection();
   if (!filter) return null;
 
+  // OpenLayers has no standalone FES serializer. Generate a temporary GetFeature document
+  // and extract only its Filter element; the feature type and namespace are not sent.
   const request = new WFS({ version: "2.0.0" }).writeGetFeature({
     featureTypes: ["layer"],
     featureNS: "urn:atlas:filter",

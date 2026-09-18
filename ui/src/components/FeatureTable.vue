@@ -358,6 +358,7 @@ export default {
 
         const data = await result.json();
         const numberMatched = data.numberMatched ?? data.totalFeatures ?? (await this.fetchFeatureCount(params));
+        // Ignore a response when a newer table request has already started.
         if (requestId !== this.featureRequestId) return;
 
         this.featureCollection = data;

@@ -12,6 +12,8 @@
       aria-label="Filtertype"
       @update:model-value="updateOperator"
     />
+    <!-- PrimeVue only adds manually entered values in multiple mode when typeahead is disabled.
+         Suggestions are therefore filtered by filterOptionsForInput instead. -->
     <AutoComplete
       v-if="filterInputType === 'multi-select'"
       v-model="selectedValues"
