@@ -612,6 +612,15 @@ export default {
               required: false,
             },
             {
+              label: "Objecten clusteren",
+              id: "is_clustered",
+              name: "IsClustered",
+              type: "checkbox",
+              required: false,
+              getDisabled: (values) => values.source_type !== "WFS",
+              infoText: "Cluster objecten die dicht bij elkaar staan op de kaart.",
+            },
+            {
               label: "Geselecteerde objecten niet highlighten",
               id: "disable_highlighted_style",
               name: "DisableHighlightedStyle",

@@ -7,8 +7,9 @@ import { inject, onMounted, onUnmounted, toRaw, watch } from "vue";
 import VectorLayer from "ol/layer/Vector";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
+import Cluster from "ol/source/Cluster";
 import VectorSource from "ol/source/Vector";
-import { Circle, Fill, Stroke, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 import OpenLayersParser from "geostyler-openlayers-parser";
 import { useMapStore } from "@/stores/map_store";
 import { getLayerFilter } from "@/utils/layer-filter-wfs";
@@ -43,6 +44,7 @@ const props = defineProps({
   layer: String,
   isVisible: Boolean,
   isSelectable: Boolean,
+  isClustered: Boolean,
   selectedFeatures: Array,
   opacity: Number,
   clientStyle: Object,
@@ -54,6 +56,7 @@ const props = defineProps({
 const map = inject("map");
 const mapStore = useMapStore(props.mapId);
 
+let featureSource;
 let source;
 let tileLayer;
 
@@ -72,8 +75,38 @@ const getStyle = async (inputStyle) => {
   return DEFAULT_STYLE;
 };
 
+/**
+ * Creates styles for clustered features while retaining the configured layer style for individual features.
+ * @param style - The layer style used when a cluster contains one feature.
+ * @returns An OpenLayers style function for clustered features.
+ */
+const getClusterStyle = (style) => {
+  const styles = {};
+
+  return (feature) => {
+    const clusteredFeatures = feature.get("features");
+    if (!clusteredFeatures || clusteredFeatures.length === 1) return style;
+
+    const count = clusteredFeatures.length;
+    if (!styles[count]) {
+      styles[count] = new Style({
+        image: new Circle({
+          radius: Math.max(12, Math.min(24, 10 + Math.log2(count) * 3)),
+          fill: new Fill({ color: "rgba(0, 102, 255, 0.8)" }),
+        }),
+        text: new Text({
+          text: String(count),
+          fill: new Fill({ color: "white" }),
+        }),
+      });
+    }
+
+    return styles[count];
+  };
+};
+
 onMounted(async () => {
-  source = new VectorSource({
+  featureSource = new VectorSource({
     format: new GeoJSON(),
     strategy: bboxStrategy,
     url: (extent) => {
@@ -96,9 +129,11 @@ onMounted(async () => {
     },
   });
 
-  source.on("addfeature", ({ feature }) => {
+  featureSource.on("addfeature", ({ feature }) => {
     feature.set("layer_id", props.id, true);
   });
+
+  source = props.isClustered ? new Cluster({ distance: 40, source: featureSource }) : featureSource;
 
   tileLayer = new VectorLayer({
     id: props.id,
@@ -117,7 +152,7 @@ onMounted(async () => {
   const style = await getStyle(
     props.clientStyle && props.clientStyle["default"] ? props.clientStyle["default"] : props.clientStyle,
   );
-  tileLayer.setStyle(style);
+  tileLayer.setStyle(props.isClustered ? getClusterStyle(style) : style);
 });
 
 onUnmounted(() => {
@@ -157,14 +192,14 @@ watch(
   () => props.clientStyle,
   async (value) => {
     const style = await getStyle(value);
-    tileLayer.setStyle(style);
+    tileLayer.setStyle(props.isClustered ? getClusterStyle(style) : style);
   },
 );
 
 watch(
   () => mapStore.layerFilters,
   () => {
-    source.refresh();
+    featureSource.refresh();
   },
   { deep: true },
 );
