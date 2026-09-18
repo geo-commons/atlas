@@ -1,7 +1,6 @@
 <template>
-  <Spinner v-if="loading" />
-  <div v-else-if="error && errorMessage">{{ errorMessage }}</div>
-  <div v-else-if="error">Er is iets fout gegaan bij het ophalen van de data...</div>
+  <Spinner v-if="isInitializing" />
+  <div v-else-if="initializationError">{{ initializationError }}</div>
   <div v-else class="filter-table-container">
     <div class="filter-container">
       <div class="toggle-filter-container">
@@ -50,58 +49,63 @@
       </div>
     </div>
 
-    <table-list class="table table-wrapper table-border table-margin">
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th v-for="property in displayProperties" :key="property">
-              <StackSortableTableHeaderItem
-                :header-text="headerText(property)"
-                :property="property"
-                :sort-stack="sortStack"
-                @sort="(column, ascending) => sortColumn(column, ascending)"
-              />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="feature in featureCollection.features" :key="feature.id">
-            <td>
-              <button
-                v-if="feature.geometry"
-                v-tippy="{ placement: 'right' }"
-                class="iconbutton __small __round"
-                content="Bekijk op kaart"
-                aria-label="Bekijk op kaart"
-                @click="() => showFeature(feature)"
-              >
-                <MarkerIcon class="icon __small __marker" />
-              </button>
-            </td>
-            <td v-for="property in displayProperties" :key="property">
-              <RichValue :data-key="property" :data-value="feature.properties[property]" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </table-list>
-    <div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-center md:tw-relative">
-      <p v-if="numberMatched !== null" class="total-results md:tw-left-0 md:tw-absolute">
-        {{ numberMatched }} {{ numberMatched === 1 ? "resultaat" : "resultaten" }}
-      </p>
-      <Paginator
-        :template="{
-          '640px': 'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
-          default: 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown',
-        }"
-        :current-page-report-template="'({currentPage} van {totalPages})'"
-        :rows="pageState.rows"
-        :total-records="numberMatched"
-        :first="pageState.page * pageState.rows - 1 + pageState.rows"
-        :rows-per-page-options="[10, 20, 30, 50, 100]"
-        @page="updatePageState"
-      ></Paginator>
+    <Spinner v-if="loading" />
+    <div v-else-if="error && errorMessage">{{ errorMessage }}</div>
+    <div v-else-if="error">Er is iets fout gegaan bij het ophalen van de data...</div>
+    <div v-else>
+      <table-list class="table table-wrapper table-border table-margin">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th v-for="property in displayProperties" :key="property">
+                <StackSortableTableHeaderItem
+                  :header-text="headerText(property)"
+                  :property="property"
+                  :sort-stack="sortStack"
+                  @sort="(column, ascending) => sortColumn(column, ascending)"
+                />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="feature in featureCollection.features" :key="feature.id">
+              <td>
+                <button
+                  v-if="feature.geometry"
+                  v-tippy="{ placement: 'right' }"
+                  class="iconbutton __small __round"
+                  content="Bekijk op kaart"
+                  aria-label="Bekijk op kaart"
+                  @click="() => showFeature(feature)"
+                >
+                  <MarkerIcon class="icon __small __marker" />
+                </button>
+              </td>
+              <td v-for="property in displayProperties" :key="property">
+                <RichValue :data-key="property" :data-value="feature.properties[property]" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </table-list>
+      <div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-center md:tw-relative">
+        <p v-if="numberMatched !== null" class="total-results md:tw-left-0 md:tw-absolute">
+          {{ numberMatched }} {{ numberMatched === 1 ? "resultaat" : "resultaten" }}
+        </p>
+        <Paginator
+          :template="{
+            '640px': 'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+            default: 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown',
+          }"
+          :current-page-report-template="'({currentPage} van {totalPages})'"
+          :rows="pageState.rows"
+          :total-records="numberMatched"
+          :first="pageState.page * pageState.rows - 1 + pageState.rows"
+          :rows-per-page-options="[10, 20, 30, 50, 100]"
+          @page="updatePageState"
+        ></Paginator>
+      </div>
     </div>
   </div>
 </template>
@@ -119,9 +123,9 @@ import Spinner from "@/components/Spinner.vue";
 import { useMapStore } from "@/stores/map_store";
 import { isNull, not, within } from "ol/format/filter";
 import { useToast } from "primevue";
-import { getGeometryName } from "@/services/layer";
 import { getWfsTimeFilter } from "@/utils/wms-time";
 import { getLayerFilter } from "@/utils/layer-filter-wfs";
+import { parseWfsDescribeFeatureType } from "@/utils/wfs-describe-feature-type";
 import { ELayerFilterSource } from "@/types/mapStore";
 
 export default {
@@ -159,6 +163,7 @@ export default {
       filterOptions: {},
       filterFeatures: {},
       numberMatched: null,
+      featureRequestId: 0,
       sortStack: [],
       searchProperties: [],
       pageState: {
@@ -167,9 +172,11 @@ export default {
         rows: 20,
         pageCount: 4,
       },
+      initializationError: null,
+      isInitializing: true,
       error: false,
       errorMessage: null,
-      loading: true,
+      loading: false,
       store: null,
       isInitialized: false,
       isDownloadPending: false,
@@ -225,6 +232,10 @@ export default {
       handler() {
         this.showFilters = !!Object.keys(this.fieldFilters).length;
 
+        if (!this.isInitialized) {
+          return;
+        }
+
         this.fetchFeatures();
       },
       deep: true,
@@ -256,12 +267,18 @@ export default {
   async created() {
     this.store = useMapStore(this.mapId);
 
-    await this.fetchFilterProperties();
+    const hasFilterProperties = await this.fetchFilterProperties();
+    if (!hasFilterProperties) {
+      this.initializationError = "Er is iets fout gegaan bij het ophalen van de filterconfiguratie.";
+      this.isInitializing = false;
+      return;
+    }
+
     await this.fetchSearchProperties();
 
     const filters = this.store.getFiltersForLayer(this.layer.id);
 
-    this.showFilters = !!Object.keys(this.fieldFilters).length;
+    this.showFilters = !!Object.keys(filters).length;
 
     this.fieldFilters = filters;
 
@@ -279,11 +296,14 @@ export default {
     this.isInitialized = true;
 
     await this.fetchFeatures();
+    this.isInitializing = false;
   },
   methods: {
     async fetchFeatures() {
+      const requestId = ++this.featureRequestId;
       this.error = false;
       this.errorMessage = null;
+      this.loading = true;
 
       const params = new URLSearchParams([
         ["service", "WFS"],
@@ -334,13 +354,17 @@ export default {
 
         const fetchParams = getFetchParameters(this.layer, this.user);
         const result = await fetch(url.toString(), fetchParams);
+        if (!result.ok) throw new Error(`WFS GetFeature request failed with status ${result.status}`);
 
         const data = await result.json();
+        const numberMatched = data.numberMatched ?? data.totalFeatures ?? (await this.fetchFeatureCount(params));
+        if (requestId !== this.featureRequestId) return;
 
         this.featureCollection = data;
-
-        this.numberMatched = data.numberMatched;
+        this.numberMatched = numberMatched;
       } catch (e) {
+        if (requestId !== this.featureRequestId) return;
+
         console.error(e);
         this.error = true;
         this.featureCollection = { features: [] };
@@ -348,42 +372,40 @@ export default {
         this.numberMatched = 0;
       }
 
-      this.loading = false;
+      if (requestId === this.featureRequestId) {
+        this.loading = false;
+      }
     },
     async fetchFilterProperties() {
-      this.error = false;
-
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "DescribeFeatureType"],
-        ["typename", this.layer.name],
-        ["outputFormat", "application/json"],
+        ["typeNames", this.layer.name],
       ]);
 
       try {
         const url = new URL(this.layer.url);
         url.search = params.toString();
         const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
-        const data = await result.json();
+        if (!result.ok) throw new Error(`DescribeFeatureType request failed with status ${result.status}`);
 
-        const geometryName = await getGeometryName(data.featureTypes);
+        const properties = parseWfsDescribeFeatureType(this.layer.name, await result.text());
+        if (properties.length === 0)
+          throw new Error("DescribeFeatureType response does not contain feature properties");
 
-        const featureType = data.featureTypes[0];
-
-        const fetchedProperties = featureType.properties.filter((p) => p.name !== geometryName).map((p) => p.name);
-        this.filterPropertyTypes = Object.fromEntries(
-          featureType.properties.map((property) => [property.name, property.localType]),
-        );
+        const fetchedProperties = properties.map((property) => property.name);
+        this.filterPropertyTypes = Object.fromEntries(properties.map((property) => [property.name, property.type]));
         this.displayProperties =
           this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
 
         this.filterProperties = [...this.displayProperties];
+        return true;
       } catch (e) {
         console.error(e);
-        this.error = true;
         this.displayProperties = [];
         this.searchProperties = [];
+        return false;
       }
     },
     fetchFeaturesForTimeSliderChange() {
@@ -407,29 +429,34 @@ export default {
         return;
       }
 
-      const params = new URLSearchParams([
-        ["service", "WFS"],
-        ["version", "1.0.0"],
-        ["request", "DescribeFeatureType"],
-        ["typename", this.layer.name],
-        ["outputFormat", "application/json"],
-      ]);
-
+      this.searchProperties = this.filterProperties.filter(
+        (property) => this.filterPropertyTypes[property] === "string",
+      );
+    },
+    /**
+     * Requests the number of matching WFS features without downloading the features themselves.
+     * @param featureParams - The GetFeature parameters used for the current table request.
+     * @returns The number of matching features, or null when the server does not provide it.
+     */
+    async fetchFeatureCount(featureParams) {
       try {
+        const params = new URLSearchParams(featureParams);
+        params.delete("count");
+        params.delete("startIndex");
+        params.delete("sortBy");
+        params.set("resultType", "hits");
+
         const url = new URL(this.layer.url);
         url.search = params.toString();
 
         const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
+        if (!result.ok) return null;
 
-        const data = await result.json();
-        const featureType = data.featureTypes[0];
-
-        // Only search through properties with type string
-        const stringProperties = featureType.properties.filter((p) => p.localType === "string");
-
-        this.searchProperties = stringProperties.map((p) => p.name);
+        const numberMatched = (await result.text()).match(/\bnumberMatched=["'](\d+)["']/)?.[1];
+        return numberMatched ? Number(numberMatched) : null;
       } catch (e) {
         console.error(e);
+        return null;
       }
     },
     getWFSDownloadUrl(outputFormat) {
@@ -609,6 +636,10 @@ export default {
     async getFilterOptions(property) {
       if (this.filterOptions[property]) {
         return this.filterOptions[property];
+      }
+
+      if (["int", "number", "date", "date-time", "time"].includes(this.filterPropertyTypes[property])) {
+        return;
       }
 
       const fetchedFeatureFilters = await this.fetchFilterOptionsForProperty(property);

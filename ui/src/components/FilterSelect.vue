@@ -1,5 +1,5 @@
 <template>
-  <div v-if="filterOptions && filterProperty" class="flex __column filter-width">
+  <div v-if="filterProperty" class="flex __column filter-width">
     <label :for="filterProperty" class="filter-label-padding">{{
       filterPropertyDisplayName ? filterPropertyDisplayName : filterProperty
     }}</label>
@@ -12,31 +12,30 @@
       aria-label="Filtertype"
       @update:model-value="updateOperator"
     />
-    <multi-select
+    <AutoComplete
       v-if="filterInputType === 'multi-select'"
       v-model="selectedValues"
-      :options="currentFilterOptionsWithoutEmpty"
-      option-label="label"
-      option-value="value"
+      :suggestions="matchingFilterOptions"
       :virtual-scroller-options="{ itemSize: 50 }"
-      placeholder="Kies waarde"
-      filter-placeholder="Zoek waarde"
-      filter
-      @update:model-value="updateFieldFilters()"
-    />
-    <Select
-      v-else-if="filterInputType === 'select'"
-      v-model="selectedSingleValue"
-      :options="currentFilterOptionsWithoutEmpty"
-      option-label="label"
-      option-value="value"
-      :virtual-scroller-options="{ itemSize: 50 }"
-      placeholder="Kies waarde"
-      filter-placeholder="Zoek waarde"
-      filter
+      :panel-style="{ minWidth: '20rem' }"
+      :force-selection="false"
+      :typeahead="false"
+      complete-on-focus
+      dropdown
+      multiple
+      placeholder="Kies of typ waarde"
       class="filter-control"
+      @complete="filterOptionsForQuery"
+      @input="filterOptionsForInput"
       @update:model-value="updateFieldFilters()"
-    />
+    >
+      <template #empty>
+        <span v-if="filterQuery">
+          Geen bestaande waarde gevonden. Druk op Enter om <strong>{{ filterQuery }}</strong> toe te voegen.
+        </span>
+        <span v-else>Geen waarden beschikbaar.</span>
+      </template>
+    </AutoComplete>
     <InputNumber
       v-else-if="filterInputType === 'number'"
       v-model="selectedSingleValue"
@@ -86,7 +85,6 @@ const EMPTY_OPERATORS = [EPanelFilterOperator.Empty, EPanelFilterOperator.NotEmp
 const FILTER_INPUT_TYPES = {
   MultiSelect: "multi-select",
   Number: "number",
-  Select: "select",
   Temporal: "temporal",
 };
 
@@ -107,6 +105,8 @@ export default {
       selectedValues: [],
       selectedOperator: EPanelFilterOperator.Equals,
       selectedSingleValue: null,
+      matchingFilterOptions: [],
+      filterQuery: "",
     };
   },
   computed: {
@@ -141,17 +141,13 @@ export default {
         return FILTER_INPUT_TYPES.Temporal;
       }
 
-      if (this.selectedOperator === EPanelFilterOperator.Equals) {
-        return FILTER_INPUT_TYPES.MultiSelect;
-      }
-
-      return FILTER_INPUT_TYPES.Select;
+      return FILTER_INPUT_TYPES.MultiSelect;
     },
     operatorOptions() {
       return this.isNumericFilter || this.isTemporalFilter ? NUMERIC_OPERATOR_OPTIONS : TEXT_OPERATOR_OPTIONS;
     },
     currentFilterOptions() {
-      return this.filterOptions.map((filterOption) => ({
+      return (this.filterOptions ?? []).map((filterOption) => ({
         label: String(filterOption),
         value: filterOption,
       }));
@@ -167,6 +163,12 @@ export default {
     },
   },
   watch: {
+    filterOptions: {
+      handler() {
+        this.matchingFilterOptions = this.currentFilterOptionsWithoutEmpty.map((filterOption) => filterOption.value);
+      },
+      immediate: true,
+    },
     currentFilterValue: {
       handler(filterValue) {
         this.syncLocalFilter(filterValue);
@@ -197,6 +199,16 @@ export default {
       this.selectedValues = [];
       this.selectedSingleValue = null;
       this.updateFieldFilters();
+    },
+    filterOptionsForQuery({ query }) {
+      this.filterQuery = query ?? "";
+      const normalizedQuery = this.filterQuery.toLowerCase();
+      this.matchingFilterOptions = this.currentFilterOptionsWithoutEmpty
+        .map((filterOption) => filterOption.value)
+        .filter((filterOption) => filterOption.toLowerCase().includes(normalizedQuery));
+    },
+    filterOptionsForInput(event) {
+      this.filterOptionsForQuery({ query: event.target.value });
     },
     updateFieldFilters() {
       this.$emit("onFilterChange", {

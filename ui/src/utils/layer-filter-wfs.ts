@@ -92,9 +92,10 @@ const getPanelFilter = (propertyName: string, filterValue: IPanelFilterValue): F
   const values = filterValue.values.filter((value) => value !== "");
   if (!filterFactory || values.length === 0) return null;
 
-  const comparisonValues = filterValue.operator === EPanelFilterOperator.Equals ? values : [values[0]];
-  const comparisons = comparisonValues.map((value) => filterFactory(propertyName, value));
-  return comparisons.length === 1 ? comparisons[0] : or(...comparisons);
+  const comparisons = values.map((value) => filterFactory(propertyName, value));
+  if (comparisons.length === 1) return comparisons[0];
+
+  return filterValue.operator === EPanelFilterOperator.NotEquals ? and(...comparisons) : or(...comparisons);
 };
 
 /**
@@ -229,7 +230,7 @@ export const getLayerFilterExpression = (
   if (!layerFilter) return combineFilters(filters);
 
   if (layerFilter.source === ELayerFilterSource.Legend) {
-    const legendFilters = layerFilter.legendFilters
+    const legendFilters = (layerFilter.legendFilters ?? [])
       .map(getLegendFilter)
       .filter((filter): filter is Filter => filter !== null);
     if (legendFilters.length > 0) {
@@ -239,7 +240,7 @@ export const getLayerFilterExpression = (
   }
 
   filters.push(
-    ...Object.entries(layerFilter.filters)
+    ...Object.entries(layerFilter.filters ?? {})
       .map(([propertyName, filterValue]) => getPanelFilter(propertyName, filterValue))
       .filter((filter): filter is Filter => filter !== null),
   );

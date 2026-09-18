@@ -19,7 +19,7 @@ import { getFetchParameters } from "@/utils/auth";
 import { getLayerTimeRange } from "@/utils/wms-time";
 import type { IUser } from "@/types/user";
 import { Geometry } from "ol/geom";
-import type { IPanelFilterValue } from "@/types/mapStore";
+import type { ILayerFilter, IPanelFilterValue } from "@/types/mapStore";
 
 const visibleSourceTypes = [ELayerTypes.WMS_WFS, ELayerTypes.WFS];
 const createDefaultTimeSliderStartDate = () => new Date(1969, 0, 1);
@@ -54,6 +54,14 @@ const getPanelFilterCount = (filterValue: IPanelFilterValue): number => {
   return filterValue.values.length;
 };
 
+const createEmptyLayerFilter = (): ILayerFilter => ({
+  filters: {},
+  searchProperties: [],
+  searchValue: "",
+  legendFilters: [],
+  source: ELayerFilterSource.Panel,
+});
+
 export function useMapStore(mapName: string) {
   return defineStore(`map-${mapName}`, {
     state: (): IMapStore => ({
@@ -85,19 +93,13 @@ export function useMapStore(mapName: string) {
         this.layerFilters = {};
       },
       resetFiltersForLayer(layerId: string) {
-        this.layerFilters[layerId] = {
-          filters: {},
-          searchProperties: [],
-          searchValue: "",
-          legendFilters: [],
-          source: ELayerFilterSource.Panel,
-        };
+        this.layerFilters[layerId] = createEmptyLayerFilter();
       },
       // Panel/search filters and legend filters are mutually exclusive.
       // Updating one source clears the other so their filter expressions are never combined accidentally.
       updateFiltersForLayer(layerId: string, filters: Record<string, IPanelFilterValue>) {
         this.layerFilters[layerId] = {
-          ...this.layerFilters[layerId],
+          ...(this.layerFilters[layerId] ?? createEmptyLayerFilter()),
           filters: filters,
           legendFilters: [],
           source: ELayerFilterSource.Panel,
@@ -105,7 +107,7 @@ export function useMapStore(mapName: string) {
       },
       updateLegendFiltersForLayer(layerId: string, legendFilters: string[]) {
         this.layerFilters[layerId] = {
-          ...this.layerFilters[layerId],
+          ...(this.layerFilters[layerId] ?? createEmptyLayerFilter()),
           filters: {},
           searchProperties: [],
           searchValue: "",
@@ -115,7 +117,7 @@ export function useMapStore(mapName: string) {
       },
       updateSearchFilterForLayer(layerId: string, searchProperties: string[], searchValue: string) {
         this.layerFilters[layerId] = {
-          ...this.layerFilters[layerId],
+          ...(this.layerFilters[layerId] ?? createEmptyLayerFilter()),
           legendFilters: [],
           searchProperties: searchProperties,
           searchValue: searchValue,

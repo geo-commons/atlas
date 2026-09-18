@@ -24,6 +24,14 @@ describe("getLayerFilter", () => {
     expect(getLayerFilter({}, "layer-a")).toBeNull();
   });
 
+  it("handles incomplete persisted panel filter state", () => {
+    const layerFilters = {
+      "layer-a": { source: ELayerFilterSource.Panel },
+    } as unknown as ILayerFilters;
+
+    expect(getLayerFilter(layerFilters, "layer-a")).toBeNull();
+  });
+
   it("serializes a non-null property filter", () => {
     expect(getLayerFilter({}, "layer-a", undefined, [not(isNull("owner"))])).toBe(
       '<Filter xmlns="http://www.opengis.net/fes/2.0"><Not><PropertyIsNull><ValueReference>owner</ValueReference></PropertyIsNull></Not></Filter>',
@@ -79,6 +87,22 @@ describe("getLayerFilter", () => {
 
     expect(getLayerFilter(layerFilters, "layer-a")).toBe(
       '<Filter xmlns="http://www.opengis.net/fes/2.0"><And><Or><PropertyIsNull><ValueReference>description</ValueReference></PropertyIsNull><PropertyIsEqualTo><ValueReference>description</ValueReference><Literal></Literal></PropertyIsEqualTo></Or><And><Not><PropertyIsNull><ValueReference>name</ValueReference></PropertyIsNull></Not><PropertyIsNotEqualTo><ValueReference>name</ValueReference><Literal></Literal></PropertyIsNotEqualTo></And></And></Filter>',
+    );
+  });
+
+  it("combines multiple not-equals panel values as exclusions", () => {
+    const layerFilters: ILayerFilters = {
+      "layer-a": {
+        filters: {
+          status: { operator: EPanelFilterOperator.NotEquals, values: ["Archived", "Deleted"], type: "string" },
+        },
+        legendFilters: [],
+        source: ELayerFilterSource.Panel,
+      },
+    };
+
+    expect(getLayerFilter(layerFilters, "layer-a")).toBe(
+      '<Filter xmlns="http://www.opengis.net/fes/2.0"><And><PropertyIsNotEqualTo><ValueReference>status</ValueReference><Literal>Archived</Literal></PropertyIsNotEqualTo><PropertyIsNotEqualTo><ValueReference>status</ValueReference><Literal>Deleted</Literal></PropertyIsNotEqualTo></And></Filter>',
     );
   });
 
