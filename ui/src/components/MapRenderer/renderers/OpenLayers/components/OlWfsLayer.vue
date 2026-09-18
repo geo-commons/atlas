@@ -4,15 +4,15 @@
 
 <script setup>
 import { inject, onMounted, onUnmounted, toRaw, watch } from "vue";
-import Select from "ol/interaction/Select";
 import VectorLayer from "ol/layer/Vector";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
+import Cluster from "ol/source/Cluster";
 import VectorSource from "ol/source/Vector";
-import { Circle, Fill, Stroke, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 import OpenLayersParser from "geostyler-openlayers-parser";
 import { useMapStore } from "@/stores/map_store";
-import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { getLayerFilter } from "@/utils/layer-filter-wfs";
 
 const olParser = new OpenLayersParser();
 
@@ -44,6 +44,7 @@ const props = defineProps({
   layer: String,
   isVisible: Boolean,
   isSelectable: Boolean,
+  isClustered: Boolean,
   selectedFeatures: Array,
   opacity: Number,
   clientStyle: Object,
@@ -52,14 +53,12 @@ const props = defineProps({
   maxZoom: Number,
 });
 
-const emit = defineEmits(["features-selected"]);
-
 const map = inject("map");
 const mapStore = useMapStore(props.mapId);
 
+let featureSource;
 let source;
 let tileLayer;
-let select;
 
 const getStyle = async (inputStyle) => {
   if (!inputStyle || Object.keys(inputStyle).length === 0) {
@@ -76,29 +75,52 @@ const getStyle = async (inputStyle) => {
   return DEFAULT_STYLE;
 };
 
-const onSelectFeatures = (e) => {
-  const features = e.target.getFeatures().getArray();
-  if (features.length === 0) {
-    return;
-  }
+/**
+ * Creates styles for clustered features while retaining the configured layer style for individual features.
+ * @param style - The layer style used when a cluster contains one feature.
+ * @returns An OpenLayers style function for clustered features.
+ */
+const getClusterStyle = (style) => {
+  const styles = {};
 
-  emit("features-selected", features);
+  return (feature) => {
+    const clusteredFeatures = feature.get("features");
+    if (!clusteredFeatures || clusteredFeatures.length === 1) return style;
+
+    const count = clusteredFeatures.length;
+    if (!styles[count]) {
+      styles[count] = new Style({
+        image: new Circle({
+          radius: Math.max(12, Math.min(24, 10 + Math.log2(count) * 3)),
+          fill: new Fill({ color: "rgba(0, 102, 255, 0.8)" }),
+        }),
+        text: new Text({
+          text: String(count),
+          fill: new Fill({ color: "white" }),
+        }),
+      });
+    }
+
+    return styles[count];
+  };
 };
 
 onMounted(async () => {
-  source = new VectorSource({
+  featureSource = new VectorSource({
     format: new GeoJSON(),
     strategy: bboxStrategy,
     url: (extent) => {
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "GetFeature"],
-        ["typename", props.name],
+        ["typeNames", props.name],
         ["outputFormat", "application/json"],
         ["srsname", "EPSG:28992"],
-        ["bbox", extent.join(",")],
+        ["count", "5000"],
       ]);
+
+      params.set("FILTER", getLayerFilter(mapStore.layerFilters, props.id, extent) ?? "");
 
       const url = new URL(props.url);
       url.search = params.toString();
@@ -106,6 +128,12 @@ onMounted(async () => {
       return url.toString();
     },
   });
+
+  featureSource.on("addfeature", ({ feature }) => {
+    feature.set("layer_id", props.id, true);
+  });
+
+  source = props.isClustered ? new Cluster({ distance: 40, source: featureSource }) : featureSource;
 
   tileLayer = new VectorLayer({
     id: props.id,
@@ -124,27 +152,10 @@ onMounted(async () => {
   const style = await getStyle(
     props.clientStyle && props.clientStyle["default"] ? props.clientStyle["default"] : props.clientStyle,
   );
-  tileLayer.setStyle(style);
-
-  if (props.isSelectable) {
-    const activeStyle = await getStyle(
-      props.clientStyle && props.clientStyle["active"] ? props.clientStyle["active"] : props.clientStyle,
-    );
-
-    select = new Select({
-      layers: [tileLayer],
-      style: activeStyle,
-    });
-
-    select.on("select", onSelectFeatures);
-    map.addInteraction(select);
-  }
+  tileLayer.setStyle(props.isClustered ? getClusterStyle(style) : style);
 });
 
 onUnmounted(() => {
-  if (select) {
-    map.removeInteraction(select);
-  }
   map.removeLayer(tileLayer);
 });
 
@@ -166,7 +177,7 @@ watch(
 watch(
   () => props.isVisible,
   (value) => {
-    tileLayer.set("visible", value);
+    tileLayer.setVisible(value);
   },
 );
 
@@ -181,50 +192,14 @@ watch(
   () => props.clientStyle,
   async (value) => {
     const style = await getStyle(value);
-    tileLayer.setStyle(style);
+    tileLayer.setStyle(props.isClustered ? getClusterStyle(style) : style);
   },
 );
 
 watch(
   () => mapStore.layerFilters,
-  (value) => {
-    // If filters object is empty, refresh source
-    if (!Object.keys(value).length) {
-      source.updateParams({
-        ...source.getParams(),
-        CQL_FILTER: null,
-      });
-      source.refresh();
-      return;
-    }
-
-    // Don't filter if there are no filters specified for specific layer
-    if (!Object.keys(value).includes(props.id)) {
-      return;
-    }
-
-    if (!value[props.id]) {
-      return;
-    }
-
-    const cqlFilter = getLayerCqlFilter(value, props.id);
-
-    source.updateParams({
-      ...source.getParams(),
-      CQL_FILTER: cqlFilter,
-    });
-
-    source.refresh();
-  },
-  { deep: true },
-);
-
-watch(
-  () => props.selectedFeatures,
-  (features) => {
-    if (select && features && features.length === 0) {
-      select.getFeatures().clear();
-    }
+  () => {
+    featureSource.refresh();
   },
   { deep: true },
 );
