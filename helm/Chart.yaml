@@ -4,8 +4,8 @@ description: Atlas is a geo portal that provides a user-friendly interface.
 
 type: application
 
-version: 3.61.0-pre1
-appVersion: 3.61.0-pre1
+version: 3.61.0-pre6
+appVersion: 3.61.0-pre6
 
 dependencies:
   - name: postgresql
