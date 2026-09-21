@@ -1,6 +1,8 @@
 name: Release Helm Chart
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
+  push:
+    branches: ["chore/helm-publish"]
 
 env:
   REGISTRY: ghcr.io
