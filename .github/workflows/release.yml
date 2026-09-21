@@ -27,7 +27,7 @@ jobs:
       - name: Get versions
         id: version
         run: |
-          VERSION=$(yq .version chart/Chart.yaml)
+          VERSION=$(yq .version helm/Chart.yaml)
           LATEST=$(helm show chart oci://$REGISTRY/$IMAGE_PREFIX/$CHART_NAME 2>/dev/null|yq '.version')
           echo "Latest version: $LATEST"
           echo "Updating to version: $VERSION"
