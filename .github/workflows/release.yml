@@ -47,7 +47,7 @@ jobs:
         if: steps.version.outputs.version != steps.version.outputs.latest
         run: |
           VERSION=${{ steps.version.outputs.version }}
-          helm push ./$CHART_NAME-$VERSION.tgz oci://$REGISTRY/$IMAGE_PREFIX
+          helm push helm/$CHART_NAME-$VERSION.tgz oci://$REGISTRY/$IMAGE_PREFIX
 
       - name: Helm | Logout
         if: always()
