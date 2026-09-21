@@ -1,9 +1,9 @@
 name: Build and upload Docker image
 
 on:
-  workflow_run:  # Run after test.yml workflow completes
-    workflows: ["Tests"]
-    types: [completed]
+  push:
+    branches: ["main"]
+    tags: ["*.*.*"]
 
 env:
   REGISTRY: ghcr.io
@@ -19,9 +19,9 @@ jobs:
           - platform: linux/amd64
             platform_id: amd64
             runner: ubuntu-24.04
-          #- platform: linux/arm64
-          #  platform_id: arm64
-          #  runner: ubuntu-24.04-arm
+          - platform: linux/arm64
+            platform_id: arm64
+            runner: ubuntu-24.04-arm
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
