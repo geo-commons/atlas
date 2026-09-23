@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  ATLAS_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || 'unknown' }}
 
 jobs:
   build:
@@ -44,6 +45,8 @@ jobs:
         with:
           platforms: linux/amd64
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
+          build-args: |
+            ATLAS_VERSION=${{ env.ATLAS_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export digest
