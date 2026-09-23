@@ -69,6 +69,10 @@ paths:
     backend:
       slug: kvkv1
       path: /vestigingsprofielen/{vestigingsnummer:[0-9]+}
+  - path: /api/v5/PandEnergieLabel/Adres
+    backend:
+      slug: eponline
+      path: /PandEnergieLabel/Adres
 
 backends:
   geoserver:
@@ -98,3 +102,9 @@ backends:
         x-api-key: ${DSO_API_KEY}
         content-crs: http://www.opengis.net/def/crs/EPSG/0/28992
         content-type: application/json
+  eponline:
+    type: REST
+    baseUrl: https://public.ep-online.nl/api/v5
+    auth:
+      header:
+        authorization: ${EP_ONLINE_API_KEY}

@@ -720,6 +720,94 @@
     }
   },
   {
+    "model": "table.table",
+    "pk": 26,
+    "fields": {
+      "title": "Energielabels",
+      "slug": "energielabels",
+      "source": 22,
+      "source_type": "REST",
+      "fields": [
+        "Postcode",
+        "Huisnummer",
+        "Energieklasse",
+        "Gebouwklasse",
+        "Gebouwtype",
+        "Gebouwsubtype",
+        "Registratiedatum",
+        "Geldig_tot"
+      ],
+      "list_endpoint": "/PandEnergieLabel/Adres?postcode={{postcode.replaceAll(' ', '')}}&huisnummer={{huisnummer}}",
+      "detail_endpoint": "/PandEnergieLabel/Adres?postcode={{Postcode.replaceAll(' ', '')}}&huisnummer={{Huisnummer}}",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "",
+      "detail_property": "[0]",
+      "page_param": "",
+      "start_page_index": 1,
+      "items_per_page_param": "",
+      "total_items_page_property": "",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "list_template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": [
+        "Postcode",
+        "Huisnummer",
+        "Energieklasse",
+        "Gebouwklasse",
+        "Gebouwtype",
+        "Gebouwsubtype",
+        "Registratiedatum",
+        "Geldig_tot"
+      ],
+      "detail_display_properties": [],
+      "friendly_fields": {},
+      "show_in_portal": true,
+      "friendly_search_fields": {},
+      "disable_detail_view": false,
+      "login_required": false
+    }
+  },
+  {
+    "model": "table.table",
+    "pk": 27,
+    "fields": {
+      "title": "WOZ",
+      "slug": "woz",
+      "source": 23,
+      "source_type": "REST",
+      "fields": ["wozWaarden", "nummeraanduiding"],
+      "list_endpoint": "wozwaarde/nummeraanduiding/{{nummeraanduiding}}",
+      "detail_endpoint": "wozwaarde/nummeraanduiding/{{nummeraanduiding}}",
+      "method": "GET",
+      "request_body": {},
+      "list_property": "",
+      "detail_property": "",
+      "page_param": "",
+      "start_page_index": 1,
+      "items_per_page_param": "",
+      "total_items_page_property": "",
+      "list_error_property": null,
+      "detail_error_property": null,
+      "template_fields": {},
+      "list_template_fields": {},
+      "layer_name": null,
+      "list_cql_filters": {},
+      "detail_cql_filters": {},
+      "list_display_properties": ["nummeraanduiding", "wozWaarden"],
+      "detail_display_properties": [],
+      "friendly_fields": {},
+      "show_in_portal": true,
+      "friendly_search_fields": {},
+      "disable_detail_view": false,
+      "login_required": false
+    }
+  },
+  {
     "model": "table.tabletotable",
     "pk": 1,
     "fields": {
@@ -898,6 +986,24 @@
       "from_layer": 8,
       "to_table": 20,
       "field_mapping": { "postcode": "postcode", "huisnummer": "huisnummer" }
+    }
+  },
+  {
+    "model": "table.layertotable",
+    "pk": 5,
+    "fields": {
+      "from_layer": 8,
+      "to_table": 26,
+      "field_mapping": { "postcode": "postcode", "huisnummer": "huisnummer" }
+    }
+  },
+  {
+    "model": "table.layertotable",
+    "pk": 9,
+    "fields": {
+      "from_layer": 8,
+      "to_table": 27,
+      "field_mapping": { "adresnummer": "nummeraanduiding" }
     }
   },
   {
@@ -1297,6 +1403,32 @@
       "slug": "kvkv1",
       "source_type": "REST",
       "url": "http://localhost:8000/api/kvk/v1",
+      "login_required": false,
+      "authenticate": false,
+      "atlas_groups": []
+    }
+  },
+  {
+    "model": "webservice.source",
+    "pk": 22,
+    "fields": {
+      "title": "eponline",
+      "slug": "eponline",
+      "source_type": "REST",
+      "url": "http://localhost:8000/api/v5",
+      "login_required": false,
+      "authenticate": false,
+      "atlas_groups": []
+    }
+  },
+  {
+    "model": "webservice.source",
+    "pk": 23,
+    "fields": {
+      "title": "WOZ-waardeloket",
+      "slug": "woz-waardeloket",
+      "source_type": "REST",
+      "url": "https://api.kadaster.nl/lvwoz/wozwaardeloket-api/v1/",
       "login_required": false,
       "authenticate": false,
       "atlas_groups": []
@@ -22111,6 +22243,23 @@
       "ordering": 0,
       "resource": "/vestigingsprofielen/{vestigingsnummer:[0-9]+}",
       "description": "KVK /vestigingsprofielen/{vestigingsnummer:[0-9]+} authorisatie",
+      "login_required": false,
+      "only_internal": false,
+      "authenticated_can_mutate": false,
+      "audit_log": false,
+      "response_filter": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
+    "model": "authz.authorization",
+    "pk": 10,
+    "fields": {
+      "source": 22,
+      "ordering": 0,
+      "resource": "/PandEnergieLabel/Adres",
+      "description": "EP-online energielabels",
       "login_required": false,
       "only_internal": false,
       "authenticated_can_mutate": false,
