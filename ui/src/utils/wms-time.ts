@@ -1,4 +1,6 @@
 import { endOfMonth, endOfYear, format, isAfter, isValid, parseISO, startOfMonth, startOfYear } from "date-fns";
+import { and, equalTo, greaterThanOrEqualTo, lessThanOrEqualTo } from "ol/format/filter";
+import type Filter from "ol/format/filter/Filter";
 import { ILayer } from "@/types/layer";
 import { ETimeSliderDisplayMode, ETimeSliderStepSize, IMapStore } from "@/types/mapStore";
 import type { IOgcCollection } from "@/types/ogc";
@@ -254,4 +256,54 @@ export const getWfsTimeCqlFilter = (state: IMapStore, layer: ILayer): string | n
   }
 
   return `(${startField} >= '${selectedStartDate}' AND ${startField} <= '${selectedEndDate}')`;
+};
+
+/**
+ * Returns a Filter Encoding expression matching the active time slider selection.
+ * @param state - The map store state.
+ * @param layer - The layer to check.
+ * @returns A temporal filter, or null when the time slider does not apply.
+ */
+export const getWfsTimeFilter = (state: IMapStore, layer: ILayer): Filter | null => {
+  if (
+    !layer.is_time_enabled ||
+    state.selectedTimeSliderLayerId !== layer.id ||
+    state.timeSliderCapabilitiesLoading ||
+    state.timeSliderCapabilitiesError ||
+    !state.timeSliderMinDate ||
+    !state.timeSliderMaxDate
+  ) {
+    return null;
+  }
+
+  const startField = layer.time_slider_start_field?.trim();
+  const endField = layer.time_slider_end_field?.trim();
+  if (!startField) return null;
+
+  const toTemporalFilterValue = (value: string): number => value as unknown as number;
+  if (state.timeSliderDisplayMode === ETimeSliderDisplayMode.ReferenceDate) {
+    const selectedDate = formatDateStart(createStepStartDate(state.timeSliderReferenceDate, state.timeSliderStepSize));
+    return endField
+      ? and(
+          lessThanOrEqualTo(startField, toTemporalFilterValue(selectedDate)),
+          greaterThanOrEqualTo(endField, toTemporalFilterValue(selectedDate)),
+        )
+      : equalTo(startField, selectedDate);
+  }
+
+  const [startDate, endDate] = state.timeSliderPeriodDates;
+  const stepStart = createStepStartDate(startDate <= endDate ? startDate : endDate, state.timeSliderStepSize);
+  const stepEnd = createStepEndDate(startDate <= endDate ? endDate : startDate, state.timeSliderStepSize);
+  const selectedStartDate = formatDateStart(stepStart);
+  const selectedEndDate = formatDateEnd(stepEnd);
+
+  return endField
+    ? and(
+        lessThanOrEqualTo(startField, toTemporalFilterValue(selectedEndDate)),
+        greaterThanOrEqualTo(endField, toTemporalFilterValue(selectedStartDate)),
+      )
+    : and(
+        greaterThanOrEqualTo(startField, toTemporalFilterValue(selectedStartDate)),
+        lessThanOrEqualTo(startField, toTemporalFilterValue(selectedEndDate)),
+      );
 };

@@ -23325,5 +23325,205 @@
     "model": "contenttypes.contenttype",
     "pk": 28,
     "fields": { "app_label": "sessions", "model": "session" }
+  },
+  {
+    "model": "webservice.source",
+    "pk": 22,
+    "fields": {
+      "title": "PDOK BAG WFS",
+      "slug": "pdok-bag-wfs",
+      "source_type": "OWS",
+      "url": "https://service.pdok.nl/kadaster/bag/wfs/v2_0",
+      "login_required": false,
+      "authenticate": false,
+      "atlas_groups": []
+    }
+  },
+  {
+    "model": "webservice.source",
+    "pk": 23,
+    "fields": {
+      "title": "https://datalab.purmerend.nl/geoserver/ows",
+      "slug": "httpsdatalabpurmerendnlgeoserverows",
+      "source_type": "OWS",
+      "url": "https://datalab.purmerend.nl/geoserver/ows",
+      "login_required": false,
+      "authenticate": false,
+      "atlas_groups": []
+    }
+  },
+  {
+    "model": "webservice.layer",
+    "pk": 300,
+    "fields": {
+      "slug": "pdok-bag-panden-wfs",
+      "title": "PDOK BAG panden (WFS)",
+      "description": "Publieke BAG pandenlaag van PDOK om WFS-rendering in Atlas te testen.",
+      "layer_name": "bag:pand",
+      "layer_source": 22,
+      "format": "image/png",
+      "opacity": "0.9",
+      "visible": false,
+      "server_style": null,
+      "client_style": {
+        "active": {
+          "name": "BAG pand active",
+          "rules": [
+            {
+              "name": "BAG pand selected",
+              "symbolizers": [
+                {
+                  "kind": "Fill",
+                  "color": "#22c55e",
+                  "fillOpacity": 0.35,
+                  "outlineColor": "#15803d",
+                  "outlineWidth": 3
+                }
+              ]
+            }
+          ]
+        },
+        "default": {
+          "name": "BAG pand default",
+          "rules": [
+            {
+              "name": "BAG pand",
+              "symbolizers": [
+                {
+                  "kind": "Fill",
+                  "color": "#f59e0b",
+                  "fillOpacity": 0.25,
+                  "outlineColor": "#b45309",
+                  "outlineWidth": 1
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "friendly_fields": {
+        "status": "Status",
+        "bouwjaar": "Bouwjaar",
+        "gebruiksdoel": "Gebruiksdoel",
+        "identificatie": "Identificatie",
+        "oppervlakte_max": "Oppervlakte max",
+        "oppervlakte_min": "Oppervlakte min"
+      },
+      "templated_properties": {},
+      "layer_type": 15,
+      "_popup_attributes": "identificatie\r\nbouwjaar\r\nstatus\r\ngebruiksdoel\r\nopervlakte_min\r\nopervlakte_max",
+      "_search_fields": "identificatie\r\nstatus\r\ngebruiksdoel",
+      "_search_terms": "BAG\r\nPDOK\r\nWFS\r\npanden",
+      "projection": "EPSG:28992",
+      "server_type": "geoserver",
+      "closed_dataset": false,
+      "login_required": false,
+      "authenticated_can_mutate": false,
+      "is_exportable": true,
+      "is_time_enabled": false,
+      "is_reference_date_enabled": false,
+      "time_slider_default_display_mode": "period",
+      "time_slider_start_field": null,
+      "time_slider_end_field": null,
+      "source_type": "WFS",
+      "legend_url": null,
+      "is_selectable": true,
+      "disable_highlighted_style": false,
+      "use_html_info_format": false,
+      "show_in_detail_panel": true,
+      "is_filterable_in_legend": false,
+      "not_in_atlas": false,
+      "created_at": "2026-09-11T00:00:00Z",
+      "updated_at": "2026-09-15T09:22:46.406Z",
+      "ordering": 21000,
+      "extent_min_x": null,
+      "extent_min_y": null,
+      "extent_max_x": null,
+      "extent_max_y": null,
+      "zoom_min": null,
+      "zoom_max": null,
+      "metadataset": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
+    "model": "webservice.layer",
+    "pk": 301,
+    "fields": {
+      "slug": "lantaarnpalen",
+      "title": "Lantaarnpalen",
+      "description": null,
+      "layer_name": "topp:beheer_lichtmasten",
+      "layer_source": 23,
+      "format": "image/png",
+      "opacity": "0.9",
+      "visible": false,
+      "server_style": null,
+      "client_style": {},
+      "friendly_fields": {},
+      "templated_properties": {},
+      "layer_type": 8,
+      "_popup_attributes": "",
+      "_search_fields": "",
+      "_search_terms": "",
+      "projection": "EPSG:28992",
+      "server_type": "geoserver",
+      "closed_dataset": false,
+      "login_required": false,
+      "authenticated_can_mutate": false,
+      "is_exportable": true,
+      "is_time_enabled": false,
+      "is_reference_date_enabled": false,
+      "time_slider_default_display_mode": "period",
+      "time_slider_start_field": null,
+      "time_slider_end_field": null,
+      "source_type": "WFS",
+      "legend_url": "https://datalab.purmerend.nl/geoserver/wms?request=GetLegendGraphic&version=1.1.1&format=image%2Fpng&width=20&height=20&layer=topp%3Abeheer_lichtmasten",
+      "is_selectable": true,
+      "disable_highlighted_style": false,
+      "use_html_info_format": false,
+      "show_in_detail_panel": true,
+      "is_filterable_in_legend": false,
+      "not_in_atlas": false,
+      "created_at": "2026-09-14T15:06:38.197Z",
+      "updated_at": "2026-09-14T15:07:35.288Z",
+      "ordering": 0,
+      "extent_min_x": null,
+      "extent_min_y": null,
+      "extent_max_x": null,
+      "extent_max_y": null,
+      "zoom_min": null,
+      "zoom_max": null,
+      "metadataset": null,
+      "atlas_groups": [],
+      "atlas_write_groups": []
+    }
+  },
+  {
+    "model": "webservice.maplayer",
+    "pk": 226,
+    "fields": {
+      "layer": 300,
+      "map": 4,
+      "map_category": null,
+      "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
+      "ordering": 2
+    }
+  },
+  {
+    "model": "webservice.maplayer",
+    "pk": 227,
+    "fields": {
+      "layer": 301,
+      "map": 4,
+      "map_category": null,
+      "settings": { "customSettings": false },
+      "is_base": false,
+      "is_visible": false,
+      "ordering": 3
+    }
   }
 ]

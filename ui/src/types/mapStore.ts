@@ -27,8 +27,8 @@ export interface IPanelFilterValue {
  * Filter state for a single layer.
  *
  * @remarks
- * Panel filters/search and legend filters are mutually exclusive sources for CQL generation.
- * When `source` is `ELayerFilterSource.Panel`, `filters` and `searchQuery` are used and
+ * Panel filters/search and legend filters are mutually exclusive sources for filter generation.
+ * When `source` is `ELayerFilterSource.Panel`, `filters` and the structured search values are used and
  * `legendFilters` is ignored. When `source` is `ELayerFilterSource.Legend`, `legendFilters`
  * is used and panel filters/search are cleared.
  */
@@ -36,7 +36,8 @@ export interface ILayerFilter {
   filters: {
     [key: string]: IPanelFilterValue;
   };
-  searchQuery: string;
+  searchProperties?: string[];
+  searchValue?: string;
   legendFilters: string[];
   source: ELayerFilterSource;
 }
