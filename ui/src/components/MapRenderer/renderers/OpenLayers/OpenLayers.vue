@@ -1,5 +1,10 @@
 <template>
-  <ol-map ref="map" :features="features" :show-compare-slider="showCompareSlider">
+  <ol-map
+    ref="map"
+    :features="features"
+    :show-compare-slider="showCompareSlider"
+    @set-selected-features="setSelectedFeatures"
+  >
     <ol-view
       ref="view"
       :position="position"
@@ -41,7 +46,7 @@
       :client-style="layer.client_style"
       :server-style="layer.server_style"
       :opacity="layer.opacity"
-      @features-selected="featuresSelected"
+      @features-selected="setSelectedFeatures"
     >
     </component>
     <ol-vector-layer
@@ -166,6 +171,11 @@ const SELECTED_AREA_STYLE = new Style({
 const HIGHLIGHTED_SELECTION_STYLE = new Style({
   stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
   fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
+  image: new Circle({
+    radius: 10,
+    fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
+    stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
+  }),
 });
 
 export default {
@@ -203,7 +213,7 @@ export default {
     fontSize: Number,
     showCompareSlider: Boolean,
   },
-  emits: ["position-changed", "tool-used", "on-fit", "features-selected", "loading-print-to-pdf"],
+  emits: ["position-changed", "tool-used", "on-fit", "set-selected-features", "loading-print-to-pdf"],
   data() {
     return {
       undoRedoInteraction: null,
@@ -448,8 +458,8 @@ export default {
     fit(geometryOrExtent, options) {
       this.$refs.view.fit(geometryOrExtent, options);
     },
-    featuresSelected(features) {
-      this.$emit("features-selected", features);
+    setSelectedFeatures(selectedFeatures) {
+      this.$emit("set-selected-features", selectedFeatures);
     },
     async printToPdf(settings) {
       try {

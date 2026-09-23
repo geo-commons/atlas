@@ -4,7 +4,6 @@
 
 <script setup>
 import { inject, onMounted, onUnmounted, toRaw, watch } from "vue";
-import Select from "ol/interaction/Select";
 import VectorLayer from "ol/layer/Vector";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
@@ -12,7 +11,7 @@ import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import OpenLayersParser from "geostyler-openlayers-parser";
 import { useMapStore } from "@/stores/map_store";
-import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { getLayerFilter } from "@/utils/layer-filter-wfs";
 
 const olParser = new OpenLayersParser();
 
@@ -52,14 +51,11 @@ const props = defineProps({
   maxZoom: Number,
 });
 
-const emit = defineEmits(["features-selected"]);
-
 const map = inject("map");
 const mapStore = useMapStore(props.mapId);
 
 let source;
 let tileLayer;
-let select;
 
 const getStyle = async (inputStyle) => {
   if (!inputStyle || Object.keys(inputStyle).length === 0) {
@@ -76,15 +72,6 @@ const getStyle = async (inputStyle) => {
   return DEFAULT_STYLE;
 };
 
-const onSelectFeatures = (e) => {
-  const features = e.target.getFeatures().getArray();
-  if (features.length === 0) {
-    return;
-  }
-
-  emit("features-selected", features);
-};
-
 onMounted(async () => {
   source = new VectorSource({
     format: new GeoJSON(),
@@ -92,19 +79,25 @@ onMounted(async () => {
     url: (extent) => {
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "GetFeature"],
-        ["typename", props.name],
+        ["typeNames", props.name],
         ["outputFormat", "application/json"],
         ["srsname", "EPSG:28992"],
-        ["bbox", extent.join(",")],
+        ["count", "5000"],
       ]);
+
+      params.set("FILTER", getLayerFilter(mapStore.layerFilters, props.id, extent) ?? "");
 
       const url = new URL(props.url);
       url.search = params.toString();
 
       return url.toString();
     },
+  });
+
+  source.on("addfeature", ({ feature }) => {
+    feature.set("layer_id", props.id, true);
   });
 
   tileLayer = new VectorLayer({
@@ -125,26 +118,9 @@ onMounted(async () => {
     props.clientStyle && props.clientStyle["default"] ? props.clientStyle["default"] : props.clientStyle,
   );
   tileLayer.setStyle(style);
-
-  if (props.isSelectable) {
-    const activeStyle = await getStyle(
-      props.clientStyle && props.clientStyle["active"] ? props.clientStyle["active"] : props.clientStyle,
-    );
-
-    select = new Select({
-      layers: [tileLayer],
-      style: activeStyle,
-    });
-
-    select.on("select", onSelectFeatures);
-    map.addInteraction(select);
-  }
 });
 
 onUnmounted(() => {
-  if (select) {
-    map.removeInteraction(select);
-  }
   map.removeLayer(tileLayer);
 });
 
@@ -166,7 +142,7 @@ watch(
 watch(
   () => props.isVisible,
   (value) => {
-    tileLayer.set("visible", value);
+    tileLayer.setVisible(value);
   },
 );
 
@@ -187,44 +163,8 @@ watch(
 
 watch(
   () => mapStore.layerFilters,
-  (value) => {
-    // If filters object is empty, refresh source
-    if (!Object.keys(value).length) {
-      source.updateParams({
-        ...source.getParams(),
-        CQL_FILTER: null,
-      });
-      source.refresh();
-      return;
-    }
-
-    // Don't filter if there are no filters specified for specific layer
-    if (!Object.keys(value).includes(props.id)) {
-      return;
-    }
-
-    if (!value[props.id]) {
-      return;
-    }
-
-    const cqlFilter = getLayerCqlFilter(value, props.id);
-
-    source.updateParams({
-      ...source.getParams(),
-      CQL_FILTER: cqlFilter,
-    });
-
+  () => {
     source.refresh();
-  },
-  { deep: true },
-);
-
-watch(
-  () => props.selectedFeatures,
-  (features) => {
-    if (select && features && features.length === 0) {
-      select.getFeatures().clear();
-    }
   },
   { deep: true },
 );
