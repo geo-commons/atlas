@@ -27,7 +27,7 @@ from .models import Category, Drawing, Source, Layer, Viewer, Map, MapLayer, Map
 from .serializers import CategorySerializer, DrawingSerializer, GroupSerializer, LayerCreateUpdateSerializer, \
     LayerListSerializer, MapSerializer, SourceSerializer, LayerSerializer, UserSerializer, \
     LogSerializer, ViewerSerializer, UserCreateUpdateSerializer, MetadatasetSerializer, DeleteSettingsSerializer, \
-    MetadatasetPublicSerializer
+    MetadatasetPublicSerializer, ConfigurationUpdateSerializer
 
 
 class MapViewSet(DataExportImportMixin, FileUploadMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
@@ -334,6 +334,9 @@ class ConfigurationViewSet(ViewSet):
     def setting(self, request, allow_settings):
 
         if request.method != 'GET':
+            serializer = ConfigurationUpdateSerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+
             # change all allow setting items in allow_settings
             for key, value in request.data.items():
                 if key in allow_settings:
@@ -348,7 +351,11 @@ class ConfigurationViewSet(ViewSet):
                         # Save the file path in the Constance setting (key is the field name)
                         setattr(config, key, path)
                     else:
-                        setattr(config, key, process_value(value))
+                        if key in serializer.validated_data:
+                            value = serializer.validated_data[key]
+                        else:
+                            value = process_value(value)
+                        setattr(config, key, value)
 
         return Response(data=get_settings(allow_settings))
 
