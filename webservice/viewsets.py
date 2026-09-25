@@ -4,6 +4,7 @@ from constance import config
 from constance import settings as constance_settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, filters
@@ -14,6 +15,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from atlas.fields import SVGAndImageFormField
 from authz.models import Log
 from tables.models import Table
 from tables.serializers import TableSerializer
@@ -331,6 +333,19 @@ class LogViewSet(viewsets.ModelViewSet):
 class ConfigurationViewSet(ViewSet):
     permission_classes = [permissions.IsAdminUser]
 
+    def _is_image_field(self, key):
+        setting = constance_settings.CONFIG.get(key, ())
+        return len(setting) >= 3 and setting[2] == 'image_field'
+
+    def _validate_image_upload(self, key, uploaded_file):
+        if not self._is_image_field(key):
+            raise ValidationError({key: 'Dit configuratieveld accepteert geen bestanden.'})
+
+        try:
+            SVGAndImageFormField().clean(uploaded_file)
+        except DjangoValidationError as exc:
+            raise ValidationError({key: exc.messages}) from exc
+
     def setting(self, request, allow_settings):
 
         if request.method != 'GET':
@@ -340,6 +355,7 @@ class ConfigurationViewSet(ViewSet):
                     # Check if current field is an image field by checking if the key has a corresponding file.
                     if (key in request.FILES):
                         uploaded_file = request.FILES[key]
+                        self._validate_image_upload(key, uploaded_file)
                         # Define the path to save the file
                         # file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
                         file_path = uploaded_file.name
