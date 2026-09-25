@@ -1,5 +1,7 @@
 import chroma from "chroma-js";
 
+const DEFAULT_BASE_COLOR = "#000000";
+
 /**
  * Generates a range of color shades from a given base color.
  *
@@ -15,16 +17,18 @@ import chroma from "chroma-js";
  * Reference: https://primevue.org/theming/styled/
  */
 export const generateShades = (baseColor: string) => {
+  const validBaseColor = chroma.valid(baseColor) ? baseColor : DEFAULT_BASE_COLOR;
+
   return {
-    50: chroma.mix(baseColor, "#ffffff", 0.9).hex(),
-    100: chroma.mix(baseColor, "#ffffff", 0.75).hex(),
-    200: chroma.mix(baseColor, "#ffffff", 0.6).hex(),
-    300: chroma.mix(baseColor, "#ffffff", 0.45).hex(),
-    400: chroma.mix(baseColor, "#ffffff", 0.3).hex(),
-    500: baseColor,
-    600: chroma.mix(baseColor, "#000000", 0.2).hex(),
-    700: chroma.mix(baseColor, "#000000", 0.35).hex(),
-    800: chroma.mix(baseColor, "#000000", 0.5).hex(),
-    900: chroma.mix(baseColor, "#000000", 0.7).hex(),
+    50: chroma.mix(validBaseColor, "#ffffff", 0.9).hex(),
+    100: chroma.mix(validBaseColor, "#ffffff", 0.75).hex(),
+    200: chroma.mix(validBaseColor, "#ffffff", 0.6).hex(),
+    300: chroma.mix(validBaseColor, "#ffffff", 0.45).hex(),
+    400: chroma.mix(validBaseColor, "#ffffff", 0.3).hex(),
+    500: validBaseColor,
+    600: chroma.mix(validBaseColor, "#000000", 0.2).hex(),
+    700: chroma.mix(validBaseColor, "#000000", 0.35).hex(),
+    800: chroma.mix(validBaseColor, "#000000", 0.5).hex(),
+    900: chroma.mix(validBaseColor, "#000000", 0.7).hex(),
   };
 };
