@@ -7,12 +7,35 @@ from webservice.models import Category, Layer, Source
 
 class TableViewSetTest(APITestCase):
     def setUp(self):
-        admin_user = get_user_model().objects.create_superuser(
+        self.admin_user = get_user_model().objects.create_superuser(
             username='admin',
             email='admin@example.com',
             password='password123',
         )
-        self.client.force_authenticate(admin_user)
+        self.user = get_user_model().objects.create_user(
+            username='user',
+            password='password123',
+        )
+        self.client.force_authenticate(self.admin_user)
+
+    def test_standard_user_cannot_access_custom_write_actions(self):
+        self.client.force_authenticate(self.user)
+
+        endpoints = [
+            '/atlas/api/v1/tables/import/',
+            '/atlas/api/v1/tables/duplicate/',
+            '/atlas/api/v1/tables/delete/',
+            '/atlas/api/v1/tables/export/',
+            '/atlas/api/v1/tables_old/import/',
+            '/atlas/api/v1/tables_old/delete/',
+            '/atlas/api/v1/tables_old/export/',
+        ]
+
+        for endpoint in endpoints:
+            with self.subTest(endpoint=endpoint):
+                response = self.client.post(endpoint, {'ids': []}, format='json')
+
+                self.assertEqual(response.status_code, 403)
 
     def test_duplicate_skips_explicit_through_relations(self):
         source = Source.objects.create(

@@ -1,15 +1,16 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import AllowAny, IsAdminUser
 
 from table.models import Table
 from table.serializers import TableSerializer
 from webservice.mixins import DataExportImportMixin, DeleteMixin, DuplicateMixin
+from webservice.permissions import IsAdminOrReadOnly
 
 
 class TableViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = TableSerializer
+    permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title']
     filterset_fields = ['show_in_portal']
@@ -33,14 +34,3 @@ class TableViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.
             raise NotFound(f"No Table matches the given query: {lookup_field_value}")
 
         return obj
-
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permission_classes = [IsAdminUser]
-        else:
-            permission_classes = [AllowAny]
-
-        return [permission() for permission in permission_classes]
