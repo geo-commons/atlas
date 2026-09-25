@@ -762,6 +762,23 @@ class DeleteSettingsSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField())
 
 
+class ConfigurationUpdateSerializer(serializers.Serializer):
+    ORGANIZATION_PRIMARY_COLOR = serializers.RegexField(
+        regex=r'\A#[0-9A-Fa-f]{6}\Z',
+        required=False,
+        allow_blank=True,
+    )
+    ORGANIZATION_TITLE_COLOR = serializers.RegexField(
+        regex=r'\A#[0-9A-Fa-f]{6}\Z',
+        required=False,
+        allow_blank=True,
+    )
+    ORGANIZATION_TEXT_COLOR = serializers.RegexField(
+        regex=r'\A#[0-9A-Fa-f]{6}\Z',
+        required=False,
+        allow_blank=True,
+    )
+
 class ViewerSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
 
