@@ -24,10 +24,9 @@ class SVGAndImageFormField(DjangoImageField):
         if test_file is None:
             return None
 
-        # We need to get a file object for Pillow. We might have a path or we might
-        # have to read the data into memory.
+        # Reuse the open temporary file or read the upload into memory.
         if hasattr(data, 'temporary_file_path'):
-            ifile = data.temporary_file_path()
+            ifile = data.file
         else:
             if hasattr(data, 'read'):
                 ifile = BytesIO(data.read())
