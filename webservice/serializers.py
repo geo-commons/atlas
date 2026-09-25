@@ -762,6 +762,14 @@ class DeleteSettingsSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField())
 
 
+class ConfigurationUpdateSerializer(serializers.Serializer):
+    MATOMO_SITE_ID = serializers.RegexField(
+        regex=r'\A[0-9]+\Z',
+        required=False,
+        allow_blank=True,
+    )
+
+
 class ViewerSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
 
