@@ -1,4 +1,6 @@
+from constance import config
 from django.test import TestCase
+from django.utils.html import escapejs
 
 from webservice.models import Category, Layer, Map, MapCategory, MapLayer, Source
 
@@ -38,6 +40,27 @@ class HomepageViewsTest(TestCase):
         self.assertEqual(response.context['data']['map']['slug'], self.main_map.slug)
         self.assertTrue(response.context['data']['map']['is_main'])
         self.assertEqual(response.context['data']['config']['position'], self.main_map.settings['position'])
+
+    def test_matomo_configuration_is_safely_embedded_in_javascript(self):
+        original_url = config.MATOMO_URL
+        original_site_id = config.MATOMO_SITE_ID
+        malicious_site_id = "1']); alert(1); //"
+
+        try:
+            config.MATOMO_URL = 'https://analytics.example.com'
+            config.MATOMO_SITE_ID = malicious_site_id
+
+            response = self.client.get('/atlas/')
+        finally:
+            config.MATOMO_URL = original_url
+            config.MATOMO_SITE_ID = original_site_id
+
+        content = response.content.decode()
+        self.assertNotIn(malicious_site_id, content)
+        self.assertIn(
+            f"_paq.push(['setSiteId', '{escapejs(malicious_site_id)}']);",
+            content,
+        )
 
     def test_v3_includes_flat_map_layers_and_categories_with_subcategories(self):
         parent_category = Category.objects.create(title='Infrastructure', slug='infrastructure', ordering=30)
