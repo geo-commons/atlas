@@ -160,6 +160,7 @@ export default {
       filters: {},
       filterProperties: [],
       filterPropertyTypes: {},
+      availableProperties: [],
       filterOptions: {},
       filterFeatures: {},
       numberMatched: null,
@@ -335,6 +336,13 @@ export default {
 
       const filter = getLayerFilter(this.store.layerFilters, this.layer.id, undefined, additionalFilters);
       if (filter) {
+        if (encodeURIComponent(filter).length > 32000) {
+          this.error = true;
+          this.errorMessage =
+            "Het geselecteerde gebied is momenteel te complex om te gebruiken als filter. Probeer een eenvoudiger gebied te selecteren of verklein het bestaande gebied.";
+          this.loading = false;
+          return;
+        }
         params.set("FILTER", filter);
       }
 
@@ -357,7 +365,9 @@ export default {
         if (!result.ok) throw new Error(`WFS GetFeature request failed with status ${result.status}`);
 
         const data = await result.json();
-        const numberMatched = data.numberMatched ?? data.totalFeatures ?? (await this.fetchFeatureCount(params));
+        const numberMatched =
+          this.getNumericFeatureCount(data.numberMatched ?? data.totalFeatures) ??
+          (await this.fetchFeatureCount(params));
         // Ignore a response when a newer table request has already started.
         if (requestId !== this.featureRequestId) return;
 
@@ -397,8 +407,11 @@ export default {
 
         const fetchedProperties = properties.map((property) => property.name);
         this.filterPropertyTypes = Object.fromEntries(properties.map((property) => [property.name, property.type]));
+        this.availableProperties = fetchedProperties;
         this.displayProperties =
-          this.layer.display_properties.length > 0 ? this.layer.display_properties : fetchedProperties;
+          this.layer.display_properties.length > 0
+            ? this.layer.display_properties.filter((property) => fetchedProperties.includes(property))
+            : fetchedProperties;
 
         this.filterProperties = [...this.displayProperties];
         return true;
@@ -430,9 +443,13 @@ export default {
         return;
       }
 
-      this.searchProperties = this.filterProperties.filter(
+      this.searchProperties = this.availableProperties.filter(
         (property) => this.filterPropertyTypes[property] === "string",
       );
+    },
+    getNumericFeatureCount(value) {
+      const numberMatched = typeof value === "number" ? value : Number(value);
+      return Number.isFinite(numberMatched) ? numberMatched : null;
     },
     /**
      * Requests the number of matching WFS features without downloading the features themselves.
@@ -453,8 +470,14 @@ export default {
         const result = await fetch(url.toString(), getFetchParameters(this.layer, this.user));
         if (!result.ok) return null;
 
-        const numberMatched = (await result.text()).match(/\bnumberMatched=["'](\d+)["']/)?.[1];
-        return numberMatched ? Number(numberMatched) : null;
+        const responseBody = await result.text();
+        try {
+          const data = JSON.parse(responseBody);
+          return this.getNumericFeatureCount(data.numberMatched ?? data.totalFeatures);
+        } catch {
+          const numberMatched = responseBody.match(/\bnumberMatched=["'](\d+)["']/)?.[1];
+          return this.getNumericFeatureCount(numberMatched);
+        }
       } catch (e) {
         console.error(e);
         return null;
@@ -488,6 +511,9 @@ export default {
 
       const filter = getLayerFilter(this.store.layerFilters, this.layer.id, undefined, additionalFilters);
       if (filter) {
+        if (encodeURIComponent(filter).length > 32000) {
+          return null;
+        }
         params.set("FILTER", filter);
       }
 

@@ -207,7 +207,7 @@ export default {
       const normalizedQuery = this.filterQuery.toLowerCase();
       this.matchingFilterOptions = this.currentFilterOptionsWithoutEmpty
         .map((filterOption) => filterOption.value)
-        .filter((filterOption) => filterOption.toLowerCase().includes(normalizedQuery));
+        .filter((filterOption) => String(filterOption).toLowerCase().includes(normalizedQuery));
     },
     filterOptionsForInput(event) {
       this.filterOptionsForQuery({ query: event.target.value });

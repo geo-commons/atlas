@@ -127,4 +127,35 @@ describe("parseWfsDescribeFeatureType", () => {
   it("returns no properties when the feature type is absent from the schema", () => {
     expect(parseWfsDescribeFeatureType("bag:pand", "<schema />")).toEqual([]);
   });
+
+  it("supports XML Schema integer variants and boolean properties", () => {
+    expect(
+      parseWfsDescribeFeatureType(
+        "test:feature",
+        `<schema xmlns="http://www.w3.org/2001/XMLSchema"><complexType name="featureType"><sequence>
+          <element name="unsigned" type="unsignedInt" />
+          <element name="positive" type="positiveInteger" />
+          <element name="enabled" type="boolean" />
+        </sequence></complexType></schema>`,
+      ),
+    ).toEqual([
+      { name: "unsigned", type: "int" },
+      { name: "positive", type: "int" },
+      { name: "enabled", type: "boolean" },
+    ]);
+  });
+
+  it("excludes GML geometry properties regardless of their namespace prefix", () => {
+    expect(
+      parseWfsDescribeFeatureType(
+        "test:feature",
+        `<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml32="http://www.opengis.net/gml/3.2">
+          <complexType name="featureType"><sequence>
+            <element name="geom" type="gml32:GeometryPropertyType" />
+            <element name="name" type="string" />
+          </sequence></complexType>
+        </schema>`,
+      ),
+    ).toEqual([{ name: "name", type: "string" }]);
+  });
 });

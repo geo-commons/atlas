@@ -57,6 +57,7 @@ export default {
   },
   data() {
     const selectInteraction = new Select({
+      layers: (layer) => layer.get("selectable") === true,
       style: new Style({
         stroke: new Stroke({ color: "rgba(0, 102, 255, 1)", width: 5 }),
         fill: new Fill({ color: "rgba(0, 102, 255, 0.2)" }),
