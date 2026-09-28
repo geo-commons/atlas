@@ -5,6 +5,7 @@
     @hide-panel="hidePanel"
   >
     <p v-if="!layer" class="info-text">De lijstweergave is nog niet geconfigureerd.</p>
+    <p v-else-if="error" class="info-text">Het geselecteerde gebied is te complex om als filter te gebruiken.</p>
 
     <ul v-if="layer">
       <li v-for="feature in features" :key="feature.id" class="list-item" @click="showFeatureOnMap(feature)">
@@ -128,6 +129,12 @@ export default {
 
       const layerFilter = getLayerFilter(this.store.layerFilters, this.layer.id, undefined, additionalFilters);
       if (layerFilter) {
+        if (encodeURIComponent(layerFilter).length > 32000) {
+          this.features = [];
+          this.error = true;
+          this.loading = false;
+          return;
+        }
         params.set("FILTER", layerFilter);
       }
 

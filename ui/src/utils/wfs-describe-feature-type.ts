@@ -1,4 +1,4 @@
-export type TWfsFilterPropertyType = "int" | "number" | "date" | "date-time" | "time" | "string";
+export type TWfsFilterPropertyType = "boolean" | "int" | "number" | "date" | "date-time" | "time" | "string";
 
 export interface IWfsFeatureProperty {
   name: string;
@@ -12,8 +12,26 @@ export interface IWfsFeatureProperty {
  */
 const getWfsFilterPropertyType = (type: string): TWfsFilterPropertyType => {
   const normalizedType = type.toLowerCase().replace(/^(xsd|xs):/, "");
-  if (["byte", "short", "int", "integer", "long"].includes(normalizedType)) return "int";
+  if (
+    [
+      "byte",
+      "short",
+      "int",
+      "integer",
+      "long",
+      "unsignedbyte",
+      "unsignedshort",
+      "unsignedint",
+      "unsignedlong",
+      "nonpositiveinteger",
+      "negativeinteger",
+      "nonnegativeinteger",
+      "positiveinteger",
+    ].includes(normalizedType)
+  )
+    return "int";
   if (["decimal", "double", "float"].includes(normalizedType)) return "number";
+  if (normalizedType === "boolean") return "boolean";
   if (normalizedType === "date") return "date";
   if (normalizedType === "datetime") return "date-time";
   if (normalizedType === "time") return "time";
@@ -35,10 +53,16 @@ export const parseWfsDescribeFeatureType = (layerName: string, xml: string): IWf
   if (!complexType) return [];
 
   return Array.from(complexType.getElementsByTagNameNS("*", "element"))
-    .map((element) => ({ name: element.getAttribute("name"), type: element.getAttribute("type") || "string" }))
-    .filter(
-      (property): property is { name: string; type: string } =>
-        property.name !== null && !property.type.startsWith("gml:"),
-    )
+    .map((element) => ({
+      element,
+      name: element.getAttribute("name"),
+      type: element.getAttribute("type") || "string",
+    }))
+    .filter((property): property is { element: Element; name: string; type: string } => {
+      const [prefix] = property.type.split(":");
+      const typeNamespace = property.type.includes(":") ? property.element.lookupNamespaceURI(prefix) : null;
+
+      return property.name !== null && !typeNamespace?.startsWith("http://www.opengis.net/gml");
+    })
     .map(({ name, type }) => ({ name, type: getWfsFilterPropertyType(type) }));
 };

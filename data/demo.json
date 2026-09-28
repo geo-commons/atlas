@@ -23411,7 +23411,7 @@
       },
       "templated_properties": {},
       "layer_type": 15,
-      "_popup_attributes": "identificatie\r\nbouwjaar\r\nstatus\r\ngebruiksdoel\r\nopervlakte_min\r\nopervlakte_max",
+      "_popup_attributes": "identificatie\r\nbouwjaar\r\nstatus\r\ngebruiksdoel\r\noppervlakte_min\r\noppervlakte_max",
       "_search_fields": "identificatie\r\nstatus\r\ngebruiksdoel",
       "_search_terms": "BAG\r\nPDOK\r\nWFS\r\npanden",
       "projection": "EPSG:28992",
