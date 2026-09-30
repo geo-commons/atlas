@@ -1,3 +1,6 @@
+/**
+ * Converts Atlas layer, panel, legend, and spatial filters into OGC Filter Encoding XML for WFS and WMS requests.
+ */
 import WFS from "ol/format/WFS";
 import { addProjection, get as getProjection } from "ol/proj";
 import Projection from "ol/proj/Projection";

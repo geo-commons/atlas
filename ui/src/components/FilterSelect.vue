@@ -44,6 +44,7 @@
       placeholder="Vul waarde in"
       class="filter-control"
       :max-fraction-digits="filterPropertyType === 'int' ? 0 : 16"
+      :use-grouping="false"
       @update:model-value="updateFieldFilters()"
     />
     <DatePicker
