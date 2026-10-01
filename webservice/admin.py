@@ -98,6 +98,7 @@ class LayerAdmin(VersionAdmin, CustomImportExportActionModelAdmin):
             'fields': (
                 'opacity',
                 'is_selectable',
+                'is_clustered',
                 'use_html_info_format',
                 'show_in_detail_panel',
                 'is_filterable_in_legend',

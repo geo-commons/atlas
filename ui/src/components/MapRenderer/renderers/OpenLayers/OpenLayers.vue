@@ -36,6 +36,7 @@
       :format="layer.format"
       :is-visible="layer.is_visible === true"
       :is-selectable="layer.is_selectable === true"
+      :is-clustered="layer.is_clustered === true"
       :is-time-enabled="layer.is_time_enabled === true"
       :send-token-with-request="layer.source.authenticate && user && user.token ? true : false"
       :selected-features="selectedFeatures"

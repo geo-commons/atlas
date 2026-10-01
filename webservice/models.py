@@ -517,6 +517,9 @@ class Layer(models.Model):
         'Legenda', help_text='Overschrijf link naar legenda', blank=True, null=True, max_length=1000)
 
     is_selectable = models.BooleanField('Is selecteerbaar', default=True)
+    is_clustered = models.BooleanField(
+        'Objecten clusteren', default=False,
+        help_text='Cluster objecten die dicht bij elkaar staan op de kaart.')
     disable_highlighted_style = models.BooleanField('Geselecteerde objecten niet highlighten', default=False)
     use_html_info_format = models.BooleanField(
         'Haal detailinformatie als HTML op bij de bron', default=False)
@@ -829,6 +832,7 @@ source: new ol.source.TileWMS({{
             'url': self.url,
             'server_type': self.server_type,
             'is_selectable': self.is_selectable,
+            'is_clustered': self.is_clustered,
             'disable_highlighted_style': self.disable_highlighted_style,
             'use_html_info_format': self.use_html_info_format,
             'show_in_detail_panel': self.show_in_detail_panel,

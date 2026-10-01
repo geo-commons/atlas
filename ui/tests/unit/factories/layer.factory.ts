@@ -13,6 +13,7 @@ const createDefaultLayer = (overrides: Partial<ILayer> = {}): ILayer => ({
   opacity: 1,
   friendly_fields: {},
   is_selectable: true,
+  is_clustered: false,
   is_base: false,
   category: null,
   show_in_detail_panel: true,

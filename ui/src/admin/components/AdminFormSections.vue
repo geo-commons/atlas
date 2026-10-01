@@ -45,12 +45,12 @@
                       :id="question.id"
                       v-slot="{ value, handleChange, handleBlur }"
                       :name="question.id"
-                      :disabled="question.disabled"
+                      :disabled="question.getDisabled ? question.getDisabled(values) : question.disabled"
                       :rules="getRules(question)"
                     >
                       <Checkbox
                         :model-value="value"
-                        :disabled="question.disabled"
+                        :disabled="question.getDisabled ? question.getDisabled(values) : question.disabled"
                         :input-id="question.id"
                         binary
                         @update:model-value="handleChange"
