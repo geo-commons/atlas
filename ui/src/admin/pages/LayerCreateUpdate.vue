@@ -618,7 +618,8 @@ export default {
               type: "checkbox",
               required: false,
               getDisabled: (values) => values.source_type !== "WFS",
-              infoText: "Cluster objecten die dicht bij elkaar staan op de kaart.",
+              infoText:
+                "Cluster objecten die dicht bij elkaar staan op de kaart, deze optie is alleen beschikbaar voor WFS lagen.",
             },
             {
               label: "Geselecteerde objecten niet highlighten",

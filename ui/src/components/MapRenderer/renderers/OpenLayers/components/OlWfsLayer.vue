@@ -133,6 +133,7 @@ onMounted(async () => {
     feature.set("layer_id", props.id, true);
   });
 
+  // If features on layer should be clustered we change the source to a Cluster source
   source = props.isClustered ? new Cluster({ distance: 40, source: featureSource }) : featureSource;
 
   tileLayer = new VectorLayer({
