@@ -108,12 +108,7 @@ export default {
     });
 
     this.selectInteraction.on("select", (e) => {
-      // Cluster features wrap their original WFS features in the `features` property.
-      // The detail panel needs the original feature properties and layer id.
-      const features = e.target
-        .getFeatures()
-        .getArray()
-        .flatMap((feature) => feature.get("features") ?? [feature]);
+      const features = e.target.getFeatures().getArray();
       this.$emit("set-selected-features", features);
     });
 

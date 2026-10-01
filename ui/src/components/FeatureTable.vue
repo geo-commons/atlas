@@ -387,6 +387,10 @@ export default {
         this.loading = false;
       }
     },
+    /**
+     * Loads the feature schema used to configure the table and filters.
+     * @returns Whether the schema was loaded successfully.
+     */
     async fetchFilterProperties() {
       const params = new URLSearchParams([
         ["service", "WFS"],

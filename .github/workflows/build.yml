@@ -1,13 +1,14 @@
 name: Build and upload Docker image
 
 on:
-  workflow_run:  # Run after test.yml workflow completes
-    workflows: ["Tests"]
-    types: [completed]
+  push:
+    branches: ["main"]
+    tags: ["*.*.*"]
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  ATLAS_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || 'unknown' }}
 
 jobs:
   build:
@@ -19,9 +20,9 @@ jobs:
           - platform: linux/amd64
             platform_id: amd64
             runner: ubuntu-24.04
-          - platform: linux/arm64
-            platform_id: arm64
-            runner: ubuntu-24.04-arm
+          #- platform: linux/arm64
+          #  platform_id: arm64
+          #  runner: ubuntu-24.04-arm
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
@@ -44,6 +45,8 @@ jobs:
         with:
           platforms: linux/amd64
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
+          build-args: |
+            ATLAS_VERSION=${{ env.ATLAS_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export digest
@@ -106,6 +109,9 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=ref,event=tag
 
       - name: Create manifest list and push
         working-directory: /tmp/digests
