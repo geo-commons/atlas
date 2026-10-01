@@ -5,6 +5,7 @@
     @hide-panel="hidePanel"
   >
     <p v-if="!layer" class="info-text">De lijstweergave is nog niet geconfigureerd.</p>
+    <p v-else-if="error" class="info-text">Het geselecteerde gebied is te complex om als filter te gebruiken.</p>
 
     <ul v-if="layer">
       <li v-for="feature in features" :key="feature.id" class="list-item" @click="showFeatureOnMap(feature)">
@@ -26,9 +27,9 @@ import MarkdownTemplate from "./MarkdownTemplate";
 import PanelDisplay from "./PanelDisplay";
 import { useMapStore } from "@/stores/map_store";
 import { getFetchParameters } from "@/utils/auth";
-import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
-import { getWfsTimeCqlFilter } from "@/utils/wms-time";
-import { WKT } from "ol/format";
+import { getLayerFilter } from "@/utils/layer-filter-wfs";
+import { getWfsTimeFilter } from "@/utils/wms-time";
+import { within } from "ol/format/filter";
 
 export default {
   name: "ListPanel",
@@ -107,43 +108,34 @@ export default {
 
       const params = new URLSearchParams([
         ["service", "WFS"],
-        ["version", "1.0.0"],
+        ["version", "2.0.0"],
         ["request", "GetFeature"],
-        ["typename", this.layer.name],
+        ["typeNames", this.layer.name],
         ["outputFormat", "application/json"],
-        ["maxFeatures", "5000"],
+        ["count", "5000"],
       ]);
 
-      const filters = [];
-      const layerCqlFilter = getLayerCqlFilter(this.store.layerFilters, this.layer.id);
-
-      if (layerCqlFilter) {
-        filters.push(`(${layerCqlFilter})`);
-      }
+      const additionalFilters = [];
 
       if (this.selectedArea) {
-        const wkt = new WKT();
-        const geom = wkt.writeGeometry(this.selectedArea);
-        const fullFilter = `WITHIN(geom,${geom})`;
+        additionalFilters.push(within("geom", this.selectedArea, "EPSG:28992"));
+      }
 
-        if (encodeURIComponent(fullFilter).length <= 32000) {
-          filters.push(fullFilter);
-        } else {
-          this.error = true;
+      const timeFilter = getWfsTimeFilter(this.store, this.layer);
+
+      if (timeFilter) {
+        additionalFilters.push(timeFilter);
+      }
+
+      const layerFilter = getLayerFilter(this.store.layerFilters, this.layer.id, undefined, additionalFilters);
+      if (layerFilter) {
+        if (encodeURIComponent(layerFilter).length > 32000) {
           this.features = [];
+          this.error = true;
           this.loading = false;
           return;
         }
-      }
-
-      const timeFilter = getWfsTimeCqlFilter(this.store, this.layer);
-
-      if (timeFilter) {
-        filters.push(timeFilter);
-      }
-
-      if (filters.length > 0) {
-        params.set("cql_filter", filters.join(" AND "));
+        params.set("FILTER", layerFilter);
       }
 
       try {

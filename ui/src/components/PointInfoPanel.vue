@@ -85,6 +85,7 @@
           :position="position"
           :config="config"
           :atlas-features="features"
+          :selected-features="selectedFeatures"
           @show-feature-on-map="showFeatureOnMap"
           @set-position="setPosition"
           @on-fit="onFit"
@@ -124,6 +125,10 @@ export default {
     layers: Array,
     showPanel: Boolean,
     mapId: String,
+    selectedFeatures: {
+      type: Array,
+      default: () => [],
+    },
   },
   emits: ["expanded-info-panel", "set-position", "on-fit", "show-feature-on-map", "select-feature"],
   data() {

@@ -12,7 +12,7 @@ import { useGlobalStore } from "@/stores";
 import { useMapStore } from "@/stores/map_store";
 import { useCompareLayers } from "@/composables/useCompareLayers";
 import { getWmsTimeParameter } from "@/utils/wms-time";
-import { getLayerCqlFilter } from "@/utils/layer-filter-cql";
+import { getLayerFilter } from "@/utils/layer-filter-wfs";
 
 const props = defineProps({
   id: String,
@@ -178,7 +178,7 @@ watch(
     if (!Object.keys(value).length) {
       source.updateParams({
         ...source.getParams(),
-        CQL_FILTER: null,
+        FILTER: null,
       });
       source.refresh();
       return;
@@ -193,11 +193,11 @@ watch(
       return;
     }
 
-    const cqlFilter = getLayerCqlFilter(value, props.id);
+    const filter = getLayerFilter(value, props.id);
 
     source.updateParams({
       ...source.getParams(),
-      CQL_FILTER: cqlFilter,
+      FILTER: filter,
     });
 
     source.refresh();
