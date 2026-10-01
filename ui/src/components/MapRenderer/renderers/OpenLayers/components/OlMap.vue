@@ -108,7 +108,10 @@ export default {
     });
 
     this.selectInteraction.on("select", (e) => {
-      const features = e.target.getFeatures().getArray();
+      const features = e.target
+        .getFeatures()
+        .getArray()
+        .flatMap((feature) => feature.get("features") ?? [feature]);
       this.$emit("set-selected-features", features);
     });
 
