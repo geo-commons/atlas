@@ -13,11 +13,49 @@ class ConfigurationViewSetTest(APITestCase):
             password='password123',
         )
         self.client.force_authenticate(admin_user)
+        self.original_url = config.MATOMO_URL
         self.original_site_id = config.MATOMO_SITE_ID
+        config.MATOMO_URL = 'https://analytics.example.com'
         config.MATOMO_SITE_ID = '1'
 
     def tearDown(self):
+        config.MATOMO_URL = self.original_url
         config.MATOMO_SITE_ID = self.original_site_id
+
+    def test_rejects_invalid_matomo_urls(self):
+        invalid_urls = (
+            'data:text/javascript,alert(1)',
+            'javascript:alert(1)',
+            'ftp://analytics.example.com',
+            '//analytics.example.com',
+            'analytics.example.com',
+        )
+
+        for matomo_url in invalid_urls:
+            with self.subTest(matomo_url=matomo_url):
+                response = self.client.post(self.url, {'MATOMO_URL': matomo_url}, format='multipart')
+
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(config.MATOMO_URL, 'https://analytics.example.com')
+
+    def test_accepts_http_and_https_matomo_urls(self):
+        valid_urls = (
+            'http://analytics.example.com',
+            'https://analytics.example.com',
+        )
+
+        for matomo_url in valid_urls:
+            with self.subTest(matomo_url=matomo_url):
+                response = self.client.post(self.url, {'MATOMO_URL': matomo_url}, format='multipart')
+
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(config.MATOMO_URL, matomo_url)
+
+    def test_accepts_empty_matomo_url(self):
+        response = self.client.post(self.url, {'MATOMO_URL': ''}, format='multipart')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(config.MATOMO_URL, '')
 
     def test_rejects_invalid_matomo_site_ids(self):
         invalid_site_ids = (

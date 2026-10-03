@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.validators import URLValidator
 from rest_framework import serializers
 
 from authz.lib import can_request_access_layer
@@ -782,6 +783,11 @@ class ConfigurationUpdateSerializer(serializers.Serializer):
         regex=HEX_COLOR_REGEX,
         required=False,
         allow_blank=True,
+    )
+    MATOMO_URL = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        validators=[URLValidator(schemes=['http', 'https'])],
     )
     MATOMO_SITE_ID = serializers.RegexField(
         regex=r'\A[0-9]+\Z',
