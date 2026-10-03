@@ -20,6 +20,7 @@ from tables.serializers import TableSerializer
 from user_management.models import AtlasGroup, AtlasUser
 from webservice.exceptions import ProtectedDeleteError
 from webservice.mixins import DataExportImportMixin, DuplicateMixin, DeleteMixin, FileUploadMixin
+from webservice.permissions import IsAdminOrReadOnly
 from webservice.util import get_settings, process_value
 from .filters import MultipleFieldsFilter
 from .models import Category, Drawing, Source, Layer, Viewer, Map, MapLayer, MapCategory, Metadataset, TopicCategory, \
@@ -233,7 +234,8 @@ class MetadatasetViewSet(viewsets.ModelViewSet, DataExportImportMixin, Duplicate
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MultipleFieldsFilter, OrderingFilter]
     multiple_lookup_fields = ['topic_category', 'status', 'show_in_overview']
     search_fields = ['title', 'abstract', 'keyword']
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_serializer_class(self):
         """
@@ -292,11 +294,7 @@ class TableViewSet(DataExportImportMixin, DeleteMixin, viewsets.ModelViewSet):
     search_fields = ['title', 'description']
 
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
-
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [permissions.IsAdminUser()]
-        return [AllowAny()]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         return Table.authorized.for_request(self.request)
