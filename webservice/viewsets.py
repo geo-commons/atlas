@@ -352,7 +352,11 @@ class ConfigurationViewSet(ViewSet):
                         # Save the file path in the Constance setting (key is the field name)
                         setattr(config, key, path)
                     else:
-                        setattr(config, key, process_value(value))
+                        if key in serializer.validated_data:
+                            value = serializer.validated_data[key]
+                        else:
+                            value = process_value(value)
+                        setattr(config, key, value)
 
         return Response(data=get_settings(allow_settings))
 
