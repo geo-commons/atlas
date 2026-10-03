@@ -26,3 +26,7 @@ htmlcov
 
 # PrimeVue related
 /ui/components.d.ts
+
+# environment
+.env
+*.env
