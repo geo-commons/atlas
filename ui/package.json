@@ -45,7 +45,7 @@
     "html2canvas": "1.4.1",
     "js-cookie": "3.0.8",
     "jspdf": "4.2.1",
-    "markdown-it": "14.3.0",
+    "markdown-it": "15.0.2",
     "nunjucks": "3.2.4",
     "ol": "10.9.0",
     "pinia": "3.0.4",
