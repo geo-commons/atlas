@@ -1,9 +1,9 @@
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 
 export const normalizeUrlValue = (value: unknown): string => {
   if (typeof value !== "string") {
     return "";
   }
 
-  return nunjucks.renderString("{{ value | replace(' ', '%20') }}", { value });
+  return renderTemplate("{{ value | replace(' ', '%20') }}", { value });
 };

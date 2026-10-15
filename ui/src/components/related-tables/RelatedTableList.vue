@@ -91,7 +91,7 @@
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import { IPosition } from "@/types/map";
 import { computed, onMounted, ref, watch } from "vue";
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
 import { formatFriendlyFieldLabel, formatRawString } from "@/utils/string-helpers";
@@ -156,7 +156,7 @@ const templateFields = computed<Record<string, string>>(() => {
 
 const getRestData = async (table: IRelatedTable) => {
   const fullUrl = `${table.source.url}${table.list_endpoint}`;
-  const renderedUrl = nunjucks.renderString(fullUrl, fieldMappingValues.value);
+  const renderedUrl = renderTemplate(fullUrl, fieldMappingValues.value);
   const url = new URL(renderedUrl);
 
   // If pagination is enabled, add pagination parameters to the request URL
@@ -168,7 +168,7 @@ const getRestData = async (table: IRelatedTable) => {
   try {
     const response = await fetch(url.toString(), {
       method: table.method,
-      body: table.method === "POST" ? nunjucks.renderString(table.request_body, fieldMappingValues.value) : null,
+      body: table.method === "POST" ? renderTemplate(table.request_body, fieldMappingValues.value) : null,
     });
 
     if (!response.ok) {
@@ -240,7 +240,7 @@ const getOwsData = async (table: IRelatedTable) => {
     let replacedFilters: string[] = [];
     table.list_cql_filters.forEach((filterObject: ICqlFilterEntry) => {
       if (fieldMappingValues.value[filterObject.key]) {
-        const replaceValue = nunjucks.renderString(filterObject.cql_filter, fieldMappingValues.value);
+        const replaceValue = renderTemplate(filterObject.cql_filter, fieldMappingValues.value);
         replacedFilters.push(replaceValue);
       }
     });
