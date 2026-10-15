@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 import TableList from "@/components/TableList.vue";
 import { formatFriendlyFieldLabel, formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import RichValue from "@/components/RichValue.vue";
@@ -146,7 +146,7 @@ const onSelectRelatedTableObject = (attr: any) => {
 
 const getRestData = async (table: IRelatedTable, item: any) => {
   const fullUrl = `${table.source.url}${table.detail_endpoint}`;
-  const renderedUrl = nunjucks.renderString(fullUrl, item);
+  const renderedUrl = renderTemplate(fullUrl, item);
 
   try {
     const response = await fetch(renderedUrl);
@@ -190,7 +190,7 @@ const getOwsData = async (table: IRelatedTable, item: any) => {
     table.detail_cql_filters.forEach((filterObject: ICqlFilterEntry) => {
       const filterValue = item[filterObject.key];
       if (filterValue) {
-        const replaceValue = nunjucks.renderString(filterObject.cql_filter, item);
+        const replaceValue = renderTemplate(filterObject.cql_filter, item);
         replacedFilters.push(replaceValue);
       }
     });

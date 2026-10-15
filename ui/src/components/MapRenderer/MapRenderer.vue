@@ -421,7 +421,7 @@ import PrintModal from "@/components/PrintModal.vue";
 import { useGlobalStore } from "@/stores";
 import { useMapStore } from "@/stores/map_store";
 import { isMobile } from "@/utils/helpers";
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 import GeoJSON from "ol/format/GeoJSON";
 import { transform } from "ol/proj";
 import TileWMS from "ol/source/TileWMS";
@@ -654,7 +654,7 @@ export default {
         y: position[1],
       };
 
-      return nunjucks.renderString(this.obliqueViewers[0].url, properties);
+      return renderTemplate(this.obliqueViewers[0].url, properties);
     },
     mapArea() {
       if (!this.config.map_area) {
