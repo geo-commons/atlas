@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { renderTemplate } from "@/utils/template-renderer";
+import { renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
 
 describe("renderTemplate", () => {
   it("renders plain and nested values without evaluating JavaScript", () => {
@@ -13,21 +13,34 @@ describe("renderTemplate", () => {
     expect(renderTemplate("{{ postcode.replaceAll(' ', '') }}", { postcode: "AB 12 CD" })).toBe("AB12CD");
   });
 
-  it("supports the configured string filters", () => {
-    expect(renderTemplate("{{ postcode.replaceAll(' ', '') | lower }}", { postcode: "AB 12 CD" })).toBe("ab12cd");
-    expect(renderTemplate("{{ value | replace(' ', '%20') }}", { value: "a value" })).toBe("a%20value");
+  it("preserves quoted commas, parentheses, pipes, and escaped quotes in methods", () => {
+    expect(renderTemplate("{{ value.replaceAll(',', '|') }}", { value: "a,b" })).toBe("a|b");
+    expect(renderTemplate("{{ value.replaceAll('(b)', 'c,d|e') }}", { value: "a(b)" })).toBe("ac,d|e");
+    expect(renderTemplate("{{ value.replaceAll('|', '(x,y)') }}", { value: "a|b" })).toBe("a(x,y)b");
+    expect(renderTemplate("{{ value.replaceAll('it\\'s', 'done') }}", { value: "it's ready" })).toBe("done ready");
   });
 
-  it("supports lowercase, uppercase, and trim filters", () => {
+  it("supports lowercase, uppercase, and trim methods", () => {
     const context = { value: "  Atlas CSP  " };
 
-    expect(renderTemplate("{{ value | lower }}", context)).toBe("  atlas csp  ");
-    expect(renderTemplate("{{ value | upper }}", context)).toBe("  ATLAS CSP  ");
-    expect(renderTemplate("{{ value | trim }}", context)).toBe("Atlas CSP");
+    expect(renderTemplate("{{ value.toLowerCase() }}", context)).toBe("  atlas csp  ");
+    expect(renderTemplate("{{ value.toUpperCase() }}", context)).toBe("  ATLAS CSP  ");
+    expect(renderTemplate("{{ value.trim() }}", context)).toBe("Atlas CSP");
   });
 
   it("renders missing and unsupported expressions as empty strings", () => {
     expect(renderTemplate("before {{ missing.value }} after", {})).toBe("before  after");
     expect(renderTemplate("{{ globalThis.alert('x') }}", {})).toBe("");
+  });
+
+  it("serializes rendered JSON request bodies", () => {
+    const body = renderJsonTemplate('{"name":"{{ name }}","message":"Hello {{ name }}"}', {
+      name: 'A "quoted" name',
+    });
+
+    expect(JSON.parse(body)).toEqual({
+      name: 'A "quoted" name',
+      message: 'Hello A "quoted" name',
+    });
   });
 });

@@ -5,5 +5,5 @@ export const normalizeUrlValue = (value: unknown): string => {
     return "";
   }
 
-  return renderTemplate("{{ value | replace(' ', '%20') }}", { value });
+  return renderTemplate("{{ value.replaceAll(' ', '%20') }}", { value });
 };

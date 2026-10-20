@@ -91,7 +91,7 @@
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import { IPosition } from "@/types/map";
 import { computed, onMounted, ref, watch } from "vue";
-import { renderTemplate } from "@/utils/template-renderer";
+import { renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
 import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
 import { formatFriendlyFieldLabel, formatRawString } from "@/utils/string-helpers";
@@ -168,7 +168,7 @@ const getRestData = async (table: IRelatedTable) => {
   try {
     const response = await fetch(url.toString(), {
       method: table.method,
-      body: table.method === "POST" ? renderTemplate(table.request_body, fieldMappingValues.value) : null,
+      body: table.method === "POST" ? renderJsonTemplate(table.request_body, fieldMappingValues.value) : null,
     });
 
     if (!response.ok) {

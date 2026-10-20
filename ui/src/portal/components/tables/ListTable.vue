@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 import { IRelatedTable, ICqlFilterEntry, SourceType } from "@/types/related-table";
-import { renderTemplate } from "@/utils/template-renderer";
+import { renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
 import fetchDot from "fetch-dot";
 import { ref, watch, computed } from "vue";
 import { pickTemplateValues } from "@/components/related-tables/utils";
@@ -164,7 +164,7 @@ const getRestData = async (table: IRelatedTable) => {
   try {
     const response = await fetch(url.toString(), {
       method: table.method,
-      body: table.method === "POST" ? renderTemplate(table.request_body, fieldMapping) : null,
+      body: table.method === "POST" ? renderJsonTemplate(table.request_body, fieldMapping) : null,
     });
 
     if (!response.ok) {
