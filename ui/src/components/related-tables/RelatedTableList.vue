@@ -91,7 +91,7 @@
 import { ICqlFilterEntry, IRelatedTable, SourceType } from "@/types/related-table";
 import { IPosition } from "@/types/map";
 import { computed, onMounted, ref, watch } from "vue";
-import { renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
+import { renderCqlTemplate, renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
 import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
 import { formatFriendlyFieldLabel, formatRawString } from "@/utils/string-helpers";
@@ -240,7 +240,7 @@ const getOwsData = async (table: IRelatedTable) => {
     let replacedFilters: string[] = [];
     table.list_cql_filters.forEach((filterObject: ICqlFilterEntry) => {
       if (fieldMappingValues.value[filterObject.key]) {
-        const replaceValue = renderTemplate(filterObject.cql_filter, fieldMappingValues.value);
+        const replaceValue = renderCqlTemplate(filterObject.cql_filter, fieldMappingValues.value);
         replacedFilters.push(replaceValue);
       }
     });

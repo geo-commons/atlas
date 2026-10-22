@@ -14,7 +14,7 @@ const TEMPLATE_EXPRESSION = /{{\s*(?<expression>[^}]+?)\s*}}/g;
  * - `postcode | replaceAll(' ', '')`
  */
 const PIPE_EXPRESSION =
-  /^(?<path>[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)(?:\s*\|\s*(?<method>replace|replaceAll)\((?<arguments>.*)\))?$/;
+  /^(?<path>[A-Za-z_$][\w$]*(?:(?:\.[A-Za-z_$][\w$]*)|(?:\[\d+\]))*)(?:\s*\|\s*(?<method>replace|replaceAll)\((?<arguments>.*)\))?$/;
 
 /**
  * Splits replacement arguments on commas outside quoted text.
@@ -134,6 +134,37 @@ export const renderTemplate = (template: string | null | undefined, context: Tem
   return template.replace(TEMPLATE_EXPRESSION, (_match, expression: string) => {
     const value = renderExpression(expression, context);
     return value == null ? "" : String(value);
+  });
+};
+
+/**
+ * Escapes a value for use inside a quoted CQL string literal.
+ *
+ * CQL represents a literal apostrophe as two apostrophes. This is deliberately
+ * separate from normal template rendering because URLs, JSON, and plain text
+ * each require different escaping rules.
+ *
+ * @example
+ * escapeCqlStringLiteral("O'Brien") // "O''Brien"
+ */
+const escapeCqlStringLiteral = (value: unknown): string => String(value ?? "").replaceAll("'", "''");
+
+/**
+ * Renders a CQL filter template with CQL-safe inserted values.
+ *
+ * Template expressions must be placed inside a quoted CQL string literal, for
+ * example `straatnaam IN ('{{ straatnaam }}')`.
+ *
+ * @param template The configured CQL filter.
+ * @param context Values available to the template.
+ */
+export const renderCqlTemplate = (template: string | null | undefined, context: TemplateContext = {}): string => {
+  if (!template) {
+    return "";
+  }
+
+  return template.replace(TEMPLATE_EXPRESSION, (_match, expression: string) => {
+    return escapeCqlStringLiteral(renderExpression(expression, context));
   });
 };
 

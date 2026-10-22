@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
+import { renderCqlTemplate, renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
 
 describe("renderTemplate", () => {
   it("renders plain and nested values without evaluating JavaScript", () => {
@@ -24,6 +24,21 @@ describe("renderTemplate", () => {
     expect(renderTemplate("before {{ missing.value }} after", {})).toBe("before  after");
     expect(renderTemplate("{{ globalThis.alert('x') }}", {})).toBe("");
     expect(renderTemplate("{{ value.replaceAll(' ', '') }}", { value: "AB 12" })).toBe("");
+  });
+
+  it("supports numeric array indexes in property paths", () => {
+    expect(renderTemplate("{{ fout[0].omschrijving }}", { fout: [{ omschrijving: "Ongeldige postcode" }] })).toBe(
+      "Ongeldige postcode",
+    );
+  });
+
+  it("escapes apostrophes in CQL template values", () => {
+    const template = "straatnaam IN ('{{ straatnaam }}')";
+
+    expect(renderCqlTemplate(template, { straatnaam: "O'Brien" })).toBe("straatnaam IN ('O''Brien')");
+    expect(renderCqlTemplate(template, { straatnaam: "x') OR INCLUDE OR straatnaam IN ('x" })).toBe(
+      "straatnaam IN ('x'') OR INCLUDE OR straatnaam IN (''x')",
+    );
   });
 
   it("serializes rendered JSON request bodies", () => {

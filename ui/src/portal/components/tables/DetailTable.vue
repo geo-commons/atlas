@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { IRelatedTable, ICqlFilterEntry, SourceType } from "@/types/related-table";
 import { watch, ref, computed } from "vue";
-import { renderTemplate } from "@/utils/template-renderer";
+import { renderCqlTemplate, renderTemplate } from "@/utils/template-renderer";
 import fetchDot from "fetch-dot";
 import ListTable from "./ListTable.vue";
 import RelatedTableAccordionPanel from "@/components/related-tables/RelatedTableAccordionPanel.vue";
@@ -163,7 +163,7 @@ const getOwsData = async (table: IRelatedTable, item: any) => {
     table.detail_cql_filters.forEach((filterObject: ICqlFilterEntry) => {
       const filterValue = item[filterObject.key];
       if (filterValue) {
-        const replaceValue = renderTemplate(filterObject.cql_filter, item);
+        const replaceValue = renderCqlTemplate(filterObject.cql_filter, item);
         replacedFilters.push(replaceValue);
       }
     });

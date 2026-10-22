@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 import { IRelatedTable, ICqlFilterEntry, SourceType } from "@/types/related-table";
-import { renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
+import { renderCqlTemplate, renderJsonTemplate, renderTemplate } from "@/utils/template-renderer";
 import fetchDot from "fetch-dot";
 import { ref, watch, computed } from "vue";
 import { pickTemplateValues } from "@/components/related-tables/utils";
@@ -236,7 +236,7 @@ const getOwsData = async (table: IRelatedTable) => {
     let replacedFilters: string[] = [];
     table.list_cql_filters.forEach((filterObject: ICqlFilterEntry) => {
       if (fieldMapping[filterObject.key]) {
-        const replaceValue = renderTemplate(filterObject.cql_filter, fieldMapping);
+        const replaceValue = renderCqlTemplate(filterObject.cql_filter, fieldMapping);
         replacedFilters.push(replaceValue);
       }
     });
