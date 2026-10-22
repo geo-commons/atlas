@@ -168,6 +168,7 @@ def _get_config(request, visible_map=None):
             'print': config.get('FEATURE_PRINT'),
             'portal': config.get('FEATURE_PORTAL'),
             'sortLayer': config.get('FEATURE_SORT_LAYER'),
+            'showAddressInPointInfoPanel': config.get('FEATURE_SHOW_ADDRESS_IN_POINT_INFO_PANEL'),
             'newTables': config.get('FEATURE_NEW_TABLES'),
             'oldLinkedDataAndTemplate': config.get('FEATURE_OLD_LINKED_DATA_AND_TEMPLATE'),
             'featureLayerInternalVisibility': config.get('FEATURE_LAYER_INTERNAL_VISIBILITY'),

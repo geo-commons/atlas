@@ -9,9 +9,9 @@
     <template #search>
       <div class="info-panel-header">
         <div class="search-query">
-          <h1 v-if="searchQuery.title">{{ searchQuery.title }}</h1>
+          <h1 v-if="showAddressInPointInfoPanel && searchQuery.title">{{ searchQuery.title }}</h1>
           <div class="coordinate-wrapper">
-            <h1 v-if="!searchQuery.title">{{ searchQuery.coordinates }}</h1>
+            <h1 v-if="!showAddressInPointInfoPanel || !searchQuery.title">{{ searchQuery.coordinates }}</h1>
             <h4 v-else>{{ searchQuery.coordinates }}</h4>
             <tippy
               placement="bottom-start"
@@ -145,6 +145,9 @@ export default {
     ...mapStores(useGlobalStore),
     visibleLayers() {
       return this.mapStore ? this.mapStore.visibleLayersForDetailPanel : [];
+    },
+    showAddressInPointInfoPanel() {
+      return this.config?.features?.showAddressInPointInfoPanel !== false;
     },
     searchQuery: {
       get() {
