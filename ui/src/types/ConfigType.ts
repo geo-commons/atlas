@@ -1,5 +1,6 @@
 export interface IConfigFeatures {
   portal?: boolean;
+  showAddressInPointInfoPanel?: boolean;
 }
 
 export interface IConfigPosition {
