@@ -8,29 +8,22 @@ describe("renderTemplate", () => {
     );
   });
 
-  it("supports replace and replaceAll method calls", () => {
-    expect(renderTemplate("{{ value.replace(' ', '-') }}", { value: "a value value" })).toBe("a-value value");
-    expect(renderTemplate("{{ postcode.replaceAll(' ', '') }}", { postcode: "AB 12 CD" })).toBe("AB12CD");
+  it("supports replace and replaceAll pipes", () => {
+    expect(renderTemplate("{{ value | replace(' ', '-') }}", { value: "a value value" })).toBe("a-value value");
+    expect(renderTemplate("{{ postcode | replaceAll(' ', '') }}", { postcode: "AB 12 CD" })).toBe("AB12CD");
   });
 
-  it("preserves quoted commas, parentheses, pipes, and escaped quotes in methods", () => {
-    expect(renderTemplate("{{ value.replaceAll(',', '|') }}", { value: "a,b" })).toBe("a|b");
-    expect(renderTemplate("{{ value.replaceAll('(b)', 'c,d|e') }}", { value: "a(b)" })).toBe("ac,d|e");
-    expect(renderTemplate("{{ value.replaceAll('|', '(x,y)') }}", { value: "a|b" })).toBe("a(x,y)b");
-    expect(renderTemplate("{{ value.replaceAll('it\\'s', 'done') }}", { value: "it's ready" })).toBe("done ready");
-  });
-
-  it("supports lowercase, uppercase, and trim methods", () => {
-    const context = { value: "  Atlas CSP  " };
-
-    expect(renderTemplate("{{ value.toLowerCase() }}", context)).toBe("  atlas csp  ");
-    expect(renderTemplate("{{ value.toUpperCase() }}", context)).toBe("  ATLAS CSP  ");
-    expect(renderTemplate("{{ value.trim() }}", context)).toBe("Atlas CSP");
+  it("preserves quoted commas, parentheses, pipes, and escaped quotes in pipes", () => {
+    expect(renderTemplate("{{ value | replaceAll(',', '|') }}", { value: "a,b" })).toBe("a|b");
+    expect(renderTemplate("{{ value | replaceAll('(b)', 'c,d|e') }}", { value: "a(b)" })).toBe("ac,d|e");
+    expect(renderTemplate("{{ value | replaceAll('|', '(x,y)') }}", { value: "a|b" })).toBe("a(x,y)b");
+    expect(renderTemplate("{{ value | replaceAll('it\\'s', 'done') }}", { value: "it's ready" })).toBe("done ready");
   });
 
   it("renders missing and unsupported expressions as empty strings", () => {
     expect(renderTemplate("before {{ missing.value }} after", {})).toBe("before  after");
     expect(renderTemplate("{{ globalThis.alert('x') }}", {})).toBe("");
+    expect(renderTemplate("{{ value.replaceAll(' ', '') }}", { value: "AB 12" })).toBe("");
   });
 
   it("serializes rendered JSON request bodies", () => {

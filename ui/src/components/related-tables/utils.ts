@@ -1,7 +1,7 @@
 import fetchDot from "fetch-dot";
 
 /**
- * Extracts all Nunjucks template variables used in a string
+ * Extracts all template variables used in a string
  * and returns an object containing their resolved values.
  *
  * Example:
