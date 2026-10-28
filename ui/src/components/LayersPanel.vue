@@ -85,6 +85,18 @@
                 {{ category.visibleLayerCount }}
               </div>
             </template>
+            <template v-if="showToggleAllLayersInCategory" #header>
+              <input
+                :id="`category-layer-toggle-${category.id}`"
+                :checked="areCategoryLayersVisible(category)"
+                :indeterminate="hasPartiallyVisibleCategoryLayers(category)"
+                class="category-layer-toggle"
+                type="checkbox"
+                :aria-label="`Schakel alle lagen in ${category.title} ${areCategoryLayersVisible(category) ? 'uit' : 'in'}`"
+                @click.stop
+                @change="toggleCategoryLayers(category)"
+              />
+            </template>
             <template #default>
               <ul :id="category.id" class="sublayers">
                 <LayerListItem
@@ -103,6 +115,20 @@
                       <div v-if="subcategory.visibleLayerCount > 0" class="counter layer-counter">
                         {{ subcategory.visibleLayerCount }}
                       </div>
+                    </template>
+                    <template v-if="showToggleAllLayersInCategory" #header>
+                      <input
+                        :id="`category-layer-toggle-${subcategory.id}`"
+                        :checked="areCategoryLayersVisible(subcategory)"
+                        :indeterminate="hasPartiallyVisibleCategoryLayers(subcategory)"
+                        class="category-layer-toggle"
+                        type="checkbox"
+                        :aria-label="`Schakel alle lagen in ${subcategory.title} ${
+                          areCategoryLayersVisible(subcategory) ? 'uit' : 'in'
+                        }`"
+                        @click.stop
+                        @change="toggleCategoryLayers(subcategory)"
+                      />
                     </template>
                     <template #default>
                       <ul :id="subcategory.id" class="sublayers subcategory-sublayers">
@@ -248,6 +274,10 @@ export default {
     mapId: String,
     showSearchBar: Boolean,
     showSimpleLayerList: Boolean,
+    showToggleAllLayersInCategory: {
+      type: Boolean,
+      default: false,
+    },
     showCompareSlider: Boolean,
     showToggleAllLayersInLegend: {
       type: Boolean,
@@ -390,12 +420,25 @@ export default {
         .filter((layer) => layer && this.layerMatchesSearch(layer));
     },
     getVisibleLayerCount(category) {
-      const directVisibleLayers = category.layers.filter((layer) => layer.is_visible).length;
-      const subcategoryVisibleLayers = (category.subcategories || []).reduce((total, subcategory) => {
-        return total + subcategory.layers.filter((layer) => layer.is_visible).length;
-      }, 0);
+      return this.getCategoryLayers(category).filter((layer) => layer.is_visible).length;
+    },
+    getCategoryLayers(category) {
+      return [...category.layers, ...(category.subcategories || []).flatMap((subcategory) => subcategory.layers)];
+    },
+    areCategoryLayersVisible(category) {
+      const categoryLayers = this.getCategoryLayers(category);
+      return categoryLayers.length > 0 && categoryLayers.every((layer) => layer.is_visible);
+    },
+    hasPartiallyVisibleCategoryLayers(category) {
+      const visibleLayerCount = this.getVisibleLayerCount(category);
+      return visibleLayerCount > 0 && visibleLayerCount < this.getCategoryLayers(category).length;
+    },
+    toggleCategoryLayers(category) {
+      const isVisible = !this.areCategoryLayersVisible(category);
 
-      return directVisibleLayers + subcategoryVisibleLayers;
+      this.getCategoryLayers(category).forEach((layer) => {
+        this.mapStore.toggleLayer({ selectedLayerId: layer.id, is_visible: isVisible });
+      });
     },
     layerMatchesSearch(layer) {
       if (!this.searchTerm) {
@@ -504,6 +547,16 @@ export default {
 
 .layer-counter {
   margin: 7px 8px 0 4px;
+}
+
+.category-layer-toggle {
+  align-self: center;
+  order: -1;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  margin: 0 4px 0 8px;
+  cursor: pointer;
 }
 
 .layers,
