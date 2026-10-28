@@ -49,6 +49,13 @@ const getCategoryOrdering = (
   return mapCategory?.ordering ?? category.ordering ?? Number.MAX_SAFE_INTEGER;
 };
 
+const getCategoryTitle = (
+  mapCategoryByCategoryId: Map<CategoryId, IMapCategoryConfig>,
+  category: ICategory,
+): string => {
+  return mapCategoryByCategoryId.get(category.id)?.title || category.title;
+};
+
 export const getTreeLayerId = (layer: IAdminLayer): LayerId => {
   return layer.internal_id ?? layer.id;
 };
@@ -239,7 +246,7 @@ export const buildCategoryTree = (
 
     const parentNode = categories.get(parentCategory.id) || {
       id: parentCategory.id,
-      title: parentCategory.title,
+      title: getCategoryTitle(mapCategoryByCategoryId, parentCategory),
       slug: parentCategory.slug,
       ordering: getCategoryOrdering(mapCategoryByCategoryId, parentCategory),
       layers: [],
@@ -258,7 +265,7 @@ export const buildCategoryTree = (
     if (!subcategoryNode) {
       subcategoryNode = {
         id: resolvedCategory.id,
-        title: resolvedCategory.title,
+        title: getCategoryTitle(mapCategoryByCategoryId, resolvedCategory),
         slug: resolvedCategory.slug,
         ordering: getCategoryOrdering(mapCategoryByCategoryId, resolvedCategory),
         layers: [],

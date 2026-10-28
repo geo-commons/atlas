@@ -149,6 +149,20 @@ describe("mapLayerTree", () => {
     expect(tree[0].layers.map((layer) => layer.id)).toEqual(["second-layer", "first-layer"]);
   });
 
+  it("uses the map-specific title for categories and subcategories", () => {
+    const tree = buildCategoryTree(
+      [regularLayer, subcategoryBaseLayer],
+      [parentCategory, subCategory],
+      [
+        { category: parentCategory.id, title: "Custom parent", ordering: 1 },
+        { category: subCategory.id, title: "Custom subcategory", ordering: 2 },
+      ],
+    );
+
+    expect(tree[0].title).toBe("Custom parent");
+    expect(tree[0].subcategories[0].title).toBe("Custom subcategory");
+  });
+
   it("flattens direct category layers before subcategory layers", () => {
     const subcategoryLayer = {
       id: 4,

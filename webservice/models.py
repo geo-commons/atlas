@@ -1048,6 +1048,7 @@ class MapCategory(models.Model):
         'Category', on_delete=models.CASCADE, related_name='maps_category')
     map = models.ForeignKey(
         'Map', on_delete=models.CASCADE, related_name='map_categories')
+    title = models.CharField('Titel', max_length=128, blank=True, default='')
     ordering = models.PositiveIntegerField('Sortering', default=0, db_index=True)
 
     class Meta:
@@ -1064,6 +1065,7 @@ class MapCategory(models.Model):
     def to_dict(self):
         return {
             'category': self.category_id,
+            'title': self.title or self.category.title,
             'ordering': self.ordering,
         }
 
