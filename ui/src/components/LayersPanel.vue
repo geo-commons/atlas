@@ -79,6 +79,14 @@
             :title="category.title"
             :is-open="debouncedSearchQuery != ''"
             class="category-wrapper"
+            :class="
+              showToggleAllLayersInCategory && [
+                '[&_.sublayers]:!tw-pl-0',
+                '[&_.sublayer>input]:!tw-left-[33px]',
+                '[&_.sublayer>label]:!tw-pl-[54px]',
+                '[&_.expand-button>.name]:tw-pl-6',
+              ]
+            "
           >
             <template #button>
               <div v-if="category.visibleLayerCount > 0" class="counter layer-counter">
@@ -86,16 +94,20 @@
               </div>
             </template>
             <template v-if="showToggleAllLayersInCategory" #header>
-              <input
-                :id="`category-layer-toggle-${category.id}`"
-                :checked="areCategoryLayersVisible(category)"
-                :indeterminate="hasPartiallyVisibleCategoryLayers(category)"
-                class="category-layer-toggle"
-                type="checkbox"
-                :aria-label="`Schakel alle lagen in ${category.title} ${areCategoryLayersVisible(category) ? 'uit' : 'in'}`"
+              <label
+                class="tw-absolute tw-left-7 tw-top-0 tw-flex tw-h-full tw-w-6 tw-cursor-pointer tw-items-start tw-justify-center"
                 @click.stop
-                @change="toggleCategoryLayers(category)"
-              />
+              >
+                <input
+                  :id="`category-layer-toggle-${category.id}`"
+                  class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
+                  :checked="areCategoryLayersVisible(category)"
+                  :indeterminate="hasPartiallyVisibleCategoryLayers(category)"
+                  type="checkbox"
+                  :aria-label="`Schakel alle lagen in ${category.title} ${areCategoryLayersVisible(category) ? 'uit' : 'in'}`"
+                  @change="toggleCategoryLayers(category)"
+                />
+              </label>
             </template>
             <template #default>
               <ul :id="category.id" class="sublayers">
@@ -109,26 +121,38 @@
                   @set-position="onSetPosition"
                   @on-fit="onFit"
                 />
-                <li v-for="subcategory in category.subcategories" :key="subcategory.id">
-                  <ExpandButton :title="subcategory.title" :is-open="debouncedSearchQuery != ''" class="!-tw-ml-2.5">
+                <li
+                  v-for="subcategory in category.subcategories"
+                  :key="subcategory.id"
+                  :class="{ 'tw-ml-6': showToggleAllLayersInCategory }"
+                >
+                  <ExpandButton
+                    :title="subcategory.title"
+                    :is-open="debouncedSearchQuery != ''"
+                    :class="{ '!-tw-ml-2.5': !showToggleAllLayersInCategory }"
+                  >
                     <template #button>
                       <div v-if="subcategory.visibleLayerCount > 0" class="counter layer-counter">
                         {{ subcategory.visibleLayerCount }}
                       </div>
                     </template>
                     <template v-if="showToggleAllLayersInCategory" #header>
-                      <input
-                        :id="`category-layer-toggle-${subcategory.id}`"
-                        :checked="areCategoryLayersVisible(subcategory)"
-                        :indeterminate="hasPartiallyVisibleCategoryLayers(subcategory)"
-                        class="category-layer-toggle"
-                        type="checkbox"
-                        :aria-label="`Schakel alle lagen in ${subcategory.title} ${
-                          areCategoryLayersVisible(subcategory) ? 'uit' : 'in'
-                        }`"
+                      <label
+                        class="tw-absolute tw-left-7 tw-top-0 tw-flex tw-h-full tw-w-6 tw-cursor-pointer tw-items-start tw-justify-center"
                         @click.stop
-                        @change="toggleCategoryLayers(subcategory)"
-                      />
+                      >
+                        <input
+                          :id="`category-layer-toggle-${subcategory.id}`"
+                          class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
+                          :checked="areCategoryLayersVisible(subcategory)"
+                          :indeterminate="hasPartiallyVisibleCategoryLayers(subcategory)"
+                          type="checkbox"
+                          :aria-label="`Schakel alle lagen in ${subcategory.title} ${
+                            areCategoryLayersVisible(subcategory) ? 'uit' : 'in'
+                          }`"
+                          @change="toggleCategoryLayers(subcategory)"
+                        />
+                      </label>
                     </template>
                     <template #default>
                       <ul :id="subcategory.id" class="sublayers subcategory-sublayers">
@@ -547,16 +571,6 @@ export default {
 
 .layer-counter {
   margin: 7px 8px 0 4px;
-}
-
-.category-layer-toggle {
-  align-self: center;
-  order: -1;
-  flex: 0 0 auto;
-  width: 14px;
-  height: 14px;
-  margin: 0 4px 0 8px;
-  cursor: pointer;
 }
 
 .layers,
