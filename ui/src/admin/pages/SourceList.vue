@@ -19,6 +19,16 @@ const tableHeaders: Array<TableHeader> = [
     key: "title",
     enableLink: true,
   },
+  {
+    header: "Aangemaakt op",
+    key: "created_at",
+    enableLink: false,
+  },
+  {
+    header: "Gewijzigd op",
+    key: "updated_at",
+    enableLink: false,
+  },
 ];
 
 const initialSourceData = {

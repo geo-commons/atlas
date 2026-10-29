@@ -33,6 +33,16 @@ const tableHeaders: Array<TableHeader> = [
     key: "show_in_overview",
     enableLink: false,
   },
+  {
+    header: "Aangemaakt op",
+    key: "created_at",
+    enableLink: false,
+  },
+  {
+    header: "Gewijzigd op",
+    key: "updated_at",
+    enableLink: false,
+  },
 ];
 
 const initialMapData = {
