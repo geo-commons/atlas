@@ -7,6 +7,14 @@ export const layerRequiresAuthentication = (layer) => {
   return true;
 };
 
+export const getDataAccessErrorMessage = (user) => {
+  if (!user || !user.token) {
+    return "U moet ingelogd zijn om deze data te bekijken.";
+  }
+
+  return "U heeft geen rechten om deze data te bekijken.";
+};
+
 // Returns fetch parameters with Authorization header when the layer source requires authentication
 // and the user is logged in
 export const getFetchParameters = (layer, user) => {
