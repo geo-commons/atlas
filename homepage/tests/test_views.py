@@ -110,8 +110,16 @@ class HomepageViewsTest(TestCase):
         self.assertEqual(
             map_data['categories'],
             [
-                {'category': subcategory.id, 'ordering': subcategory_map_category.ordering},
-                {'category': parent_category.id, 'ordering': parent_map_category.ordering},
+                {
+                    'category': subcategory.id,
+                    'title': subcategory.title,
+                    'ordering': subcategory_map_category.ordering,
+                },
+                {
+                    'category': parent_category.id,
+                    'title': parent_category.title,
+                    'ordering': parent_map_category.ordering,
+                },
             ],
         )
         self.assertEqual([layer['layer'] for layer in map_data['layers']], [subcategory_layer.id, direct_layer.id])
@@ -143,7 +151,10 @@ class HomepageViewsTest(TestCase):
         self.assertIn('traffic-incidents', layer_ids)
 
         map_data = response.context['data']['map']
-        self.assertEqual(map_data['categories'], [{'category': subcategory.id, 'ordering': 1}])
+        self.assertEqual(
+            map_data['categories'],
+            [{'category': subcategory.id, 'title': subcategory.title, 'ordering': 1}],
+        )
 
     def test_v3_map_layers_include_configured_layers_only(self):
         category = Category.objects.create(title='Infrastructure', slug='infrastructure')

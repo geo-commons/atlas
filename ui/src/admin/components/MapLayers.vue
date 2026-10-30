@@ -209,6 +209,7 @@
               v-model="editedCategoryTitle"
               autofocus
               fluid
+              :max-length="128"
               @keyup.enter="saveCategoryTitle"
             />
           </div>
