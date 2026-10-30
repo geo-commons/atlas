@@ -22622,7 +22622,8 @@
       "groups": [],
       "user_permissions": [],
       "atlas_groups": []
-    }
+    ,
+      "updated_at": "2026-10-29T00:00:00Z"}
   },
   {
     "model": "user_management.atlasuser",
@@ -22643,7 +22644,8 @@
       "groups": [],
       "user_permissions": [],
       "atlas_groups": []
-    }
+    ,
+      "updated_at": "2026-10-29T00:00:00Z"}
   },
   {
     "model": "user_management.atlasuser",
@@ -22664,7 +22666,8 @@
       "groups": [],
       "user_permissions": [],
       "atlas_groups": []
-    }
+    ,
+      "updated_at": "2026-10-29T00:00:00Z"}
   },
   {
     "model": "authz.authorization",
