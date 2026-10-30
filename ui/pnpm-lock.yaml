@@ -129,8 +129,8 @@ importers:
         specifier: 2.8.9
         version: 2.8.9(vue@3.5.42(typescript@5.9.3))
       vue-codemirror6:
-        specifier: 1.5.2
-        version: 1.5.2(@codemirror/autocomplete@6.20.3)(@codemirror/commands@6.11.0)(@codemirror/language@6.12.4)(@codemirror/lint@6.9.7)(@codemirror/search@6.7.2)(@codemirror/state@6.7.0)(@codemirror/view@6.43.11)(codemirror@6.0.2)(style-mod@4.1.3)(vue@3.5.42(typescript@5.9.3))
+        specifier: 1.7.0
+        version: 1.7.0(@codemirror/autocomplete@6.20.3)(@codemirror/commands@6.11.0)(@codemirror/language@6.12.4)(@codemirror/lint@6.9.7)(@codemirror/search@6.7.2)(@codemirror/state@6.7.0)(@codemirror/view@6.43.11)(codemirror@6.0.2)(style-mod@4.1.3)(vue@3.5.42(typescript@5.9.3))
       vue-router:
         specifier: 4.6.4
         version: 4.6.4(vue@3.5.42(typescript@5.9.3))
@@ -2598,9 +2598,8 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
-  vue-codemirror6@1.5.2:
-    resolution: {integrity: sha512-SJRW0r8776zdqIVSZZsHuTXErmql1PKATupN+RPs4IXSTAzzKl4Sl/804BazVb9OYrd2Ym5Yv97AmwPRVD4zeg==}
-    engines: {node: ^20.19.0 || >=22.12.0, pnpm: '>=10.3.0'}
+  vue-codemirror6@1.7.0:
+    resolution: {integrity: sha512-OPXoJN3S8NCq6xld4r6o5IuzVwgZJ46b7kU6bEq7uwTQkLW+thC8oXp2ZyWy8JfSVRoURExpaRzqK4cV5+IB6g==}
     peerDependencies:
       '@codemirror/autocomplete': ^6.0.0
       '@codemirror/commands': ^6.0.0
@@ -4990,7 +4989,7 @@ snapshots:
       easy-bem: 1.1.1
       vue: 3.5.42(typescript@5.9.3)
 
-  vue-codemirror6@1.5.2(@codemirror/autocomplete@6.20.3)(@codemirror/commands@6.11.0)(@codemirror/language@6.12.4)(@codemirror/lint@6.9.7)(@codemirror/search@6.7.2)(@codemirror/state@6.7.0)(@codemirror/view@6.43.11)(codemirror@6.0.2)(style-mod@4.1.3)(vue@3.5.42(typescript@5.9.3)):
+  vue-codemirror6@1.7.0(@codemirror/autocomplete@6.20.3)(@codemirror/commands@6.11.0)(@codemirror/language@6.12.4)(@codemirror/lint@6.9.7)(@codemirror/search@6.7.2)(@codemirror/state@6.7.0)(@codemirror/view@6.43.11)(codemirror@6.0.2)(style-mod@4.1.3)(vue@3.5.42(typescript@5.9.3)):
     dependencies:
       '@codemirror/autocomplete': 6.20.3
       '@codemirror/commands': 6.11.0
