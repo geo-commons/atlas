@@ -103,6 +103,7 @@
                   class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
                   :checked="areCategoryLayersVisible(category)"
                   :indeterminate="hasPartiallyVisibleCategoryLayers(category)"
+                  :disabled="getCategoryLayersAvailableForToggle(category).length === 0"
                   type="checkbox"
                   :aria-label="`Schakel alle lagen in ${category.title} ${areCategoryLayersVisible(category) ? 'uit' : 'in'}`"
                   @change="toggleCategoryLayers(category)"
@@ -146,6 +147,7 @@
                           class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
                           :checked="areCategoryLayersVisible(subcategory)"
                           :indeterminate="hasPartiallyVisibleCategoryLayers(subcategory)"
+                          :disabled="getCategoryLayersAvailableForToggle(subcategory).length === 0"
                           type="checkbox"
                           :aria-label="`Schakel alle lagen in ${subcategory.title} ${
                             areCategoryLayersVisible(subcategory) ? 'uit' : 'in'
@@ -276,6 +278,7 @@ import { mapState } from "pinia";
 import { useDebounceFn } from "@vueuse/core";
 import { useGlobalStore } from "@/stores";
 import { useMapStore } from "@/stores/map_store";
+import { canEnableLayer } from "@/utils/auth";
 
 export default {
   name: "LayersPanel",
@@ -449,18 +452,26 @@ export default {
     getCategoryLayers(category) {
       return [...category.layers, ...(category.subcategories || []).flatMap((subcategory) => subcategory.layers)];
     },
+    getCategoryLayersAvailableForToggle(category) {
+      return this.getCategoryLayers(category).filter((layer) => layer.is_visible || canEnableLayer(layer, this.user));
+    },
     areCategoryLayersVisible(category) {
-      const categoryLayers = this.getCategoryLayers(category);
+      const categoryLayers = this.getCategoryLayersAvailableForToggle(category);
       return categoryLayers.length > 0 && categoryLayers.every((layer) => layer.is_visible);
     },
     hasPartiallyVisibleCategoryLayers(category) {
-      const visibleLayerCount = this.getVisibleLayerCount(category);
-      return visibleLayerCount > 0 && visibleLayerCount < this.getCategoryLayers(category).length;
+      const categoryLayers = this.getCategoryLayersAvailableForToggle(category);
+      const visibleLayerCount = categoryLayers.filter((layer) => layer.is_visible).length;
+      return visibleLayerCount > 0 && visibleLayerCount < categoryLayers.length;
     },
     toggleCategoryLayers(category) {
       const isVisible = !this.areCategoryLayersVisible(category);
+      const categoryLayers = this.getCategoryLayers(category);
+      const layersToToggle = isVisible
+        ? categoryLayers.filter((layer) => !layer.is_visible && canEnableLayer(layer, this.user))
+        : categoryLayers.filter((layer) => layer.is_visible);
 
-      this.getCategoryLayers(category).forEach((layer) => {
+      layersToToggle.forEach((layer) => {
         this.mapStore.toggleLayer({ selectedLayerId: layer.id, is_visible: isVisible });
       });
     },

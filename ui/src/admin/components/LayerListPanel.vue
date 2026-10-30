@@ -48,9 +48,7 @@
             binary
             @update:model-value="(value) => (data.features.show_toggle_all_layers_in_category = value)"
           />
-          <label for="features.show_toggle_all_layers_in_category"
-            >Toon alle lagen per (sub)categorie</label
-          >
+          <label for="features.show_toggle_all_layers_in_category">Toon alle lagen per (sub)categorie</label>
         </div>
       </div>
     </template>
