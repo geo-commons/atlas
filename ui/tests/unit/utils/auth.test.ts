@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
+import { getDataAccessErrorMessage, getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
 import { createLayer } from "../factories/layer.factory";
+
+describe("getDataAccessErrorMessage", () => {
+  it("asks unauthenticated users to log in", () => {
+    expect(getDataAccessErrorMessage(null)).toBe("U moet ingelogd zijn om deze data te bekijken.");
+  });
+
+  it("tells authenticated users they do not have access", () => {
+    expect(getDataAccessErrorMessage({ token: "test-token" })).toBe("U heeft geen rechten om deze data te bekijken.");
+  });
+});
 
 describe("layerRequiresAuthentication", () => {
   it("returns true when the layer source forwards authentication", () => {
