@@ -21,7 +21,6 @@ export default {
     position: Object,
     padding: Array,
     isVisible: Boolean,
-    markerOnClick: Boolean,
     tool: String,
   },
   emits: ["position-changed"],
@@ -95,13 +94,11 @@ export default {
         return;
       }
 
-      if (this.markerOnClick) {
-        this.$emit("position-changed", {
-          ...this.position,
-          marker: e.coordinate,
-          source: "map",
-        });
-      }
+      this.$emit("position-changed", {
+        ...this.position,
+        marker: e.coordinate,
+        source: "map",
+      });
     });
   },
   methods: {
