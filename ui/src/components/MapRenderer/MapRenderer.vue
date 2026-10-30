@@ -126,7 +126,7 @@
       @hide-panel="toggleFilters"
     />
     <PointInfoPanel
-      v-if="!showPanoramaPanel && features.markerOnClick"
+      v-if="!showPanoramaPanel"
       :layers="layers"
       :position="position"
       :show-panel="!showDataPanel && showInfoPanel && !editLayerStore.hideOtherPanels"
@@ -142,7 +142,7 @@
       @show-feature-on-map="showFeatureOnMap"
     />
     <DetailPanel
-      v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
+      v-if="!showPanoramaPanel && features.detail"
       :show-panel="selectedFeatures.length > 0 && !editLayerStore.hideOtherPanels"
       :features="selectedFeatures"
       @features-selected="setSelectedFeatures"
