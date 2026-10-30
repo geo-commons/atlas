@@ -7,6 +7,11 @@ export const layerRequiresAuthentication = (layer) => {
   return true;
 };
 
+// Login-required layers can only be enabled when the viewer has an authentication token.
+export const canEnableLayer = (layer, user) => {
+  return !layer.login_required || Boolean(user?.token);
+};
+
 // Returns fetch parameters with Authorization header when the layer source requires authentication
 // and the user is logged in
 export const getFetchParameters = (layer, user) => {

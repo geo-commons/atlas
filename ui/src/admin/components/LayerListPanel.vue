@@ -39,6 +39,17 @@
           />
           <label for="features.layerlistsimple">Versimpelde weergave lagenlijst</label>
         </div>
+
+        <div class="setting __hover">
+          <Checkbox
+            input-id="features.show_toggle_all_layers_in_category"
+            :model-value="data.features.show_toggle_all_layers_in_category === true"
+            name="features.show_toggle_all_layers_in_category"
+            binary
+            @update:model-value="(value) => (data.features.show_toggle_all_layers_in_category = value)"
+          />
+          <label for="features.show_toggle_all_layers_in_category">Toon alle lagen per (sub)categorie</label>
+        </div>
       </div>
     </template>
   </AdminSidePanel>

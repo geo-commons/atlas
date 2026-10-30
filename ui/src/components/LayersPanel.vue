@@ -79,11 +79,36 @@
             :title="category.title"
             :is-open="debouncedSearchQuery != ''"
             class="category-wrapper"
+            :class="
+              showToggleAllLayersInCategory && [
+                '[&_.sublayers]:!tw-pl-0',
+                '[&_.sublayer>input]:!tw-left-[33px]',
+                '[&_.sublayer>label]:!tw-pl-[54px]',
+                '[&_.expand-button>.name]:tw-pl-6',
+              ]
+            "
           >
             <template #button>
               <div v-if="category.visibleLayerCount > 0" class="counter layer-counter">
                 {{ category.visibleLayerCount }}
               </div>
+            </template>
+            <template v-if="showToggleAllLayersInCategory" #header>
+              <label
+                class="tw-absolute tw-left-7 tw-top-0 tw-flex tw-h-full tw-w-6 tw-cursor-pointer tw-items-start tw-justify-center"
+                @click.stop
+              >
+                <input
+                  :id="`category-layer-toggle-${category.id}`"
+                  class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
+                  :checked="areCategoryLayersVisible(category)"
+                  :indeterminate="hasPartiallyVisibleCategoryLayers(category)"
+                  :disabled="getCategoryLayersAvailableForToggle(category).length === 0"
+                  type="checkbox"
+                  :aria-label="`Schakel alle lagen in ${category.title} ${areCategoryLayersVisible(category) ? 'uit' : 'in'}`"
+                  @change="toggleCategoryLayers(category)"
+                />
+              </label>
             </template>
             <template #default>
               <ul :id="category.id" class="sublayers">
@@ -97,12 +122,39 @@
                   @set-position="onSetPosition"
                   @on-fit="onFit"
                 />
-                <li v-for="subcategory in category.subcategories" :key="subcategory.id">
-                  <ExpandButton :title="subcategory.title" :is-open="debouncedSearchQuery != ''" class="!-tw-ml-2.5">
+                <li
+                  v-for="subcategory in category.subcategories"
+                  :key="subcategory.id"
+                  :class="{ 'tw-ml-6': showToggleAllLayersInCategory }"
+                >
+                  <ExpandButton
+                    :title="subcategory.title"
+                    :is-open="debouncedSearchQuery != ''"
+                    :class="{ '!-tw-ml-2.5': !showToggleAllLayersInCategory }"
+                  >
                     <template #button>
                       <div v-if="subcategory.visibleLayerCount > 0" class="counter layer-counter">
                         {{ subcategory.visibleLayerCount }}
                       </div>
+                    </template>
+                    <template v-if="showToggleAllLayersInCategory" #header>
+                      <label
+                        class="tw-absolute tw-left-7 tw-top-0 tw-flex tw-h-full tw-w-6 tw-cursor-pointer tw-items-start tw-justify-center"
+                        @click.stop
+                      >
+                        <input
+                          :id="`category-layer-toggle-${subcategory.id}`"
+                          class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
+                          :checked="areCategoryLayersVisible(subcategory)"
+                          :indeterminate="hasPartiallyVisibleCategoryLayers(subcategory)"
+                          :disabled="getCategoryLayersAvailableForToggle(subcategory).length === 0"
+                          type="checkbox"
+                          :aria-label="`Schakel alle lagen in ${subcategory.title} ${
+                            areCategoryLayersVisible(subcategory) ? 'uit' : 'in'
+                          }`"
+                          @change="toggleCategoryLayers(subcategory)"
+                        />
+                      </label>
                     </template>
                     <template #default>
                       <ul :id="subcategory.id" class="sublayers subcategory-sublayers">
@@ -226,6 +278,7 @@ import { mapState } from "pinia";
 import { useDebounceFn } from "@vueuse/core";
 import { useGlobalStore } from "@/stores";
 import { useMapStore } from "@/stores/map_store";
+import { canEnableLayer } from "@/utils/auth";
 
 export default {
   name: "LayersPanel",
@@ -248,6 +301,10 @@ export default {
     mapId: String,
     showSearchBar: Boolean,
     showSimpleLayerList: Boolean,
+    showToggleAllLayersInCategory: {
+      type: Boolean,
+      default: false,
+    },
     showCompareSlider: Boolean,
     showToggleAllLayersInLegend: {
       type: Boolean,
@@ -390,12 +447,33 @@ export default {
         .filter((layer) => layer && this.layerMatchesSearch(layer));
     },
     getVisibleLayerCount(category) {
-      const directVisibleLayers = category.layers.filter((layer) => layer.is_visible).length;
-      const subcategoryVisibleLayers = (category.subcategories || []).reduce((total, subcategory) => {
-        return total + subcategory.layers.filter((layer) => layer.is_visible).length;
-      }, 0);
+      return this.getCategoryLayers(category).filter((layer) => layer.is_visible).length;
+    },
+    getCategoryLayers(category) {
+      return [...category.layers, ...(category.subcategories || []).flatMap((subcategory) => subcategory.layers)];
+    },
+    getCategoryLayersAvailableForToggle(category) {
+      return this.getCategoryLayers(category).filter((layer) => layer.is_visible || canEnableLayer(layer, this.user));
+    },
+    areCategoryLayersVisible(category) {
+      const categoryLayers = this.getCategoryLayersAvailableForToggle(category);
+      return categoryLayers.length > 0 && categoryLayers.every((layer) => layer.is_visible);
+    },
+    hasPartiallyVisibleCategoryLayers(category) {
+      const categoryLayers = this.getCategoryLayersAvailableForToggle(category);
+      const visibleLayerCount = categoryLayers.filter((layer) => layer.is_visible).length;
+      return visibleLayerCount > 0 && visibleLayerCount < categoryLayers.length;
+    },
+    toggleCategoryLayers(category) {
+      const isVisible = !this.areCategoryLayersVisible(category);
+      const categoryLayers = this.getCategoryLayers(category);
+      const layersToToggle = isVisible
+        ? categoryLayers.filter((layer) => !layer.is_visible && canEnableLayer(layer, this.user))
+        : categoryLayers.filter((layer) => layer.is_visible);
 
-      return directVisibleLayers + subcategoryVisibleLayers;
+      layersToToggle.forEach((layer) => {
+        this.mapStore.toggleLayer({ selectedLayerId: layer.id, is_visible: isVisible });
+      });
     },
     layerMatchesSearch(layer) {
       if (!this.searchTerm) {
