@@ -10,6 +10,8 @@ class AtlasGroup(models.Model):
         help_text='Het unieke kernmerk van de groep volgens de inlogbron. Alleen invullen als synchronisatie met inlogbron gewenst is.')
     slug = AutoSlugField('Kort kenmerk', null=True, blank=True, unique=True, populate_from='name', editable=True,
                          help_text='Een uniek kort kenmerk voor de groep.', max_length=255)
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
 
     def __str__(self):
         return self.name
@@ -26,6 +28,7 @@ class AtlasUser(AbstractUser):
         'External ID', max_length=255, editable=False, null=True, blank=True,
         help_text='Het unieke kernmerk van de gebruiker in de inlogbron.'
     )
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
 
     atlas_groups = models.ManyToManyField(
         AtlasGroup, blank=True, related_name='atlas_users')

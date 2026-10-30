@@ -26,6 +26,16 @@ const tableHeaders: Array<TableHeader> = [
     key: "parent.title",
     enableLink: false,
   },
+  {
+    header: "Aangemaakt op",
+    key: "created_at",
+    enableLink: false,
+  },
+  {
+    header: "Gewijzigd op",
+    key: "updated_at",
+    enableLink: false,
+  },
 ];
 
 const initialCategoryData = {
