@@ -204,14 +204,23 @@
         >
           <div class="tw-flex tw-flex-col tw-gap-2">
             <label for="map-category-title">Naam</label>
-            <InputText
-              id="map-category-title"
+            <VeeField
+              v-slot="{ value, handleBlur, handleChange }"
               v-model="editedCategoryTitle"
-              autofocus
-              fluid
-              :max-length="128"
-              @keyup.enter="saveCategoryTitle"
-            />
+              name="map-category-title"
+              rules="required|max:128"
+            >
+              <InputText
+                id="map-category-title"
+                :model-value="value"
+                autofocus
+                fluid
+                @blur="handleBlur"
+                @keyup.enter="saveCategoryTitle"
+                @update:model-value="handleChange"
+              />
+            </VeeField>
+            <VeeErrorMessage class="form-error" name="map-category-title" />
           </div>
           <template #footer>
             <Button label="Annuleren" severity="secondary" outlined @click="showCategoryTitleDialog = false" />
@@ -243,6 +252,7 @@ import MapLayerItem from "./MapLayerItem.vue";
 import MapCategory from "./MapCategory.vue";
 import MapLayerSelector from "./MapLayerSelector.vue";
 import { computed, onMounted, ref, watch } from "vue";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, useForm } from "vee-validate";
 
 import type {
   CategoryId,
@@ -305,6 +315,7 @@ const data = ref<IMapLayersState>({
   layers: [],
   categories: [],
 });
+const { resetForm, validate } = useForm<{ "map-category-title": string }>();
 
 const toast = useToast();
 
@@ -449,10 +460,16 @@ const handleCategoryToggle = (categoryId: CategoryId, isOpen: boolean): void => 
 const openCategoryTitleDialog = (categoryId: CategoryId, title: string): void => {
   editedCategoryId.value = categoryId;
   editedCategoryTitle.value = title;
+  resetForm({ values: { "map-category-title": title } });
   showCategoryTitleDialog.value = true;
 };
 
-const saveCategoryTitle = (): void => {
+const saveCategoryTitle = async (): Promise<void> => {
+  const { valid } = await validate();
+  if (!valid) {
+    return;
+  }
+
   const categoryId = editedCategoryId.value;
   const title = editedCategoryTitle.value.trim();
 
