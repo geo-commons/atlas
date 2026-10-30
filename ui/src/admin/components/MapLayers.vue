@@ -150,7 +150,9 @@
               :key="category.id"
               :category="category"
               :is-open="isSelectedCategoryOpen(category.id)"
+              editable
               @toggle-open="handleCategoryToggle"
+              @edit-title="openCategoryTitleDialog"
             >
               <MapLayerItem
                 v-for="selectedLayer in category.layers"
@@ -165,7 +167,9 @@
                 :key="subCategory.id"
                 :category="subCategory"
                 :is-open="isSelectedCategoryOpen(subCategory.id)"
+                editable
                 @toggle-open="handleCategoryToggle"
+                @edit-title="openCategoryTitleDialog"
               >
                 <MapLayerItem
                   v-for="selectedLayer in subCategory.layers"
@@ -191,6 +195,38 @@
           :map-categories="[]"
           :select-layer="selectLayer"
         />
+
+        <Dialog
+          v-model:visible="showCategoryTitleDialog"
+          modal
+          header="Naam categorie wijzigen"
+          :style="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+        >
+          <div class="tw-flex tw-flex-col tw-gap-2">
+            <label for="map-category-title">Naam</label>
+            <VeeField
+              v-slot="{ value, handleBlur, handleChange }"
+              v-model="editedCategoryTitle"
+              name="map-category-title"
+              rules="required|max:128"
+            >
+              <InputText
+                id="map-category-title"
+                :model-value="value"
+                autofocus
+                fluid
+                @blur="handleBlur"
+                @keyup.enter="saveCategoryTitle"
+                @update:model-value="handleChange"
+              />
+            </VeeField>
+            <VeeErrorMessage class="form-error" name="map-category-title" />
+          </div>
+          <template #footer>
+            <Button label="Annuleren" severity="secondary" outlined @click="showCategoryTitleDialog = false" />
+            <Button label="Opslaan" :disabled="!editedCategoryTitle.trim()" @click="saveCategoryTitle" />
+          </template>
+        </Dialog>
       </div>
     </template>
     <template #footer>
@@ -216,6 +252,7 @@ import MapLayerItem from "./MapLayerItem.vue";
 import MapCategory from "./MapCategory.vue";
 import MapLayerSelector from "./MapLayerSelector.vue";
 import { computed, onMounted, ref, watch } from "vue";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, useForm } from "vee-validate";
 
 import type {
   CategoryId,
@@ -271,10 +308,14 @@ const isSavingOrder = ref<boolean>(false);
 const selectedCategoryTree = ref<ICategoryTreeNode[]>([]);
 const selectedLayerSearchQuery = ref<string>("");
 const closedCategoryIds = ref<Set<CategoryId>>(new Set());
+const showCategoryTitleDialog = ref<boolean>(false);
+const editedCategoryId = ref<CategoryId | null>(null);
+const editedCategoryTitle = ref<string>("");
 const data = ref<IMapLayersState>({
   layers: [],
   categories: [],
 });
+const { resetForm, validate } = useForm<{ "map-category-title": string }>();
 
 const toast = useToast();
 
@@ -414,6 +455,38 @@ const handleCategoryToggle = (categoryId: CategoryId, isOpen: boolean): void => 
   }
 
   closedCategoryIds.value = nextClosedCategoryIds;
+};
+
+const openCategoryTitleDialog = (categoryId: CategoryId, title: string): void => {
+  editedCategoryId.value = categoryId;
+  editedCategoryTitle.value = title;
+  resetForm({ values: { "map-category-title": title } });
+  showCategoryTitleDialog.value = true;
+};
+
+const saveCategoryTitle = async (): Promise<void> => {
+  const { valid } = await validate();
+  if (!valid) {
+    return;
+  }
+
+  const categoryId = editedCategoryId.value;
+  const title = editedCategoryTitle.value.trim();
+
+  if (!categoryId || !title) {
+    return;
+  }
+
+  selectedCategoryTree.value = selectedCategoryTree.value.map((category) => ({
+    ...category,
+    title: category.id === categoryId ? title : category.title,
+    subcategories: category.subcategories.map((subcategory) => ({
+      ...subcategory,
+      title: subcategory.id === categoryId ? title : subcategory.title,
+    })),
+  }));
+  emitLayerConfig(selectedCategoryTree.value);
+  showCategoryTitleDialog.value = false;
 };
 
 const rebuildSelectedCategoryTree = (): void => {

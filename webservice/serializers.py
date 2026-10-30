@@ -81,14 +81,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class MapCategorySerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-
     class Meta:
         model = MapCategory
         fields = ['id', 'category', 'title', 'ordering']
 
-    def get_title(self, obj):
-        return obj.category.title if obj.category else ""
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['title'] = instance.title or instance.category.title
+        return representation
 
 
 class MapSerializer(serializers.ModelSerializer):
@@ -162,6 +162,9 @@ class MapSerializer(serializers.ModelSerializer):
                 "ordering": map_category.get("ordering", 0),
                 "map": map_instance,
             }
+
+            if "title" in map_category:
+                defaults["title"] = map_category["title"]
 
             obj, _ = MapCategory.objects.update_or_create(map=map_instance, category=category, defaults=defaults)
 

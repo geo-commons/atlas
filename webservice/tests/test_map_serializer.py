@@ -97,6 +97,32 @@ class MapCategorySerializerTest(APITestCase):
         self.assertEqual(data['category'], self.category.id)
         self.assertEqual(data['ordering'], 2)
 
+    def test_map_category_serialization_uses_custom_title(self):
+        map_instance = Map.objects.create(title='Test Map', slug='test-map')
+        map_category = MapCategory.objects.create(
+            map=map_instance,
+            category=self.category,
+            title='Map-specific category',
+        )
+
+        self.assertEqual(MapCategorySerializer(map_category).data['title'], 'Map-specific category')
+
+    def test_map_serializer_updates_map_category_title(self):
+        map_instance = Map.objects.create(title='Test Map', slug='test-map')
+        serializer = MapSerializer(
+            map_instance,
+            data={
+                'title': map_instance.title,
+                'categories': [{'category': self.category.id, 'title': 'Map-specific category', 'ordering': 2}],
+            },
+            partial=True,
+        )
+
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        serializer.save()
+
+        self.assertEqual(map_instance.map_categories.get(category=self.category).title, 'Map-specific category')
+
 
 class MapSerializerTest(APITestCase):
     """Test MapSerializer create/update operations"""
