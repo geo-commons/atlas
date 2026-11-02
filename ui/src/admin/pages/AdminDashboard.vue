@@ -53,6 +53,12 @@
             </span>
             Admin documentatie
           </a>
+          <router-link to="/audit-logs" class="button __tertiary __large" type="button" aria-label="Beheerlogs">
+            <span class="button-icon tw-bg-orange-100">
+              <LogIcon class="icon tw-text-orange-800" />
+            </span>
+            Beheerlogs
+          </router-link>
         </div>
       </div>
       <div>

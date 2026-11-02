@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<AdminListViewTableValueProps>(), {});
 
 // Date logic
 function isValidDate(dateString: string) {
-  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?([+-]\d{2}:\d{2})$/;
+  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 
   if (!regex.test(dateString)) {
     return false;
@@ -32,5 +32,5 @@ function isValidDate(dateString: string) {
   <span v-if="props.value === true"> <CircleCheckIcon class="icon __green" /> </span>
   <span v-else-if="props.value === false"> <CircleCrossIcon class="icon __red" /> </span>
   <span v-else-if="isValidDate(props.value)">{{ formatDateValue(props.value) }}</span>
-  <span v-else>{{ props.value }}</span>
+  <span v-else class="tw-whitespace-pre-line">{{ props.value }}</span>
 </template>

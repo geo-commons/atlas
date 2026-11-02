@@ -11,6 +11,7 @@ dependencies = [
     "django-import-export==4.4.1",
     "djangorestframework-simplejwt==5.5.1",
     "django-reversion==6.3.0",
+    "django-simple-history==3.13.0",
     "Django==5.2.17",
     "djangorestframework==3.18.1",
     "mistune==3.3.4",

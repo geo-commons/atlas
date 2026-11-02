@@ -1,6 +1,7 @@
 from rest_framework import routers
 
 from authz import viewsets as authz_viewsets
+from .audit import AuditLogViewSet
 from . import viewsets
 
 api_router = routers.DefaultRouter()
@@ -35,6 +36,9 @@ api_router.register(
 )
 api_router.register(
     r'logs', viewsets.LogViewSet, basename='logs'
+)
+api_router.register(
+    r'audit-logs', AuditLogViewSet, basename='audit-logs'
 )
 
 api_router.register(

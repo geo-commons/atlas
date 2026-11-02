@@ -9,6 +9,8 @@
       :initial-values="initialValues"
       :compact-layout="false"
       :form-object="'tables'"
+      history-model="table.table"
+      :history-object-id="route.params.id"
       :object-specific-save="saveTable"
       @update-source="(source) => (selectedSource.value = source)"
     />

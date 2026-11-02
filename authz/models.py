@@ -1,9 +1,11 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from utils.tools import is_internal
 
 
 class Authorization(models.Model):
+    history = HistoricalRecords(m2m_fields=("atlas_groups", "atlas_write_groups"))
     source = models.ForeignKey('webservice.Source', on_delete=models.CASCADE)
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)

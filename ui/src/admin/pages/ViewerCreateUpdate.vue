@@ -9,6 +9,8 @@
       :initial-values="initialValues"
       :compact-layout="false"
       :form-object="'viewers'"
+      history-model="webservice.viewer"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveViewer"
     />
   </div>

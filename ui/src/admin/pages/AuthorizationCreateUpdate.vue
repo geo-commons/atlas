@@ -8,6 +8,8 @@
       :sections="sections"
       :initial-values="initialValues"
       :form-object="'authorizations'"
+      history-model="authz.authorization"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveAuthorization"
     />
   </div>

@@ -27,6 +27,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('webservice', '0151_map_is_main'),
+        ('constance', '0003_drop_pickle'),
     ]
 
     operations = [

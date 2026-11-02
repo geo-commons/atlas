@@ -1,7 +1,7 @@
 <template>
   <div v-if="loading">laden...</div>
   <vee-form
-    v-else
+    v-if="!loading"
     v-slot="{ values }"
     ref="formRef"
     :initial-values="initialValues"
@@ -444,6 +444,11 @@
       </div>
     </div>
     <div class="config-btn-wrapper">
+      <AdminObjectHistory
+        v-if="historyModel && historyObjectId"
+        :model-label="historyModel"
+        :object-id="historyObjectId"
+      />
       <Button
         v-if="!disableCreateAndUpdate"
         text
@@ -480,6 +485,7 @@
 
 <script>
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
+import AdminObjectHistory from "@/admin/components/AdminObjectHistory.vue";
 import LayerField from "@/admin/components/LayerField.vue";
 import MapsField from "@/admin/components/MapsField.vue";
 import MetadatasetsField from "@/admin/components/MetadatasetsField.vue";
@@ -499,6 +505,7 @@ import RelatedTablesField from "@/admin/components/RelatedTablesField.vue";
 export default {
   name: "AdminFormSections",
   components: {
+    AdminObjectHistory,
     RelatedTablesField,
     LayerField,
     MapsField,
@@ -533,6 +540,8 @@ export default {
     },
     objectSpecificSave: Function,
     formObject: String,
+    historyModel: String,
+    historyObjectId: [String, Number],
   },
   emits: ["update-source", "related-tables-changed", "close"],
   expose: ["sendSaveRequest", "resetForm"],

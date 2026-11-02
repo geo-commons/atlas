@@ -9,6 +9,8 @@
       :initial-values="initialValues"
       :compact-layout="true"
       :form-object="'groups'"
+      history-model="user_management.atlasgroup"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveGroup"
     />
   </div>

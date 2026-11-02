@@ -9,6 +9,8 @@
       :initial-values="initialValues"
       :compact-layout="true"
       :form-object="'categories'"
+      history-model="webservice.category"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveCategory"
     />
   </div>

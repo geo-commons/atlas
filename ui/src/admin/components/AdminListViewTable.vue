@@ -14,6 +14,7 @@ export type TableHeader = {
   key: string;
   overrideKeyForFilter?: string;
   enableLink: boolean;
+  linkUrlKey?: string;
   isArrayWithKey?: string;
   mapValues?: { [key: string]: any };
 };
@@ -102,6 +103,14 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
   return value;
 };
 
+const getLinkUrl = (row: object, header: TableHeader): string | null => {
+  if (header.linkUrlKey) {
+    return getValue(row, header.linkUrlKey) || null;
+  }
+
+  return `/${props.apiName}/update/${getValue(row, "id")}`;
+};
+
 const blockDelete = (obj: any): any => {
   if (!props.blockDelete.length) {
     return false;
@@ -151,18 +160,18 @@ defineExpose({ resetSelection });
           </td>
 
           <td v-for="header in tableHeaders" :key="header.key" class="first:tw-pl-4">
-            <p v-if="!header.enableLink">
-              <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
-            </p>
             <router-link
-              v-else
+              v-if="header.enableLink && getLinkUrl(row, header)"
               class="admin-title-link"
               type="button"
               :aria-label="`${row[header.key]} configureren`"
-              :to="`/${props.apiName}/update/${row.id}`"
+              :to="getLinkUrl(row, header) || '/'"
             >
               <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
             </router-link>
+            <p v-else>
+              <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
+            </p>
           </td>
           <td v-if="props.enableEdit" class="btn-col">
             <button

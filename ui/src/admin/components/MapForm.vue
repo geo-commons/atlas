@@ -433,6 +433,7 @@
 
     <template #footer>
       <div class="tw-flex tw-gap-2 tw-justify-end tw-w-full">
+        <AdminObjectHistory v-if="data.id" model-label="webservice.map" :object-id="data.id" />
         <router-link :to="data.is_main ? '/' : '/maps'" class="button __tertiary">Annuleren</router-link>
         <SplitButton label="Opslaan" :model="items" @click="submitForm(true)" />
       </div>
@@ -447,11 +448,13 @@ import ChevronRightIcon from "../../assets/icons/chevron-right-icon.svg";
 import MapIcon from "../../assets/icons/map-icon.svg";
 import AdminSidePanel from "@/admin/components/AdminSidePanel.vue";
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
+import AdminObjectHistory from "@/admin/components/AdminObjectHistory.vue";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 
 export default {
   name: "MapForm",
   components: {
+    AdminObjectHistory,
     AdminFormInfoText,
     LayerIcon,
     ImageIcon,
