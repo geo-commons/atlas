@@ -148,8 +148,8 @@ importers:
         specifier: 9.39.4
         version: 9.39.4
       '@primevue/auto-import-resolver':
-        specifier: 4.5.5
-        version: 4.5.5
+        specifier: 5.0.4
+        version: 5.0.4
       '@types/chroma-js':
         specifier: 3.1.2
         version: 3.1.2
@@ -703,9 +703,8 @@ packages:
     resolution: {integrity: sha512-pZ5f+vj7wSzRhC7KoEQRU5fvYAe+RP9+m39CTscZ3UywCD1Y2o6Fe1rRgklMPSkzUcty2jzkA0zMYkiJBD1hgg==}
     engines: {node: '>=12.11.0'}
 
-  '@primevue/auto-import-resolver@4.5.5':
-    resolution: {integrity: sha512-1LWftK+1c/pLgMyW81xqsCLESm2a8GGlLz0eg13oFBVmJdXBs9nmzF+SIhvtkRDROB8TCMwlOpyqVCi1Yw89UQ==}
-    engines: {node: '>=12.11.0'}
+  '@primevue/auto-import-resolver@5.0.4':
+    resolution: {integrity: sha512-1GbDiuTJUiVmawabLRyds9ASZ+wwYQLKZiOEGJaeYNShiNAHsKHqZBdz1BhYk6ghrKlfrrmHxGQw54JI6poi9Q==}
 
   '@primevue/core@4.5.5':
     resolution: {integrity: sha512-JpkXhq1ddc70JdsC3CC4dM+UbeeWuCW/8DpS9dNBfrOk824TLSlRlMEGFyVKqRMn5WPQvYLiy3xXfLQeNdSqhQ==}
@@ -717,9 +716,8 @@ packages:
     resolution: {integrity: sha512-eteOhTdAOXEYE9qW1AOrBBgDxQ2szHJxSkEK1XVdV2TKxGM5FQf03Ovms0VDyZTc16XBIgvwYjXJQS0BPbhPaA==}
     engines: {node: '>=12.11.0'}
 
-  '@primevue/metadata@4.5.5':
-    resolution: {integrity: sha512-ZYLu9m3Nm5BmL0woqCJX84EZfLBepJn+T19v5oj3PlsMpUVNnDAsm2jgYdT6/b3RkdOuccxk4Pg/0EvlATOAhA==}
-    engines: {node: '>=12.11.0'}
+  '@primevue/metadata@5.0.4':
+    resolution: {integrity: sha512-ovlmrrHa9tugrEnjC87YElt4F26i5knnbrR6rsNDRI4VP7d/5Ue1j/5cqafqJi0E2/w81F2UCUqFDHIhCkxUAw==}
 
   '@primevue/themes@4.5.4':
     resolution: {integrity: sha512-rUFZxMHLanTZdvZq4zgZPk+KRBZ3s7fE3bBK32OrZBkHQhEJmkJ7Ftd4w4QFlXyz1B7c+k5invZiOOCjwHXg9Q==}
@@ -3128,9 +3126,9 @@ snapshots:
 
   '@primeuix/utils@0.6.4': {}
 
-  '@primevue/auto-import-resolver@4.5.5':
+  '@primevue/auto-import-resolver@5.0.4':
     dependencies:
-      '@primevue/metadata': 4.5.5
+      '@primevue/metadata': 5.0.4
 
   '@primevue/core@4.5.5(vue@3.5.42(typescript@5.9.3))':
     dependencies:
@@ -3145,7 +3143,7 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
-  '@primevue/metadata@4.5.5': {}
+  '@primevue/metadata@5.0.4': {}
 
   '@primevue/themes@4.5.4':
     dependencies:
