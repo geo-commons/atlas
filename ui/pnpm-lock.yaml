@@ -66,8 +66,8 @@ importers:
         specifier: 4.1.1
         version: 4.1.1
       geostyler-openlayers-parser:
-        specifier: 5.7.1
-        version: 5.7.1(ol@10.9.0)
+        specifier: 5.8.0
+        version: 5.8.0(ol@10.9.0)
       gl-matrix:
         specifier: 3.4.4
         version: 3.4.4
@@ -886,6 +886,15 @@ packages:
       '@vue/composition-api':
         optional: true
 
+  '@turf/centroid@7.4.0':
+    resolution: {integrity: sha512-WglCFe+TnMqeYa/LcbUp37NgIF0zHTNYmlxwUm40fyyzyLsYeDq4dgFWLTYpvRNqb5oIMV6xsBjSf+vCPtVJ6w==}
+
+  '@turf/helpers@7.4.0':
+    resolution: {integrity: sha512-7PAwLZqOdRzTI5g9bHvUwlloAXPDH/mlajtryk0tw4ZwGMtmXsAyF4QundsAMfy4u48Fyd3AUqMXY0SMxqJGWg==}
+
+  '@turf/meta@7.4.0':
+    resolution: {integrity: sha512-3cLUvlEyDuSnMSzrjhaLAEiYR8xhbfWyTVQlrlEw40xL81d4KF4PqUWbjTXKpXZStdYbet2GCurl79KMypNw6g==}
+
   '@types/arcgis-rest-api@10.4.8':
     resolution: {integrity: sha512-MapiW0nP/5X0BUHmtRNEjbK0xrxS6n0syZWQk25H4ObFFwuK1+pGl7LQfOLgpsVM849WQ1b2sKIvWqEAvPwzCA==}
 
@@ -1620,8 +1629,8 @@ packages:
     resolution: {integrity: sha512-k594MfqCtQfdaNdK3jyLCiZz5bLeg4pjfAk3qgzfM9dwLmI277BI01Ti68Q+Q72dybUV1VIyGU0ky8teUi5Cmg==}
     engines: {node: '>=20.6.0', npm: '>=10.0.0'}
 
-  geostyler-openlayers-parser@5.7.1:
-    resolution: {integrity: sha512-GKkFdki1XbNIWS8onAU2CatGCJ/BB3QzknligxTXtTuLOa6Gqp2RshgExt3BzVyQOlXMmb8zmhtd5Z0CbvrrgA==}
+  geostyler-openlayers-parser@5.8.0:
+    resolution: {integrity: sha512-BrwNH1lRpDz1qGnGySq7mf62k67GGVkXE5Zn6tpldYWaR8J4iw1XbK0duxEBzUOSuJcRx2LxgZ8Ey9qrAwLJDg==}
     engines: {node: '>=20.6.0'}
     peerDependencies:
       ol: '>=7.4'
@@ -1630,9 +1639,9 @@ packages:
     resolution: {integrity: sha512-XnKrjm5XY2hBc98h5uKaAdYAgy+R9YuBzf8aGo4SPmYoPtAlnNaGWkRZB8j/vnuzQg8/kpGVOJ94o+42WUhuhw==}
     engines: {node: '>=20.6.0', npm: '>=10.0.0'}
 
-  geostyler-style@11.1.0:
-    resolution: {integrity: sha512-PixhZL0yR6XVSxCGdm3/ti4DjclXTGOSm4xc2TpuymfAxOhQZ3t8u392o9Ne4l4fM4nIzRRKACj7Kr0nO9H1Vg==}
-    engines: {node: '>=20.6.0', npm: '>=10.0.0'}
+  geostyler-style@13.1.0:
+    resolution: {integrity: sha512-fHEyeSLsq6oMxqhby3GsCgQ2s59Grc/Pc1A8crpZURtgxFEddbWJoZHMlMxer1LAuh7XcsJPUnbi5Ek+eJtZpg==}
+    engines: {node: '>=20.19.0', npm: '>=10.0.0'}
 
   geotiff@3.0.5:
     resolution: {integrity: sha512-OWcL9S9+yDZ6iAlXMt32T1iwUApJM8UiD47xbm6ZP1h33d10fqkPs14EG/ttT5EnefpZSx3G15iDFC5FxUNUwA==}
@@ -2440,6 +2449,9 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
+  tslib@2.9.1:
+    resolution: {integrity: sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==}
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -2817,7 +2829,7 @@ snapshots:
     dependencies:
       '@dnd-kit/abstract': 0.5.0
       '@dnd-kit/geometry': 0.5.0
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   '@dnd-kit/dom@0.5.0':
     dependencies:
@@ -2830,7 +2842,7 @@ snapshots:
   '@dnd-kit/geometry@0.5.0':
     dependencies:
       '@dnd-kit/state': 0.5.0
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   '@dnd-kit/helpers@0.5.0':
     dependencies:
@@ -3244,6 +3256,24 @@ snapshots:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.42(typescript@5.9.3)
       vue-demi: 0.14.10(vue@3.5.42(typescript@5.9.3))
+
+  '@turf/centroid@7.4.0':
+    dependencies:
+      '@turf/helpers': 7.4.0
+      '@turf/meta': 7.4.0
+      '@types/geojson': 7946.0.16
+      tslib: 2.9.1
+
+  '@turf/helpers@7.4.0':
+    dependencies:
+      '@types/geojson': 7946.0.16
+      tslib: 2.9.1
+
+  '@turf/meta@7.4.0':
+    dependencies:
+      '@turf/helpers': 7.4.0
+      '@types/geojson': 7946.0.16
+      tslib: 2.9.1
 
   '@types/arcgis-rest-api@10.4.8': {}
 
@@ -4101,15 +4131,16 @@ snapshots:
     dependencies:
       geostyler-style: 10.5.0
 
-  geostyler-openlayers-parser@5.7.1(ol@10.9.0):
+  geostyler-openlayers-parser@5.8.0(ol@10.9.0):
     dependencies:
+      '@turf/centroid': 7.4.0
       css-font-parser: 2.0.1
-      geostyler-style: 11.1.0
+      geostyler-style: 13.1.0
       ol: 10.9.0
 
   geostyler-style@10.5.0: {}
 
-  geostyler-style@11.1.0: {}
+  geostyler-style@13.1.0: {}
 
   geotiff@3.0.5:
     dependencies:
@@ -4867,6 +4898,8 @@ snapshots:
   ts-interface-checker@0.1.13: {}
 
   tslib@2.8.1: {}
+
+  tslib@2.9.1: {}
 
   type-check@0.4.0:
     dependencies:
