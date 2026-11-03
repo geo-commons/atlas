@@ -25,7 +25,7 @@
     "@codemirror/state": "6.7.0",
     "@cyclomedia/streetsmart-api": "26.1.1",
     "gl-matrix": "3.4.4",
-    "@dnd-kit/helpers": "0.5.0",
+    "@dnd-kit/helpers": "0.5.1",
     "@dnd-kit/vue": "0.5.0",
     "@pinia/colada": "0.21.7",
     "@primevue/themes": "4.5.4",
