@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { apiFetch } from "@/utils/api-helpers";
 import { formatDateValue } from "@/utils/date-formatter";
+import { getAuditActionIndicator } from "@/admin/utils/audit-event";
 import { computed, ref, watch } from "vue";
 import Drawer from "primevue/drawer";
 import Button from "primevue/button";
@@ -13,12 +14,6 @@ interface IAuditLogEntry {
   action_id: string;
   actor: string;
   details: string;
-}
-
-interface IAuditEventIndicator {
-  label: string;
-  severity: "success" | "danger" | "info";
-  icon: string;
 }
 
 interface IAuditLogResponse {
@@ -35,18 +30,6 @@ const isOpen = ref(false);
 const isLoading = ref(false);
 const entries = ref<IAuditLogEntry[]>([]);
 const nextUrl = ref<string | null>(null);
-
-const getAuditEventIndicator = (entry: IAuditLogEntry): IAuditEventIndicator => {
-  if (entry.action_id === "+" || entry.details.includes("toegevoegd")) {
-    return { label: "Toegevoegd", severity: "success", icon: "pi pi-plus" };
-  }
-
-  if (entry.action_id === "-" || entry.details.includes("verwijderd")) {
-    return { label: "Verwijderd", severity: "danger", icon: "pi pi-trash" };
-  }
-
-  return { label: "Gewijzigd", severity: "info", icon: "pi pi-pencil" };
-};
 
 const historyUrl = computed(() => {
   const query = new URLSearchParams({ model: props.modelLabel, object_id: String(props.objectId), page_size: "10" });
@@ -96,9 +79,9 @@ watch(
       <li v-for="entry in entries" :key="entry.id">
         <div class="history-meta">
           <Tag
-            :value="getAuditEventIndicator(entry).label"
-            :severity="getAuditEventIndicator(entry).severity"
-            :icon="getAuditEventIndicator(entry).icon"
+            :value="getAuditActionIndicator(entry.action_id).label"
+            :severity="getAuditActionIndicator(entry.action_id).severity"
+            :icon="getAuditActionIndicator(entry.action_id).icon"
           />
           <span>{{ formatDateValue(entry.date) }} · {{ entry.actor }}</span>
         </div>

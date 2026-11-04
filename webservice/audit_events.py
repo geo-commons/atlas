@@ -1,12 +1,24 @@
 from dataclasses import dataclass
 
 from django.core.exceptions import ObjectDoesNotExist
+from simple_history.models import HistoricalRecords
 
 from authz.models import Authorization
-from table.models import Table as LegacyTable
+from table.models import LayerToTable, Table as LegacyTable, TableToTable
 from tables.models import Table
 from user_management.models import AtlasGroup, AtlasUser
-from webservice.models import AuditEvent, Category, Layer, Map, MapCategory, MapLayer, Metadataset, Source, Viewer
+from webservice.models import (
+    AuditEvent,
+    AuditEventGroup,
+    Category,
+    Layer,
+    Map,
+    MapCategory,
+    MapLayer,
+    Metadataset,
+    Source,
+    Viewer,
+)
 
 
 ACTION_LABELS = {
@@ -32,6 +44,8 @@ ADMIN_OBJECT_PATHS = {
 HIDDEN_FIELD_NAMES = {"api_key", "last_login", "password", "secret", "token"}
 MAP_LAYER_MODEL_LABEL = "webservice.maplayer"
 MAP_CATEGORY_MODEL_LABEL = "webservice.mapcategory"
+TABLE_TO_TABLE_MODEL_LABEL = "table.tabletotable"
+LAYER_TO_TABLE_MODEL_LABEL = "table.layertotable"
 
 
 @dataclass
@@ -56,6 +70,8 @@ def get_audited_models():
         Source,
         Table,
         LegacyTable,
+        TableToTable,
+        LayerToTable,
         Viewer,
     )
 
@@ -72,11 +88,68 @@ def create_audit_event(history_record, source_instance=None):
     if event_data is None:
         return None
 
-    return AuditEvent.objects.get_or_create(
+    audit_event, created = AuditEvent.objects.get_or_create(
         source_model=event_data["source_model"],
         source_history_id=event_data["source_history_id"],
         defaults=event_data,
     )
+    if audit_event.group_id is None:
+        audit_event.group = get_audit_event_group(event_data)
+        audit_event.save(update_fields=["group"])
+        update_audit_event_group(audit_event.group, audit_event)
+
+    return audit_event, created
+
+
+def get_audit_event_group(event_data):
+    request_id = get_request_id()
+    if request_id is None:
+        return AuditEventGroup.objects.create(**get_audit_event_group_data(event_data))
+
+    group_data = get_audit_event_group_data(event_data)
+    group, created = AuditEventGroup.objects.get_or_create(
+        request_id=request_id,
+        subject_model=event_data["subject_model"],
+        object_id=event_data["object_id"],
+        defaults=group_data,
+    )
+    return group
+
+
+def get_audit_event_group_data(event_data):
+    return {
+        "request_id": get_request_id(),
+        "event_date": event_data["event_date"],
+        "subject_model": event_data["subject_model"],
+        "subject_label": event_data["subject_label"],
+        "object_id": event_data["object_id"],
+        "object_label": event_data["object_label"],
+        "action_id": event_data["action_id"],
+        "actor": event_data["actor"],
+        "actor_label": event_data["actor_label"],
+        "details": "",
+        "admin_url": event_data["admin_url"],
+    }
+
+
+def update_audit_event_group(group, audit_event):
+    group.event_date = max(group.event_date, audit_event.event_date)
+    group.action_id = get_group_action_id(group.action_id, audit_event.action_id)
+    group.details = "\n\n".join(filter(None, [group.details, audit_event.details]))
+    group.save(update_fields=["event_date", "action_id", "details"])
+
+
+def get_group_action_id(current_action_id, new_action_id):
+    if current_action_id in {"+", "-"}:
+        return current_action_id
+    if current_action_id == new_action_id:
+        return current_action_id
+    return "~"
+
+
+def get_request_id():
+    request = getattr(HistoricalRecords.context, "request", None)
+    return getattr(request, "audit_event_request_id", None)
 
 
 def get_audit_event_data(history_record, source_instance=None):
@@ -110,6 +183,10 @@ def get_audit_event_data(history_record, source_instance=None):
 def get_subject_data(history_record, source_instance):
     source_model_label = history_record.instance_type._meta.label_lower
     if source_model_label not in {MAP_LAYER_MODEL_LABEL, MAP_CATEGORY_MODEL_LABEL}:
+        if source_model_label == TABLE_TO_TABLE_MODEL_LABEL:
+            return get_table_relation_subject_data(history_record, source_instance)
+        if source_model_label == LAYER_TO_TABLE_MODEL_LABEL:
+            return get_layer_relation_subject_data(history_record, source_instance)
         return (
             source_model_label,
             history_record.instance_type._meta.verbose_name.title(),
@@ -126,6 +203,26 @@ def get_subject_data(history_record, source_instance):
     )
 
 
+def get_table_relation_subject_data(history_record, source_instance):
+    table_id = history_record.from_table_id
+    return (
+        "table.table",
+        "Tabel",
+        table_id,
+        get_related_object_label(source_instance, "from_table", table_id, LegacyTable, history_record.history_date),
+    )
+
+
+def get_layer_relation_subject_data(history_record, source_instance):
+    layer_id = history_record.from_layer_id
+    return (
+        "webservice.layer",
+        "Kaartlaag",
+        layer_id,
+        get_related_object_label(source_instance, "from_layer", layer_id, Layer, history_record.history_date),
+    )
+
+
 def get_action_id(source_model_label, history_type):
     if source_model_label in {MAP_LAYER_MODEL_LABEL, MAP_CATEGORY_MODEL_LABEL}:
         return "~"
@@ -138,6 +235,10 @@ def get_change_summary(history_record, source_instance):
         return get_map_layer_change_summary(history_record, source_instance)
     if source_model_label == MAP_CATEGORY_MODEL_LABEL:
         return get_map_category_change_summary(history_record, source_instance)
+    if source_model_label == TABLE_TO_TABLE_MODEL_LABEL:
+        return get_table_relation_change_summary(history_record, source_instance)
+    if source_model_label == LAYER_TO_TABLE_MODEL_LABEL:
+        return get_layer_relation_change_summary(history_record, source_instance)
 
     if history_record.history_type == "+":
         return "Nieuw object"
@@ -193,6 +294,44 @@ def get_map_category_change_summary(history_record, source_instance):
     return f"Categorie gewijzigd\n{category_name}\n{formatted_changes}"
 
 
+def get_table_relation_change_summary(history_record, source_instance):
+    table_name = get_related_object_label(
+        source_instance,
+        "to_table",
+        history_record.to_table_id,
+        LegacyTable,
+        history_record.history_date,
+    )
+    if history_record.history_type == "+":
+        return f"Gerelateerde tabel toegevoegd\n{table_name}"
+    if history_record.history_type == "-":
+        return f"Gerelateerde tabel verwijderd\n{table_name}"
+
+    changes = get_changes(history_record)
+    if not changes:
+        return None
+    return f"Gerelateerde tabel gewijzigd\n{table_name}\n" + "\n".join(format_change(change) for change in changes)
+
+
+def get_layer_relation_change_summary(history_record, source_instance):
+    table_name = get_related_object_label(
+        source_instance,
+        "to_table",
+        history_record.to_table_id,
+        LegacyTable,
+        history_record.history_date,
+    )
+    if history_record.history_type == "+":
+        return f"Tabel gekoppeld\n{table_name}"
+    if history_record.history_type == "-":
+        return f"Tabel ontkoppeld\n{table_name}"
+
+    changes = get_changes(history_record)
+    if not changes:
+        return None
+    return f"Tabelkoppeling gewijzigd\n{table_name}\n" + "\n".join(format_change(change) for change in changes)
+
+
 def get_changes(history_record):
     previous_record = history_record.prev_record
     if previous_record is None:
@@ -201,6 +340,8 @@ def get_changes(history_record):
     changes = []
     for change in history_record.diff_against(previous_record).changes:
         if change.field.casefold() in HIDDEN_FIELD_NAMES:
+            continue
+        if get_normalized_value(change.old) == get_normalized_value(change.new):
             continue
 
         field = history_record.instance_type._meta.get_field(change.field)
@@ -221,8 +362,13 @@ def format_change(change):
 
 
 def get_display_value(value):
-    text = "–" if value in (None, "") else str(value)
+    normalized_value = get_normalized_value(value)
+    text = "–" if normalized_value is None else str(normalized_value)
     return f"{text[:117]}..." if len(text) > 120 else text
+
+
+def get_normalized_value(value):
+    return None if value in (None, "") else value
 
 
 def format_map_layer_change(change, history_record):

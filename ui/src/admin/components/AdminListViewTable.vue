@@ -7,6 +7,8 @@ import AdminListViewTableHeader, { TableHeaderRef } from "@/admin/components/Adm
 import { Ref, ref, watch } from "vue";
 import { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
 import AdminListViewTableValue from "@/admin/components/AdminListViewTableValue.vue";
+import { getAuditActionIndicator } from "@/admin/utils/audit-event";
+import Tag from "primevue/tag";
 
 // Properties
 export type TableHeader = {
@@ -17,6 +19,7 @@ export type TableHeader = {
   linkUrlKey?: string;
   isArrayWithKey?: string;
   mapValues?: { [key: string]: any };
+  tagActionIdKey?: string;
 };
 
 type AdminListViewProps = {
@@ -160,8 +163,14 @@ defineExpose({ resetSelection });
           </td>
 
           <td v-for="header in tableHeaders" :key="header.key" class="first:tw-pl-4">
+            <Tag
+              v-if="header.tagActionIdKey"
+              :value="getAuditActionIndicator(getValue(row, header.tagActionIdKey)).label"
+              :severity="getAuditActionIndicator(getValue(row, header.tagActionIdKey)).severity"
+              :icon="getAuditActionIndicator(getValue(row, header.tagActionIdKey)).icon"
+            />
             <router-link
-              v-if="header.enableLink && getLinkUrl(row, header)"
+              v-else-if="header.enableLink && getLinkUrl(row, header)"
               class="admin-title-link"
               type="button"
               :aria-label="`${row[header.key]} configureren`"

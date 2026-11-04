@@ -1149,6 +1149,13 @@ class AuditEvent(models.Model):
     actor_label = models.CharField(max_length=255)
     details = models.TextField()
     admin_url = models.CharField(max_length=255, null=True, blank=True)
+    group = models.ForeignKey(
+        "AuditEventGroup",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="events",
+    )
 
     class Meta:
         ordering = ["-event_date", "-id"]
@@ -1158,6 +1165,40 @@ class AuditEvent(models.Model):
         indexes = [
             models.Index(fields=["subject_model", "object_id", "-event_date"], name="audit_event_subject_date"),
             models.Index(fields=["actor", "-event_date"], name="audit_event_actor_date"),
+        ]
+
+
+class AuditEventGroup(models.Model):
+    request_id = models.UUIDField(null=True, blank=True)
+    event_date = models.DateTimeField(db_index=True)
+    subject_model = models.CharField(max_length=100)
+    subject_label = models.CharField(max_length=100)
+    object_id = models.PositiveIntegerField()
+    object_label = models.CharField(max_length=255)
+    action_id = models.CharField(max_length=1)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="audit_event_groups",
+    )
+    actor_label = models.CharField(max_length=255)
+    details = models.TextField()
+    admin_url = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        ordering = ["-event_date", "-id"]
+        indexes = [
+            models.Index(fields=["subject_model", "object_id", "-event_date"], name="audit_group_subject_date"),
+            models.Index(fields=["actor", "-event_date"], name="audit_group_actor_date"),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["request_id", "subject_model", "object_id"],
+                condition=Q(request_id__isnull=False),
+                name="unique_audit_group_request_subject",
+            ),
         ]
 
 

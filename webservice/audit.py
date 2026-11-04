@@ -6,11 +6,13 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from webservice.audit_events import (
     ACTION_LABELS,
+    LAYER_TO_TABLE_MODEL_LABEL,
     MAP_CATEGORY_MODEL_LABEL,
     MAP_LAYER_MODEL_LABEL,
+    TABLE_TO_TABLE_MODEL_LABEL,
     get_audited_models,
 )
-from webservice.models import AuditEvent
+from webservice.models import AuditEventGroup
 from webservice.pagination import StandardResultsSetPagination
 
 
@@ -21,7 +23,7 @@ class AuditEventFilter(django_filters.FilterSet):
     actor = django_filters.BaseInFilter(field_name="actor_id", lookup_expr="in")
 
     class Meta:
-        model = AuditEvent
+        model = AuditEventGroup
         fields = []
 
 
@@ -41,7 +43,7 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
     ordering = ["-event_date", "-id"]
 
     def get_queryset(self):
-        return AuditEvent.objects.select_related("actor")
+        return AuditEventGroup.objects.select_related("actor")
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -74,6 +76,10 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
             model_id = model._meta.label_lower
             if model_id in {MAP_LAYER_MODEL_LABEL, MAP_CATEGORY_MODEL_LABEL}:
                 options["webservice.map"] = {"id": "webservice.map", "label": "Kaart"}
+            elif model_id == TABLE_TO_TABLE_MODEL_LABEL:
+                options["table.table"] = {"id": "table.table", "label": "Tabel"}
+            elif model_id == LAYER_TO_TABLE_MODEL_LABEL:
+                options["webservice.layer"] = {"id": "webservice.layer", "label": "Kaartlaag"}
             else:
                 options[model_id] = {"id": model_id, "label": model._meta.verbose_name.title()}
 
@@ -93,4 +99,15 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
             "actor": event.actor_label,
             "actor_id": event.actor_id,
             "details": event.details,
+            "summary": AuditLogViewSet.get_summary(event),
         }
+
+    @staticmethod
+    def get_summary(event):
+        if event.action_id == "+":
+            return "Nieuw object"
+        if event.action_id == "-":
+            return "Object verwijderd"
+
+        change_count = sum(max(1, change.count(" → ")) for change in event.details.split("\n\n"))
+        return f"{change_count} wijziging" if change_count == 1 else f"{change_count} wijzigingen"

@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
+from simple_history.models import HistoricalRecords
 
+from table.models import Table, TableToTable
 from webservice.audit import AuditLogViewSet, get_audited_models
+from webservice.middleware import MapAuditEventRequestMiddleware
 from webservice.models import AuditEvent, Category, Layer, Map, MapCategory, MapLayer, Source
 from webservice.serializers import MapSerializer
 
@@ -40,6 +43,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(entry["action"], "Gewijzigd")
         self.assertEqual(entry["actor"], "administrator@example.com")
         self.assertIn("Titel\nOriginal source → Renamed source", entry["details"])
+        self.assertEqual(entry["summary"], "2 wijzigingen")
 
     def test_supports_drf_search_syntax(self):
         source = Source(title="Original source", url="https://example.com")
@@ -168,6 +172,37 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Categorie toegevoegd\nRoad works", details)
         self.assertIn("Kaartlaag toegevoegd\nRoad works", details)
 
+    def test_map_mutations_in_one_request_are_grouped(self):
+        map_instance = Map.objects.create(title="Test map", slug="test-map")
+        category = Category.objects.create(title="Road works")
+        layer = Layer.objects.create(title="Road works", layer_type=category)
+        request = self.factory.put("/atlas/api/v1/maps/")
+        request.user = self.admin_user
+        request.audit_event_request_id = "00000000-0000-0000-0000-000000000001"
+
+        HistoricalRecords.context.request = request
+        try:
+            serializer = MapSerializer(
+                map_instance,
+                data={
+                    "title": "Test map",
+                    "slug": "test-map",
+                    "categories": [{"category": category.id, "ordering": 0}],
+                    "layers": [{"layer": layer.id, "settings": {}, "ordering": 0}],
+                },
+            )
+            self.assertTrue(serializer.is_valid(), serializer.errors)
+            serializer.save()
+        finally:
+            del HistoricalRecords.context.request
+
+        entries = self.get_map_audit_entries(map_instance)
+
+        self.assertEqual(len(entries), 1)
+        self.assertIn("Categorie toegevoegd\nRoad works", entries[0]["details"])
+        self.assertIn("Kaartlaag toegevoegd\nRoad works", entries[0]["details"])
+        self.assertEqual(entries[0]["summary"], "2 wijzigingen")
+
     def test_map_serializer_removes_layer_audit_entry(self):
         map_instance = Map.objects.create(title="Test map", slug="test-map")
         category = Category.objects.create(title="Road works")
@@ -245,6 +280,37 @@ class AuditLogViewSetTests(TestCase):
 
         self.assertEqual(audit_event.object_label, "Test map")
         self.assertEqual(audit_event.details, "Kaartlaag toegevoegd\nOriginal layer")
+
+    def test_ignores_equivalent_empty_thumbnail_changes(self):
+        map_instance = Map.objects.create(title="Test map", slug="test-map")
+        map_instance.thumbnail = ""
+        map_instance.save()
+
+        self.assertEqual(map_instance.history.count(), 2)
+        self.assertEqual(AuditEvent.objects.filter(source_model="webservice.map").count(), 1)
+
+    def test_only_assigns_a_group_identifier_to_map_requests(self):
+        middleware = MapAuditEventRequestMiddleware(lambda request: None)
+        map_request = self.factory.patch("/atlas/api/v1/maps/1/")
+        layer_request = self.factory.patch("/atlas/api/v1/layers/1/")
+
+        middleware(map_request)
+        middleware(layer_request)
+
+        self.assertTrue(hasattr(map_request, "audit_event_request_id"))
+        self.assertFalse(hasattr(layer_request, "audit_event_request_id"))
+
+    def test_table_relationship_changes_are_audited(self):
+        source = Source.objects.create(title="Test source", url="https://example.com")
+        table = Table.objects.create(title="Source table", source=source)
+        related_table = Table.objects.create(title="Related table", source=source)
+        TableToTable.objects.create(from_table=table, to_table=related_table, field_mapping={})
+
+        audit_event = AuditEvent.objects.get(source_model="table.tabletotable")
+
+        self.assertEqual(audit_event.subject_model, "table.table")
+        self.assertEqual(audit_event.object_label, "Source table")
+        self.assertEqual(audit_event.details, "Gerelateerde tabel toegevoegd\nRelated table")
 
     def get_map_audit_entries(self, map_instance):
         request = self.factory.get(

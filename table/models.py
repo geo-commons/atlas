@@ -237,6 +237,7 @@ class Table(models.Model):
 
 
 class TableToTable(models.Model):
+    history = HistoricalRecords()
     from_table = models.ForeignKey('Table', related_name='outgoing_table_relations', on_delete=models.CASCADE)
     to_table = models.ForeignKey('Table', related_name='incoming_table_relations', on_delete=models.CASCADE)
     field_mapping = models.JSONField('Mapping van kolomnamen')
@@ -249,6 +250,7 @@ class TableToTable(models.Model):
 
 
 class LayerToTable(models.Model):
+    history = HistoricalRecords()
     from_layer = models.ForeignKey('webservice.Layer', related_name='layer_table_relations', on_delete=models.CASCADE)
     to_table = models.ForeignKey('Table', related_name='layer_table_relations', on_delete=models.CASCADE)
     field_mapping = models.JSONField('Mapping van kolomnamen')

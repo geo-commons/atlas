@@ -24,9 +24,9 @@ const tableHeaders: TableHeader[] = [
   { header: "Datum", key: "date", enableLink: false },
   { header: "Model", key: "model", enableLink: false },
   { header: "Object", key: "object", enableLink: true, linkUrlKey: "admin_url" },
-  { header: "Actie", key: "action", enableLink: false },
+  { header: "Actie", key: "action", enableLink: false, tagActionIdKey: "action_id" },
   { header: "Uitgevoerd door", key: "actor", enableLink: false },
-  { header: "Details", key: "details", enableLink: false },
+  { header: "Details", key: "summary", enableLink: false },
 ];
 
 const tableFilters = computed<TableFilter[]>(() => [
