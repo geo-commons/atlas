@@ -50,6 +50,8 @@ LAYER_TO_TABLE_MODEL_LABEL = "table.layertotable"
 
 @dataclass
 class AuditChange:
+    """Represent a visible field change between two historical records."""
+
     field_name: str
     field_label: str
     old_value: object
@@ -57,6 +59,7 @@ class AuditChange:
 
 
 def get_audited_models():
+    """Return models whose history should appear in the Atlas audit log."""
     return (
         Authorization,
         AtlasGroup,
@@ -77,10 +80,12 @@ def get_audited_models():
 
 
 def is_audited_model(model):
+    """Return whether a model is configured to produce audit events."""
     return model in get_audited_models()
 
 
 def create_audit_event(history_record, source_instance=None):
+    """Create and group an audit event for a newly created history record."""
     if not is_audited_model(history_record.instance_type):
         return None
 
@@ -88,6 +93,8 @@ def create_audit_event(history_record, source_instance=None):
     if event_data is None:
         return None
 
+    # History signals can be delivered more than once while fixtures or migrations
+    # are replayed. The source history row is the stable idempotency key.
     audit_event, created = AuditEvent.objects.get_or_create(
         source_model=event_data["source_model"],
         source_history_id=event_data["source_history_id"],
@@ -102,8 +109,11 @@ def create_audit_event(history_record, source_instance=None):
 
 
 def get_audit_event_group(event_data):
+    """Return the group for an event, grouping map writes within one request."""
     request_id = get_request_id()
     if request_id is None:
+        # Non-map writes are deliberately kept as individual entries; only map
+        # requests receive an id from the middleware and are collapsed below.
         return AuditEventGroup.objects.create(**get_audit_event_group_data(event_data))
 
     group_data = get_audit_event_group_data(event_data)
@@ -117,6 +127,7 @@ def get_audit_event_group(event_data):
 
 
 def get_audit_event_group_data(event_data):
+    """Build the initial persisted fields for an audit-event group."""
     return {
         "request_id": get_request_id(),
         "event_date": event_data["event_date"],
@@ -133,6 +144,7 @@ def get_audit_event_group_data(event_data):
 
 
 def update_audit_event_group(group, audit_event):
+    """Merge an event's timestamp, action, and details into its group."""
     group.event_date = max(group.event_date, audit_event.event_date)
     group.action_id = get_group_action_id(group.action_id, audit_event.action_id)
     group.details = "\n\n".join(filter(None, [group.details, audit_event.details]))
@@ -140,6 +152,7 @@ def update_audit_event_group(group, audit_event):
 
 
 def get_group_action_id(current_action_id, new_action_id):
+    """Determine the group action after adding another event."""
     if current_action_id in {"+", "-"}:
         return current_action_id
     if current_action_id == new_action_id:
@@ -148,11 +161,13 @@ def get_group_action_id(current_action_id, new_action_id):
 
 
 def get_request_id():
+    """Return the current request identifier when audit grouping is enabled."""
     request = getattr(HistoricalRecords.context, "request", None)
     return getattr(request, "audit_event_request_id", None)
 
 
 def get_audit_event_data(history_record, source_instance=None):
+    """Build the immutable audit-event payload from a historical record."""
     source_model = history_record.instance_type
     source_model_label = source_model._meta.label_lower
     subject_model, subject_label, object_id, object_label = get_subject_data(
@@ -181,6 +196,7 @@ def get_audit_event_data(history_record, source_instance=None):
 
 
 def get_subject_data(history_record, source_instance):
+    """Return the admin object that should own a history record in the log."""
     source_model_label = history_record.instance_type._meta.label_lower
     if source_model_label not in {MAP_LAYER_MODEL_LABEL, MAP_CATEGORY_MODEL_LABEL}:
         if source_model_label == TABLE_TO_TABLE_MODEL_LABEL:
@@ -204,6 +220,7 @@ def get_subject_data(history_record, source_instance):
 
 
 def get_table_relation_subject_data(history_record, source_instance):
+    """Return the source table as the subject of a table-to-table relation event."""
     table_id = history_record.from_table_id
     return (
         "table.table",
@@ -214,6 +231,7 @@ def get_table_relation_subject_data(history_record, source_instance):
 
 
 def get_layer_relation_subject_data(history_record, source_instance):
+    """Return the source layer as the subject of a layer-to-table relation event."""
     layer_id = history_record.from_layer_id
     return (
         "webservice.layer",
@@ -224,12 +242,14 @@ def get_layer_relation_subject_data(history_record, source_instance):
 
 
 def get_action_id(source_model_label, history_type):
+    """Map a history action to the action displayed for its audit subject."""
     if source_model_label in {MAP_LAYER_MODEL_LABEL, MAP_CATEGORY_MODEL_LABEL}:
         return "~"
     return history_type
 
 
 def get_change_summary(history_record, source_instance):
+    """Return visible, localized details for a historical change or ``None`` when unchanged."""
     source_model_label = history_record.instance_type._meta.label_lower
     if source_model_label == MAP_LAYER_MODEL_LABEL:
         return get_map_layer_change_summary(history_record, source_instance)
@@ -253,6 +273,7 @@ def get_change_summary(history_record, source_instance):
 
 
 def get_map_layer_change_summary(history_record, source_instance):
+    """Describe a map-layer relationship change in terms of its map and layer."""
     layer_name = get_related_object_label(
         source_instance,
         "layer",
@@ -274,6 +295,7 @@ def get_map_layer_change_summary(history_record, source_instance):
 
 
 def get_map_category_change_summary(history_record, source_instance):
+    """Describe a map-category relationship change in terms of its map and category."""
     category_name = get_related_object_label(
         source_instance,
         "category",
@@ -295,6 +317,7 @@ def get_map_category_change_summary(history_record, source_instance):
 
 
 def get_table_relation_change_summary(history_record, source_instance):
+    """Describe a relation added to, removed from, or changed on a legacy table."""
     table_name = get_related_object_label(
         source_instance,
         "to_table",
@@ -314,6 +337,7 @@ def get_table_relation_change_summary(history_record, source_instance):
 
 
 def get_layer_relation_change_summary(history_record, source_instance):
+    """Describe a table relation added to, removed from, or changed on a layer."""
     table_name = get_related_object_label(
         source_instance,
         "to_table",
@@ -333,6 +357,7 @@ def get_layer_relation_change_summary(history_record, source_instance):
 
 
 def get_changes(history_record):
+    """Return meaningful, non-sensitive field changes from the previous history record."""
     previous_record = history_record.prev_record
     if previous_record is None:
         return []
@@ -358,20 +383,24 @@ def get_changes(history_record):
 
 
 def format_change(change):
+    """Format one field change for display in the audit log."""
     return f"{change.field_label}\n{get_display_value(change.old_value)} → {get_display_value(change.new_value)}"
 
 
 def get_display_value(value):
+    """Normalize and render a field value for the audit log."""
     normalized_value = get_normalized_value(value)
     text = "–" if normalized_value is None else str(normalized_value)
-    return f"{text[:117]}..." if len(text) > 120 else text
+    return text
 
 
 def get_normalized_value(value):
+    """Treat empty strings and null values as the same empty audit value."""
     return None if value in (None, "") else value
 
 
 def format_map_layer_change(change, history_record):
+    """Use map-layer-specific labels for category and ordering changes."""
     if change.field_name == "map_category":
         old_category = get_map_category_label(change.old_value, history_record.history_date)
         new_category = get_map_category_label(change.new_value, history_record.history_date)
@@ -382,12 +411,14 @@ def format_map_layer_change(change, history_record):
 
 
 def format_map_category_change(change):
+    """Use the user-facing position label for map-category ordering changes."""
     if change.field_name == "ordering":
         return f"Positie\n{get_display_value(change.old_value)} → {get_display_value(change.new_value)}"
     return format_change(change)
 
 
 def get_map_category_label(map_category_id, history_date):
+    """Resolve a map-category id to its category label at a point in time."""
     if map_category_id is None:
         return "Geen categorie"
 
@@ -402,16 +433,21 @@ def get_map_category_label(map_category_id, history_date):
 
 
 def get_related_object_label(source_instance, field_name, object_id, model, history_date):
+    """Return a related object's label from the instance or its historical record."""
     if source_instance is not None:
         try:
             return str(getattr(source_instance, field_name))
         except ObjectDoesNotExist:
             pass
 
+    # Relations may already be gone (especially during cascaded deletes). Look
+    # up the latest value available at the event time to keep the audit text
+    # historically accurate instead of using the current database state.
     return get_historical_label(model, object_id, history_date)
 
 
 def get_historical_label(model, object_id, history_date):
+    """Return an object's last known label at or before a historical timestamp."""
     history_record = model.history.filter(
         id=object_id,
         history_date__lte=history_date,
@@ -423,6 +459,7 @@ def get_historical_label(model, object_id, history_date):
 
 
 def get_historical_object_label(history_record):
+    """Select the most useful human-readable label from a history record."""
     for field_name in ("title", "name", "label", "username", "resource"):
         value = getattr(history_record, field_name, None)
         if value:
@@ -431,12 +468,14 @@ def get_historical_object_label(history_record):
 
 
 def get_actor_label(actor):
+    """Return the user-facing name for an actor or the system actor."""
     if actor is None:
         return "Systeem"
     return actor.name or actor.email or actor.get_username()
 
 
 def get_admin_url(subject_model, object_id, action_id):
+    """Return the edit URL for a non-deleted audit subject when one exists."""
     if action_id == "-":
         return None
 

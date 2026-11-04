@@ -18,6 +18,8 @@ from webservice.permissions import IsAtlasAdmin
 
 
 class AuditEventFilter(django_filters.FilterSet):
+    """Expose the audit-log query parameters as comma-separated filters."""
+
     model = django_filters.BaseInFilter(field_name="subject_model", lookup_expr="in")
     object_id = django_filters.BaseInFilter(field_name="object_id", lookup_expr="in")
     action = django_filters.BaseInFilter(field_name="action_id", lookup_expr="in")
@@ -29,6 +31,8 @@ class AuditEventFilter(django_filters.FilterSet):
 
 
 class AuditLogViewSet(ReadOnlyModelViewSet):
+    """List grouped audit events for Atlas administrators."""
+
     permission_classes = [IsAtlasAdmin]
     pagination_class = StandardResultsSetPagination
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -44,9 +48,11 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
     ordering = ["-event_date", "-id"]
 
     def get_queryset(self):
+        """Return audit groups together with their actor relation."""
         return AuditEventGroup.objects.select_related("actor")
 
     def list(self, request, *args, **kwargs):
+        """Filter, paginate, and serialize the audit-event groups."""
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -56,6 +62,7 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="unique-fields")
     def unique_fields(self, request):
+        """Return the actor, model, and action options for audit-log filters."""
         events = self.get_queryset()
         actors = {
             event["actor_id"]: event["actor_label"]
@@ -72,6 +79,7 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
 
     @staticmethod
     def get_model_filter_options():
+        """Return user-facing model filters, merging relationship events into their parent object."""
         options = {}
         for model in get_audited_models():
             model_id = model._meta.label_lower
@@ -88,6 +96,7 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
 
     @staticmethod
     def serialize_event(event):
+        """Convert an audit-event group to the response shape consumed by the admin UI."""
         return {
             "id": event.id,
             "date": event.event_date,
@@ -105,10 +114,14 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
 
     @staticmethod
     def get_summary(event):
+        """Build a compact, user-facing summary of an audit-event group."""
         if event.action_id == "+":
             return "Nieuw object"
         if event.action_id == "-":
             return "Object verwijderd"
 
+        # Grouped events are separated by blank lines. A relation add/remove has
+        # no value arrow but still represents one change; field updates can have
+        # multiple arrows in the same grouped event.
         change_count = sum(max(1, change.count(" → ")) for change in event.details.split("\n\n"))
         return f"{change_count} wijziging" if change_count == 1 else f"{change_count} wijzigingen"
