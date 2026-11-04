@@ -141,9 +141,11 @@ class MapSerializer(serializers.ModelSerializer):
         map_layers = validated_data.pop("map_layers", [])
         map_categories = validated_data.pop("map_categories", [])
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
+        map_fields_changed = any(getattr(instance, attr) != value for attr, value in validated_data.items())
+        if map_fields_changed:
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
 
         if has_categories:
             self._sync_categories(instance, map_categories)

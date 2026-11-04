@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { apiFetch } from "@/utils/api-helpers";
 import { formatDateValue } from "@/utils/date-formatter";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import Drawer from "primevue/drawer";
 import Button from "primevue/button";
 
@@ -51,10 +51,19 @@ const loadHistory = async (url = historyUrl.value, append = false): Promise<void
 
 const openHistory = async (): Promise<void> => {
   isOpen.value = true;
-  if (!entries.value.length) {
-    await loadHistory();
-  }
+  await loadHistory();
 };
+
+watch(
+  () => [props.modelLabel, props.objectId],
+  async () => {
+    entries.value = [];
+    nextUrl.value = null;
+    if (isOpen.value) {
+      await loadHistory();
+    }
+  },
+);
 </script>
 
 <template>

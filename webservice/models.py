@@ -1130,6 +1130,37 @@ class MapManager(models.Manager):
         return self.filter(published=True)
 
 
+class AuditEvent(models.Model):
+    source_model = models.CharField(max_length=100)
+    source_history_id = models.PositiveIntegerField()
+    event_date = models.DateTimeField(db_index=True)
+    subject_model = models.CharField(max_length=100)
+    subject_label = models.CharField(max_length=100)
+    object_id = models.PositiveIntegerField()
+    object_label = models.CharField(max_length=255)
+    action_id = models.CharField(max_length=1)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="audit_events",
+    )
+    actor_label = models.CharField(max_length=255)
+    details = models.TextField()
+    admin_url = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        ordering = ["-event_date", "-id"]
+        constraints = [
+            models.UniqueConstraint(fields=["source_model", "source_history_id"], name="unique_audit_event_source"),
+        ]
+        indexes = [
+            models.Index(fields=["subject_model", "object_id", "-event_date"], name="audit_event_subject_date"),
+            models.Index(fields=["actor", "-event_date"], name="audit_event_actor_date"),
+        ]
+
+
 class Map(models.Model):
     history = HistoricalRecords()
     objects = models.Manager()
@@ -1137,6 +1168,7 @@ class Map(models.Model):
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
+                         overwrite_on_add=False,
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas.', max_length=255,
                          validators=[no_underscore_validator])
 
