@@ -1,5 +1,5 @@
 import django_filters
-from rest_framework import filters, permissions
+from rest_framework import filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -14,6 +14,7 @@ from webservice.audit_events import (
 )
 from webservice.models import AuditEventGroup
 from webservice.pagination import StandardResultsSetPagination
+from webservice.permissions import IsAtlasAdmin
 
 
 class AuditEventFilter(django_filters.FilterSet):
@@ -28,7 +29,7 @@ class AuditEventFilter(django_filters.FilterSet):
 
 
 class AuditLogViewSet(ReadOnlyModelViewSet):
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsAtlasAdmin]
     pagination_class = StandardResultsSetPagination
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = AuditEventFilter

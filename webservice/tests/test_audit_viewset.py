@@ -45,6 +45,20 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Titel\nOriginal source → Renamed source", entry["details"])
         self.assertEqual(entry["summary"], "2 wijzigingen")
 
+    def test_denies_staff_users_without_the_admin_checkbox_permissions(self):
+        staff_user = get_user_model().objects.create_user(
+            username="staff-user",
+            email="staff-user@example.com",
+            password="password",
+            is_staff=True,
+        )
+        request = self.factory.get("/atlas/api/v1/audit-logs/")
+        force_authenticate(request, user=staff_user)
+
+        response = AuditLogViewSet.as_view({"get": "list"})(request)
+
+        self.assertEqual(response.status_code, 403)
+
     def test_supports_drf_search_syntax(self):
         source = Source(title="Original source", url="https://example.com")
         source._history_user = self.admin_user
