@@ -4,13 +4,21 @@ import { formatDateValue } from "@/utils/date-formatter";
 import { computed, ref, watch } from "vue";
 import Drawer from "primevue/drawer";
 import Button from "primevue/button";
+import Tag from "primevue/tag";
 
 interface IAuditLogEntry {
   id: string;
   date: string;
   action: string;
+  action_id: string;
   actor: string;
   details: string;
+}
+
+interface IAuditEventIndicator {
+  label: string;
+  severity: "success" | "danger" | "info";
+  icon: string;
 }
 
 interface IAuditLogResponse {
@@ -27,6 +35,18 @@ const isOpen = ref(false);
 const isLoading = ref(false);
 const entries = ref<IAuditLogEntry[]>([]);
 const nextUrl = ref<string | null>(null);
+
+const getAuditEventIndicator = (entry: IAuditLogEntry): IAuditEventIndicator => {
+  if (entry.action_id === "+" || entry.details.includes("toegevoegd")) {
+    return { label: "Toegevoegd", severity: "success", icon: "pi pi-plus" };
+  }
+
+  if (entry.action_id === "-" || entry.details.includes("verwijderd")) {
+    return { label: "Verwijderd", severity: "danger", icon: "pi pi-trash" };
+  }
+
+  return { label: "Gewijzigd", severity: "info", icon: "pi pi-pencil" };
+};
 
 const historyUrl = computed(() => {
   const query = new URLSearchParams({ model: props.modelLabel, object_id: String(props.objectId), page_size: "10" });
@@ -74,8 +94,14 @@ watch(
     <p v-else-if="!entries.length">Er zijn nog geen wijzigingen geregistreerd.</p>
     <ol v-else class="history-list">
       <li v-for="entry in entries" :key="entry.id">
-        <div class="history-meta">{{ formatDateValue(entry.date) }} · {{ entry.actor }}</div>
-        <div class="history-action">{{ entry.action }}</div>
+        <div class="history-meta">
+          <Tag
+            :value="getAuditEventIndicator(entry).label"
+            :severity="getAuditEventIndicator(entry).severity"
+            :icon="getAuditEventIndicator(entry).icon"
+          />
+          <span>{{ formatDateValue(entry.date) }} · {{ entry.actor }}</span>
+        </div>
         <div class="history-details">{{ entry.details }}</div>
       </li>
     </ol>
@@ -93,6 +119,9 @@ watch(
 
 <style scoped>
 .history-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: var(--color-text-grey);
 }
 
@@ -105,11 +134,6 @@ watch(
 .history-list li {
   padding: 1rem 0;
   border-bottom: 1px solid var(--color-grey-60);
-}
-
-.history-action {
-  margin-top: 0.5rem;
-  font-weight: 600;
 }
 
 .history-details {
