@@ -9,6 +9,8 @@
       :initial-values="initialValues"
       :compact-layout="false"
       :form-object="'tables_old'"
+      history-model="tables.table"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveTable"
     />
   </div>

@@ -8,6 +8,8 @@
       :sections="sections"
       :initial-values="initialValues"
       :form-object="'layers'"
+      history-model="webservice.layer"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveLayer"
       @update-source="(source) => (selectedSource = source)"
       @related-tables-changed="handleRelatedTablesChange"

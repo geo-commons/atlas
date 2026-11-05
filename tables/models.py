@@ -1,5 +1,6 @@
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
+from simple_history.models import HistoricalRecords
 
 from utils.tools import is_internal
 from webservice.validators import no_underscore_validator
@@ -19,6 +20,7 @@ class TableManager(models.Manager):
 
 
 class Table(models.Model):
+    history = HistoricalRecords()
     METHOD_GET = 'GET'
     METHOD_POST = 'POST'
 

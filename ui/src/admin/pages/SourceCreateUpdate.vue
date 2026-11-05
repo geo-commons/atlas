@@ -9,6 +9,8 @@
       :initial-values="initialValues"
       :compact-layout="false"
       :form-object="'sources'"
+      history-model="webservice.source"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveSource"
     />
   </div>

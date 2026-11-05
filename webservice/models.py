@@ -9,6 +9,7 @@ from django.db.models import Max, Q
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django_extensions.db.fields import AutoSlugField
+from simple_history.models import HistoricalRecords
 
 from user_management.models import AtlasGroup
 from utils.constance_config import get_constance_config
@@ -40,6 +41,7 @@ class LayerManager(models.Manager):
 
 
 class Category(models.Model):
+    history = HistoricalRecords()
     objects = models.Manager()
 
     # MBS (https://gitlab.com/purmerend/datalab/mbs) depends on this field
@@ -116,6 +118,7 @@ class Category(models.Model):
 
 
 class Source(models.Model):
+    history = HistoricalRecords(m2m_fields=("atlas_groups",))
     SOURCE_OWS = 'OWS'
     SOURCE_WMTS = 'WMTS'
     SOURCE_REST = 'REST'
@@ -251,6 +254,7 @@ class OtherConstraintsType(models.TextChoices):
 
 
 class Metadataset(models.Model):
+    history = HistoricalRecords()
     objects = models.Manager()
     authorized = MetadatasetManager()
 
@@ -381,6 +385,7 @@ class Metadataset(models.Model):
 
 
 class Layer(models.Model):
+    history = HistoricalRecords(m2m_fields=("atlas_groups", "atlas_write_groups"))
     SOURCE_WMS_WFS = 'WMS_WFS'
     SOURCE_WMS = 'WMS'
     SOURCE_WFS = 'WFS'
@@ -534,11 +539,11 @@ class Layer(models.Model):
         help_text='De laag wordt niet getoond in de standaardkaart')
 
     atlas_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen',
+        AtlasGroup, blank=True, verbose_name='Leesgroepen',
         help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
 
     atlas_write_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen', related_name='atlas_write_groups',
+        AtlasGroup, blank=True, verbose_name='Schrijfgroepen', related_name='atlas_write_groups',
         help_text='De inhoud van deze dataset kan alleen gemuteerd worden als de gebruiker lid is van een van deze groepen.')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
@@ -1010,6 +1015,7 @@ class Template(models.Model):
 
 
 class MapLayer(models.Model):
+    history = HistoricalRecords()
     layer = models.ForeignKey(
         'Layer', on_delete=models.CASCADE, related_name='maps_layer')
     map = models.ForeignKey(
@@ -1044,6 +1050,7 @@ class MapLayer(models.Model):
 
 
 class MapCategory(models.Model):
+    history = HistoricalRecords()
     category = models.ForeignKey(
         'Category', on_delete=models.CASCADE, related_name='maps_category')
     map = models.ForeignKey(
@@ -1123,12 +1130,88 @@ class MapManager(models.Manager):
         return self.filter(published=True)
 
 
+class AuditEvent(models.Model):
+    source_model = models.CharField(max_length=100)
+    source_history_id = models.PositiveIntegerField()
+    event_date = models.DateTimeField(db_index=True)
+    subject_model = models.CharField(max_length=100)
+    subject_label = models.CharField(max_length=100)
+    object_id = models.PositiveIntegerField()
+    object_label = models.CharField(max_length=255)
+    action_id = models.CharField(max_length=1)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="audit_events",
+    )
+    actor_label = models.CharField(max_length=255)
+    details = models.TextField()
+    changes = models.JSONField(default=list)
+    admin_url = models.CharField(max_length=255, null=True, blank=True)
+    group = models.ForeignKey(
+        "AuditEventGroup",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="events",
+    )
+
+    class Meta:
+        ordering = ["-event_date", "-id"]
+        constraints = [
+            models.UniqueConstraint(fields=["source_model", "source_history_id"], name="unique_audit_event_source"),
+        ]
+        indexes = [
+            models.Index(fields=["subject_model", "object_id", "-event_date"], name="audit_event_subject_date"),
+            models.Index(fields=["actor", "-event_date"], name="audit_event_actor_date"),
+        ]
+
+
+class AuditEventGroup(models.Model):
+    request_id = models.UUIDField(null=True, blank=True)
+    event_date = models.DateTimeField(db_index=True)
+    subject_model = models.CharField(max_length=100)
+    subject_label = models.CharField(max_length=100)
+    object_id = models.PositiveIntegerField()
+    object_label = models.CharField(max_length=255)
+    action_id = models.CharField(max_length=1)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="audit_event_groups",
+    )
+    actor_label = models.CharField(max_length=255)
+    details = models.TextField()
+    changes = models.JSONField(default=list)
+    admin_url = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        ordering = ["-event_date", "-id"]
+        indexes = [
+            models.Index(fields=["subject_model", "object_id", "-event_date"], name="audit_group_subject_date"),
+            models.Index(fields=["actor", "-event_date"], name="audit_group_actor_date"),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["request_id", "subject_model", "object_id"],
+                condition=Q(request_id__isnull=False),
+                name="unique_audit_group_request_subject",
+            ),
+        ]
+
+
 class Map(models.Model):
+    history = HistoricalRecords()
     objects = models.Manager()
     authorized = MapManager()
 
     title = models.CharField('Titel', max_length=128, null=True)
     slug = AutoSlugField('Kort kenmerk', blank=True, unique=True, populate_from='title', editable=True,
+                         overwrite_on_add=False,
                          help_text='Een uniek kort kenmerk voor de kaart in Atlas.', max_length=255,
                          validators=[no_underscore_validator])
 
@@ -1231,6 +1314,7 @@ class ViewerVisibleManager(models.Manager):
 
 
 class Viewer(models.Model):
+    history = HistoricalRecords(excluded_fields=["password", "api_key"])
     TYPE_GOOGLE_MAPS = 'GOOGLE_MAPS'
     TYPE_STREET_SMART = 'STREET_SMART'
     TYPE_OBLIQUO = 'OBLIQUO'

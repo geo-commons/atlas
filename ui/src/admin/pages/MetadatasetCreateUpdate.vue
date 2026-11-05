@@ -8,6 +8,8 @@
       :sections="sections"
       :initial-values="initialValues"
       :form-object="'metadatasets'"
+      history-model="webservice.metadataset"
+      :history-object-id="route.params.id"
       :object-specific-save="saveMetadataset"
     />
 

@@ -1,9 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
+from simple_history.models import HistoricalRecords
 
 
 class AtlasGroup(models.Model):
+    history = HistoricalRecords()
     name = models.CharField('Groep', max_length=50)
     external_id = models.CharField(
         'External ID', max_length=255, null=True, blank=True,
@@ -20,6 +22,7 @@ class AtlasGroup(models.Model):
 
 
 class AtlasUser(AbstractUser):
+    history = HistoricalRecords(excluded_fields=["password"], m2m_fields=("atlas_groups",))
     name = models.CharField(
         'Volledige naam', max_length=255, blank=True, null=True)
     external_id = models.CharField(

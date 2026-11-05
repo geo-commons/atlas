@@ -7,6 +7,8 @@ import AdminListViewTableHeader, { TableHeaderRef } from "@/admin/components/Adm
 import { Ref, ref, watch } from "vue";
 import { PaginationRef } from "@/admin/components/AdminListViewPaginator.vue";
 import AdminListViewTableValue from "@/admin/components/AdminListViewTableValue.vue";
+import { getAuditActionIndicator } from "@/admin/utils/audit-event";
+import Tag from "primevue/tag";
 
 // Properties
 export type TableHeader = {
@@ -14,8 +16,10 @@ export type TableHeader = {
   key: string;
   overrideKeyForFilter?: string;
   enableLink: boolean;
+  linkUrlKey?: string;
   isArrayWithKey?: string;
   mapValues?: { [key: string]: any };
+  tagActionIdKey?: string;
 };
 
 type AdminListViewProps = {
@@ -102,6 +106,14 @@ const getValue = (obj: object, keyString: string, isArrayWithKey?: string, mapVa
   return value;
 };
 
+const getLinkUrl = (row: object, header: TableHeader): string | null => {
+  if (header.linkUrlKey) {
+    return getValue(row, header.linkUrlKey) || null;
+  }
+
+  return `/${props.apiName}/update/${getValue(row, "id")}`;
+};
+
 const blockDelete = (obj: any): any => {
   if (!props.blockDelete.length) {
     return false;
@@ -151,18 +163,24 @@ defineExpose({ resetSelection });
           </td>
 
           <td v-for="header in tableHeaders" :key="header.key" class="first:tw-pl-4">
-            <p v-if="!header.enableLink">
-              <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
-            </p>
+            <Tag
+              v-if="header.tagActionIdKey"
+              :value="getAuditActionIndicator(getValue(row, header.tagActionIdKey)).label"
+              :severity="getAuditActionIndicator(getValue(row, header.tagActionIdKey)).severity"
+              :icon="getAuditActionIndicator(getValue(row, header.tagActionIdKey)).icon"
+            />
             <router-link
-              v-else
+              v-else-if="header.enableLink && getLinkUrl(row, header)"
               class="admin-title-link"
               type="button"
               :aria-label="`${row[header.key]} configureren`"
-              :to="`/${props.apiName}/update/${row.id}`"
+              :to="getLinkUrl(row, header) || '/'"
             >
               <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
             </router-link>
+            <p v-else>
+              <AdminListViewTableValue :value="getValue(row, header.key, header.isArrayWithKey, header.mapValues)" />
+            </p>
           </td>
           <td v-if="props.enableEdit" class="btn-col">
             <button

@@ -31,6 +31,7 @@ import { useGlobalStore } from "@/stores";
 import MetadatasetList from "@/admin/pages/MetadatasetList.vue";
 import MetadatasetCreateUpdate from "@/admin/pages/MetadatasetCreateUpdate.vue";
 import LogList from "@/admin/pages/LogList.vue";
+import AuditLogList from "@/admin/pages/AuditLogList.vue";
 import TableList from "@/admin/pages/TableList.vue";
 import ViewerList from "@/admin/pages/ViewerList.vue";
 import TableCreateUpdate from "@/admin/pages/TableCreateUpdate.vue";
@@ -196,6 +197,11 @@ const routes = [
     path: "/logs",
     component: LogList,
     meta: { title: "Logs", menu: true },
+  },
+  {
+    path: "/audit-logs",
+    component: AuditLogList,
+    meta: { title: "Beheerlogs", menu: true },
   },
   {
     path: "/logs/update/:id",

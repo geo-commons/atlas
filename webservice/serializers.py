@@ -141,9 +141,11 @@ class MapSerializer(serializers.ModelSerializer):
         map_layers = validated_data.pop("map_layers", [])
         map_categories = validated_data.pop("map_categories", [])
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
+        map_fields_changed = any(getattr(instance, attr) != value for attr, value in validated_data.items())
+        if map_fields_changed:
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
 
         if has_categories:
             self._sync_categories(instance, map_categories)
@@ -597,45 +599,47 @@ class LayerCreateUpdateSerializer(serializers.ModelSerializer):
         # Handling many-to-many field 'related_tables'
         if related_tables is not None:
             try:
-                # Get IDs of table relations sent in the request
-                incoming_table_ids = {item.get('id') for item in related_tables if item.get('id')}
-
-                # Get existing relations
-                existing_relations = LayerToTable.objects.filter(from_layer=instance)
-
-                # Delete relations that are no longer needed
-                relations_to_delete = existing_relations.exclude(id__in=incoming_table_ids)
-                relations_to_delete.delete()
+                existing_relations = list(LayerToTable.objects.filter(from_layer=instance))
+                # Find existing relations by id or related table.
+                relations_by_id = {relation.id: relation for relation in existing_relations}
+                relations_by_table_id = {relation.to_table_id: relation for relation in existing_relations}
+                kept_relation_ids = set()
 
                 for item in related_tables:
                     relation_id = item.get('id')
+                    to_table_id = item.get('to_table')
+                    existing_relation = relations_by_id.get(relation_id)
 
-                    if relation_id:
-                        # Update existing relation using its ID
-                        existing_relation = LayerToTable.objects.get(id=relation_id)
+                    # Try the related table when the relation id does not match.
+                    if existing_relation is None or (
+                        to_table_id is not None and existing_relation.to_table_id != to_table_id
+                    ):
+                        existing_relation = relations_by_table_id.get(to_table_id)
 
-                        field_mapping = item.get('field_mapping')
-                        if field_mapping is not None:
-                            existing_relation.field_mapping = field_mapping
-
-                        related_table_title = item.get('related_table_title')
-                        if related_table_title is not None:
-                            existing_relation.related_table_title = related_table_title
-
-                        ordering = item.get('ordering')
-                        if ordering is not None:
-                            existing_relation.ordering = ordering
-
-                        existing_relation.save()
-                    else:
-                        # Create new relation
-                        LayerToTable.objects.create(
+                    if existing_relation is None:
+                        existing_relation = LayerToTable.objects.create(
                             from_layer=instance,
-                            to_table_id=item.get('to_table'),
+                            to_table_id=to_table_id,
                             field_mapping=item.get('field_mapping'),
                             related_table_title=item.get('related_table_title', ''),
                             ordering=item.get('ordering', 0),
                         )
+                    else:
+                        # Only save changed relations.
+                        updated_fields = []
+                        for field_name in ('field_mapping', 'related_table_title', 'ordering'):
+                            value = item.get(field_name)
+                            if value is not None and getattr(existing_relation, field_name) != value:
+                                setattr(existing_relation, field_name, value)
+                                updated_fields.append(field_name)
+
+                        if updated_fields:
+                            existing_relation.save(update_fields=updated_fields)
+
+                    kept_relation_ids.add(existing_relation.id)
+
+                # Remove relations that are no longer in the request.
+                LayerToTable.objects.filter(from_layer=instance).exclude(id__in=kept_relation_ids).delete()
             except Exception as e:
                 raise serializers.ValidationError({
                     'related_tables': 'Er is een onverwachte fout opgretreden bij het opslaan van de gerelateerde tabellen. '

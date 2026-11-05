@@ -8,6 +8,8 @@
       :sections="sections"
       :initial-values="initialValues"
       :form-object="'users'"
+      history-model="user_management.atlasuser"
+      :history-object-id="$route.params.id"
       :object-specific-save="saveUser"
     />
   </div>
