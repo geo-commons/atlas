@@ -109,11 +109,10 @@ def create_audit_event(history_record, source_instance=None):
 
 
 def get_audit_event_group(event_data):
-    """Return the group for an event, grouping map writes within one request."""
+    """Return the group for an event in the current request."""
     request_id = get_request_id()
     if request_id is None:
-        # Non-map writes are deliberately kept as individual entries; only map
-        # requests receive an id from the middleware and are collapsed below.
+        # Changes without a request cannot be grouped with other events.
         return AuditEventGroup.objects.create(**get_audit_event_group_data(event_data))
 
     group_data = get_audit_event_group_data(event_data)
