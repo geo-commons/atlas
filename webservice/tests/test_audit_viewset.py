@@ -3,11 +3,12 @@ from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 from simple_history.models import HistoricalRecords
 
-from table.models import Table, TableToTable
+from table.models import LayerToTable, Table, TableToTable
+from table.serializers import TableSerializer
 from webservice.audit import AuditLogViewSet, get_audited_models
 from webservice.middleware import MapAuditEventRequestMiddleware
 from webservice.models import AuditEvent, Category, Layer, Map, MapCategory, MapLayer, Source
-from webservice.serializers import MapSerializer
+from webservice.serializers import LayerCreateUpdateSerializer, MapSerializer
 
 
 class AuditLogViewSetTests(TestCase):
@@ -325,6 +326,76 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(audit_event.subject_model, "table.table")
         self.assertEqual(audit_event.object_label, "Source table")
         self.assertEqual(audit_event.details, "Gerelateerde tabel toegevoegd\nRelated table")
+
+    def test_table_relationship_update_is_logged_once_with_its_changed_field(self):
+        source = Source.objects.create(title="Test source", url="https://example.com")
+        table = Table.objects.create(title="Source table", source=source)
+        related_table = Table.objects.create(title="Related table", source=source)
+        relation = TableToTable.objects.create(from_table=table, to_table=related_table, field_mapping={})
+
+        relation.ordering = 2
+        relation._history_user = self.admin_user
+        relation.save()
+
+        events = AuditEvent.objects.filter(source_model="table.tabletotable").order_by("event_date", "id")
+
+        self.assertEqual(events.count(), 2)
+        self.assertEqual(events.last().action_id, "~")
+        self.assertEqual(
+            events.last().details,
+            "Gerelateerde tabel gewijzigd\nRelated table\nVolgorde\n0 → 2",
+        )
+
+    def test_layer_table_relationship_changes_are_logged_on_the_layer(self):
+        source = Source.objects.create(title="Test source", url="https://example.com")
+        related_table = Table.objects.create(title="Related table", source=source)
+        layer = Layer.objects.create(title="Source layer")
+        relation = LayerToTable.objects.create(from_layer=layer, to_table=related_table, field_mapping={})
+
+        relation.delete()
+
+        events = AuditEvent.objects.filter(source_model="table.layertotable").order_by("event_date", "id")
+
+        self.assertEqual(events.count(), 2)
+        self.assertEqual(events.first().subject_model, "webservice.layer")
+        self.assertEqual(events.first().object_label, "Source layer")
+        self.assertEqual(events.first().details, "Tabel gekoppeld\nRelated table")
+        self.assertEqual(events.last().action_id, "-")
+        self.assertEqual(events.last().details, "Tabel ontkoppeld\nRelated table")
+
+    def test_filters_multiple_object_ids(self):
+        first_source = Source(title="First source", url="https://example.com/first")
+        first_source._history_user = self.admin_user
+        first_source.save()
+        second_source = Source(title="Second source", url="https://example.com/second")
+        second_source._history_user = self.admin_user
+        second_source.save()
+
+        first_source.title = "First source renamed"
+        first_source._history_user = self.admin_user
+        first_source.save()
+        second_source.title = "Second source renamed"
+        second_source._history_user = self.admin_user
+        second_source.save()
+
+        request = self.factory.get(
+            "/atlas/api/v1/audit-logs/",
+            {
+                "model": "webservice.source",
+                "object_id": f"{first_source.id},{second_source.id}",
+                "action": "~",
+                "actor": self.admin_user.id,
+            },
+        )
+        force_authenticate(request, user=self.admin_user)
+        response = AuditLogViewSet.as_view({"get": "list"})(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 2)
+        self.assertEqual(
+            {entry["object"] for entry in response.data["results"]},
+            {"First source renamed", "Second source renamed"},
+        )
 
     def get_map_audit_entries(self, map_instance):
         request = self.factory.get(
