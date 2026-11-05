@@ -15,7 +15,6 @@ from webservice.audit_events import (
 )
 from webservice.models import AuditEvent, Layer, Metadataset, Source
 
-
 class AuditEventTests(TestCase):
     def setUp(self):
         self.admin_user = get_user_model().objects.create_superuser(
@@ -151,6 +150,7 @@ class AuditEventTests(TestCase):
         self.assertIsNone(get_normalized_value(None))
         self.assertEqual(get_display_value(None), "–")
         self.assertEqual(get_display_value("Text"), "Text")
+        self.assertEqual(get_display_value({"gps": True, "baselayer": False}), '{"gps": true, "baselayer": false}')
 
     def test_admin_urls_match_the_audit_subject_action(self):
         """Return an edit link for active objects and none for deleted objects.

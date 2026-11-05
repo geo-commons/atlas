@@ -18,6 +18,10 @@ describe("getAuditValueDisplay", () => {
       isJson: true,
       value: '[\n  {\n    "layer": 292,\n    "atlasgroup": 1\n  }\n]',
     });
+    expect(getAuditValueDisplay("{'gps': True, 'baselayer': False}")).toEqual({
+      isJson: true,
+      value: '{\n  "gps": true,\n  "baselayer": false\n}',
+    });
   });
 
   it("keeps normal text unchanged", () => {

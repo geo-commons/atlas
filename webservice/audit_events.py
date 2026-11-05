@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from decimal import Decimal
+import json
 
 from django.core.exceptions import ObjectDoesNotExist
 from simple_history.models import HistoricalRecords
@@ -463,8 +464,11 @@ def get_many_to_many_labels(values, related_model, history_date):
 def get_display_value(value):
     """Normalize and render a field value for the audit log."""
     normalized_value = get_normalized_value(value)
-    text = "–" if normalized_value is None else str(normalized_value)
-    return text
+    if normalized_value is None:
+        return "–"
+    if isinstance(normalized_value, (dict, list)):
+        return json.dumps(normalized_value, ensure_ascii=False, default=str)
+    return str(normalized_value)
 
 
 def get_normalized_value(value):

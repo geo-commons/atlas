@@ -38,7 +38,12 @@ export const getAuditValueDisplay = (value: string): IAuditValueDisplay => {
     return { isJson: true, value: JSON.stringify(JSON.parse(trimmedValue), null, 2) };
   } catch {
     try {
-      return { isJson: true, value: JSON.stringify(JSON.parse(trimmedValue.replaceAll("'", '"')), null, 2) };
+      const pythonStyleJson = trimmedValue
+        .replaceAll("'", '"')
+        .replace(/\bTrue\b/g, "true")
+        .replace(/\bFalse\b/g, "false")
+        .replace(/\bNone\b/g, "null");
+      return { isJson: true, value: JSON.stringify(JSON.parse(pythonStyleJson), null, 2) };
     } catch {
       return { isJson: false, value };
     }
