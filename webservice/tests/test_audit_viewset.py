@@ -6,8 +6,8 @@ from simple_history.models import HistoricalRecords
 from table.models import LayerToTable, Table, TableToTable
 from table.serializers import TableSerializer
 from webservice.audit import AuditLogViewSet, get_audited_models
-from webservice.middleware import MapAuditEventRequestMiddleware
-from webservice.models import AuditEvent, Category, Layer, Map, MapCategory, MapLayer, Source
+from webservice.middleware import AuditEventRequestMiddleware
+from webservice.models import AuditEvent, AuditEventGroup, Category, Layer, Map, MapCategory, MapLayer, Source
 from webservice.serializers import LayerCreateUpdateSerializer, MapSerializer
 
 
@@ -304,8 +304,8 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(map_instance.history.count(), 2)
         self.assertEqual(AuditEvent.objects.filter(source_model="webservice.map").count(), 1)
 
-    def test_only_assigns_a_group_identifier_to_map_requests(self):
-        middleware = MapAuditEventRequestMiddleware(lambda request: None)
+    def test_assigns_a_group_identifier_to_every_request(self):
+        middleware = AuditEventRequestMiddleware(lambda request: None)
         map_request = self.factory.patch("/atlas/api/v1/maps/1/")
         layer_request = self.factory.patch("/atlas/api/v1/layers/1/")
 
@@ -313,7 +313,85 @@ class AuditLogViewSetTests(TestCase):
         middleware(layer_request)
 
         self.assertTrue(hasattr(map_request, "audit_event_request_id"))
-        self.assertFalse(hasattr(layer_request, "audit_event_request_id"))
+        self.assertTrue(hasattr(layer_request, "audit_event_request_id"))
+        self.assertNotEqual(map_request.audit_event_request_id, layer_request.audit_event_request_id)
+
+    def test_layer_mutations_in_one_request_are_grouped(self):
+        source = Source.objects.create(title="Test source", url="https://example.com")
+        layer = Layer.objects.create(title="Test layer")
+        first_table = Table.objects.create(title="First table", source=source)
+        second_table = Table.objects.create(title="Second table", source=source)
+        first_relation = LayerToTable.objects.create(from_layer=layer, to_table=first_table, field_mapping={}, ordering=0)
+        second_relation = LayerToTable.objects.create(from_layer=layer, to_table=second_table, field_mapping={}, ordering=1)
+        request = self.factory.patch(f"/atlas/api/v1/layers/{layer.id}/")
+        request.user = self.admin_user
+        AuditEventRequestMiddleware(lambda request: None)(request)
+
+        HistoricalRecords.context.request = request
+        try:
+            serializer = LayerCreateUpdateSerializer(
+                layer,
+                data={
+                    "related_tables": [
+                        {"id": first_relation.id, "to_table": first_table.id, "field_mapping": {}, "ordering": 1},
+                        {"id": second_relation.id, "to_table": second_table.id, "field_mapping": {}, "ordering": 0},
+                    ]
+                },
+                partial=True,
+            )
+            self.assertTrue(serializer.is_valid(), serializer.errors)
+            serializer.save()
+        finally:
+            del HistoricalRecords.context.request
+
+        groups = AuditEventGroup.objects.filter(
+            request_id=request.audit_event_request_id,
+            subject_model="webservice.layer",
+            object_id=layer.id,
+        )
+
+        self.assertEqual(groups.count(), 1)
+        self.assertIn("Tabelkoppeling gewijzigd\nFirst table\nVolgorde\n0 → 1", groups[0].details)
+        self.assertIn("Tabelkoppeling gewijzigd\nSecond table\nVolgorde\n1 → 0", groups[0].details)
+
+    def test_table_mutations_in_one_request_are_grouped(self):
+        source = Source.objects.create(title="Test source", url="https://example.com")
+        table = Table.objects.create(title="Source table", source=source)
+        first_table = Table.objects.create(title="First table", source=source)
+        second_table = Table.objects.create(title="Second table", source=source)
+        first_relation = TableToTable.objects.create(from_table=table, to_table=first_table, field_mapping={}, ordering=0)
+        second_relation = TableToTable.objects.create(from_table=table, to_table=second_table, field_mapping={}, ordering=1)
+        request = self.factory.patch(f"/atlas/api/v1/tables/{table.id}/")
+        request.user = self.admin_user
+        AuditEventRequestMiddleware(lambda request: None)(request)
+
+        HistoricalRecords.context.request = request
+        try:
+            serializer = TableSerializer(
+                table,
+                data={
+                    "related_tables": [
+                        {"id": first_relation.id, "to_table": first_table.id, "field_mapping": {}, "ordering": 1},
+                        {"id": second_relation.id, "to_table": second_table.id, "field_mapping": {}, "ordering": 0},
+                    ]
+                },
+                partial=True,
+                context={"request": request},
+            )
+            self.assertTrue(serializer.is_valid(), serializer.errors)
+            serializer.save()
+        finally:
+            del HistoricalRecords.context.request
+
+        groups = AuditEventGroup.objects.filter(
+            request_id=request.audit_event_request_id,
+            subject_model="table.table",
+            object_id=table.id,
+        )
+
+        self.assertEqual(groups.count(), 1)
+        self.assertIn("Gerelateerde tabel gewijzigd\nFirst table\nVolgorde\n0 → 1", groups[0].details)
+        self.assertIn("Gerelateerde tabel gewijzigd\nSecond table\nVolgorde\n1 → 0", groups[0].details)
 
     def test_table_relationship_changes_are_audited(self):
         source = Source.objects.create(title="Test source", url="https://example.com")

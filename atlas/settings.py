@@ -126,7 +126,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'webservice.middleware.MapAuditEventRequestMiddleware',
+    'webservice.middleware.AuditEventRequestMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
     'utils.middleware.check_access_admin',
     'utils.middleware.disable_admin1',
