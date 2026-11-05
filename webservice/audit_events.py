@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from decimal import Decimal
 
 from django.core.exceptions import ObjectDoesNotExist
 from simple_history.models import HistoricalRecords
@@ -138,16 +139,18 @@ def get_audit_event_group_data(event_data):
         "actor": event_data["actor"],
         "actor_label": event_data["actor_label"],
         "details": "",
+        "changes": [],
         "admin_url": event_data["admin_url"],
     }
 
 
 def update_audit_event_group(group, audit_event):
-    """Merge an event's timestamp, action, and details into its group."""
+    """Merge an event's timestamp, action, and changes into its group."""
     group.event_date = max(group.event_date, audit_event.event_date)
     group.action_id = get_group_action_id(group.action_id, audit_event.action_id)
     group.details = "\n\n".join(filter(None, [group.details, audit_event.details]))
-    group.save(update_fields=["event_date", "action_id", "details"])
+    group.changes = [*group.changes, *audit_event.changes]
+    group.save(update_fields=["event_date", "action_id", "details", "changes"])
 
 
 def get_group_action_id(current_action_id, new_action_id):
@@ -174,9 +177,11 @@ def get_audit_event_data(history_record, source_instance=None):
         source_instance,
     )
     action_id = get_action_id(source_model_label, history_record.history_type)
-    details = get_change_summary(history_record, source_instance)
-    if details is None:
+    audit_content = get_audit_content(history_record, source_instance)
+    if audit_content is None:
         return None
+
+    details, changes = audit_content
 
     return {
         "source_model": source_model_label,
@@ -190,6 +195,7 @@ def get_audit_event_data(history_record, source_instance=None):
         "actor": history_record.history_user,
         "actor_label": get_actor_label(history_record.history_user),
         "details": details,
+        "changes": changes,
         "admin_url": get_admin_url(subject_model, object_id, action_id),
     }
 
@@ -247,31 +253,31 @@ def get_action_id(source_model_label, history_type):
     return history_type
 
 
-def get_change_summary(history_record, source_instance):
-    """Return visible, localized details for a historical change or ``None`` when unchanged."""
+def get_audit_content(history_record, source_instance=None):
+    """Return a legacy text summary and structured changes for one history record."""
     source_model_label = history_record.instance_type._meta.label_lower
     if source_model_label == MAP_LAYER_MODEL_LABEL:
-        return get_map_layer_change_summary(history_record, source_instance)
+        return get_map_layer_audit_content(history_record, source_instance)
     if source_model_label == MAP_CATEGORY_MODEL_LABEL:
-        return get_map_category_change_summary(history_record, source_instance)
+        return get_map_category_audit_content(history_record, source_instance)
     if source_model_label == TABLE_TO_TABLE_MODEL_LABEL:
-        return get_table_relation_change_summary(history_record, source_instance)
+        return get_table_relation_audit_content(history_record, source_instance)
     if source_model_label == LAYER_TO_TABLE_MODEL_LABEL:
-        return get_layer_relation_change_summary(history_record, source_instance)
+        return get_layer_relation_audit_content(history_record, source_instance)
 
     if history_record.history_type == "+":
-        return "Nieuw object"
+        return "Nieuw object", [{"value": "Nieuw object"}]
     if history_record.history_type == "-":
-        return "Object verwijderd"
+        return "Object verwijderd", [{"value": "Object verwijderd"}]
 
     changes = get_changes(history_record)
     if not changes:
         return None
 
-    return "\n".join(format_change(change) for change in changes)
+    return "\n".join(format_change(change) for change in changes), [get_change_detail(change) for change in changes]
 
 
-def get_map_layer_change_summary(history_record, source_instance):
+def get_map_layer_audit_content(history_record, source_instance):
     """Describe a map-layer relationship change in terms of its map and layer."""
     layer_name = get_related_object_label(
         source_instance,
@@ -281,19 +287,24 @@ def get_map_layer_change_summary(history_record, source_instance):
         history_record.history_date,
     )
     if history_record.history_type == "+":
-        return f"Kaartlaag toegevoegd\n{layer_name}"
+        details = f"Kaartlaag toegevoegd\n{layer_name}"
+        return details, [{"value": details}]
     if history_record.history_type == "-":
-        return f"Kaartlaag verwijderd\n{layer_name}"
+        details = f"Kaartlaag verwijderd\n{layer_name}"
+        return details, [{"value": details}]
 
     changes = get_changes(history_record)
     if not changes:
         return None
 
     formatted_changes = "\n".join(format_map_layer_change(change, history_record) for change in changes)
-    return f"Kaartlaag gewijzigd\n{layer_name}\n{formatted_changes}"
+    return (
+        f"Kaartlaag gewijzigd\n{layer_name}\n{formatted_changes}",
+        [get_map_layer_change_detail(change, history_record, layer_name) for change in changes],
+    )
 
 
-def get_map_category_change_summary(history_record, source_instance):
+def get_map_category_audit_content(history_record, source_instance):
     """Describe a map-category relationship change in terms of its map and category."""
     category_name = get_related_object_label(
         source_instance,
@@ -303,19 +314,24 @@ def get_map_category_change_summary(history_record, source_instance):
         history_record.history_date,
     )
     if history_record.history_type == "+":
-        return f"Categorie toegevoegd\n{category_name}"
+        details = f"Categorie toegevoegd\n{category_name}"
+        return details, [{"value": details}]
     if history_record.history_type == "-":
-        return f"Categorie verwijderd\n{category_name}"
+        details = f"Categorie verwijderd\n{category_name}"
+        return details, [{"value": details}]
 
     changes = get_changes(history_record)
     if not changes:
         return None
 
     formatted_changes = "\n".join(format_map_category_change(change) for change in changes)
-    return f"Categorie gewijzigd\n{category_name}\n{formatted_changes}"
+    return (
+        f"Categorie gewijzigd\n{category_name}\n{formatted_changes}",
+        [get_map_category_change_detail(change, category_name) for change in changes],
+    )
 
 
-def get_table_relation_change_summary(history_record, source_instance):
+def get_table_relation_audit_content(history_record, source_instance):
     """Describe a relation added to, removed from, or changed on a legacy table."""
     table_name = get_related_object_label(
         source_instance,
@@ -325,17 +341,22 @@ def get_table_relation_change_summary(history_record, source_instance):
         history_record.history_date,
     )
     if history_record.history_type == "+":
-        return f"Gerelateerde tabel toegevoegd\n{table_name}"
+        details = f"Gerelateerde tabel toegevoegd\n{table_name}"
+        return details, [{"value": details}]
     if history_record.history_type == "-":
-        return f"Gerelateerde tabel verwijderd\n{table_name}"
+        details = f"Gerelateerde tabel verwijderd\n{table_name}"
+        return details, [{"value": details}]
 
     changes = get_changes(history_record)
     if not changes:
         return None
-    return f"Gerelateerde tabel gewijzigd\n{table_name}\n" + "\n".join(format_change(change) for change in changes)
+    return (
+        f"Gerelateerde tabel gewijzigd\n{table_name}\n" + "\n".join(format_change(change) for change in changes),
+        [get_change_detail(change, table_name) for change in changes],
+    )
 
 
-def get_layer_relation_change_summary(history_record, source_instance):
+def get_layer_relation_audit_content(history_record, source_instance):
     """Describe a table relation added to, removed from, or changed on a layer."""
     table_name = get_related_object_label(
         source_instance,
@@ -345,14 +366,19 @@ def get_layer_relation_change_summary(history_record, source_instance):
         history_record.history_date,
     )
     if history_record.history_type == "+":
-        return f"Tabel gekoppeld\n{table_name}"
+        details = f"Tabel gekoppeld\n{table_name}"
+        return details, [{"value": details}]
     if history_record.history_type == "-":
-        return f"Tabel ontkoppeld\n{table_name}"
+        details = f"Tabel ontkoppeld\n{table_name}"
+        return details, [{"value": details}]
 
     changes = get_changes(history_record)
     if not changes:
         return None
-    return f"Tabelkoppeling gewijzigd\n{table_name}\n" + "\n".join(format_change(change) for change in changes)
+    return (
+        f"Tabelkoppeling gewijzigd\n{table_name}\n" + "\n".join(format_change(change) for change in changes),
+        [get_change_detail(change, table_name) for change in changes],
+    )
 
 
 def get_changes(history_record):
@@ -361,6 +387,7 @@ def get_changes(history_record):
     if previous_record is None:
         return []
 
+    source_model_label = history_record.instance_type._meta.label_lower
     changes = []
     for change in history_record.diff_against(previous_record).changes:
         if change.field.casefold() in HIDDEN_FIELD_NAMES:
@@ -369,12 +396,18 @@ def get_changes(history_record):
             continue
 
         field = history_record.instance_type._meta.get_field(change.field)
+        old_value = change.old
+        new_value = change.new
+        if not (source_model_label == MAP_LAYER_MODEL_LABEL and change.field == "map_category"):
+            old_value = get_change_value(change.old, field, history_record.history_date)
+            new_value = get_change_value(change.new, field, history_record.history_date)
+
         changes.append(
             AuditChange(
                 field_name=change.field,
-                field_label=str(field.verbose_name),
-                old_value=change.old,
-                new_value=change.new,
+                field_label=str(field.verbose_name).capitalize(),
+                old_value=old_value,
+                new_value=new_value,
             )
         )
 
@@ -386,6 +419,47 @@ def format_change(change):
     return f"{change.field_label}\n{get_display_value(change.old_value)} → {get_display_value(change.new_value)}"
 
 
+def get_change_detail(change, related_object_label=None):
+    """Build one structured change that remains safe for multiline values."""
+    field = change.field_label
+    if related_object_label is not None:
+        field = f"{related_object_label} · {field}"
+    return {
+        "field": field,
+        "old_value": get_display_value(change.old_value),
+        "new_value": get_display_value(change.new_value),
+    }
+
+
+def get_change_value(value, field, history_date):
+    """Return a readable value for a changed model field."""
+    if get_normalized_value(value) is None:
+        return value
+
+    if field.many_to_one:
+        return get_historical_label(field.related_model, value, history_date)
+
+    if field.many_to_many and isinstance(value, list):
+        return get_many_to_many_labels(value, field.related_model, history_date)
+
+    return value
+
+
+def get_many_to_many_labels(values, related_model, history_date):
+    """Return readable labels for the related objects in a history M2M value."""
+    related_id_field = related_model._meta.model_name
+    labels = []
+    for value in values:
+        if not isinstance(value, dict):
+            continue
+
+        related_id = value.get(related_id_field)
+        if related_id is not None:
+            labels.append(get_historical_label(related_model, related_id, history_date))
+
+    return ", ".join(labels)
+
+
 def get_display_value(value):
     """Normalize and render a field value for the audit log."""
     normalized_value = get_normalized_value(value)
@@ -395,7 +469,11 @@ def get_display_value(value):
 
 def get_normalized_value(value):
     """Treat empty strings and null values as the same empty audit value."""
-    return None if value in (None, "") else value
+    if value in (None, ""):
+        return None
+    if isinstance(value, Decimal):
+        return str(value)
+    return value
 
 
 def format_map_layer_change(change, history_record):
@@ -409,11 +487,37 @@ def format_map_layer_change(change, history_record):
     return format_change(change)
 
 
+def get_map_layer_change_detail(change, history_record, layer_name):
+    """Build a structured map-layer change with its friendly field labels."""
+    if change.field_name == "map_category":
+        return {
+            "field": f"{layer_name} · Categorie",
+            "old_value": get_map_category_label(change.old_value, history_record.history_date),
+            "new_value": get_map_category_label(change.new_value, history_record.history_date),
+        }
+    if change.field_name == "ordering":
+        return get_change_detail(
+            AuditChange("ordering", "Positie", change.old_value, change.new_value),
+            layer_name,
+        )
+    return get_change_detail(change, layer_name)
+
+
 def format_map_category_change(change):
     """Use the user-facing position label for map-category ordering changes."""
     if change.field_name == "ordering":
         return f"Positie\n{get_display_value(change.old_value)} → {get_display_value(change.new_value)}"
     return format_change(change)
+
+
+def get_map_category_change_detail(change, category_name):
+    """Build a structured map-category change with its friendly position label."""
+    if change.field_name == "ordering":
+        return get_change_detail(
+            AuditChange("ordering", "Positie", change.old_value, change.new_value),
+            category_name,
+        )
+    return get_change_detail(change, category_name)
 
 
 def get_map_category_label(map_category_id, history_date):
@@ -452,18 +556,26 @@ def get_historical_label(model, object_id, history_date):
         history_date__lte=history_date,
     ).order_by("-history_date", "-history_id").first()
     if history_record is None:
-        return "Onbekend object"
+        current_object = model._default_manager.filter(id=object_id).first()
+        if current_object is not None:
+            return get_object_label(current_object)
+        return f"ID {object_id}"
 
     return get_historical_object_label(history_record)
 
 
 def get_historical_object_label(history_record):
     """Select the most useful human-readable label from a history record."""
+    return get_object_label(history_record)
+
+
+def get_object_label(instance):
+    """Select the most useful human-readable label from a model instance."""
     for field_name in ("title", "name", "label", "username", "resource"):
-        value = getattr(history_record, field_name, None)
+        value = getattr(instance, field_name, None)
         if value:
             return str(value)
-    return f"ID {history_record.id}"
+    return f"ID {instance.id}"
 
 
 def get_actor_label(actor):

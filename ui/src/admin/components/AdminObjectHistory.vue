@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { apiFetch } from "@/utils/api-helpers";
 import { formatDateValue } from "@/utils/date-formatter";
-import { getAuditActionIndicator, getAuditDetails, getAuditValueDisplay } from "@/admin/utils/audit-event";
+import { getAuditActionIndicator, getAuditValueDisplay, type IAuditDetail } from "@/admin/utils/audit-event";
 import { computed, ref, watch } from "vue";
 import Drawer from "primevue/drawer";
 import Button from "primevue/button";
@@ -14,8 +14,15 @@ interface IAuditLogEntry {
   action: string;
   action_id: string;
   actor: string;
-  details: string;
+  changes: IAuditChange[];
   summary: string;
+}
+
+interface IAuditChange {
+  field?: string;
+  old_value?: string;
+  new_value?: string;
+  value?: string;
 }
 
 interface IAuditLogResponse {
@@ -59,6 +66,15 @@ const openHistory = async (): Promise<void> => {
   await loadHistory();
 };
 
+const getEntryDetails = (entry: IAuditLogEntry): IAuditDetail[] => {
+  return entry.changes.map((change) => ({
+    field: change.field,
+    oldValue: change.old_value,
+    newValue: change.new_value,
+    value: change.value,
+  }));
+};
+
 watch(
   () => [props.modelLabel, props.objectId],
   async () => {
@@ -90,19 +106,18 @@ watch(
         <p class="history-summary">{{ entry.summary }}</p>
         <div class="history-changes">
           <Card
-            v-for="(detail, index) in getAuditDetails(entry.details)"
+            v-for="(detail, index) in getEntryDetails(entry)"
             :key="index"
             :pt="{
               root: {
                 class:
-                  '!tw-border !tw-border-solid !tw-border-[var(--color-grey-20)] !tw-bg-[#fafafa] !tw-text-black !tw-shadow-none',
+                  '!tw-w-full !tw-min-w-0 !tw-border !tw-border-solid !tw-border-[var(--color-grey-20)] !tw-bg-[#fafafa] !tw-text-black !tw-shadow-none',
               },
               body: { class: '!tw-p-3' },
               content: { class: '!tw-p-0' },
             }"
           >
             <template #content>
-              <p v-if="detail.context" class="history-change-context">{{ detail.context }}</p>
               <p v-if="detail.field" class="history-change-field">{{ detail.field }}</p>
               <div
                 v-if="
@@ -124,12 +139,15 @@ watch(
                   ><code>{{ getAuditValueDisplay(detail.newValue ?? String()).value }}</code></pre>
                 </div>
               </div>
-              <p v-else-if="detail.oldValue !== undefined" class="history-change-values">
+              <p
+                v-else-if="detail.oldValue !== undefined"
+                class="history-change-values tw-break-all tw-whitespace-pre-wrap"
+              >
                 <span class="history-change-old">{{ detail.oldValue }}</span>
                 <span class="history-change-arrow">→</span>
                 <span>{{ detail.newValue }}</span>
               </p>
-              <p v-else class="history-change-value">{{ detail.value }}</p>
+              <p v-else class="history-change-value tw-break-all">{{ detail.value }}</p>
             </template>
           </Card>
         </div>
@@ -176,16 +194,10 @@ watch(
   gap: 0.5rem;
 }
 
-.history-change-context,
 .history-change-field,
 .history-change-values,
 .history-change-value {
   margin: 0;
-}
-
-.history-change-context {
-  color: var(--color-text-grey);
-  font-size: 0.875rem;
 }
 
 .history-change-field {

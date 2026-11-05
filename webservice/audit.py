@@ -94,8 +94,8 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
 
         return sorted(options.values(), key=lambda option: option["label"])
 
-    @staticmethod
-    def serialize_event(event):
+    @classmethod
+    def serialize_event(cls, event):
         """Convert an audit-event group to the response shape consumed by the admin UI."""
         return {
             "id": event.id,
@@ -109,7 +109,8 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
             "actor": event.actor_label,
             "actor_id": event.actor_id,
             "details": event.details,
-            "summary": AuditLogViewSet.get_summary(event),
+            "changes": event.changes,
+            "summary": cls.get_summary(event),
         }
 
     @staticmethod
@@ -120,8 +121,5 @@ class AuditLogViewSet(ReadOnlyModelViewSet):
         if event.action_id == "-":
             return "Object verwijderd"
 
-        # Grouped events are separated by blank lines. A relation add/remove has
-        # no value arrow but still represents one change; field updates can have
-        # multiple arrows in the same grouped event.
-        change_count = sum(max(1, change.count(" → ")) for change in event.details.split("\n\n"))
+        change_count = len(event.changes)
         return f"{change_count} wijziging" if change_count == 1 else f"{change_count} wijzigingen"

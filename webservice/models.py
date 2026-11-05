@@ -539,11 +539,11 @@ class Layer(models.Model):
         help_text='De laag wordt niet getoond in de standaardkaart')
 
     atlas_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen',
+        AtlasGroup, blank=True, verbose_name='Leesgroepen',
         help_text='De inhoud van deze dataset kan alleen bekeken worden als de gebruiker lid is van een van deze groepen.')
 
     atlas_write_groups = models.ManyToManyField(
-        AtlasGroup, blank=True, verbose_name='Groepen', related_name='atlas_write_groups',
+        AtlasGroup, blank=True, verbose_name='Schrijfgroepen', related_name='atlas_write_groups',
         help_text='De inhoud van deze dataset kan alleen gemuteerd worden als de gebruiker lid is van een van deze groepen.')
 
     created_at = models.DateTimeField('created_at', auto_now_add=True)
@@ -1148,6 +1148,7 @@ class AuditEvent(models.Model):
     )
     actor_label = models.CharField(max_length=255)
     details = models.TextField()
+    changes = models.JSONField(default=list)
     admin_url = models.CharField(max_length=255, null=True, blank=True)
     group = models.ForeignKey(
         "AuditEventGroup",
@@ -1185,6 +1186,7 @@ class AuditEventGroup(models.Model):
     )
     actor_label = models.CharField(max_length=255)
     details = models.TextField()
+    changes = models.JSONField(default=list)
     admin_url = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:

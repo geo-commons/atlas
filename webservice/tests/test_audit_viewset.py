@@ -47,6 +47,34 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Titel\nOriginal source → Renamed source", entry["details"])
         self.assertEqual(entry["summary"], "2 wijzigingen")
 
+    def test_returns_multiline_values_as_one_structured_change(self):
+        """Keep a multiline field value intact instead of parsing it from audit text."""
+        layer = Layer(title="Test layer", _popup_attributes="id\ntijdstipregistratie")
+        layer._history_user = self.admin_user
+        layer.save()
+
+        layer._popup_attributes = "akr_gemeente\nlokaalid"
+        layer._history_user = self.admin_user
+        layer.save()
+
+        request = self.factory.get(
+            "/atlas/api/v1/audit-logs/",
+            {"action": "~", "object_id": layer.id},
+        )
+        force_authenticate(request, user=self.admin_user)
+        response = AuditLogViewSet.as_view({"get": "list"})(request)
+
+        self.assertEqual(response.status_code, 200)
+        changes = response.data["results"][0]["changes"]
+        self.assertIn(
+            {
+                "field": "Voer één veld per regel in. bij geen invoer worden alle velden getoond",
+                "old_value": "id\ntijdstipregistratie",
+                "new_value": "akr_gemeente\nlokaalid",
+            },
+            changes,
+        )
+
     def test_denies_non_super_user(self):
         """Block a staff user without superuser rights from reading audit logs."""
         staff_user = get_user_model().objects.create_user(
