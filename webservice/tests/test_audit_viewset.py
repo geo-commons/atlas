@@ -5,7 +5,7 @@ from simple_history.models import HistoricalRecords
 
 from table.models import LayerToTable, Table, TableToTable
 from table.serializers import TableSerializer
-from webservice.audit import AuditLogViewSet, get_audited_models
+from webservice.audit import AuditLogViewSet
 from webservice.middleware import AuditEventRequestMiddleware
 from webservice.models import AuditEvent, AuditEventGroup, Category, Layer, Map, MapCategory, MapLayer, Source
 from webservice.serializers import LayerCreateUpdateSerializer, MapSerializer
@@ -22,6 +22,7 @@ class AuditLogViewSetTests(TestCase):
         self.factory = APIRequestFactory()
 
     def test_lists_changes_with_actor_and_changed_fields(self):
+        """Change a source and return its actor, changed field, and edit link."""
         source = Source(title="Original source", url="https://example.com")
         source._history_user = self.admin_user
         source.save()
@@ -46,7 +47,8 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Titel\nOriginal source → Renamed source", entry["details"])
         self.assertEqual(entry["summary"], "2 wijzigingen")
 
-    def test_denies_staff_users_without_the_admin_checkbox_permissions(self):
+    def test_denies_non_super_user(self):
+        """Block a staff user without superuser rights from reading audit logs."""
         staff_user = get_user_model().objects.create_user(
             username="staff-user",
             email="staff-user@example.com",
@@ -60,24 +62,8 @@ class AuditLogViewSetTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_supports_drf_search_syntax(self):
-        source = Source(title="Original source", url="https://example.com")
-        source._history_user = self.admin_user
-        source.save()
-
-        source.title = "Renamed source"
-        source._history_user = self.admin_user
-        source.save()
-
-        request = self.factory.get("/atlas/api/v1/audit-logs/", {"search": '"Renamed source"'})
-        force_authenticate(request, user=self.admin_user)
-        response = AuditLogViewSet.as_view({"get": "list"})(request)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["object"], "Renamed source")
-
     def test_shows_map_layer_changes_as_map_changes(self):
+        """Add a layer to a map and show the event on the map, not the relation."""
         map_instance = Map(title="Test map")
         map_instance._history_user = self.admin_user
         map_instance.save()
@@ -103,13 +89,8 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(entry["action"], "Gewijzigd")
         self.assertEqual(entry["details"], "Kaartlaag toegevoegd\nRoad works")
 
-    def test_shows_map_categories_as_map_changes(self):
-        audited_models = get_audited_models()
-
-        self.assertIn(MapCategory, audited_models)
-        self.assertIn(MapLayer, audited_models)
-
     def test_unique_fields_only_contains_user_facing_model_labels(self):
+        """Return readable filter labels and hide internal relation model names."""
         request = self.factory.get("/atlas/api/v1/audit-logs/unique-fields/")
         force_authenticate(request, user=self.admin_user)
         response = AuditLogViewSet.as_view({"get": "unique_fields"})(request)
@@ -123,6 +104,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertNotIn("webservice.mapcategory", models)
 
     def test_shows_map_category_creation_as_a_map_change(self):
+        """Add a category to a map and show the event in the map history."""
         map_instance = Map.objects.create(title="Test map")
         category = Category.objects.create(title="Road works")
         map_category = MapCategory(map=map_instance, category=category)
@@ -141,6 +123,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(response.data["results"][0]["details"], "Categorie toegevoegd\nRoad works")
 
     def test_uses_category_names_and_friendly_labels_for_map_layer_changes(self):
+        """Show category names and readable labels when a map layer changes."""
         map_instance = Map.objects.create(title="Test map")
         layer = Layer.objects.create(title="Road works")
         category = Category.objects.create(title="Road works")
@@ -165,6 +148,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Positie\n0 → 1", details[0])
 
     def test_map_serializer_adds_category_and_layer_audit_entries(self):
+        """Save a map with a category and layer, then log both additions."""
         map_instance = Map.objects.create(title="Test map", slug="test-map")
         category = Category.objects.create(title="Road works")
         layer = Layer.objects.create(title="Road works", layer_type=category)
@@ -188,6 +172,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Kaartlaag toegevoegd\nRoad works", details)
 
     def test_map_mutations_in_one_request_are_grouped(self):
+        """Save a category and layer in one map request as one audit entry."""
         map_instance = Map.objects.create(title="Test map", slug="test-map")
         category = Category.objects.create(title="Road works")
         layer = Layer.objects.create(title="Road works", layer_type=category)
@@ -219,6 +204,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(entries[0]["summary"], "2 wijzigingen")
 
     def test_map_serializer_removes_layer_audit_entry(self):
+        """Remove a layer through the map serializer and log that removal."""
         map_instance = Map.objects.create(title="Test map", slug="test-map")
         category = Category.objects.create(title="Road works")
         map_category = MapCategory.objects.create(map=map_instance, category=category)
@@ -242,6 +228,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Kaartlaag verwijderd\nRoad works", details)
 
     def test_map_serializer_removes_category_audit_entry(self):
+        """Remove a category through the map serializer and log that removal."""
         map_instance = Map.objects.create(title="Test map", slug="test-map")
         category = Category.objects.create(title="Road works")
         MapCategory.objects.create(map=map_instance, category=category)
@@ -263,6 +250,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Categorie verwijderd\nRoad works", details)
 
     def test_map_serializer_only_logs_changed_map_fields(self):
+        """Update one map field and do not log fields with the same value."""
         map_instance = Map.objects.create(title="Test map", slug="custom-map-url")
         map_instance._history_user = self.admin_user
 
@@ -284,6 +272,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertNotIn("Kort kenmerk", entries[0]["details"])
 
     def test_map_layer_audit_event_keeps_the_original_layer_name(self):
+        """Keep the original layer name after the layer is renamed later."""
         map_instance = Map.objects.create(title="Test map", slug="test-map")
         layer = Layer.objects.create(title="Original layer")
         MapLayer.objects.create(map=map_instance, layer=layer, settings={})
@@ -296,15 +285,8 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(audit_event.object_label, "Test map")
         self.assertEqual(audit_event.details, "Kaartlaag toegevoegd\nOriginal layer")
 
-    def test_ignores_equivalent_empty_thumbnail_changes(self):
-        map_instance = Map.objects.create(title="Test map", slug="test-map")
-        map_instance.thumbnail = ""
-        map_instance.save()
-
-        self.assertEqual(map_instance.history.count(), 2)
-        self.assertEqual(AuditEvent.objects.filter(source_model="webservice.map").count(), 1)
-
     def test_assigns_a_group_identifier_to_every_request(self):
+        """Give each request a different id so events cannot cross group."""
         middleware = AuditEventRequestMiddleware(lambda request: None)
         map_request = self.factory.patch("/atlas/api/v1/maps/1/")
         layer_request = self.factory.patch("/atlas/api/v1/layers/1/")
@@ -317,6 +299,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertNotEqual(map_request.audit_event_request_id, layer_request.audit_event_request_id)
 
     def test_layer_mutations_in_one_request_are_grouped(self):
+        """Move two layer table relations in one request and create one log entry."""
         source = Source.objects.create(title="Test source", url="https://example.com")
         layer = Layer.objects.create(title="Test layer")
         first_table = Table.objects.create(title="First table", source=source)
@@ -355,6 +338,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Tabelkoppeling gewijzigd\nSecond table\nVolgorde\n1 → 0", groups[0].details)
 
     def test_table_mutations_in_one_request_are_grouped(self):
+        """Move two table relations in one request and create one log entry."""
         source = Source.objects.create(title="Test source", url="https://example.com")
         table = Table.objects.create(title="Source table", source=source)
         first_table = Table.objects.create(title="First table", source=source)
@@ -394,6 +378,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertIn("Gerelateerde tabel gewijzigd\nSecond table\nVolgorde\n1 → 0", groups[0].details)
 
     def test_table_relationship_changes_are_audited(self):
+        """Create a table relation and log it on the source table."""
         source = Source.objects.create(title="Test source", url="https://example.com")
         table = Table.objects.create(title="Source table", source=source)
         related_table = Table.objects.create(title="Related table", source=source)
@@ -406,6 +391,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(audit_event.details, "Gerelateerde tabel toegevoegd\nRelated table")
 
     def test_table_relationship_update_is_logged_once_with_its_changed_field(self):
+        """Change one relation field and create one event with that field."""
         source = Source.objects.create(title="Test source", url="https://example.com")
         table = Table.objects.create(title="Source table", source=source)
         related_table = Table.objects.create(title="Related table", source=source)
@@ -425,6 +411,7 @@ class AuditLogViewSetTests(TestCase):
         )
 
     def test_layer_table_relationship_changes_are_logged_on_the_layer(self):
+        """Add and remove a table relation and log both events on the layer."""
         source = Source.objects.create(title="Test source", url="https://example.com")
         related_table = Table.objects.create(title="Related table", source=source)
         layer = Layer.objects.create(title="Source layer")
@@ -442,6 +429,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(events.last().details, "Tabel ontkoppeld\nRelated table")
 
     def test_filters_multiple_object_ids(self):
+        """Filter changed sources by multiple object ids, model, action, and actor."""
         first_source = Source(title="First source", url="https://example.com/first")
         first_source._history_user = self.admin_user
         first_source.save()

@@ -26,6 +26,7 @@ class TableSerializerTest(APITestCase):
         return request
 
     def test_serializes_related_tables_by_relation_order(self):
+        """Return related tables in saved order with their relation settings."""
         first_table = Table.objects.create(
             title='Z Table',
             slug='z-table',
@@ -59,6 +60,7 @@ class TableSerializerTest(APITestCase):
         self.assertEqual(serializer.data['related_tables'][0]['ordering'], 1)
 
     def test_to_dict_serializes_related_tables_by_relation_order(self):
+        """Keep related tables in saved order in the table dictionary output."""
         first_table = Table.objects.create(
             title='Z Table',
             slug='z-table',
@@ -82,6 +84,7 @@ class TableSerializerTest(APITestCase):
         )
 
     def test_related_tables_updates_ordering(self):
+        """Update the saved order of one existing related table."""
         related_table = Table.objects.create(
             title='Related table',
             slug='related-table',
@@ -115,6 +118,7 @@ class TableSerializerTest(APITestCase):
         self.assertEqual(relation.ordering, 0)
 
     def test_empty_related_tables_removes_relations(self):
+        """Remove all table relations when the update sends an empty list."""
         related_table = Table.objects.create(
             title='Related table',
             slug='related-table',
@@ -135,6 +139,7 @@ class TableSerializerTest(APITestCase):
         self.assertFalse(TableToTable.objects.filter(from_table=self.table).exists())
 
     def test_patch_without_related_tables_keeps_existing_relations(self):
+        """Keep existing table relations when a patch does not send them."""
         related_table = Table.objects.create(
             title='Related table',
             slug='related-table',
@@ -154,6 +159,7 @@ class TableSerializerTest(APITestCase):
         self.assertTrue(TableToTable.objects.filter(id=relation.id).exists())
 
     def test_related_tables_update_keeps_adds_and_removes_relations(self):
+        """Keep one relation, remove one, add one, and update its settings."""
         kept_table = Table.objects.create(
             title='Kept table', slug='kept-table', source=self.source, layer_name='kept:table'
         )
