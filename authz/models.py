@@ -4,7 +4,7 @@ from utils.tools import is_internal
 
 
 class Authorization(models.Model):
-    source = models.ForeignKey('webservice.Source', on_delete=models.CASCADE)
+    source = models.ForeignKey('webservice.Source', on_delete=models.PROTECT)
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 

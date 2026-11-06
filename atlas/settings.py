@@ -150,6 +150,7 @@ if AUTHENTICATION_ENABLE_OIDC:
 ROOT_URLCONF = 'atlas.urls'
 
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'webservice.exception_handlers.api_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
