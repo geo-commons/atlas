@@ -190,6 +190,7 @@ function getSections() {
           required: true,
           placeholder: "bron",
           options: sourcesState.value.data,
+          relationResource: "sources",
         },
         {
           label: "Type bron (OWS, WMTS, REST)",
@@ -434,6 +435,7 @@ function getSections() {
           required: false,
           placeholder: "Selecteer gerelateerde tabellen",
           options: availableTablesState.value.data,
+          relationResource: "tables",
         },
       ],
     },
