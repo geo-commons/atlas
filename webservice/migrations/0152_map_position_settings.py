@@ -26,6 +26,7 @@ def backfill_map_positions(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('constance', '0001_initial'),
         ('webservice', '0151_map_is_main'),
     ]
 
