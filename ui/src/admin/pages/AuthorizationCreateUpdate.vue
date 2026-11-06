@@ -122,6 +122,7 @@ export default {
               required: true,
               placeholder: "bron",
               options: this.sourcesState.data,
+              relationResource: "sources",
             },
             {
               label: "Resource",

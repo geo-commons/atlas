@@ -203,20 +203,42 @@
                     :rules="getRules(question)"
                     :disabled="question.disabled"
                   >
-                    <Select
-                      :model-value="value"
-                      :options="question.options"
-                      option-label="label"
-                      option-value="id"
-                      :disabled="question.disabled"
-                      :placeholder="`Selecteer een ${question.placeholder}`"
-                      filter
-                      :filter-placeholder="`Zoek een ${question.placeholder}`"
-                      fluid
-                      show-clear
-                      @update:model-value="handleChange"
-                      @blur="handleBlur"
-                    />
+                    <div class="tw-flex tw-w-full tw-items-stretch tw-gap-2">
+                      <Select
+                        :model-value="value"
+                        :options="question.options"
+                        option-label="label"
+                        option-value="id"
+                        :disabled="question.disabled"
+                        :placeholder="`Selecteer een ${question.placeholder}`"
+                        class="tw-min-w-0 tw-flex-1"
+                        filter
+                        :filter-placeholder="`Zoek een ${question.placeholder}`"
+                        fluid
+                        show-clear
+                        @update:model-value="handleChange"
+                        @blur="handleBlur"
+                      />
+                      <router-link
+                        v-if="question.relationResource && value !== null && value !== undefined && value !== ''"
+                        v-slot="{ href }"
+                        custom
+                        :to="`/${question.relationResource}/update/${value}`"
+                      >
+                        <Button
+                          as="a"
+                          :href="href"
+                          target="_blank"
+                          rel="noopener"
+                          label="Bekijk"
+                          icon="pi pi-external-link"
+                          severity="secondary"
+                          outlined
+                          class="!tw-no-underline"
+                          :aria-label="`Open geselecteerde ${question.label} in een nieuw tabblad`"
+                        />
+                      </router-link>
+                    </div>
                   </vee-field>
                 </div>
                 <vee-field
@@ -437,6 +459,12 @@
                 <span class="warning-text">
                   <vee-error-message :name="question.id" />
                 </span>
+                <AdminRelationLinks
+                  v-if="question.relationResource && question.type !== 'dropdown'"
+                  :resource="question.relationResource"
+                  :value="values[question.id]"
+                  :options="question.options || []"
+                />
               </div>
             </div>
           </div>
@@ -480,6 +508,7 @@
 
 <script>
 import AdminFormInfoText from "@/admin/components/AdminFormInfoText.vue";
+import AdminRelationLinks from "@/admin/components/AdminRelationLinks.vue";
 import LayerField from "@/admin/components/LayerField.vue";
 import MapsField from "@/admin/components/MapsField.vue";
 import MetadatasetsField from "@/admin/components/MetadatasetsField.vue";
@@ -499,6 +528,7 @@ import RelatedTablesField from "@/admin/components/RelatedTablesField.vue";
 export default {
   name: "AdminFormSections",
   components: {
+    AdminRelationLinks,
     RelatedTablesField,
     LayerField,
     MapsField,

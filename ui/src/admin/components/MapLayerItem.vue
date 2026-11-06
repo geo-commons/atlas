@@ -28,6 +28,7 @@
 <script setup lang="ts">
 import { ILayer } from "@/types/layer";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import Menu from "primevue/menu";
 import ViewIcon from "@/assets/icons/view-icon.svg";
 
@@ -48,6 +49,7 @@ const props = withDefaults(
 );
 
 const { layer, openLayerSettings, isLayerVisible, deselectLayer, selectLayer, isChangingOrder } = props;
+const router = useRouter();
 
 const getLayerId = (layer: MapLayerItemLayer): number | string => {
   return layer.internal_id ?? layer.id;
@@ -82,6 +84,13 @@ const items: MenuItem[] = [
         },
       ]
     : []),
+  {
+    label: "Bekijk kaartlaag",
+    icon: "pi pi-external-link",
+    command: () => {
+      window.open(router.resolve(`/layers/update/${layer.id}`).href, "_blank", "noopener");
+    },
+  },
 ];
 
 const toggleMenu = (event: Event) => {

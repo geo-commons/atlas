@@ -71,6 +71,7 @@ export default {
               required: false,
               placeholder: "hoofdcategorie",
               options: this.categoriesExceptCurrent || [],
+              relationResource: "categories",
               infoText: "Laat leeg voor een hoofdcategorie. Kies een hoofdcategorie om een subcategorie van te maken.",
             },
           ],
