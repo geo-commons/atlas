@@ -35,7 +35,7 @@ class Table(models.Model):
                          help_text='Een uniek kort kenmerk voor tabel.', max_length=255,
                          validators=[no_underscore_validator])
 
-    source = models.ForeignKey('webservice.Source', on_delete=models.CASCADE)
+    source = models.ForeignKey('webservice.Source', on_delete=models.PROTECT)
     endpoint = models.CharField('Endpoint', max_length=500)
     method = models.CharField('Methode', choices=METHOD_TYPES, max_length=20)
 
