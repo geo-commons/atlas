@@ -60,7 +60,7 @@ jobs:
           uv run coverage report && uv run coverage xml
       - name: Report on coverage
         if: github.event_name == 'pull_request'
-        uses: orgoro/coverage@v3.2
+        uses: orgoro/coverage@v3.3
         with:
           coverageFile: coverage.xml
           token: ${{ secrets.GITHUB_TOKEN }}
