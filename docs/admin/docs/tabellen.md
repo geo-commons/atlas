@@ -4,7 +4,7 @@ In dit artikel wordt uitgelegd wat "Tabellen" zijn, wat je ermee kan en hoe je z
 
 Tabellen zijn raadpleegbaar via kaartlagen in de kaartviewer. Via een aan een kaartlaag gekoppelde tabel kan je een lijstweergave met resultaten vanuit een OWS / REST bron weergeven en door op een resultaat in de lijstweergave te drukken kan je een bijbehorende detailweergave bekijken. Tabellen kunnen geraadpleegd worden voor het tonen van (geo-)informatie vanuit diverse type (OWS en REST) bronnen waar niet altijd een geometrie aanhangt.
 
-Een bijkomende kracht van tabellen is dat je ze aan elkaar kan verbinden, waardoor je in de detailweergave van een tabel de lijstweergaves van andere tabellen kan tonen. Daarnaast is een tafel erg flexibel te configureren, waardoor je ze voor veel verschillende doeleinden kan inzetten.
+Een bijkomende kracht van tabellen is dat je ze aan elkaar kan verbinden, waardoor je in de detailweergave van een tabel de lijstweergaves van andere tabellen kan tonen. Daarnaast is een tabel erg flexibel te configureren, waardoor je ze voor veel verschillende doeleinden kan inzetten.
 
 ### Voorbeeld
 
