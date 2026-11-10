@@ -10,7 +10,7 @@ dependencies = [
     "django-filter==25.2",
     "django-import-export==4.4.1",
     "djangorestframework-simplejwt==5.5.1",
-    "django-reversion==6.3.0",
+    "django-reversion==6.5.1",
     "Django==5.2.17",
     "djangorestframework==3.18.1",
     "mistune==3.3.4",
