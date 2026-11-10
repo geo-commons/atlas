@@ -58,7 +58,7 @@ prod = [
 requires-dist = [
     { name = "coverage", specifier = "==7.14.3" },
     { name = "django", specifier = "==5.2.17" },
-    { name = "django-constance", specifier = "==4.3.5" },
+    { name = "django-constance", specifier = "==4.5.0" },
     { name = "django-debug-toolbar", specifier = "==6.3.0" },
     { name = "django-extensions", specifier = "==4.1" },
     { name = "django-filter", specifier = "==25.2" },
@@ -387,11 +387,11 @@ wheels = [
 
 [[package]]
 name = "django-constance"
-version = "4.3.5"
+version = "4.5.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9c/95/8eff746544ba8958f431f4cfb162fd632db5f914b05b6a355a98eaf45cfd/django_constance-4.3.5.tar.gz", hash = "sha256:081177483d272b664cf768deae76fc2fbb0a777076f45620b6fde4d9075ee2b3", size = 181943, upload-time = "2026-03-15T11:23:50.799Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/96/c4980722d8cce79d600b1cca8436d02b84eea8f79d009174c28da4cbf28a/django_constance-4.5.0.tar.gz", hash = "sha256:a467fd202449e508e120dbee5bb6410103bc418140bb1be87eef3c270240407f", size = 187719, upload-time = "2026-10-28T15:12:38.45Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/aa/3ff4198d02c0cb23c595fcfbed364bcf03b80f9109b7b971eaa34604c349/django_constance-4.3.5-py3-none-any.whl", hash = "sha256:c28f360c2822112772a3e4caf02db758c82cca8de7d0b9f648fef371bf4b8bc6", size = 66907, upload-time = "2026-03-15T11:23:49.166Z" },
+    { url = "https://files.pythonhosted.org/packages/15/62/dee274de0ef07b44a60eba3e30acefb85aa2d126e2cc455bb32e856bf47b/django_constance-4.5.0-py3-none-any.whl", hash = "sha256:b3ff93c231f86786aa0d6606c72cf1ea26393500defdfe11e3b0f2c172a30b94", size = 69324, upload-time = "2026-10-28T15:12:36.926Z" },
 ]
 
 [[package]]

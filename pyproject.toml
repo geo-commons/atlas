@@ -4,7 +4,7 @@ version = "3.61.0"
 requires-python = "==3.14.10"
 dependencies = [
     "coverage==7.14.3",
-    "django-constance==4.3.5",
+    "django-constance==4.5.0",
     "django-debug-toolbar==6.3.0",
     "django-extensions==4.1",
     "django-filter==25.2",
