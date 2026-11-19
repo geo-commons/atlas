@@ -40,7 +40,7 @@
     "es6-promise": "4.2.8",
     "fetch-dot": "1.2.0",
     "geostyler-cql-parser": "4.1.1",
-    "geostyler-openlayers-parser": "5.7.1",
+    "geostyler-openlayers-parser": "5.8.0",
     "hex-rgb": "5.0.0",
     "html2canvas": "1.4.1",
     "js-cookie": "3.0.8",
