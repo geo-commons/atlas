@@ -316,6 +316,10 @@ CONSTANCE_CONFIG = {
     'FEATURE_PORTAL': (False, ('Portaalfunctionaliteit')),
     'FEATURE_PRINT': (False, ('Printfunctionaliteit')),
     'FEATURE_SORT_LAYER': (False, 'Sorteer kaartlagen in de viewer'),
+    'FEATURE_SHOW_ADDRESS_IN_POINT_INFO_PANEL': (
+        True,
+        'Toon adres in detailweergave',
+    ),
     'FEATURE_DISABLE_ADMIN1': (False, ('Zet admin1 uit')),
     'FEATURE_NEW_TABLES': (False, ('Gebruik de nieuwe tabellen functionaliteit')),
     'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE': (True, ('Gebruik de oude gekoppelde data en templates')),
@@ -357,6 +361,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'FEATURE_PORTAL',
         'FEATURE_PRINT',
         'FEATURE_SORT_LAYER',
+        'FEATURE_SHOW_ADDRESS_IN_POINT_INFO_PANEL',
         'FEATURE_DISABLE_ADMIN1',
         'FEATURE_NEW_TABLES',
         'FEATURE_OLD_LINKED_DATA_AND_TEMPLATE',

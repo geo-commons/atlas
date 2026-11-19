@@ -235,6 +235,12 @@ export default {
               type: "checkbox",
             },
             {
+              label: "Toon adres in detailweergave",
+              id: "FEATURE_SHOW_ADDRESS_IN_POINT_INFO_PANEL",
+              name: "featureShowAddressInPointInfoPanel",
+              type: "checkbox",
+            },
+            {
               label: "Zet oude beheerpaneel uit",
               id: "FEATURE_DISABLE_ADMIN1",
               name: "featureDisableAdmin1",
