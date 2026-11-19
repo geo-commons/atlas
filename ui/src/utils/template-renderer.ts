@@ -2,8 +2,8 @@ import fetchDot from "fetch-dot";
 
 type TemplateContext = Record<string, unknown>;
 
-/** Matches a supported Atlas template expression without interpreting it as JavaScript. */
-const TEMPLATE_EXPRESSION = /{{\s*(?<expression>[^}]+?)\s*}}/g;
+/** Matches a delimited expression, including escaped braces inside it. */
+const TEMPLATE_EXPRESSION = /{{\s*(?<expression>(?:\\.|[^\\}])+?)\s*}}/g;
 
 /**
  * Matches a property path with an optional replacement pipe.
@@ -74,7 +74,7 @@ const parseStringArgument = (argument: string): string => {
     return value;
   }
 
-  return value.slice(1, -1).replace(/\\(['"\\])/g, "$1");
+  return value.slice(1, -1).replace(/\\(['"\\{}])/g, "$1");
 };
 
 /**
@@ -122,6 +122,10 @@ const renderExpression = (expression: string, context: TemplateContext): unknown
  * @example
  * renderTemplate("/places/{{ postcode | replace(' ', '') }}", { postcode: "1234 AB" })
  * // "/places/1234AB"
+ *
+ * Whitespace inside `{{` and `}}` is optional. A delimited expression with an
+ * unsupported path or nested opening braces renders as an empty string.
+ * Unclosed delimiters and stray closing braces remain as literal text.
  *
  * @param template The configured template string.
  * @param context Values available to the template.

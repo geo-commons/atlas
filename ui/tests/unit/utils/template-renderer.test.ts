@@ -13,6 +13,11 @@ describe("renderTemplate", () => {
     expect(renderTemplate("{{ postcode | replaceAll(' ', '') }}", { postcode: "AB 12 CD" })).toBe("AB12CD");
   });
 
+  it("replaces escaped braces in quoted pipe arguments", () => {
+    expect(renderTemplate("{{ value | replace('\\{', '\\}') }}", { value: "{name}" })).toBe("}name}");
+    expect(renderTemplate("{{ value | replaceAll('\\}', '') }}", { value: "a}b}" })).toBe("ab");
+  });
+
   it("preserves quoted commas, parentheses, pipes, and escaped quotes in pipes", () => {
     expect(renderTemplate("{{ value | replaceAll(',', '|') }}", { value: "a,b" })).toBe("a|b");
     expect(renderTemplate("{{ value | replaceAll('(b)', 'c,d|e') }}", { value: "a(b)" })).toBe("ac,d|e");
@@ -24,6 +29,18 @@ describe("renderTemplate", () => {
     expect(renderTemplate("before {{ missing.value }} after", {})).toBe("before  after");
     expect(renderTemplate("{{ globalThis.alert('x') }}", {})).toBe("");
     expect(renderTemplate("{{ value.replaceAll(' ', '') }}", { value: "AB 12" })).toBe("");
+  });
+
+  it("accepts different whitespace around property names", () => {
+    expect(renderTemplate("{{name }} / {{name}} / {{ name}} / {{ name }}", { name: "Atlas" })).toBe(
+      "Atlas / Atlas / Atlas / Atlas",
+    );
+  });
+
+  it("renders malformed delimited expressions as empty strings and keeps unmatched braces literal", () => {
+    expect(renderTemplate("before {{ {{ name }} after", { name: "Atlas" })).toBe("before  after");
+    expect(renderTemplate("before {{ name after", { name: "Atlas" })).toBe("before {{ name after");
+    expect(renderTemplate("{{ name }} }}}", { name: "Atlas" })).toBe("Atlas }}}");
   });
 
   it("supports numeric array indexes in property paths", () => {
