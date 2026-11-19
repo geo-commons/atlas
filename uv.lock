@@ -58,15 +58,15 @@ prod = [
 requires-dist = [
     { name = "coverage", specifier = "==7.14.3" },
     { name = "django", specifier = "==5.2.17" },
-    { name = "django-constance", specifier = "==4.3.5" },
-    { name = "django-debug-toolbar", specifier = "==6.3.0" },
+    { name = "django-constance", specifier = "==4.5.0" },
+    { name = "django-debug-toolbar", specifier = "==8.0.0" },
     { name = "django-extensions", specifier = "==4.1" },
     { name = "django-filter", specifier = "==25.2" },
     { name = "django-import-export", specifier = "==4.4.1" },
-    { name = "django-reversion", specifier = "==6.3.0" },
+    { name = "django-reversion", specifier = "==6.5.2" },
     { name = "django-revproxy", specifier = "==0.13.0" },
     { name = "django-vite", specifier = "==3.1.0" },
-    { name = "djangorestframework", specifier = "==3.18.1" },
+    { name = "djangorestframework", specifier = "==3.18.3" },
     { name = "djangorestframework-simplejwt", specifier = "==5.5.1" },
     { name = "mistune", specifier = "==3.3.4" },
     { name = "mkdocs-material", specifier = "==9.7.7" },
@@ -78,7 +78,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "commitizen", specifier = "==4.16.4" },
+    { name = "commitizen", specifier = "==4.19.3" },
     { name = "ruff", specifier = "==0.15.20" },
 ]
 prod = [{ name = "uwsgi", specifier = "==2.0.31" }]
@@ -231,7 +231,7 @@ wheels = [
 
 [[package]]
 name = "commitizen"
-version = "4.16.4"
+version = "4.19.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "argcomplete" },
@@ -247,9 +247,9 @@ dependencies = [
     { name = "termcolor" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/50/8a/4fccfa29c95536ac6dc98dc09a676cc2bce60d72f68b8e280278c6674669/commitizen-4.16.4.tar.gz", hash = "sha256:bb2fda50da381979e308d4a443d349598de2487d9e40d2e4f55a1f115ca38a8c", size = 66771, upload-time = "2026-06-22T06:32:50.06Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/bc/294ceb7ba99f83dca2bf62942dd325ffca86e504aa41cc42c2982350bd2b/commitizen-4.19.3.tar.gz", hash = "sha256:db77b1d521b5b9a16231a4fd5093d09ca519c5f170938806a784309b81938419", size = 73784, upload-time = "2026-10-24T07:24:08.219Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2f/8f/496168ab853b325f62075e78ceb611d975ffc58116e4fabcca17725ac53c/commitizen-4.16.4-py3-none-any.whl", hash = "sha256:054e957491e3c897226a631e5bbeca5f5db772ce23412a5d588a4d7b9bb0bbc2", size = 88933, upload-time = "2026-06-22T06:32:48.615Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/ae/4f63a84dd2db955a3b222b2df002ebff61387fc80efdf46f611f9f4dd308/commitizen-4.19.3-py3-none-any.whl", hash = "sha256:d625e038cce66d92da20d24c2c366d410caca43966eba8ec036debf48fda2a68", size = 92037, upload-time = "2026-10-24T07:24:06.801Z" },
 ]
 
 [[package]]
@@ -387,24 +387,24 @@ wheels = [
 
 [[package]]
 name = "django-constance"
-version = "4.3.5"
+version = "4.5.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9c/95/8eff746544ba8958f431f4cfb162fd632db5f914b05b6a355a98eaf45cfd/django_constance-4.3.5.tar.gz", hash = "sha256:081177483d272b664cf768deae76fc2fbb0a777076f45620b6fde4d9075ee2b3", size = 181943, upload-time = "2026-03-15T11:23:50.799Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/96/c4980722d8cce79d600b1cca8436d02b84eea8f79d009174c28da4cbf28a/django_constance-4.5.0.tar.gz", hash = "sha256:a467fd202449e508e120dbee5bb6410103bc418140bb1be87eef3c270240407f", size = 187719, upload-time = "2026-10-28T15:12:38.45Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/aa/3ff4198d02c0cb23c595fcfbed364bcf03b80f9109b7b971eaa34604c349/django_constance-4.3.5-py3-none-any.whl", hash = "sha256:c28f360c2822112772a3e4caf02db758c82cca8de7d0b9f648fef371bf4b8bc6", size = 66907, upload-time = "2026-03-15T11:23:49.166Z" },
+    { url = "https://files.pythonhosted.org/packages/15/62/dee274de0ef07b44a60eba3e30acefb85aa2d126e2cc455bb32e856bf47b/django_constance-4.5.0-py3-none-any.whl", hash = "sha256:b3ff93c231f86786aa0d6606c72cf1ea26393500defdfe11e3b0f2c172a30b94", size = 69324, upload-time = "2026-10-28T15:12:36.926Z" },
 ]
 
 [[package]]
 name = "django-debug-toolbar"
-version = "6.3.0"
+version = "8.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "sqlparse" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/ea/b62673424dd72d2dbf5adf4145281a421d5792f47380d9bc8e3b11e1a769/django_debug_toolbar-6.3.0.tar.gz", hash = "sha256:f830a86fe02e17f625a22cfbed24a5bd1500762e201ec959c50efb0f9327282b", size = 334079, upload-time = "2026-04-02T16:07:01.385Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4f/3d/aa093a841f32837311538e7952f5548b1a9c605a5aba5395163fbc54ac59/django_debug_toolbar-8.0.0.tar.gz", hash = "sha256:cae32d3e441e608f39f3f1ca6b3f028c38d5d04d74c98d8ab96d46022dee3163", size = 1239141, upload-time = "2026-09-01T18:27:56.934Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/9e/d8c3c845f4b5ccac7377c19f4049e7e00c6f121846a81f69a497b45734df/django_debug_toolbar-6.3.0-py3-none-any.whl", hash = "sha256:a199ce3d0f884739a9096835ad417479fede05f3b3c4824bc8b354721ba8f629", size = 298304, upload-time = "2026-04-02T16:06:59.617Z" },
+    { url = "https://files.pythonhosted.org/packages/22/bd/ffd3f171940c58cca7971d1e5b81d6ab67b85a9569fe9d9fe13f7fbd1c99/django_debug_toolbar-8.0.0-py3-none-any.whl", hash = "sha256:329dfd6e1c26d9b4501a5cc69294c8bb734206ccb1bd36e96afc4d14128b630a", size = 437877, upload-time = "2026-09-01T18:27:55.018Z" },
 ]
 
 [[package]]
@@ -447,14 +447,14 @@ wheels = [
 
 [[package]]
 name = "django-reversion"
-version = "6.3.0"
+version = "6.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/88/93/0240c12e07f882e11bc4028b6d5570ff6305ac6237843853b9238895be3a/django_reversion-6.3.0.tar.gz", hash = "sha256:0aa54eb334694f522fd234743978c614d45aa785edc70a6177267cdaaf06f967", size = 79028, upload-time = "2026-06-12T19:55:46.603Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/a6/b24a987fb1ff3004205dd9adcc90e94370242c3284aaad29f5736bdbf90a/django_reversion-6.5.2.tar.gz", hash = "sha256:100fa722e9bf9cb68865b678f90e5415166c3798d839e10f8fced636bf63c09d", size = 83199, upload-time = "2026-11-12T14:30:31.448Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/ec/2e79165dee4c0d3a52024e5b471b571452191cfe30524e1d7f20eeea7003/django_reversion-6.3.0-py3-none-any.whl", hash = "sha256:6abf59fc70e0d5efd68e03d478c20b994ca72d4ec89e8fed99533e6b87acc8d1", size = 89660, upload-time = "2026-06-12T19:55:45.381Z" },
+    { url = "https://files.pythonhosted.org/packages/01/a4/a121b28a45ba3ff85f1b4d1b7858fa41329e460637fbe942f358ca79e30f/django_reversion-6.5.2-py3-none-any.whl", hash = "sha256:34a18f45f9a735bb9f33bb5494773e69df11ff797e6b13c379dfdf529437cc8e", size = 93063, upload-time = "2026-11-12T14:30:30.339Z" },
 ]
 
 [[package]]
@@ -483,14 +483,14 @@ wheels = [
 
 [[package]]
 name = "djangorestframework"
-version = "3.18.1"
+version = "3.18.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/2e/b3ce9d449b1ed9f9dd74fb7dfbc5f20860d5f40c2b4b10a2c3eabd8ff579/djangorestframework-3.18.1.tar.gz", hash = "sha256:605d79fa2ec2f02905492e5ea13d903c2d842d0b4c915a57f7bf02ab9f3c91dd", size = 915653, upload-time = "2026-09-07T18:04:08.288Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8d/b2/1cee76b188301f7d03169ca77fab2b3d3ec5d01b3469189f944af2d7f11a/djangorestframework-3.18.3.tar.gz", hash = "sha256:446a9b352e7eff630421ab3f2328bd2401b109a9470afa4a31189994911ed030", size = 923563, upload-time = "2026-10-06T21:33:51.521Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/83/5ed615e47339d8e65f62eb1a8133f8f046492eb3a25ad40d90acb9a208b3/djangorestframework-3.18.1-py3-none-any.whl", hash = "sha256:f1409d698967aaf82d5d98d76b549c8fba8bd92ebd0d83d24454508f72168dc2", size = 901373, upload-time = "2026-09-07T18:04:06.237Z" },
+    { url = "https://files.pythonhosted.org/packages/c4/dd/de5f4543765bec94e036a5e9593a42f8fa7efec8de78eb56b9ca834385f3/djangorestframework-3.18.3-py3-none-any.whl", hash = "sha256:8544bb674846731b1e3c9b309236ee1dc412905a0aa725be2ec193ca950a7d12", size = 903986, upload-time = "2026-10-06T21:33:49.917Z" },
 ]
 
 [[package]]
