@@ -282,6 +282,7 @@
           :map-id="mapId"
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
+          :show-toggle-all-layers-in-category="features.show_toggle_all_layers_in_category === true"
           :show-compare-slider="compareLayers"
           :show-toggle-all-layers-in-legend="features.show_toggle_all_layers_in_legend !== false"
           :show-sort-layers-in-legend="features.show_sort_layers_in_legend !== false"

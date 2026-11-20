@@ -49,6 +49,7 @@ import fetchDot from "fetch-dot";
 import SearchFormTable from "../components/SearchFormTable.vue";
 import { mapState } from "pinia";
 import { useGlobalStore } from "@/stores";
+import { getDataAccessErrorMessage } from "@/utils/auth";
 
 export default {
   name: "ListView",
@@ -68,7 +69,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useGlobalStore, ["tables"]),
+    ...mapState(useGlobalStore, ["tables", "user"]),
     table() {
       const results = this.tables.filter((table) => table.slug === this.$route.params.tableSlug);
 
@@ -103,10 +104,8 @@ export default {
         const data = await result.json();
 
         if (!result.ok) {
-          if (result.status == 401) {
-            this.error = "U moet ingelogd zijn om deze data te bekijken.";
-          } else if (result.status == 403) {
-            this.error = "U heeft geen rechten om deze data te bekijken.";
+          if (result.status === 401 || result.status === 403) {
+            this.error = getDataAccessErrorMessage(this.user);
           } else {
             if (this.table.error_template && data) {
               this.error =

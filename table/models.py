@@ -40,7 +40,7 @@ class Table(models.Model):
                          overwrite_on_add=False, editable=True,
                          help_text='Een uniek kort kenmerk voor de tabel in Atlas. Gebruik alleen kleine letters, cijfers en afbreekstreepjes.',
                          max_length=255)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE, related_name="tables")
+    source = models.ForeignKey(Source, on_delete=models.PROTECT, related_name="tables")
     source_type = models.CharField('Brontype', choices=Source.SOURCE_TYPES, default=Source.SOURCE_OWS)
     fields = models.JSONField(default=list)
 
@@ -235,8 +235,8 @@ class Table(models.Model):
 
 
 class TableToTable(models.Model):
-    from_table = models.ForeignKey('Table', related_name='outgoing_table_relations', on_delete=models.CASCADE)
-    to_table = models.ForeignKey('Table', related_name='incoming_table_relations', on_delete=models.CASCADE)
+    from_table = models.ForeignKey('Table', related_name='outgoing_table_relations', on_delete=models.PROTECT)
+    to_table = models.ForeignKey('Table', related_name='incoming_table_relations', on_delete=models.PROTECT)
     field_mapping = models.JSONField('Mapping van kolomnamen')
     related_table_title = models.CharField('Titel van gerelateerde tabel', max_length=255, blank=True, null=True)
     ordering = models.PositiveIntegerField('Volgorde', default=0)
@@ -247,8 +247,8 @@ class TableToTable(models.Model):
 
 
 class LayerToTable(models.Model):
-    from_layer = models.ForeignKey('webservice.Layer', related_name='layer_table_relations', on_delete=models.CASCADE)
-    to_table = models.ForeignKey('Table', related_name='layer_table_relations', on_delete=models.CASCADE)
+    from_layer = models.ForeignKey('webservice.Layer', related_name='layer_table_relations', on_delete=models.PROTECT)
+    to_table = models.ForeignKey('Table', related_name='layer_table_relations', on_delete=models.PROTECT)
     field_mapping = models.JSONField('Mapping van kolomnamen')
     related_table_title = models.CharField('Titel van gerelateerde tabel', max_length=255, blank=True, null=True)
     ordering = models.PositiveIntegerField('Volgorde', default=0)

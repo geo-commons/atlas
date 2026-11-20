@@ -1,6 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
+import {
+  canEnableLayer,
+  getDataAccessErrorMessage,
+  getFetchParameters,
+  layerRequiresAuthentication,
+} from "@/utils/auth";
 import { createLayer } from "../factories/layer.factory";
+
+describe("getDataAccessErrorMessage", () => {
+  it("asks unauthenticated users to log in", () => {
+    expect(getDataAccessErrorMessage(null)).toBe("U moet ingelogd zijn om deze data te bekijken.");
+  });
+
+  it("tells authenticated users they do not have access", () => {
+    expect(getDataAccessErrorMessage({ token: "test-token" })).toBe("U heeft geen rechten om deze data te bekijken.");
+  });
+});
 
 describe("layerRequiresAuthentication", () => {
   it("returns true when the layer source forwards authentication", () => {
@@ -13,6 +28,20 @@ describe("layerRequiresAuthentication", () => {
     const layer = createLayer({ source: { authenticate: false }, login_required: true });
 
     expect(layerRequiresAuthentication(layer)).toBe(false);
+  });
+});
+
+describe("canEnableLayer", () => {
+  it("returns true for a public layer without an authenticated user", () => {
+    expect(canEnableLayer(createLayer({ login_required: false }), null)).toBe(true);
+  });
+
+  it("returns false for a login-required layer without an authenticated user", () => {
+    expect(canEnableLayer(createLayer({ login_required: true }), null)).toBe(false);
+  });
+
+  it("returns true for a login-required layer with an authenticated user", () => {
+    expect(canEnableLayer(createLayer({ login_required: true }), { token: "test-token" })).toBe(true);
   });
 });
 

@@ -37,6 +37,7 @@ import Markdown from "./Markdown";
 import { useGlobalStore } from "@/stores";
 import { mapState } from "pinia";
 import RichValue from "@/components/RichValue.vue";
+import { getDataAccessErrorMessage } from "@/utils/auth";
 
 nunjucks.configure({ autoescaping: true });
 
@@ -85,10 +86,8 @@ export default {
         });
 
         if (!result.ok) {
-          if (result.status === 401) {
-            this.error = "U moet ingelogd zijn om deze data te bekijken.";
-          } else if (result.status === 403) {
-            this.error = "U heeft geen rechten om deze data te bekijken.";
+          if (result.status === 401 || result.status === 403) {
+            this.error = getDataAccessErrorMessage(this.user);
           } else if (result.status === 502 || result.status === 504) {
             this.error = "De databron kan niet bereikt worden. Probeer het later opnieuw.";
           } else {

@@ -64,12 +64,16 @@ import RelatedTableAccordionPanel from "@/components/related-tables/RelatedTable
 import { formatFriendlyFieldLabel, formatRawString, getResolvedKey } from "@/utils/string-helpers";
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import RichValue from "@/components/RichValue.vue";
+import { getDataAccessErrorMessage } from "@/utils/auth";
+import { useGlobalStore } from "@/stores";
 
 const { selectedRelatedTableAttributes, selectedRelatedTable } = defineProps<{
   selectedRelatedTableAttributes: Record<string, string> | null;
   selectedRelatedTable: IRelatedTable | null;
   selectedRelatedTableTitle: string | null;
 }>();
+
+const globalStore = useGlobalStore();
 
 const emit = defineEmits<{
   (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
@@ -125,6 +129,10 @@ const getRestData = async (table: IRelatedTable, item: any) => {
     const response = await fetch(renderedUrl);
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(getDataAccessErrorMessage(globalStore.user));
+      }
+
       let error = `Er is een onbekende fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${response.status}`;
 
       try {
@@ -178,6 +186,10 @@ const getOwsData = async (table: IRelatedTable, item: any) => {
       const result = await fetch(url.toString());
 
       if (!result.ok) {
+        if (result.status === 401 || result.status === 403) {
+          throw new Error(getDataAccessErrorMessage(globalStore.user));
+        }
+
         const error = `Er is een fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${result.status}`;
         throw new Error(error);
       }

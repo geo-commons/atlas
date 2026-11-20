@@ -501,6 +501,7 @@ export default {
               placeholder: "categorie",
               required: false,
               options: this.categoriesWithFullTitle || [],
+              relationResource: "categories",
             },
             {
               label: "Beschrijving",
@@ -542,6 +543,7 @@ export default {
               required: true,
               placeholder: "bron",
               options: this.sourcesState.data || [],
+              relationResource: "sources",
             },
             {
               label: "Laagnaam",
@@ -813,6 +815,7 @@ export default {
               type: "maps-select",
               required: false,
               options: this.mapOptions,
+              relationResource: "maps",
               infoText: "Selecteer op welke kaarten deze kaartlaag wordt getoond.",
               getDisabled: (values) => !values.category_id || this.mapOptions.length === 0,
             },
@@ -926,6 +929,7 @@ export default {
               required: false,
               placeholder: "Selecteer gerelateerde tabellen",
               options: this.tablesState.data || [],
+              relationResource: "tables",
             },
           ],
           showIf: this.config?.features?.newTables,

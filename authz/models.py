@@ -4,7 +4,7 @@ from utils.tools import is_internal
 
 
 class Authorization(models.Model):
-    source = models.ForeignKey('webservice.Source', on_delete=models.CASCADE)
+    source = models.ForeignKey('webservice.Source', on_delete=models.PROTECT)
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 
@@ -36,7 +36,7 @@ class Authorization(models.Model):
         ordering = ('source', 'resource', 'ordering')
 
     def __str__(self):
-        return self.resource
+        return self.resource or self.description or f'Authorization {self.pk}'
 
     def is_accessible_by(self, user, request):
         if not is_internal(request):
