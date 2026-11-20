@@ -68,6 +68,7 @@ import { getFeatureCenterCoordinates } from "@/utils/geometry-helpers";
 import MarkerIcon from "@/assets/icons/marker-icon.svg";
 import InformationCircleIcon from "@/assets/icons/information-circle-icon.svg";
 import { formatRawString } from "@/utils/string-helpers";
+import { getDataAccessErrorMessage } from "@/utils/auth";
 import RichValue from "@/components/RichValue.vue";
 
 export default {
@@ -180,10 +181,8 @@ export default {
         const result = await fetch(url.toString(), this.getFetchParameters());
 
         if (!result.ok) {
-          if (result.status === 401) {
-            this.error = "U moet ingelogd zijn om deze data te bekijken.";
-          } else if (result.status === 403) {
-            this.error = "U heeft geen rechten om deze data te bekijken.";
+          if (result.status === 401 || result.status === 403) {
+            this.error = getDataAccessErrorMessage(this.user);
           } else {
             this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
           }

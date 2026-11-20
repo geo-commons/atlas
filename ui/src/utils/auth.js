@@ -7,6 +7,14 @@ export const layerRequiresAuthentication = (layer) => {
   return true;
 };
 
+export const getDataAccessErrorMessage = (user) => {
+  if (!user || !user.token) {
+    return "U moet ingelogd zijn om deze data te bekijken.";
+  }
+
+  return "U heeft geen rechten om deze data te bekijken.";
+};
+
 // Login-required layers can only be enabled when the viewer has an authentication token.
 export const canEnableLayer = (layer, user) => {
   return !layer.login_required || Boolean(user?.token);

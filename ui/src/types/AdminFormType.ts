@@ -21,6 +21,7 @@ export interface AdminFormQuestion {
   json?: boolean;
   isNested?: boolean;
   sourceField?: string;
+  relationResource?: string;
 }
 
 export interface AdminFormSection {

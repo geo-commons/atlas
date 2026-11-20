@@ -25,6 +25,7 @@
             />
           </vee-field>
           <vee-error-message class="form-error" name="source_id" />
+          <AdminRelationLinks resource="sources" :value="template.source_id" :options="sources || []" />
         </div>
         <div class="layer-setting">
           <label class="question-label" for="endpoint">Endpoint</label>
@@ -132,12 +133,13 @@
 
 <script>
 import { updateMultiLineField } from "@/utils/admin-form-helpers";
+import AdminRelationLinks from "@/admin/components/AdminRelationLinks.vue";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { getAllObjects } from "@/utils/api-helpers";
 
 export default {
   name: "TemplateForm",
-  components: { VeeForm, VeeField, VeeErrorMessage },
+  components: { AdminRelationLinks, VeeForm, VeeField, VeeErrorMessage },
   props: {
     initialTemplate: Object,
   },
