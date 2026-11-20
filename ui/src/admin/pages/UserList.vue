@@ -43,6 +43,11 @@ const tableHeaders: Array<TableHeader> = [
     enableLink: false,
   },
   {
+    header: "Gewijzigd op",
+    key: "updated_at",
+    enableLink: false,
+  },
+  {
     header: "Actief",
     key: "is_active",
     enableLink: false,

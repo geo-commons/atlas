@@ -30,6 +30,9 @@ class Authorization(models.Model):
     response_filter = models.TextField(
         null=True, blank=True, help_text='Voeg een jq filter toe om een data response te filteren, in het geval van WMS GetFeatureInfo, WFS GetFeature en REST')
 
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
+
     class Meta:
         verbose_name = 'Autorisatie'
         verbose_name_plural = 'Autorisaties'

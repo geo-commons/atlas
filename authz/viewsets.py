@@ -3,7 +3,7 @@ from json import JSONDecodeError
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 from webservice.mixins import DataExportImportMixin, DeleteMixin, DuplicateMixin
 from webservice.models import Source
@@ -71,4 +71,4 @@ class AuthorizationViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, v
 
     search_fields = ['resource']
 
-    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]

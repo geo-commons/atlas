@@ -38,6 +38,8 @@ class SimpleTableSerializer(serializers.ModelSerializer):
             'template_fields',
             'list_template_fields',
             'disable_detail_view',
+            'created_at',
+            'updated_at',
         ]
 
 
@@ -104,6 +106,8 @@ class TableSerializer(serializers.ModelSerializer):
             'friendly_search_fields',
             'disable_detail_view',
             'login_required',
+            'created_at',
+            'updated_at',
         ]
 
     def get_related_tables(self, obj):
