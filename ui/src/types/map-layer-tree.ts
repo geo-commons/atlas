@@ -29,7 +29,7 @@ export interface IMapLayerConfig {
 export interface IMapCategoryConfig {
   id?: CategoryId;
   category: CategoryId;
-  title: string;
+  title?: string;
   ordering?: number;
 }
 

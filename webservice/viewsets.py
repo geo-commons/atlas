@@ -83,6 +83,7 @@ class MapViewSet(DataExportImportMixin, FileUploadMixin, DuplicateMixin, DeleteM
             duplicated_category = MapCategory.objects.create(
                 map=duplicate,
                 category=original_category.category,
+                title=original_category.title,
                 ordering=original_category.ordering,
             )
             category_mapping[original_category.id] = duplicated_category
