@@ -78,7 +78,7 @@ const items = computed<MenuItem[]>(() => [
     command: () => emit("edit-title", props.category.id, props.category.title),
   },
   {
-    label: "Naam uit Atlas gebruiken",
+    label: "Gebruik originele naam",
     disabled: !props.hasCustomTitle,
     command: () => emit("reset-title", props.category.id),
   },
