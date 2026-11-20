@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { canEnableLayer, getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
-import { getDataAccessErrorMessage, getFetchParameters, layerRequiresAuthentication } from "@/utils/auth";
+import {
+  canEnableLayer,
+  getDataAccessErrorMessage,
+  getFetchParameters,
+  layerRequiresAuthentication,
+} from "@/utils/auth";
 import { createLayer } from "../factories/layer.factory";
 
 describe("getDataAccessErrorMessage", () => {

@@ -101,11 +101,11 @@
                 <input
                   :id="`category-layer-toggle-${category.id}`"
                   class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
-                  :checked="areCategoryLayersVisible(category)"
+                  :checked="getVisibleLayerCount(category) > 0"
                   :indeterminate="hasPartiallyVisibleCategoryLayers(category)"
                   :disabled="getCategoryLayersAvailableForToggle(category).length === 0"
                   type="checkbox"
-                  :aria-label="`Schakel alle lagen in ${category.title} ${areCategoryLayersVisible(category) ? 'uit' : 'in'}`"
+                  :aria-label="`Schakel alle lagen in ${category.title} ${getVisibleLayerCount(category) > 0 ? 'uit' : 'in'}`"
                   @change="toggleCategoryLayers(category)"
                 />
               </label>
@@ -145,12 +145,12 @@
                         <input
                           :id="`category-layer-toggle-${subcategory.id}`"
                           class="tw-m-0 tw-mt-2.5 tw-h-3.5 tw-w-3.5 tw-cursor-pointer"
-                          :checked="areCategoryLayersVisible(subcategory)"
+                          :checked="getVisibleLayerCount(subcategory) > 0"
                           :indeterminate="hasPartiallyVisibleCategoryLayers(subcategory)"
                           :disabled="getCategoryLayersAvailableForToggle(subcategory).length === 0"
                           type="checkbox"
                           :aria-label="`Schakel alle lagen in ${subcategory.title} ${
-                            areCategoryLayersVisible(subcategory) ? 'uit' : 'in'
+                            getVisibleLayerCount(subcategory) > 0 ? 'uit' : 'in'
                           }`"
                           @change="toggleCategoryLayers(subcategory)"
                         />
@@ -455,17 +455,13 @@ export default {
     getCategoryLayersAvailableForToggle(category) {
       return this.getCategoryLayers(category).filter((layer) => layer.is_visible || canEnableLayer(layer, this.user));
     },
-    areCategoryLayersVisible(category) {
-      const categoryLayers = this.getCategoryLayersAvailableForToggle(category);
-      return categoryLayers.length > 0 && categoryLayers.every((layer) => layer.is_visible);
-    },
     hasPartiallyVisibleCategoryLayers(category) {
       const categoryLayers = this.getCategoryLayersAvailableForToggle(category);
       const visibleLayerCount = categoryLayers.filter((layer) => layer.is_visible).length;
       return visibleLayerCount > 0 && visibleLayerCount < categoryLayers.length;
     },
     toggleCategoryLayers(category) {
-      const isVisible = !this.areCategoryLayersVisible(category);
+      const isVisible = this.getVisibleLayerCount(category) === 0;
       const categoryLayers = this.getCategoryLayers(category);
       const layersToToggle = isVisible
         ? categoryLayers.filter((layer) => !layer.is_visible && canEnableLayer(layer, this.user))
