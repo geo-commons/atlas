@@ -85,7 +85,7 @@ const items: MenuItem[] = [
       ]
     : []),
   {
-    label: "Bekijk kaartlaag",
+    label: "Bewerk kaartlaag",
     icon: "pi pi-external-link",
     command: () => {
       window.open(router.resolve(`/layers/update/${layer.id}`).href, "_blank", "noopener");
