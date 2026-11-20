@@ -163,6 +163,23 @@ describe("mapLayerTree", () => {
     expect(tree[0].subcategories[0].title).toBe("Custom subcategory");
   });
 
+  it("follows the Atlas title when the map-specific title is empty", () => {
+    const mapCategories = [
+      { category: parentCategory.id, title: "", ordering: 1 },
+      { category: subCategory.id, title: "", ordering: 2 },
+    ];
+    const renamedParent = { ...parentCategory, title: "Renamed parent" };
+    const renamedSubcategory = { ...subCategory, title: "Renamed subcategory", parent: renamedParent };
+    const tree = buildCategoryTree(
+      [regularLayer, subcategoryBaseLayer],
+      [renamedParent, renamedSubcategory],
+      mapCategories,
+    );
+
+    expect(tree[0].title).toBe("Renamed parent");
+    expect(tree[0].subcategories[0].title).toBe("Renamed subcategory");
+  });
+
   it("flattens direct category layers before subcategory layers", () => {
     const subcategoryLayer = {
       id: 4,

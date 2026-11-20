@@ -85,11 +85,6 @@ class MapCategorySerializer(serializers.ModelSerializer):
         model = MapCategory
         fields = ['id', 'category', 'title', 'ordering']
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['title'] = instance.title or instance.category.title
-        return representation
-
 
 class MapSerializer(serializers.ModelSerializer):
     layers = MapLayerSerializer(many=True, source='map_layers', required=False)

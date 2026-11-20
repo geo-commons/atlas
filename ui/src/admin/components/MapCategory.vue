@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Menu from "primevue/menu";
 
 import type { MenuItem } from "primevue/menuitem";
@@ -55,26 +55,34 @@ const props = withDefaults(
     };
     isOpen?: boolean;
     editable?: boolean;
+    hasCustomTitle?: boolean;
   }>(),
   {
     isOpen: true,
     editable: false,
+    hasCustomTitle: false,
   },
 );
 
 const emit = defineEmits<{
   (e: "toggle-open", categoryId: string, isOpen: boolean): void;
   (e: "edit-title", categoryId: string, title: string): void;
+  (e: "reset-title", categoryId: string): void;
 }>();
 
 const menu = ref<InstanceType<typeof Menu> | null>(null);
 
-const items: MenuItem[] = [
+const items = computed<MenuItem[]>(() => [
   {
     label: "Naam bewerken",
     command: () => emit("edit-title", props.category.id, props.category.title),
   },
-];
+  {
+    label: "Naam uit Atlas gebruiken",
+    disabled: !props.hasCustomTitle,
+    command: () => emit("reset-title", props.category.id),
+  },
+]);
 
 const toggleOpen = (): void => {
   emit("toggle-open", props.category.id, !props.isOpen);

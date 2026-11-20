@@ -151,8 +151,10 @@
               :category="category"
               :is-open="isSelectedCategoryOpen(category.id)"
               editable
+              :has-custom-title="hasCustomCategoryTitle(category.id)"
               @toggle-open="handleCategoryToggle"
               @edit-title="openCategoryTitleDialog"
+              @reset-title="resetCategoryTitle"
             >
               <MapLayerItem
                 v-for="selectedLayer in category.layers"
@@ -168,8 +170,10 @@
                 :category="subCategory"
                 :is-open="isSelectedCategoryOpen(subCategory.id)"
                 editable
+                :has-custom-title="hasCustomCategoryTitle(subCategory.id)"
                 @toggle-open="handleCategoryToggle"
                 @edit-title="openCategoryTitleDialog"
+                @reset-title="resetCategoryTitle"
               >
                 <MapLayerItem
                   v-for="selectedLayer in subCategory.layers"
@@ -477,16 +481,21 @@ const saveCategoryTitle = async (): Promise<void> => {
     return;
   }
 
-  selectedCategoryTree.value = selectedCategoryTree.value.map((category) => ({
-    ...category,
-    title: category.id === categoryId ? title : category.title,
-    subcategories: category.subcategories.map((subcategory) => ({
-      ...subcategory,
-      title: subcategory.id === categoryId ? title : subcategory.title,
-    })),
-  }));
-  emitLayerConfig(selectedCategoryTree.value);
+  updateCategoryTitle(categoryId, title);
   showCategoryTitleDialog.value = false;
+};
+
+const resetCategoryTitle = (categoryId: CategoryId): void => {
+  updateCategoryTitle(categoryId, "");
+};
+
+const updateCategoryTitle = (categoryId: CategoryId, title: string): void => {
+  data.value.categories = getCategoryConfigsFromTree(selectedCategoryTree.value).map((category) => ({
+    ...category,
+    title: category.category === categoryId ? title : category.title,
+  }));
+  rebuildSelectedCategoryTree();
+  emitLayerConfig(selectedCategoryTree.value);
 };
 
 const rebuildSelectedCategoryTree = (): void => {
@@ -502,13 +511,17 @@ const getExistingMapCategoryConfig = (categoryId: CategoryId): IMapCategoryConfi
   return (data.value.categories || []).find((category) => category.category === categoryId);
 };
 
+const hasCustomCategoryTitle = (categoryId: CategoryId): boolean => {
+  return Boolean(getExistingMapCategoryConfig(categoryId)?.title);
+};
+
 const getCategoryConfigsFromTree = (categoryTree: ICategoryTreeNode[]): IMapCategoryConfig[] => {
   return categoryTree.flatMap((category) => {
     const existingCategory = getExistingMapCategoryConfig(category.id);
     const categoryConfig: IMapCategoryConfig = {
       ...existingCategory,
       category: category.id,
-      title: category.title,
+      title: existingCategory?.title ?? "",
       ordering: category.ordering,
     };
 
@@ -519,7 +532,7 @@ const getCategoryConfigsFromTree = (categoryTree: ICategoryTreeNode[]): IMapCate
         return {
           ...existingSubcategory,
           category: subcategory.id,
-          title: subcategory.title,
+          title: existingSubcategory?.title ?? "",
           ordering: subcategory.ordering,
         };
       }),
