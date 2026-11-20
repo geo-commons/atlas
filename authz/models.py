@@ -36,7 +36,7 @@ class Authorization(models.Model):
         ordering = ('source', 'resource', 'ordering')
 
     def __str__(self):
-        return self.resource
+        return self.resource or self.description or f'Authorization {self.pk}'
 
     def is_accessible_by(self, user, request):
         if not is_internal(request):

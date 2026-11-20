@@ -35,7 +35,7 @@ def get_protected_object_groups(protected_objects):
     for object_type in sorted(objects_by_type):
         protected_objects_for_type = sorted(
             objects_by_type[object_type],
-            key=lambda protected_object: get_protected_object_label(protected_object).lower(),
+            key=lambda protected_object: protected_object.pk,
         )
         visible_objects = protected_objects_for_type[:MAXIMUM_PROTECTED_OBJECTS_PER_TYPE]
         groups.append({

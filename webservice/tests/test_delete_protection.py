@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models.deletion import ProtectedError
 from rest_framework.test import APITestCase
 
+from authz.models import Authorization
 from table.models import LayerToTable, Table, TableToTable
 from webservice.models import Category, Layer, Map, MapCategory, MapLayer, Source
 
@@ -63,6 +64,33 @@ class DeleteProtectionTest(APITestCase):
         self.assertEqual(response.status_code, 409)
         self.assertEqual(response.data['protected_by'], ['Tabellen'])
         self.assertTrue(Source.objects.filter(pk=source.pk).exists())
+
+    def test_source_delete_lists_authorization_without_resource(self):
+        for description in ('Source authorization', ''):
+            with self.subTest(description=description):
+                source = self.create_source(title=f'Source {description or "unnamed"}')
+                authorization = Authorization.objects.create(
+                    source=source,
+                    resource=None,
+                    description=description,
+                )
+                expected_label = description or f'Authorization {authorization.pk}'
+
+                response = self.client.delete(f'/atlas/api/v1/sources/{source.pk}/')
+
+                self.assertEqual(response.status_code, 409)
+                self.assertEqual(response.data['code'], 'protected_delete')
+                self.assertEqual(response.data['protected_by'], ['Autorisaties'])
+                self.assertEqual(
+                    response.data['protected_objects'],
+                    [{
+                        'type': 'Autorisaties',
+                        'objects': [{'id': authorization.pk, 'label': expected_label}],
+                        'remaining_count': 0,
+                    }],
+                )
+                self.assertIn(f'Autorisaties: {expected_label}', response.data['detail'])
+                self.assertTrue(Source.objects.filter(pk=source.pk).exists())
 
     def test_layer_delete_is_blocked_when_it_is_on_a_map(self):
         source = self.create_source()
