@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 import fetchDot from "fetch-dot";
 
 import ExpandButton from "./ExpandButton";
@@ -37,8 +37,6 @@ import Markdown from "./Markdown";
 import { useGlobalStore } from "@/stores";
 import { mapState } from "pinia";
 import RichValue from "@/components/RichValue.vue";
-
-nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "FeatureInfoTemplate",
@@ -67,7 +65,7 @@ export default {
   methods: {
     async fetchData() {
       const fullUrl = this.template.source.url + this.template.endpoint;
-      const renderedUrl = nunjucks.renderString(fullUrl, this.feature.properties);
+      const renderedUrl = renderTemplate(fullUrl, this.feature.properties);
       const url = new URL(renderedUrl);
 
       let params = {};
@@ -121,7 +119,7 @@ export default {
       return {};
     },
     renderString(field, record) {
-      return nunjucks.renderString(field, record);
+      return renderTemplate(field, record);
     },
   },
 };

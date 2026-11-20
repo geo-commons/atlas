@@ -51,7 +51,7 @@ Het configureren van tabellen verloopt via de Atlas admin. In dit artikel wordt 
 | **Lijst endpoint**           | Het API-endpoint voor het ophalen van één of meerdere resultaten, resultaat wordt altijd weergegeven in een tabel. Je kunt dynamische waarden meegeven via template tags tussen dubbele accolades: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`. | Optioneel (verplicht bij REST bron)           | `/zoeken?postcode={{postcode}}&huisnummer={{huisnummer}}&huisletter={{huisletter}}` |
 | **Detail endpoint**          | Het API-endpoint voor het ophalen van één specifiek resultaat. Ook hier kun je template tags gebruiken: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`                                                                                             | Optioneel (verplicht bij REST bron)           | `/zoeken?kvkNummer={{kvkNummer}}`                                                   |
 | **HTTP Methode**             | De HTTP methode die gebruikt wordt voor het doen van het request naar het betreffende **Lijst endpoint**. Standaard waarde is `GET`.                                                                                                                                            | Optioneel                                     | `GET`                                                                               |
-| **Request body (voor POST)** | De request body die verstuurd wordt naar de API indien je hebt gekozen voor **HTTP Methode** POST. Je kunt dynamische waarden meegeven via template tags tussen dubbele accolades: `{{variabele}}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`.                 | Optioneel, moet een geldige JSON waarde zijn. | `{}`                                                                                |
+| **Request body (voor POST)** | De request body die verstuurd wordt naar de API indien je hebt gekozen voor **HTTP Methode** POST. Je kunt dynamische waarden meegeven via template tags tussen dubbele accolades in een JSON-stringwaarde, bijvoorbeeld `{"postcode":"{{postcode}}"}`. X en Y coordinaten zijn beschikbaar via `{{x}}` en `{{y}}`. Template tags zonder aanhalingstekens, zoals `{"limit": {{limit}}}`, worden niet ondersteund. | Optioneel, moet een geldige JSON waarde zijn. | `{}`                                                                                |
 
 ### Response mapping
 
@@ -175,6 +175,8 @@ Voor dynamische waarden in URL's, request_body en filters gebruik je dubbele acc
 <li>Enkelvoudig: {{variabele}}</li>
 <li>Meerdere: ?postcode={{postcode}}&huisnummer={{huisnummer}}</li>
 <li>Coordinaten van huidige punt van de marker in de viewer zijn beschikbaar via {{x}} en {{y}}</li>
+<li>Geneste velden: {{adres.postcode}}</li>
+<li>Spaties vervangen: {{postcode | replaceAll(' ', '')}}</li>
 </ul>
 
 # Voorbeelden

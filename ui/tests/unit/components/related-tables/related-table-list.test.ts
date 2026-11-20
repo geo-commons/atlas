@@ -15,8 +15,8 @@ describe("pickTemplateValues", () => {
     });
   });
 
-  it("supports whitespace and ignores nunjucks filters in lookups", () => {
-    const template = "{{  foo   | lower }} {{ user.name | trim }}";
+  it("supports whitespace in lookups", () => {
+    const template = "{{  foo }} {{ user.name }}";
     const values = {
       foo: "HELLO",
       user: { name: "  John  " },

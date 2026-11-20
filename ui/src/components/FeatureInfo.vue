@@ -134,7 +134,6 @@
 </template>
 
 <script>
-import nunjucks from "nunjucks";
 import LinkedDataTable from "./LinkedDataTable.vue";
 import TableList from "./TableList";
 import TileWMS from "ol/source/TileWMS";
@@ -162,8 +161,6 @@ import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import { useMapStore } from "@/stores/map_store";
 import { getWmsTimeParameter } from "@/utils/wms-time";
 import { getLayerFilter } from "@/utils/layer-filter-wfs";
-
-nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "FeatureInfo",

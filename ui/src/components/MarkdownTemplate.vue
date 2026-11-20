@@ -3,10 +3,8 @@
 </template>
 
 <script>
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 import Markdown from "./Markdown";
-
-nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "MarkdownTemplate",
@@ -20,7 +18,7 @@ export default {
   computed: {
     parsedSource() {
       try {
-        return nunjucks.renderString(this.source, this.data);
+        return renderTemplate(this.source, this.data);
       } catch {
         return "";
       }

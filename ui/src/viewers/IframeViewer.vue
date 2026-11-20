@@ -3,15 +3,13 @@
 </template>
 
 <script>
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 import { transform } from "ol/proj";
 import { register } from "ol/proj/proj4";
 import { getDefinitions } from "../utils/projections";
 
 // Register EPSG:28992 projection
 register(getDefinitions());
-
-nunjucks.configure({ autoescaping: true });
 
 export default {
   name: "IframeViewer",
@@ -30,7 +28,7 @@ export default {
         y: this.position.marker[1],
       };
 
-      return nunjucks.renderString(this.url, properties);
+      return renderTemplate(this.url, properties);
     },
   },
   methods: {

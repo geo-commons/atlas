@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import nunjucks from "nunjucks";
+import { renderTemplate } from "@/utils/template-renderer";
 import fetchDot from "fetch-dot";
 import SearchFormTable from "../components/SearchFormTable.vue";
 import { mapState } from "pinia";
@@ -110,7 +110,7 @@ export default {
           } else {
             if (this.table.error_template && data) {
               this.error =
-                nunjucks.renderString(this.table.error_template, data) ||
+                renderTemplate(this.table.error_template, data) ||
                 "Er is een fout opgetreden tijdens het ophalen van de gegevens";
             } else {
               this.error = "Er is een fout opgetreden tijdens het ophalen van de gegevens.";
@@ -148,7 +148,7 @@ export default {
       await this.getTableItems(this.url, searchFields);
     },
     renderString(template, context) {
-      return nunjucks.renderString(template, context);
+      return renderTemplate(template, context);
     },
     async updatePageState(pageState) {
       this.page = pageState.page + 1;
