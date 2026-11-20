@@ -119,6 +119,7 @@ class MapViewSetTest(APITestCase):
         map_category = MapCategory.objects.create(
             map=map_instance,
             category=category,
+            title='Map category',
             ordering=3,
         )
         MapLayer.objects.create(
@@ -144,6 +145,7 @@ class MapViewSetTest(APITestCase):
         self.assertEqual(duplicated_map.settings, {'position': {'zoom': 8}})
 
         duplicated_category = duplicated_map.map_categories.get(category=category)
+        self.assertEqual(duplicated_category.title, 'Map category')
         self.assertEqual(duplicated_category.ordering, 3)
 
         duplicated_layer = duplicated_map.map_layers.get(layer=layer)
