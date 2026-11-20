@@ -438,7 +438,7 @@ export default {
         ...(this.data.categories || []),
         {
           category: category.id,
-          title: category.title,
+          title: "",
           ordering: category.ordering ?? this.data.categories?.length ?? 0,
         },
       ];
