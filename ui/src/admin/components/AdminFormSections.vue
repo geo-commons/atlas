@@ -230,12 +230,12 @@
                           :href="href"
                           target="_blank"
                           rel="noopener"
-                          label="Bekijk"
+                          label="Bewerk"
                           icon="pi pi-external-link"
                           severity="secondary"
                           outlined
                           class="!tw-no-underline"
-                          :aria-label="`Open geselecteerde ${question.label} in een nieuw tabblad`"
+                          :aria-label="`Bewerk geselecteerde ${question.label} in een nieuw tabblad`"
                         />
                       </router-link>
                     </div>

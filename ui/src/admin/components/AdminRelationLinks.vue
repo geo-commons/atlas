@@ -6,12 +6,12 @@
         :href="href"
         target="_blank"
         rel="noopener"
-        :label="`Bekijk ${link.label}`"
+        :label="`Bewerk ${link.label}`"
         icon="pi pi-external-link"
         severity="secondary"
         outlined
         class="!tw-no-underline"
-        :aria-label="`Open ${relationName} ${link.label} in een nieuw tabblad`"
+        :aria-label="`Bewerk ${relationName} ${link.label} in een nieuw tabblad`"
       />
     </router-link>
   </div>
