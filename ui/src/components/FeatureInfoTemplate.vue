@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { renderTemplate } from "@/utils/template-renderer";
+import { renderHtmlTemplate, renderTemplate } from "@/utils/template-renderer";
 import fetchDot from "fetch-dot";
 
 import ExpandButton from "./ExpandButton";
@@ -119,7 +119,7 @@ export default {
       return {};
     },
     renderString(field, record) {
-      return renderTemplate(field, record);
+      return renderHtmlTemplate(field, record);
     },
   },
 };

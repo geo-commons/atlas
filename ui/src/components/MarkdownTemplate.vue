@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { renderTemplate } from "@/utils/template-renderer";
+import { renderHtmlTemplate } from "@/utils/template-renderer";
 import Markdown from "./Markdown";
 
 export default {
@@ -18,7 +18,7 @@ export default {
   computed: {
     parsedSource() {
       try {
-        return renderTemplate(this.source, this.data);
+        return renderHtmlTemplate(this.source, this.data);
       } catch {
         return "";
       }

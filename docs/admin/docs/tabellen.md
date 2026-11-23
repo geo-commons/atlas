@@ -176,7 +176,7 @@ Voor dynamische waarden in URL's, request_body en filters gebruik je dubbele acc
 <li>Meerdere: ?postcode={{postcode}}&huisnummer={{huisnummer}}</li>
 <li>Coordinaten van huidige punt van de marker in de viewer zijn beschikbaar via {{x}} en {{y}}</li>
 <li>Geneste velden: {{adres.postcode}}</li>
-<li>Spaties vervangen: {{postcode | replaceAll(' ', '')}}</li>
+<li>Spaties vervangen: {{postcode | replace: ' ', ''}}</li>
 </ul>
 
 # Voorbeelden
