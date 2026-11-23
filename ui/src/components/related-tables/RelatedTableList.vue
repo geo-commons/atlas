@@ -96,6 +96,8 @@ import RichValue from "@/components/RichValue.vue";
 import fetchDot from "fetch-dot";
 import { formatFriendlyFieldLabel, formatRawString } from "@/utils/string-helpers";
 import { pickTemplateValues } from "@/components/related-tables/utils";
+import { getDataAccessErrorMessage } from "@/utils/auth";
+import { useGlobalStore } from "@/stores";
 
 const { layerFeature, tableFeature, fieldMapping, relatedTable, relatedTableTitle, position } = defineProps<{
   layerFeature?: Record<string, string>;
@@ -105,6 +107,8 @@ const { layerFeature, tableFeature, fieldMapping, relatedTable, relatedTableTitl
   relatedTableTitle: string;
   position: IPosition;
 }>();
+
+const globalStore = useGlobalStore();
 
 const emit = defineEmits<{
   (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
@@ -172,6 +176,10 @@ const getRestData = async (table: IRelatedTable) => {
     });
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(getDataAccessErrorMessage(globalStore.user));
+      }
+
       if (response.status === 404) {
         relatedTableData.value = [];
         totalItems.value = 0;
@@ -255,6 +263,10 @@ const getOwsData = async (table: IRelatedTable) => {
 
       const result = await fetch(url.toString());
       if (!result.ok) {
+        if (result.status === 401 || result.status === 403) {
+          throw new Error(getDataAccessErrorMessage(globalStore.user));
+        }
+
         const error = `Er is een fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${result.status}`;
         throw new Error(error);
       }

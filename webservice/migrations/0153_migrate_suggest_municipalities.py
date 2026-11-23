@@ -19,7 +19,6 @@ def _migrate_suggest_municipalities(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ('webservice', '0152_map_position_settings'),
-        ("constance", "0003_drop_pickle"),
     ]
     
     operations = [

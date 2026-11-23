@@ -94,11 +94,15 @@ import RelatedTableList from "@/components/related-tables/RelatedTableList.vue";
 import fetchDot from "fetch-dot";
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
 import { IPosition } from "@/types/map";
+import { getDataAccessErrorMessage } from "@/utils/auth";
+import { useGlobalStore } from "@/stores";
 
 const { selectedRelatedTableAttributes, position } = defineProps<{
   selectedRelatedTableAttributes: { relatedTableId: number; item: any; relatedTableTitle: string };
   position: IPosition;
 }>();
+
+const globalStore = useGlobalStore();
 
 const emit = defineEmits<{
   (e: "back"): void;
@@ -152,6 +156,10 @@ const getRestData = async (table: IRelatedTable, item: any) => {
     const response = await fetch(renderedUrl);
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(getDataAccessErrorMessage(globalStore.user));
+      }
+
       let error = `Er is een onbekende fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${response.status}`;
 
       try {
@@ -205,6 +213,10 @@ const getOwsData = async (table: IRelatedTable, item: any) => {
       const result = await fetch(url.toString());
 
       if (!result.ok) {
+        if (result.status === 401 || result.status === 403) {
+          throw new Error(getDataAccessErrorMessage(globalStore.user));
+        }
+
         const error = `Er is een fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${result.status}`;
         throw new Error(error);
       }
@@ -239,7 +251,9 @@ const getRelatedTable = async (tableId: number) => {
 
   if (!response.ok) {
     errorMessage.value =
-      "Er is een fout opgetreden bij het ophalen van de gerelateerde tabel. Probeer het later opnieuw.";
+      response.status === 401 || response.status === 403
+        ? getDataAccessErrorMessage(globalStore.user)
+        : "Er is een fout opgetreden bij het ophalen van de gerelateerde tabel. Probeer het later opnieuw.";
     return;
   }
   relatedTable.value = result;

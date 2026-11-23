@@ -5,14 +5,7 @@
     :show-compare-slider="showCompareSlider"
     @set-selected-features="setSelectedFeatures"
   >
-    <ol-view
-      ref="view"
-      :position="position"
-      :padding="padding"
-      :tool="tool"
-      :marker-on-click="features.markerOnClick"
-      @position-changed="onPositionChanged"
-    />
+    <ol-view ref="view" :position="position" :padding="padding" :tool="tool" @position-changed="onPositionChanged" />
     <ol-draw-interaction
       v-if="tool"
       :tool="tool"
@@ -64,7 +57,7 @@
       :is-visible="true"
       :selectable="false"
       :vector-style="MARKER_STYLE"
-      :features="markerFeatures"
+      :features="features.markerOnClick ? markerFeatures : []"
       :z-index="markerIndex"
     />
     <ol-vector-layer
