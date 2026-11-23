@@ -17,7 +17,7 @@ class LiquidReplaceMigrationTest(TestCase):
             'plain_text': 'replace(" ", "")',
         }
 
-        converted = migration.convert_value(value)
+        converted = migration.convert_legacy_replace_in_value(value)
 
         self.assertEqual(converted['endpoint'], '/zoeken?postcode={{ postcode | replace: " ", "" }}&test=test')
         self.assertEqual(converted['filters'], [
@@ -25,4 +25,4 @@ class LiquidReplaceMigrationTest(TestCase):
             "{{ postcode | replace: ' ', '' }}",
         ])
         self.assertEqual(converted['plain_text'], value['plain_text'])
-        self.assertEqual(migration.convert_value(converted), converted)
+        self.assertEqual(migration.convert_legacy_replace_in_value(converted), converted)
