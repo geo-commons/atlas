@@ -98,8 +98,8 @@ class Table(models.Model):
         'Vereis inlog voor deze tabel', default=False,
         help_text='De tabel is alleen zichtbaar voor ingelogde gebruikers, ook als deze gekoppeld is aan andere tabellen.')
 
-    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
-    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True, null=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True, null=True)
 
     tables = models.ManyToManyField(
         'self',

@@ -4,6 +4,7 @@ from rest_framework.exceptions import NotFound
 
 from table.models import Table
 from table.serializers import TableSerializer
+from webservice.filters import NullsLastTimestampOrderingFilter
 from webservice.mixins import DataExportImportMixin, DeleteMixin, DuplicateMixin
 from webservice.permissions import IsAdminOrReadOnly
 
@@ -11,7 +12,7 @@ from webservice.permissions import IsAdminOrReadOnly
 class TableViewSet(DataExportImportMixin, DuplicateMixin, DeleteMixin, viewsets.ModelViewSet):
     serializer_class = TableSerializer
     permission_classes = [IsAdminOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, NullsLastTimestampOrderingFilter]
     search_fields = ['title']
     filterset_fields = ['show_in_portal']
     

@@ -53,8 +53,8 @@ class Category(models.Model):
     ordering = models.PositiveIntegerField('Sortering',
                                            default=0, editable=True, db_index=True)
 
-    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
-    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True, null=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True, null=True)
 
     parent = models.ForeignKey(
         'self',
@@ -150,8 +150,8 @@ class Source(models.Model):
     authenticate = models.BooleanField('Verstuur authenticatieinformatie naar bron', default=False,
                                        help_text='Configureer dit alleen voor vertrouwde bronnen')
 
-    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
-    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True, null=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True, null=True)
 
     class Meta:
         verbose_name = 'Bron'
@@ -374,8 +374,8 @@ class Metadataset(models.Model):
         'Rol verantwoordelijke', max_length=128, null=True, blank=True, choices=RoleType.choices,
         help_text="De rol van de verantwoordelijke van de bron.")
 
-    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
-    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True, null=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True, null=True)
 
     class Meta:
         verbose_name = 'Metadataset'
@@ -1191,8 +1191,8 @@ class Map(models.Model):
                                            help_text="Schakel dit veld in om de kaart weer te geven in het overzicht van het dataportaal. Laat het uitgeschakeld om de kaart te verbergen in het overzicht, zelfs als deze gepubliceerd is.",
                                            default=True)
 
-    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
-    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True, null=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True, null=True)
 
     def get_absolute_url(self):
         return reverse('homepage:v3', args=[self.slug]) + '/'
@@ -1269,8 +1269,8 @@ class Viewer(models.Model):
     internal = models.BooleanField('Alleen zichtbaar voor ingelogde gebruikers en interne omgeving', default=True,
                                    help_text='Hou er rekening mee dat de gebruikernaam, het wachtwoord of de API key gedeeld wordt met het publieke internet op het moment dat deze optie uit staat.')
 
-    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True)
-    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True)
+    created_at = models.DateTimeField('Aangemaakt op', auto_now_add=True, null=True)
+    updated_at = models.DateTimeField('Gewijzigd op', auto_now=True, null=True)
 
     objects = models.Manager()
     visible = ViewerVisibleManager()
