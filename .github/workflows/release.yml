@@ -20,7 +20,7 @@ jobs:
 
       - name: Helm | Login
         id: login
-        run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login -u ${{ github.actor }} --password-stdin $REGISTRY/geo-commons
+        run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login -u ${{ github.actor }} --password-stdin $REGISTRY
 
       - name: Get versions
         id: version
@@ -49,4 +49,4 @@ jobs:
 
       - name: Helm | Logout
         if: always()
-        run: helm registry logout $REGISTRY/geo-commons
+        run: helm registry logout $REGISTRY
