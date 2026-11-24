@@ -265,8 +265,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # See https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FILE_UPLOAD_PERMISSIONS
 FILE_UPLOAD_PERMISSIONS = None
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
 LOGIN_URL = '/atlas/login'
 LOGIN_REDIRECT_URL = '/atlas/'
 LOGOUT_REDIRECT_URL = '/atlas/'
