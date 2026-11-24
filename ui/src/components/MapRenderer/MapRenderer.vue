@@ -126,7 +126,7 @@
       @hide-panel="toggleFilters"
     />
     <PointInfoPanel
-      v-if="!showPanoramaPanel && features.markerOnClick"
+      v-if="!showPanoramaPanel"
       :layers="layers"
       :position="position"
       :show-panel="!showDataPanel && showInfoPanel && !editLayerStore.hideOtherPanels"
@@ -142,7 +142,7 @@
       @show-feature-on-map="showFeatureOnMap"
     />
     <DetailPanel
-      v-if="!showPanoramaPanel && !features.markerOnClick && features.detail"
+      v-if="!showPanoramaPanel && features.detail"
       :show-panel="selectedFeatures.length > 0 && !editLayerStore.hideOtherPanels"
       :features="selectedFeatures"
       @features-selected="setSelectedFeatures"
@@ -282,6 +282,7 @@
           :map-id="mapId"
           :show-search-bar="features.layerlistsearch"
           :show-simple-layer-list="features.layerlistsimple"
+          :show-toggle-all-layers-in-category="features.show_toggle_all_layers_in_category === true"
           :show-compare-slider="compareLayers"
           :show-toggle-all-layers-in-legend="features.show_toggle_all_layers_in_legend !== false"
           :show-sort-layers-in-legend="features.show_sort_layers_in_legend !== false"

@@ -49,6 +49,7 @@ import { IPosition } from "@/types/map";
 import { ILayer } from "@/types/layer";
 import { IUser } from "@/types/user";
 import { useMapStore } from "@/stores/map_store";
+import { canEnableLayer } from "@/utils/auth";
 
 interface LayerListItemProps {
   layer: ILayer;
@@ -67,7 +68,7 @@ const emit = defineEmits<{
 const mapStore = useMapStore(props.mapId);
 
 const isDisabled = computed(() => {
-  if (props.layer.login_required && (!props.user || !props.user.token)) {
+  if (!canEnableLayer(props.layer, props.user)) {
     return true;
   }
 

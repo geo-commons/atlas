@@ -93,11 +93,15 @@ import { ref, watch, computed } from "vue";
 import { pickTemplateValues } from "@/components/related-tables/utils";
 import { formatFriendlyFieldLabel, formatRawString } from "@/utils/string-helpers";
 import MarkdownTemplate from "@/components/MarkdownTemplate.vue";
+import { getDataAccessErrorMessage } from "@/utils/auth";
+import { useGlobalStore } from "@/stores";
 
 const { relatedTable, fieldMapping } = defineProps<{
   relatedTable: IRelatedTable;
   fieldMapping: Record<string, string>;
 }>();
+
+const globalStore = useGlobalStore();
 
 const emit = defineEmits<{
   (e: "select-related-table-object", type: { relatedTableId: number; item: any; relatedTableTitle: string }): void;
@@ -168,6 +172,10 @@ const getRestData = async (table: IRelatedTable) => {
     });
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(getDataAccessErrorMessage(globalStore.user));
+      }
+
       if (response.status === 404) {
         tableData.value = [];
         totalItems.value = 0;
@@ -251,6 +259,10 @@ const getOwsData = async (table: IRelatedTable) => {
 
       const result = await fetch(url.toString());
       if (!result.ok) {
+        if (result.status === 401 || result.status === 403) {
+          throw new Error(getDataAccessErrorMessage(globalStore.user));
+        }
+
         const error = `Er is een fout opgetreden bij het ophalen van de gegevens. Probeer het later opnieuw. HTTP Status: ${result.status}`;
         throw new Error(error);
       }

@@ -270,7 +270,7 @@
               binary
               @update:model-value="(value) => (data.features.markerOnClick = value)"
             />
-            <label for="features.markerOnClick">Prikker bij klik</label>
+            <label for="features.markerOnClick">Toon prikkers op de kaart</label>
           </div>
 
           <div class="setting __hover">

@@ -442,7 +442,7 @@ class Layer(models.Model):
         'Laagnaam', max_length=128, null=True, help_text='De naam van de laag op de geoserver.')
 
     layer_source = models.ForeignKey(
-        'Source', verbose_name='Bron', on_delete=models.SET_NULL, null=True)
+        'Source', verbose_name='Bron', on_delete=models.PROTECT, null=True)
 
     format = models.CharField(
         'Formaat', max_length=128, choices=FORMAT_TYPES, default=FORMAT_PNG)
@@ -468,7 +468,7 @@ class Layer(models.Model):
 
     # This is the category
     layer_type = models.ForeignKey(
-        Category, verbose_name='Categorie', on_delete=models.SET_NULL,
+        Category, verbose_name='Categorie', on_delete=models.PROTECT,
         blank=True, null=True)
 
     _popup_attributes = models.TextField(
@@ -978,7 +978,7 @@ class Template(models.Model):
     layer = models.ForeignKey(
         Layer, on_delete=models.CASCADE, related_name='templates')
 
-    source = models.ForeignKey('Source', on_delete=models.CASCADE)
+    source = models.ForeignKey('Source', on_delete=models.PROTECT)
     endpoint = models.CharField(_('Endpoint'), max_length=500)
     method = models.CharField(
         'Methode', choices=METHOD_TYPES, max_length=20, default=METHOD_GET)
@@ -1020,7 +1020,7 @@ class Template(models.Model):
 
 class MapLayer(models.Model):
     layer = models.ForeignKey(
-        'Layer', on_delete=models.CASCADE, related_name='maps_layer')
+        'Layer', on_delete=models.PROTECT, related_name='maps_layer')
     map = models.ForeignKey(
         'Map', on_delete=models.CASCADE, related_name='map_layers')
     map_category = models.ForeignKey(
@@ -1054,9 +1054,10 @@ class MapLayer(models.Model):
 
 class MapCategory(models.Model):
     category = models.ForeignKey(
-        'Category', on_delete=models.CASCADE, related_name='maps_category')
+        'Category', on_delete=models.PROTECT, related_name='maps_category')
     map = models.ForeignKey(
         'Map', on_delete=models.CASCADE, related_name='map_categories')
+    title = models.CharField('Titel', max_length=128, blank=True, default='')
     ordering = models.PositiveIntegerField('Sortering', default=0, db_index=True)
 
     class Meta:
@@ -1073,6 +1074,7 @@ class MapCategory(models.Model):
     def to_dict(self):
         return {
             'category': self.category_id,
+            'title': self.title or self.category.title,
             'ordering': self.ordering,
         }
 
