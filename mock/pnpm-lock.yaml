@@ -309,8 +309,8 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
-  morgan@1.12.0:
-    resolution: {integrity: sha512-OHpTRQwn2ezasILW8iKe+Yww1XsfWsZIpUOLF7RDb2g5GwO3trPaRwi7+8BDiJ7HFx2Kg2mfUdCBcVhwYlOz2g==}
+  morgan@1.12.1:
+    resolution: {integrity: sha512-tljKC0ex20AjO58Ob/eZ53JloycbVswbVNCHx6V6VLGzqt/w8dIynVGL0G8qVjNKwiA7sYSogCrN6QtJ82IV+g==}
     engines: {node: '>= 0.8.0'}
 
   ms@2.0.0:
@@ -774,7 +774,7 @@ snapshots:
       lodash-id: 0.14.1
       lowdb: 1.0.0
       method-override: 3.0.0(supports-color@7.2.0)
-      morgan: 1.12.0(supports-color@7.2.0)
+      morgan: 1.12.1(supports-color@7.2.0)
       nanoid: 3.3.18
       please-upgrade-node: 3.2.0
       pluralize: 8.0.0
@@ -822,7 +822,7 @@ snapshots:
 
   mime@1.6.0: {}
 
-  morgan@1.12.0(supports-color@7.2.0):
+  morgan@1.12.1(supports-color@7.2.0):
     dependencies:
       basic-auth: 2.0.1
       debug: 2.6.9(supports-color@7.2.0)
