@@ -40,6 +40,14 @@ Onder weergave vallen alle standaard weergaveopties voor de kaartlaag te configu
 
 - **Is selecteerbaar:** Met het aanzetten van de "is selecteerbaar" optie, zorg je ervoor dat de betreffende kaartlaag selecteerbaar is en je features op deze kaartlaag kan selecteren. _Standaard_: aan.
 - **Objecten clusteren:** Groepeert objecten die dicht bij elkaar staan tot één symbool met het aantal objecten. Bij inzoomen worden clusters automatisch opgesplitst. Deze optie is alleen beschikbaar voor een laag met brontype **WFS**. _Standaard_: uit.
+
+!!! warning "Clustering werkt alleen met objecten van het type Point"
+
+    Zorg dat het geometrie-veld expliciet van het type Point is en niet Multipoint.
+    Dit moet in ieder geval binnen Geoserver Edit Layer -> Feature type details ingesteld zijn.
+    Wanneer een geometrie-veld vanuit de database-tabel al het type Point is dan moet Geoserver dit automatisch overnemen. Bij het aanpassen van een bestaande layer kun je bij Feature Type Details -> Customize attributes aanvinken, daarna kun je via Edit (het potloodje) het veldtype voor het geometrie-veld aanpassen. Klik daarna op opslaan om de wijzigingen te bewaren. Controleer ook of binnen atlas de bron en het brontype bij de kaartlaaginstellingen van het type WFS zijn.  
+
+
 - **Geselecteerde objecten niet highlighten:** Met het aanzetten van deze optie worden features van deze kaartlaag nog steeds opgehaald en getoond in de detail- en dataweergave, maar niet met de blauwe highlightstijl op de kaart weergegeven. Dit geldt ook wanneer een gebruiker vanuit de lijst-, detail- of dataweergave op **Bekijk** klikt. _Standaard_: uit.
 - **Haal detailinformatie als HTML op bij de bron:** Met het aanzetten van de "haal detailinformatie op als HTML bij de bron" optie, zorg je ervoor dat het getFeatureInfo request wat naar betreffende kaartlaag bron wordt gedaan geen JSON-data formaat terugverwacht maar een HTML-data formaat. _Standaard_: uit.
 - **Toon laag in detail- en dataweergave:** Met het aanzetten van de "toon laag in detail- en dataweergave" optie zorg je ervoor dat de laag zichtbaar is binnen het detail en dataweergave. _Standaard_: aan.
