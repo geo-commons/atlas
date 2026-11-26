@@ -66,7 +66,9 @@ Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarb
 !!! info
 
     Het zoomniveau is dus omgekeerd aan de schaalwaarde. Bij inzoomen wordt de schaal kleiner maar het zoomniveau groter. Dit kan verwarrend zijn bij het configureren van bovenstaande waardes.
-    Een handvat:
+    Een handvat:  
+
+    ```
 
     Zoomniveau MaxScaleDenominator Niveau
 
@@ -74,6 +76,8 @@ Via het "zoomniveau minimum" veld bepaal je wat het minimale zoomniveau is waarb
     14,48      24000               Stadsniveau
     19,5       1000                Straatniveau
     22,34      100                 Huis/perceelniveau
+
+    ```
 
 !!! tip
 
